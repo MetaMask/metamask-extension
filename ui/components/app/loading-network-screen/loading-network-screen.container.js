@@ -58,6 +58,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     rollbackToPreviousProvider: () =>
       dispatch(actions.rollbackToPreviousProvider()),
+    failoverToMainnet: () => {
+      dispatch(actions.setActiveNetwork(NETWORK_TYPES.MAINNET));
+    },
     showNetworkDropdown: () => {
       return dispatch(actions.toggleNetworkMenu());
     },

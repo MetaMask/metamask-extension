@@ -41,6 +41,7 @@ export default class LoadingNetworkScreen extends PureComponent {
     setProviderArgs: PropTypes.array,
     setActiveNetwork: PropTypes.func,
     rollbackToPreviousProvider: PropTypes.func,
+    failoverToMainnet: PropTypes.func,
     isNetworkLoading: PropTypes.bool,
     showDeprecatedRpcUrlWarning: PropTypes.bool,
   };
@@ -187,7 +188,7 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   render() {
-    const { rollbackToPreviousProvider, showDeprecatedRpcUrlWarning } =
+    const { rollbackToPreviousProvider, failoverToMainnet, showDeprecatedRpcUrlWarning } =
       this.props;
 
     let loadingMessageToRender;
@@ -206,7 +207,18 @@ export default class LoadingNetworkScreen extends PureComponent {
         header={
           <div
             className="page-container__header-close"
-            onClick={rollbackToPreviousProvider}
+            onClick={() => {
+              try {
+                failoverToMainnet();
+              } catch (error) {
+                console.error('Error failing over to mainnet:', error);
+                try {
+                  rollbackToPreviousProvider();
+                } catch (rollbackError) {
+                  console.error('Error with both mainnet and rollback:', rollbackError);
+                }
+              }
+            }}
           />
         }
         showLoadingSpinner={!this.state.showErrorScreen}
