@@ -127,6 +127,16 @@ const bridgeSlice = createSlice({
               getNativeAssetForChainId(toToken.chainId)?.address,
           }
         : toToken;
+      // Update toChainId if it's different from the toToken chainId
+      if (
+        toToken?.chainId &&
+        (state.toChainId
+          ? formatChainIdToCaip(toToken.chainId) !==
+            formatChainIdToCaip(state.toChainId)
+          : true)
+      ) {
+        state.toChainId = formatChainIdToCaip(toToken.chainId);
+      }
     },
     setFromTokenInputValue: (
       state,

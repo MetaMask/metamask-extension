@@ -795,9 +795,6 @@ const PrepareBridgePage = () => {
                       selectedEvmAccount,
                     }),
                   );
-                  if (fromChain?.chainId) {
-                    dispatch(setToChainId(fromChain.chainId));
-                  }
                 }
                 dispatch(setToToken(fromToken));
               }}

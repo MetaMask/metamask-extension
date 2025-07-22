@@ -23,7 +23,6 @@ import {
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
-  setToChainId,
   setToToken,
 } from '../../ducks/bridge/actions';
 import {
@@ -218,7 +217,6 @@ export const useBridgeQueryParams = (
       const { chainId, assetReference } = parseCaipAssetType(
         toTokenMetadata.assetId,
       );
-      dispatch(setToChainId(chainId));
       dispatch(
         setToToken({
           ...toTokenMetadata,
