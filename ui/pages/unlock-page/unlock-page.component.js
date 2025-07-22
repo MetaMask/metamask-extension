@@ -67,6 +67,11 @@ class UnlockPage extends Component {
      */
     isUnlocked: PropTypes.bool,
     /**
+     * If isOnboardingCompleted is true, `Use a different login method` button
+     * will be shown instead of `Forgot password?`
+     */
+    isOnboardingCompleted: PropTypes.bool,
+    /**
      * onClick handler for "Forgot password?" link
      */
     onRestore: PropTypes.func,
@@ -357,10 +362,9 @@ class UnlockPage extends Component {
   };
 
   onForgotPasswordOrLoginWithDiffMethods = () => {
-    const { isSocialLoginFlow, isUnlocked, history } = this.props;
-    console.log('isUnlocked', isUnlocked);
-    if (!isUnlocked) {
-      console.log('redirecting to onboarding welcome route');
+    const { isSocialLoginFlow, history, isOnboardingCompleted } = this.props;
+
+    if (!isOnboardingCompleted) {
       history.replace(ONBOARDING_WELCOME_ROUTE);
       return;
     }
@@ -391,7 +395,7 @@ class UnlockPage extends Component {
 
   render() {
     const { password, error, isLocked, showResetPasswordModal } = this.state;
-    const { isUnlocked } = this.props;
+    const { isOnboardingCompleted } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
@@ -503,7 +507,9 @@ class UnlockPage extends Component {
               onClick={() => this.onForgotPasswordOrLoginWithDiffMethods()}
               marginBottom={6}
             >
-              {isUnlocked ? t('forgotPassword') : t('useDifferentLoginMethod')}
+              {isOnboardingCompleted
+                ? t('forgotPassword')
+                : t('useDifferentLoginMethod')}
             </Button>
 
             <Text>

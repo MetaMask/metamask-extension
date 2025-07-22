@@ -77,7 +77,7 @@ describe('Unlock Page', () => {
 
   it('clicks imports seed button', () => {
     const mockStateNonUnlocked = {
-      metamask: { isUnlocked: true },
+      metamask: { completedOnboarding: true },
     };
     const store = configureMockStore([thunk])(mockStateNonUnlocked);
     const { getByText, getByTestId } = renderWithProvider(

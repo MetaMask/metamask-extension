@@ -78,6 +78,7 @@ export default function OnboardingPinExtension() {
   };
 
   useEffect(() => {
+    // if the user has not created a wallet, redirect to onboarding welcome route
     if (!currentKeyring) {
       history.replace(ONBOARDING_WELCOME_ROUTE);
     }
