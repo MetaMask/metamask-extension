@@ -148,6 +148,14 @@ class NetworkManager {
     console.log(`${tabName} tab is properly selected`);
   }
 
+  async clickCustomNetworkTab(): Promise<void> {
+    console.log(`Clicking custom network tab`);
+    await this.driver.clickElement({
+      css: this.tabList,
+      text: 'Custom',
+    });
+  }
+
   async addNetwork(): Promise<void> {
     console.log(`Adding network`);
     await this.driver.clickElement(this.addNetworkButton);

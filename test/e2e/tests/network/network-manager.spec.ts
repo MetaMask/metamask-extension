@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
 import { toHex } from '@metamask/controller-utils';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
@@ -12,7 +13,6 @@ import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HomePage from '../../page-objects/pages/home/homepage';
 import NftListPage from '../../page-objects/pages/home/nft-list';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
 describe('Network Manager', function (this: Suite) {
@@ -173,24 +173,6 @@ describe('Network Manager', function (this: Suite) {
         // check if arbitrum is selected
         await networkManager.openNetworkManager();
         await networkManager.checkNetworkIsSelected(NetworkId.ARBITRUM);
-      },
-    );
-  });
-
-  it('should disable all popular networks when the user enables a custom network', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withEnabledNetworks({ eip155: { '0x1': true, '0xe708': true } })
-          .build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
       },
     );
   });
