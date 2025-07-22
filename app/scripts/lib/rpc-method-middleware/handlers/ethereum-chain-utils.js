@@ -260,9 +260,7 @@ export async function switchChain(
       );
       const existingChainIds = Object.keys(existingEnabledNetworks);
 
-      if (existingChainIds.includes(chainId)) {
-        console.log(`Network ${chainId} already exists`);
-      } else {
+      if (!existingChainIds.includes(chainId)) {
         const isFeaturedNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
 
         if (isFeaturedNetwork) {
