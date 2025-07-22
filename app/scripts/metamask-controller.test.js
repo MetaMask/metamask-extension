@@ -112,9 +112,11 @@ function* ulidGenerator(ulids = mockULIDs) {
 
 /**
  * Generate mock patches for a complete state replacement.
+ *
+ * @returns A list of mock patches.
  */
 function getMockPatches() {
-  return[{ op: 'replace', path: [], value: {} }];
+  return [{ op: 'replace', path: [], value: {} }];
 }
 
 let mockUlidGenerator = ulidGenerator();
@@ -387,7 +389,7 @@ describe('MetaMaskController', () => {
       metamaskController.controllerMessenger.publish(
         'PreferencesController:stateChange',
         preferences,
-        getMockPatches()
+        getMockPatches(),
       );
       await flushPromises();
     }
@@ -3767,7 +3769,7 @@ describe('MetaMaskController', () => {
         metamaskController.controllerMessenger.publish(
           'CurrencyRateController:stateChange',
           { currentCurrency: mockCurrency },
-          getMockPatches()
+          getMockPatches(),
         );
 
         expect(
