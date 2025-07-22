@@ -7054,13 +7054,13 @@ __metadata:
 
 "@metamask/preferences-controller@file:../core/packages/preferences-controller::locator=metamask-crx%40workspace%3A.":
   version: 18.4.1
-  resolution: "@metamask/preferences-controller@file:../core/packages/preferences-controller#../core/packages/preferences-controller::hash=fae3b9&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/preferences-controller@file:../core/packages/preferences-controller#../core/packages/preferences-controller::hash=c459b2&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/controller-utils": "npm:^11.11.0"
   peerDependencies:
     "@metamask/keyring-controller": ^22.0.0
-  checksum: 10/027d2638fff0042034b37b5813e04a933b95dac8ff3152e9a4e48ab368a5cfbff5b65aeb23849c3a14a9200a2ed04e7db6e9f52d3e1fe934f9ea36f7ac79e070
+  checksum: 10/0d8fa9f0d5beedfbd0e41a738e86bf369747ba04bd6c3c179089639551868b77e70fbcfd783cad81a80eb3ee9e8228d2217f51a00cd9b41490eda22f7e697d7b
   languageName: node
   linkType: hard
 

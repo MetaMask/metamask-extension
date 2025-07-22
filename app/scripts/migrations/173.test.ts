@@ -1,121 +1,157 @@
 import { migrate, version } from './173';
 
-describe(`migration #${version}`, () => {
+describe('migration #173', () => {
   it('should update the version metadata', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
+      meta: { version: 172 },
       data: {},
     };
 
     const newStorage = await migrate(oldStorage);
-
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('should flatten nested preferences structure', async () => {
+  it('should preserve existing top-level preferences like ipfsGateway', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
+      meta: { version: 172 },
       data: {
         PreferencesController: {
+          ipfsGateway: 'custom.gateway.com',
+          isIpfsGatewayEnabled: false,
+          useTokenDetection: true,
+          openSeaEnabled: false,
+          securityAlertsEnabled: true,
+          useSafeChainsListValidation: false,
           selectedAddress: '0x123',
-          identities: {},
+          identities: { '0x123': { name: 'Account 1' } },
+          lostIdentities: {},
           preferences: {
-            autoLockTimeLimit: 5,
-            showExtensionInFullSizeView: true,
+            autoLockTimeLimit: 300,
             showFiatInTestnets: true,
-            smartTransactionsOptInStatus: false,
-            hideZeroBalanceTokens: true,
-            tokenSortConfig: {
-              key: 'tokenFiatAmount',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
-            },
+            privacyMode: true,
           },
-          useBlockie: true,
-          theme: 'light',
         },
       },
     };
 
     const newStorage = await migrate(oldStorage);
 
-    const prefs = newStorage.data.PreferencesController as Record<string, any>;
-
-    // Check that nested preferences were moved to top level
-    expect(prefs.autoLockTimeLimit).toBe(5);
-    expect(prefs.showExtensionInFullSizeView).toBe(true);
-    expect(prefs.showFiatInTestnets).toBe(true);
-    expect(prefs.smartTransactionsOptInStatus).toBe(false);
-    expect(prefs.hideZeroBalanceTokens).toBe(true);
-    expect(prefs.tokenSortConfig).toStrictEqual({
-      key: 'tokenFiatAmount',
-      order: 'dsc',
-      sortCallback: 'stringNumeric',
+    expect(newStorage.data.PreferencesController).toMatchObject({
+      // Existing top-level properties should be preserved
+      ipfsGateway: 'custom.gateway.com',
+      isIpfsGatewayEnabled: false,
+      useTokenDetection: true,
+      openSeaEnabled: false,
+      securityAlertsEnabled: true,
+      useSafeChainsListValidation: false,
+      selectedAddress: '0x123',
+      identities: { '0x123': { name: 'Account 1' } },
+      lostIdentities: {},
+      // Nested preferences should be flattened
+      autoLockTimeLimit: 300,
+      showFiatInTestnets: true,
+      privacyMode: true,
+      // New defaults should be added
+      useBlockie: false,
+      theme: 'dark',
+      currentLocale: '',
+      textDirection: undefined,
+      usePhishDetect: true,
+      dismissSeedBackUpReminder: false,
+      advancedGasFee: {},
+      knownMethodData: {},
+      forgottenPassword: false,
+      ledgerTransportType: 'webhid',
+      enableMV3TimestampSave: true,
+      watchEthereumAccountEnabled: false,
+      addSnapAccountEnabled: false,
+      snapRegistryList: {},
+      snapsAddSnapAccountModalDismissed: false,
+      useMultiAccountBalanceChecker: true,
+      showExtensionInFullSizeView: false,
+      smartTransactionsMigrationApplied: false,
+      showNativeTokenAsMainBalance: false,
+      useNativeCurrencyAsPrimaryCurrency: true,
+      hideZeroBalanceTokens: false,
+      petnamesEnabled: true,
+      featureNotificationsEnabled: false,
+      showConfirmationAdvancedDetails: false,
+      tokenNetworkFilter: {},
+      skipDeepLinkInterstitial: false,
+      showMultiRpcModal: false,
+      manageInstitutionalWallets: false,
+      use4ByteResolution: true,
+      useCurrencyRateCheck: true,
+      useExternalNameSources: true,
+      useExternalServices: true,
+      useAddressBarEnsResolution: true,
+      overrideContentSecurityPolicyHeader: true,
     });
 
-    // Check that the nested preferences object was removed
-    expect(prefs.preferences).toBeUndefined();
-
-    // Check that existing top-level preferences were preserved
-    expect(prefs.selectedAddress).toBe('0x123');
-    expect(prefs.identities).toStrictEqual({});
-    expect(prefs.useBlockie).toBe(true);
-    expect(prefs.theme).toBe('light');
+    // The nested preferences object should be removed
+    expect(newStorage.data.PreferencesController).not.toHaveProperty('preferences');
   });
 
-  it('should add default values for new preferences', async () => {
+  it('should handle when PreferencesController is missing', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
-      data: {
-        PreferencesController: {
-          selectedAddress: '0x123',
-          identities: {},
-          preferences: {},
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    const prefs = newStorage.data.PreferencesController as Record<string, any>;
-
-    // Check that new preferences have default values
-    expect(prefs.usePhishDetect).toBe(true);
-    expect(prefs.use4ByteResolution).toBe(true);
-    expect(prefs.useCurrencyRateCheck).toBe(true);
-    expect(prefs.useExternalNameSources).toBe(true);
-    expect(prefs.useExternalServices).toBe(true);
-    expect(prefs.watchEthereumAccountEnabled).toBe(false);
-    expect(prefs.useMultiAccountBalanceChecker).toBe(true);
-    expect(prefs.manageInstitutionalWallets).toBe(false);
-    expect(prefs.ledgerTransportType).toBe('webhid');
-  });
-
-  it('should handle missing PreferencesController', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
+      meta: { version: 172 },
       data: {
         OtherController: {},
       },
     };
 
+    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
     const newStorage = await migrate(oldStorage);
 
-    expect(newStorage.data).toStrictEqual({
-      OtherController: {},
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Migration 173: PreferencesController not found or not an object, skipping.'
+    );
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+
+    consoleSpy.mockRestore();
+  });
+
+  it('should handle when PreferencesController has no nested preferences object', async () => {
+    const oldStorage = {
+      meta: { version: 172 },
+      data: {
+        PreferencesController: {
+          ipfsGateway: 'dweb.link',
+          isIpfsGatewayEnabled: true,
+          selectedAddress: '0x456',
+          identities: {},
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data.PreferencesController).toMatchObject({
+      // Existing properties preserved
+      ipfsGateway: 'dweb.link',
+      isIpfsGatewayEnabled: true,
+      selectedAddress: '0x456',
+      identities: {},
+      // Defaults added
+      autoLockTimeLimit: undefined,
+      showFiatInTestnets: false,
+      showExtensionInFullSizeView: false,
+      useBlockie: false,
+      theme: 'dark',
     });
   });
 
-  it('should not override existing top-level preferences with nested ones', async () => {
+  it('should not override existing top-level values when flattening nested preferences', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
+      meta: { version: 172 },
       data: {
         PreferencesController: {
-          // Top-level autoLockTimeLimit should take precedence
-          autoLockTimeLimit: 10,
+          autoLockTimeLimit: 600, // Existing top-level value
+          showFiatInTestnets: false, // Existing top-level value
           preferences: {
-            // This nested one should be ignored
-            autoLockTimeLimit: 5,
+            autoLockTimeLimit: 300, // Nested value should NOT override
+            showFiatInTestnets: true, // Nested value should NOT override
+            privacyMode: true, // This should be moved up
           },
         },
       },
@@ -123,7 +159,82 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
 
-    const prefs = newStorage.data.PreferencesController as Record<string, any>;
-    expect(prefs.autoLockTimeLimit).toBe(10);
+    expect(newStorage.data.PreferencesController).toMatchObject({
+      // Top-level values should be preserved, not overridden by nested values
+      autoLockTimeLimit: 600,
+      showFiatInTestnets: false,
+      // Only non-conflicting nested values should be moved up
+      privacyMode: true,
+    });
+  });
+
+  it('should add all required default values for new properties', async () => {
+    const oldStorage = {
+      meta: { version: 172 },
+      data: {
+        PreferencesController: {},
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+    const prefs = newStorage.data.PreferencesController;
+
+    // Check all defaults are added
+    expect(prefs).toMatchObject({
+      useBlockie: false,
+      theme: 'dark',
+      currentLocale: '',
+      textDirection: undefined,
+      usePhishDetect: true,
+      use4ByteResolution: true,
+      useCurrencyRateCheck: true,
+      useExternalNameSources: true,
+      useExternalServices: true,
+      useAddressBarEnsResolution: true,
+      overrideContentSecurityPolicyHeader: true,
+      securityAlertsEnabled: true,
+      useSafeChainsListValidation: true,
+      useTokenDetection: true,
+      openSeaEnabled: true,
+      useNftDetection: false,
+      dismissSeedBackUpReminder: false,
+      advancedGasFee: {},
+      knownMethodData: {},
+      forgottenPassword: false,
+      ledgerTransportType: 'webhid',
+      enableMV3TimestampSave: true,
+      watchEthereumAccountEnabled: false,
+      addSnapAccountEnabled: false,
+      snapRegistryList: {},
+      snapsAddSnapAccountModalDismissed: false,
+      useMultiAccountBalanceChecker: true,
+      manageInstitutionalWallets: false,
+      useMultiRpcMigration: true,
+      useTransactionSimulations: true,
+      autoLockTimeLimit: undefined,
+      showExtensionInFullSizeView: false,
+      showFiatInTestnets: false,
+      showTestNetworks: false,
+      smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: false,
+      showNativeTokenAsMainBalance: false,
+      useNativeCurrencyAsPrimaryCurrency: true,
+      hideZeroBalanceTokens: false,
+      petnamesEnabled: true,
+      featureNotificationsEnabled: false,
+      showConfirmationAdvancedDetails: false,
+      tokenNetworkFilter: {},
+      tokenSortConfig: {
+        key: 'tokenFiatAmount',
+        order: 'dsc',
+        sortCallback: 'stringNumeric',
+      },
+      skipDeepLinkInterstitial: false,
+      showMultiRpcModal: false,
+      privacyMode: false,
+      dismissSmartAccountSuggestionEnabled: false,
+      smartAccountOptIn: true,
+      smartAccountOptInForAccounts: [],
+    });
   });
 });

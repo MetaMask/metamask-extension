@@ -33,69 +33,110 @@ function transformState(state: Record<string, unknown>): void {
     return;
   }
 
-  const preferences = state.PreferencesController as Record<string, any>;
+  console.log('Migration 173: PreferencesController found, transforming state...');
 
-  // First, flatten the nested preferences object
-  if (preferences.preferences && typeof preferences.preferences === 'object') {
-    const nestedPrefs = preferences.preferences as Record<string, any>;
+  const oldPreferences = state.PreferencesController as Record<string, any>;
+
+  // Start with a copy of the existing preferences controller state
+  // This preserves all existing top-level properties like ipfsGateway, useTokenDetection, etc.
+  const newPreferences = { ...oldPreferences };
+
+  // If there's a nested preferences object, flatten it
+  if (oldPreferences.preferences && typeof oldPreferences.preferences === 'object') {
+    const nestedPrefs = oldPreferences.preferences as Record<string, any>;
 
     // Move all nested preferences to the top level
     Object.entries(nestedPrefs).forEach(([key, value]) => {
-      // Skip if the key already exists at the top level
-      if (!(key in preferences)) {
-        preferences[key] = value;
+      // Only move if the key doesn't already exist at the top level
+      // This ensures we don't override existing top-level values
+      if (!(key in newPreferences)) {
+        newPreferences[key] = value;
       }
     });
 
     // Remove the nested preferences object
-    delete preferences.preferences;
+    delete newPreferences.preferences;
   }
 
-  // Ensure all required fields have proper defaults if they don't exist
-  // Visual/UI Preferences
-  if (!('useBlockie' in preferences)) preferences.useBlockie = false;
-  if (!('theme' in preferences)) preferences.theme = 'dark';
-  if (!('currentLocale' in preferences)) preferences.currentLocale = '';
+  // Add default values ONLY for properties that don't exist
+  // These match the defaults in core PreferencesController
+  const defaults: Record<string, any> = {
+    // Visual/UI Preferences
+    useBlockie: false,
+    theme: 'dark',
+    currentLocale: '',
+    textDirection: undefined,
 
-  // Security/Privacy Preferences
-  if (!('usePhishDetect' in preferences)) preferences.usePhishDetect = true;
-  if (!('use4ByteResolution' in preferences)) preferences.use4ByteResolution = true;
-  if (!('useCurrencyRateCheck' in preferences)) preferences.useCurrencyRateCheck = true;
-  if (!('useExternalNameSources' in preferences)) preferences.useExternalNameSources = true;
-  if (!('useExternalServices' in preferences)) preferences.useExternalServices = true;
-  if (!('useAddressBarEnsResolution' in preferences)) preferences.useAddressBarEnsResolution = true;
-  if (!('overrideContentSecurityPolicyHeader' in preferences)) preferences.overrideContentSecurityPolicyHeader = true;
+    // Security/Privacy Preferences
+    usePhishDetect: true,
+    use4ByteResolution: true,
+    useCurrencyRateCheck: true,
+    useExternalNameSources: true,
+    useExternalServices: true,
+    useAddressBarEnsResolution: true,
+    overrideContentSecurityPolicyHeader: true,
+    securityAlertsEnabled: true,
+    useSafeChainsListValidation: true,
 
-  // Advanced Settings
-  if (!('dismissSeedBackUpReminder' in preferences)) preferences.dismissSeedBackUpReminder = false;
-  if (!('advancedGasFee' in preferences)) preferences.advancedGasFee = {};
-  if (!('knownMethodData' in preferences)) preferences.knownMethodData = {};
-  if (!('forgottenPassword' in preferences)) preferences.forgottenPassword = false;
-  if (!('ledgerTransportType' in preferences)) {
-    // Try to detect the best transport type
-    preferences.ledgerTransportType = 'webhid';
-  }
-  if (!('enableMV3TimestampSave' in preferences)) preferences.enableMV3TimestampSave = true;
+    // Token/NFT Detection
+    useTokenDetection: true,
+    openSeaEnabled: true,
+    useNftDetection: false,
 
-  // Feature Flags
-  if (!('watchEthereumAccountEnabled' in preferences)) preferences.watchEthereumAccountEnabled = false;
-  if (!('snapRegistryList' in preferences)) preferences.snapRegistryList = {};
-  if (!('useMultiAccountBalanceChecker' in preferences)) preferences.useMultiAccountBalanceChecker = true;
-  if (!('manageInstitutionalWallets' in preferences)) preferences.manageInstitutionalWallets = false;
+    // Advanced Settings
+    dismissSeedBackUpReminder: false,
+    advancedGasFee: {},
+    knownMethodData: {},
+    forgottenPassword: false,
+    ledgerTransportType: 'webhid',
+    enableMV3TimestampSave: true,
 
-  // User Experience Preferences (these were nested before)
-  if (!('showExtensionInFullSizeView' in preferences)) preferences.showExtensionInFullSizeView = false;
-  if (!('showFiatInTestnets' in preferences)) preferences.showFiatInTestnets = false;
-  if (!('smartTransactionsMigrationApplied' in preferences)) preferences.smartTransactionsMigrationApplied = false;
-  if (!('showNativeTokenAsMainBalance' in preferences)) preferences.showNativeTokenAsMainBalance = false;
-  if (!('useNativeCurrencyAsPrimaryCurrency' in preferences)) preferences.useNativeCurrencyAsPrimaryCurrency = true;
-  if (!('hideZeroBalanceTokens' in preferences)) preferences.hideZeroBalanceTokens = false;
-  if (!('petnamesEnabled' in preferences)) preferences.petnamesEnabled = true;
-  if (!('featureNotificationsEnabled' in preferences)) preferences.featureNotificationsEnabled = false;
-  if (!('showConfirmationAdvancedDetails' in preferences)) preferences.showConfirmationAdvancedDetails = false;
-  if (!('tokenNetworkFilter' in preferences)) preferences.tokenNetworkFilter = {};
-  if (!('skipDeepLinkInterstitial' in preferences)) preferences.skipDeepLinkInterstitial = false;
-  if (!('showMultiRpcModal' in preferences)) preferences.showMultiRpcModal = false;
+    // Feature Flags
+    watchEthereumAccountEnabled: false,
+    addSnapAccountEnabled: false,
+    snapRegistryList: {},
+    snapsAddSnapAccountModalDismissed: false,
+    useMultiAccountBalanceChecker: true,
+    manageInstitutionalWallets: false,
+    useMultiRpcMigration: true,
+    useTransactionSimulations: true,
 
-  state.PreferencesController = preferences;
+    // User Experience Preferences
+    autoLockTimeLimit: undefined,
+    showExtensionInFullSizeView: false,
+    showFiatInTestnets: false,
+    showTestNetworks: false,
+    smartTransactionsOptInStatus: true,
+    smartTransactionsMigrationApplied: false,
+    showNativeTokenAsMainBalance: false,
+    useNativeCurrencyAsPrimaryCurrency: true,
+    hideZeroBalanceTokens: false,
+    petnamesEnabled: true,
+    featureNotificationsEnabled: false,
+    showConfirmationAdvancedDetails: false,
+    tokenNetworkFilter: {},
+    tokenSortConfig: {
+      key: 'tokenFiatAmount',
+      order: 'dsc',
+      sortCallback: 'stringNumeric',
+    },
+    skipDeepLinkInterstitial: false,
+    showMultiRpcModal: false,
+    privacyMode: false,
+    dismissSmartAccountSuggestionEnabled: false,
+    smartAccountOptIn: true,
+    smartAccountOptInForAccounts: [],
+  };
+
+  // Apply defaults only for missing properties
+  Object.entries(defaults).forEach(([key, value]) => {
+    if (!(key in newPreferences)) {
+      newPreferences[key] = value;
+    }
+  });
+
+  console.log('Migration 173: New preferences:', newPreferences);
+
+  // Replace the state with the transformed preferences
+  state.PreferencesController = newPreferences;
 }

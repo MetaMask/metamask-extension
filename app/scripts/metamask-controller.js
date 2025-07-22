@@ -822,7 +822,10 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:setAccountName',
         'NetworkController:getState',
       ],
-      allowedEvents: ['AccountsController:stateChange'],
+      allowedEvents: [
+        'AccountsController:stateChange',
+        'KeyringController:stateChange',
+      ],
     });
 
     this.preferencesController = new PreferencesController({
@@ -2133,7 +2136,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
           getDismissSmartAccountSuggestionEnabled: () =>
-            this.preferencesController.state.preferences
+            this.preferencesController.state
               .dismissSmartAccountSuggestionEnabled,
           isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
             this.txController,
@@ -2155,7 +2158,7 @@ export default class MetamaskController extends EventEmitter {
         null,
         {
           getDismissSmartAccountSuggestionEnabled: () =>
-            this.preferencesController.state.preferences
+            this.preferencesController.state
               .dismissSmartAccountSuggestionEnabled,
           getIsSmartTransaction: (chainId) =>
             getIsSmartTransaction(this._getMetaMaskState(), chainId),
@@ -2497,7 +2500,8 @@ export default class MetamaskController extends EventEmitter {
    */
   getPreferences() {
     const {
-      preferences,
+      privacyMode,
+      showTestNetworks,
       securityAlertsEnabled,
       useCurrencyRateCheck,
       useTransactionSimulations,
@@ -2508,8 +2512,8 @@ export default class MetamaskController extends EventEmitter {
     } = this.preferencesController.state;
 
     return {
-      privacyMode: preferences.privacyMode,
-      showTestnets: preferences.showTestNetworks,
+      privacyMode,
+      showTestnets: showTestNetworks,
       securityAlertsEnabled,
       useCurrencyRateCheck,
       useTransactionSimulations,
@@ -3623,7 +3627,6 @@ export default class MetamaskController extends EventEmitter {
       setPreference: preferencesController.setPreference.bind(
         preferencesController,
       ),
-
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,
       ),
@@ -3645,7 +3648,6 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-
       setManageInstitutionalWallets:
         preferencesController.setManageInstitutionalWallets.bind(
           preferencesController,
@@ -7376,8 +7378,7 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       setTokenNetworkFilter: (chainId) => {
-        const { tokenNetworkFilter } =
-          this.preferencesController.getPreferences();
+        const { tokenNetworkFilter } = this.preferencesController.state;
         if (chainId && Object.keys(tokenNetworkFilter).length === 1) {
           this.preferencesController.setPreference('tokenNetworkFilter', {
             [chainId]: true,
@@ -8450,8 +8451,7 @@ export default class MetamaskController extends EventEmitter {
         );
       },
       getIsConfirmationAdvancedDetailsOpen: () => {
-        return this.preferencesController.state.preferences
-          .showConfirmationAdvancedDetails;
+        return this.preferencesController.state.showConfirmationAdvancedDetails;
       },
       getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
       getNetworkRpcUrl: (chainId) => {

@@ -189,10 +189,8 @@ export type MetaMaskState = {
   security_providers: string[];
   addressBook: AddressBookControllerState['addressBook'];
   currentCurrency: string;
-  preferences: {
-    privacyMode: PreferencesControllerState['privacyMode'];
-    tokenNetworkFilter: PreferencesControllerState['tokenNetworkFilter'];
-  };
+  privacyMode: PreferencesControllerState['privacyMode'];
+  tokenNetworkFilter: PreferencesControllerState['tokenNetworkFilter'];
   srpSessionData: AuthenticationControllerState['srpSessionData'];
   keyrings: { type: string; accounts: string[] }[];
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
@@ -1333,9 +1331,9 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.TokenSortPreference]:
         metamaskState.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
-        metamaskState.preferences.privacyMode,
+        metamaskState.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
-        metamaskState.preferences.tokenNetworkFilter || {},
+        metamaskState.tokenNetworkFilter || {},
       ),
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
