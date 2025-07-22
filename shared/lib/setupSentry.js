@@ -38,7 +38,7 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-export default function setupSentry(forceEnable = false) {
+export default function setupSentry(skipConsentFilter = false) {
   if (!RELEASE) {
     throw new Error('Missing release');
   }
@@ -63,7 +63,7 @@ export default function setupSentry(forceEnable = false) {
       log('Error getting extension installType', error);
     });
   integrateLogging();
-  setSentryClient(forceEnable);
+  setSentryClient(skipConsentFilter);
 
   return {
     ...Sentry,
@@ -71,7 +71,7 @@ export default function setupSentry(forceEnable = false) {
   };
 }
 
-function getClientOptions(forceEnable = false) {
+function getClientOptions(skipConsentFilter = false) {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
@@ -91,7 +91,11 @@ function getClientOptions(forceEnable = false) {
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
         },
       }),
-      filterEvents({ getMetaMetricsEnabled, log, isForceEnable: forceEnable }),
+      filterEvents({
+        getMetaMetricsEnabled,
+        log,
+        skipConsentFilter,
+      }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -256,8 +260,8 @@ async function getMetaMetricsEnabled() {
   }
 }
 
-function setSentryClient(forceEnable = false) {
-  const clientOptions = getClientOptions(forceEnable);
+function setSentryClient(skipConsentFilter = false) {
+  const clientOptions = getClientOptions(skipConsentFilter);
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**

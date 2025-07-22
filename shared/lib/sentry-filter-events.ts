@@ -13,17 +13,17 @@ const NAME = 'FilterEvents';
 export function filterEvents({
   getMetaMetricsEnabled,
   log,
-  isForceEnable,
+  skipConsentFilter,
 }: {
   getMetaMetricsEnabled: () => Promise<boolean>;
   log: (message: string) => void;
-  isForceEnable: boolean;
+  skipConsentFilter: boolean;
 }): Integration {
   return {
     name: NAME,
     processEvent: async (event: SentryEvent) => {
       // If force enable is true, we don't want to filter events.
-      if (isForceEnable) {
+      if (skipConsentFilter) {
         return event;
       }
 
