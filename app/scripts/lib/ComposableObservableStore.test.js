@@ -33,6 +33,16 @@ class ExampleController extends BaseController {
       state.baz = contents;
     });
   }
+
+  replaceState(state) {
+    this.update(() => state);
+  }
+
+  updatePropertyMissingFromMetadata(contents) {
+    this.update((state) => {
+      state.missing = contents;
+    });
+  }
 }
 
 describe('ComposableObservableStore', () => {
@@ -191,6 +201,50 @@ describe('ComposableObservableStore', () => {
 
       expect(onStateChange).toHaveBeenCalledWith({
         Example: { bar: 'update' },
+      });
+    });
+
+    it('should emit state change when there is a complete state replacement', () => {
+      const messenger = new Messenger();
+      const exampleController = new ExampleController({
+        messenger,
+      });
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+        persist: true,
+      });
+      store.updateStructure({
+        Example: exampleController,
+      });
+      const onStateChange = jest.fn();
+      store.subscribe(onStateChange);
+
+      exampleController.replaceState({ baz: 'update', bar: 'update' });
+
+      expect(onStateChange).toHaveBeenCalledWith({
+        Example: { bar: 'update' },
+      });
+    });
+
+    it('should emit state change when there is an update to a property missing from metadata', () => {
+      const messenger = new Messenger();
+      const exampleController = new ExampleController({
+        messenger,
+      });
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+        persist: true,
+      });
+      store.updateStructure({
+        Example: exampleController,
+      });
+      const onStateChange = jest.fn();
+      store.subscribe(onStateChange);
+
+      exampleController.updatePropertyMissingFromMetadata('update');
+
+      expect(onStateChange).toHaveBeenCalledWith({
+        Example: { bar: 'bar' },
       });
     });
 
