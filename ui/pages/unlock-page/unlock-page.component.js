@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
+import log from 'loglevel';
 import {
   Text,
   FormTextField,
@@ -71,6 +72,10 @@ class UnlockPage extends Component {
      */
     onSubmit: PropTypes.func,
     /**
+     * check password is outdated for social login flow
+     */
+    checkIsSeedlessPasswordOutdated: PropTypes.func,
+    /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
@@ -113,12 +118,18 @@ class UnlockPage extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
       name: TraceName.OnboardingPasswordLoginAttempt,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: this.props.onboardingParentContext?.current,
     });
+
+    try {
+      await this.props.checkIsSeedlessPasswordOutdated();
+    } catch (error) {
+      log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+    }
   }
 
   handleSubmit = async (event) => {
@@ -134,8 +145,34 @@ class UnlockPage extends Component {
 
     this.setState({ error: null, isSubmitting: true });
 
+    // Track wallet rehydration attempted for social login users
+    if (this.props.isSocialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.RehydrationPasswordAttempted,
+        properties: {
+          account_type: 'social',
+          biometrics: false,
+        },
+      });
+    }
+
     try {
       await onSubmit(password);
+
+      // Track wallet rehydration completed for social login users
+      if (this.props.isSocialLoginFlow) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.RehydrationCompleted,
+          properties: {
+            account_type: 'social',
+            biometrics: false,
+            failed_attempts: this.failed_attempts,
+          },
+        });
+      }
+
       this.context.trackEvent(
         {
           category: MetaMetricsEventCategory.Navigation,
@@ -169,11 +206,28 @@ class UnlockPage extends Component {
 
   handleLoginError = async (error) => {
     const { t } = this.context;
-    this.failed_attempts += 1;
     const { message, data } = error;
+
+    // Sync failed_attempts with numberOfAttempts from error data
+    if (data?.numberOfAttempts !== undefined) {
+      this.failed_attempts = data.numberOfAttempts;
+    }
+
     let finalErrorMessage = message;
     let finalUnlockDelayPeriod = 0;
     let errorReason;
+
+    // Track wallet rehydration failed for social login users
+    if (this.props.isSocialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.RehydrationPasswordFailed,
+        properties: {
+          account_type: 'social',
+          failed_attempts: this.failed_attempts,
+        },
+      });
+    }
 
     // Check if we are in the onboarding flow
     if (this.props.onboardingParentContext?.current) {
@@ -300,13 +354,28 @@ class UnlockPage extends Component {
   };
 
   onForgotPassword = () => {
+    const { isSocialLoginFlow } = this.props;
+
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ForgotPasswordClicked,
+      properties: {
+        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      },
+    });
+
     this.setState({ showResetPasswordModal: true });
   };
 
   onRestoreWallet = () => {
+    const { isSocialLoginFlow } = this.props;
+
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.ResetWallet,
+      properties: {
+        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      },
     });
     this.props.onRestore();
   };
