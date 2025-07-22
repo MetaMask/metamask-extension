@@ -83,7 +83,6 @@ export const useNetworkItemCallbacks = () => {
       const hexChainId = convertCaipToHexChainId(chainId);
       const isDeletable =
         isUnlocked &&
-        network.chainId !== currentChainId &&
         network.chainId !== EthScope.Mainnet;
 
       const modalProps = {

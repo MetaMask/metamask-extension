@@ -499,7 +499,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       const hexChainId = convertCaipToHexChainId(chainId);
       const isDeletable =
         isUnlocked &&
-        network.chainId !== currentChainId &&
         network.chainId !== EthScope.Mainnet;
 
       return {
