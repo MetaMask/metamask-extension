@@ -19,10 +19,8 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import {
-  getSelectedNetworkClientId,
-  getCurrentChainId,
-} from '../../../shared/modules/selectors/networks';
+import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -64,7 +62,7 @@ const CrossChainSwap = () => {
   };
 
   const isSwap = useIsMultichainSwap();
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useSelector(getMultichainCurrentChainId);
   const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
     getIsUnifiedUIEnabled(state, chainId),
   );
