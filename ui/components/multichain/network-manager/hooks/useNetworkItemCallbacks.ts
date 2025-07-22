@@ -81,9 +81,7 @@ export const useNetworkItemCallbacks = () => {
       // Non-EVM networks cannot be deleted, edited or have
       // RPC endpoints so it's safe to call this conversion function here.
       const hexChainId = convertCaipToHexChainId(chainId);
-      const isDeletable =
-        isUnlocked &&
-        network.chainId !== EthScope.Mainnet;
+      const isDeletable = isUnlocked && network.chainId !== EthScope.Mainnet;
 
       const modalProps = {
         onConfirm: () => undefined,
