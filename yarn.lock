@@ -7499,8 +7499,8 @@ __metadata:
 
 "@metamask/solana-wallet-snap@patch:@metamask/solana-wallet-snap@npm%3A1.36.0#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.36.0-bc691d3aa4.patch":
   version: 1.36.0
-  resolution: "@metamask/solana-wallet-snap@patch:@metamask/solana-wallet-snap@npm%3A1.36.0#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.36.0-bc691d3aa4.patch::version=1.36.0&hash=ad2421"
-  checksum: 10/a696e8adf9e4a7ba8051bb6d84f8b0d63600c9bfc807587ad4b5537d7425e800ea571015ff012f4994099490b81eb69e251b9f473412c53e9f975611d363e6cb
+  resolution: "@metamask/solana-wallet-snap@patch:@metamask/solana-wallet-snap@npm%3A1.36.0#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.36.0-bc691d3aa4.patch::version=1.36.0&hash=45324a"
+  checksum: 10/80339930cc3047e3d5ea71f0069537c4d52f61723ecb6b7613b2f1b98a64115040a368a78f6eb45f9d54ff6bfddb7825d244d6221ad7b7b6f48f0e1a4692c73a
   languageName: node
   linkType: hard
 
