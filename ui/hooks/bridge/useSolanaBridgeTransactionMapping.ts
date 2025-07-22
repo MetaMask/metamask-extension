@@ -60,7 +60,7 @@ export type BridgeOriginatedItem = {
   id: string; // Source Tx Hash
   account: string;
   timestamp: number;
-  type: 'send'; // Base type for potential filtering
+  type: 'swap' | 'bridge';
   from: {
     address: string;
     asset: {
@@ -200,12 +200,19 @@ export default function useSolanaBridgeTransactionMapping(
           const assetType: BridgeAsset =
             getNativeAssetForChainId(chainId) ?? 'eip155:1/slip44:60';
 
+          const srcChainId = bridgeTx.quote?.srcChainId;
+          const destChainId = bridgeTx.quote?.destChainId;
+          const isCrossChain =
+            srcChainId !== undefined &&
+            destChainId !== undefined &&
+            srcChainId !== destChainId;
+
           // Create the item with only the fields available from bridge history.
           const bridgeOriginatedTx: BridgeOriginatedItem = {
             id: srcTxHash,
             account: bridgeTx.account,
             timestamp: timestampSeconds,
-            type: 'send',
+            type: isCrossChain ? 'bridge' : 'swap',
             to: [],
             from: [
               {
