@@ -533,7 +533,11 @@ const PrepareBridgePage = () => {
     ) => {
       trackCrossChainSwapsEvent({
         event: MetaMetricsEventName.InputChanged,
-        properties,
+        properties: {
+          ...properties,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: formatChainIdToCaip(fromChain?.chainId || ''),
+        },
       });
     },
     [],
