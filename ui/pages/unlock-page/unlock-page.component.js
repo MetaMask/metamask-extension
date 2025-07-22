@@ -28,6 +28,10 @@ import {
   FontWeight,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
@@ -129,6 +133,18 @@ class UnlockPage extends Component {
       await this.props.checkIsSeedlessPasswordOutdated();
     } catch (error) {
       log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isUnlocked, history } = this.props;
+
+    if (
+      !prevProps.isUnlocked &&
+      isUnlocked &&
+      getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
+    ) {
+      history.push(DEFAULT_ROUTE);
     }
   }
 
