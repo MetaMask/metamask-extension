@@ -89,6 +89,7 @@ describe('Address Book', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('$85,000.00', 'USD');
         await homePage.startSendFlow();
 
         const sendTokenPage = new SendTokenPage(driver);
