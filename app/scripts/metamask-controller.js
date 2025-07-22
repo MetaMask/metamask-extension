@@ -8658,6 +8658,9 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen(open) {
     this._isClientOpen = open;
+
+    // Notify Snaps that the client is open or closed.
+    this.controllerMessenger.call('SnapController:setClientActive', open);
   }
   /* eslint-enable accessor-pairs */
 
