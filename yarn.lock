@@ -5360,9 +5360,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@31.0.0-preview-97b5829f":
-  version: 31.0.0-preview-97b5829f
-  resolution: "@metamask-previews/accounts-controller@npm:31.0.0-preview-97b5829f"
+"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@31.0.0-preview-74230359":
+  version: 31.0.0-preview-74230359
+  resolution: "@metamask-previews/accounts-controller@npm:31.0.0-preview-74230359"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -5377,6 +5377,7 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     ethereum-cryptography: "npm:^2.1.2"
     immer: "npm:^9.0.6"
+    lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/keyring-controller": ^22.0.0
@@ -5384,7 +5385,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/eb9d33050d5197471f8a30932952f79a79e40481ebfd5a3c8d05d50cc6c89d1d49e73a4361b2659b1d954789c07499a774b7c54f5437e818ecee61eebfa38c25
+  checksum: 10/140fecf169cebdeeb3615b2a36a3a002cb73ab3822c486a9d4f98b7b068e61c1d33098a5d8906d179d2c0eaeb2fb426420eb2ca4da6d9d06e03cf1da5f2f343e
   languageName: node
   linkType: hard
 

@@ -1119,6 +1119,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
+        "lodash": true,
         "uuid": true
       }
     },
