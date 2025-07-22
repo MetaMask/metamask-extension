@@ -308,6 +308,14 @@ const firstTimeState = {
 
 const noop = () => undefined;
 
+function createMockCronjobControllerStorageManager() {
+  return {
+    init: noop,
+    getInitialState: noop,
+    set: noop,
+  };
+}
+
 describe('MetaMaskController', () => {
   beforeAll(async () => {
     await ganacheServer.start();
@@ -425,6 +433,8 @@ describe('MetaMaskController', () => {
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
         isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
       });
 
       jest.spyOn(
@@ -474,6 +484,8 @@ describe('MetaMaskController', () => {
           platform: {
             _showNotification: jest.fn(),
           },
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         expect(localController.loggingController.add).toHaveBeenCalledTimes(1);
@@ -501,6 +513,8 @@ describe('MetaMaskController', () => {
           },
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         expect(openExtensionInBrowserMock).toHaveBeenCalledTimes(1);
@@ -616,6 +630,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         const accountsControllerSpy = jest.spyOn(
@@ -2388,6 +2404,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
         jest.spyOn(localMetaMaskController, 'getCookieFromMarketingPage');
       });
@@ -2699,6 +2717,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
         initializeMockMiddlewareLog();
         jest
@@ -3809,6 +3829,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         metamaskController.controllerMessenger.publish(
@@ -3843,6 +3865,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
       });
 
@@ -4227,6 +4251,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         expect(
@@ -4257,6 +4283,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         const networkState = metamaskController.networkController.state;
@@ -4321,6 +4349,8 @@ describe('MetaMaskController', () => {
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
       isFirstMetaMaskControllerSetup: true,
+      cronjobControllerStorageManager:
+        createMockCronjobControllerStorageManager(),
     });
 
     beforeEach(() => {
@@ -4383,6 +4413,8 @@ describe('MetaMaskController', () => {
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
         isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
       });
 
       expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
@@ -4407,6 +4439,8 @@ describe('MetaMaskController', () => {
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
         isFirstMetaMaskControllerSetup: false,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
       });
 
       expect(metamaskController.resetStates).not.toHaveBeenCalled();

@@ -16,6 +16,7 @@ import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
+import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -205,6 +206,8 @@ export type ControllerInitRequest<
    * Generated using the callback specified in `getInitMessengerCallback`.
    */
   initMessenger: InitMessengerType;
+
+  getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
 };
 
 /**

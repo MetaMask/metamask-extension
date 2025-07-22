@@ -15,6 +15,7 @@ export function buildControllerInitRequestMock(): jest.Mocked<
   >
 > {
   return {
+    getCronjobControllerStorageManager: jest.fn(),
     getController: jest.fn(),
     getFlatState: jest.fn(),
     getGlobalChainId: jest.fn().mockReturnValue(CHAIN_ID_MOCK),
