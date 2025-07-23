@@ -105,6 +105,13 @@ describe('Bridge tests', function (this: Suite) {
         const swapBridgeInputChanged = findEventsByName(
           EventTypes.SwapBridgeInputChanged,
         );
+        console.log(
+          '=======swapBridgeInputChanged',
+          swapBridgeInputChanged.length,
+          swapBridgeInputChanged
+            .map((e) => e.properties)
+            .map(({ input, chain_id }) => ({ input, chain_id })),
+        );
         /**
          * token_source
          * chain_source
