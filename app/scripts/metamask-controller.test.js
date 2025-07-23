@@ -3604,6 +3604,7 @@ describe('MetaMaskController', () => {
       const mockEvmAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
         ...mockEvmAccount,
+        scopes: [BtcScope.Mainnet],
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
         methods: [BtcMethod.SendBitcoin],

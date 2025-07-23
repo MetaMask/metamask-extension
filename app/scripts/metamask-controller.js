@@ -3801,6 +3801,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setEnableEnforcedSimulationsForTransaction.bind(
           appStateController,
         ),
+      setEnforcedSimulationsSlippageForTransaction:
+        appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -4854,7 +4858,9 @@ export default class MetamaskController extends EventEmitter {
           log.error(
             `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
           );
-          if (
+          if (err instanceof RecoveryError) {
+            throw new JsonRpcError(-32603, err.message, err.data);
+          } else if (
             err.message ===
             SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
           ) {
@@ -8665,6 +8671,9 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen(open) {
     this._isClientOpen = open;
+
+    // Notify Snaps that the client is open or closed.
+    this.controllerMessenger.call('SnapController:setClientActive', open);
   }
   /* eslint-enable accessor-pairs */
 

@@ -334,6 +334,20 @@ export default function useSolanaBridgeTransactionMapping(
       }
       return {
         ...(tx as Transaction),
+        from: [
+          {
+            address: matchingBridgeTx.account,
+            asset: {
+              type: matchingBridgeTx.quote?.srcAsset?.assetId,
+              amount: (
+                Number(matchingBridgeTx.quote?.srcTokenAmount ?? 0) /
+                10 ** (matchingBridgeTx.quote?.srcAsset?.decimals ?? 9)
+              ).toString(),
+              unit: matchingBridgeTx.quote?.srcAsset?.symbol ?? '',
+              fungible: true,
+            },
+          },
+        ],
         isBridgeTx,
         bridgeInfo,
         isBridgeOriginated: false,
