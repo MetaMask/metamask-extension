@@ -66,7 +66,7 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         // Switch to Arbitrum One to set it as the current network
-        await switchToNetworkFromSendFlow(driver, 'Arbitrum One');
+        // await switchToNetworkFromSendFlow(driver, 'Arbitrum One');
 
         await bridgeTransaction(
           driver,

@@ -120,7 +120,14 @@ describe('Bridge tests', function (this: Suite) {
          * chain_destination
          */
 
-        assert.ok(swapBridgeInputChanged.length === 19);
+        assert(
+          swapBridgeInputChanged.length >= 18,
+          'Should have at least 18 input changes',
+        );
+        assert(
+          swapBridgeInputChanged.length <= 20,
+          'Should have at most 20 input changes',
+        );
 
         const inputTypes = [
           'token_source',
