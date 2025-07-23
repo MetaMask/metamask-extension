@@ -45,6 +45,9 @@ const SnapUIRendererComponent = ({
   contentBackgroundColor,
   PERF_DEBUG,
 }) => {
+  // eslint-disable-next-line react-compiler/react-compiler
+  'use no memo';
+
   const t = useI18nContext();
 
   const interfaceState = useSelector(
