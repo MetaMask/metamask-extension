@@ -5071,7 +5071,8 @@
     "message": "Ενεργοποιημένο"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Αυτό το email και ο κωδικός σας πρόσβασης στο MetaMask θα σας βοηθήσουν να ανακτήσετε τον λογαριασμό σας και τις φράσεις ανάκτησης."
+    "message": "Αυτό το email και ο κωδικός σας πρόσβασης στο MetaMask θα σας βοηθήσουν να ανακτήσετε τον λογαριασμό σας και τις φράσεις ανάκτησης.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "ΑΝΑΚΤΗΣΗ ΜΕΣΩ $1",

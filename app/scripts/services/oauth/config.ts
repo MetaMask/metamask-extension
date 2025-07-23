@@ -110,7 +110,7 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
  *
  * @returns true if the build is a Development or Test build, false otherwise
  */
-function isDevOrTestBuild() {
+export function isDevOrTestBuild() {
   return (
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING

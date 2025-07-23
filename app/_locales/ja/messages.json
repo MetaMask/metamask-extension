@@ -5071,7 +5071,8 @@
     "message": "有効"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "このメールアドレスとMetaMaskパスワードは、アカウントとリカバリーフレーズの復元に役立ちます。"
+    "message": "このメールアドレスとMetaMaskパスワードは、アカウントとリカバリーフレーズの復元に役立ちます。",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1の復元",

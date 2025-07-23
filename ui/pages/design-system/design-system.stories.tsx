@@ -55,7 +55,7 @@ const WalletHome: React.FC = () => {
       {/* Container Expanded View */}
       <Box className="mx-auto w-full bg-default md:max-w-xl md:rounded-3xl md:py-4">
         {/* Header */}
-        <Box className="border-color-border-muted px-4 py-4 md:px-8">
+        <Box className="border-muted p-4 md:px-8">
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
@@ -96,7 +96,7 @@ const WalletHome: React.FC = () => {
           </Box>
         </Box>
         {/* Balance */}
-        <Box className="px-4 py-4 md:px-8">
+        <Box className="p-4 md:px-8">
           <Text variant={TextVariant.DisplayMd}>$10,528.46</Text>
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -111,7 +111,7 @@ const WalletHome: React.FC = () => {
           flexDirection={BoxFlexDirection.Row}
           flexWrap={BoxFlexWrap.Wrap}
           gap={2}
-          className="px-4 py-4 md:px-8"
+          className="p-4 md:px-8"
         >
           <ButtonBase className="h-auto flex-1 flex-col justify-center rounded-lg bg-muted py-4 hover:bg-muted-hover active:bg-muted-pressed">
             <Icon name={IconName.Bank} className="mb-2" />
@@ -136,7 +136,7 @@ const WalletHome: React.FC = () => {
             <Text
               asChild
               fontWeight={FontWeight.Medium}
-              className="border-color-border-default flex-1 border-b-2 pb-2 pt-1"
+              className="flex-1 border-b-2 border-default pb-2 pt-1"
             >
               <button>Tokens</button>
             </Text>
@@ -175,7 +175,7 @@ const WalletHome: React.FC = () => {
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Between}
-            className="px-4 py-4 md:px-8"
+            className="p-4 md:px-8"
           >
             <Box
               flexDirection={BoxFlexDirection.Row}
@@ -202,7 +202,7 @@ const WalletHome: React.FC = () => {
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Between}
-            className="bg-transparent w-full px-4 py-2 hover:bg-hover active:bg-pressed md:px-8"
+            className="w-full bg-transparent px-4 py-2 hover:bg-hover active:bg-pressed md:px-8"
           >
             <Box
               flexDirection={BoxFlexDirection.Row}
@@ -281,7 +281,7 @@ const WalletHome: React.FC = () => {
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Between}
-            className="bg-transparent w-full px-4 py-2 hover:bg-hover active:bg-pressed md:px-8"
+            className="w-full bg-transparent px-4 py-2 hover:bg-hover active:bg-pressed md:px-8"
           >
             <Box
               flexDirection={BoxFlexDirection.Row}
@@ -341,7 +341,7 @@ const WalletHome: React.FC = () => {
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Between}
-            className="bg-transparent w-full px-4 py-2 hover:bg-hover active:bg-pressed md:px-8"
+            className="w-full bg-transparent px-4 py-2 hover:bg-hover active:bg-pressed md:px-8"
           >
             <Box
               flexDirection={BoxFlexDirection.Row}
@@ -401,7 +401,7 @@ const WalletHome: React.FC = () => {
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Between}
-            className="bg-transparent w-full px-4 py-2 hover:bg-hover active:bg-pressed md:px-8"
+            className="w-full bg-transparent px-4 py-2 hover:bg-hover active:bg-pressed md:px-8"
           >
             <Box
               flexDirection={BoxFlexDirection.Row}

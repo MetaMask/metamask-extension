@@ -77,7 +77,9 @@ export function setShowNewSrpAddedToast(value: boolean) {
   };
 }
 
-export function setShowPasswordChangeToast(value: PasswordChangeToastType) {
+export function setShowPasswordChangeToast(
+  value: PasswordChangeToastType | null,
+) {
   return {
     type: SET_SHOW_PASSWORD_CHANGE_TOAST,
     payload: value,
