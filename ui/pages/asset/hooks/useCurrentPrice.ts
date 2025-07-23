@@ -11,6 +11,7 @@ import {
   getMultichainIsEvm,
 } from '../../../selectors/multichain';
 import { Asset } from '../types/asset';
+import { getConversionRateByTicker } from '../../../ducks/metamask/metamask';
 
 /**
  * Get the current price of an asset.
@@ -27,6 +28,10 @@ export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
     getMultichainConversionRate,
   );
 
+  const evmConversion = useSelector((state) =>
+    getConversionRateByTicker(state, asset.symbol),
+  );
+
   const { chainId, type } = asset;
 
   const address = (() => {
@@ -37,7 +42,9 @@ export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
   })();
 
   if (type === AssetType.native) {
-    return { currentPrice: Number(nativeConversionRate) };
+    return isEvm
+      ? { currentPrice: evmConversion }
+      : { currentPrice: Number(nativeConversionRate) };
   }
 
   if (isEvm) {
