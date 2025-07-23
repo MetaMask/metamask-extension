@@ -129,6 +129,11 @@ describe('MetaMaskController', function () {
       },
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
+      cronjobControllerStorageManager: {
+        init: noop,
+        getInitialState: noop,
+        set: noop,
+      },
     });
     initializeMockMiddlewareLog();
 
