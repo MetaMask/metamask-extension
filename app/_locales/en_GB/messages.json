@@ -1465,6 +1465,12 @@
   "connectionRequest": {
     "message": "Connection request"
   },
+  "connectionsRemovedModalDescription": {
+    "message": "Some connections (like hardware wallets and snaps) were removed due to inactivity on this device. You can re-add them anytime in Settings."
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "Connections removed"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -2455,7 +2461,7 @@
     "message": "biometrics turned on"
   },
   "forgotPasswordSocialStep2": {
-    "message": "If you have your $1, you can reset your current wallet and reimport using $1.",
+    "message": "If you have your $1, you can reset your current wallet and reimport using Secret Recovery Phrase.",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
@@ -4237,7 +4243,7 @@
     "message": "Password"
   },
   "passwordChangedRecently": {
-    "message": "Your password changed"
+    "message": "Your password was changed"
   },
   "passwordChangedRecentlyDescription": {
     "message": "Enter your new password to stay logged into MetaMask."
@@ -5153,7 +5159,8 @@
     "message": "Enabled"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "This email and your MetaMask password will help you recover your account and recovery phrases."
+    "message": "Use your $1 login and MetaMask password to recover your account and Secret Recovery Phrases.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 RECOVERY",

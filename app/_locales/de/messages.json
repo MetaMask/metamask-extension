@@ -5071,7 +5071,8 @@
     "message": "Aktiviert"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Mit dieser E-Mail und Ihrem MetaMask-Passwort können Sie Ihr Konto und Ihre Wiederherstellungsphrasen wiederherstellen."
+    "message": "Mit dieser E-Mail und Ihrem MetaMask-Passwort können Sie Ihr Konto und Ihre Wiederherstellungsphrasen wiederherstellen.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 WIEDERHERSTELLUNG",

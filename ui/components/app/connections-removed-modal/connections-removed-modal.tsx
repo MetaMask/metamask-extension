@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -17,28 +16,31 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  ButtonSize,
   Button,
   Icon,
   IconSize,
   IconName,
+  ModalFooter,
+  ModalBody,
+  ButtonSize,
 } from '../../component-library';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { lockMetamask } from '../../../store/actions';
-import { setShowPasswordChangeToast } from '../toast-master/utils';
+import { setShowConnectionsRemovedModal } from '../../../store/actions';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function PasswordOutdatedModal() {
+export default function ConnectionsRemovedModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+
+  const onConfirm = useCallback(() => {
+    dispatch(setShowConnectionsRemovedModal(false));
+  }, [dispatch]);
 
   return (
     <Modal
       isOpen
       onClose={() => undefined}
-      data-testid="password-outdated-modal"
+      data-testid="connections-removed-modal"
     >
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.center}>
@@ -52,34 +54,20 @@ export default function PasswordOutdatedModal() {
               />
             </Box>
             <Text
-              variant={TextVariant.headingMd}
+              variant={TextVariant.headingSm}
               textAlign={TextAlign.Center}
               marginTop={4}
             >
-              {t('passwordChangedRecently')}
-            </Text>
-            <Text variant={TextVariant.bodySm} marginTop={4}>
-              {t('passwordChangedRecentlyDescription')}
+              {t('connectionsRemovedModalTitle')}
             </Text>
           </Box>
         </ModalHeader>
-        <Box paddingLeft={4} paddingRight={4}>
-          <Box display={Display.Flex} marginTop={2} gap={4}>
-            <Button
-              data-testid="password-changed"
-              size={ButtonSize.Lg}
-              block
-              onClick={async () => {
-                // remove the password change toast from the app state
-                await dispatch(setShowPasswordChangeToast(null));
-                await dispatch(lockMetamask());
-                history.push(DEFAULT_ROUTE);
-              }}
-            >
-              {t('continue')}
-            </Button>
-          </Box>
-        </Box>
+        <ModalBody>{t('connectionsRemovedModalDescription')}</ModalBody>
+        <ModalFooter>
+          <Button size={ButtonSize.Lg} block onClick={onConfirm}>
+            {t('gotIt')}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

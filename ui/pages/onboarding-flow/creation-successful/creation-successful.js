@@ -18,6 +18,7 @@ import {
   FontWeight,
   TextColor,
   IconColor,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -202,6 +203,7 @@ export default function CreationSuccessful() {
               data-testid="manage-default-settings"
               borderRadius={BorderRadius.LG}
               width={BlockSize.Full}
+              backgroundColor={BackgroundColor.backgroundMuted}
               onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
             >
               <Box display={Display.Flex} alignItems={AlignItems.center}>

@@ -5071,7 +5071,8 @@
     "message": "Включено"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Этот адрес эл. почты и ваш пароль MetaMask помогут восстановить ваш счет и фразы для восстановления."
+    "message": "Этот адрес эл. почты и ваш пароль MetaMask помогут восстановить ваш счет и фразы для восстановления.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "ВОССТАНОВЛЕНИЕ $1",
