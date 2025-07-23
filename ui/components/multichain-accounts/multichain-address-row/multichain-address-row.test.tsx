@@ -1,44 +1,22 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
-import { KnownCaipNamespace, CaipChainId } from '@metamask/utils';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import { MultichainNetwork } from '../../../selectors/multichain';
+import { fireEvent, screen, render } from '@testing-library/react';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from './multichain-address-row';
 
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
 }));
+
 const mockHandleCopy = jest.fn();
 
-const mockNetwork: MultichainNetwork = {
-  nickname: 'Ethereum Mainnet',
-  isEvmNetwork: true,
-  chainId: `${KnownCaipNamespace.Eip155}:1` as CaipChainId,
-  network: {
-    type: 'mainnet',
-    chainId: '0x1',
-    ticker: 'ETH',
-    rpcPrefs: {
-      imageUrl: './images/eth_logo.svg',
-    },
-  },
+const defaultProps = {
+  chainId: '0x1',
+  networkName: 'Ethereum Mainnet',
+  address: '0x1234567890123456789012345678901234567890',
 };
 
-const mockAddress = '0x1234567890123456789012345678901234567890';
-
-const render = (props = {}) => {
-  const store = configureStore(mockState);
-  return renderWithProvider(
-    <MultichainAddressRow
-      network={mockNetwork}
-      address={mockAddress}
-      {...props}
-    />,
-    store,
-  );
+const renderComponent = (props = {}) => {
+  return render(<MultichainAddressRow {...defaultProps} {...props} />);
 };
 
 describe('MultichainAddressRow', () => {
@@ -48,7 +26,7 @@ describe('MultichainAddressRow', () => {
   });
 
   it('renders correctly with all elements', () => {
-    render();
+    renderComponent();
 
     expect(
       screen.getByTestId('multichain-address-row-network-name'),
@@ -72,32 +50,29 @@ describe('MultichainAddressRow', () => {
   });
 
   it('handles copy button click', () => {
-    render();
+    renderComponent();
 
     const copyButton = screen.getByTestId('multichain-address-row-copy-button');
     fireEvent.click(copyButton);
 
-    expect(mockHandleCopy).toHaveBeenCalledWith(mockAddress);
+    expect(mockHandleCopy).toHaveBeenCalledWith(defaultProps.address);
   });
 
-  it('renders correctly without network image', () => {
-    const networkWithoutImage: MultichainNetwork = {
-      nickname: 'Custom Network',
-      isEvmNetwork: true,
-      chainId: `${KnownCaipNamespace.Eip155}:1337` as CaipChainId,
-      network: {
-        type: 'rpc',
-        chainId: '0x539',
-        ticker: 'ETH',
-        rpcPrefs: {},
-      },
-    };
-
-    render({ network: networkWithoutImage });
+  it('renders correctly with different network', () => {
+    renderComponent({
+      chainId: '0x89',
+      networkName: 'Polygon Mainnet',
+      address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+    });
 
     expect(
       screen.getByTestId('multichain-address-row-network-name'),
-    ).toHaveTextContent('Custom Network');
+    ).toHaveTextContent('Polygon Mainnet');
+
+    expect(
+      screen.getByTestId('multichain-address-row-address'),
+    ).toHaveTextContent('0xabcde...fabcd');
+
     expect(
       screen.getByTestId('multichain-address-row-network-icon'),
     ).toBeInTheDocument();
@@ -109,35 +84,53 @@ describe('MultichainAddressRow', () => {
       mockHandleCopy,
     ]);
 
-    render();
+    renderComponent();
 
     const copyButton = screen.getByTestId('multichain-address-row-copy-button');
 
     expect(copyButton).toBeInTheDocument();
   });
 
-  it('handles networks with different image source', () => {
-    const networkWithDifferentImage: MultichainNetwork = {
-      nickname: 'Test Network',
-      isEvmNetwork: true,
-      chainId: `${KnownCaipNamespace.Eip155}:1` as CaipChainId,
-      network: {
-        type: 'mainnet',
-        chainId: '0x1',
-        ticker: 'ETH',
-        rpcPrefs: {
-          imageUrl: './images/test-icon.svg',
-        },
-      },
-    };
-
-    render({ network: networkWithDifferentImage });
+  it('handles custom network without image', () => {
+    renderComponent({
+      chainId: '0x539',
+      networkName: 'Custom Network',
+      address: '0x9876543210987654321098765432109876543210',
+    });
 
     expect(
       screen.getByTestId('multichain-address-row-network-name'),
-    ).toHaveTextContent('Test Network');
+    ).toHaveTextContent('Custom Network');
+
+    expect(
+      screen.getByTestId('multichain-address-row-address'),
+    ).toHaveTextContent('0x98765...43210');
+
     expect(
       screen.getByTestId('multichain-address-row-network-icon'),
     ).toBeInTheDocument();
+  });
+
+  it('applies custom className when provided', () => {
+    renderComponent({ className: 'custom-class' });
+
+    const addressRow = screen.getByTestId('multichain-address-row');
+    expect(addressRow).toHaveClass('custom-class');
+  });
+
+  it('handles QR button click', () => {
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+
+    renderComponent();
+
+    const qrButton = screen.getByTestId('multichain-address-row-qr-button');
+    fireEvent.click(qrButton);
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'QR code clicked for address:',
+      defaultProps.address,
+    );
+
+    consoleSpy.mockRestore();
   });
 });
