@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [12.22.3]
-### Fixed
-- fix: resolve infinite loading on spending cap when selected chain differs from dapp (#34355)
-- fix: prevent frequent writes while the wallet UI is closed (#34413, #34465, #34506, #34473, #34474)
 ## [12.23.0]
 ### Added
 - feat: gasIncluded swaps cp-12-23.0 (#33988)
@@ -118,6 +114,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: Solana single-chain swap failure event not firing on src-chain (#33811)
 - fix: max button was shown on native assets incorrectly causing invalid quotes (#34293)
 - fix: migrate BSC network RPC from bsc-dataseed.binance.org to bsc infura (#33997)
+
+## [12.22.3]
+### Fixed
+- fix: resolve infinite loading on spending cap when selected chain differs from dapp (#34355)
+- fix: prevent frequent writes while the wallet UI is closed (#34413, #34465, #34506, #34473, #34474)
 
 ## [12.22.2]
 ### Fixed
