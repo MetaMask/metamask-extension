@@ -2021,7 +2021,7 @@ export default class MetamaskController extends EventEmitter {
     this.notificationServicesPushController =
       controllersByName.NotificationServicesPushController;
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
-    this.accountWalletController = controllersByName.AccountTreeController;
+    this.accountTreeController = controllersByName.AccountTreeController;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
 
@@ -5773,7 +5773,7 @@ export default class MetamaskController extends EventEmitter {
     // Init multichain accounts after creating internal accounts.
     this.MultichainAccountService.init();
     // Force account-tree refresh after all accounts have been updated.
-    this.accountWalletController.init();
+    this.accountTreeController.init();
 
     if (completedOnboarding) {
       // This must be set as soon as possible to communicate to the

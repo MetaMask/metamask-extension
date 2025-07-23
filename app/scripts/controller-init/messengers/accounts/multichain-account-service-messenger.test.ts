@@ -4,10 +4,10 @@ import { getMultichainAccountServiceMessenger } from './multichain-account-servi
 describe('getMultichainAccountServiceMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
-    const accountWalletControllerMessenger =
+    const multichainAccountServiceMessenger =
       getMultichainAccountServiceMessenger(messenger);
 
-    expect(accountWalletControllerMessenger).toBeInstanceOf(
+    expect(multichainAccountServiceMessenger).toBeInstanceOf(
       RestrictedMessenger,
     );
   });
