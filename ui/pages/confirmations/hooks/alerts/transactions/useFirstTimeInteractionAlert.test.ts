@@ -9,6 +9,10 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../test/data/confirmations/token-transfer';
+import {
+  TrustSignalDisplayState,
+  useTrustSignal,
+} from '../../../../../hooks/useTrustSignals';
 import { useFirstTimeInteractionAlert } from './useFirstTimeInteractionAlert';
 
 const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -27,6 +31,14 @@ const TRANSACTION_META_MOCK = {
   },
   time: new Date().getTime() - 10000,
 } as TransactionMeta;
+
+jest.mock('../../../../../hooks/useTrustSignals', () => {
+  const actual = jest.requireActual('../../../../../hooks/useTrustSignals');
+  return {
+    ...actual,
+    useTrustSignal: jest.fn(),
+  };
+});
 
 function runHook({
   currentConfirmation,
@@ -59,8 +71,13 @@ function runHook({
 }
 
 describe('useFirstTimeInteractionAlert', () => {
+  const mockUseTrustSignal = jest.mocked(useTrustSignal);
   beforeEach(() => {
     jest.resetAllMocks();
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -142,6 +159,53 @@ describe('useFirstTimeInteractionAlert', () => {
       runHook({
         currentConfirmation: firstTimeConfirmation,
         internalAccountAddresses: [ACCOUNT_ADDRESS_2_MOCK.toUpperCase()],
+      }),
+    ).toEqual([]);
+  });
+
+  it('returns no alerts if transaction destination is verified', () => {
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Verified,
+      label: null,
+    });
+
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      type: TransactionType.simpleSend,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: ACCOUNT_ADDRESS_2_MOCK,
+      },
+    };
+
+    expect(
+      runHook({
+        currentConfirmation: firstTimeConfirmation,
+      }),
+    ).toEqual([]);
+  });
+
+  it('returns no alerts if token transfer recipient is verified', () => {
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Verified,
+      label: null,
+    });
+
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      type: TransactionType.tokenMethodTransfer,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: ACCOUNT_ADDRESS_2_MOCK.toLowerCase(),
+        data: genUnapprovedTokenTransferConfirmation().txParams.data,
+      },
+    };
+
+    expect(
+      runHook({
+        currentConfirmation: firstTimeConfirmation,
       }),
     ).toEqual([]);
   });

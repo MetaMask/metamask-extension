@@ -110,9 +110,8 @@ async function main() {
   let existingParentDirectory;
   if (out) {
     outputDirectory = path.dirname(out);
-    existingParentDirectory = await getFirstParentDirectoryThatExists(
-      outputDirectory,
-    );
+    existingParentDirectory =
+      await getFirstParentDirectoryThatExists(outputDirectory);
     if (!(await isWritable(existingParentDirectory))) {
       throw new Error('Specified output file directory is not writable');
     }

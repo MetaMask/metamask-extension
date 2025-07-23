@@ -3,6 +3,7 @@ import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
 } from '@metamask/bridge-controller';
+import { CaipAssetTypeStruct } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
@@ -22,6 +23,7 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
+  CHAIN_IDS.SEI,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -71,6 +73,8 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: 'ZkSync Era',
   [CHAIN_IDS.BASE]: 'Base',
   [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'Base',
+  [CHAIN_IDS.SEI]: 'Sei',
+  [toEvmCaipChainId(CHAIN_IDS.SEI)]: 'Sei',
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
@@ -87,8 +91,9 @@ export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
 export const SOLANA_USDC_ASSET = {
   address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-  assetId:
+  assetId: CaipAssetTypeStruct.create(
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  ),
   symbol: 'USDC',
   decimals: 6,
   image:

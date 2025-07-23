@@ -3,17 +3,17 @@
 exports[`Unlock Page should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box unlock-page__container mm-box--margin-top-0 mm-box--margin-bottom-auto mm-box--margin-inline-0 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    class="mm-box mm-box--padding-bottom-12 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
   >
     <form
-      class="mm-box unlock-page mm-box--margin-auto mm-box--padding-6 mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--rounded-lg"
+      class="mm-box unlock-page mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       data-testid="unlock-page"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box unlock-page__mascot-container mm-box--margin-top-6 mm-box--margin-bottom-0"
+          class="mm-box unlock-page__mascot-container mm-box--margin-bottom-0"
         >
           <div
             style="z-index: 0;"
@@ -22,84 +22,64 @@ exports[`Unlock Page should match snapshot 1`] = `
           </div>
         </div>
         <h1
-          class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-1 mm-box--margin-bottom-2 mm-box--color-text-default"
+          class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-text--text-align-center mm-box--margin-bottom-12 mm-box--color-text-default"
           data-testid="unlock-page-title"
         >
           Welcome back
         </h1>
         <div
-          class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+          class="mm-box mm-form-text-field mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
         >
-          <label
-            class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-            for="password"
-          >
-            <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-              >
-                Password
-              </p>
-            </div>
-          </label>
           <div
             class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
+              aria-label="Password"
               autocomplete="on"
               class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
               data-testid="unlock-password"
               focused="true"
               id="password"
-              placeholder="Enter password"
+              placeholder="Enter your password"
               type="password"
               value=""
             />
           </div>
         </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
-      >
-        <div
-          class="mm-box unlock-page__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--margin-bottom-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+          data-testid="unlock-submit"
+          disabled=""
+          type="submit"
         >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
-            data-testid="unlock-submit"
-            data-theme="light"
-            disabled=""
-            type="submit"
-          >
-            Unlock
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-            data-testid="unlock-forgot-password-button"
-            type="button"
-          >
-            Forgot password?
-          </button>
-        </div>
-        <div
-          class="mm-box unlock-page__support mm-box--margin-top-6"
+          Unlock
+        </button>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-bottom-6 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          data-testid="unlock-forgot-password-button"
+          type="button"
+        >
+          Forgot password?
+        </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           <span>
              
             Need help? Contact 
             <a
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               href="https://support.metamask.io"
               rel="noopener noreferrer"
               target="_blank"
+              type="button"
             >
               MetaMask support
             </a>
             
              
           </span>
-        </div>
+        </p>
       </div>
     </form>
   </div>
