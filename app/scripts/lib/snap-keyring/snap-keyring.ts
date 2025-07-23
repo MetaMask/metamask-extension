@@ -597,6 +597,8 @@ export function snapKeyringBuilder(
       messenger,
       callbacks: new SnapKeyringImpl(messenger, helpers),
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      // Enables generic account creation for new chain integration. It's
+      // Flask-only since production should use defined account types.
       isAnyAccountTypeAllowed: true,
       ///: END:ONLY_INCLUDE_IF
     });
