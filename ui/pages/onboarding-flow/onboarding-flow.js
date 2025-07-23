@@ -233,7 +233,7 @@ export default function OnboardingFlow() {
       }
 
       setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
-      history.push(nextRoute);
+      history.replace(nextRoute);
     } finally {
       setIsLoading(false);
     }

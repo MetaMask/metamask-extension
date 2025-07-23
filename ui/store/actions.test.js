@@ -348,7 +348,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       const syncPasswordAndUnlockWallet =
-        background.syncPasswordAndUnlockWallet.resolves();
+        background.syncPasswordAndUnlockWallet.resolves(true);
 
       setBackgroundConnection(background);
 
