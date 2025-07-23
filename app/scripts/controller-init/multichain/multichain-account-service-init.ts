@@ -1,6 +1,6 @@
-import { MultichainAccountController } from '@metamask/multichain-account-controller';
+import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
-import { MultichainAccountControllerMessenger } from '../messengers/accounts';
+import { MultichainAccountServiceMessenger } from '../messengers/accounts';
 
 /**
  * Initialize the multichain account controller.
@@ -9,11 +9,11 @@ import { MultichainAccountControllerMessenger } from '../messengers/accounts';
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @returns The initialized controller.
  */
-export const MultichainAccountControllerInit: ControllerInitFunction<
-  MultichainAccountController,
-  MultichainAccountControllerMessenger
+export const MultichainAccountServiceInit: ControllerInitFunction<
+  MultichainAccountService,
+  MultichainAccountServiceMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new MultichainAccountController({
+  const controller = new MultichainAccountService({
     messenger: controllerMessenger,
   });
 

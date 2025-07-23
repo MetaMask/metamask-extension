@@ -24,8 +24,8 @@ type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent;
 
-export type MultichainAccountControllerMessenger = ReturnType<
-  typeof getMultichainAccountControllerMessenger
+export type MultichainAccountServiceMessenger = ReturnType<
+  typeof getMultichainAccountServiceMessenger
 >;
 
 /**
@@ -35,11 +35,11 @@ export type MultichainAccountControllerMessenger = ReturnType<
  * @param messenger - The controller messenger to restrict.
  * @returns The restricted controller messenger.
  */
-export function getMultichainAccountControllerMessenger(
+export function getMultichainAccountServiceMessenger(
   messenger: Messenger<Actions, Events>,
 ) {
   return messenger.getRestricted({
-    name: 'MultichainAccountController',
+    name: 'MultichainAccountService',
     allowedEvents: [],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
@@ -59,10 +59,10 @@ export function getMultichainAccountControllerMessenger(
  * @param messenger - The controller messenger to restrict.
  * @returns The restricted controller messenger.
  */
-export function getMultichainAccountControllerInitMessenger(
+export function getMultichainAccountServiceInitMessenger(
   messenger: Messenger<Actions, Events>,
 ) {
   // Our `init` method needs the same actions, so just re-use the same messenger
   // function here.
-  return getMultichainAccountControllerMessenger(messenger);
+  return getMultichainAccountServiceMessenger(messenger);
 }

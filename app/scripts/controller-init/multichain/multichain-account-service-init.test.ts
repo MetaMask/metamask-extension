@@ -1,31 +1,31 @@
-import { MultichainAccountController } from '@metamask/multichain-account-controller';
+import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
-  getMultichainAccountControllerMessenger,
-  MultichainAccountControllerMessenger,
+  getMultichainAccountServiceMessenger,
+  MultichainAccountServiceMessenger,
 } from '../messengers/accounts';
-import { MultichainAccountControllerInit } from './multichain-account-controller-init';
+import { MultichainAccountServiceInit } from './multichain-account-service-init';
 
-jest.mock('@metamask/multichain-account-controller');
+jest.mock('@metamask/multichain-account-service');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<MultichainAccountControllerMessenger>
+  ControllerInitRequest<MultichainAccountServiceMessenger>
 > {
   const baseControllerMessenger = new Messenger();
 
   return {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getMultichainAccountControllerMessenger(
+    controllerMessenger: getMultichainAccountServiceMessenger(
       baseControllerMessenger,
     ),
     initMessenger: undefined,
   };
 }
 
-describe('MultichainAccountControllerInit', () => {
-  const accountTreeControllerClassMock = jest.mocked(MultichainAccountController);
+describe('MultichainAccountServiceInit', () => {
+  const accountTreeControllerClassMock = jest.mocked(MultichainAccountService);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -33,18 +33,18 @@ describe('MultichainAccountControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(MultichainAccountControllerInit(requestMock).controller).toBeInstanceOf(
-      MultichainAccountController,
+    expect(MultichainAccountServiceInit(requestMock).controller).toBeInstanceOf(
+      MultichainAccountService,
     );
   });
 
   it('initializes with correct messenger and state', () => {
     const requestMock = buildInitRequestMock();
-    MultichainAccountControllerInit(requestMock);
+    MultichainAccountServiceInit(requestMock);
 
     expect(accountTreeControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      state: requestMock.persistedState.MultichainAccountController,
+      state: requestMock.persistedState.MultichainAccountService,
     });
   });
 });

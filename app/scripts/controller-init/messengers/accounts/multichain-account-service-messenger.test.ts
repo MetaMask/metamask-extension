@@ -1,11 +1,11 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import { getMultichainAccountControllerMessenger } from './multichain-account-controller-messenger';
+import { getMultichainAccountServiceMessenger } from './multichain-account-service-messenger';
 
-describe('getMultichainAccountControllerMessenger', () => {
+describe('getMultichainAccountServiceMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
     const accountWalletControllerMessenger =
-      getMultichainAccountControllerMessenger(messenger);
+      getMultichainAccountServiceMessenger(messenger);
 
     expect(accountWalletControllerMessenger).toBeInstanceOf(
       RestrictedMessenger,
