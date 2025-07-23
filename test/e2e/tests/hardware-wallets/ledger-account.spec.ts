@@ -1,3 +1,4 @@
+import { Browser } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
@@ -29,8 +30,21 @@ describe('Ledger Hardware', function () {
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.check_pageIsLoaded();
-        await connectHardwareWalletPage.openConnectLedgerPage();
+        await connectHardwareWalletPage.clickConnectLedgerButton();
 
+        // Check if browser is Firefox
+        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+
+        if (isFirefox) {
+          // In Firefox, we expect to see "Firefox Not Supported" message
+          await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
+          return; // Exit early for Firefox
+        }
+
+        // Click continue button when browser is not Firefox
+        await connectHardwareWalletPage.clickContinueButton();
+
+        // For non-Firefox browsers, continue with the existing test flow
         const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
           driver,
         );
@@ -79,8 +93,21 @@ describe('Ledger Hardware', function () {
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.check_pageIsLoaded();
-        await connectHardwareWalletPage.openConnectLedgerPage();
+        await connectHardwareWalletPage.clickConnectLedgerButton();
 
+        // Check if browser is Firefox
+        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+
+        if (isFirefox) {
+          // In Firefox, we expect to see "Firefox Not Supported" message
+          await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
+          return; // Exit early for Firefox
+        }
+
+        // Click continue button when browser is not Firefox
+        await connectHardwareWalletPage.clickContinueButton();
+
+        // For non-Firefox browsers, continue with the existing test flow
         // Unlock 5 Ledger accounts
         const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
           driver,

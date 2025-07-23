@@ -43,7 +43,6 @@ There are many areas in above flow where the code can be improved upon to cleanu
 1. ### Refactor message managers:
 
    Currently we have 3 different message managers:
-
    - [MessageManager](https://github.com/MetaMask/metamask-extension/blob/main/app/scripts/lib/message-manager.js)
    - [PersonalMessageManager](https://github.com/MetaMask/metamask-extension/blob/main/app/scripts/lib/personal-message-manager.js)
    - [TypedMessageManager](https://github.com/MetaMask/metamask-extension/blob/main/app/scripts/lib/typed-message-manager.js)
@@ -55,13 +54,11 @@ There are many areas in above flow where the code can be improved upon to cleanu
 2. ### Refactoring Routing to Signature Request pages:
 
    Current navigation to Signature Request pages is un-necessarily complicated. It can be simplified to great extent.
-
    - To the navigation code in [Home](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/home/home.component.js#L181) component add condition to check if there are unapproved messages and route to path `/singature-request`.
    - In [Routes](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/routes/routes.component.js) component render pages/confirm-signature-request for path `/singature-request`.
    - Refactor out [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/confirm-transaction/conf-tx.js) into pages/confirm-signature-request component. [#17240](https://github.com/MetaMask/metamask-extension/issues/17240)
 
 3. ### Refactoring in [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/confirm-transaction/conf-tx.js)
-
    - [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/confirm-transaction/conf-tx.js) to be renamed to `pages/confirm-signature-request component`
    - Get rid of [confirm-transaction](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/confirm-transaction/confirm-transaction.component.js) component from signature request routing. Thus, we need to ensure that any required logic from the component is extracted into a reusable hook and included in pages/confirm-signature-request.
    - Convert to functional react component and use selectors to get state and get rid of `mapStateToProps`. [#17239](https://github.com/MetaMask/metamask-extension/issues/17239)
@@ -73,7 +70,6 @@ There are many areas in above flow where the code can be improved upon to cleanu
 4. ### Refactoring component rendering Signature Request Pages
 
    There are 3 different signature request components responsible to render different signature request pages:
-
    1. [signature-request-original](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/signature-request-original) - ETH sign, personal sign, sign typed data V1
    2. [signature-request](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/signature-request) - Sign typed data V3, V4
    3. [signature-request-siwe](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/signature-request-siwe) - SignatureRequestSIWE (Sign-In with Ethereum)
@@ -82,7 +78,6 @@ There are many areas in above flow where the code can be improved upon to cleanu
    And there is a lot of code duplication between components - [signature-request-original](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/signature-request-original) and [signature-request](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/signature-request).
 
 5. ### Refactoring in signature-request-original
-
    - Rename, this component takes care of ETH sign, personal sign, sign typed data V1 requests. Let's rename it accordingly.
    - Get rid of container components
    - Migrate other classical components to functional react components.
@@ -102,7 +97,6 @@ There are many areas in above flow where the code can be improved upon to cleanu
    - Extract [renderBody](https://github.com/MetaMask/metamask-extension/blob/e07ec9dcf3d3f341f83e6b29a29d30edaf7f5b5b/ui/components/app/signature-request-original/signature-request-original.component.js#L114) into a reusable component.
 
 6. ### Refactoring in signature-request
-
    - Get rid of container components and for other components migrate to functional react components.
    - Reuse the Header component created for signature-request pages
    - Reuse the footer component created for confirmation pages.
