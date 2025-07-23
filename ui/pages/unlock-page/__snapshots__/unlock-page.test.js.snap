@@ -59,7 +59,7 @@ exports[`Unlock Page should match snapshot 1`] = `
           data-testid="unlock-forgot-password-button"
           type="button"
         >
-          Forgot password?
+          Use a different login method
         </button>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
