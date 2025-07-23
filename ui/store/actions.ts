@@ -460,23 +460,22 @@ export function checkIsSeedlessPasswordOutdated(
   skipCache = true,
 ): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
+    let isPasswordOutdated = false;
     try {
-      const isPasswordOutdated = await submitRequestToBackground<boolean>(
+      isPasswordOutdated = await submitRequestToBackground<boolean>(
         'checkIsSeedlessPasswordOutdated',
         [skipCache],
       );
       if (isPasswordOutdated) {
         await forceUpdateMetamaskState(dispatch);
       }
-      return isPasswordOutdated;
     } catch (error) {
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
+      log.warn('checkIsSeedlessPasswordOutdated error', error);
     }
+
+    dispatch(hideLoadingIndication());
+
+    return isPasswordOutdated;
   };
 }
 
