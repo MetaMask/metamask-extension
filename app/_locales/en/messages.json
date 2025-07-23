@@ -5159,7 +5159,8 @@
     "message": "Enabled"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "This email and your MetaMask password will help you recover your account and recovery phrases."
+    "message": "Use your $1 login and MetaMask password to recover your account and Secret Recovery Phrases.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 RECOVERY",
