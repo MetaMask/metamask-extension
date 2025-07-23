@@ -395,6 +395,8 @@ export function changePassword(
         } catch (error) {
           // revert the keyring password change
           await keyringChangePassword(oldPassword);
+          const revertedKeyringEncryptionKey = await exportEncryptionKey();
+          await storeKeyringEncryptionKey(revertedKeyringEncryptionKey);
           throw error;
         }
       }
