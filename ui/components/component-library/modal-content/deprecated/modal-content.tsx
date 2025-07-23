@@ -66,6 +66,15 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
         return;
       }
 
+      // Don't close when clicking on the account picker button (hamburger menu)
+      // to allow proper toggle behavior
+      if (
+        isClosedOnOutsideClick &&
+        (event.target as HTMLElement).closest('.multichain-account-picker')
+      ) {
+        return;
+      }
+
       if (
         isClosedOnOutsideClick &&
         modalDialogRef?.current &&
