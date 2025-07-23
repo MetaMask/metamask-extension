@@ -5414,15 +5414,6 @@ export default class MetamaskController extends EventEmitter {
 
       if (completedOnboarding) {
         await this._addAccountsWithBalance();
-
-        // This must be set as soon as possible to communicate to the
-        // keyring's iframe and have the setting initialized properly
-        // Optimistically called to not block MetaMask login due to
-        // Ledger Keyring GitHub downtime
-        this.#withKeyringForDevice(
-          { name: HardwareDeviceNames.ledger },
-          async (keyring) => this.setLedgerTransportPreference(keyring),
-        );
       }
 
       if (getIsSeedlessOnboardingFeatureEnabled()) {
@@ -5784,17 +5775,6 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
-
-    if (completedOnboarding) {
-      // This must be set as soon as possible to communicate to the
-      // keyring's iframe and have the setting initialized properly
-      // Optimistically called to not block MetaMask login due to
-      // Ledger Keyring GitHub downtime
-      this.#withKeyringForDevice(
-        { name: HardwareDeviceNames.ledger },
-        async (keyring) => this.setLedgerTransportPreference(keyring),
-      );
-    }
   }
 
   async _loginUser(password) {
@@ -5920,10 +5900,6 @@ export default class MetamaskController extends EventEmitter {
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
-        if (deviceName === HardwareDeviceNames.ledger) {
-          await this.setLedgerTransportPreference(keyring);
-        }
-
         let accounts = [];
         switch (page) {
           case -1:
@@ -9371,6 +9347,10 @@ export default class MetamaskController extends EventEmitter {
 
         if (options.name === HardwareDeviceNames.lattice) {
           keyring.appName = 'MetaMask';
+        }
+
+        if (options.name === HardwareDeviceNames.ledger) {
+          await this.setLedgerTransportPreference(keyring);
         }
 
         if (
