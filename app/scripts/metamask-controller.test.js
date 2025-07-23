@@ -32,7 +32,7 @@ import {
 } from '@metamask/assets-controllers';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
-import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
+import { LedgerKeyring } from '@metamask-previews/eth-ledger-bridge-keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -223,8 +223,8 @@ jest.mock('@metamask/eth-trezor-keyring', () => ({
   }),
 }));
 
-jest.mock('@metamask/eth-ledger-bridge-keyring', () => ({
-  ...jest.requireActual('@metamask/eth-ledger-bridge-keyring'),
+jest.mock('@metamask-previews/eth-ledger-bridge-keyring', () => ({
+  ...jest.requireActual('@metamask-previews/eth-ledger-bridge-keyring'),
   LedgerIframeBridge: buildMockKeyringBridge({
     publicKey: KNOWN_PUBLIC_KEY,
     address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,

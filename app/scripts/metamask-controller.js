@@ -33,7 +33,7 @@ import {
 import {
   LedgerKeyring,
   LedgerIframeBridge,
-} from '@metamask/eth-ledger-bridge-keyring';
+} from '@metamask-previews/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
