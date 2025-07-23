@@ -4400,7 +4400,7 @@ export default class MetamaskController extends EventEmitter {
       endTrace,
       isRelaySupported,
       openUpdateTabAndReload: () =>
-        openUpdateTabAndReload(this.requestSafeReload),
+        openUpdateTabAndReload(this.requestSafeReload.bind(this)),
       requestSafeReload: this.requestSafeReload.bind(this),
       applyTransactionContainersExisting: (transactionId, containerTypes) =>
         applyTransactionContainersExisting({
