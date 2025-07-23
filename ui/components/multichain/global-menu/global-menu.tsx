@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
+  setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
   toggleNetworkMenu,
 } from '../../../store/actions';
@@ -158,7 +159,11 @@ export const GlobalMenu = ({
         category: MetaMetricsEventCategory.NotificationsActivationFlow,
         event: MetaMetricsEventName.NotificationsActivated,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           action_type: 'started',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_profile_syncing_enabled: isBackupAndSyncEnabled,
         },
       });
@@ -173,7 +178,11 @@ export const GlobalMenu = ({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationsMenuOpened,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         unread_count: notificationsUnreadCount,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         read_count: notificationsReadCount,
       },
     });
@@ -279,17 +288,16 @@ export const GlobalMenu = ({
           {t('expandView')}
         </MenuItem>
       )}
-      {process.env.REMOVE_GNS && (
-        <MenuItem
-          iconName={IconName.Hierarchy}
-          onClick={() => {
-            dispatch(toggleNetworkMenu());
-            closeMenu();
-          }}
-        >
-          {t('networks')}
-        </MenuItem>
-      )}
+      <MenuItem
+        data-testid="global-menu-networks"
+        iconName={IconName.Hierarchy}
+        onClick={() => {
+          dispatch(toggleNetworkMenu());
+          closeMenu();
+        }}
+      >
+        {t('networks')}
+      </MenuItem>
       <MenuItem
         iconName={IconName.Snaps}
         onClick={() => {
@@ -303,7 +311,7 @@ export const GlobalMenu = ({
       <MenuItem
         iconName={IconName.MessageQuestion}
         onClick={() => {
-          global.platform.openTab({ url: supportLink });
+          dispatch(setShowSupportDataConsentModal(true));
           trackEvent(
             {
               category: MetaMetricsEventCategory.Home,

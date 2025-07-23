@@ -1,5 +1,5 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { EthMethod, SolMethod } from '@metamask/keyring-api';
+import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
 import {
   type CaipAssetType,
   type Hex,
@@ -55,7 +55,6 @@ import {
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedInternalAccount,
   getShowFiatInTestnets,
-  getSwapsDefaultToken,
 } from '../../../selectors';
 import {
   getImageForChainId,
@@ -64,7 +63,10 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import { type TokenWithFiatAmount } from '../../../components/app/assets/types';
+import {
+  TokenFiatDisplayInfo,
+  type TokenWithFiatAmount,
+} from '../../../components/app/assets/types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { Asset } from '../types/asset';
@@ -98,11 +100,6 @@ const AssetPage = ({
 
   const isNative = type === AssetType.native;
 
-  // These need to be specific to the asset and not the current chain
-  const defaultSwapsToken = useSelector(
-    (state) => getSwapsDefaultToken(state, chainId),
-    isEqual,
-  );
   const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
   const isBridgeChain = useSelector((state) =>
     getIsBridgeChain(state, chainId),
@@ -112,7 +109,8 @@ const AssetPage = ({
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation) ||
-    account.methods.includes(SolMethod.SignTransaction);
+    account.methods.includes(SolMethod.SignTransaction) ||
+    account.methods.includes(BtcMethod.SendBitcoin);
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -290,7 +288,7 @@ const AssetPage = ({
         >
           {name && symbol && name !== symbol
             ? `${name} (${symbol})`
-            : name ?? symbol}
+            : (name ?? symbol)}
         </Text>
       </Box>
       <AssetChart
@@ -298,6 +296,7 @@ const AssetPage = ({
         address={address}
         currentPrice={currentPrice}
         currency={currency}
+        asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
       />
       <Box marginTop={4} paddingLeft={4} paddingRight={4}>
         {type === AssetType.native ? (
@@ -310,7 +309,6 @@ const AssetPage = ({
               isSwapsChain,
               isBridgeChain,
               chainId,
-              defaultSwapsToken,
             }}
           />
         ) : (

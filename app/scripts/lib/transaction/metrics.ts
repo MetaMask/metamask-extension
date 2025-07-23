@@ -24,6 +24,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   EIP5792ErrorCode,
+  NATIVE_TOKEN_ADDRESS,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
@@ -371,6 +372,8 @@ export const handlePostTransactionBalanceUpdate = async (
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties: { ...transactionMeta.swapMetaData },
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: getHDEntropyIndex(),
         },
       });
@@ -386,7 +389,9 @@ export const handlePostTransactionBalanceUpdate = async (
       );
 
       const quoteVsExecutionRatio = tokensReceived
-        ? `${new BigNumber(tokensReceived, 10)
+        ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `${new BigNumber(tokensReceived, 10)
             .div(transactionMeta.swapMetaData.token_to_amount, 10)
             .times(100)
             .round(2)}%`
@@ -395,7 +400,9 @@ export const handlePostTransactionBalanceUpdate = async (
       const estimatedVsUsedGasRatio =
         transactionMeta.txReceipt?.gasUsed &&
         transactionMeta.swapMetaData.estimated_gas
-          ? `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
+          ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
               .div(transactionMeta.swapMetaData.estimated_gas, 10)
               .times(100)
               .round(2)}%`
@@ -411,11 +418,23 @@ export const handlePostTransactionBalanceUpdate = async (
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties: {
           ...transactionMeta.swapMetaData,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_to_amount_received: tokensReceived,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           quote_vs_executionRatio: quoteVsExecutionRatio,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           trade_and_approval_gas_cost_in_eth:
             transactionsCost.tradeAndApprovalGasCostInEth,
           // Firefox and Chrome have different implementations of the APIs
@@ -423,10 +442,14 @@ export const handlePostTransactionBalanceUpdate = async (
           // numbers are converted into number strings, on firefox they remain
           // Big Number objects. As such, we convert them here for both
           // browsers.
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_to_amount:
             transactionMeta.swapMetaData.token_to_amount.toString(10),
         },
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: getHDEntropyIndex(),
         },
       });
@@ -976,36 +999,70 @@ async function buildEventFragmentProperties({
 
   // Add Entropy Properties
   const hdEntropyProperties = {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
   };
 
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     chain_id: chainId,
     referrer,
     source,
     status,
     network: `${parseInt(chainId, 16)}`,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     eip_1559_version: eip1559Version,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_edit_type: 'none',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_edit_attempted: 'none',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_estimation_failed: Boolean(simulationFails),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     account_type: await transactionMetricsRequest.getAccountType(
       transactionMetricsRequest.getSelectedAddress(),
     ),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     device_model: await transactionMetricsRequest.getDeviceModel(
       transactionMetricsRequest.getSelectedAddress(),
     ),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     asset_type: assetType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     token_standard: tokenStandard,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_type: transactionType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_speed_up: type === TransactionType.retry,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_internal_id: id,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_fee_selected: gasFeeSelected,
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_advanced_view: isAdvancedDetailsOpen,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_contract_method: transactionContractMethod
       ? [transactionContractMethod]
       : [],
@@ -1028,20 +1085,34 @@ async function buildEventFragmentProperties({
   if (transactionContractMethod === contractMethodNames.APPROVE) {
     properties = {
       ...properties,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_approval_amount_type: transactionApprovalAmountType,
     };
   }
 
   let sensitiveProperties = {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_envelope_type: isEIP1559Transaction(transactionMeta)
       ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
       : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     first_seen: time,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_limit: gasLimit,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_replaced: transactionReplaced,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_contract_address: transactionContractAddress
       ? [transactionContractAddress]
       : [],
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
@@ -1053,8 +1124,12 @@ async function buildEventFragmentProperties({
   if (transactionContractMethod === contractMethodNames.APPROVE) {
     sensitiveProperties = {
       ...sensitiveProperties,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_approval_amount_vs_balance_ratio:
         transactionApprovalAmountVsBalanceRatio,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_approval_amount_vs_proposed_ratio:
         transactionApprovalAmountVsProposedRatio,
     };
@@ -1152,6 +1227,8 @@ function allowanceAmountInRelationToDappProposedValue(
     originalApprovalAmount &&
     finalApprovalAmount
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return `${new BigNumber(originalApprovalAmount, 10)
       .div(finalApprovalAmount, 10)
       .times(100)
@@ -1179,6 +1256,8 @@ function allowanceAmountInRelationToTokenBalance(
     dappProposedTokenAmount &&
     currentTokenBalance
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return `${new BigNumber(dappProposedTokenAmount, 16)
       .div(currentTokenBalance, 10)
       .times(100)
@@ -1257,6 +1336,10 @@ function addGaslessProperties(
     (token) =>
       token.tokenAddress.toLowerCase() === selectedGasFeeToken?.toLowerCase(),
   )?.symbol;
+
+  if (selectedGasFeeToken?.toLowerCase() === NATIVE_TOKEN_ADDRESS) {
+    properties.gas_paid_with = 'pre-funded_ETH';
+  }
 
   properties.gas_insufficient_native_asset = isInsufficientNativeBalance(
     transactionMeta,

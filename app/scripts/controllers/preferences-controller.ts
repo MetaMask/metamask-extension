@@ -106,6 +106,8 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   dismissSmartAccountSuggestionEnabled: boolean;
+  skipDeepLinkInterstitial: boolean;
+  smartAccountOptIn: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -194,12 +196,14 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       dismissSmartAccountSuggestionEnabled: false,
+      smartAccountOptIn: true,
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
         sortCallback: 'stringNumeric',
       },
       tokenNetworkFilter: {},
+      skipDeepLinkInterstitial: false,
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -211,7 +215,7 @@ export const getDefaultPreferencesControllerState =
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f,
     snapRegistryList: {},
-    theme: ThemeType.os,
+    theme: ThemeType.dark,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     snapsAddSnapAccountModalDismissed: false,
     ///: END:ONLY_INCLUDE_IF

@@ -80,6 +80,16 @@
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
+  "accountAlreadyExistsLogin": {
+    "message": "Log in"
+  },
+  "accountAlreadyExistsLoginDescription": {
+    "message": "A wallet using “$1” already exists. Do you want to try logging in instead?",
+    "description": "$1 is the account email"
+  },
+  "accountAlreadyExistsTitle": {
+    "message": "Wallet already exists"
+  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -99,6 +109,16 @@
   "accountNameReserved": {
     "message": "This account name is reserved",
     "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
+  },
+  "accountNotFoundCreateOne": {
+    "message": "Yes, create a new wallet"
+  },
+  "accountNotFoundDescription": {
+    "message": "We couldn’t find a wallet for “$1”. Do you want to create a new one with this login?",
+    "description": "$1 is the account email"
+  },
+  "accountNotFoundTitle": {
+    "message": "Wallet not found"
   },
   "accountOptions": {
     "message": "Account options"
@@ -154,6 +174,9 @@
   "addAccountFromNetwork": {
     "message": "Add $1 account",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
+  },
+  "addAccountOrWallet": {
+    "message": "Add account or wallet"
   },
   "addAccountToMetaMask": {
     "message": "Add account to MetaMask"
@@ -287,7 +310,7 @@
     "message": "Address"
   },
   "addressCopied": {
-    "message": "Address copied!"
+    "message": "Address copied"
   },
   "addressMismatch": {
     "message": "Site address mismatch"
@@ -370,6 +393,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
+  "alertMessageAddressTrustSignal": {
+    "message": "If you confirm this request, you will probably lose your assets to a scammer."
+  },
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
@@ -393,6 +419,12 @@
   },
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
+  },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "This has been identified as malicious. We recommend not interacting with this site."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "This has been identified as suspicious. We recommend not interacting with this site."
   },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
@@ -435,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Fee estimate unavailable"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Malicious site"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Suspicious site"
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
@@ -592,6 +630,9 @@
   "back": {
     "message": "Back"
   },
+  "backup": {
+    "message": "Backup"
+  },
   "backupAndSync": {
     "message": "Backup and sync"
   },
@@ -618,6 +659,9 @@
   },
   "backupAndSyncFeatureAccounts": {
     "message": "Accounts"
+  },
+  "backupAndSyncFeatureContacts": {
+    "message": "Contacts"
   },
   "backupAndSyncManageWhatYouSync": {
     "message": "Manage what you sync"
@@ -867,6 +911,9 @@
   "bridgeSelectDestinationAccount": {
     "message": "Select destination account"
   },
+  "bridgeSelectDifferentQuote": {
+    "message": "Please select a different quote."
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
   },
@@ -917,9 +964,6 @@
   "bridgeTo": {
     "message": "Bridge to"
   },
-  "bridgeToChain": {
-    "message": "Bridge to $1"
-  },
   "bridgeTokenCannotVerifyDescription": {
     "message": "If you added this token manually, make sure you are aware of the risks to your funds before you bridge."
   },
@@ -928,6 +972,9 @@
   },
   "bridgeTransactionProgress": {
     "message": "Transaction $1 of 2"
+  },
+  "bridgeTxDetailsBridged": {
+    "message": "Bridged"
   },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
@@ -946,6 +993,12 @@
   },
   "bridgeTxDetailsStatus": {
     "message": "Status"
+  },
+  "bridgeTxDetailsSwapped": {
+    "message": "Swapped"
+  },
+  "bridgeTxDetailsSwapping": {
+    "message": "Swapping"
   },
   "bridgeTxDetailsTimestamp": {
     "message": "Time stamp"
@@ -972,6 +1025,12 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "More $1 needed for gas"
+  },
+  "bridged": {
+    "message": "Bridged"
+  },
+  "bridgedToChain": {
+    "message": "Bridged to $1"
   },
   "bridging": {
     "message": "Bridging"
@@ -1035,6 +1094,18 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
+  },
+  "changePasswordLoading": {
+    "message": "Changing password..."
+  },
+  "changePasswordLoadingNote": {
+    "message": "This shouldn't take long"
+  },
+  "changePasswordWarning": {
+    "message": "Are you sure?"
+  },
+  "changePasswordWarningDescription": {
+    "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
   },
   "chooseYourNetwork": {
     "message": "Choose your network"
@@ -1173,9 +1244,6 @@
   },
   "confirmPassword": {
     "message": "Confirm password"
-  },
-  "confirmPasswordPlaceholder": {
-    "message": "Re-enter your password"
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
@@ -1397,6 +1465,12 @@
   "connectionRequest": {
     "message": "Connection request"
   },
+  "connectionsRemovedModalDescription": {
+    "message": "Some connections (like hardware wallets and snaps) were removed due to inactivity on this device. You can re-add them anytime in Settings."
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "Connections removed"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -1459,7 +1533,16 @@
     "message": "Create a new account"
   },
   "createPassword": {
+    "message": "MetaMask password"
+  },
+  "createPasswordCreate": {
     "message": "Create password"
+  },
+  "createPasswordDetails": {
+    "message": "Unlocks MetaMask on this device only."
+  },
+  "createPasswordDetailsSocial": {
+    "message": "Use this for wallet recovery on all devices."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
@@ -1535,6 +1618,9 @@
   "customGasSettingToolTipMessage": {
     "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
+  },
+  "customNetworks": {
+    "message": "Custom networks"
   },
   "customSlippage": {
     "message": "Custom"
@@ -1639,6 +1725,56 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLink_Caution": {
+    "message": "Proceed with caution"
+  },
+  "deepLink_Continue": {
+    "message": "Continue"
+  },
+  "deepLink_ContinueDescription": {
+    "message": "You'll open $1 if you continue.",
+    "description": "$1 is the name of the page they'll be redirected to if they click the Continue button. Examples of $1: 'the home page'; 'the buy page'; 'the swaps page'; 'the notifications page'"
+  },
+  "deepLink_DontRemindMeAgain": {
+    "message": "Don't remind me again"
+  },
+  "deepLink_Error404Description": {
+    "message": "We can't find the page you are looking for."
+  },
+  "deepLink_Error404Title": {
+    "message": "This page doesn't exist"
+  },
+  "deepLink_ErrorMissingUrl": {
+    "message": "No url to navigate to was provided."
+  },
+  "deepLink_ErrorOtherDescription": {
+    "message": "This is a bug and should be reported to MetaMask."
+  },
+  "deepLink_ErrorOtherTitle": {
+    "message": "An error occurred while processing the deep link"
+  },
+  "deepLink_GoToTheHomePageButton": {
+    "message": "Go to the home page"
+  },
+  "deepLink_RedirectingToMetaMask": {
+    "message": "Redirecting to MetaMask"
+  },
+  "deepLink_ThirdPartyDescription": {
+    "message": "You were sent here by a third party, not MetaMask. $1",
+    "description": "$1 is the message 'deepLink_ContinueDescription'"
+  },
+  "deepLink_theBuyPage": {
+    "message": "the buy page"
+  },
+  "deepLink_theHomePage": {
+    "message": "the home page"
+  },
+  "deepLink_theNotificationsPage": {
+    "message": "the notifications page"
+  },
+  "deepLink_theSwapsPage": {
+    "message": "the swaps page"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
@@ -1714,6 +1850,9 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "deselectAll": {
+    "message": "Deselect all"
   },
   "destinationAccountPickerNoEligible": {
     "message": "No eligible accounts found"
@@ -1825,14 +1964,20 @@
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Face ID on our app lets you in even if you forget your password. Take MetaMask everywhere you go!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Scan this QR code to get started."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Get our mobile app"
+  },
   "downloadNow": {
     "message": "Download Now"
   },
   "downloadStateLogs": {
     "message": "Download state logs"
-  },
-  "dragAndDropBanner": {
-    "message": "You can drag networks to reorder them. "
   },
   "dropped": {
     "message": "Dropped"
@@ -1966,6 +2111,9 @@
   "editInPortfolio": {
     "message": "Edit in Portfolio"
   },
+  "editNetwork": {
+    "message": "Edit network"
+  },
   "editNetworkLink": {
     "message": "edit the original network"
   },
@@ -2010,6 +2158,12 @@
   },
   "enableIt": {
     "message": " Enable it"
+  },
+  "enableSmartContractAccount": {
+    "message": "Enable smart contract account"
+  },
+  "enableSmartContractAccountDescription": {
+    "message": "You can enable smart account features on supported networks."
   },
   "enableSnap": {
     "message": "Enable"
@@ -2074,6 +2228,9 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "enterPasswordCurrent": {
+    "message": "Enter your current password"
+  },
   "enterRpcUrl": {
     "message": "Enter RPC URL"
   },
@@ -2085,6 +2242,12 @@
   },
   "enterYourPassword": {
     "message": "Enter your password"
+  },
+  "enterYourPasswordContinue": {
+    "message": "Enter password to continue"
+  },
+  "enterYourPasswordSocialLoginFlow": {
+    "message": "Enter Metamask Password"
   },
   "errorCode": {
     "message": "Code: $1",
@@ -2262,8 +2425,9 @@
   "floatAmountToken": {
     "message": "Token amount must be an integer"
   },
-  "followUsOnTwitter": {
-    "message": "Follow us on Twitter"
+  "followUsOnX": {
+    "message": "Follow us on $1",
+    "description": "$1 is the x icon"
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
@@ -2273,6 +2437,32 @@
   },
   "forgotPassword": {
     "message": "Forgot password?"
+  },
+  "forgotPasswordModalButton": {
+    "message": "Reset wallet"
+  },
+  "forgotPasswordModalDescription1": {
+    "message": "MetaMask can’t recover your password for you."
+  },
+  "forgotPasswordModalDescription2": {
+    "message": "You can reset your wallet by entering the Secret Recovery Phrase you used when you set up your wallet."
+  },
+  "forgotPasswordModalTitle": {
+    "message": "Forgot your password?"
+  },
+  "forgotPasswordSocialDescription": {
+    "message": "MetaMask can’t recover your password for you."
+  },
+  "forgotPasswordSocialStep1": {
+    "message": "If you’re logged into MetaMask on a device with $1 (like Face ID), you can reset your password there.",
+    "description": "$1 is bold biometrics turned on"
+  },
+  "forgotPasswordSocialStep1Biometrics": {
+    "message": "biometrics turned on"
+  },
+  "forgotPasswordSocialStep2": {
+    "message": "If you have your $1, you can reset your current wallet and reimport using Secret Recovery Phrase.",
+    "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
     "message": "form"
@@ -2560,6 +2750,13 @@
   },
   "importAccountMsg": {
     "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "Imported private keys are backed up to your account and sync automatically when you sign in with the same Google or Apple login."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 about how imported keys work",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -2902,6 +3099,21 @@
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum transaction's input data isn't sufficiently padded."
   },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "We're having trouble connecting to Ledger. Check out our "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " on how to connect a hardware wallet, then try again."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger no longer supports Firefox, so you might need to use a different browser."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "guide"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox Not Supported"
+  },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
   },
@@ -2974,6 +3186,37 @@
   },
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
+  },
+  "loginErrorConnectButton": {
+    "message": "Try again"
+  },
+  "loginErrorConnectDescription": {
+    "message": "Your internet connection is unstable. Check your connection and try again."
+  },
+  "loginErrorConnectTitle": {
+    "message": "Unable to connect"
+  },
+  "loginErrorGenericButton": {
+    "message": "Try again"
+  },
+  "loginErrorGenericDescription": {
+    "message": "An error occurred while logging in. Try again and if the issue continues, contact $1.",
+    "description": "$1 is the key 'loginErrorGenericSupport'"
+  },
+  "loginErrorGenericSupport": {
+    "message": "Metamask Support"
+  },
+  "loginErrorGenericTitle": {
+    "message": "Something went wrong"
+  },
+  "loginErrorSessionExpiredButton": {
+    "message": "Log in"
+  },
+  "loginErrorSessionExpiredDescription": {
+    "message": "Your session has expired. Please log in again to continue."
+  },
+  "loginErrorSessionExpiredTitle": {
+    "message": "Session has expired"
   },
   "logo": {
     "message": "$1 logo",
@@ -3167,6 +3410,14 @@
   "nameAlreadyInUse": {
     "message": "Name is already in use"
   },
+  "nameFooterTrustWarning": {
+    "message": "Only save addresses you trust.",
+    "description": "Footer warning text shown in name modal for malicious and warning addresses."
+  },
+  "nameInstructionsMalicious": {
+    "message": "This has been identified as malicious. We recommend not interacting with this address.",
+    "description": "Instruction text in name component modal when address is malicious."
+  },
   "nameInstructionsNew": {
     "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -3179,6 +3430,10 @@
     "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
   },
+  "nameInstructionsWarning": {
+    "message": "This has been identified as suspicious. If you trust this author, set a personal display name to identify it going forward.",
+    "description": "Instruction text in name component modal when address has warning signals."
+  },
   "nameLabel": {
     "message": "Nickname",
     "description": "Label above name input field in name component modal."
@@ -3186,6 +3441,10 @@
   "nameModalMaybeProposedName": {
     "message": "Maybe: $1",
     "description": "$1 is the proposed name"
+  },
+  "nameModalTitleMalicious": {
+    "message": "Malicious address",
+    "description": "Title of the modal created by the name component when address is identified as malicious."
   },
   "nameModalTitleNew": {
     "message": "Unknown address",
@@ -3198,6 +3457,14 @@
   "nameModalTitleSaved": {
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
+  },
+  "nameModalTitleVerified": {
+    "message": "Verified address",
+    "description": "Title of the modal created by the name component when address is verified."
+  },
+  "nameModalTitleWarning": {
+    "message": "Suspicious address",
+    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Proposed by $1",
@@ -3218,6 +3485,10 @@
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
+  },
+  "nameSetPlaceholderSuggested": {
+    "message": "Suggested: $1",
+    "description": "$1 is the proposed name"
   },
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 is asking for your approval to:",
@@ -3279,6 +3550,9 @@
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
+  },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Must have at least one network enabled"
   },
   "networkMenu": {
     "message": "Network Menu"
@@ -3418,8 +3692,8 @@
   "newPassword": {
     "message": "New password"
   },
-  "newPasswordPlaceholder": {
-    "message": "Enter a strong password"
+  "newPasswordCreate": {
+    "message": "Create new password"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
@@ -3498,7 +3772,7 @@
     "message": "No conversion rate available"
   },
   "noDeFiPositions": {
-    "message": "No positions yet"
+    "message": "Can't find what you're looking for?"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -3511,6 +3785,9 @@
   },
   "noNetworksFound": {
     "message": "No networks found for the given search query"
+  },
+  "noNetworksSelected": {
+    "message": "No networks selected"
   },
   "noOptionsAvailableMessage": {
     "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
@@ -3965,6 +4242,12 @@
   "password": {
     "message": "Password"
   },
+  "passwordChangedRecently": {
+    "message": "Your password was changed"
+  },
+  "passwordChangedRecentlyDescription": {
+    "message": "Enter your new password to stay logged into MetaMask."
+  },
   "passwordNotLongEnough": {
     "message": "Password must have at least 8 characters"
   },
@@ -3976,7 +4259,10 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "MetaMask can’t recover this password."
+    "message": "If I forget this password, MetaMask can’t reset it for me."
+  },
+  "passwordTermsWarningSocial": {
+    "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
   },
   "passwordToggleHide": {
     "message": "Hide Password"
@@ -4324,9 +4610,6 @@
   "popularNetworks": {
     "message": "Popular networks"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
@@ -4355,7 +4638,7 @@
     "message": "Privacy policy"
   },
   "privateKey": {
-    "message": "Private Key",
+    "message": "Private key",
     "description": "select this type of file to use to import an account"
   },
   "privateKeyCopyWarning": {
@@ -4388,6 +4671,9 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
+  },
+  "protocolNotSupported": {
+    "message": "We may not support your protocol yet."
   },
   "provide": {
     "message": "Provide"
@@ -4485,6 +4771,9 @@
   "rateIncludesMMFee": {
     "message": "Rate includes $1% fee"
   },
+  "rateIncludesMMFeeAndGas": {
+    "message": "Rate includes $1% fee and gas"
+  },
   "reAddAccounts": {
     "message": "re-add any other accounts"
   },
@@ -4500,6 +4789,9 @@
   "receiveCrypto": {
     "message": "Receive crypto"
   },
+  "received": {
+    "message": "Received"
+  },
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
@@ -4507,28 +4799,16 @@
     "message": "Recommended"
   },
   "recoveryPhraseReminderBackupStart": {
-    "message": "Start here"
+    "message": "Back up now"
   },
   "recoveryPhraseReminderConfirm": {
-    "message": "Got it"
-  },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Always keep your Secret Recovery Phrase in a secure and secret place"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Need to backup your Secret Recovery Phrase again?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Never share your Secret Recovery Phrase with anyone"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "The MetaMask team will never ask for your Secret Recovery Phrase"
+    "message": "Remind me later"
   },
   "recoveryPhraseReminderSubText": {
-    "message": "Your Secret Recovery Phrase controls all of your accounts."
+    "message": "If you don’t back up your wallet, you’ll lose access to your funds if you get locked out of the app or get a new device."
   },
   "recoveryPhraseReminderTitle": {
-    "message": "Protect your funds"
+    "message": "Protect your wallet"
   },
   "redeposit": {
     "message": "Redeposit"
@@ -4565,6 +4845,14 @@
   },
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+  },
+  "removeAccountModalBannerDescription": {
+    "message": "Make sure you have the Secret Recovery Phrase or private key for this account before removing.",
+    "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
+  },
+  "removeAccountModalBannerTitle": {
+    "message": "This account will be removed from MetaMask.",
+    "description": "Title of a banner alert used on account remove modal."
   },
   "removeKeyringSnap": {
     "message": "Removing this Snap removes these accounts from MetaMask:"
@@ -4633,16 +4921,34 @@
     "message": "Reset"
   },
   "resetWallet": {
-    "message": "Reset wallet"
+    "message": "Reset your wallet"
   },
   "resetWalletSubHeader": {
     "message": "MetaMask does not keep a copy of your password. If you’re having trouble unlocking your account, you will need to reset your wallet. You can do this by providing the Secret Recovery Phrase you used when you set up your wallet."
   },
+  "resetWalletSubHeaderSocial": {
+    "message": "MetaMask doesn’t keep a copy of your password. If you’re having trouble unlocking your account, you’ll need to reset your wallet. If you have a Secret Recovery Phrase, you can use it to erase your current wallet from this device, along with the list of your accounts."
+  },
   "resetWalletUsingSRP": {
     "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens you’ve added to an account will need to be $3 as well."
   },
+  "resetWalletUsingSRPSocial": {
+    "message": "After resetting with a Secret Recovery Phrase, you’ll see a new list of accounts. This list will include accounts that have a balance. You can $1 you made before. But you’ll need to add back any $2 and $3 you imported. "
+  },
+  "resetWalletUsingSRPSocialAccounts": {
+    "message": "add back any other accounts"
+  },
+  "resetWalletUsingSRPSocialCustomAccounts": {
+    "message": "custom accounts"
+  },
+  "resetWalletUsingSRPSocialCustomTokens": {
+    "message": "custom tokens"
+  },
   "resetWalletWarning": {
     "message": "Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this."
+  },
+  "resetWalletWarningSocial": {
+    "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
   },
   "restartMetamask": {
     "message": "Restart MetaMask"
@@ -4672,7 +4978,7 @@
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
   "revealSecretRecoveryPhrase": {
-    "message": "Reveal Secret Recovery Phrase"
+    "message": "Secret Recovery Phrase"
   },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
@@ -4814,8 +5120,33 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "securityChangePassword": {
+    "message": "Change password"
+  },
+  "securityChangePasswordDescription": {
+    "message": "Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet."
+  },
+  "securityChangePasswordTitle": {
+    "message": "Password"
+  },
+  "securityChangePasswordToastError": {
+    "message": "Password couldn’t be changed. Please try again."
+  },
+  "securityChangePasswordToastSuccess": {
+    "message": "New password saved"
+  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
+  },
+  "securityLoginWithSocial": {
+    "message": "Login with $1",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securityLoginWithSrpBackedUp": {
+    "message": "Secret Recovery Phrase backed up"
+  },
+  "securityLoginWithSrpNotBackedUp": {
+    "message": "Back up Secret Recovery Phrase"
   },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
@@ -4823,6 +5154,26 @@
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
+  },
+  "securitySocialLoginEnabled": {
+    "message": "Enabled"
+  },
+  "securitySocialLoginEnabledDescription": {
+    "message": "Use your $1 login and MetaMask password to recover your account and Secret Recovery Phrases.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securitySocialLoginLabel": {
+    "message": "$1 RECOVERY",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securitySrpDescription": {
+    "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpLabel": {
+    "message": "SECRET RECOVERY PHRASES"
+  },
+  "securitySrpWalletRecovery": {
+    "message": "Manage recovery methods"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -4917,16 +5268,8 @@
   "sendSelectSendAsset": {
     "message": "Select asset to send"
   },
-  "sendSpecifiedTokens": {
-    "message": "Send $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
-  },
-  "sendTokenAsToken": {
-    "message": "Send $1 as $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "Sending $1"
@@ -4941,6 +5284,17 @@
   "sendingToTokenContractWarning": {
     "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
+  "sent": {
+    "message": "Sent"
+  },
+  "sentSpecifiedTokens": {
+    "message": "Sent $1",
+    "description": "Symbol of the specified token"
+  },
+  "sentTokenAsToken": {
+    "message": "Sent $1 as $2",
+    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sepolia": {
     "message": "Sepolia test network"
@@ -5075,8 +5429,14 @@
   "simulationDetailsTitle": {
     "message": "Estimated changes"
   },
+  "simulationDetailsTitleEnforced": {
+    "message": "Balance changes"
+  },
   "simulationDetailsTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  },
+  "simulationDetailsTitleTooltipEnforced": {
+    "message": "Balance changes are guaranteed. If this outcome isn't possible, the transaction will be stopped."
   },
   "simulationDetailsTotalFiat": {
     "message": "Total = $1",
@@ -5090,6 +5450,15 @@
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
+  },
+  "simulationSettingsModalEnforceToggle": {
+    "message": "Enforce balance changes"
+  },
+  "simulationSettingsModalEnforceToggleDescription": {
+    "message": "To keep your money safe, this transaction won't go through if the balance changes or the slippage tolerance isn't met."
+  },
+  "simulationSettingsModalTitle": {
+    "message": "Transaction settings"
   },
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
@@ -5127,6 +5496,12 @@
   "skipAccountSecuritySkip": {
     "message": "Skip"
   },
+  "skipDeepLinkInterstitial": {
+    "message": "Don't show interstitial screen when opening deep links"
+  },
+  "skipDeepLinkInterstitialDescription": {
+    "message": "Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A \"deep link\" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information. This setting only applies to links signed by MetaMask."
+  },
   "slideBridgeDescription": {
     "message": "Move across 9 chains, all within your wallet"
   },
@@ -5144,6 +5519,12 @@
   },
   "slideDebitCardTitle": {
     "message": "MetaMask debit card"
+  },
+  "slideDownloadMobileAppDescription": {
+    "message": "Take your wallet everywhere you go"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Download MetaMask mobile"
   },
   "slideFundWalletDescription": {
     "message": "Add or transfer tokens to get started"
@@ -5205,14 +5586,20 @@
   "smartAccountReject": {
     "message": "Don’t use smart account"
   },
-  "smartAccountRequestFor": {
-    "message": "Request for"
-  },
   "smartAccountSameAccount": {
     "message": "Same account, smarter features."
   },
+  "smartAccountSplashInfo": {
+    "message": "Smart accounts"
+  },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
+  },
+  "smartAccountUpdateSuccessMessage": {
+    "message": "Your account will be updated to smart account with your next transaction."
+  },
+  "smartAccountUpdateSuccessTitle": {
+    "message": "Successful!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
@@ -5584,12 +5971,18 @@
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
   },
+  "srpListStateBackedUp": {
+    "message": "Reveal"
+  },
+  "srpListStateNotBackedUp": {
+    "message": "Backup"
+  },
   "srpPasteFailedTooManyWords": {
     "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
     "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
-    "message": "You can paste your entire secret recovery phrase into any field",
+    "message": "You can paste your entire Secret Recovery Phrase into any field.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
@@ -5673,9 +6066,6 @@
   "standardAccountLabel": {
     "message": "Standard Account"
   },
-  "startEarning": {
-    "message": "Start earning"
-  },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
@@ -5732,9 +6122,6 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
-  },
-  "statusNotConnectedAccount": {
-    "message": "No accounts connected"
   },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
@@ -5915,6 +6302,10 @@
   },
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
+  },
+  "swapDetailsTitle": {
+    "message": "Swap details",
+    "description": "Title for the modal showing details about a swap transaction."
   },
   "swapDirectContract": {
     "message": "Direct contract"
@@ -6244,6 +6635,9 @@
   "switch": {
     "message": "Switch"
   },
+  "switchBack": {
+    "message": "Switch back"
+  },
   "switchEthereumChainConfirmationDescription": {
     "message": "This will switch the selected network within MetaMask to a previously added network:"
   },
@@ -6265,17 +6659,6 @@
   },
   "switchToThisAccount": {
     "message": "Switch to this account"
-  },
-  "switchedNetworkToastDecline": {
-    "message": "Don't show again"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 is now active on $2",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "You're now using $1",
-    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
@@ -6591,6 +6974,9 @@
   "twelveHrTitle": {
     "message": "12hr:"
   },
+  "txAlertTitle": {
+    "message": "This transaction will be reverted"
+  },
   "typeYourSRP": {
     "message": "Enter your Secret Recovery Phrase"
   },
@@ -6626,8 +7012,11 @@
   "unlock": {
     "message": "Unlock"
   },
-  "unlockMessage": {
-    "message": "The decentralized web awaits"
+  "unlockPageIncorrectPassword": {
+    "message": "Password is incorrect. Please try again."
+  },
+  "unlockPageTooManyFailedAttempts": {
+    "message": "Too many failed attempts. Please try again in "
   },
   "unpin": {
     "message": "Unpin"
@@ -6686,6 +7075,9 @@
   "use4ByteResolution": {
     "message": "Decode smart contracts"
   },
+  "useDifferentLoginMethod": {
+    "message": "Use a different login method"
+  },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
   },
@@ -6714,6 +7106,12 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
+  "useSmartAccountDescription": {
+    "message": "Keep this on to automatically switch accounts created within MetaMask to smart accounts whenever relevant features are available, such as faster transactions, lower network fees and payment flexibility on payment for those."
+  },
+  "useSmartAccountTitle": {
+    "message": "Use smart account"
+  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
   },
@@ -6726,6 +7124,9 @@
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart contract account is not supported"
   },
+  "value": {
+    "message": "Value"
+  },
   "version": {
     "message": "Version"
   },
@@ -6734,6 +7135,10 @@
   },
   "viewActivity": {
     "message": "View activity"
+  },
+  "viewAddressOnExplorer": {
+    "message": "View on $1",
+    "description": "$1 is the block explorer name"
   },
   "viewAllQuotes": {
     "message": "view all quotes"
@@ -6798,6 +7203,19 @@
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
+  "walletDetails": {
+    "message": "Wallet details"
+  },
+  "walletName": {
+    "message": "Wallet name"
+  },
+  "walletNotFoundDescription": {
+    "message": "The wallet with ID $1 was not found.",
+    "description": "$1 is the wallet ID"
+  },
+  "walletNotFoundTitle": {
+    "message": "Wallet not found"
+  },
   "walletReadyLearn": {
     "message": "$1 you can keep this phrase safe so you never lose access to your money.",
     "description": "$1 is the link to Learn how"
@@ -6808,8 +7226,18 @@
   "walletReadyLoseSrp": {
     "message": "If you lose your Secret Recovery Phrase, you won’t be able to use your wallet."
   },
+  "walletReadyLoseSrpFromReminder": {
+    "message": "This Secret Recovery Phrase can help you regain access if you ever forget your password or lose access to your login."
+  },
   "walletReadyLoseSrpRemind": {
     "message": "If you don’t back up your Secret Recovery Phrase, you’ll lose access to your funds if you get locked out of the app or get a new device."
+  },
+  "walletReadySocialDetails1": {
+    "message": "You can log in to your wallet anytime with your $1 account and password.",
+    "description": "$1 is the social login type. e.g Google, Apple, etc."
+  },
+  "walletReadySocialDetails2": {
+    "message": "If you forget your password, you won’t be able to access your wallet."
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
@@ -6877,6 +7305,9 @@
   "willApproveAmountForBridgingHardware": {
     "message": "You’ll need to confirm two transactions on your hardware wallet."
   },
+  "willApproveAmountForSwapping": {
+    "message": "This will approve $1 for swapping."
+  },
   "withdrawing": {
     "message": "Withdrawing"
   },
@@ -6929,6 +7360,9 @@
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"
+  },
+  "yourWalletIsReadyFromReminder": {
+    "message": "Keep your Secret Recovery Phrase safe!"
   },
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"

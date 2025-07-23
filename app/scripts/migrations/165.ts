@@ -169,10 +169,8 @@ function transformState(
     !hasProperty(state, 'CronjobController') ||
     !isObject(state.CronjobController)
   ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Skipping migration ${version}: \`CronjobController\` state not found or is not an object.`,
-      ),
+    console.warn(
+      `Skipping migration ${version}: \`CronjobController\` state not found or is not an object.`,
     );
 
     return state;
@@ -182,7 +180,7 @@ function transformState(
     !hasProperty(state, 'PermissionController') ||
     !isObject(state.PermissionController)
   ) {
-    global.sentry?.captureException?.(
+    console.warn(
       new Error(
         `Skipping migration ${version}: \`PermissionController\` state not found or is not an object.`,
       ),
@@ -255,7 +253,7 @@ function transformState(
 
   // New events object created from the legacy events.
   const eventsFromLegacyEvents = Object.fromEntries(
-    Object.entries(cronjobControllerState.events).map(
+    Object.entries(cronjobControllerState.events ?? {}).map(
       ([id, event]): [string, BackgroundEvent] => {
         return [
           id,

@@ -32,6 +32,7 @@ import {
   ButtonBase,
   ButtonBaseSize,
 } from '../../../../components/component-library';
+import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { loadingOpacity } from '../../util';
@@ -60,7 +61,11 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   fill: true,
   backgroundColor: ({ chart }) => {
     const gradient = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     gradient.addColorStop(0, `${chart.options.borderColor}60`);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     gradient.addColorStop(1, `${chart.options.borderColor}00`);
     return gradient;
   },
@@ -133,11 +138,13 @@ const AssetChart = ({
   address,
   currentPrice,
   currency,
+  asset,
 }: {
   chainId: Hex;
   address: string;
   currentPrice?: number;
   currency: string;
+  asset?: TokenFiatDisplayInfo;
 }) => {
   const t = useI18nContext();
   const theme = useTheme();
@@ -202,13 +209,15 @@ const AssetChart = ({
         price={currentPrice}
         date={Date.now()}
         comparePrice={prices?.[0]?.y}
+        asset={asset}
       />
+
       <Box
         data-testid="asset-price-chart"
         marginTop={4}
         backgroundColor={
           loading && !prices
-            ? BackgroundColor.backgroundMuted
+            ? BackgroundColor.backgroundSection
             : BackgroundColor.transparent
         }
         borderRadius={BorderRadius.LG}

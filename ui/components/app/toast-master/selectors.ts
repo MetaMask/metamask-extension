@@ -13,13 +13,17 @@ import {
   isSolanaAccount,
 } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
+import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
 import { getIsPrivacyToastRecent } from './utils';
 
 type State = {
   appState: Partial<
     Pick<
       MetaMaskReduxState['appState'],
-      'showNftDetectionEnablementToast' | 'showNewSrpAddedToast'
+      | 'showNftDetectionEnablementToast'
+      | 'showNewSrpAddedToast'
+      | 'showPasswordChangeToast'
+      | 'showCopyAddressToast'
     >
   >;
   metamask: Partial<
@@ -29,7 +33,6 @@ type State = {
       | 'newPrivacyPolicyToastShownDate'
       | 'onboardingDate'
       | 'surveyLinkLastClickedOrClosed'
-      | 'switchedNetworkNeverShowMessage'
     >
   >;
 };
@@ -115,18 +118,6 @@ export function selectShowConnectAccountToast(
 }
 
 /**
- * Retrieves user preference to never see the "Switched Network" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectSwitchedNetworkNeverShowMessage(
-  state: Pick<State, 'metamask'>,
-): boolean {
-  return Boolean(state.metamask.switchedNetworkNeverShowMessage);
-}
-
-/**
  * Retrieves user preference to see the "New SRP Added" toast
  *
  * @param state - Redux state object.
@@ -134,4 +125,28 @@ export function selectSwitchedNetworkNeverShowMessage(
  */
 export function selectNewSrpAdded(state: Pick<State, 'appState'>): boolean {
   return Boolean(state.appState.showNewSrpAddedToast);
+}
+
+/**
+ * Retrieves user preference to see the "Password Change Error" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectPasswordChangeToast(
+  state: Pick<State, 'appState'>,
+): PasswordChangeToastType | null {
+  return state.appState.showPasswordChangeToast || null;
+}
+
+/**
+ * Retrieves user preference to see the "Copy Address" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowCopyAddressToast(
+  state: Pick<State, 'appState'>,
+): boolean {
+  return Boolean(state.appState.showCopyAddressToast);
 }

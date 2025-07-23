@@ -1,7 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
+import classnames from 'classnames';
 import {
   setCompletedOnboarding,
   toggleExternalServices,
@@ -18,7 +19,10 @@ import {
   IconColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   Box,
   Button,
@@ -33,6 +37,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getFirstTimeFlowType,
   getExternalServicesOnboardingToggleState,
+  getCurrentKeyring,
 } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
@@ -48,6 +53,7 @@ export default function OnboardingPinExtension() {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const currentKeyring = useSelector(getCurrentKeyring);
 
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
@@ -61,7 +67,7 @@ export default function OnboardingPinExtension() {
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSetupComplete,
+      event: MetaMetricsEventName.ExtensionPinned,
       properties: {
         wallet_setup_type:
           firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
@@ -70,6 +76,13 @@ export default function OnboardingPinExtension() {
     });
     history.push(DEFAULT_ROUTE);
   };
+
+  useEffect(() => {
+    // if the user has not created a wallet, redirect to onboarding welcome route
+    if (!currentKeyring) {
+      history.replace(ONBOARDING_WELCOME_ROUTE);
+    }
+  }, [currentKeyring, history]);
 
   return (
     <Box
@@ -91,11 +104,12 @@ export default function OnboardingPinExtension() {
             <ButtonIcon
               iconName={IconName.Arrow2Left}
               size={ButtonIconSize.Lg}
-              iconProps={{
-                color: hasPrev ? IconColor.iconDefault : IconColor.iconMuted,
-              }}
               borderRadius={BorderRadius.full}
-              className="onboarding-pin-extension__arrow"
+              borderWidth={2}
+              borderColor={IconColor.iconDefault}
+              className={classnames('onboarding-pin-extension__arrow', {
+                'onboarding-pin-extension__arrow--disabled': !hasPrev,
+              })}
               disabled={!hasPrev}
               title={label}
               onClick={onClickHandler}
@@ -106,11 +120,16 @@ export default function OnboardingPinExtension() {
             <ButtonIcon
               iconName={IconName.Arrow2Right}
               size={ButtonIconSize.Lg}
-              iconProps={{
-                color: hasNext ? IconColor.iconDefault : IconColor.iconMuted,
-              }}
               borderRadius={BorderRadius.full}
-              className="onboarding-pin-extension__arrow onboarding-pin-extension__arrow--next"
+              borderWidth={2}
+              borderColor={IconColor.iconDefault}
+              className={classnames(
+                'onboarding-pin-extension__arrow',
+                'onboarding-pin-extension__arrow--next',
+                {
+                  'onboarding-pin-extension__arrow--disabled': !hasNext,
+                },
+              )}
               disabled={!hasNext}
               title={label}
               onClick={onClickHandler}
@@ -128,7 +147,6 @@ export default function OnboardingPinExtension() {
           >
             <img
               src="/images/onboarding-extension-pin.svg"
-              className="onboarding-pin-extension__image-pin"
               alt={t('onboardingPinExtensionAltPin')}
             />
           </Box>
@@ -140,7 +158,6 @@ export default function OnboardingPinExtension() {
           >
             <img
               src="/images/onboarding-extension-launch.svg"
-              className="onboarding-pin-extension__image-launch"
               alt={t('onboardingPinExtensionAltLaunch')}
             />
           </Box>

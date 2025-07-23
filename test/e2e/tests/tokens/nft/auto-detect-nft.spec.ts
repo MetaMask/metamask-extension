@@ -5,7 +5,7 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { setupAutoDetectMocking } from './mocks';
 
 describe('NFT detection', function () {
@@ -19,8 +19,9 @@ describe('NFT detection', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            '0x1': true,
-            '0x5': true,
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         driverOptions,
@@ -28,7 +29,7 @@ describe('NFT detection', function () {
         testSpecificMock: setupAutoDetectMocking,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         // navigate to security & privacy settings and toggle on NFT autodetection
         await new HeaderNavbar(driver).openSettingsPage();

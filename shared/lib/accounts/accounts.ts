@@ -12,15 +12,17 @@ import { Messenger } from '@metamask/base-controller';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
 import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/accounts-controller';
-import { captureException } from '@sentry/browser';
 ///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../constants/multichain/networks';
+import { captureException } from '../sentry';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 
 /**
  * Supported non-EVM Snaps.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type SUPPORTED_WALLET_SNAP_ID =
   | typeof SOLANA_WALLET_SNAP_ID
   | typeof BITCOIN_WALLET_SNAP_ID;

@@ -468,8 +468,8 @@ describe('preferences controller', () => {
 
   describe('setTheme', () => {
     const { controller } = setupController({});
-    it('should default to value "OS"', () => {
-      expect(controller.state.theme).toStrictEqual('os');
+    it('should default to value "Dark"', () => {
+      expect(controller.state.theme).toStrictEqual('dark');
     });
 
     it('should set the setTheme property in state', () => {
@@ -669,11 +669,13 @@ describe('preferences controller', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
+        skipDeepLinkInterstitial: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
+        smartAccountOptIn: true,
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
@@ -696,12 +698,14 @@ describe('preferences controller', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
+        skipDeepLinkInterstitial: false,
         privacyMode: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
+        smartAccountOptIn: true,
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',

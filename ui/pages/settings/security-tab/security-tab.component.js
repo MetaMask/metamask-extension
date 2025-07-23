@@ -1,4 +1,4 @@
-import { startCase } from 'lodash';
+import { capitalize, startCase } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import {
@@ -32,6 +32,8 @@ import {
   IconName,
   Box,
   Text,
+  BannerAlert,
+  BannerAlertSeverity,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -49,6 +51,7 @@ import {
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
   REVEAL_SRP_LIST_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
@@ -57,6 +60,7 @@ import {
 
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import MetametricsToggle from './metametrics-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 
@@ -102,10 +106,14 @@ export default class SecurityTab extends PureComponent {
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func,
+    setSkipDeepLinkInterstitial: PropTypes.func.isRequired,
+    skipDeepLinkInterstitial: PropTypes.bool,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
     hdEntropyIndex: PropTypes.number,
-    hasMultipleHdKeyrings: PropTypes.bool,
+    isSeedPhraseBackedUp: PropTypes.bool,
+    socialLoginEnabled: PropTypes.bool,
+    socialLoginType: PropTypes.string,
   };
 
   state = {
@@ -166,7 +174,35 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
-    const { history, hasMultipleHdKeyrings } = this.props;
+    const {
+      history,
+      isSeedPhraseBackedUp,
+      socialLoginEnabled,
+      socialLoginType,
+    } = this.props;
+
+    const getBannerDescription = () => {
+      if (socialLoginEnabled) {
+        return t('securityLoginWithSocial', [capitalize(socialLoginType)]);
+      }
+
+      return isSeedPhraseBackedUp
+        ? t('securityLoginWithSrpBackedUp')
+        : t('securityLoginWithSrpNotBackedUp');
+    };
+
+    const getBannerSeverity = () => {
+      return isSeedPhraseBackedUp
+        ? BannerAlertSeverity.Success
+        : BannerAlertSeverity.Danger;
+    };
+
+    const getButtonText = () => {
+      if (socialLoginEnabled) {
+        return t('securitySrpWalletRecovery');
+      }
+      return t('revealSecretRecoveryPhrase');
+    };
 
     return (
       <>
@@ -177,46 +213,104 @@ export default class SecurityTab extends PureComponent {
           {t('secretRecoveryPhrase')}
         </div>
         <div className="settings-page__content-padded">
-          <Button
-            data-testid="reveal-seed-words"
-            type="danger"
-            size={ButtonSize.Lg}
-            onClick={(event) => {
-              event.preventDefault();
-              this.context.trackEvent({
-                category: MetaMetricsEventCategory.Settings,
-                event: MetaMetricsEventName.KeyExportSelected,
-                properties: {
-                  key_type: MetaMetricsEventKeyType.Srp,
-                  location: 'Settings',
-                  hd_entropy_index: this.props.hdEntropyIndex,
-                },
-              });
-              this.context.trackEvent({
-                category: MetaMetricsEventCategory.Settings,
-                event: MetaMetricsEventName.SrpRevealClicked,
-                properties: {
-                  key_type: MetaMetricsEventKeyType.Srp,
-                  location: 'Settings',
-                },
-              });
-              if (hasMultipleHdKeyrings) {
-                history.push({
-                  pathname: REVEAL_SRP_LIST_ROUTE,
-                });
-                return;
-              }
-              this.setState({ srpQuizModalVisible: true });
-            }}
+          <Box
+            className="settings-page__content-row"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={4}
           >
-            {t('revealSeedWords')}
-          </Button>
+            <div className="settings-page__content-item">
+              <div className="settings-page__content-description">
+                {t('securitySrpDescription')}
+              </div>
+              <BannerAlert
+                data-testid="backup-state-banner-alert"
+                description={getBannerDescription()}
+                paddingTop={2}
+                paddingBottom={2}
+                marginTop={4}
+                severity={getBannerSeverity()}
+              />
+            </div>
+            <div className="settings-page__content-item-col">
+              <Button
+                data-testid="reveal-seed-words"
+                size={ButtonSize.Lg}
+                onClick={(event) => {
+                  event.preventDefault();
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Settings,
+                    event: MetaMetricsEventName.KeyExportSelected,
+                    properties: {
+                      key_type: MetaMetricsEventKeyType.Srp,
+                      location: 'Settings',
+                      hd_entropy_index: this.props.hdEntropyIndex,
+                    },
+                  });
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Settings,
+                    event: MetaMetricsEventName.SrpRevealClicked,
+                    properties: {
+                      key_type: MetaMetricsEventKeyType.Srp,
+                      location: 'Settings',
+                    },
+                  });
+                  history.push({
+                    pathname: REVEAL_SRP_LIST_ROUTE,
+                  });
+                }}
+              >
+                {getButtonText()}
+              </Button>
+            </div>
+          </Box>
           {this.state.srpQuizModalVisible && (
             <SRPQuiz
               isOpen={this.state.srpQuizModalVisible}
               onClose={this.hideSrpQuizModal}
             />
           )}
+        </div>
+      </>
+    );
+  }
+
+  renderChangePassword() {
+    const { t } = this.context;
+    const { history } = this.props;
+
+    return (
+      <>
+        <div
+          ref={this.settingsRefs[2]}
+          className="settings-page__security-tab-sub-header"
+        >
+          {t('securityChangePasswordTitle')}
+        </div>
+        <div className="settings-page__content-padded">
+          <Box
+            className="settings-page__content-row"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={4}
+          >
+            <div className="settings-page__content-item">
+              <div className="settings-page__content-description">
+                {t('securityChangePasswordDescription')}
+              </div>
+            </div>
+            <div className="settings-page__content-item-col">
+              <Button
+                data-testid="change-password-button"
+                size={ButtonSize.Lg}
+                onClick={() => {
+                  history.push(SECURITY_PASSWORD_CHANGE_ROUTE);
+                }}
+              >
+                {t('securityChangePassword')}
+              </Button>
+            </div>
+          </Box>
         </div>
       </>
     );
@@ -235,7 +329,7 @@ export default class SecurityTab extends PureComponent {
         </div>
         <div className="settings-page__content-padded">
           <Box
-            ref={this.settingsRefs[3]}
+            ref={this.settingsRefs[2]}
             className="settings-page__content-row"
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
@@ -279,7 +373,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -1101,6 +1195,53 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderSkipDeepLinkInterstitial() {
+    const { t } = this.context;
+    const { skipDeepLinkInterstitial, setSkipDeepLinkInterstitial } =
+      this.props;
+
+    return (
+      <>
+        <Box
+          ref={this.settingsRefs[3]}
+          className="settings-page__content-row"
+          data-testid="setting-skip-deep-link-interstitial"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
+          id="skip-deep-link-interstitial"
+        >
+          <Box
+            className="settings-page__content-row"
+            gap={4}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <div className="settings-page__content-item">
+              <span>{t('skipDeepLinkInterstitial')}</span>
+              <div className="settings-page__content-description">
+                {t('skipDeepLinkInterstitialDescription')}
+              </div>
+            </div>
+
+            <div
+              className="settings-page__content-item-col"
+              data-testid="skipDeepLinkInterstitial"
+            >
+              <ToggleButton
+                value={skipDeepLinkInterstitial}
+                onToggle={(value) => setSkipDeepLinkInterstitial(!value)}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
+          </Box>
+        </Box>
+      </>
+    );
+  }
+
   renderDataCollectionWarning = () => {
     const { t } = this.context;
 
@@ -1158,6 +1299,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
+        {getIsSeedlessOnboardingFeatureEnabled() && this.renderChangePassword()}
         {this.renderSecurityAlertsToggle()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
@@ -1170,6 +1312,9 @@ export default class SecurityTab extends PureComponent {
         </div>
         <div className="settings-page__content-padded">
           {this.renderPhishingDetectionToggle()}
+        </div>
+        <div className="settings-page__content-padded">
+          {this.renderSkipDeepLinkInterstitial()}
         </div>
 
         <div>

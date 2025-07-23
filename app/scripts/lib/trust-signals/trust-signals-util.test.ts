@@ -3,7 +3,6 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import * as networksModule from '../../../../shared/modules/selectors/networks';
 import {
-  isProdEnabled,
   isEthSendTransaction,
   hasValidTransactionParams,
   isEthSignTypedData,
@@ -15,42 +14,6 @@ import { SupportedEVMChain } from './types';
 jest.mock('../../../../shared/modules/selectors/networks');
 
 describe('trust-signals-util', () => {
-  describe('isProdEnabled', () => {
-    const originalEnv = process.env;
-
-    beforeEach(() => {
-      jest.resetModules();
-      process.env = { ...originalEnv };
-    });
-
-    afterAll(() => {
-      process.env = originalEnv;
-    });
-
-    it('should return true when TRUST_SIGNALS_PROD_ENABLED is "true"', () => {
-      process.env.TRUST_SIGNALS_PROD_ENABLED = 'true';
-      expect(isProdEnabled()).toBe(true);
-    });
-
-    it('should return false when TRUST_SIGNALS_PROD_ENABLED is "false"', () => {
-      process.env.TRUST_SIGNALS_PROD_ENABLED = 'false';
-      expect(isProdEnabled()).toBe(false);
-    });
-
-    it('should return false when TRUST_SIGNALS_PROD_ENABLED is undefined', () => {
-      delete process.env.TRUST_SIGNALS_PROD_ENABLED;
-      expect(isProdEnabled()).toBe(false);
-    });
-
-    it('should return false when TRUST_SIGNALS_PROD_ENABLED is any other value', () => {
-      process.env.TRUST_SIGNALS_PROD_ENABLED = '1';
-      expect(isProdEnabled()).toBe(false);
-
-      process.env.TRUST_SIGNALS_PROD_ENABLED = 'TRUE';
-      expect(isProdEnabled()).toBe(false);
-    });
-  });
-
   describe('isEthSendTransaction', () => {
     it('should return true for eth_sendTransaction method', () => {
       const req: JsonRpcRequest = {

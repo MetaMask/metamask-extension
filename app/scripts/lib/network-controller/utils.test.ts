@@ -11,6 +11,8 @@ import {
 jest.mock('@metamask/remote-feature-flag-controller', () => {
   return {
     ...jest.requireActual('@metamask/remote-feature-flag-controller'),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __esModule: true,
     generateDeterministicRandomNumber: jest.fn(),
   };
@@ -68,6 +70,7 @@ describe('getIsQuicknodeEndpointUrl', () => {
         process.env.QUICKNODE_POLYGON_URL =
           'https://example.quicknode.com/polygon';
         process.env.QUICKNODE_BASE_URL = 'https://example.quicknode.com/base';
+        process.env.QUICKNODE_BSC_URL = 'https://example.quicknode.com/bsc';
 
         // We can assume this is set.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

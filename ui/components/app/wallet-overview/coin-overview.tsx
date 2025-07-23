@@ -28,7 +28,7 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { PRIMARY } from '../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   getPreferences,
   getShouldHideZeroBalanceTokens,
@@ -39,7 +39,8 @@ import {
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  SwapsEthToken,
+  getEnabledNetworksByNamespace,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
@@ -70,8 +71,6 @@ export type CoinOverviewProps = {
   className?: string;
   classPrefix?: string;
   chainId: CaipChainId | Hex;
-  // FIXME: This seems to be for Ethereum only
-  defaultSwapsToken?: SwapsEthToken;
   isBridgeChain: boolean;
   isBuyableChain: boolean;
   isSwapsChain: boolean;
@@ -97,6 +96,8 @@ export const LegacyAggregatedBalance = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
   const allChainIDs = useSelector(getChainIdsToPoll) as string[];
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
@@ -118,8 +119,12 @@ export const LegacyAggregatedBalance = ({
     formattedTokensWithBalancesPerChain,
   );
 
+  const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
+    ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
+    : showNativeTokenAsMainBalance;
+
   const isNotAggregatedFiatBalance =
-    !shouldShowFiat || showNativeTokenAsMainBalance || isTestnet;
+    !shouldShowFiat || showNativeTokenAsMain || isTestnet;
 
   let balanceToDisplay;
   if (isNotAggregatedFiatBalance) {
@@ -131,6 +136,24 @@ export const LegacyAggregatedBalance = ({
   if (!balanceToDisplay) {
     return <Spinner className="loading-overlay__spinner" />;
   }
+
+  /**
+   * Determines the currency display type based on network configuration.
+   * Returns SECONDARY for multi-network setups when global network selector is removed,
+   * otherwise returns PRIMARY for single network or legacy configurations.
+   */
+  const getCurrencyDisplayType = (): typeof PRIMARY | typeof SECONDARY => {
+    const isMultiNetwork = Object.keys(enabledNetworks).length > 1;
+
+    if (isGlobalNetworkSelectorRemoved) {
+      if (isMultiNetwork && showNativeTokenAsMainBalance) {
+        return SECONDARY;
+      }
+      return PRIMARY;
+    }
+    return PRIMARY;
+  };
+
   return (
     <>
       <UserPreferencedCurrencyDisplay
@@ -141,12 +164,12 @@ export const LegacyAggregatedBalance = ({
         })}
         data-testid={`${classPrefix}-overview__primary-currency`}
         value={balanceToDisplay}
-        type={PRIMARY}
+        type={getCurrencyDisplayType()}
         ethNumberOfDecimals={4}
         hideTitle
         shouldCheckShowNativeToken
         isAggregatedFiatOverviewBalance={
-          !showNativeTokenAsMainBalance && !isTestnet && shouldShowFiat
+          !showNativeTokenAsMain && !isTestnet && shouldShowFiat
         }
         privacyMode={privacyMode}
       />
@@ -171,16 +194,12 @@ export const CoinOverview = ({
   className,
   classPrefix = 'coin',
   chainId,
-  defaultSwapsToken,
   isBridgeChain,
   isBuyableChain,
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
-  // Pre-conditions
-  if (isSwapsChain && defaultSwapsToken === undefined) {
-    throw new Error('defaultSwapsToken is required');
-  }
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
 
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
@@ -236,7 +255,7 @@ export const CoinOverview = ({
           data-testid="portfolio-link"
           textProps={{ variant: TextVariant.bodyMdMedium }}
         >
-          {process.env.REMOVE_GNS ? t('discover') : t('portfolio')}
+          {t('discover')}
         </ButtonLink>
       );
       return null;
@@ -276,7 +295,8 @@ export const CoinOverview = ({
       return renderNonEvmView();
     }
 
-    return showNativeTokenAsMainBalance
+    return showNativeTokenAsMainBalance &&
+      Object.keys(enabledNetworks).length === 1
       ? renderNativeTokenView()
       : renderAggregatedView();
   };
@@ -326,7 +346,6 @@ export const CoinOverview = ({
             isSigningEnabled,
             isBridgeChain,
             isBuyableChain,
-            defaultSwapsToken,
             classPrefix,
           }}
         />

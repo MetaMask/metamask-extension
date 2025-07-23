@@ -1,8 +1,6 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
 import {
   getMockFeatureAnnouncementResponse,
-  getMockBatchCreateTriggersResponse,
-  getMockBatchDeleteTriggersResponse,
   getMockListNotificationsResponse,
   getMockMarkNotificationsAsReadResponse,
   createMockNotificationEthSent,
@@ -21,21 +19,43 @@ import {
   createMockNotificationLidoReadyToBeWithdrawn,
 } from '@metamask/notification-services-controller/notification-services/mocks';
 import {
-  getMockRetrievePushNotificationLinksResponse,
   getMockUpdatePushNotificationLinksResponse,
   getMockCreateFCMRegistrationTokenResponse,
   getMockDeleteFCMRegistrationTokenResponse,
 } from '@metamask/notification-services-controller/push-services/mocks';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
-import { mockIdentityServices } from '../identity/mocks';
+import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 
 type MockResponse = {
   url: string | RegExp;
   requestMethod: 'GET' | 'POST' | 'PUT' | 'DELETE';
   response: unknown;
 };
+
+export type UserStorageAccount = {
+  v: string;
+  a: string;
+  i: string;
+  n: string;
+  nlu: number;
+};
+
+export const notificationsMockAccounts: UserStorageAccount[] = [
+  {
+    v: '1',
+    a: '0xAa4179E7f103701e904D27DF223a39Aa9c27405a'.toLowerCase(),
+    i: '0000-1111',
+    n: 'Hello from account 1',
+    nlu: 1738590287,
+  },
+  {
+    v: '1',
+    a: '0xd2a4aFe5c2fF0a16Bf81F77ba4201A8107AA874b'.toLowerCase(),
+    i: '1111-1111',
+    n: 'Hello from account 2',
+    nlu: 1738590287,
+  },
+];
 
 const mockListNotificationsResponse = getMockListNotificationsResponse();
 mockListNotificationsResponse.response = [
@@ -91,33 +111,27 @@ export function getMockFeatureAnnouncementItemId() {
  * E2E mock setup for notification APIs (Notifications, Push Notifications)
  *
  * @param server - server obj used to mock our endpoints
- * @param userStorageMockttpControllerInstance - optional instance of UserStorageMockttpController, useful if you need persisted user storage between tests
+ * @param triggerServer - notification trigger server
  */
 export async function mockNotificationServices(
   server: Mockttp,
-  userStorageMockttpControllerInstance: UserStorageMockttpController = new UserStorageMockttpController(),
+  triggerServer: MockttpNotificationTriggerServer = new MockttpNotificationTriggerServer(),
 ) {
-  // Storage and Auth
-  await mockIdentityServices(server, userStorageMockttpControllerInstance);
+  // Trigger Server
+  triggerServer.setupServer(server);
 
-  userStorageMockttpControllerInstance.setupPath(
-    USER_STORAGE_FEATURE_NAMES.notifications,
-    server,
-  );
-
-  // Notifications
+  // Notification Server
   mockAPICall(server, mockFeatureAnnouncementResponse, (r) =>
     r.withQuery({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_type: 'productAnnouncement',
     }),
   );
-  mockAPICall(server, getMockBatchCreateTriggersResponse());
-  mockAPICall(server, getMockBatchDeleteTriggersResponse());
   mockAPICall(server, mockListNotificationsResponse);
   mockAPICall(server, getMockMarkNotificationsAsReadResponse());
 
   // Push Notifications
-  mockAPICall(server, getMockRetrievePushNotificationLinksResponse());
   mockAPICall(server, getMockUpdatePushNotificationLinksResponse());
   mockAPICall(server, getMockCreateFCMRegistrationTokenResponse());
   mockAPICall(server, getMockDeleteFCMRegistrationTokenResponse());

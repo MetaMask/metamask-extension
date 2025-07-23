@@ -5,10 +5,13 @@ import { regularDelayMs, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
+import WebSocketLocalServer from '../../websocket-server';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -67,7 +70,7 @@ export const commonSolanaAddress =
 
 export const commonSolanaTxConfirmedDetailsFixture = {
   status: 'Confirmed',
-  amount: '0.00708 SOL',
+  amount: '-0.00708 SOL',
   networkFee: '0.000005 SOL',
   fromAddress: 'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
   toAddress: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
@@ -858,7 +861,7 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
     statusCode: 200,
     json: {
       result:
-        '3nqGKH1ef8WkTgKXZ8q3xKsvjktWmHHhJpZMSdbB6hBqy5dA7aLVSAUjw5okezZjKMHiNg2MF5HAqtpmsesQtnpj',
+        '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
       id: '1337',
       jsonrpc: '2.0',
     },
@@ -868,7 +871,8 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'sendTransaction',
     })
-    .thenCallback(() => {
+    .thenCallback(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 seconds delay
       return response;
     });
 }
@@ -1517,6 +1521,8 @@ export async function mockBridgeGetTokens(mockServer: Mockttp) {
   });
 }
 
+export const SHOW_SWAP_SNAP_CONFIRMATION = false;
+
 const featureFlags = {
   refreshRate: 30000,
   maxRefreshCount: 5,
@@ -1539,13 +1545,70 @@ const featureFlags = {
       ],
       isActiveSrc: true,
       isActiveDest: true,
+      isSnapConfirmationEnabled: false,
     },
   },
 };
+
+const featureFlagsWithSnapConfirmation = {
+  ...featureFlags,
+  chains: {
+    ...featureFlags.chains,
+    '1151111081099710': {
+      ...featureFlags.chains['1151111081099710'],
+      isSnapConfirmationEnabled: true,
+    },
+  },
+};
+
+async function startWebsocketMock(mockServer: Mockttp) {
+  const port = 8088;
+  // Start a WebSocket server to handle the connection
+  const localWebSocketServer = WebSocketLocalServer.getServerInstance(port);
+  localWebSocketServer.start();
+  const wsServer = localWebSocketServer.getServer();
+  wsServer.on('connection', (socket: WebSocket) => {
+    console.log('Client connected to the local WebSocket server');
+
+    // Handle messages from the client
+    socket.addEventListener('message', (event: MessageEvent) => {
+      const message = event.data.toString();
+      console.log('Message received from client:', message);
+      if (message.includes('signatureSubscribe')) {
+        console.log('Signature subscribe message received from client');
+        setTimeout(() => {
+          socket.send(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              result: 8648699534240963,
+              id: '1',
+            }),
+          );
+          console.log('Simulated message sent to the client');
+        }, 2000); // Delay the message by 5 second
+      }
+    });
+
+    // Handle client disconnection
+    socket.addEventListener('close', () => {
+      console.log('Client disconnected from the local WebSocket server');
+    });
+  });
+
+  // Intercept WebSocket handshake requests
+  await mockServer
+    .forAnyWebSocket()
+    .matching((req) =>
+      /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
+    )
+    .thenForwardTo(`ws://localhost:${port}`);
+}
+
 export async function withSolanaAccountSnap(
   {
     title,
     showNativeTokenAsMainBalance = true,
+    showSnapConfirmation = false,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockZeroBalance,
@@ -1557,9 +1620,11 @@ export async function withSolanaAccountSnap(
     dappPaths,
     withProtocolSnap,
     withCustomMocks,
+    withFixtureBuilder,
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
+    showSnapConfirmation?: boolean;
     numberOfAccounts?: number;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
@@ -1577,6 +1642,7 @@ export async function withSolanaAccountSnap(
       | Promise<MockedEndpoint[] | MockedEndpoint>
       | MockedEndpoint[]
       | MockedEndpoint;
+    withFixtureBuilder?: (builder: FixtureBuilder) => FixtureBuilder;
   },
   test: (
     driver: Driver,
@@ -1591,6 +1657,17 @@ export async function withSolanaAccountSnap(
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
   }
 
+  if (withFixtureBuilder) {
+    fixtures = withFixtureBuilder(fixtures).withEnabledNetworks({
+      eip155: {
+        '0x539': true,
+      },
+      solana: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+      },
+    });
+  }
+
   await withFixtures(
     {
       fixtures: fixtures.build(),
@@ -1603,7 +1680,9 @@ export async function withSolanaAccountSnap(
         // - If this flag is set, the slides count will be 5.
         remoteFeatureFlags: {
           addSolanaAccount: true,
-          bridgeConfig: featureFlags,
+          bridgeConfig: showSnapConfirmation
+            ? featureFlagsWithSnapConfirmation
+            : featureFlags,
         },
       },
       dappPaths,
@@ -1718,8 +1797,11 @@ export async function withSolanaAccountSnap(
       mockServer: Mockttp;
       extensionId: string;
     }) => {
-      await loginWithoutBalanceValidation(driver);
+      await startWebsocketMock(mockServer);
+      await loginWithBalanceValidation(driver);
+
       const headerComponent = new HeaderNavbar(driver);
+      const assetList = new AssetListPage(driver);
       const accountListPage = new AccountListPage(driver);
 
       for (let i = 1; i <= numberOfAccounts; i++) {
@@ -1728,7 +1810,9 @@ export async function withSolanaAccountSnap(
           accountType: ACCOUNT_TYPE.Solana,
           accountName: `Solana ${i}`,
         });
+        await new NonEvmHomepage(driver).check_pageIsLoaded();
         await headerComponent.check_accountLabel(`Solana ${i}`);
+        await assetList.check_networkFilterText('Solana');
       }
 
       if (numberOfAccounts > 0) {

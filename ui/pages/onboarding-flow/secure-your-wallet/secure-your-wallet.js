@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -14,7 +14,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -28,8 +31,9 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex, getIsSocialLoginFlow } from '../../../selectors';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default function SecureYourWallet() {
@@ -44,18 +48,31 @@ export default function SecureYourWallet() {
   const isFromReminderParam = searchParams.get('isFromReminder')
     ? '/?isFromReminder=true'
     : '';
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const onboardingCompleted = useSelector(getCompletedOnboarding);
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  const handleOnShowSrpDetailsModal = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SrpDefinitionClicked,
+      properties: {
+        location: 'secure_your_wallet',
+      },
+    });
+    setShowSrpDetailsModal(true);
+  }, [trackEvent]);
 
   const handleClickRecommended = () => {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecurityStarted,
       properties: {
-        hd_entropy_index: hdEntropyIndex,
+        hd_entropy_index: hdEntropyIndex ?? 0,
       },
     });
-    history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
+    history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}/${isFromReminderParam}`);
   };
 
   const handleClickNotRecommended = () => {
@@ -63,11 +80,19 @@ export default function SecureYourWallet() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecuritySkipInitiated,
       properties: {
-        hd_entropy_index: hdEntropyIndex,
+        hd_entropy_index: hdEntropyIndex ?? 0,
       },
     });
     setShowSkipSRPBackupPopover(true);
   };
+
+  useEffect(() => {
+    // During the onboarding flow, this page does not belong to the social login flow,
+    // so we need to redirect to the other pages (based on the browser)
+    if (!onboardingCompleted && isSocialLoginFlow) {
+      history.replace(ONBOARDING_WELCOME_ROUTE);
+    }
+  }, [onboardingCompleted, history, isSocialLoginFlow]);
 
   return (
     <Box
@@ -115,22 +140,20 @@ export default function SecureYourWallet() {
           />
         </Box>
         <Box>
-          <Text variant={TextVariant.bodyMd} marginBottom={6} as="div">
+          <Text color={TextColor.textAlternative} marginBottom={6} as="div">
             {t('secureWalletWalletSaveSrp', [
               [
                 <ButtonLink
                   key="secureWalletWalletSaveSrp"
                   size={ButtonLinkSize.Inherit}
-                  onClick={() => {
-                    setShowSrpDetailsModal(true);
-                  }}
+                  onClick={handleOnShowSrpDetailsModal}
                 >
                   {t('secretRecoveryPhrase')}
                 </ButtonLink>,
               ],
             ])}
           </Text>
-          <Text variant={TextVariant.bodyMd}>
+          <Text color={TextColor.textAlternative}>
             {t('secureWalletWalletRecover')}
           </Text>
         </Box>

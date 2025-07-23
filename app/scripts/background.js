@@ -14,8 +14,7 @@ import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-// Import to set up global `Promise.withResolvers` polyfill
-import '../../shared/lib/promise-with-resolvers';
+import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
 import {
@@ -89,7 +88,10 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
+import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
+import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -198,7 +200,7 @@ let rejectInitialization;
  * state of application initialization (or re-initialization).
  */
 function setGlobalInitializers() {
-  const deferred = Promise.withResolvers();
+  const deferred = withResolvers();
   isInitialized = deferred.promise;
   resolveInitialization = deferred.resolve;
   rejectInitialization = deferred.reject;
@@ -600,6 +602,8 @@ async function initialize(backup) {
     : {};
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
+  const cronjobControllerStorageManager = new CronjobControllerStorageManager();
+  await cronjobControllerStorageManager.init();
 
   const { update, requestSafeReload } =
     getRequestSafeReload(persistenceManager);
@@ -613,9 +617,14 @@ async function initialize(backup) {
     offscreenPromise,
     preinstalledSnaps,
     requestSafeReload,
+    cronjobControllerStorageManager,
   );
 
   controller.store.on('update', update);
+  controller.store.on('error', (error) => {
+    log.error('MetaMask controller.store error:', error);
+    sentry?.captureException(error);
+  });
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
@@ -624,6 +633,21 @@ async function initialize(backup) {
     await loadPhishingWarningPage();
   }
   await sendReadyMessageToTabs();
+
+  new DeepLinkRouter({
+    getExtensionURL: platform.getExtensionURL,
+    getState: controller.getState.bind(controller),
+  })
+    .on('navigate', async ({ url, parsed }) => {
+      // don't track deep links that are immediately redirected (like /buy)
+      if (!('redirectTo' in parsed)) {
+        await controller.metaMetricsController.trackEvent(
+          createEvent({ signature: parsed.signature, url }),
+        );
+      }
+    })
+    .on('error', (error) => sentry?.captureException(error))
+    .install();
 }
 
 /**
@@ -945,6 +969,7 @@ function trackAppOpened(environment) {
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
  * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
+ * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
  */
 export function setupController(
   initState,
@@ -955,6 +980,7 @@ export function setupController(
   offscreenPromise,
   preinstalledSnaps,
   requestSafeReload,
+  cronjobControllerStorageManager,
 ) {
   //
   // MetaMask Controller
@@ -984,6 +1010,7 @@ export function setupController(
     offscreenPromise,
     preinstalledSnaps,
     requestSafeReload,
+    cronjobControllerStorageManager,
   });
 
   setupEnsIpfsResolver({
@@ -1138,7 +1165,9 @@ export function setupController(
 
       connectEip1193(portStream, remotePort.sender);
 
-      if (isFirefox) {
+      // for firefox and manifest v2 (non production webpack builds)
+      // we expose the multichain provider via window.postMessage
+      if (isFirefox || !isManifestV3) {
         const mux = setupMultiplex(portStream);
         mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
@@ -1455,7 +1484,11 @@ const addAppInstalledEvent = () => {
 function handleOnInstalled(details) {
   if (details.reason === 'install') {
     onInstall();
-  } else if (details.reason === 'update') {
+  } else if (
+    details.reason === 'update' &&
+    details.previousVersion &&
+    details.previousVersion !== platform.getVersion()
+  ) {
     onUpdate();
   }
 }
