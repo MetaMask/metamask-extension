@@ -446,13 +446,11 @@ export function AssetPickerModal({
       const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
       const isSymbolMatch =
         symbol?.toLowerCase().includes(trimmedSearchQuery);
-
       // only check for matching address if search term has 6 characters or more
       // users are expected to copy and paste addresses instead of typing them
       const isAddressMatch =
         trimmedSearchQuery.length >= 6 &&
         address?.toLowerCase().includes(trimmedSearchQuery);
-
 
       const isMatchedBySearchQuery = Boolean(
         !trimmedSearchQuery || isSymbolMatch || isAddressMatch
