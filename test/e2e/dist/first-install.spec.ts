@@ -1,9 +1,7 @@
-import assert from 'assert/strict';
-import { Browser } from 'selenium-webdriver';
+import { hasProperty, isObject } from '@metamask/utils';
 import { withFixtures } from '../helpers';
 import { errorMessages } from '../webdriver/driver';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
-import { hasProperty, isObject } from '@metamask/utils';
 
 describe('First install', function () {
   it('opens new window upon install, but not on subsequent reloads', async function () {
@@ -15,12 +13,12 @@ describe('First install', function () {
         // Wait for MetaMask to automatically open a new tab
         await driver.waitUntilXWindowHandles(2);
 
-        let windowHandles = await driver.getAllWindowHandles();
+        const windowHandles = await driver.getAllWindowHandles();
 
         // Switch to new tab and verify it's the start onboarding page
         await driver.driver.switchTo().window(windowHandles[1]);
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.check_loginPageIsLoaded();
 
         await driver.executeScript('window.stateHooks.reloadExtension()');
 
@@ -42,9 +40,8 @@ describe('First install', function () {
             // Ignore timeout error, it's expected here in the success case
             console.log('Onboarding tab not opened');
             return;
-          } else {
-            throw error;
           }
+          throw error;
         }
         throw new Error('Onboarding tab opened unexpectedly');
       },
