@@ -55,7 +55,9 @@ export const AccountDetailsDisplay = ({
   }, [formatedAddress, handleCopy]);
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
-  const { networkSupporting7702Present, pending } = useEIP7702Networks(address);
+  const { networkSupporting7702Present, pending } = isEvmAccountType(accountType)
+    ? useEIP7702Networks(address)
+    : { networkSupporting7702Present: false, pending: false };
 
   return (
     <Box
