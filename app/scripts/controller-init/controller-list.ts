@@ -132,5 +132,4 @@ export type ControllerFlatState = AccountsController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
-  RemoteFeatureFlagController['state'] &
-  MultichainAccountService['state'];
+  RemoteFeatureFlagController['state'];

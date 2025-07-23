@@ -44,7 +44,6 @@ describe('MultichainAccountServiceInit', () => {
 
     expect(accountTreeControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      state: requestMock.persistedState.MultichainAccountService,
     });
   });
 });
