@@ -148,6 +148,10 @@ describe('Bridge tests', function (this: Suite) {
         const swapBridgeQuotesRequested = findEventsByName(
           EventTypes.SwapBridgeQuotesRequested,
         );
+        console.log(
+          '=======swapBridgeQuotesRequested',
+          swapBridgeQuotesRequested.length,
+        );
         assert.ok(swapBridgeQuotesRequested.length === 3);
         assert.ok(
           swapBridgeQuotesRequested[0].properties.chain_id_source ===
