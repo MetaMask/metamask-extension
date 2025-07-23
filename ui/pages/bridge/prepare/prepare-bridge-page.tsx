@@ -527,9 +527,7 @@ const PrepareBridgePage = () => {
       name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
       timestamp: Date.now(),
     });
-  }, []);
 
-  useEffect(() => {
     // If there's an active quote, assume that the user is returning to the page
     if (activeQuote) {
       // Get input data from active quote
