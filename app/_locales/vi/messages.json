@@ -5071,7 +5071,8 @@
     "message": "Đã bật"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Email này và mật khẩu MetaMask của bạn sẽ giúp bạn khôi phục tài khoản và cụm từ khôi phục."
+    "message": "Email này và mật khẩu MetaMask của bạn sẽ giúp bạn khôi phục tài khoản và cụm từ khôi phục.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "KHÔI PHỤC $1",

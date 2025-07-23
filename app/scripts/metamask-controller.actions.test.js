@@ -12,6 +12,7 @@ import {
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
+import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import MetaMaskController from './metamask-controller';
@@ -567,11 +568,22 @@ describe('MetaMaskController', function () {
       it('should throw OutdatedPassword error when password verification succeeds', async function () {
         jest
           .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockResolvedValue();
-
+          .mockResolvedValue(true);
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'submitGlobalPassword',
+          )
+          .mockRejectedValue(
+            new Error(
+              SeedlessOnboardingControllerErrorMessage.IncorrectPassword,
+            ),
+          );
         await expect(
           metamaskController.syncPasswordAndUnlockWallet(password),
-        ).rejects.toThrow('Outdated password');
+        ).rejects.toThrow(
+          SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+        );
       });
 
       it('should successfully sync password when password verification fails', async function () {
@@ -625,6 +637,7 @@ describe('MetaMaskController', function () {
           metamaskController.seedlessOnboardingController.submitGlobalPassword,
         ).toHaveBeenCalledWith({
           globalPassword: password,
+          maxKeyChainLength: 20,
         });
         expect(
           metamaskController.seedlessOnboardingController
