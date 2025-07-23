@@ -284,8 +284,6 @@ export function createNewVaultAndSyncWithSocial(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       const primaryKeyring = await createNewVault(password);
       if (!primaryKeyring) {
@@ -306,8 +304,6 @@ export function createNewVaultAndSyncWithSocial(
       } else {
         throw error;
       }
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -322,8 +318,6 @@ export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       // restore the vault using the seed phrase
       const mnemonic = await submitRequestToBackground(
@@ -332,11 +326,9 @@ export function restoreSocialBackupAndGetSeedPhrase(
       );
 
       await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
       return mnemonic;
     } catch (error) {
       log.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
-      dispatch(hideLoadingIndication());
       dispatch(displayWarning(error.message));
       throw error;
     }
@@ -613,7 +605,6 @@ export function createNewVaultAndGetSeedPhrase(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
     try {
       await createNewVault(password);
       const seedPhrase = await getSeedPhrase(password);
@@ -625,8 +616,6 @@ export function createNewVaultAndGetSeedPhrase(
       } else {
         throw error;
       }
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -637,8 +626,6 @@ export function unlockAndGetSeedPhrase(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       await submitPassword(password);
       const seedPhrase = await getSeedPhrase(password);
@@ -651,8 +638,6 @@ export function unlockAndGetSeedPhrase(
       } else {
         throw error;
       }
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
