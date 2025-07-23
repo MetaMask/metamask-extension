@@ -5457,6 +5457,12 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "simulationSettingsModalEnforceSlippage": {
+    "message": "Slippage tolerance"
+  },
+  "simulationSettingsModalEnforceSlippageDescription": {
+    "message": "Set a difference you're comfortable with for balance changes. Transactions won't go through if the difference is higher."
+  },
   "simulationSettingsModalEnforceToggle": {
     "message": "Enforce balance changes"
   },
