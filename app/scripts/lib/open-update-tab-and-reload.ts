@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 import type MetamaskController from '../metamask-controller';
 
 export async function openUpdateTabAndReload(
-  metamaskController: MetamaskController,
+  requestSafeReload: MetamaskController['requestSafeReload'],
 ) {
   try {
     await browser.tabs.create({
@@ -12,5 +12,5 @@ export async function openUpdateTabAndReload(
   } catch (error) {
     console.error(error);
   }
-  await metamaskController.requestSafeReload();
+  await requestSafeReload();
 }
