@@ -473,8 +473,6 @@ export function checkIsSeedlessPasswordOutdated(
       log.warn('checkIsSeedlessPasswordOutdated error', error);
     }
 
-    dispatch(hideLoadingIndication());
-
     return isPasswordOutdated;
   };
 }
