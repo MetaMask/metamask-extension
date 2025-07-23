@@ -1121,7 +1121,7 @@
         "bn.js": true,
         "browserify>buffer": true,
         "@metamask/ppom-validator>elliptic": true,
-        "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>json-stable-stringify": true
+        "eslint>json-stable-stringify-without-jsonify": true
       }
     },
     "@metamask/base-controller": {
@@ -1250,7 +1250,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
@@ -1258,7 +1257,8 @@
         "browserify>buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
+        "eslint>fast-deep-equal": true,
+        "lodash": true
       }
     },
     "@metamask/delegation-controller": {
@@ -4227,7 +4227,7 @@
         "string.prototype.matchall>get-intrinsic>get-proto": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>has-symbols": true,
-        "depcheck>is-core-module>hasown": true,
+        "axios>form-data>hasown": true,
         "string.prototype.matchall>get-intrinsic>math-intrinsics": true
       }
     },
@@ -4311,7 +4311,7 @@
         "@metamask/ppom-validator>elliptic>minimalistic-assert": true
       }
     },
-    "depcheck>is-core-module>hasown": {
+    "axios>form-data>hasown": {
       "packages": {
         "browserify>has>function-bind": true
       }
@@ -4398,7 +4398,7 @@
     "string.prototype.matchall>internal-slot": {
       "packages": {
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "depcheck>is-core-module>hasown": true,
+        "axios>form-data>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
     },
@@ -4521,15 +4521,6 @@
     "@ngraveio/bc-ur>jsbi": {
       "globals": {
         "define": true
-      }
-    },
-    "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>json-stable-stringify": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "browserify>util>which-typed-array>call-bound": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
-        "@lavamoat/lavapack>json-stable-stringify>jsonify": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
       }
     },
     "@metamask/message-manager>jsonschema": {
