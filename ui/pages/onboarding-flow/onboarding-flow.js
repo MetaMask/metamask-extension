@@ -224,7 +224,7 @@ export default function OnboardingFlow() {
     }
 
     setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
-    history.push(nextRoute);
+    history.replace(nextRoute);
   };
 
   const handleImportWithRecoveryPhrase = async (password, srp) => {
