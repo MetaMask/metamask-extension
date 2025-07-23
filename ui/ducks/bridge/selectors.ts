@@ -70,7 +70,7 @@ import {
   tokenPriceInNativeAsset,
 } from './utils';
 import type { BridgeState } from './types';
-import { getDefaultToToken, toBridgeToken } from './bridge';
+import { getDefaultToToken, toBridgeToken } from './utils';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -197,8 +197,8 @@ export const getTopAssetsFromFeatureFlags = (
 };
 
 /**
- * If the user has selected a destination chain, use the destination chain as the destination chain
- * If the user has not selected a destination chain, use the source chain as the destination chain
+ * If the user has selected a toChainId, return it as the destination chain
+ * Otherwise, use the source chain as the destination chain (default to swap params)
  */
 export const getToChain = createSelector(
   [
@@ -240,10 +240,12 @@ export const getFromToken = createSelector(
 export const getToToken = createSelector(
   [getFromToken, getToChain, (state) => state.bridge.toToken],
   (fromToken, toChain, toToken) => {
-    if (!toChain) {
+    if (!toChain || !fromToken) {
       return null;
     }
+    // If the user has selected a token, return it
     if (toToken) return toToken;
+    // Otherwise, determine the default token to use based on fromToken and toChain
     const defaultToken = getDefaultToToken(toChain, fromToken);
     return defaultToken ? toBridgeToken(defaultToken) : null;
   },

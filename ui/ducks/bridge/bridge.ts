@@ -7,23 +7,13 @@ import {
   formatChainIdToHex,
   isNativeAddress,
   getNativeAssetForChainId,
-  ChainId,
 } from '@metamask/bridge-controller';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
-import { getTokenExchangeRate } from './utils';
-import type {
-  BridgeState,
-  BridgeToken,
-  ChainIdPayload,
-  TokenPayload,
-} from './types';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { AddNetworkFields } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
+import { getTokenExchangeRate, toBridgeToken } from './utils';
+import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
 
 const initialState: BridgeState = {
   toChainId: null,
@@ -60,7 +50,7 @@ export const setTxAlerts = createAsyncThunk(
   fetchTxAlerts,
 );
 
-const getTokenImage = (payload: TokenPayload['payload']) => {
+export const getTokenImage = (payload: TokenPayload['payload']) => {
   if (!payload) {
     return '';
   }
@@ -83,84 +73,6 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
   // If there's no image from the payload, build the asset image URL and return it
   const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
   return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
-};
-
-export const toBridgeToken = (
-  payload: TokenPayload['payload'],
-): BridgeToken | null => {
-  if (!payload) {
-    return null;
-  }
-  const caipChainId = formatChainIdToCaip(payload.chainId);
-  return {
-    ...payload,
-    balance: payload.balance ?? '0',
-    string: payload.string ?? '0',
-    chainId: payload.chainId,
-    image: getTokenImage(payload),
-    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
-  };
-};
-
-const createBridgeTokenPayload = (
-  tokenData: {
-    address: string;
-    symbol: string;
-    decimals: number;
-    name?: string;
-    assetId?: string;
-  },
-  chainId: ChainId | Hex,
-): TokenPayload['payload'] | null => {
-  const { assetId, ...rest } = tokenData;
-  return toBridgeToken({
-    ...rest,
-    chainId,
-  });
-};
-
-export const getDefaultToToken = (
-  toChain?: NetworkConfiguration | AddNetworkFields,
-  fromToken?: TokenPayload['payload'],
-) => {
-  // Use the explicitly selected chain, or the default (which is same as source)
-  const targetChainId = toChain?.chainId;
-
-  if (!fromToken || !targetChainId) {
-    return null;
-  }
-
-  const commonPair =
-    BRIDGE_CHAINID_COMMON_TOKEN_PAIR[
-      targetChainId as keyof typeof BRIDGE_CHAINID_COMMON_TOKEN_PAIR
-    ];
-
-  if (commonPair) {
-    // If source is native token, default to USDC on same chain
-    if (isNativeAddress(fromToken.address)) {
-      return createBridgeTokenPayload(commonPair, targetChainId);
-    }
-
-    // If source is USDC (or other common pair token), default to native token
-    if (fromToken.address?.toLowerCase() === commonPair.address.toLowerCase()) {
-      const nativeAsset = getNativeAssetForChainId(targetChainId);
-      if (nativeAsset) {
-        return createBridgeTokenPayload(nativeAsset, targetChainId);
-      }
-    }
-
-    // For any other token, default to USDC
-    return createBridgeTokenPayload(commonPair, targetChainId);
-  }
-
-  // Last resort: native token
-  const nativeAsset = getNativeAssetForChainId(targetChainId);
-  if (nativeAsset) {
-    // return nativeAsset
-    return createBridgeTokenPayload(nativeAsset, targetChainId);
-  }
-
-  return null;
 };
 
 const bridgeSlice = createSlice({

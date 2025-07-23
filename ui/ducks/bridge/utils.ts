@@ -15,12 +15,17 @@ import {
   type TxData,
   BridgeClientId,
   formatChainIdToCaip,
+  getNativeAssetForChainId,
+  isNativeAddress,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { toAssetId } from '../../../shared/lib/asset-utils';
+import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
+import { getTokenImage } from './bridge';
+import type { TokenPayload, BridgeToken } from './types';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -192,3 +197,73 @@ export const isNetworkAdded = (
 ): v is NetworkConfiguration =>
   v !== undefined &&
   'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+
+export const toBridgeToken = (
+  payload: TokenPayload['payload'],
+): BridgeToken | null => {
+  if (!payload) {
+    return null;
+  }
+  const caipChainId = formatChainIdToCaip(payload.chainId);
+  return {
+    ...payload,
+    balance: payload.balance ?? '0',
+    string: payload.string ?? '0',
+    chainId: payload.chainId,
+    image: getTokenImage(payload),
+    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
+  };
+};
+const createBridgeTokenPayload = (
+  tokenData: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    name?: string;
+    assetId?: string;
+  },
+  chainId: ChainId | Hex,
+): TokenPayload['payload'] | null => {
+  const { assetId, ...rest } = tokenData;
+  return toBridgeToken({
+    ...rest,
+    chainId,
+  });
+};
+
+export const getDefaultToToken = (
+  { chainId: targetChainId }: NetworkConfiguration | AddNetworkFields,
+  fromToken: NonNullable<TokenPayload['payload']>,
+) => {
+  const commonPair =
+    BRIDGE_CHAINID_COMMON_TOKEN_PAIR[
+      targetChainId as keyof typeof BRIDGE_CHAINID_COMMON_TOKEN_PAIR
+    ];
+
+  if (commonPair) {
+    // If source is native token, default to USDC on same chain
+    if (isNativeAddress(fromToken.address)) {
+      return createBridgeTokenPayload(commonPair, targetChainId);
+    }
+
+    // If source is USDC (or other common pair token), default to native token
+    if (fromToken.address?.toLowerCase() === commonPair.address.toLowerCase()) {
+      const nativeAsset = getNativeAssetForChainId(targetChainId);
+      if (nativeAsset) {
+        return createBridgeTokenPayload(nativeAsset, targetChainId);
+      }
+    }
+
+    // For any other token, default to USDC
+    return createBridgeTokenPayload(commonPair, targetChainId);
+  }
+
+  // Last resort: native token
+  const nativeAsset = getNativeAssetForChainId(targetChainId);
+  if (nativeAsset) {
+    // return nativeAsset
+    return createBridgeTokenPayload(nativeAsset, targetChainId);
+  }
+
+  return null;
+};
