@@ -63,6 +63,8 @@
     "allTokens": {},
     "enableEnforcedSimulations": true,
     "enableEnforcedSimulationsForTransactions": {},
+    "enforcedSimulationsSlippage": 10,
+    "enforcedSimulationsSlippageForTransactions": {},
     "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
