@@ -6629,25 +6629,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@metamask/multichain-network-controller@npm:0.8.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.9.0"
-    "@metamask/keyring-api": "npm:^18.0.0"
-    "@metamask/keyring-internal-api": "npm:^6.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.2.0"
-    "@solana/addresses": "npm:^2.0.0"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@metamask/accounts-controller": ^30.0.0
-    "@metamask/network-controller": ^23.0.0
-  checksum: 10/ea3649ee4b5607edebe098ca5a205fe2678ea8c45f5cfa3ab503fb37b11bceb20cccf0372a7695f791610deef2273b896749893996c24a5c76b8a72d35e825fe
-  languageName: node
-  linkType: hard
-
 "@metamask/multichain-transactions-controller@npm:^0.9.0":
   version: 0.9.0
   resolution: "@metamask/multichain-transactions-controller@npm:0.9.0"
@@ -31995,7 +31976,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-api-client": "npm:^0.6.4"
     "@metamask/multichain-api-middleware": "npm:0.4.0"
-    "@metamask/multichain-network-controller": "npm:^0.8.0"
+    "@metamask/multichain-network-controller": "npm:^0.10.0"
     "@metamask/multichain-transactions-controller": "npm:^0.9.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A24.0.0#~/.yarn/patches/@metamask-network-controller-npm-24.0.0-eb476d2620.patch"
