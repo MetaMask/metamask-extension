@@ -1223,7 +1223,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1301,7 +1301,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
@@ -1309,7 +1308,8 @@
         "browserify>buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
+        "eslint>fast-deep-equal": true,
+        "lodash": true
       }
     },
     "@metamask/delegation-controller": {
@@ -1854,21 +1854,6 @@
         "@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/multichain-network-controller>@solana/addresses": true,
-        "lodash": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": true,
         "lodash": true
       }
     },
@@ -2194,8 +2179,7 @@
         "@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
-        "@metamask/name-controller>async-mutex": true,
-        "browserify>buffer": true
+        "@metamask/name-controller>async-mutex": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -2966,34 +2950,6 @@
         "@solana/addresses>@solana/errors": true
       }
     },
-    "@metamask/multichain-network-controller>@solana/addresses": {
-      "globals": {
-        "Intl.Collator": true,
-        "TextEncoder": true,
-        "crypto.subtle.digest": true,
-        "crypto.subtle.exportKey": true
-      },
-      "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": {
-      "globals": {
-        "Intl.Collator": true,
-        "TextEncoder": true,
-        "crypto.subtle.digest": true,
-        "crypto.subtle.exportKey": true
-      },
-      "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
-      }
-    },
     "@solana/addresses>@solana/assertions": {
       "globals": {
         "crypto": true,
@@ -3003,23 +2959,9 @@
         "@solana/addresses>@solana/errors": true
       }
     },
-    "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": {
-      "globals": {
-        "crypto": true,
-        "isSecureContext": true
-      },
-      "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
-      }
-    },
     "@solana/addresses>@solana/codecs-core": {
       "packages": {
         "@solana/addresses>@solana/errors": true
-      }
-    },
-    "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": {
-      "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
     "@solana/addresses>@solana/codecs-strings": {
@@ -3034,24 +2976,7 @@
         "@solana/addresses>@solana/errors": true
       }
     },
-    "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "atob": true,
-        "btoa": true
-      },
-      "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
-      }
-    },
     "@solana/addresses>@solana/errors": {
-      "globals": {
-        "btoa": true
-      }
-    },
-    "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": {
       "globals": {
         "btoa": true
       }
@@ -4264,7 +4189,7 @@
         "string.prototype.matchall>get-intrinsic>get-proto": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>has-symbols": true,
-        "depcheck>is-core-module>hasown": true,
+        "axios>form-data>hasown": true,
         "string.prototype.matchall>get-intrinsic>math-intrinsics": true
       }
     },
@@ -4348,7 +4273,7 @@
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true
       }
     },
-    "depcheck>is-core-module>hasown": {
+    "axios>form-data>hasown": {
       "packages": {
         "browserify>has>function-bind": true
       }
@@ -4435,7 +4360,7 @@
     "string.prototype.matchall>internal-slot": {
       "packages": {
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "depcheck>is-core-module>hasown": true,
+        "axios>form-data>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
     },

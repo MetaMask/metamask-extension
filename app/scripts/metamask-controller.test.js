@@ -110,6 +110,15 @@ function* ulidGenerator(ulids = mockULIDs) {
   throw new Error('should not be called after exhausting provided IDs');
 }
 
+/**
+ * Generate mock patches for a complete state replacement.
+ *
+ * @returns A list of mock patches.
+ */
+function getMockPatches() {
+  return [{ op: 'replace', path: [], value: {} }];
+}
+
 let mockUlidGenerator = ulidGenerator();
 
 jest.mock('ulid', () => ({
@@ -296,6 +305,14 @@ const firstTimeState = {
 
 const noop = () => undefined;
 
+function createMockCronjobControllerStorageManager() {
+  return {
+    init: noop,
+    getInitialState: noop,
+    set: noop,
+  };
+}
+
 describe('MetaMaskController', () => {
   beforeAll(async () => {
     process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
@@ -372,6 +389,7 @@ describe('MetaMaskController', () => {
       metamaskController.controllerMessenger.publish(
         'PreferencesController:stateChange',
         preferences,
+        getMockPatches(),
       );
       await flushPromises();
     }
@@ -410,6 +428,8 @@ describe('MetaMaskController', () => {
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
         isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
       });
 
       jest.spyOn(
@@ -463,6 +483,8 @@ describe('MetaMaskController', () => {
           platform: {
             _showNotification: jest.fn(),
           },
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         expect(localController.loggingController.add).toHaveBeenCalledTimes(1);
@@ -490,6 +512,8 @@ describe('MetaMaskController', () => {
           },
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         expect(openExtensionInBrowserMock).toHaveBeenCalledTimes(1);
@@ -611,6 +635,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         const accountsControllerSpy = jest.spyOn(
@@ -2372,6 +2398,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
         jest.spyOn(localMetaMaskController, 'getCookieFromMarketingPage');
       });
@@ -2683,6 +2711,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
         initializeMockMiddlewareLog();
         jest
@@ -3574,6 +3604,7 @@ describe('MetaMaskController', () => {
       const mockEvmAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
         ...mockEvmAccount,
+        scopes: [BtcScope.Mainnet],
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
         methods: [BtcMethod.SendBitcoin],
@@ -3590,92 +3621,121 @@ describe('MetaMaskController', () => {
         jest.clearAllMocks();
       });
 
-      it('starts MultichainRatesController if selected account is changed to non-EVM', async () => {
-        expect(
-          metamaskController.multichainRatesController.start,
-        ).not.toHaveBeenCalled();
-
-        metamaskController.controllerMessenger.publish(
-          'AccountsController:selectedAccountChange',
-          mockNonEvmAccount,
-        );
-
-        expect(
-          metamaskController.multichainRatesController.start,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it('stops MultichainRatesController if selected account is changed to EVM', async () => {
-        expect(
-          metamaskController.multichainRatesController.start,
-        ).not.toHaveBeenCalled();
-
-        metamaskController.controllerMessenger.publish(
-          'AccountsController:selectedAccountChange',
-          mockNonEvmAccount,
-        );
-
-        expect(
-          metamaskController.multichainRatesController.start,
-        ).toHaveBeenCalledTimes(1);
-
-        metamaskController.controllerMessenger.publish(
-          'AccountsController:selectedAccountChange',
-          mockEvmAccount,
-        );
-        expect(
-          metamaskController.multichainRatesController.start,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          metamaskController.multichainRatesController.stop,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it('does not start MultichainRatesController if selected account is changed to EVM', async () => {
-        expect(
-          metamaskController.multichainRatesController.start,
-        ).not.toHaveBeenCalled();
-
-        metamaskController.controllerMessenger.publish(
-          'AccountsController:selectedAccountChange',
-          mockEvmAccount,
-        );
-
-        expect(
-          metamaskController.multichainRatesController.start,
-        ).not.toHaveBeenCalled();
-      });
-
-      it('starts MultichainRatesController if selected account is non-EVM account during initialization', async () => {
-        jest.spyOn(RatesController.prototype, 'start');
-        const localMetamaskController = new MetaMaskController({
-          showUserConfirmation: noop,
-          encryptor: mockEncryptor,
-          initState: {
-            ...cloneDeep(firstTimeState),
-            AccountsController: {
-              internalAccounts: {
-                accounts: {
-                  [mockNonEvmAccount.id]: mockNonEvmAccount,
-                  [mockEvmAccount.id]: mockEvmAccount,
-                },
-                selectedAccount: mockNonEvmAccount.id,
-              },
-            },
-          },
-          initLangCode: 'en_US',
-          platform: {
-            showTransactionNotification: () => undefined,
-            getVersion: () => 'foo',
-          },
-          browser: browserPolyfillMock,
-          infuraProjectId: 'foo',
-          isFirstMetaMaskControllerSetup: true,
+      describe('client is open', () => {
+        beforeEach(() => {
+          jest.replaceProperty(
+            metamaskController,
+            'activeControllerConnections',
+            1,
+          );
         });
 
-        expect(
-          localMetamaskController.multichainRatesController.start,
-        ).toHaveBeenCalled();
+        it('starts MultichainRatesController if selected account is changed to non-EVM', async () => {
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).not.toHaveBeenCalled();
+
+          metamaskController.controllerMessenger.publish(
+            'AccountsController:selectedAccountChange',
+            mockNonEvmAccount,
+          );
+
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).toHaveBeenCalledTimes(1);
+        });
+
+        it('stops MultichainRatesController if selected account is changed to EVM', async () => {
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).not.toHaveBeenCalled();
+
+          metamaskController.controllerMessenger.publish(
+            'AccountsController:selectedAccountChange',
+            mockNonEvmAccount,
+          );
+
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).toHaveBeenCalledTimes(1);
+
+          metamaskController.controllerMessenger.publish(
+            'AccountsController:selectedAccountChange',
+            mockEvmAccount,
+          );
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            metamaskController.multichainRatesController.stop,
+          ).toHaveBeenCalledTimes(1);
+        });
+
+        it('does not start MultichainRatesController if selected account is changed to EVM', async () => {
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).not.toHaveBeenCalled();
+
+          metamaskController.controllerMessenger.publish(
+            'AccountsController:selectedAccountChange',
+            mockEvmAccount,
+          );
+
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('client is closed', () => {
+        beforeEach(() => {
+          jest.replaceProperty(
+            metamaskController,
+            'activeControllerConnections',
+            0,
+          );
+        });
+
+        it('does not start MultichainRatesController if selected account is changed to non-EVM', async () => {
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).not.toHaveBeenCalled();
+
+          metamaskController.controllerMessenger.publish(
+            'AccountsController:selectedAccountChange',
+            mockNonEvmAccount,
+          );
+
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('stops MultichainRatesController if selected account is changed to EVM', async () => {
+          metamaskController.controllerMessenger.publish(
+            'AccountsController:selectedAccountChange',
+            mockEvmAccount,
+          );
+
+          expect(
+            metamaskController.multichainRatesController.stop,
+          ).toHaveBeenCalledTimes(1);
+        });
+
+        it('does not start MultichainRatesController if selected account is changed to EVM', async () => {
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).not.toHaveBeenCalled();
+
+          metamaskController.controllerMessenger.publish(
+            'AccountsController:selectedAccountChange',
+            mockEvmAccount,
+          );
+
+          expect(
+            metamaskController.multichainRatesController.start,
+          ).not.toHaveBeenCalled();
+        });
       });
 
       it('calls setFiatCurrency when the `currentCurrency` has changed', async () => {
@@ -3703,11 +3763,14 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         metamaskController.controllerMessenger.publish(
           'CurrencyRateController:stateChange',
           { currentCurrency: mockCurrency },
+          getMockPatches(),
         );
 
         expect(
@@ -3737,6 +3800,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
       });
 
@@ -4121,6 +4186,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         expect(
@@ -4151,6 +4218,8 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
         });
 
         const networkState = metamaskController.networkController.state;
@@ -4623,6 +4692,8 @@ describe('MetaMaskController', () => {
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
       isFirstMetaMaskControllerSetup: true,
+      cronjobControllerStorageManager:
+        createMockCronjobControllerStorageManager(),
     });
 
     beforeEach(() => {
@@ -4685,6 +4756,8 @@ describe('MetaMaskController', () => {
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
         isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
       });
 
       expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
@@ -4709,6 +4782,8 @@ describe('MetaMaskController', () => {
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
         isFirstMetaMaskControllerSetup: false,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
       });
 
       expect(metamaskController.resetStates).not.toHaveBeenCalled();

@@ -57,6 +57,7 @@ const WalletDetailsAccountItem = ({
       padding={4}
       marginBottom={1}
       style={{ cursor: 'pointer', border: 'none' }}
+      data-testid={`wallet-details-account-item-${account.id}`}
       {...rowStylesProps}
     >
       <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
