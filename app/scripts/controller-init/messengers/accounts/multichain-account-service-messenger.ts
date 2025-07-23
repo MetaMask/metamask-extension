@@ -10,6 +10,7 @@ import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snap
 import {
   KeyringControllerWithKeyringAction,
   KeyringControllerGetStateAction,
+  KeyringControllerStateChangeEvent,
 } from '@metamask/keyring-controller';
 
 type Actions =
@@ -21,6 +22,7 @@ type Actions =
   | KeyringControllerWithKeyringAction;
 
 type Events =
+  | KeyringControllerStateChangeEvent
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent;
 
@@ -40,7 +42,7 @@ export function getMultichainAccountServiceMessenger(
 ) {
   return messenger.getRestricted({
     name: 'MultichainAccountService',
-    allowedEvents: [],
+    allowedEvents: ['KeyringController:stateChange'],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
       'AccountsController:getAccountByAddress',
