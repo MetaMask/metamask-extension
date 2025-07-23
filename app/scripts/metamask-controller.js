@@ -2007,7 +2007,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainTransactionsController;
     this.multichainAssetsRatesController =
       controllersByName.MultichainAssetsRatesController;
-    this.MultichainAccountService = controllersByName.MultichainAccountService;
+    this.multichainAccountService = controllersByName.MultichainAccountService;
     ///: END:ONLY_INCLUDE_IF
     this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
@@ -5770,7 +5770,7 @@ export default class MetamaskController extends EventEmitter {
 
     await this.accountsController.updateAccounts();
     // Init multichain accounts after creating internal accounts.
-    this.MultichainAccountService.init();
+    this.multichainAccountService.init();
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
 
