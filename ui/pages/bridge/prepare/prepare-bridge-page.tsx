@@ -559,9 +559,7 @@ const PrepareBridgePage = () => {
 
   useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
 
-  const occurrences = Number(
-    toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
-  );
+  const occurrences = toToken?.occurrences ?? toToken?.aggregators?.length;
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
 
@@ -1049,9 +1047,8 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
-            // (!defaultToToken || toToken.address !== defaultToToken.address) &&
-            // TODO fix this
-            occurrences < 2 && (
+            occurrences &&
+            Number(occurrences) < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
                 title={t('bridgeTokenCannotVerifyTitle')}
