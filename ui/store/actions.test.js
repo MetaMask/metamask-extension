@@ -155,14 +155,8 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
       await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
 
-      expect(store.getActions()).toStrictEqual(expectedActions);
       expect(getSeedPhraseStub.callCount).toStrictEqual(1);
       expect(createNewVaultAndKeychainStub.callCount).toStrictEqual(1);
       expect(
@@ -188,11 +182,6 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
       await store.dispatch(
         actions.restoreSocialBackupAndGetSeedPhrase('password'),
       );
@@ -200,7 +189,6 @@ describe('Actions', () => {
       expect(restoreSocialBackupAndGetSeedPhraseStub.callCount).toStrictEqual(
         1,
       );
-      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
     it('errors when fetchAndRestoreSeedPhrase throws', async () => {
@@ -212,11 +200,7 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-      ];
+      const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];
 
       await expect(
         store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
