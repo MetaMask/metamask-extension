@@ -113,7 +113,7 @@ describe('Bridge tests', function (this: Suite) {
          * chain_destination
          */
 
-        assert.ok(swapBridgeInputChanged.length === 18);
+        assert.ok(swapBridgeInputChanged.length === 19);
 
         const inputTypes = [
           'token_source',
