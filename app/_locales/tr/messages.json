@@ -5071,7 +5071,8 @@
     "message": "Etkinleştirildi"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Bu e-posta ve MetaMask şifreniz hesabınızı ve kurtarma ifadelerinizi kurtarmanıza yardımcı olacaktır."
+    "message": "Bu e-posta ve MetaMask şifreniz hesabınızı ve kurtarma ifadelerinizi kurtarmanıza yardımcı olacaktır.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 KURTARMA",
