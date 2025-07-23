@@ -3201,6 +3201,7 @@ export function setActiveNetworkConfigurationId(
     } catch (error) {
       logErrorWithMessage(error);
     }
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 

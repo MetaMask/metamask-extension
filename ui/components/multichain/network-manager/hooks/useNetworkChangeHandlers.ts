@@ -13,6 +13,7 @@ import {
   addPermittedChain,
   detectNfts,
   setActiveNetwork,
+  setActiveNetworkConfigurationId,
   setEnabledNetworks,
   setNetworkClientIdForDomain,
   setNextNonce,
@@ -147,11 +148,21 @@ export const useNetworkChangeHandlers = () => {
             firstEnabledNetworkConfig.defaultRpcEndpointIndex
           ]?.networkClientId;
 
+        /*
         dispatch(
           setActiveNetwork(firstEnabledNetworkClientId || finalNetworkClientId),
         );
+        */
+        dispatch(
+          setActiveNetworkConfigurationId(
+            firstEnabledNetworkClientId || finalNetworkClientId,
+          ),
+        );
       } else {
+        /*
         dispatch(setActiveNetwork(finalNetworkClientId));
+        */
+        dispatch(setActiveNetworkConfigurationId(finalNetworkClientId));
       }
 
       dispatch(updateCustomNonce(''));
