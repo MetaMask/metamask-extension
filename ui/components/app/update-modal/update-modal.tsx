@@ -70,9 +70,14 @@ function UpdateModal() {
         </ModalBody>
         <ModalFooter
           onSubmit={async () => {
-            setIsLoading(true);
-            await openUpdateTabAndReload();
-            setIsLoading(false);
+            try {
+              setIsLoading(true);
+              await openUpdateTabAndReload();
+            } catch (error) {
+              console.error(error);
+            } finally {
+              setIsLoading(false);
+            }
           }}
           submitButtonProps={{
             children: t('updateToTheLatestVersion'),
