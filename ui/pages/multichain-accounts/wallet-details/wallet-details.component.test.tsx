@@ -8,7 +8,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   AccountGroupId,
   AccountWalletId,
-} from '@metamask/account-tree-controller';
+} from '@metamask/account-api';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
