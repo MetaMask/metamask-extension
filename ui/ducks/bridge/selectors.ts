@@ -70,7 +70,7 @@ import {
   tokenPriceInNativeAsset,
 } from './utils';
 import type { BridgeState } from './types';
-import { toBridgeToken } from './bridge';
+import { getDefaultToToken, toBridgeToken } from './bridge';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -243,19 +243,9 @@ export const getToToken = createSelector(
     if (!toChain) {
       return null;
     }
-    const destNativeAsset = getNativeAssetForChainId(
-      toChain.chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
-    );
-    const newToToken = toToken ?? toBridgeToken(destNativeAsset);
-    // Return null if dest token is the same as the src token
-    if (
-      fromToken?.assetId &&
-      newToToken?.assetId &&
-      fromToken.assetId.toLowerCase() === newToToken.assetId.toLowerCase()
-    ) {
-      return null;
-    }
-    return newToToken;
+    if (toToken) return toToken;
+    const defaultToken = getDefaultToToken(toChain, fromToken);
+    return defaultToken ? toBridgeToken(defaultToken) : null;
   },
 );
 

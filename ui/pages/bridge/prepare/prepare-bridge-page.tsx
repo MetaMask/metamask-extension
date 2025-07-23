@@ -133,7 +133,6 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
-import useBridgeDefaultToToken from '../../../hooks/bridge/useBridgeDefaultToToken';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -265,8 +264,6 @@ const PrepareBridgePage = () => {
     ? selectedEvmAccount
     : selectedMultichainAccount;
 
-  useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
-
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
   const hardwareWalletName = useSelector(getHardwareWalletName);
@@ -361,35 +358,6 @@ const PrepareBridgePage = () => {
       clearTimeout(switchButtonTimer);
     };
   }, [rotateSwitchTokens]);
-
-  useEffect(() => {
-    // If there's an active quote, assume that the user is returning to the page
-    if (activeQuote) {
-      // Get input data from active quote
-      const { srcAsset, destAsset, destChainId, srcChainId } =
-        activeQuote.quote;
-
-      if (srcAsset && destAsset && destChainId) {
-        // Set inputs to values from active quote
-        dispatch(setToChainId(destChainId));
-        dispatch(
-          setToToken({
-            ...destAsset,
-            chainId: destChainId,
-          }),
-        );
-        dispatch(
-          setFromToken({
-            ...srcAsset,
-            chainId: srcChainId,
-          }),
-        );
-      }
-    } else {
-      // Reset controller and inputs on load
-      dispatch(resetBridgeState());
-    }
-  }, []);
 
   // Scroll to bottom of the page when banners are shown
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
@@ -556,28 +524,37 @@ const PrepareBridgePage = () => {
       name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
       timestamp: Date.now(),
     });
-    setDefaultTokenApplied(false);
   }, []);
 
-  const { defaultToToken } = useBridgeDefaultToToken();
-
-  // Track whether defaults have been applied separately for token
-  const [defaultTokenApplied, setDefaultTokenApplied] = useState(false);
-
   useEffect(() => {
-    // Only set default token if user hasn't already selected one and default hasn't been applied
-    if (!toToken && defaultToToken && toChain && !defaultTokenApplied) {
-      dispatch(setToToken(defaultToToken));
-      setDefaultTokenApplied(true);
+    // If there's an active quote, assume that the user is returning to the page
+    if (activeQuote) {
+      // Get input data from active quote
+      const { srcAsset, destAsset, destChainId, srcChainId } =
+        activeQuote.quote;
+
+      if (srcAsset && destAsset && destChainId) {
+        dispatch(
+          setFromToken({
+            ...srcAsset,
+            chainId: srcChainId,
+          }),
+        );
+        // Set inputs to values from active quote
+        dispatch(
+          setToToken({
+            ...destAsset,
+            chainId: destChainId,
+          }),
+        );
+      }
+    } else {
+      // Reset controller and inputs on load
+      dispatch(resetBridgeState());
     }
-  }, [
-    defaultToToken,
-    toToken,
-    toChain,
-    dispatch,
-    trackInputEvent,
-    defaultTokenApplied,
-  ]);
+  }, []);
+
+  useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
 
   const occurrences = Number(
     toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
@@ -1069,7 +1046,8 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
-            (!defaultToToken || toToken.address !== defaultToToken.address) &&
+            // (!defaultToToken || toToken.address !== defaultToToken.address) &&
+            // TODO fix this
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
