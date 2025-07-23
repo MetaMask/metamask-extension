@@ -6079,6 +6079,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-snap-keyring@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@metamask/eth-snap-keyring@npm:15.0.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@metamask/base-controller": "npm:^7.1.1"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/keyring-api": "npm:^19.1.0"
+    "@metamask/keyring-internal-api": "npm:^7.1.0"
+    "@metamask/keyring-internal-snap-client": "npm:^5.0.0"
+    "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    "@types/uuid": "npm:^9.0.8"
+    uuid: "npm:^9.0.1"
+  peerDependencies:
+    "@metamask/keyring-api": ^19.1.0
+  checksum: 10/a82c903573d1516111d8595b5d5cf4c33c5ab5c76f758e82536cf2c5c925378e8b490a278456ebd52d091fdabb9861c8537f5ab3e1f6df8fc1b24d7498c8b79c
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-token-tracker@npm:^10.0.2":
   version: 10.0.2
   resolution: "@metamask/eth-token-tracker@npm:10.0.2"
@@ -6432,6 +6453,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-api@npm:^19.0.0, @metamask/keyring-api@npm:^19.1.0":
+  version: 19.1.0
+  resolution: "@metamask/keyring-api@npm:19.1.0"
+  dependencies:
+    "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+  checksum: 10/2db4e6e1c0d7c6299b1bb74a5bef6a4b66111556b069dcf23d3dd9a328024da2c0b14ac350d606bc09cb677eb235a43f4a841d5cce850daba2526b4a44b00b3b
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-controller@npm:^22.1.0":
   version: 22.1.0
   resolution: "@metamask/keyring-controller@npm:22.1.0"
@@ -6466,6 +6499,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-internal-api@npm:^7.0.0, @metamask/keyring-internal-api@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@metamask/keyring-internal-api@npm:7.1.0"
+  dependencies:
+    "@metamask/keyring-api": "npm:^19.1.0"
+    "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+  checksum: 10/9e479fb4657596a8314efa1ec83da845eab716e4990afc6f3dffe855589d63e05adc50221cf7cd745af39f30abac82d43f608f35bbb7a1ee3b3e0508c16a5e1c
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-internal-snap-client@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/keyring-internal-snap-client@npm:4.1.0"
@@ -6476,6 +6520,19 @@ __metadata:
     "@metamask/keyring-snap-client": "npm:^5.0.0"
     "@metamask/keyring-utils": "npm:^3.0.0"
   checksum: 10/7e536df7733b5d00558e009832326be6d56367f330fef7f3b073ecca8e184176f1353a2635a2e13a6128d6cfdc972ce6389307d41c7bc6b8403f7dcac30f92fe
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-internal-snap-client@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/keyring-internal-snap-client@npm:5.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^7.1.1"
+    "@metamask/keyring-api": "npm:^19.0.0"
+    "@metamask/keyring-internal-api": "npm:^7.0.0"
+    "@metamask/keyring-snap-client": "npm:^6.0.0"
+    "@metamask/keyring-utils": "npm:^3.1.0"
+  checksum: 10/e61dc8411cda4ffdfaca1366f519b28da65f229703cf71d9cbb2c858d321ba8a54c22b1ddfeb2d8f63af4d17ba9daf4137131f49cfe1f2c78a419e98d46b3014
   languageName: node
   linkType: hard
 
@@ -6511,6 +6568,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-snap-client@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/keyring-snap-client@npm:6.0.0"
+  dependencies:
+    "@metamask/keyring-api": "npm:^19.0.0"
+    "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@types/uuid": "npm:^9.0.8"
+    uuid: "npm:^9.0.1"
+    webextension-polyfill: "npm:^0.12.0"
+  peerDependencies:
+    "@metamask/providers": ^19.0.0
+  checksum: 10/fe182c602b2a2f349b99426565fbde6bc650d26095162650efdd7bde86ce32047a4dcdad1c8e46b83c5ae01c3e067c6cc24f922d27b388d7c65238fb4de893cf
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-utils@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/keyring-utils@npm:3.0.0"
@@ -6520,6 +6593,18 @@ __metadata:
     "@metamask/utils": "npm:^11.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/eff3c0b9a86d6a25c5dd443946ba3ff56cb94fcb915a4eb061089819805e1e78eba2ea5cfb12a47ec4606542870c417de422f755947389ab9f3a4f08e96742db
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-utils@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/keyring-utils@npm:3.1.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+  checksum: 10/d7325bb72e47bd3d81b1bce55203d8343408c0d37dd2862203c21bb68c6a1e32a1cfa7ca46a4f6fe1f14e757084bbc45db8db3eedbefc90ce81805ce22d335e8
   languageName: node
   linkType: hard
 
@@ -31968,7 +32053,7 @@ __metadata:
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^11.1.1"
     "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/eth-snap-keyring": "npm:^13.0.0"
+    "@metamask/eth-snap-keyring": "npm:^15.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
     "@metamask/eth-trezor-keyring": "npm:^8.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
@@ -31982,11 +32067,11 @@ __metadata:
     "@metamask/kernel-browser-runtime": "npm:^0.1.0"
     "@metamask/kernel-shims": "npm:^0.2.0"
     "@metamask/kernel-utils": "npm:^0.1.0"
-    "@metamask/keyring-api": "npm:^18.0.0"
+    "@metamask/keyring-api": "npm:^19.1.0"
     "@metamask/keyring-controller": "npm:^22.1.0"
-    "@metamask/keyring-internal-api": "npm:^6.2.0"
-    "@metamask/keyring-internal-snap-client": "npm:^4.1.0"
-    "@metamask/keyring-snap-client": "npm:^5.0.0"
+    "@metamask/keyring-internal-api": "npm:^7.1.0"
+    "@metamask/keyring-internal-snap-client": "npm:^5.0.0"
+    "@metamask/keyring-snap-client": "npm:^6.0.0"
     "@metamask/logger": "npm:^0.2.0"
     "@metamask/logging-controller": "npm:^6.0.4"
     "@metamask/logo": "npm:^4.0.0"
