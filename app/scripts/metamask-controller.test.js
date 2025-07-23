@@ -110,6 +110,15 @@ function* ulidGenerator(ulids = mockULIDs) {
   throw new Error('should not be called after exhausting provided IDs');
 }
 
+/**
+ * Generate mock patches for a complete state replacement.
+ *
+ * @returns A list of mock patches.
+ */
+function getMockPatches() {
+  return [{ op: 'replace', path: [], value: {} }];
+}
+
 let mockUlidGenerator = ulidGenerator();
 
 jest.mock('ulid', () => ({
@@ -380,6 +389,7 @@ describe('MetaMaskController', () => {
       metamaskController.controllerMessenger.publish(
         'PreferencesController:stateChange',
         preferences,
+        getMockPatches(),
       );
       await flushPromises();
     }
@@ -3594,6 +3604,7 @@ describe('MetaMaskController', () => {
       const mockEvmAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
         ...mockEvmAccount,
+        scopes: [BtcScope.Mainnet],
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
         methods: [BtcMethod.SendBitcoin],
@@ -3759,6 +3770,7 @@ describe('MetaMaskController', () => {
         metamaskController.controllerMessenger.publish(
           'CurrencyRateController:stateChange',
           { currentCurrency: mockCurrency },
+          getMockPatches(),
         );
 
         expect(
