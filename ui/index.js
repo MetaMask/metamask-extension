@@ -261,9 +261,9 @@ async function runInitialActions(store) {
     };
     await validateSeedlessPasswordOutdated(initialState);
     // periodically check seedless password outdated when app UI is open
-    setInterval(async () => {
+    setInterval(() => {
       const state = store.getState();
-      await validateSeedlessPasswordOutdated(state);
+      validateSeedlessPasswordOutdated(state);
     }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
   } catch (e) {
     log.error('[Metamask] checkIsSeedlessPasswordOutdated error', e);
@@ -294,6 +294,17 @@ function setupStateHooks(store) {
       throw error;
     };
     /**
+     * The following stateHook is a method intended to capture an error, used in
+     * our E2E test to ensure that errors are correctly sent to sentry.
+     *
+     * @param {string} [msg] - The error message to capture, defaults to 'Test Error'
+     */
+    window.stateHooks.captureTestError = async function (msg = 'Test Error') {
+      const error = new Error(msg);
+      error.name = 'TestError';
+      global.sentry.captureException(error);
+    };
+    /**
      * The following stateHook is a method intended to throw an error in the
      * background, used in our E2E test to ensure that errors are attempted to be
      * sent to sentry.
@@ -304,6 +315,17 @@ function setupStateHooks(store) {
       msg = 'Test Error',
     ) {
       await actions.throwTestBackgroundError(msg);
+    };
+    /**
+     * The following stateHook is a method intended to capture an error in the background, used
+     * in our E2E test to ensure that errors are correctly sent to sentry.
+     *
+     * @param {string} [msg] - The error message to capture, defaults to 'Test Error'
+     */
+    window.stateHooks.captureBackgroundError = async function (
+      msg = 'Test Error',
+    ) {
+      await actions.captureTestBackgroundError(msg);
     };
   }
 
