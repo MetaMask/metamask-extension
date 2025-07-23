@@ -7,34 +7,6 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
 }));
 
-jest.mock('../../../selectors/multichain', () => ({
-  getImageForChainId: (chainId: string) => {
-    const imageMap: Record<string, string> = {
-      '0x1': './images/eth_logo.svg',
-      '0x89': './images/polygon_logo.svg',
-      '0x539': './images/custom_logo.svg',
-    };
-    return imageMap[chainId];
-  },
-}));
-
-// Mock the selectors first, before any imports that might load them
-jest.mock('../../../selectors', () => ({
-  getMetaMaskAccounts: jest.fn(() => ({})),
-  getSelectedAccount: jest.fn(() => ({})),
-  getMultichainIsEvm: jest.fn(() => true),
-  getNetworkConfigurationsByChainId: jest.fn(() => ({})),
-  getCurrentChainId: jest.fn(() => '0x1'),
-  getConversionRate: jest.fn(() => 1),
-  getNativeCurrency: jest.fn(() => 'ETH'),
-  getTokenExchangeRates: jest.fn(() => ({})),
-  getTokens: jest.fn(() => []),
-  getSelectedAddress: jest.fn(() => '0x123'),
-  getAccountsByChainId: jest.fn(() => ({})),
-  getBalances: jest.fn(() => ({})),
-  getCachedBalances: jest.fn(() => ({})),
-}));
-
 const mockHandleCopy = jest.fn();
 
 const defaultProps = {
