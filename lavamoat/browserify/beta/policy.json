@@ -1077,10 +1077,10 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/account-api": {
+    "@metamask/multichain-account-service>@metamask/account-api": {
       "packages": {
-        "@metamask/account-api>@metamask/keyring-api": true,
-        "@metamask/account-api>@metamask/keyring-utils": true
+        "@metamask/multichain-account-service>@metamask/account-api>@metamask/keyring-api": true,
+        "@metamask/multichain-account-service>@metamask/account-api>@metamask/keyring-utils": true
       }
     },
     "@metamask/account-tree-controller": {
@@ -1735,9 +1735,9 @@
         "bitcoin-address-validation": true
       }
     },
-    "@metamask/account-api>@metamask/keyring-api": {
+    "@metamask/multichain-account-service>@metamask/account-api>@metamask/keyring-api": {
       "packages": {
-        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/multichain-account-service>@metamask/account-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
@@ -1808,7 +1808,7 @@
         "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": true
       }
     },
-    "@metamask/account-api>@metamask/keyring-utils": {
+    "@metamask/multichain-account-service>@metamask/account-api>@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
@@ -1873,7 +1873,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/account-api": true,
+        "@metamask/multichain-account-service>@metamask/account-api": true,
         "@metamask/multichain-account-service>@metamask/keyring-api": true,
         "@metamask/keyring-controller": true
       }
