@@ -223,7 +223,6 @@
     "ui/components/multichain/index.js",
   ],
   ["ui/ducks/alerts/unconnected-account.js", "ui/store/actions.ts"],
-  ["ui/ducks/bridge/bridge.ts", "ui/ducks/bridge/utils.ts"],
   [
     "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
     "ui/ducks/index.js",
