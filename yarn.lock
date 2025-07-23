@@ -6584,19 +6584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-utils@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/keyring-utils@npm:3.0.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/eff3c0b9a86d6a25c5dd443946ba3ff56cb94fcb915a4eb061089819805e1e78eba2ea5cfb12a47ec4606542870c417de422f755947389ab9f3a4f08e96742db
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-utils@npm:^3.1.0":
+"@metamask/keyring-utils@npm:^3.0.0, @metamask/keyring-utils@npm:^3.1.0":
   version: 3.1.0
   resolution: "@metamask/keyring-utils@npm:3.1.0"
   dependencies:
