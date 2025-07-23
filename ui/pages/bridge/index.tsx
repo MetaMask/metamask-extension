@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
-import { UnifiedSwapBridgeEventName } from '@metamask/bridge-controller';
+import {
+  BridgeAppState,
+  UnifiedSwapBridgeEventName,
+} from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
@@ -17,6 +20,7 @@ import {
   IconName,
 } from '../../components/component-library';
 import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -34,6 +38,7 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
+import { getIsUnifiedUIEnabled } from '../../ducks/bridge/selectors';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -57,6 +62,10 @@ const CrossChainSwap = () => {
   };
 
   const isSwap = useIsMultichainSwap();
+  const chainId = useSelector(getMultichainCurrentChainId);
+  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
+    getIsUnifiedUIEnabled(state, chainId),
+  );
 
   useEffect(() => {
     dispatch(
@@ -120,7 +129,7 @@ const CrossChainSwap = () => {
           />
         }
       >
-        {isSwap ? t('swap') : t('bridge')}
+        {isSwap || isUnifiedUIEnabled ? t('swap') : t('bridge')}
       </Header>
       <Content padding={0}>
         <Switch>

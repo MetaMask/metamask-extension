@@ -68,7 +68,7 @@ class RestoreVaultPage extends Component {
 
   render() {
     const { t } = this.context;
-    const { isLoading } = this.props;
+    const { isLoading, isSocialLoginFlow } = this.props;
 
     return (
       <Box className="first-view-main-wrapper">
@@ -89,44 +89,81 @@ class RestoreVaultPage extends Component {
               {t('resetWallet')}
             </Text>
             <Text color={TextColor.textDefault}>
-              {t('resetWalletSubHeader')}
+              {isSocialLoginFlow
+                ? t('resetWalletSubHeaderSocial')
+                : t('resetWalletSubHeader')}
             </Text>
             <Text color={TextColor.textDefault} marginTop={4} marginBottom={4}>
-              {t('resetWalletUsingSRP', [
-                <Button
-                  type="link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={ZENDESK_URLS.ADD_MISSING_ACCOUNTS}
-                  key="import-account-secretphase"
-                  className="import-account__link"
-                >
-                  {t('reAddAccounts')}
-                </Button>,
-                <Button
-                  type="link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={ZENDESK_URLS.IMPORT_ACCOUNTS}
-                  key="import-account-reimport-accounts"
-                  className="import-account__link"
-                >
-                  {t('reAdded')}
-                </Button>,
-                <Button
-                  type="link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={ZENDESK_URLS.ADD_CUSTOM_TOKENS}
-                  key="import-account-readd-tokens"
-                  className="import-account__link"
-                >
-                  {t('reAdded')}
-                </Button>,
-              ])}
+              {isSocialLoginFlow
+                ? t('resetWalletUsingSRPSocial', [
+                    <Button
+                      type="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={ZENDESK_URLS.RESET_IMPORT_AN_ACCOUNT}
+                      key="import-an-account"
+                      className="import-account__link"
+                    >
+                      {t('resetWalletUsingSRPSocialAccounts')}
+                    </Button>,
+                    <Button
+                      type="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={ZENDESK_URLS.RESET_ADD_MISSING_ACCOUNT}
+                      key="add-missing-account"
+                      className="import-account__link"
+                    >
+                      {t('resetWalletUsingSRPSocialCustomAccounts')}
+                    </Button>,
+                    <Button
+                      type="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={ZENDESK_URLS.RESET_DISPLAY_TOKENS}
+                      key="display-tokens"
+                      className="import-account__link"
+                    >
+                      {t('resetWalletUsingSRPSocialCustomTokens')}
+                    </Button>,
+                  ])
+                : t('resetWalletUsingSRP', [
+                    <Button
+                      type="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={ZENDESK_URLS.ADD_MISSING_ACCOUNTS}
+                      key="import-account-secretphase"
+                      className="import-account__link"
+                    >
+                      {t('reAddAccounts')}
+                    </Button>,
+                    <Button
+                      type="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={ZENDESK_URLS.IMPORT_ACCOUNTS}
+                      key="import-account-reimport-accounts"
+                      className="import-account__link"
+                    >
+                      {t('reAdded')}
+                    </Button>,
+                    <Button
+                      type="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={ZENDESK_URLS.ADD_CUSTOM_TOKENS}
+                      key="import-account-readd-tokens"
+                      className="import-account__link"
+                    >
+                      {t('reAdded')}
+                    </Button>,
+                  ])}
             </Text>
             <Text color={TextColor.textDefault} margin={0} marginBottom={4}>
-              {t('resetWalletWarning')}
+              {isSocialLoginFlow
+                ? t('resetWalletWarningSocial')
+                : t('resetWalletWarning')}
             </Text>
             <CreateNewVault
               disabled={isLoading}

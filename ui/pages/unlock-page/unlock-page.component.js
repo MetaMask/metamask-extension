@@ -29,7 +29,10 @@ import {
   FontWeight,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -64,6 +67,11 @@ class UnlockPage extends Component {
      * If isUnlocked is true will redirect to most recent route in history
      */
     isUnlocked: PropTypes.bool,
+    /**
+     * If isOnboardingCompleted is true, `Use a different login method` button
+     * will be shown instead of `Forgot password?`
+     */
+    isOnboardingCompleted: PropTypes.bool,
     /**
      * onClick handler for "Forgot password?" link
      */
@@ -381,8 +389,13 @@ class UnlockPage extends Component {
     );
   };
 
-  onForgotPassword = () => {
-    const { isSocialLoginFlow } = this.props;
+  onForgotPasswordOrLoginWithDiffMethods = () => {
+    const { isSocialLoginFlow, history, isOnboardingCompleted } = this.props;
+
+    if (!isOnboardingCompleted) {
+      history.replace(ONBOARDING_WELCOME_ROUTE);
+      return;
+    }
 
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -410,6 +423,7 @@ class UnlockPage extends Component {
 
   render() {
     const { password, error, isLocked, showResetPasswordModal } = this.state;
+    const { isOnboardingCompleted } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
@@ -518,10 +532,12 @@ class UnlockPage extends Component {
               data-testid="unlock-forgot-password-button"
               key="import-account"
               type="button"
-              onClick={() => this.onForgotPassword()}
+              onClick={() => this.onForgotPasswordOrLoginWithDiffMethods()}
               marginBottom={6}
             >
-              {t('forgotPassword')}
+              {isOnboardingCompleted
+                ? t('forgotPassword')
+                : t('useDifferentLoginMethod')}
             </Button>
 
             <Text>

@@ -20,6 +20,7 @@ import {
   getIsSocialLoginFlow,
   getParticipateInMetaMetrics,
 } from '../../selectors';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -30,6 +31,7 @@ const mapStateToProps = (state) => {
     isUnlocked,
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isMetaMetricsEnabled: getParticipateInMetaMetrics(state),
+    isOnboardingCompleted: getCompletedOnboarding(state),
   };
 };
 

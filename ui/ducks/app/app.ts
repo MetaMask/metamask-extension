@@ -132,6 +132,7 @@ type AppState = {
     error: Error;
     view: string;
   } | null;
+  showConnectionsRemovedModal: boolean;
   showCopyAddressToast: boolean;
 };
 
@@ -235,6 +236,7 @@ const initialState: AppState = {
   showCopyAddressToast: false,
   showSupportDataConsentModal: false,
   onboardingErrorReport: null,
+  showConnectionsRemovedModal: false,
 };
 
 export default function reduceApp(
@@ -788,6 +790,12 @@ export default function reduceApp(
       return {
         ...appState,
         onboardingErrorReport: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_CONNECTIONS_REMOVED:
+      return {
+        ...appState,
+        showConnectionsRemovedModal: action.value,
       };
 
     default:
