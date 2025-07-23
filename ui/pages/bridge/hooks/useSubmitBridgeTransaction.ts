@@ -74,16 +74,31 @@ export default function useSubmitBridgeTransaction() {
     // Execute transaction(s)
     try {
       if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
+        // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+        // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+        // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+        // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setDefaultHomeActiveTabName('activity'));
         history.push({
           pathname: DEFAULT_ROUTE,
           state: { stayOnHomePage: true },
         });
+        // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+        // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+        // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+        // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(submitBridgeTx(quoteResponse, false));
         return;
       }
+      // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+      // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+      // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+      // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(
-        await submitBridgeTx(
+        submitBridgeTx(
           quoteResponse,
           isSolanaChainId(quoteResponse.quote.srcChainId)
             ? false
@@ -97,12 +112,22 @@ export default function useSubmitBridgeTransaction() {
         dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
+        // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+        // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+        // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+        // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setDefaultHomeActiveTabName('activity'));
         history.push(DEFAULT_ROUTE);
       }
       return;
     }
     // Route user to activity tab on Home page
+    // TODO: Fix Redux dispatch typing - implement useAppDispatch pattern
+    // Discussion: https://github.com/MetaMask/metamask-extension/pull/32052#discussion_r2195789610
+    // Solution: Update MetaMaskReduxDispatch type to properly handle async thunks
+    // Extract thunk dispatch calls to separate issue - these are TypeScript/ESLint typing issues
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(setDefaultHomeActiveTabName('activity'));
     history.push({
       pathname: DEFAULT_ROUTE,

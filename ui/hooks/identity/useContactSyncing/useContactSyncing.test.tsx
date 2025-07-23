@@ -137,6 +137,8 @@ describe('useContactSyncing', () => {
     const { mocks, dispatchContactSyncing, shouldDispatchContactSyncing } =
       arrangeAndAct();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatchContactSyncing();
 
     await waitFor(() => {
@@ -149,6 +151,8 @@ describe('useContactSyncing', () => {
     const { mocks, dispatchContactSyncing, shouldDispatchContactSyncing } =
       arrangeAndAct({ isContactSyncingEnabled: false });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatchContactSyncing();
 
     await waitFor(() => {

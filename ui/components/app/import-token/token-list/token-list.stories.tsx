@@ -53,7 +53,8 @@ Default.args = {
       symbol: 'DAI',
       name: 'Dai Stablecoin',
       address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-      iconUrl: 'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png',
+      iconUrl:
+        'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png',
     },
     {
       symbol: 'XYZ',
