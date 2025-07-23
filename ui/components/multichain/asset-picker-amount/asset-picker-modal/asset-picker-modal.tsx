@@ -444,8 +444,7 @@ export function AssetPickerModal({
       tokenChainId?: string,
     ) => {
       const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
-      const isSymbolMatch =
-        symbol?.toLowerCase().includes(trimmedSearchQuery);
+      const isSymbolMatch = symbol?.toLowerCase().includes(trimmedSearchQuery);
       // only check for matching address if search term has 6 characters or more
       // users are expected to copy and paste addresses instead of typing them
       const isAddressMatch =
@@ -453,7 +452,7 @@ export function AssetPickerModal({
         address?.toLowerCase().includes(trimmedSearchQuery);
 
       const isMatchedBySearchQuery = Boolean(
-        !trimmedSearchQuery || isSymbolMatch || isAddressMatch
+        !trimmedSearchQuery || isSymbolMatch || isAddressMatch,
       );
       const isTokenInSelectedChain = isMultiselectEnabled
         ? tokenChainId && selectedChainIds?.indexOf(tokenChainId) !== -1
