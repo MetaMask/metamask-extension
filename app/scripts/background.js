@@ -14,7 +14,6 @@ import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { captureException } from '../../shared/lib/sentry';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
@@ -124,6 +123,7 @@ global.logEncryptedVault = () => {
   persistenceManager.logEncryptedVault();
 };
 
+const { sentry } = global;
 let firstTimeState = { ...rawFirstTimeState };
 
 const metamaskInternalProcessHash = {
@@ -276,7 +276,7 @@ function maybeDetectPhishing(theController) {
         url,
       });
     } catch (error) {
-      return captureException(error);
+      return sentry?.captureException(error);
     }
   }
   // we can use the blocking API in MV2, but not in MV3
@@ -453,7 +453,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
     // This is set in `setupController`, which is called as part of initialization
     connectWindowPostMessage(...args);
   } catch (error) {
-    captureException(error);
+    sentry?.captureException(error);
 
     // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
     // restore from a backup, if we have one.
@@ -623,7 +623,7 @@ async function initialize(backup) {
   controller.store.on('update', update);
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);
-    captureException(error);
+    sentry?.captureException(error);
   });
 
   // `setupController` sets up the `controller` object, so we can use it now:
@@ -646,7 +646,7 @@ async function initialize(backup) {
         );
       }
     })
-    .on('error', (error) => captureException(error))
+    .on('error', (error) => sentry?.captureException(error))
     .install();
 }
 
@@ -798,7 +798,7 @@ export async function loadStateFromPersistence(backup) {
     console.warn(err);
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
-    captureException(err, {
+    sentry.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
     });

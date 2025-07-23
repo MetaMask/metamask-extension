@@ -17,7 +17,6 @@ import {
 } from '@metamask/signature-controller';
 import { Messenger } from '@metamask/base-controller';
 import { cloneDeep } from 'lodash';
-import { captureException } from '../../../../shared/lib/sentry';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -37,6 +36,8 @@ import {
 } from './security-alerts-api';
 
 const log = createProjectLogger('ppom-util');
+
+const { sentry } = global;
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -160,7 +161,7 @@ export function handlePPOMError(
   const description = getErrorMessage(error);
 
   if (source === SecurityAlertSource.Local) {
-    captureException(error);
+    sentry?.captureException(error);
   }
   console.error(logMessage, errorData);
 
