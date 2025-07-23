@@ -11,7 +11,7 @@ describe('openUpdateTabAndReload', () => {
   const mockRequestSafeReload = jest.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   it('should open the update tab and then call requestSafeReload', async () => {
