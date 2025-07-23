@@ -32677,8 +32677,8 @@ __metadata:
     watchify: "npm:^4.0.0"
     webextension-polyfill: "npm:^0.8.0"
     webpack: "npm:5.99.9"
-    webpack-cli: "npm:6.0.1"
-    webpack-dev-server: "npm:5.2.2"
+    webpack-cli: "npm:^6.0.1"
+    webpack-dev-server: "npm:^5.2.2"
     ws: "npm:^8.17.1"
     xml2js: "npm:^0.6.2"
     yaml: "npm:^2.4.1"
@@ -44521,7 +44521,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-cli@npm:6.0.1":
+"webpack-cli@npm:^6.0.1":
   version: 6.0.1
   resolution: "webpack-cli@npm:6.0.1"
   dependencies:
@@ -44588,7 +44588,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-dev-server@npm:5.2.2":
+"webpack-dev-server@npm:^5.2.2":
   version: 5.2.2
   resolution: "webpack-dev-server@npm:5.2.2"
   dependencies:
