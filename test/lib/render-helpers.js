@@ -6,13 +6,28 @@ import { userEvent } from '@testing-library/user-event';
 import { Router } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { createMemoryHistory } from 'history';
+import { noop } from 'lodash';
 import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
-import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
+import {
+  LegacyMetaMetricsProvider,
+  MetaMetricsContext,
+} from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
-import { setupInitialStore } from '../../ui';
+import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
+
+// Mock MetaMetrics context for tests
+const createMockTrackEvent = () => {
+  const mockTrackEvent = () => Promise.resolve();
+  Object.assign(mockTrackEvent, {
+    bufferedTrace: () => Promise.resolve(),
+    bufferedEndTrace: () => Promise.resolve(),
+    onboardingParentContext: { current: null },
+  });
+  return mockTrackEvent;
+};
 
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
@@ -41,13 +56,19 @@ I18nProvider.defaultProps = {
 
 const createProviderWrapper = (store, pathname = '/') => {
   const history = createMemoryHistory({ initialEntries: [pathname] });
+  const mockTrackEvent = createMockTrackEvent();
+
   const Wrapper = ({ children }) =>
     store ? (
       <Provider store={store}>
         <Router history={history}>
           <I18nProvider currentLocale="en" current={en} en={en}>
             <LegacyI18nProvider>
-              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+              <MetaMetricsContext.Provider value={mockTrackEvent}>
+                <LegacyMetaMetricsProvider>
+                  {children}
+                </LegacyMetaMetricsProvider>
+              </MetaMetricsContext.Provider>
             </LegacyI18nProvider>
           </I18nProvider>
         </Router>
@@ -55,7 +76,9 @@ const createProviderWrapper = (store, pathname = '/') => {
     ) : (
       <Router history={history}>
         <LegacyI18nProvider>
-          <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+          </MetaMetricsContext.Provider>
         </LegacyI18nProvider>
       </Router>
     );
@@ -101,6 +124,7 @@ export function renderHookWithProvider(hook, state, pathname = '/', Container) {
   return {
     ...renderHook(hook, { wrapper }),
     history,
+    store,
   };
 }
 
@@ -186,9 +210,9 @@ export async function integrationTestRender(extendedRenderOptions) {
     ...renderOptions
   } = extendedRenderOptions;
 
-  const store = await setupInitialStore(preloadedState, backgroundConnection, {
-    activeTab,
-  });
+  connectToBackground(backgroundConnection, noop);
+
+  const store = await setupInitialStore(preloadedState, activeTab);
 
   return {
     ...render(<Root store={store} />, { ...renderOptions }),

@@ -1,9 +1,12 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_CONFIRM_SRP_ROUTE,
+  ONBOARDING_REVEAL_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   Text,
   Box,
@@ -44,10 +47,45 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
   const searchParams = new URLSearchParams(search);
-  const isFromReminderParam = searchParams.get('isFromReminder')
-    ? '/?isFromReminder=true'
-    : '';
+  const isFromReminder = searchParams.get('isFromReminder');
+  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+
+  const queryParams = new URLSearchParams();
+  if (isFromReminder) {
+    queryParams.set('isFromReminder', isFromReminder);
+  }
+  if (isFromSettingsSecurity) {
+    queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
+  }
+  const nextRouteQueryString = queryParams.toString();
+
+  useEffect(() => {
+    if (!secretRecoveryPhrase) {
+      history.replace(
+        `${ONBOARDING_REVEAL_SRP_ROUTE}/${
+          nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+        }`,
+      );
+    }
+  }, [history, secretRecoveryPhrase, nextRouteQueryString]);
+
   const trackEvent = useContext(MetaMetricsContext);
+
+  const handleContinue = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
+
+    history.push(
+      `${ONBOARDING_CONFIRM_SRP_ROUTE}${
+        nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+      }`,
+    );
+  }, [hdEntropyIndex, history, trackEvent, nextRouteQueryString]);
 
   const handleOnShowSrpDetailsModal = useCallback(() => {
     trackEvent({
@@ -94,7 +132,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
           marginBottom={4}
           width={BlockSize.Full}
         >
-          {!isFromReminderParam && (
+          {!isFromReminder && (
             <Text
               variant={TextVariant.bodyMd}
               color={TextColor.textAlternative}
@@ -154,19 +192,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
           data-testid="recovery-phrase-continue"
           className="recovery-phrase__footer--button"
           disabled={!phraseRevealed}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event:
-                MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
-              properties: {
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-            history.push(
-              `${ONBOARDING_CONFIRM_SRP_ROUTE}${isFromReminderParam}`,
-            );
-          }}
+          onClick={handleContinue}
         >
           {t('continue')}
         </Button>

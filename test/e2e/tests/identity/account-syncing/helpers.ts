@@ -2,24 +2,9 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
+  AsEnum,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { Driver } from '../../../webdriver/driver';
-
-export type UserStorageAccount = {
-  /**
-   * The Version 'v' of the User Storage.
-   * NOTE - will allow us to support upgrade/downgrades in the future
-   */
-  v: string;
-  /** the id 'i' of the account */
-  i: string;
-  /** the address 'a' of the account */
-  a: string;
-  /** the name 'n' of the account */
-  n: string;
-  /** the nameLastUpdatedAt timestamp 'nlu' of the account */
-  nlu?: number;
-};
 
 export const arrangeTestUtils = (
   driver: Driver,
@@ -29,7 +14,7 @@ export const arrangeTestUtils = (
   const BASE_INTERVAL = 1000;
 
   const prepareEventsEmittedCounter = (
-    event: UserStorageMockttpControllerEvents,
+    event: AsEnum<typeof UserStorageMockttpControllerEvents>,
   ) => {
     let counter = 0;
     userStorageMockttpController.eventEmitter.on(event, () => {

@@ -374,7 +374,7 @@ describe('AccountListItem', () => {
       });
     });
   });
-  describe('SRP Pills', () => {
+  describe('Account labels', () => {
     it('renders the SRP pill for account when multi SRP are present in state', () => {
       const { container } = render(
         {
@@ -420,10 +420,10 @@ describe('AccountListItem', () => {
       expect(tag.textContent).toBe('SRP #1');
     });
 
-    it('does not render the SRP pill when explicitly disabled', () => {
+    it('does not render the any account label when explicitly disabled', () => {
       const { container } = render(
         {
-          showSrpPill: false,
+          showAccountLabels: false,
           account: {
             ...mockAccount,
             metadata: {
