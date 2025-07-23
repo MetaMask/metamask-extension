@@ -425,10 +425,14 @@ export function tryUnlockMetamask(
       callBackgroundMethod(
         'syncPasswordAndUnlockWallet',
         [password],
-        (error) => {
+        (error, isPasswordSynced) => {
           if (error) {
             reject(error);
             return;
+          }
+          // if password is not synced show connections removal warning to user.
+          if (!isPasswordSynced) {
+            dispatch(setShowConnectionsRemovedModal(true));
           }
 
           resolve();
@@ -454,23 +458,20 @@ export function checkIsSeedlessPasswordOutdated(
   skipCache = true,
 ): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
+    let isPasswordOutdated = false;
     try {
-      const isPasswordOutdated = await submitRequestToBackground<boolean>(
+      isPasswordOutdated = await submitRequestToBackground<boolean>(
         'checkIsSeedlessPasswordOutdated',
         [skipCache],
       );
       if (isPasswordOutdated) {
         await forceUpdateMetamaskState(dispatch);
       }
-      return isPasswordOutdated;
     } catch (error) {
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
+      log.warn('checkIsSeedlessPasswordOutdated error', error);
     }
+
+    return isPasswordOutdated;
   };
 }
 
@@ -2042,6 +2043,15 @@ export function unlockSucceeded(message?: string) {
   return {
     type: actionConstants.UNLOCK_SUCCEEDED,
     value: message,
+  };
+}
+
+export function setShowConnectionsRemovedModal(
+  showConnectionsRemovedModal: boolean,
+) {
+  return {
+    type: actionConstants.SET_SHOW_CONNECTIONS_REMOVED,
+    value: showConnectionsRemovedModal,
   };
 }
 
