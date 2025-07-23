@@ -4851,7 +4851,9 @@ export default class MetamaskController extends EventEmitter {
           log.error(
             `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
           );
-          if (
+          if (err instanceof RecoveryError) {
+            throw new JsonRpcError(-32603, err.message, err.data);
+          } else if (
             err.message ===
             SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
           ) {
