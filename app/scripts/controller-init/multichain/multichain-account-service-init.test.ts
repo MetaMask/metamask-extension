@@ -31,7 +31,7 @@ describe('MultichainAccountServiceInit', () => {
     jest.resetAllMocks();
   });
 
-  it('returns controller instance', () => {
+  it('returns service instance', () => {
     const requestMock = buildInitRequestMock();
     expect(MultichainAccountServiceInit(requestMock).controller).toBeInstanceOf(
       MultichainAccountService,
