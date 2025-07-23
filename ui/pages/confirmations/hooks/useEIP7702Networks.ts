@@ -30,22 +30,14 @@ export const useEIP7702Networks = (address: string) => {
     keyringType &&
     KEYRING_TYPES_SUPPORTING_7702.includes(keyringType as KeyringTypes);
 
-  // For non-EVM accounts we return a stable object to prevent re-renders
-  if (!isSupportedKeyringType) {
-    return {
-      network7702List: [],
-      networkSupporting7702Present: false,
-      pending: false,
-    };
-  }
-
   const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
 
   const [nonTestNetworks = {}, testNetworks = {}] = useMemo(() => {
     if (!isSupportedKeyringType) {
-      return [];
+      // We return empty objects for unsupported keyring types
+      return [{}, {}];
     }
     return Object.entries(multichainNetworks).reduce(
       ([nonTestnetsList, testnetsList], [id, network]) => {
