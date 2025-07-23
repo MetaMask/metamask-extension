@@ -5071,7 +5071,8 @@
     "message": "Pinagana"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Tutulungan ka ng email na ito at ng iyong password sa MetaMask na mabawi ang iyong account at mga parirala sa pagbawi."
+    "message": "Tutulungan ka ng email na ito at ng iyong password sa MetaMask na mabawi ang iyong account at mga parirala sa pagbawi.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "PAGBAWI SA $1",
