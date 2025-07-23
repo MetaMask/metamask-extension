@@ -5071,7 +5071,8 @@
     "message": "चालू किया गया"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "यह ईमेल और आपका MetaMask पासवर्ड आपको अपना अकाउंट और रिकवरी फ्रेज़ रिकवर करने में सहायता करेगा।"
+    "message": "यह ईमेल और आपका MetaMask पासवर्ड आपको अपना अकाउंट और रिकवरी फ्रेज़ रिकवर करने में सहायता करेगा।",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 रिकवरी",
