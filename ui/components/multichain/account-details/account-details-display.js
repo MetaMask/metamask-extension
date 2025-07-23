@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
@@ -55,9 +55,16 @@ export const AccountDetailsDisplay = ({
   }, [formatedAddress, handleCopy]);
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
-  const { networkSupporting7702Present, pending } = isEvmAccountType(accountType)
-    ? useEIP7702Networks(address)
-    : { networkSupporting7702Present: false, pending: false };
+
+  const eip7702Result = useEIP7702Networks(address);
+
+  // Memoize to prevent re-renders
+  const { networkSupporting7702Present, pending } = useMemo(() => {
+    if (!isEvmAccountType(accountType)) {
+      return { networkSupporting7702Present: false, pending: false };
+    }
+    return eip7702Result;
+  }, [accountType, eip7702Result]);
 
   return (
     <Box
