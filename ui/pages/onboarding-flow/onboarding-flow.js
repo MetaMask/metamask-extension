@@ -81,6 +81,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import LoadingScreen from '../../components/ui/loading-screen';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -103,6 +104,7 @@ const TWITTER_URL = 'https://twitter.com/MetaMask';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { pathname, search } = useLocation();
   const history = useHistory();
@@ -202,6 +204,7 @@ export default function OnboardingFlow() {
 
   const handleCreateNewAccount = async (password) => {
     try {
+      setIsLoading(true);
       let newSecretRecoveryPhrase;
       if (
         isSeedlessOnboardingFeatureEnabled &&
@@ -219,27 +222,34 @@ export default function OnboardingFlow() {
       setSecretRecoveryPhrase(newSecretRecoveryPhrase);
     } catch (error) {
       dispatch(setOnboardingErrorReport({ error, view: 'CreatePassword' }));
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleUnlock = async (password) => {
-    let retrievedSecretRecoveryPhrase;
+    try {
+      setIsLoading(true);
+      let retrievedSecretRecoveryPhrase;
 
-    if (
-      isSeedlessOnboardingFeatureEnabled &&
-      firstTimeFlowType === FirstTimeFlowType.socialImport
-    ) {
-      retrievedSecretRecoveryPhrase = await dispatch(
-        restoreSocialBackupAndGetSeedPhrase(password),
-      );
-    } else {
-      retrievedSecretRecoveryPhrase = await dispatch(
-        unlockAndGetSeedPhrase(password),
-      );
+      if (
+        isSeedlessOnboardingFeatureEnabled &&
+        firstTimeFlowType === FirstTimeFlowType.socialImport
+      ) {
+        retrievedSecretRecoveryPhrase = await dispatch(
+          restoreSocialBackupAndGetSeedPhrase(password),
+        );
+      } else {
+        retrievedSecretRecoveryPhrase = await dispatch(
+          unlockAndGetSeedPhrase(password),
+        );
+      }
+
+      setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      history.replace(nextRoute);
+    } finally {
+      setIsLoading(false);
     }
-
-    setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
-    history.push(nextRoute);
   };
 
   const handleImportWithRecoveryPhrase = async (password, srp) => {
@@ -433,6 +443,7 @@ export default function OnboardingFlow() {
           ])}
         </Button>
       )}
+      {isLoading && <LoadingScreen />}
     </Box>
   );
 }

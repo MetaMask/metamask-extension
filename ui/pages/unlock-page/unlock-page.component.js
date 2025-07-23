@@ -504,6 +504,9 @@ class UnlockPage extends Component {
                 'data-testid': 'unlock-password',
                 'aria-label': t('password'),
               }}
+              textFieldProps={{
+                disabled: isLocked,
+              }}
               onChange={(event) => this.handleInputChange(event)}
               type={TextFieldType.Password}
               value={password}
@@ -511,7 +514,6 @@ class UnlockPage extends Component {
               helpText={this.renderHelpText()}
               autoComplete
               autoFocus
-              disabled={isLocked}
               width={BlockSize.Full}
               marginBottom={4}
             />

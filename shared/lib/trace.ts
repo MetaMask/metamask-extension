@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import type * as Sentry from '@sentry/browser';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
 import { log as sentryLogger } from './setupSentry';
