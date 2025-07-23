@@ -32,14 +32,11 @@ export const useEIP7702Networks = (address: string) => {
 
   // For non-EVM accounts we return a stable object to prevent re-renders
   if (!isSupportedKeyringType) {
-    return useMemo(
-      () => ({
-        network7702List: [],
-        networkSupporting7702Present: false,
-        pending: false,
-      }),
-      [],
-    );
+    return {
+      network7702List: [],
+      networkSupporting7702Present: false,
+      pending: false,
+    };
   }
 
   const [multichainNetworks] = useSelector(
