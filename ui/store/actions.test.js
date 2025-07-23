@@ -250,6 +250,42 @@ describe('Actions', () => {
         storeKeyringEncryptionKeyStub.calledOnceWith('encryption-key'),
       ).toStrictEqual(true);
     });
+
+    it('should revert the keyring password change if socialSyncChangePassword fails', async () => {
+      const store = mockStore({
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const oldPassword = 'old-password';
+      const newPassword = 'new-password';
+
+      const socialSyncChangePasswordStub = sinon
+        .stub()
+        .rejects(new Error('error'));
+      const keyringChangePasswordStub = sinon.stub().resolves();
+      const exportEncryptionKeyStub = sinon.stub().resolves('encryption-key');
+      const storeKeyringEncryptionKeyStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        socialSyncChangePassword: socialSyncChangePasswordStub,
+        keyringChangePassword: keyringChangePasswordStub,
+        exportEncryptionKey: exportEncryptionKeyStub,
+        storeKeyringEncryptionKey: storeKeyringEncryptionKeyStub,
+      });
+
+      await setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(actions.changePassword(newPassword, oldPassword)),
+      ).rejects.toThrow('error');
+      expect(keyringChangePasswordStub.callCount).toStrictEqual(2);
+      expect(exportEncryptionKeyStub.callCount).toStrictEqual(1);
+      expect(
+        storeKeyringEncryptionKeyStub.calledOnceWith('encryption-key'),
+      ).toStrictEqual(true);
+    });
   });
 
   describe('#tryUnlockMetamask', () => {
