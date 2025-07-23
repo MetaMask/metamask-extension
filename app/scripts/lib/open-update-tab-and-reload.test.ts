@@ -1,5 +1,5 @@
-import { openUpdateTabAndReload } from './open-update-tab-and-reload';
 import browser from 'webextension-polyfill';
+import { openUpdateTabAndReload } from './open-update-tab-and-reload';
 
 jest.mock('webextension-polyfill', () => ({
   tabs: {
