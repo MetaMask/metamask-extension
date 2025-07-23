@@ -5071,7 +5071,8 @@
     "message": "已启用"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "该电子邮箱和您的 MetaMask 密码将帮助您找回账户及助记词。"
+    "message": "该电子邮箱和您的 MetaMask 密码将帮助您找回账户及助记词。",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 找回",
