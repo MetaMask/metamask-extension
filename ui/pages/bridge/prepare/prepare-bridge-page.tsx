@@ -478,7 +478,7 @@ const PrepareBridgePage = () => {
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
-    debouncedUpdateQuoteRequestInController(quoteParams, {
+    const eventProperties = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_enabled: smartTransactionsEnabled,
@@ -490,8 +490,11 @@ const PrepareBridgePage = () => {
       token_symbol_destination: toToken?.symbol ?? '',
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      security_warnings: [],
-    });
+      security_warnings: [txAlert?.descriptionId, tokenAlert?.titleId].filter(
+        Boolean,
+      ) as string[],
+    };
+    debouncedUpdateQuoteRequestInController(quoteParams, eventProperties);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteParams]);
 

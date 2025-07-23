@@ -1,0 +1,44 @@
+diff --git a/dist/bridge-controller.cjs b/dist/bridge-controller.cjs
+index 40a8e5772b50aa6378be5afa4404ed584753e42f..231da803a80d790d71384d7195992ac544d40e03 100644
+--- a/dist/bridge-controller.cjs
++++ b/dist/bridge-controller.cjs
+@@ -267,7 +267,7 @@ class BridgeController extends (0, polling_controller_1.StaticIntervalPollingCon
+                 // This call is not awaited to prevent blocking quote fetching if the snap takes too long to respond
+                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                 __classPrivateFieldGet(this, _BridgeController_setMinimumBalanceForRentExemptionInLamports, "f").call(this, updatedQuoteRequest.srcChainId);
+-                const quotes = await (0, fetch_1.fetchBridgeQuotes)(updatedQuoteRequest, 
++                const quotes = await (0, fetch_1.fetchBridgeQuotes)(updatedQuoteRequest,
+                 // AbortController is always defined by this line, because we assign it a few lines above,
+                 // not sure why Jest thinks it's not
+                 // Linters accurately say that it's defined
+@@ -523,7 +523,7 @@ class BridgeController extends (0, polling_controller_1.StaticIntervalPollingCon
+                     value !== this.state.quoteRequest[key]) {
+                     this.trackUnifiedSwapBridgeEvent(constants_1.UnifiedSwapBridgeEventName.InputChanged, {
+                         input: inputKey,
+-                        value: inputValue,
++                        input_value: inputValue,
+                     });
+                 }
+             });
+diff --git a/dist/bridge-controller.mjs b/dist/bridge-controller.mjs
+index 47d248848f5e87742a6b2edd73bab35d96498061..4dfa7d9a9e61ab22d790052e3f8a7815ccebab1d 100644
+--- a/dist/bridge-controller.mjs
++++ b/dist/bridge-controller.mjs
+@@ -264,7 +264,7 @@ export class BridgeController extends StaticIntervalPollingController() {
+                 // This call is not awaited to prevent blocking quote fetching if the snap takes too long to respond
+                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                 __classPrivateFieldGet(this, _BridgeController_setMinimumBalanceForRentExemptionInLamports, "f").call(this, updatedQuoteRequest.srcChainId);
+-                const quotes = await fetchBridgeQuotes(updatedQuoteRequest, 
++                const quotes = await fetchBridgeQuotes(updatedQuoteRequest,
+                 // AbortController is always defined by this line, because we assign it a few lines above,
+                 // not sure why Jest thinks it's not
+                 // Linters accurately say that it's defined
+@@ -520,7 +520,7 @@ export class BridgeController extends StaticIntervalPollingController() {
+                     value !== this.state.quoteRequest[key]) {
+                     this.trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.InputChanged, {
+                         input: inputKey,
+-                        value: inputValue,
++                        input_value: inputValue,
+                     });
+                 }
+             });
