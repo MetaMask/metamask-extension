@@ -1465,6 +1465,12 @@
   "connectionRequest": {
     "message": "Connection request"
   },
+  "connectionsRemovedModalDescription": {
+    "message": "Some connections (like hardware wallets and snaps) were removed due to inactivity on this device. You can re-add them anytime in Settings."
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "Connections removed"
+  },
   "contactUs": {
     "message": "Contact us"
   },
