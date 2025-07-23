@@ -55,6 +55,7 @@ export const MultichainAccountCell = ({
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.flexStart}
+        style={{ minWidth: 0, flex: 1, overflow: 'hidden' }}
       >
         <Box
           className="multichain-account-cell__account-avatar"
@@ -87,7 +88,9 @@ export const MultichainAccountCell = ({
             name={IconName.CheckBold}
             color={IconColor.primaryDefault}
             marginLeft={1}
+            marginRight={1}
             data-testid={`multichain-account-cell-${accountId}-selected-icon`}
+            style={{ flexShrink: 0 }}
           />
         )}
       </Box>
@@ -95,6 +98,7 @@ export const MultichainAccountCell = ({
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
+        style={{ flexShrink: 0 }}
       >
         <Text
           className="multichain-account-cell__account-balance"

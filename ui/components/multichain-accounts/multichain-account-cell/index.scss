@@ -3,15 +3,20 @@
     width: 40px;
     height: 40px;
     border-width: 2.2px;
+    flex-shrink: 0;
   }
 
   &__account-name {
     font-weight: 600;
-    max-width: 200px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__account-balance {
     font-weight: 600;
+    flex-shrink: 0;
   }
 
   &:hover {

@@ -156,5 +156,19 @@ export const MultipleAccounts: StoryFn<typeof MultichainAccountCell> = () => (
       onClick={() => console.log('Trading account clicked')}
       endAccessory={<MoreOptionsAccessory />}
     />
+    <MultichainAccountCell
+      accountId="0x3456789012abcdef"
+      accountName="Second trading account"
+      balance="$178,256,100.00"
+      onClick={() => console.log('Second trading account clicked')}
+      endAccessory={<MoreOptionsAccessory />}
+    />
+    <MultichainAccountCell
+      accountId="0x3456789012abcdef"
+      accountName="Second savings account"
+      balance="1722.943 ETH"
+      onClick={() => console.log('Second savings account clicked')}
+      endAccessory={<MoreOptionsAccessory />}
+    />
   </div>
 );
