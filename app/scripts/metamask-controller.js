@@ -2007,8 +2007,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainTransactionsController;
     this.multichainAssetsRatesController =
       controllersByName.MultichainAssetsRatesController;
-    this.MultichainAccountService =
-      controllersByName.MultichainAccountService;
+    this.MultichainAccountService = controllersByName.MultichainAccountService;
     ///: END:ONLY_INCLUDE_IF
     this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
