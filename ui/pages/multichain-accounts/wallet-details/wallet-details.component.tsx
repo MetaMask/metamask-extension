@@ -1,10 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  AccountGroupId,
-  AccountWalletId,
-} from '@metamask/account-tree-controller';
+import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import {
   SolScope,

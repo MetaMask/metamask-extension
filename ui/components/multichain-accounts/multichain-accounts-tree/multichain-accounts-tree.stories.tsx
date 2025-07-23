@@ -6,7 +6,7 @@ import { MultichainAccountsTree } from './index';
 import type {
   AccountGroupId,
   AccountWalletId,
-} from '@metamask/account-tree-controller';
+} from '@metamask/account-api';
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 
 export default {
