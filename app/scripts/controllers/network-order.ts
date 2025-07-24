@@ -8,7 +8,6 @@ import {
 import {
   NetworkControllerSetActiveNetworkAction,
   NetworkControllerStateChangeEvent,
-  NetworkControllerGetNetworkClientByIdAction,
   NetworkState,
   NetworkControllerNetworkRemovedEvent,
   NetworkControllerGetStateAction,
@@ -57,7 +56,6 @@ export type NetworkOrderControllerMessengerActions =
 
 type AllowedActions =
   | NetworkControllerGetStateAction
-  | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerSetActiveNetworkAction;
 
 // Type for the messenger of NetworkOrderController
@@ -191,6 +189,13 @@ export class NetworkOrderController extends BaseController<
         // Append new networks to the end
         .concat(newNetworks);
     });
+
+    // The network controller can potentially update to a chain that is not selected in our enabled network map.
+    // This ensures that we fallback to a network that has been added to our network map.
+    const evmChainIds = Object.keys(
+      this.state.enabledNetworkMap[KnownCaipNamespace.Eip155],
+    );
+    this.#switchToEnabledNetworkIfNeeded(evmChainIds);
   }
 
   onNetworkRemoved(networkId: Hex) {
@@ -203,6 +208,9 @@ export class NetworkOrderController extends BaseController<
     if (namespace === (KnownCaipNamespace.Eip155 as string)) {
       this.update((state) => {
         delete state.enabledNetworkMap[namespace][networkId];
+        if (Object.keys(state.enabledNetworkMap[namespace]).length === 0) {
+          state.enabledNetworkMap[namespace]['0x1'] = true;
+        }
       });
     } else {
       this.update((state) => {
@@ -289,7 +297,14 @@ export class NetworkOrderController extends BaseController<
       !chainIds.includes(selectedNetworkChainId) &&
       clientId
     ) {
-      this.messagingSystem.call('NetworkController:setActiveNetwork', clientId);
+      // Settimout delay to run this in a seperate 'tick'.
+      // There were some issues related to background state being updated, but persisted state not being updated.
+      setTimeout(() => {
+        this.messagingSystem.call(
+          'NetworkController:setActiveNetwork',
+          clientId,
+        );
+      }, 0);
     }
   }
 }

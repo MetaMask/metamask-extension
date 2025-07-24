@@ -110,7 +110,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           'Wallet 1',
         );
         await accountListPage.check_walletDisplayedInAccountListMenu(
-          'Snap: MetaMask Simple Snap Keyring',
+          'MetaMask Simple Snap Keyring',
         );
         await accountListPage.check_walletDetailsButtonIsDisplayed();
 

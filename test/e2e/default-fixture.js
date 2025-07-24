@@ -151,6 +151,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
+        tracesBeforeMetricsOptIn: [],
         fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,
