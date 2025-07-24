@@ -3176,9 +3176,6 @@
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
   },
-  "loadingTimeoutMessage": {
-    "message": "Loading seems to be taking longer than usual, try refreshing the page. If the problem persists, please contact support."
-  },
   "loadingTokenList": {
     "message": "Loading token list"
   },
@@ -6946,7 +6943,7 @@
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleStartingMessage": {
-    "message": "This error could be intermittent; try restarting the extension."
+    "message": "This error could be intermittent, so try restarting the extension."
   },
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
