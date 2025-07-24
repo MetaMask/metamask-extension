@@ -6,6 +6,7 @@
   align-self: center;
   margin: 10rem 0 0 0;
 }
+
 .loading-spinner {
   width: 2rem;
   height: 2rem;
@@ -27,12 +28,14 @@
     content: "__MSG_CSS_loadingTakingTooLongMessageText__";
     display: block;
   }
+
   &::after {
     direction: "__MSG_@@bidi_dir__";
     content: "__MSG_CSS_loadingTakingTooLongActionText__";
     display: block;
   }
 }
+
 @media (prefers-color-scheme: dark) {
   .loading-timeout-message {
     // the design system uses dark grey300 for `--color-text-alternative` in
@@ -48,9 +51,11 @@
   0% {
     opacity: 0;
   }
+
   99.999% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
