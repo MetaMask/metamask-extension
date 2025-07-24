@@ -8,6 +8,7 @@ import {
   isEthSignTypedData,
   hasValidTypedDataParams,
   getChainId,
+  isConnected,
 } from './trust-signals-util';
 import { SupportedEVMChain } from './types';
 
@@ -363,6 +364,51 @@ describe('trust-signals-util', () => {
 
         expect(getChainId(mockNetworkController)).toBe(expected);
       });
+    });
+  });
+
+  describe('isConnected', () => {
+    it('returns true when the user is connected', () => {
+      const req: JsonRpcRequest & { origin?: string } = {
+        method: MESSAGE_TYPE.ETH_ACCOUNTS,
+        origin: 'https://example.com',
+      } as JsonRpcRequest & { origin?: string };
+      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
+      expect(isConnected(req, getPermittedAccounts)).toBe(true);
+    });
+
+    it('should return false when the user is not connected', () => {
+      const req: JsonRpcRequest & { origin?: string } = {
+        method: MESSAGE_TYPE.ETH_ACCOUNTS,
+        origin: 'https://example.com',
+      } as JsonRpcRequest & { origin?: string };
+      const getPermittedAccounts = jest.fn().mockReturnValue([]);
+      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+    });
+
+    it('returns false when the method is not eth_accounts', () => {
+      const req: JsonRpcRequest & { origin?: string } = {
+        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+        origin: 'https://example.com',
+      } as JsonRpcRequest & { origin?: string };
+      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
+      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+    });
+
+    it('returns false when the origin is not present', () => {
+      const req: JsonRpcRequest & { origin?: string } = {
+        method: MESSAGE_TYPE.ETH_ACCOUNTS,
+      } as JsonRpcRequest & { origin?: string };
+      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
+      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+    });
+    it('returns false even if connected but different method', () => {
+      const req: JsonRpcRequest & { origin?: string } = {
+        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+        origin: 'https://example.com',
+      } as JsonRpcRequest & { origin?: string };
+      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
+      expect(isConnected(req, getPermittedAccounts)).toBe(false);
     });
   });
 });
