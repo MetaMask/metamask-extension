@@ -4,7 +4,7 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
 
 const baseUrl =
-  'https://user-storage\\.api\\.cx\\.metamask\\.io\\/api\\/v1\\/userstorage';
+  'https://user-storage\\.dev-api\\.cx\\.metamask\\.io\\/api\\/v1\\/userstorage';
 
 export const pathRegexps = {
   [USER_STORAGE_FEATURE_NAMES.accounts]: new RegExp(

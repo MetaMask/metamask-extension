@@ -378,6 +378,7 @@
     "encryptionKey": "string",
     "encryptionSalt": "string",
     "socialBackupsMetadata": "object",
+    "socialPairingDone": "boolean",
     "srpSessionData": "object",
     "enableEnforcedSimulations": true,
     "enableEnforcedSimulationsForTransactions": "object",
