@@ -857,9 +857,6 @@ async function buildEventFragmentProperties({
     eip1559Version = '2';
   }
 
-  const contractInteractionTypes =
-    type && CONTRACT_INTERACTION_TYPES.includes(type);
-
   const contractMethodNames = {
     APPROVE: 'Approve',
   };
@@ -1376,7 +1373,7 @@ function getMMSwapOrBridgeType(type: TransactionType): string | null {
  * Determines the transaction type for metrics and whether it's a contract interaction
  * @param type - The transaction type
  * @param originalType - The original transaction type (for retry transactions)
- * @returns Object containing the transaction type and whether it's a contract interaction
+ * @returns - Object containing final type and whether it's a contract interaction
  */
 function determineTransactionTypeAndContractInteraction(
   type: TransactionType,
