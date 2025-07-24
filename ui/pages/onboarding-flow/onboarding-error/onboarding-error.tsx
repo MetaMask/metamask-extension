@@ -31,6 +31,7 @@ import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { setOnboardingErrorReport } from '../../../store/actions';
 // eslint-disable-next-line import/no-restricted-paths
 import setupSentry from '../../../../app/scripts/lib/setupSentry';
+import { captureException } from '../../../../shared/lib/sentry';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -57,9 +58,9 @@ export default function OnboardingError() {
       return;
     }
     try {
-      const sentry = setupSentry(true);
+      setupSentry(true);
       const { error, view = 'Unknown' } = onboardingErrorReport || {};
-      sentry?.captureException(error, {
+      captureException(error, {
         extra: {
           view,
           context: 'OnboardingError forced report',
@@ -67,6 +68,8 @@ export default function OnboardingError() {
       });
     } catch (sentryError) {
       console.error('Failed to force report error to Sentry:', sentryError);
+    } finally {
+      setupSentry(false);
     }
   }, [onboardingErrorReport]);
 
