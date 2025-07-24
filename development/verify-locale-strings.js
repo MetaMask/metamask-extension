@@ -270,9 +270,6 @@ async function verifyEnglishLocale() {
     'appDescription',
     'rejected',
     'signed',
-    // used via CSS
-    'CSS_loadingTakingTooLongMessageText',
-    'CSS_loadingTakingTooLongActionText',
   ];
 
   const englishMessages = Object.keys(englishLocale);
