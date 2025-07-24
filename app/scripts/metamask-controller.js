@@ -4846,7 +4846,7 @@ export default class MetamaskController extends EventEmitter {
       // 2. Seedless controller failed but Keyring controller password verification succeeded.
       // 3. Both keyring and seedless controller password verification failed.
       await this.seedlessOnboardingController
-        .submitGlobalPassword({
+        .submitGlobalPasswordAndSync({
           globalPassword: password,
           maxKeyChainLength: 20,
         })
