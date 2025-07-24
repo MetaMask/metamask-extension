@@ -47,8 +47,6 @@ export function useTransactionConfirm() {
 
   const handleGasless7702 = useCallback(() => {
     newTransactionMeta.isExternalSign = true;
-    // Temporary add gas_payment type as we don't have gas_payment type in controller
-    newTransactionMeta.type = 'gas_payment' as unknown as TransactionType;
   }, [newTransactionMeta]);
 
   const onTransactionConfirm = useCallback(async () => {
