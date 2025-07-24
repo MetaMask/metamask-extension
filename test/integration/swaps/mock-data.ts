@@ -92,6 +92,7 @@ export const TOP_ASSETS_API_MOCK_RESULT = [
   },
 ];
 
+// eslint-disable-next-line @metamask/design-tokens/color-no-hex -- External API response data with third-party service branding colors
 export const AGGREGATOR_METADATA_API_MOCK_RESULT = {
   airswapLight: {
     color: '#2B71FF',
