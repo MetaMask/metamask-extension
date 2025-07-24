@@ -36,7 +36,8 @@ const useMultiPolling = <PollingInput>(
         pollingTokens.current.delete(inputKey);
       }
     }
-  }, [usePollingOptions.input && JSON.stringify(usePollingOptions.input)]);
+    // This effect will only run if a `usePollingOptions.input` array with a new reference is passed in as a prop.
+  }, [usePollingOptions.input]);
 
   // stop all polling on dismount
   useEffect(() => {

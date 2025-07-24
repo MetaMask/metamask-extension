@@ -6,7 +6,7 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 import { isEqual } from 'lodash';
-import React, { ReactNode, useEffect, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -69,7 +69,7 @@ import {
 } from '../../../components/app/assets/types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
-import { Asset } from '../types/asset';
+import { type Asset, isNativeAsset } from '../types/asset';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { getMultichainNativeAssetType } from '../../../selectors/assets';
 import AssetChart from './chart/asset-chart';
@@ -203,11 +203,14 @@ const AssetPage = ({
     : 0;
 
   // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
-  asset.balance = {
-    value: hexToDecimal(tokenHexBalance),
-    display: String(balance),
-    fiat: String(tokenFiatAmount),
-  };
+  const [updatedAsset] = useState({
+    ...asset,
+    balance: {
+      value: hexToDecimal(tokenHexBalance),
+      display: String(balance),
+      fiat: String(tokenFiatAmount),
+    },
+  });
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
@@ -299,7 +302,7 @@ const AssetPage = ({
         asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
       />
       <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-        {type === AssetType.native ? (
+        {isNativeAsset(updatedAsset) ? (
           <CoinButtons
             {...{
               account,
@@ -312,7 +315,7 @@ const AssetPage = ({
             }}
           />
         ) : (
-          <TokenButtons token={asset} />
+          <TokenButtons token={updatedAsset} />
         )}
       </Box>
       <Box
@@ -434,7 +437,7 @@ const AssetPage = ({
               </Box>
             </Box>
           )}
-          <AssetMarketDetails asset={asset} address={address} />
+          <AssetMarketDetails asset={updatedAsset} address={address} />
           <Box
             borderColor={BorderColor.borderMuted}
             marginInline={4}

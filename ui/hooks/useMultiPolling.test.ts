@@ -13,13 +13,22 @@ describe('useMultiPolling', () => {
 
     const mockStopPollingByPollingToken = jest.fn();
     const inputs = ['foo', 'bar'];
+    const initialProps = {
+      startPolling: mockStartPolling,
+      stopPollingByPollingToken: mockStopPollingByPollingToken,
+      input: inputs,
+    };
 
-    const { unmount, rerender } = renderHook(() =>
-      useMultiPolling({
-        startPolling: mockStartPolling,
-        stopPollingByPollingToken: mockStopPollingByPollingToken,
-        input: inputs,
-      }),
+    const { unmount, rerender } = renderHook(
+      ({ startPolling, stopPollingByPollingToken, input }) =>
+        useMultiPolling({
+          startPolling,
+          stopPollingByPollingToken,
+          input,
+        }),
+      {
+        initialProps,
+      },
     );
 
     // All inputs should start polling
@@ -29,10 +38,9 @@ describe('useMultiPolling', () => {
     }
 
     // Remove one input, and add another
-    inputs[0] = 'baz';
-    rerender({ input: inputs });
-    expect(mockStopPollingByPollingToken).toHaveBeenCalledWith('foo_token');
+    rerender({ ...initialProps, input: ['baz', ...inputs.slice(1)] });
     expect(mockStartPolling).toHaveBeenCalledWith('baz');
+    expect(mockStopPollingByPollingToken).toHaveBeenCalledWith('foo_token');
 
     // All inputs should stop polling on dismount
     await Promise.all(promises);
