@@ -139,16 +139,6 @@ export default function RecoveryPhraseChips({
         return fakeSeedPhraseWords[index % fakeSeedPhraseWords.length];
       });
 
-  const testProps = {
-    ...(process.env.IN_TEST
-      ? // tests use these attributes to verify the recovery phrase and quiz words
-        {
-          'data-recovery-phrase': phrasesToDisplay.join(':'),
-          'data-quiz-words': JSON.stringify(quizWords),
-        }
-      : {}),
-  };
-
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
       <Box
@@ -166,10 +156,11 @@ export default function RecoveryPhraseChips({
           alignItems={AlignItems.center}
           gap={2}
           data-testid="recovery-phrase-chips"
+          data-recovery-phrase={secretRecoveryPhrase.join(':')}
+          data-quiz-words={JSON.stringify(quizWords)}
           className={classnames('recovery-phrase__chips', {
             'recovery-phrase__chips--hidden': !phraseRevealed,
           })}
-          {...testProps}
         >
           {phrasesToDisplay.map((word, index) => {
             const isQuizWord = indicesToCheck.includes(index);
