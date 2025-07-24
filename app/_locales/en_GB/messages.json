@@ -5136,7 +5136,7 @@
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
   "securityLoginWithSocial": {
-    "message": "Login with $1",
+    "message": "Log in with $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securityLoginWithSrpBackedUp": {
