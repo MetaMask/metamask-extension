@@ -36,7 +36,8 @@ export const useEIP7702Networks = (address: string) => {
 
   const [nonTestNetworks = {}, testNetworks = {}] = useMemo(() => {
     if (!isSupportedKeyringType) {
-      return [];
+      // We return empty objects for unsupported keyring types
+      return [{}, {}];
     }
     return Object.entries(multichainNetworks).reduce(
       ([nonTestnetsList, testnetsList], [id, network]) => {

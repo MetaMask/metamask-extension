@@ -16,6 +16,8 @@ import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
+import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
+import { OAuthRefreshTokenResult } from '../services/oauth/types';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -209,9 +211,7 @@ export type ControllerInitRequest<
   /**
    * Refresh the OAuth token.
    */
-  refreshOAuthToken: () => Promise<{
-    idTokens: string[];
-  }>;
+  refreshOAuthToken: () => Promise<OAuthRefreshTokenResult>;
 
   /**
    * Revoke the current OAuth refresh token and get a new one.
@@ -220,6 +220,8 @@ export type ControllerInitRequest<
     newRefreshToken: string;
     newRevokeToken: string;
   }>;
+
+  getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
 };
 
 /**
