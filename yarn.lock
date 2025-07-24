@@ -7451,17 +7451,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:1.36.0":
-  version: 1.36.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.36.0"
-  checksum: 10/3bdc8d14be76e57c8b0a1244be7dfaa533c61827bb06921b8e8fbb3159e853808ccfcfa3fd718dadda370a445eebc3a93c25cb5ebcb1e59ec1339b7aa0498a24
+"@metamask/solana-wallet-snap@npm:1.35.2":
+  version: 1.35.2
+  resolution: "@metamask/solana-wallet-snap@npm:1.35.2"
+  checksum: 10/d1b3d08035ba0a9439486485e8449eed095d47a9a56525c61eabee9d615b080f600a46eb4cfe6da8c1d02e86fa9208cf0e10c00f79de6d80229625d0b710a095
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@patch:@metamask/solana-wallet-snap@npm%3A1.36.0#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.36.0-bc691d3aa4.patch":
-  version: 1.36.0
-  resolution: "@metamask/solana-wallet-snap@patch:@metamask/solana-wallet-snap@npm%3A1.36.0#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.36.0-bc691d3aa4.patch::version=1.36.0&hash=45324a"
-  checksum: 10/80339930cc3047e3d5ea71f0069537c4d52f61723ecb6b7613b2f1b98a64115040a368a78f6eb45f9d54ff6bfddb7825d244d6221ad7b7b6f48f0e1a4692c73a
+"@metamask/solana-wallet-snap@patch:@metamask/solana-wallet-snap@npm%3A1.35.2#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.35.2-f381656714.patch":
+  version: 1.35.2
+  resolution: "@metamask/solana-wallet-snap@patch:@metamask/solana-wallet-snap@npm%3A1.35.2#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.35.2-f381656714.patch::version=1.35.2&hash=0c504d"
+  checksum: 10/bcd2a7839e2df4ae6f8031b7c04b2fb594412fe7760a0497c79ea9e1c35e7387cb7401e4a6c62dd1e0f8b0577b4c92e676889ce5a10060c056328dd5f808b303
   languageName: node
   linkType: hard
 
@@ -31930,7 +31930,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.3.0"
     "@metamask/snaps-sdk": "npm:^9.1.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
-    "@metamask/solana-wallet-snap": "patch:@metamask/solana-wallet-snap@npm%3A1.36.0#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.36.0-bc691d3aa4.patch"
+    "@metamask/solana-wallet-snap": "patch:@metamask/solana-wallet-snap@npm%3A1.35.2#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.35.2-f381656714.patch"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.2.0"
     "@metamask/superstruct": "npm:^3.2.1"
