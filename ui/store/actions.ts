@@ -296,6 +296,7 @@ export function createNewVaultAndSyncWithSocial(
         seedPhrase,
         primaryKeyring.metadata.id,
       );
+      dispatch(hideWarning());
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -325,6 +326,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
         [password],
       );
 
+      dispatch(hideWarning());
       await forceUpdateMetamaskState(dispatch);
       return mnemonic;
     } catch (error) {
@@ -344,6 +346,8 @@ export function syncSeedPhrases(): ThunkAction<
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('syncSeedPhrases');
+      dispatch(hideWarning());
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error('[syncSeedPhrases] error', error);
       dispatch(displayWarning(error.message));
@@ -445,6 +449,7 @@ export function tryUnlockMetamask(
       })
       .then(() => {
         dispatch(hideLoadingIndication());
+        dispatch(hideWarning());
       })
       .catch((err) => {
         dispatch(unlockFailed(getErrorMessage(err)));
@@ -556,6 +561,7 @@ export function importMnemonicToVault(mnemonic: string): ThunkAction<
     })
       .then(async (result) => {
         dispatch(hideLoadingIndication());
+        dispatch(hideWarning());
         dispatch(setShowNewSrpAddedToast(true));
         return result;
       })
