@@ -1,7 +1,11 @@
 import type * as Sentry from '@sentry/browser';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
-import { log as sentryLogger } from './setupSentry';
+// TODO: Remove restricted import
+import {
+  log as sentryLogger,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../app/scripts/lib/setupSentry';
 
 /**
  * The supported trace names.
