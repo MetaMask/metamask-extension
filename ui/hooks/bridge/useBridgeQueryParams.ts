@@ -186,7 +186,7 @@ export const useBridgeQueryParams = (
           chainId,
           address:
             isNativeReference || isNativeAddress(assetReference)
-              ? nativeAsset.address
+              ? (nativeAsset?.address ?? '')
               : assetReference,
         };
         // Only update if chain is different

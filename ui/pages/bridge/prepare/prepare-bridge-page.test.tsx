@@ -2,7 +2,6 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import * as reactRouterUtils from 'react-router-dom-v5-compat';
 import * as ReactReduxModule from 'react-redux';
-import { zeroAddress } from 'ethereumjs-util';
 import { userEvent } from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderHook } from '@testing-library/react-hooks';
