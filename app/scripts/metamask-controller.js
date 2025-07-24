@@ -4903,11 +4903,6 @@ export default class MetamaskController extends EventEmitter {
 
       let changePasswordSuccess = false;
       try {
-        // update seedlessOnboardingController to use latest global password
-        await this.seedlessOnboardingController.syncLatestGlobalPassword({
-          globalPassword: password,
-        });
-
         this.metaMetricsController.bufferedTrace?.({
           name: TraceName.OnboardingResetPassword,
           op: TraceOperation.OnboardingSecurityOp,
