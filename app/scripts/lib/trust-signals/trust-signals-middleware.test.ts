@@ -39,13 +39,13 @@ const MOCK_SCAN_RESPONSES = {
 const createMockRequest = (
   method: string,
   params: Json[] = [],
-  mainFrameOrigin: string = 'https://example.com',
-): JsonRpcRequest & { mainFrameOrigin?: string } => ({
+  origin: string = 'https://example.com',
+): JsonRpcRequest & { origin?: string } => ({
   method,
   params,
   id: 1,
   jsonrpc: '2.0',
-  mainFrameOrigin,
+  origin,
 });
 
 const createMockResponse = (): JsonRpcResponse => ({
@@ -175,9 +175,7 @@ describe('createTrustSignalsMiddleware', () => {
         appStateController,
         networkController,
       );
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(
-        req.mainFrameOrigin,
-      );
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
       expect(next).toHaveBeenCalled();
     });
 
@@ -561,12 +559,12 @@ describe('createTrustSignalsMiddleware', () => {
   });
 
   describe('eth_accounts', () => {
-    it('scans URL when mainFrameOrigin is present', async () => {
+    it('scans URL when origin is present', async () => {
       const { middleware, phishingController } = createMiddleware();
-      const mainFrameOrigin = 'https://example.com';
+      const origin = 'https://example.com';
       const req = {
         ...createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS),
-        mainFrameOrigin,
+        origin,
       };
       const res = createMockResponse();
       const next = jest.fn();
@@ -579,14 +577,14 @@ describe('createTrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(mainFrameOrigin);
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
       expect(next).toHaveBeenCalled();
     });
 
-    it('does not scan URL when mainFrameOrigin is not present', async () => {
+    it('does not scan URL when origin is not present', async () => {
       const { middleware, phishingController } = createMiddleware();
       const req = createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS);
-      req.mainFrameOrigin = undefined;
+      req.origin = undefined;
       const res = createMockResponse();
       const next = jest.fn();
 
@@ -598,10 +596,10 @@ describe('createTrustSignalsMiddleware', () => {
 
     it('handles phishing scan errors gracefully', async () => {
       const { middleware, phishingController } = createMiddleware();
-      const mainFrameOrigin = 'https://malicious.com';
+      const origin = 'https://malicious.com';
       const req = {
         ...createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS),
-        mainFrameOrigin,
+        origin,
       };
       const res = createMockResponse();
       const next = jest.fn();
@@ -615,7 +613,7 @@ describe('createTrustSignalsMiddleware', () => {
 
       await new Promise((resolve) => setTimeout(resolve, 0));
 
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(mainFrameOrigin);
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
       expect(next).toHaveBeenCalled();
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
