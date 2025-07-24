@@ -1103,6 +1103,12 @@
         "@metamask/superstruct": true
       }
     },
+    "@metamask/multichain-account-service>@metamask/account-api": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/account-api>@metamask/keyring-utils": true
+      }
+    },
     "@metamask/account-tree-controller": {
       "globals": {
         "console.warn": true
@@ -1888,6 +1894,16 @@
         "browserify>buffer": true,
         "webpack>events": true,
         "uuid": true
+      }
+    },
+    "@metamask/multichain-account-service": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/multichain-account-service>@metamask/account-api": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true
       }
     },
     "@metamask/multichain-api-middleware": {
