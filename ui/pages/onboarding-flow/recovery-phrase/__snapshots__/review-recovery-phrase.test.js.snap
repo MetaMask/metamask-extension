@@ -71,7 +71,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
           <div
             class="mm-box recovery-phrase__chips recovery-phrase__chips--hidden mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             data-quiz-words="[]"
-            data-recovery-phrase="candy:maple:cake:sugar:pudding:cream:honey:rich:smooth:crumble:sweet:treat"
+            data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
             data-testid="recovery-phrase-chips"
           >
             <div
