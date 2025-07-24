@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
@@ -19,7 +19,10 @@ import {
   IconColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   Box,
   Button,
@@ -34,6 +37,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getFirstTimeFlowType,
   getExternalServicesOnboardingToggleState,
+  getCurrentKeyring,
 } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
@@ -49,6 +53,7 @@ export default function OnboardingPinExtension() {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const currentKeyring = useSelector(getCurrentKeyring);
 
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
@@ -71,6 +76,13 @@ export default function OnboardingPinExtension() {
     });
     history.push(DEFAULT_ROUTE);
   };
+
+  useEffect(() => {
+    // if the user has not created a wallet, redirect to onboarding welcome route
+    if (!currentKeyring) {
+      history.replace(ONBOARDING_WELCOME_ROUTE);
+    }
+  }, [currentKeyring, history]);
 
   return (
     <Box
