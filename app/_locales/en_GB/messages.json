@@ -7028,7 +7028,7 @@
     "message": "Password is incorrect. Please try again."
   },
   "unlockPageTooManyFailedAttempts": {
-    "message": "Too many failed attempts. Please try again in "
+    "message": "Too many attempts. Try again in "
   },
   "unpin": {
     "message": "Unpin"

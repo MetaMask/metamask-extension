@@ -6,7 +6,7 @@ import { MultichainAccountsTree } from './index';
 import type {
   AccountGroupId,
   AccountWalletId,
-} from '@metamask/account-tree-controller';
+} from '@metamask/account-api';
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 
 export default {
@@ -26,11 +26,9 @@ export default {
 } as Meta<typeof MultichainAccountsTree>;
 
 const walletOneId: AccountWalletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
-const walletOneGroupId: AccountGroupId =
-  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ:default';
+const walletOneGroupId: AccountGroupId = `${walletOneId}/default`;
 const walletTwoId: AccountWalletId = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
-const walletTwoGroupId: AccountGroupId =
-  'entropy:01JKAF3PJ247KAM6C03G5Q0NP8:default';
+const walletTwoGroupId: AccountGroupId = `${walletTwoId}/default`;
 
 const mockWallets: ConsolidatedWallets = {
   [walletOneId]: {
