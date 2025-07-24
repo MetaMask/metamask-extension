@@ -4774,9 +4774,6 @@
   "rateIncludesMMFee": {
     "message": "Rate includes $1% fee"
   },
-  "rateIncludesMMFeeAndGas": {
-    "message": "Rate includes $1% fee and gas"
-  },
   "reAddAccounts": {
     "message": "re-add any other accounts"
   },
