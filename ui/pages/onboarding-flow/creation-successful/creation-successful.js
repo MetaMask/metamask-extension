@@ -199,6 +199,33 @@ export default function CreationSuccessful() {
             className="creation-successful__settings-actions"
             gap={4}
           >
+            <Button
+              variant={ButtonVariant.Secondary}
+              data-testid="manage-default-settings"
+              borderRadius={BorderRadius.LG}
+              width={BlockSize.Full}
+              onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+            >
+              <Box display={Display.Flex} alignItems={AlignItems.center}>
+                <Icon
+                  name={IconName.Setting}
+                  size={IconSize.Md}
+                  marginInlineEnd={3}
+                />
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('manageDefaultSettings')}
+                </Text>
+              </Box>
+              <Icon
+                name={IconName.ArrowRight}
+                color={IconColor.iconAlternative}
+                size={IconSize.Sm}
+              />
+            </Button>
+
             <ButtonBase
               data-testid="manage-default-settings"
               borderRadius={BorderRadius.LG}
