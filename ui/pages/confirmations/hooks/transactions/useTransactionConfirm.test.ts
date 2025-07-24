@@ -131,22 +131,6 @@ describe('useTransactionConfirm', () => {
     );
   });
 
-  it('updates transaction type and isExternalSign if transaction is gasless 7702', async () => {
-    getIsSmartTransactionMock.mockReturnValue(false);
-
-    const { onTransactionConfirm } = runHook({
-      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
-    });
-
-    await onTransactionConfirm();
-
-    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
-
-    expect(actualTransactionMeta.type).toBe('gas_payment');
-    expect(actualTransactionMeta.isExternalSign).toBe(true);
-  });
-
   it('does not update transaction params if smart transaction and no selected gas fee token', async () => {
     getIsSmartTransactionMock.mockReturnValue(true);
 
