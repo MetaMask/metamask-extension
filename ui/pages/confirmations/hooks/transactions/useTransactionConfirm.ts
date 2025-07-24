@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
@@ -44,6 +47,8 @@ export function useTransactionConfirm() {
 
   const handleGasless7702 = useCallback(() => {
     newTransactionMeta.isExternalSign = true;
+    // Temporary add gas_payment type as we don't have gas_payment type in controller
+    newTransactionMeta.type = 'gas_payment' as unknown as TransactionType;
   }, [newTransactionMeta]);
 
   const onTransactionConfirm = useCallback(async () => {

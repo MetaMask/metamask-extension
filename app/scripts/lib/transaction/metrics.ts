@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
 import {
@@ -68,6 +69,8 @@ const log = createProjectLogger('transaction-metrics');
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
 const CONTRACT_INTERACTION_TYPES = [
+  TransactionType.bridge,
+  TransactionType.bridgeApproval,
   TransactionType.contractInteraction,
   TransactionType.tokenMethodApprove,
   TransactionType.tokenMethodIncreaseAllowance,
@@ -374,8 +377,6 @@ export const handlePostTransactionBalanceUpdate = async (
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties: { ...transactionMeta.swapMetaData },
         properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: getHDEntropyIndex(),
         },
       });
@@ -420,23 +421,11 @@ export const handlePostTransactionBalanceUpdate = async (
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties: {
           ...transactionMeta.swapMetaData,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_to_amount_received: tokensReceived,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           quote_vs_executionRatio: quoteVsExecutionRatio,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           trade_and_approval_gas_cost_in_eth:
             transactionsCost.tradeAndApprovalGasCostInEth,
           // Firefox and Chrome have different implementations of the APIs
@@ -444,14 +433,10 @@ export const handlePostTransactionBalanceUpdate = async (
           // numbers are converted into number strings, on firefox they remain
           // Big Number objects. As such, we convert them here for both
           // browsers.
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_to_amount:
             transactionMeta.swapMetaData.token_to_amount.toString(10),
         },
         properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: getHDEntropyIndex(),
         },
       });
@@ -886,18 +871,15 @@ async function buildEventFragmentProperties({
   let transactionApprovalAmountVsProposedRatio;
   let transactionApprovalAmountVsBalanceRatio;
   let transactionContractAddress;
-  let transactionType = TransactionType.simpleSend;
   let transactionContractMethod4Byte;
-  if (type === TransactionType.swapAndSend) {
-    transactionType = TransactionType.swapAndSend;
-  } else if (type === TransactionType.cancel) {
-    transactionType = TransactionType.cancel;
-  } else if (type === TransactionType.retry && originalType) {
-    transactionType = originalType;
-  } else if (type === TransactionType.deployContract) {
-    transactionType = TransactionType.deployContract;
-  } else if (contractInteractionTypes) {
-    transactionType = TransactionType.contractInteraction;
+
+  const { transactionType, isContractInteraction } =
+    determineTransactionTypeAndContractInteraction(
+      type as TransactionType,
+      originalType,
+    );
+
+  if (isContractInteraction) {
     transactionContractMethod = contractMethodName;
     transactionContractAddress = transactionMeta.txParams?.to;
     transactionContractMethod4Byte = transactionMeta.txParams?.data?.slice(
@@ -1355,11 +1337,6 @@ function addGaslessProperties(
     transactionMeta,
     getAccountBalance,
   );
-
-  // Temporary pending nested transaction type support
-  if (batchId && !batchTransactions?.length && !nestedTransactions?.length) {
-    properties.transaction_type = 'gas_payment';
-  }
 }
 
 async function getNestedMethodNames(
@@ -1400,4 +1377,76 @@ function isInsufficientNativeBalance(
   const totalCost = add0x(addHexes(gasCost, value ?? '0x0'));
 
   return new Numeric(totalCost, 16).greaterThan(new Numeric(nativeBalance, 16));
+}
+
+function getMMSwapOrBridgeType(type: TransactionType): string | null {
+  if (type === TransactionType.swap) {
+    return 'mm_swap';
+  } else if (type === TransactionType.bridge) {
+    return 'mm_bridge';
+  }
+  return null;
+}
+
+/**
+ * Determines the transaction type for metrics and whether it's a contract interaction
+ * @param type - The transaction type
+ * @param originalType - The original transaction type (for retry transactions)
+ * @returns Object containing the transaction type and whether it's a contract interaction
+ */
+function determineTransactionTypeAndContractInteraction(
+  type: TransactionType,
+  originalType?: TransactionType,
+): {
+  transactionType: TransactionType;
+  isContractInteraction: boolean;
+} {
+  const isContractInteraction =
+    type && CONTRACT_INTERACTION_TYPES.includes(type);
+
+  // Direct type assignments
+  const directTypeMappings = [
+    TransactionType.swapAndSend,
+    TransactionType.cancel,
+    TransactionType.deployContract,
+    'gas_payment',
+  ];
+
+  if (directTypeMappings.includes(type)) {
+    return {
+      transactionType: type,
+      isContractInteraction,
+    };
+  }
+
+  // Special case for retry transactions
+  if (type === TransactionType.retry && originalType) {
+    return {
+      transactionType: originalType,
+      isContractInteraction,
+    };
+  }
+
+  // Contract interaction types
+  if (isContractInteraction) {
+    const mmSwapOrBridgeType = getMMSwapOrBridgeType(type);
+    if (mmSwapOrBridgeType) {
+      // This doesn't have to be valid transaction type as it's required to be different values for metrics
+      return {
+        transactionType: mmSwapOrBridgeType as unknown as TransactionType,
+        isContractInteraction: true,
+      };
+    }
+
+    return {
+      transactionType: TransactionType.contractInteraction,
+      isContractInteraction: true,
+    };
+  }
+
+  // Default fallback
+  return {
+    transactionType: TransactionType.simpleSend,
+    isContractInteraction: false,
+  };
 }
