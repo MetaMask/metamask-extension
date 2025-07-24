@@ -117,7 +117,10 @@ const DefaultNetworks = memo(() => {
     const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
     dispatch(setEnabledNetworks(evmChainIds, namespace));
-    dispatch(setActiveNetwork(finalNetworkClientId));
+    // deferring execution to keep select all unblocked
+    setTimeout(() => {
+      dispatch(setActiveNetwork(finalNetworkClientId));
+    }, 0);
   }, [dispatch, evmNetworks, namespace, orderedNetworks]);
 
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
@@ -174,7 +177,7 @@ const DefaultNetworks = memo(() => {
             startAccessory={
               singleRemainingNetwork && isLastRemainingNetwork ? (
                 <Tooltip
-                  title={'Must have at least one network enabled'}
+                  title={t('networkManagerMustHaveAtLeastOneNetworkEnabled')}
                   position="top"
                 >
                   <Checkbox label="" isChecked={isEnabled} />

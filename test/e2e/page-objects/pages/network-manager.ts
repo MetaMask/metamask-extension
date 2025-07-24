@@ -1,4 +1,16 @@
+import { regularDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+
+export enum NetworkId {
+  ETHEREUM = 'eip155:1',
+  LINEA = 'eip155:59144',
+  ARBITRUM = 'eip155:42161',
+  AVALANCHE = 'eip155:43114',
+  BSC = 'eip155:56',
+  BASE = 'eip155:8453',
+  OPTIMISM = 'eip155:10',
+  POLYGON = 'eip155:137',
+}
 
 class NetworkManager {
   protected readonly driver: Driver;
@@ -47,18 +59,28 @@ class NetworkManager {
     await this.driver.delay(1000); // small delay to ensure networks are all selected
   }
 
+  async selectNetworkByChainId(chainId: string): Promise<void> {
+    await this.driver.clickElementSafe(this.networkListItem(chainId));
+  }
+
   // Method to select/click on a network item
   async selectNetwork(networkName: string): Promise<void> {
     console.log(`Selecting network: ${networkName}`);
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsDeselected(networkName);
+    await this.driver.delay(regularDelayMs);
     await this.driver.clickElementSafe(this.networkListItem(networkName));
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsSelected(networkName);
   }
 
   async deselectNetwork(networkName: string): Promise<void> {
     console.log(`Deselecting network: ${networkName}`);
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsSelected(networkName);
+    await this.driver.delay(regularDelayMs);
     await this.driver.clickElementSafe(this.networkListItem(networkName));
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsDeselected(networkName);
   }
 

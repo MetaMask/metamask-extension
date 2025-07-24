@@ -4,13 +4,18 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
+import { Platform } from '@metamask/profile-sync-controller/sdk';
 import { isSolanaAddress } from '../../../shared/lib/multichain/accounts';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
-import { updateSlides } from '../../store/actions';
+import {
+  getUserProfileMetaMetrics as getUserProfileMetaMetricsAction,
+  updateSlides,
+} from '../../store/actions';
 import {
   getRemoteFeatureFlags,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
+  getShowDownloadMobileAppSlide,
   getSlides,
   getUseExternalServices,
 } from '../../selectors';
@@ -30,6 +35,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
+  DOWNLOAD_MOBILE_APP_SLIDE,
 } from './constants';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
@@ -67,6 +73,7 @@ export const useCarouselManagement = ({
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const useExternalServices = useSelector(getUseExternalServices);
+  const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
   const prevSlidesRef = useRef<CarouselSlide[]>();
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
@@ -132,6 +139,19 @@ export const useCarouselManagement = ({
       const contentfulEnabled =
         remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
+      if (useExternalServices && showDownloadMobileAppSlide) {
+        const userProfileMetaMetrics = await getUserProfileMetaMetricsAction();
+        if (userProfileMetaMetrics) {
+          const isUserAvailableOnMobile = userProfileMetaMetrics.lineage.some(
+            (lineage) => lineage.agent === Platform.MOBILE,
+          );
+
+          if (!isUserAvailableOnMobile) {
+            defaultSlides.unshift(DOWNLOAD_MOBILE_APP_SLIDE);
+          }
+        }
+      }
+
       if (contentfulEnabled) {
         try {
           const { prioritySlides, regularSlides } =
@@ -179,7 +199,13 @@ export const useCarouselManagement = ({
       }
     };
 
-    maybeFetchContentful();
+    (async () => {
+      try {
+        await maybeFetchContentful();
+      } catch (err) {
+        log.warn('Failed to load carousel slides:', err);
+      }
+    })();
   }, [
     dispatch,
     hasZeroBalance,
@@ -189,6 +215,7 @@ export const useCarouselManagement = ({
     slides,
     selectedAccount.address,
     useExternalServices,
+    showDownloadMobileAppSlide,
   ]);
 
   return { slides };

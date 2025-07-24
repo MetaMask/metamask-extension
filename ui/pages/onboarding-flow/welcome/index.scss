@@ -24,11 +24,8 @@
     max-width: 548px;
   }
 
-  // SRP_OVERRIDE: bg always white
   &__button {
-    background-color: var(--brand-colors-white);
     width: 240px;
-    color: var(--brand-colors-black);
   }
 }
 
@@ -55,16 +52,6 @@
     &--image {
       margin-bottom: 60px;
     }
-  }
-
-  &__create-button {
-    background-color: var(--brand-colors-black);
-    color: var(--brand-colors-white);
-  }
-
-  &__import-button {
-    border: 1px solid var(--brand-colors-black);
-    color: var(--brand-colors-black);
   }
 }
 
