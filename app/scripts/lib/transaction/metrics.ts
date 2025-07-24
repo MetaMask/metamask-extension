@@ -980,8 +980,6 @@ async function buildEventFragmentProperties({
 
   // Add Entropy Properties
   const hdEntropyProperties = {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
   };
 
@@ -997,61 +995,31 @@ async function buildEventFragmentProperties({
 
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     chain_id: chainId,
     referrer,
     source,
     status,
     network: `${parseInt(chainId, 16)}`,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     eip_1559_version: eip1559Version,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_edit_type: 'none',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_edit_attempted: 'none',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_estimation_failed: Boolean(simulationFails),
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    account_type: accountType,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    account_type: await transactionMetricsRequest.getAccountType(
+      transactionMetricsRequest.getSelectedAddress(),
+    ),
     device_model: await transactionMetricsRequest.getDeviceModel(
       transactionMetricsRequest.getSelectedAddress(),
     ),
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     asset_type: assetType,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     token_standard: tokenStandard,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_type: transactionType,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_speed_up: type === TransactionType.retry,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_internal_id: id,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_fee_selected: gasFeeSelected,
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_advanced_view: isAdvancedDetailsOpen,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_contract_method: transactionContractMethod
       ? [transactionContractMethod]
       : [],
@@ -1074,34 +1042,21 @@ async function buildEventFragmentProperties({
   if (transactionContractMethod === contractMethodNames.APPROVE) {
     properties = {
       ...properties,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       transaction_approval_amount_type: transactionApprovalAmountType,
     };
   }
 
   let sensitiveProperties = {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_envelope_type: isEIP1559Transaction(transactionMeta)
       ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
       : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     first_seen: time,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_limit: gasLimit,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_replaced: transactionReplaced,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_contract_address: transactionContractAddress
       ? [transactionContractAddress]
       : [],
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
@@ -1113,12 +1068,10 @@ async function buildEventFragmentProperties({
   if (transactionContractMethod === contractMethodNames.APPROVE) {
     sensitiveProperties = {
       ...sensitiveProperties,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       transaction_approval_amount_vs_balance_ratio:
         transactionApprovalAmountVsBalanceRatio,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       transaction_approval_amount_vs_proposed_ratio:
         transactionApprovalAmountVsProposedRatio,
     };
