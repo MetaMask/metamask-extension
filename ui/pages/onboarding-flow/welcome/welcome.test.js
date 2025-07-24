@@ -1,8 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { waitFor } from '@testing-library/dom';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import * as Actions from '../../../store/actions';
+import { ONBOARDING_ERROR_ROUTE } from '../../../helpers/constants/routes';
 import Welcome from './welcome';
 import { WelcomePageState } from './types';
 
@@ -61,14 +61,14 @@ describe('Welcome Page', () => {
     expect(agreeButton).toBeDisabled();
   });
 
-  it('should show the onboarding error page when the error thrown in login', async () => {
+  it('should redirect to onboarding error page when the error thrown in login', async () => {
     process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
 
     jest
       .spyOn(Actions, 'startOAuthLogin')
       .mockRejectedValue(new Error('login error'));
 
-    const { getByText, getByTestId } = renderWithProvider(
+    const { getByText, getByTestId, history } = renderWithProvider(
       <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
       mockStore,
     );
@@ -81,8 +81,6 @@ describe('Welcome Page', () => {
     );
     fireEvent.click(createWithGoogleButton);
 
-    await waitFor(() => {
-      expect(getByTestId('onboarding-error')).toBeInTheDocument();
-    });
+    expect(history.location.pathname).toStrictEqual(ONBOARDING_ERROR_ROUTE);
   });
 });
