@@ -53,6 +53,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
+  getShowTestNetworks,
 } from '../../../../../selectors';
 import Tooltip from '../../../../ui/tooltip';
 
@@ -60,6 +61,7 @@ const DefaultNetworks = memo(() => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
+  console.log('orderedNetworksList', orderedNetworksList);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -68,6 +70,7 @@ const DefaultNetworks = memo(() => {
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
   const currentCaipChainId = useSelector(getSelectedMultichainNetworkChainId);
   const { namespace } = parseCaipChainId(currentCaipChainId);
+  const showTestnets = useSelector(getShowTestNetworks);
 
   // Use the shared network change handlers hook
   const { handleNetworkChange } = useNetworkChangeHandlers();
@@ -78,12 +81,16 @@ const DefaultNetworks = memo(() => {
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
   // Use the shared state hook
-  const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
+  const { nonTestNetworks, testNetworks, isNetworkInDefaultNetworkTab } =
     useNetworkManagerState({ showDefaultNetworks: true });
 
   // Memoize sorted networks to avoid expensive sorting on every render
   const orderedNetworks = useMemo(
     () => sortNetworks(nonTestNetworks, orderedNetworksList),
+    [nonTestNetworks, orderedNetworksList],
+  );
+  const orderedTestNetworks = useMemo(
+    () => sortNetworks(testNetworks, orderedNetworksList),
     [nonTestNetworks, orderedNetworksList],
   );
 

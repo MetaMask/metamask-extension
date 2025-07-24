@@ -52,6 +52,7 @@ import {
   getManageInstitutionalWallets,
   getHDEntropyIndex,
   getIsMultichainAccountsState1Enabled,
+  getShowTestNetworks,
 } from '../../../selectors';
 import {
   MetaMetricsEventAccountType,
@@ -109,6 +110,8 @@ export const ACTION_MODES = {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
+  // Displays the add account form controls (for bitcoin testnet account)
+  ADD_BITCOIN_TESTNET: 'add-bitcoin-testnet',
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   // Displays the add account form controls (for solana account)
@@ -131,6 +134,10 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
   [ACTION_MODES.ADD_BITCOIN]: {
     clientType: WalletClientType.Bitcoin,
     chainId: MultichainNetworks.BITCOIN,
+  },
+  [ACTION_MODES.ADD_BITCOIN_TESTNET]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN_TESTNET,
   },
   [ACTION_MODES.ADD_SOLANA]: {
     clientType: WalletClientType.Solana,
@@ -163,6 +170,8 @@ export const getActionTitle = (
     ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
+    case ACTION_MODES.ADD_BITCOIN_TESTNET:
+      return t('addAccountFromNetwork', [t('networkNameBitcoinTestnet')]);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     case ACTION_MODES.ADD_SOLANA:
@@ -247,6 +256,7 @@ export const AccountMenu = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
+  const showTestnets = useSelector(getShowTestNetworks);
   const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Bitcoin,
   );
@@ -477,32 +487,60 @@ export const AccountMenu = ({
               )
               ///: END:ONLY_INCLUDE_IF
             }
+
             {
               ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-              bitcoinSupportEnabled && (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    startIconProps={{ size: IconSize.Md }}
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    onClick={async () => {
-                      return await handleMultichainSnapAccountCreation(
-                        bitcoinWalletSnapClient,
-                        {
-                          scope: MultichainNetworks.BITCOIN,
-                          entropySource: primaryKeyring.metadata.id,
-                        },
-                        ACTION_MODES.ADD_BITCOIN,
-                      );
-                    }}
-                    data-testid="multichain-account-menu-popover-add-btc-account"
-                  >
-                    {t('addBitcoinAccountLabel')}
-                  </ButtonLink>
-                </Box>
-              )
+              <>
+                {bitcoinSupportEnabled && (
+                  <Box marginTop={4}>
+                    <ButtonLink
+                      size={ButtonLinkSize.Sm}
+                      startIconName={IconName.Add}
+                      startIconProps={{ size: IconSize.Md }}
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                      onClick={async () => {
+                        return await handleMultichainSnapAccountCreation(
+                          bitcoinWalletSnapClient,
+                          {
+                            scope: MultichainNetworks.BITCOIN,
+                            entropySource: primaryKeyring.metadata.id,
+                          },
+                          ACTION_MODES.ADD_BITCOIN,
+                        );
+                      }}
+                      data-testid="multichain-account-menu-popover-add-btc-account"
+                    >
+                      {t('addBitcoinAccountLabel')}
+                    </ButtonLink>
+                  </Box>
+                )}
+
+                {bitcoinSupportEnabled && showTestnets && (
+                  <Box marginTop={4}>
+                    <ButtonLink
+                      size={ButtonLinkSize.Sm}
+                      startIconName={IconName.Add}
+                      startIconProps={{ size: IconSize.Md }}
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                      onClick={async () => {
+                        return await handleMultichainSnapAccountCreation(
+                          bitcoinWalletSnapClient,
+                          {
+                            scope: MultichainNetworks.BITCOIN_TESTNET,
+                            entropySource: primaryKeyring.metadata.id,
+                          },
+                          ACTION_MODES.ADD_BITCOIN_TESTNET,
+                        );
+                      }}
+                      data-testid="multichain-account-menu-popover-add-btc-testnet-account"
+                    >
+                      {t('addBitcoinTestnetAccountLabel')}
+                    </ButtonLink>
+                  </Box>
+                )}
+              </>
               ///: END:ONLY_INCLUDE_IF
             }
 
