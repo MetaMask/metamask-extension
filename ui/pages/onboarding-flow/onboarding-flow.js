@@ -77,6 +77,8 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import LoadingScreen from '../../components/ui/loading-screen';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -98,6 +100,7 @@ const TWITTER_URL = 'https://twitter.com/MetaMask';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { pathname, search } = useLocation();
   const history = useHistory();
@@ -110,6 +113,7 @@ export default function OnboardingFlow() {
     'isFromSettingsSecurity',
   );
   const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, onboardingParentContext } = trackEvent;
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -177,42 +181,62 @@ export default function OnboardingFlow() {
     isFromSettingsSecurity,
   ]);
 
-  const handleCreateNewAccount = async (password) => {
-    let newSecretRecoveryPhrase;
-    if (
-      isSeedlessOnboardingFeatureEnabled &&
-      firstTimeFlowType === FirstTimeFlowType.socialCreate
-    ) {
-      newSecretRecoveryPhrase = await dispatch(
-        createNewVaultAndSyncWithSocial(password),
-      );
-    } else if (firstTimeFlowType === FirstTimeFlowType.create) {
-      newSecretRecoveryPhrase = await dispatch(
-        createNewVaultAndGetSeedPhrase(password),
-      );
+  useEffect(() => {
+    const trace = bufferedTrace?.({
+      name: TraceName.OnboardingJourneyOverall,
+      op: TraceOperation.OnboardingUserJourney,
+    });
+    if (onboardingParentContext) {
+      onboardingParentContext.current = trace;
     }
+  }, [onboardingParentContext, bufferedTrace]);
 
-    setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+  const handleCreateNewAccount = async (password) => {
+    try {
+      setIsLoading(true);
+      let newSecretRecoveryPhrase;
+      if (
+        isSeedlessOnboardingFeatureEnabled &&
+        firstTimeFlowType === FirstTimeFlowType.socialCreate
+      ) {
+        newSecretRecoveryPhrase = await dispatch(
+          createNewVaultAndSyncWithSocial(password),
+        );
+      } else if (firstTimeFlowType === FirstTimeFlowType.create) {
+        newSecretRecoveryPhrase = await dispatch(
+          createNewVaultAndGetSeedPhrase(password),
+        );
+      }
+
+      setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleUnlock = async (password) => {
-    let retrievedSecretRecoveryPhrase;
+    try {
+      setIsLoading(true);
+      let retrievedSecretRecoveryPhrase;
 
-    if (
-      isSeedlessOnboardingFeatureEnabled &&
-      firstTimeFlowType === FirstTimeFlowType.socialImport
-    ) {
-      retrievedSecretRecoveryPhrase = await dispatch(
-        restoreSocialBackupAndGetSeedPhrase(password),
-      );
-    } else {
-      retrievedSecretRecoveryPhrase = await dispatch(
-        unlockAndGetSeedPhrase(password),
-      );
+      if (
+        isSeedlessOnboardingFeatureEnabled &&
+        firstTimeFlowType === FirstTimeFlowType.socialImport
+      ) {
+        retrievedSecretRecoveryPhrase = await dispatch(
+          restoreSocialBackupAndGetSeedPhrase(password),
+        );
+      } else {
+        retrievedSecretRecoveryPhrase = await dispatch(
+          unlockAndGetSeedPhrase(password),
+        );
+      }
+
+      setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      history.replace(nextRoute);
+    } finally {
+      setIsLoading(false);
     }
-
-    setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
-    history.push(nextRoute);
   };
 
   const handleImportWithRecoveryPhrase = async (password, srp) => {
@@ -387,7 +411,7 @@ export default function OnboardingFlow() {
               event: MetaMetricsEventName.OnboardingTwitterClick,
               properties: {
                 text: t('followUsOnX', ['X']),
-                location: MetaMetricsEventName.OnboardingWalletCreationComplete,
+                location: MetaMetricsEventName.WalletCreated,
                 url: TWITTER_URL,
                 hd_entropy_index: hdEntropyIndex,
               },
@@ -404,6 +428,7 @@ export default function OnboardingFlow() {
           ])}
         </Button>
       )}
+      {isLoading && <LoadingScreen />}
     </Box>
   );
 }
