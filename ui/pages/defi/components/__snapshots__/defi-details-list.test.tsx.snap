@@ -9,7 +9,7 @@ exports[`DeFiDetailsPage renders defi details list 1`] = `
       class="mm-box"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative-soft"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"
         data-testid="defi-details-list-supply-position"
       >
         Supplied
@@ -106,7 +106,7 @@ exports[`DeFiDetailsPage renders defi details list 1`] = `
       class="mm-box"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative-soft"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"
         data-testid="defi-details-list-supply-position"
       >
         Reward

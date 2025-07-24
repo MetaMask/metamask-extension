@@ -273,7 +273,7 @@ export const BridgeInputGroup = ({
           color={
             isAmountReadOnly && isEstimatedReturnLow
               ? TextColor.warningDefault
-              : TextColor.textAlternativeSoft
+              : TextColor.textAlternative
           }
           textAlign={TextAlign.End}
           ellipsis
@@ -291,7 +291,7 @@ export const BridgeInputGroup = ({
             color={
               isInsufficientBalance(balanceAmount)
                 ? TextColor.errorDefault
-                : TextColor.textAlternativeSoft
+                : TextColor.textAlternative
             }
             style={{
               cursor: 'default',
@@ -317,7 +317,7 @@ export const BridgeInputGroup = ({
               display={Display.Flex}
               gap={1}
               variant={TextVariant.bodyMd}
-              color={TextColor.textAlternativeSoft}
+              color={TextColor.textAlternative}
               onClick={() => {
                 handleAddressClick();
               }}

@@ -118,7 +118,7 @@ const DefiDetailsList = React.memo(
                     <Text
                       variant={TextVariant.bodyMdMedium}
                       paddingLeft={4}
-                      color={TextColor.textAlternativeSoft}
+                      color={TextColor.textAlternative}
                       data-testid={`defi-details-list-${positionType}-position`}
                     >
                       {label}

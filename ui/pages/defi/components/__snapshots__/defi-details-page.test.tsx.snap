@@ -60,7 +60,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
       class="mm-box mm-box--padding-bottom-4 mm-box--padding-left-4"
     >
       <span
-        class="mm-box mm-text mm-box--color-text-alternative-soft mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-alternative"
         data-testid="defi-details-page-market-value"
       >
         $20,000.00
@@ -81,7 +81,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
           class="mm-box"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative-soft"
+            class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"
             data-testid="defi-details-list-stake-position"
           >
             Staked

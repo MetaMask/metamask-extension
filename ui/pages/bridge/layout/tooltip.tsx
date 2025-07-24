@@ -59,14 +59,14 @@ const Tooltip = React.forwardRef(
           {triggerElement ??
             (iconName && (
               <Icon
-                color={IconColor.iconAlternativeSoft}
+                color={IconColor.iconAlternative}
                 name={iconName}
                 size={IconSize.Sm}
               />
             )) ?? (
               <Icon
                 name={IconName.Question}
-                color={IconColor.iconAlternativeSoft}
+                color={IconColor.iconAlternative}
                 size={IconSize.Sm}
               />
             )}

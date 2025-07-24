@@ -179,7 +179,7 @@ export const BridgeQuotesModal = ({
               color={
                 sortOrder === sortOrderOption
                   ? TextColor.primaryDefault
-                  : TextColor.textAlternativeSoft
+                  : TextColor.textAlternative
               }
             >
               <Text
@@ -191,7 +191,7 @@ export const BridgeQuotesModal = ({
                 color={
                   sortOrder === sortOrderOption
                     ? TextColor.primaryDefault
-                    : TextColor.textAlternativeSoft
+                    : TextColor.textAlternative
                 }
               >
                 {label}

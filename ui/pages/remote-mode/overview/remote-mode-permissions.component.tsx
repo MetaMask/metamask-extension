@@ -98,7 +98,7 @@ export default function RemoteModePermissions({
 
   return (
     <Box>
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
         Remote Mode lets you use your hardware wallet without plugging it
         in.{' '}
       </Text>
@@ -228,7 +228,7 @@ export default function RemoteModePermissions({
               )}
             </Box>
           ) : (
-            <Text color={TextColor.textAlternativeSoft}>
+            <Text color={TextColor.textAlternative}>
               Allow your MetaMask account to trade with hardware funds via
               MetaMask Swaps. Allowances can only be used to swap.
             </Text>
@@ -363,7 +363,7 @@ export default function RemoteModePermissions({
               )}
             </Box>
           ) : (
-            <Text color={TextColor.textAlternativeSoft}>
+            <Text color={TextColor.textAlternative}>
               Allow your MetaMask account to withdraw from hardware funds up to
               the daily limit.
             </Text>

@@ -6,7 +6,7 @@ exports[`BridgeCTAButton should disable the component when quotes are loading an
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
   >
     <p
-      class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
+      class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
     />
   </div>
 </div>
@@ -30,7 +30,7 @@ exports[`BridgeCTAButton should render the component when amount and dest token 
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
   >
     <p
-      class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
+      class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
     >
       Select amount
     </p>
@@ -44,7 +44,7 @@ exports[`BridgeCTAButton should render the component when amount, dest chain and
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
   >
     <p
-      class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
+      class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
     >
       Select token and amount
     </p>
@@ -58,7 +58,7 @@ exports[`BridgeCTAButton should render the component's initial state 1`] = `
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
   >
     <p
-      class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
+      class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
     >
       Select token
     </p>

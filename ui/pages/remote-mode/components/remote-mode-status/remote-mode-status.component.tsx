@@ -27,11 +27,11 @@ export default function RemoteModeStatus({ enabled }: RemoteModeStatusProps) {
       <Icon
         name={IconName.Info}
         size={IconSize.Sm}
-        color={IconColor.iconAlternativeSoft}
+        color={IconColor.iconAlternative}
         marginRight={1}
         marginTop={1}
       />
-      <Text color={TextColor.textAlternativeSoft} variant={TextVariant.bodySm}>
+      <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
         Remote Mode: {enabled ? 'On' : 'Off'}
       </Text>
     </Box>

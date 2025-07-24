@@ -6,6 +6,7 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -127,7 +128,7 @@ const DeFiPage = () => {
       <Box paddingLeft={4} paddingBottom={4}>
         <SensitiveText
           data-testid="defi-details-page-market-value"
-          className="mm-box--color-text-alternative-soft"
+          color={TextColor.textAlternative}
           ellipsis
           variant={TextVariant.inherit}
           isHidden={privacyMode}

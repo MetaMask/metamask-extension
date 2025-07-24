@@ -39,7 +39,7 @@ export default function RemoteModeIntroducing() {
         </Text>
         <Text
           variant={TextVariant.bodyMd}
-          color={TextColor.textAlternativeSoft}
+          color={TextColor.textAlternative}
         >
           Remote Mode lets you use your hardware wallet without plugging it in.
         </Text>
