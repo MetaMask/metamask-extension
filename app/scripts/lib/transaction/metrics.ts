@@ -1312,13 +1312,7 @@ function addGaslessProperties(
   _sensitiveProperties: Record<string, Json | undefined>,
   getAccountBalance: (account: Hex, chainId: Hex) => Hex,
 ) {
-  const {
-    batchId,
-    batchTransactions,
-    gasFeeTokens,
-    nestedTransactions,
-    selectedGasFeeToken,
-  } = transactionMeta;
+  const { gasFeeTokens, selectedGasFeeToken } = transactionMeta;
 
   properties.gas_payment_tokens_available = gasFeeTokens?.map(
     (token) => token.symbol,
