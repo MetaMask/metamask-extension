@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { captureException } from '@sentry/browser';
 import {
   TextVariant,
   Display,
@@ -57,9 +56,9 @@ export default function OnboardingError() {
       return;
     }
     try {
-      setupSentry(true);
+      const sentry = setupSentry(true);
       const { error, view = 'Unknown' } = onboardingErrorReport || {};
-      captureException(error, {
+      sentry?.captureException(error, {
         extra: {
           view,
           context: 'OnboardingError forced report',
