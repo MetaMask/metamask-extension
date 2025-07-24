@@ -8,9 +8,9 @@
     padding-right: 8px !important;
 
     &:hover {
-      background-color: var(--color-error-muted) !important;
+      background-color: var(--color-error-muted-hover) !important;
       box-shadow: none !important;
-      color: var(--color-error-muted-hover) !important;
+      color: var(--color-error-default) !important;
     }
 
     > span {
