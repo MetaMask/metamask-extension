@@ -39,12 +39,7 @@ import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
-import {
-  LOGIN_ERROR,
-  LOGIN_OPTION,
-  LOGIN_TYPE,
-  WelcomePageState,
-} from './types';
+import { LOGIN_OPTION, LOGIN_TYPE, WelcomePageState } from './types';
 import LoginErrorModal from './login-error-modal';
 
 export default function OnboardingWelcome({
@@ -180,7 +175,9 @@ export default function OnboardingWelcome({
         data: { success: false },
       });
 
-      if (isMetaMetricsEnabled) {
+      if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+        setLoginError(null);
+      } else if (isMetaMetricsEnabled) {
         captureException(error, {
           tags: {
             view: 'Onboarding',
@@ -304,16 +301,6 @@ export default function OnboardingWelcome({
     ],
   );
 
-  const handleLoginError = useCallback((error) => {
-    log.error('handleLoginError::error', error);
-    const errorMessage = error.message;
-    if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
-      setLoginError(null);
-    } else {
-      setLoginError(LOGIN_ERROR.GENERIC);
-    }
-  }, []);
-
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
       try {
@@ -332,7 +319,7 @@ export default function OnboardingWelcome({
           }
         }
       } catch (error) {
-        handleLoginError(error);
+        log.error('handleLoginError::error', error);
       }
     },
     [
@@ -341,7 +328,6 @@ export default function OnboardingWelcome({
       onSocialLoginCreateClick,
       onSocialLoginImportClick,
       isSeedlessOnboardingFeatureEnabled,
-      handleLoginError,
     ],
   );
 
