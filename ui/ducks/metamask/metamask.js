@@ -297,6 +297,10 @@ export function getConversionRate(state) {
     ?.conversionRate;
 }
 
+export function getConversionRateByTicker(state, ticker) {
+  return state.metamask.currencyRates[ticker]?.conversionRate;
+}
+
 export function getCurrencyRates(state) {
   return state.metamask.currencyRates;
 }

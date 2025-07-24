@@ -122,4 +122,25 @@ describe('Token Details', function () {
       },
     );
   });
+
+  it('shows details for a N token with prices available', async function () {
+    await withFixtures(
+      {
+        ...fixtures,
+        title: (this as Context).test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.openTokenDetails('ETH');
+
+        // check display of price in details
+        await assetListPage.checkTokenPrice('$1,700.00');
+      },
+    );
+  });
 });

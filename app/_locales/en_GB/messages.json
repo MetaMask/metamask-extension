@@ -1473,6 +1473,12 @@
   "connectionRequest": {
     "message": "Connection request"
   },
+  "connectionsRemovedModalDescription": {
+    "message": "Some connections (like hardware wallets and snaps) were removed due to inactivity on this device. You can re-add them anytime in Settings."
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "Connections removed"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -2463,7 +2469,7 @@
     "message": "biometrics turned on"
   },
   "forgotPasswordSocialStep2": {
-    "message": "If you have your $1, you can reset your current wallet and reimport using $1.",
+    "message": "If you have your $1, you can reset your current wallet and reimport using Secret Recovery Phrase.",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
@@ -3785,6 +3791,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noNetworksAvailable": {
+    "message": "No networks available"
+  },
   "noNetworksFound": {
     "message": "No networks found for the given search query"
   },
@@ -4245,7 +4254,7 @@
     "message": "Password"
   },
   "passwordChangedRecently": {
-    "message": "Your password changed"
+    "message": "Your password was changed"
   },
   "passwordChangedRecentlyDescription": {
     "message": "Enter your new password to stay logged into MetaMask."
@@ -5074,6 +5083,9 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
+  "searchNetworks": {
+    "message": "Search networks"
+  },
   "searchNfts": {
     "message": "Search NFTs"
   },
@@ -5161,7 +5173,8 @@
     "message": "Enabled"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "This email and your MetaMask password will help you recover your account and recovery phrases."
+    "message": "Use your $1 login and MetaMask password to recover your account and Secret Recovery Phrases.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 RECOVERY",
@@ -5451,6 +5464,12 @@
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
+  },
+  "simulationSettingsModalEnforceSlippage": {
+    "message": "Slippage tolerance"
+  },
+  "simulationSettingsModalEnforceSlippageDescription": {
+    "message": "Set a difference you're comfortable with for balance changes. Transactions won't go through if the difference is higher."
   },
   "simulationSettingsModalEnforceToggle": {
     "message": "Enforce balance changes"
@@ -7017,7 +7036,7 @@
     "message": "Password is incorrect. Please try again."
   },
   "unlockPageTooManyFailedAttempts": {
-    "message": "Too many failed attempts. Please try again in "
+    "message": "Too many attempts. Try again in "
   },
   "unpin": {
     "message": "Unpin"
