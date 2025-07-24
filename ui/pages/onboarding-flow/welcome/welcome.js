@@ -66,14 +66,9 @@ export default function OnboardingWelcome({
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
-        firstTimeFlowType === FirstTimeFlowType.socialImport
+        firstTimeFlowType === FirstTimeFlowType.socialImport ||
+        firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        history.replace(
-          isParticipateInMetaMetricsSet
-            ? ONBOARDING_COMPLETION_ROUTE
-            : ONBOARDING_METAMETRICS,
-        );
-      } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
         history.replace(
           isParticipateInMetaMetricsSet
             ? ONBOARDING_COMPLETION_ROUTE
