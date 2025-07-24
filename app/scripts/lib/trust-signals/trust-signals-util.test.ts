@@ -9,6 +9,7 @@ import {
   hasValidTypedDataParams,
   getChainId,
   isConnected,
+  connectScreenHasBeenPrompted,
 } from './trust-signals-util';
 import { SupportedEVMChain } from './types';
 
@@ -377,7 +378,7 @@ describe('trust-signals-util', () => {
       expect(isConnected(req, getPermittedAccounts)).toBe(true);
     });
 
-    it('should return false when the user is not connected', () => {
+    it('returns false when the user is not connected', () => {
       const req: JsonRpcRequest & { origin?: string } = {
         method: MESSAGE_TYPE.ETH_ACCOUNTS,
         origin: 'https://example.com',
@@ -409,6 +410,35 @@ describe('trust-signals-util', () => {
       } as JsonRpcRequest & { origin?: string };
       const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
       expect(isConnected(req, getPermittedAccounts)).toBe(false);
+    });
+  });
+
+  describe('connectScreenHasBeenPrompted', () => {
+    it('returns true when the method is eth_request_accounts', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(connectScreenHasBeenPrompted(req)).toBe(true);
+    });
+
+    it('returns true when the method is wallet_request_permissions', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(connectScreenHasBeenPrompted(req)).toBe(true);
+    });
+
+    it('returns false when the method is not eth_request_accounts or wallet_request_permissions', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(connectScreenHasBeenPrompted(req)).toBe(false);
     });
   });
 });
