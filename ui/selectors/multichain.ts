@@ -509,7 +509,6 @@ export function getMultichainConversionRate(
 ) {
   const { conversionRates } = state.metamask;
   const { chainId } = getMultichainNetwork(state, account);
-
   const conversionRate = getConversionRatesForNativeAsset({
     conversionRates,
     chainId,
