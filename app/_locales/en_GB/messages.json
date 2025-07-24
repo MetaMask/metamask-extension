@@ -750,7 +750,7 @@
     "message": "MetaMask Beta Version"
   },
   "betaTerms": {
-    "message": "Beta Terms of use"
+    "message": "Beta Terms of Use"
   },
   "billionAbbreviation": {
     "message": "B",
@@ -1782,7 +1782,7 @@
     "message": "MetaMask uses default settings to best balance safety and ease of use. Change these settings to further increase your privacy."
   },
   "defaultSettingsTitle": {
-    "message": "Default privacy settings"
+    "message": "Default settings"
   },
   "defi": {
     "message": "DeFi"
@@ -5195,8 +5195,8 @@
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
   "seedPhraseReviewDetails": {
-    "message": "This is your $1. Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+    "message": "This is your $1. Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don't share it with anyone, ever.",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewDetails2": {
     "message": "Don’t share it with anyone, ever."
@@ -6691,7 +6691,7 @@
     "message": "10% increase"
   },
   "terms": {
-    "message": "Terms of use"
+    "message": "Terms of Use"
   },
   "termsOfService": {
     "message": "Terms of service"
@@ -6700,7 +6700,7 @@
     "message": "Agree"
   },
   "termsOfUseAgreeText": {
-    "message": "I agree to the Terms of use, which apply to my use of MetaMask and all of its features"
+    "message": "I agree to the Terms of Use, which apply to my use of MetaMask and all of its features."
   },
   "termsOfUseFooterText": {
     "message": "Please scroll to read all sections"
