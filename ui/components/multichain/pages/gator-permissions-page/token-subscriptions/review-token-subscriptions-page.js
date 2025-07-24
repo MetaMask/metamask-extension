@@ -27,6 +27,7 @@ import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../sel
 import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
+import { getSelectedInternalAccount } from '../../../../../selectors';
 
 export const ReviewTokenSubscriptionsPage = () => {
   const t = useI18nContext();
@@ -35,9 +36,6 @@ export const ReviewTokenSubscriptionsPage = () => {
   const { chainId } = useParams();
   const [networkName, setNetworkName] = useState('');
   const [totalTokenSubscriptions, setTotalTokenSubscriptions] = useState(0);
-  const { revokeGatorPermission } = useRevokeGatorPermissions({
-    chainId,
-  });
 
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const nativeTokenPeriodicPermissions = useSelector((state) =>
@@ -47,6 +45,11 @@ export const ReviewTokenSubscriptionsPage = () => {
       chainId,
     ),
   );
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { revokeGatorPermission } = useRevokeGatorPermissions({
+    accountAddress: selectedAccount.address,
+    chainId,
+  });
 
   useEffect(() => {
     setNetworkName(extractNetworkName(networks, chainId));

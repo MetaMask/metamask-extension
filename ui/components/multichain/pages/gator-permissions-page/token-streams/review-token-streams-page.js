@@ -8,6 +8,7 @@ import {
   ButtonIconSize,
   IconName,
   Text,
+  Button,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -27,6 +28,7 @@ import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../sel
 import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
+import { getSelectedInternalAccount } from '../../../../../selectors';
 
 export const ReviewTokenStreamsPage = () => {
   const t = useI18nContext();
@@ -35,9 +37,13 @@ export const ReviewTokenStreamsPage = () => {
   const { chainId } = useParams();
   const [networkName, setNetworkName] = useState('');
   const [totalTokenStreams, setTotalTokenStreams] = useState(0);
-  const { revokeGatorPermission } = useRevokeGatorPermissions({
-    chainId,
-  });
+
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { revokeGatorPermission, revokeGatorPermissionBatch } =
+    useRevokeGatorPermissions({
+      accountAddress: selectedAccount.address,
+      chainId,
+    });
 
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const nativeTokenStreams = useSelector((state) =>
@@ -62,6 +68,29 @@ export const ReviewTokenStreamsPage = () => {
 
   const handleRevokeClick = async (permissionContext, delegationManager) => {
     await revokeGatorPermission(permissionContext, delegationManager);
+  };
+
+  const handleRevokeBatchClick = async () => {
+    const revokeGatorPermissionArgs = [];
+
+    nativeTokenStreams.forEach((nativeTokenStream) => {
+      const { permissionResponse } = nativeTokenStream;
+      revokeGatorPermissionArgs.push({
+        permissionContext: permissionResponse.context,
+        delegationManagerAddress:
+          permissionResponse.signerMeta.delegationManager,
+      });
+    });
+
+    erc20TokenStreams.forEach((erc20TokenStream) => {
+      const { permissionResponse } = erc20TokenStream;
+      revokeGatorPermissionArgs.push({
+        permissionContext: permissionResponse.context,
+        delegationManager: permissionResponse.signerMeta.delegationManager,
+      });
+    });
+
+    await revokeGatorPermissionBatch(revokeGatorPermissionArgs);
   };
 
   const renderTokenStreams = (streams) =>
@@ -119,6 +148,12 @@ export const ReviewTokenStreamsPage = () => {
           <>
             {renderTokenStreams(nativeTokenStreams)}
             {renderTokenStreams(erc20TokenStreams)}
+            <Button
+              onClick={handleRevokeBatchClick}
+              disabled={totalTokenStreams === 0}
+            >
+              Revoke All(test)
+            </Button>
           </>
         ) : (
           <Box

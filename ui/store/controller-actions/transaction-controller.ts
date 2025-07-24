@@ -35,3 +35,12 @@ export async function updateSelectedGasFeeToken(
     args,
   );
 }
+
+export async function addTransactionBatch(
+  ...args: Parameters<TransactionController['addTransactionBatch']>
+) {
+  return await submitRequestToBackground<{ batchId: string }>(
+    'addTransactionBatch',
+    args,
+  );
+}
