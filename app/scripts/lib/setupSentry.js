@@ -2,8 +2,8 @@ import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
-import { isManifestV3 } from '../modules/mv3.utils';
-import { getManifestFlags } from './manifestFlags';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
 

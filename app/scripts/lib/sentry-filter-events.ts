@@ -8,7 +8,6 @@ const NAME = 'FilterEvents';
  * @param options - Options bag.
  * @param options.getMetaMetricsEnabled - Function that returns whether MetaMetrics is enabled.
  * @param options.log - Function to log messages.
- * @param options.isForceEnable - Whether to force enable the filter events.
  */
 export function filterEvents({
   getMetaMetricsEnabled,
