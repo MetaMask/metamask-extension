@@ -42,7 +42,7 @@ describe('Error utils Tests', function () {
           },
           troubleStartingMessage: {
             message:
-              'This error could be intermittent; try restarting the extension.',
+              'This error could be intermittent, so try restarting the extension.',
           },
           restartMetamask: {
             message: 'Restart MetaMask',
