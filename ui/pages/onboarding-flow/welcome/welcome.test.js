@@ -61,7 +61,7 @@ describe('Welcome Page', () => {
     expect(agreeButton).toBeDisabled();
   });
 
-  it('should show the error modal when the error thrown in login', async () => {
+  it('should show the onboarding error page when the error thrown in login', async () => {
     process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
 
     jest
@@ -82,7 +82,7 @@ describe('Welcome Page', () => {
     fireEvent.click(createWithGoogleButton);
 
     await waitFor(() => {
-      expect(getByTestId('login-error-modal')).toBeInTheDocument();
+      expect(getByTestId('onboarding-error')).toBeInTheDocument();
     });
   });
 });
