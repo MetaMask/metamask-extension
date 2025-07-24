@@ -7586,6 +7586,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.phishingController,
         this.preferencesController,
+        this.getPermittedAccounts.bind(this, origin),
       ),
     );
 
