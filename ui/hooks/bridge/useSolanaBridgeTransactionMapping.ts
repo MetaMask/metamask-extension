@@ -20,6 +20,7 @@ import {
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../useMultichainTransactionDisplay';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
 /**
  * Defines the structure for additional bridge-related information added to transactions.
@@ -219,9 +220,9 @@ export default function useSolanaBridgeTransactionMapping(
                 address: bridgeTx.account,
                 asset: {
                   type: assetType,
-                  amount: (
-                    Number(bridgeTx.quote?.srcTokenAmount ?? 0) /
-                    10 ** (bridgeTx.quote?.srcAsset?.decimals ?? 9)
+                  amount: calcTokenAmount(
+                    bridgeTx.quote?.srcTokenAmount ?? 0,
+                    bridgeTx.quote?.srcAsset?.decimals ?? 9,
                   ).toString(),
                   unit: bridgeTx.quote?.srcAsset?.symbol ?? '',
                   fungible: true,
@@ -334,6 +335,20 @@ export default function useSolanaBridgeTransactionMapping(
       }
       return {
         ...(tx as Transaction),
+        from: [
+          {
+            address: matchingBridgeTx.account,
+            asset: {
+              type: matchingBridgeTx.quote?.srcAsset?.assetId,
+              amount: calcTokenAmount(
+                matchingBridgeTx.quote?.srcTokenAmount ?? 0,
+                matchingBridgeTx.quote?.srcAsset?.decimals ?? 9,
+              ).toString(),
+              unit: matchingBridgeTx.quote?.srcAsset?.symbol ?? '',
+              fungible: true,
+            },
+          },
+        ],
         isBridgeTx,
         bridgeInfo,
         isBridgeOriginated: false,
