@@ -4912,6 +4912,11 @@ export default class MetamaskController extends EventEmitter {
         changePasswordSuccess = true;
         // sync the new keyring encryption key after keyring changePassword to the seedless onboarding controller
         await this.syncKeyringEncryptionKey();
+
+        // check password outdated again skip cache to reset the cache after successful syncing
+        await this.seedlessOnboardingController.checkIsPasswordOutdated({
+          skipCache: true,
+        });
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Unknown error';

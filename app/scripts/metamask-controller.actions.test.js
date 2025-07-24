@@ -687,6 +687,55 @@ describe('MetaMaskController', function () {
         expect(releaseLock).toHaveBeenCalled();
       });
 
+      it('should lock wallet and throw error when checkIsPasswordOutdated fails', async function () {
+        const releaseLock = jest.fn();
+        const checkError = new Error('Check failed');
+
+        jest
+          .spyOn(metamaskController.keyringController, 'verifyPassword')
+          .mockRejectedValue(new Error('Incorrect password'));
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'submitGlobalPasswordAndSync',
+          )
+          .mockResolvedValue();
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'loadKeyringEncryptionKey',
+          )
+          .mockResolvedValue('encryption-key');
+        jest
+          .spyOn(metamaskController, 'submitEncryptionKey')
+          .mockResolvedValue();
+        jest
+          .spyOn(metamaskController.keyringController, 'changePassword')
+          .mockResolvedValue();
+        jest
+          .spyOn(metamaskController, 'syncKeyringEncryptionKey')
+          .mockResolvedValue();
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'checkIsPasswordOutdated',
+          )
+          .mockResolvedValueOnce(true)
+          .mockRejectedValue(checkError);
+        jest.spyOn(metamaskController, 'setLocked').mockResolvedValue();
+
+        metamaskController.syncSeedlessGlobalPasswordMutex.acquire.mockResolvedValue(
+          releaseLock,
+        );
+
+        await expect(
+          metamaskController.syncPasswordAndUnlockWallet(password),
+        ).rejects.toThrow('Check failed');
+
+        expect(metamaskController.setLocked).toHaveBeenCalled();
+        expect(releaseLock).toHaveBeenCalled();
+      });
+
       it('should always release lock even when errors occur', async function () {
         const releaseLock = jest.fn();
 
