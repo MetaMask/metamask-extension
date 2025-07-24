@@ -48,7 +48,7 @@ export default function OnboardingError() {
     }
   }, [history, onboardingErrorReport]);
 
-  const onTryAgain = useCallback(() => {
+  const clearReport = useCallback(() => {
     dispatch(setOnboardingErrorReport(null));
     history.push(ONBOARDING_WELCOME_ROUTE);
   }, [dispatch, history]);
@@ -70,8 +70,9 @@ export default function OnboardingError() {
       console.error('Failed to force report error to Sentry:', sentryError);
     } finally {
       setupSentry(false);
+      clearReport();
     }
-  }, [onboardingErrorReport]);
+  }, [clearReport, onboardingErrorReport]);
 
   return (
     <Box
@@ -154,7 +155,7 @@ export default function OnboardingError() {
           block
           size={ButtonSize.Lg}
           variant={ButtonVariant.Secondary}
-          onClick={onTryAgain}
+          onClick={clearReport}
         >
           {t('tryAgain')}
         </Button>
