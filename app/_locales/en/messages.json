@@ -3789,6 +3789,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noNetworksAvailable": {
+    "message": "No networks available"
+  },
   "noNetworksFound": {
     "message": "No networks found for the given search query"
   },
@@ -5078,6 +5081,9 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
+  "searchNetworks": {
+    "message": "Search networks"
+  },
   "searchNfts": {
     "message": "Search NFTs"
   },
@@ -5476,6 +5482,12 @@
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
+  },
+  "simulationSettingsModalEnforceSlippage": {
+    "message": "Slippage tolerance"
+  },
+  "simulationSettingsModalEnforceSlippageDescription": {
+    "message": "Set a difference you're comfortable with for balance changes. Transactions won't go through if the difference is higher."
   },
   "simulationSettingsModalEnforceToggle": {
     "message": "Enforce balance changes"
@@ -7042,7 +7054,7 @@
     "message": "Password is incorrect. Please try again."
   },
   "unlockPageTooManyFailedAttempts": {
-    "message": "Too many failed attempts. Please try again in "
+    "message": "Too many attempts. Try again in "
   },
   "unpin": {
     "message": "Unpin"

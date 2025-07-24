@@ -1,10 +1,9 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { KnownCaipNamespace, CaipChainId } from '@metamask/utils';
 import { MultichainAddressRow } from './multichain-address-row';
 
 const meta: Meta<typeof MultichainAddressRow> = {
-  title: 'Components/Multichain/MultichainAddressRow',
+  title: 'Components/MultichainAccounts/MultichainAddressRow',
   component: MultichainAddressRow,
   parameters: {
     docs: {
@@ -15,9 +14,13 @@ const meta: Meta<typeof MultichainAddressRow> = {
     },
   },
   argTypes: {
-    network: {
-      control: 'object',
-      description: 'MultichainNetwork object containing nickname, chainId, and rpcPrefs with imageUrl',
+    chainId: {
+      control: 'text',
+      description: 'Chain ID to identify the network',
+    },
+    networkName: {
+      control: 'text',
+      description: 'Network name to display',
     },
     address: {
       control: 'text',
@@ -35,19 +38,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    network: {
-      nickname: 'Ethereum Mainnet',
-      isEvmNetwork: true,
-      chainId: `${KnownCaipNamespace.Eip155}:1` as CaipChainId,
-      network: {
-        type: 'mainnet',
-        chainId: '0x1',
-        ticker: 'ETH',
-        rpcPrefs: {
-          imageUrl: './images/eth_logo.svg',
-        },
-      },
-    },
+    chainId: '0x1',
+    networkName: 'Ethereum Mainnet',
     address: '0x1234567890123456789012345678901234567890',
     className: '',
   },
@@ -55,58 +47,45 @@ export const Default: Story = {
 
 export const WithLongNetworkName: Story = {
   args: {
-    network: {
-      nickname: 'Polygon Mumbai Testnet',
-      isEvmNetwork: true,
-      chainId: `${KnownCaipNamespace.Eip155}:80001` as CaipChainId,
-      network: {
-        type: 'rpc',
-        chainId: '0x13881',
-        ticker: 'MATIC',
-        rpcPrefs: {
-          imageUrl: './images/pol-token.svg',
-        },
-      },
-    },
+    chainId: '0x13881',
+    networkName: 'Polygon Mumbai Testnet',
     address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
-    className: '',
-  },
-};
-
-export const WithoutNetworkImage: Story = {
-  args: {
-    network: {
-      nickname: 'Custom Network',
-      isEvmNetwork: true,
-      chainId: `${KnownCaipNamespace.Eip155}:1337` as CaipChainId,
-      network: {
-        type: 'rpc',
-        chainId: '0x539',
-        ticker: 'ETH',
-        rpcPrefs: {},
-      },
-    },
-    address: '0x9876543210987654321098765432109876543210',
     className: '',
   },
 };
 
 export const ArbitrumNetwork: Story = {
   args: {
-    network: {
-      nickname: 'Arbitrum One',
-      isEvmNetwork: true,
-      chainId: `${KnownCaipNamespace.Eip155}:42161` as CaipChainId,
-      network: {
-        type: 'rpc',
-        chainId: '0xa4b1',
-        ticker: 'ETH',
-        rpcPrefs: {
-          imageUrl: './images/arbitrum.svg',
-        },
-      },
-    },
+    chainId: '0xa4b1',
+    networkName: 'Arbitrum One',
     address: '0x0123456789abcdef0123456789abcdef01234567',
+    className: '',
+  },
+};
+
+export const OptimismNetwork: Story = {
+  args: {
+    chainId: '0xa',
+    networkName: 'Optimism',
+    address: '0x9876543210987654321098765432109876543210',
+    className: '',
+  },
+};
+
+export const PolygonNetwork: Story = {
+  args: {
+    chainId: '0x89',
+    networkName: 'Polygon Mainnet',
+    address: '0xfedcba0987654321fedcba0987654321fedcba09',
+    className: '',
+  },
+};
+
+export const CustomNetwork: Story = {
+  args: {
+    chainId: '0x539',
+    networkName: 'Custom Network',
+    address: '0x1111222233334444555566667777888899990000',
     className: '',
   },
 };
