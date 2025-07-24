@@ -5350,6 +5350,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/account-api@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/account-api@npm:0.2.0"
+  dependencies:
+    "@metamask/keyring-api": "npm:^19.0.0"
+    "@metamask/keyring-utils": "npm:^3.1.0"
+  checksum: 10/9c4d77facd8509423f0ccf0d953f4dd5a29594ea16b4b7e2e2403c19549d03fc60fb83115a397a0043903d373b3c09bf6f733e863aaa1252435377e3c1ca4716
+  languageName: node
+  linkType: hard
+
 "@metamask/account-tree-controller@npm:^0.1.0":
   version: 0.1.0
   resolution: "@metamask/account-tree-controller@npm:0.1.0"
@@ -6680,6 +6690,28 @@ __metadata:
   version: 3.1.1
   resolution: "@metamask/metamask-eth-abis@npm:3.1.1"
   checksum: 10/2d456882c5180eaf02d07f578ee8b8806d18639349d086a6b3b68c87e7ea294749efc332bfe7c1d5fb700933e71f31a46d3cd07b94c4e91c80faea5f9729bf0d
+  languageName: node
+  linkType: hard
+
+"@metamask/multichain-account-service@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@metamask/multichain-account-service@npm:0.2.1"
+  dependencies:
+    "@metamask/account-api": "npm:^0.2.0"
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/keyring-api": "npm:^19.0.0"
+    "@metamask/keyring-internal-api": "npm:^7.0.0"
+    "@metamask/keyring-snap-client": "npm:^6.0.0"
+    "@metamask/snaps-sdk": "npm:^9.0.0"
+    "@metamask/snaps-utils": "npm:^11.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+  peerDependencies:
+    "@metamask/accounts-controller": ^32.0.0
+    "@metamask/keyring-controller": ^22.0.0
+    "@metamask/providers": ^22.0.0
+    "@metamask/snaps-controllers": ^14.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/6432b62ae0306bfe7ef2699ff958d6c6894d316bce5ac568da65997f854ec0f203bcd46eba42cf71f9ec54994427806f6bfbe318bf100a0003735a1b55e99894
   languageName: node
   linkType: hard
 
@@ -32018,6 +32050,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:1.1.2"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/multichain-account-service": "npm:^0.2.1"
     "@metamask/multichain-api-client": "npm:^0.6.4"
     "@metamask/multichain-api-middleware": "npm:0.4.0"
     "@metamask/multichain-network-controller": "npm:^0.10.0"
