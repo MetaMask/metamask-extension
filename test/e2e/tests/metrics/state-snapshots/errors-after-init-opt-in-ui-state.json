@@ -33,7 +33,7 @@
     "showNftDetectionEnablementToast": "boolean",
     "showPasswordChangeToast": null,
     "loadingMessage": "undefined",
-    "warning": "string",
+    "warning": "undefined",
     "buyView": "object",
     "defaultHdPaths": "object",
     "networksTabSelectedRpcUrl": "string",
