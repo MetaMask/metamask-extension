@@ -36,7 +36,6 @@ import {
   createNewVaultAndRestore,
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
-  setOnboardingErrorReport,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -220,8 +219,6 @@ export default function OnboardingFlow() {
       }
 
       setSecretRecoveryPhrase(newSecretRecoveryPhrase);
-    } catch (error) {
-      dispatch(setOnboardingErrorReport({ error, view: 'CreatePassword' }));
     } finally {
       setIsLoading(false);
     }
