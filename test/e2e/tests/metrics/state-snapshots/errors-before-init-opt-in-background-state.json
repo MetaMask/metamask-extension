@@ -21,7 +21,7 @@
     "NetworkOrderController": {
       "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
       "enabledNetworkMap": {
-        "0x539": "boolean"
+        "eip155": "object"
       }
     },
     "AccountOrderController": {

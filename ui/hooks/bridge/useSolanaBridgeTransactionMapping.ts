@@ -165,7 +165,7 @@ export default function useSolanaBridgeTransactionMapping(
     ? {
         ...initialNonEvmTransactions,
         transactions: (initialNonEvmTransactions.transactions || []).map(
-          (tx) => ({ ...tx, isBridgeOriginated: false } as ExtendedTransaction),
+          (tx) => ({ ...tx, isBridgeOriginated: false }) as ExtendedTransaction,
         ),
       }
     : { transactions: [], next: null, lastUpdated: Date.now() };
@@ -189,7 +189,7 @@ export default function useSolanaBridgeTransactionMapping(
         if (!existsInOriginalTxList && srcTxHash) {
           const timestampSeconds =
             ((bridgeTx.status?.status === 'COMPLETE'
-              ? bridgeTx.completionTime ?? bridgeTx.startTime
+              ? (bridgeTx.completionTime ?? bridgeTx.startTime)
               : bridgeTx.startTime) ?? Date.now()) / 1000;
 
           const rawChainId = bridgeTx.quote?.srcChainId;

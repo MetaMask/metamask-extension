@@ -204,9 +204,8 @@ describe('InstitutionalSnapController', () => {
 
   describe('beforeCheckPendingTransactionHook', () => {
     it('should return false for deferred transactions', async () => {
-      const result = await controller.beforeCheckPendingTransactionHook(
-        mockTransactionMeta,
-      );
+      const result =
+        await controller.beforeCheckPendingTransactionHook(mockTransactionMeta);
       expect(result).toBe(false);
     });
 
@@ -224,9 +223,8 @@ describe('InstitutionalSnapController', () => {
         return {};
       });
 
-      const result = await controller.beforeCheckPendingTransactionHook(
-        mockTransactionMeta,
-      );
+      const result =
+        await controller.beforeCheckPendingTransactionHook(mockTransactionMeta);
       expect(result).toBe(true);
     });
   });

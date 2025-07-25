@@ -73,8 +73,8 @@ export function useMultichainTransactionDisplay(
 
   const typeToTitle: Partial<Record<TransactionType, string>> = {
     // TODO: Add support for other transaction types
-    [TransactionType.Send]: t('send'),
-    [TransactionType.Receive]: t('receive'),
+    [TransactionType.Send]: t('sent'),
+    [TransactionType.Receive]: t('received'),
     [TransactionType.Swap]: `${t('swap')} ${from?.unit} ${t(
       'to',
     ).toLowerCase()} ${to?.unit}`,

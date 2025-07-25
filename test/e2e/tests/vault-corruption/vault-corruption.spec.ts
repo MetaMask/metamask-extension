@@ -9,6 +9,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
+import LoginPage from '../../page-objects/pages/login-page';
 
 describe('Vault Corruption', function () {
   /**
@@ -152,11 +153,14 @@ describe('Vault Corruption', function () {
     await onboard(driver);
 
     const homePage = new HomePage(driver);
-    homePage.check_pageIsLoaded();
+    await homePage.check_pageIsLoaded();
+    await homePage.waitForLoadingOverlayToDisappear();
 
     const headerNavbar = new HeaderNavbar(driver);
     const firstAddress = await getFirstAddress(driver, headerNavbar);
     await headerNavbar.lockMetaMask();
+    const loginPage = new LoginPage(driver);
+    await loginPage.check_pageIsLoaded();
 
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);

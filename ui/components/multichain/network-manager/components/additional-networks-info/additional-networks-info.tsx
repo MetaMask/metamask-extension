@@ -56,17 +56,20 @@ export const AdditionalNetworksInfo = memo(() => {
   }, []);
 
   return (
-    <Box paddingTop={4} paddingBottom={4} onMouseLeave={handleMouseLeave}>
-      <Box
-        marginTop={4}
-        marginBottom={4}
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-      >
+    <Box
+      paddingTop={2}
+      paddingRight={4}
+      paddingLeft={4}
+      onMouseLeave={handleMouseLeave}
+    >
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         {/* Container for the "Additional Networks" text and info icon */}
         <Box display={Display.InlineFlex} ref={setBoxRef}>
           {/* Label text - uses translation key "additionalNetworks" */}
-          <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
             {t('additionalNetworks')}
           </Text>
 
@@ -88,7 +91,7 @@ export const AdditionalNetworksInfo = memo(() => {
               offset={[16, 12]}
               isOpen={isOpen}
               flip
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BackgroundColor.backgroundSection}
               onMouseLeave={handleMouseLeave}
               style={{
                 zIndex: 1000,

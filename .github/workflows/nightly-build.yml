@@ -1,0 +1,70 @@
+name: Nightly Build
+
+on:
+  schedule:
+    # Run daily at 02:00 UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # required for s3 uploads
+
+jobs:
+  build-dist-browserify:
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-browserify
+      build-command: yarn build dist
+    secrets: inherit
+
+  build-dist-mv2-browserify:
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-mv2-browserify
+      build-command: yarn build dist
+      mozilla-lint: true
+      enable-mv3: false
+    secrets: inherit
+
+  build-experimental-browserify:
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-experimental-browserify
+      build-command: yarn build --build-type experimental dist
+    secrets: inherit
+
+  build-experimental-mv2-browserify:
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-experimental-mv2-browserify
+      build-command: yarn build --build-type experimental dist
+      mozilla-lint: true
+      enable-mv3: false
+    secrets: inherit
+
+  post-nightly-builds:
+    needs:
+      - build-dist-browserify
+      - build-dist-mv2-browserify
+      - build-experimental-browserify
+      - build-experimental-mv2-browserify
+    runs-on: ubuntu-latest
+    env:
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      RUN_ID: ${{ github.run_id }}
+      # For scheduled runs, use the default branch
+      BRANCH: ${{ github.ref_name || 'main' }}
+      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+      SLACK_NIGHTLY_BUILDS_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Post nightly builds
+        run: yarn tsx .github/scripts/post-nightly-builds.ts

@@ -13,6 +13,7 @@ import {
   NETWORKS_FORM_ROUTE,
   NETWORKS_ROUTE,
   SECURITY_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
   SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
 import SettingsPage from './settings.component';
@@ -39,6 +40,7 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
+  [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 };
 

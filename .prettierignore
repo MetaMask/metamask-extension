@@ -8,6 +8,7 @@ node_modules/**/*
 /changed-files/**/*
 /coverage/**/*
 /development/chromereload.js
+/development/circular-deps.jsonc
 /development/ts-migration-dashboard/filesToConvert.json
 /development/ts-migration-dashboard/build/**
 /dist/**/*

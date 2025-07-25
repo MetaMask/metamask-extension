@@ -40,6 +40,8 @@ const log = createProjectLogger('ppom-util');
 const { sentry } = global;
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: BlockaidResultType.Errored,
   reason: BlockaidReason.errored,
 };

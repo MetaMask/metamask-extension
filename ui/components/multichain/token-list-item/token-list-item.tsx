@@ -196,7 +196,11 @@ export const TokenListItemComponent = ({
               properties: {
                 location: 'Home',
                 // FIXME: This might not be a number for non-EVM accounts
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 chain_id: chainId,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 token_symbol: tokenSymbol,
               },
             });

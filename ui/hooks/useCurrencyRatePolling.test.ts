@@ -1,3 +1,5 @@
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { BtcScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import {
@@ -45,8 +47,10 @@ describe('useCurrencyRatePolling', () => {
       useSafeChainsListValidation: true,
       selectedNetworkClientId: 'selectedNetworkClientId',
       enabledNetworkMap: {
-        '0x1': true,
-        '0x38': true,
+        eip155: {
+          '0x1': true,
+          '0x38': true,
+        },
       },
       networkConfigurationsByChainId: {
         '0x1': arrangeNetworkConfiguration({
@@ -59,6 +63,10 @@ describe('useCurrencyRatePolling', () => {
         }),
       } as unknown,
       preferences: {},
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: BtcScope.Mainnet,
+      isEvmSelected: true,
     },
   });
 

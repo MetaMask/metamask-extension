@@ -64,7 +64,10 @@ describe('Settings', function () {
           .withShowFiatTestnetEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({
-            [CHAIN_IDS.SEPOLIA]: true,
+            eip155: {
+              [CHAIN_IDS.SEPOLIA]: true,
+              [CHAIN_IDS.LOCALHOST]: true,
+            },
           })
           .build(),
         title: this.test?.fullTitle(),

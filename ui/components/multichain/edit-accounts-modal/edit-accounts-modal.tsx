@@ -38,7 +38,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import {
+  WalletClientType,
+  EVM_WALLET_TYPE,
+} from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { EditAccountAddAccountForm } from './add-account';
 import { EditAccountModalAddNewAccountOption } from './add-new-account-option';
 
@@ -69,9 +72,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultSelectedAccountAddresses,
   );
-  const [accountType, setAccountType] = useState<WalletClientType | 'EVM'>(
-    'EVM',
-  );
+  const [accountType, setAccountType] = useState<
+    WalletClientType | typeof EVM_WALLET_TYPE
+  >(EVM_WALLET_TYPE);
   useEffect(() => {
     setSelectedAccountAddresses(defaultSelectedAccountAddresses);
   }, [
@@ -274,7 +277,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
       )}
       {modalStage === EditAccountModalStage.AddNewAccount && (
         <EditAccountModalAddNewAccountOption
-          setAccountTypeToAdd={(accountTypeToAdd: WalletClientType | 'EVM') => {
+          setAccountTypeToAdd={(
+            accountTypeToAdd: WalletClientType | typeof EVM_WALLET_TYPE,
+          ) => {
             setAccountType(accountTypeToAdd);
             setModalStage(EditAccountModalStage.EditAccounts);
           }}

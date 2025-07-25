@@ -35,6 +35,8 @@ export const UserStorageControllerInit: ControllerInitFunction<
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncAdded,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
             },
           });
@@ -44,6 +46,8 @@ export const UserStorageControllerInit: ControllerInitFunction<
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncNameUpdated,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
             },
           });
@@ -61,7 +65,11 @@ export const UserStorageControllerInit: ControllerInitFunction<
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncErroneousSituation,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               situation_message: situationMessage,
             },
           });
@@ -73,7 +81,11 @@ export const UserStorageControllerInit: ControllerInitFunction<
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               feature_name: 'Backup And Sync',
               action: 'Contacts Sync Contact Updated',
             },
@@ -84,7 +96,11 @@ export const UserStorageControllerInit: ControllerInitFunction<
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               feature_name: 'Backup And Sync',
               action: 'Contacts Sync Contact Deleted',
             },
@@ -103,9 +119,15 @@ export const UserStorageControllerInit: ControllerInitFunction<
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               feature_name: 'Backup And Sync',
               action: 'Contacts Sync Erroneous Situation',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               additional_description: situationMessage,
             },
           });

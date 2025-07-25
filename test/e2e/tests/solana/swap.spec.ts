@@ -60,7 +60,7 @@ describe('Swap on Solana', function () {
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.check_txAmountInActivity('-0.001 SOL', 1);
         await activityListPage.check_waitForTransactionStatus('confirmed');
-        await activityListPage.check_swapTransactionActivity(
+        await activityListPage.check_transactionActivityByText(
           'Swap SOL to USDC',
         );
       },
@@ -100,7 +100,7 @@ describe('Swap on Solana', function () {
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.check_txAmountInActivity('-1 USDC', 1);
         await activityListPage.check_waitForTransactionStatus('confirmed');
-        await activityListPage.check_swapTransactionActivity(
+        await activityListPage.check_transactionActivityByText(
           'Swap USDC to SOL',
         );
       },

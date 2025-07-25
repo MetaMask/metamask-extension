@@ -109,11 +109,11 @@ async function main(): Promise<void> {
   }
 
   if (labelable.type === LabelableType.Issue) {
-    // If labelable is a flaky test report, no template is needed (we just add a link to circle.ci in the description), we skip the template checks
+    // If labelable is a flaky test report, no template is needed (we just add a link to ci in the description), we skip the template checks
     const flakyTestsLabelFound = findLabel(labelable, flakyTestsLabel);
     if (flakyTestsLabelFound?.id) {
       console.log(
-        `Issue ${labelable?.number} was created to report a flaky test. Issue's description doesn't need to match issue template in that case as the issue's description only includes a link redirecting to circle.ci. Skip template checks.`,
+        `Issue ${labelable?.number} was created to report a flaky test. Issue's description doesn't need to match issue template in that case as the issue's description only includes a link redirecting to ci. Skip template checks.`,
       );
       await removeLabelFromLabelableIfPresent(
         octokit,

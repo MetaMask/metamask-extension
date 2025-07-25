@@ -28,6 +28,7 @@ export const useIsTxSubmittable = (
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
+    isTxAlertPresent,
   } = useSelector(getValidationErrors);
 
   return Boolean(
@@ -39,6 +40,7 @@ export const useIsTxSubmittable = (
       activeQuote &&
       !isInsufficientBalance(srcTokenBalance) &&
       !isInsufficientGasBalance(nativeAssetBalance) &&
-      !isInsufficientGasForQuote(nativeAssetBalance),
+      !isInsufficientGasForQuote(nativeAssetBalance) &&
+      !isTxAlertPresent,
   );
 };

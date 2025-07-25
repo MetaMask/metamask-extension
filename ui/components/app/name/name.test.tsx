@@ -194,7 +194,11 @@ describe('Name', () => {
           event: MetaMetricsEventName.PetnameDisplayed,
           category: MetaMetricsEventCategory.Petnames,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             has_petname: hasPetname,
           },
         });

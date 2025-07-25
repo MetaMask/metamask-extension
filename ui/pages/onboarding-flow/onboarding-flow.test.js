@@ -25,6 +25,7 @@ import {
   unlockAndGetSeedPhrase,
 } from '../../store/actions';
 import { mockNetworkState } from '../../../test/stub/networks';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingFlow from './onboarding-flow';
 
 jest.mock('../../store/actions', () => ({
@@ -132,7 +133,13 @@ describe('Onboarding Flow', () => {
     it('should call createNewVaultAndGetSeedPhrase when creating a new wallet password', async () => {
       const { queryByTestId, queryByText } = renderWithProvider(
         <OnboardingFlow />,
-        store,
+        configureMockStore()({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            firstTimeFlowType: FirstTimeFlowType.create,
+          },
+        }),
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
@@ -213,10 +220,16 @@ describe('Onboarding Flow', () => {
       expect(unlockPage).toBeInTheDocument();
     });
 
-    it('should', async () => {
+    it('should call unlockAndGetSeedPhrase when unlocking with a password', async () => {
       const { getByLabelText, getByText } = renderWithProvider(
         <OnboardingFlow />,
-        store,
+        configureMockStore()({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            firstTimeFlowType: FirstTimeFlowType.import,
+          },
+        }),
         ONBOARDING_UNLOCK_ROUTE,
       );
 

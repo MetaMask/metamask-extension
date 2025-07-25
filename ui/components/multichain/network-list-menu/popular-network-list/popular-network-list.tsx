@@ -103,7 +103,7 @@ const PopularNetworkList = ({
               offset={[16, 12]}
               isOpen={isOpen}
               flip
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BackgroundColor.backgroundSection}
               onMouseLeave={handleMouseLeave}
               style={{
                 width: '326px',

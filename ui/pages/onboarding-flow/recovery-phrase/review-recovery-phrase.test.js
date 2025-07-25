@@ -100,7 +100,7 @@ describe('Review Recovery Phrase Component', () => {
   });
 
   it('should route to url with reminder parameter', () => {
-    const isReminderParam = '/?isFromReminder=true';
+    const isReminderParam = '?isFromReminder=true';
     const { queryByTestId } = renderWithProvider(
       <RecoveryPhrase {...props} />,
       mockStore,

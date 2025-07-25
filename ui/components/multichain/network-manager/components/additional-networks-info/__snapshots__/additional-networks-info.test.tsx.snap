@@ -3,16 +3,16 @@
 exports[`AdditionalNetworksInfo renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4"
+    class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-left-4"
   >
     <div
-      class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--display-flex mm-box--justify-content-space-between"
+      class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-inline-flex"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
         >
           Additional networks
         </p>

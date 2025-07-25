@@ -65,6 +65,8 @@ export function bytesToB64Url(bytes: ArrayBuffer): string {
  * be combined.
  * @returns
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function cartesianProduct<T extends unknown[][]>(...sets: T) {
   return sets.reduce((a, b) =>
     a.flatMap((d) => b.map((e) => [d, e].flat())),

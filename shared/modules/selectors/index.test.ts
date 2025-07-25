@@ -189,8 +189,7 @@ describe('Selectors', () => {
       'returns false if feature flag is disabled, not a HW and is Ethereum network',
       () => {
         const state = createSwapsMockStore();
-        state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive =
-          false;
+        state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive = false;
         expect(getSmartTransactionsEnabled(state)).toBe(false);
       },
     );

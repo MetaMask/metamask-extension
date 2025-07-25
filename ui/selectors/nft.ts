@@ -49,16 +49,19 @@ export const getNftContractsByAddressByChain = createSelector(
       .flat()
       .flat();
 
-    return allNftContracts.reduce((acc, contract) => {
-      const { chainId, ...data } = contract;
+    return allNftContracts.reduce(
+      (acc, contract) => {
+        const { chainId, ...data } = contract;
 
-      const chainIdContracts = acc[chainId] ?? {};
-      acc[chainId] = chainIdContracts;
+        const chainIdContracts = acc[chainId] ?? {};
+        acc[chainId] = chainIdContracts;
 
-      chainIdContracts[data.address.toLowerCase()] = data;
+        chainIdContracts[data.address.toLowerCase()] = data;
 
-      return acc;
-    }, {} as { [chainId: string]: { [address: string]: NftContract } });
+        return acc;
+      },
+      {} as { [chainId: string]: { [address: string]: NftContract } },
+    );
   },
 );
 

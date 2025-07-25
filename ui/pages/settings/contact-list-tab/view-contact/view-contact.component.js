@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 
-import Button from '../../../../components/ui/button/button.component';
-
 import {
+  Button,
+  ButtonVariant,
   AvatarAccount,
   AvatarAccountSize,
   Box,
@@ -66,7 +66,7 @@ function ViewContact({
         </Box>
         <div className="address-book__view-contact__group">
           <Button
-            type="secondary"
+            variant={ButtonVariant.Secondary}
             onClick={() => {
               history.push(`${editRoute}/${address}`);
             }}

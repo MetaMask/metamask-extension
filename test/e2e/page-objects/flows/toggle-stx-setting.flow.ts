@@ -21,3 +21,22 @@ export async function toggleStxSetting(driver: Driver) {
   await advancedSettingsPage.toggleSmartTransactions();
   await settingsPage.closeSettingsPage();
 }
+
+/**
+ * Toggle the Smart Transactions (STX) option from the Advance settings.
+ *
+ * @param driver - The driver instance.
+ */
+export async function disableStxSetting(driver: Driver) {
+  const headerNavbar = new HeaderNavbar(driver);
+  await headerNavbar.check_pageIsLoaded();
+  await headerNavbar.openSettingsPage();
+
+  const settingsPage = new SettingsPage(driver);
+  await settingsPage.check_pageIsLoaded();
+  await settingsPage.clickAdvancedTab();
+  const advancedSettingsPage = new AdvancedSettings(driver);
+  await advancedSettingsPage.check_pageIsLoaded();
+  await advancedSettingsPage.toggleSmartTransactionsOff();
+  await settingsPage.closeSettingsPage();
+}

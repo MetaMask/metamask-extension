@@ -1,6 +1,7 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
@@ -31,7 +32,9 @@ describe('AssetListControlBar', () => {
       metamask: {
         selectedNetworkClientId: 'selectedNetworkClientId',
         enabledNetworkMap: {
-          '0x1': true,
+          eip155: {
+            '0x1': true,
+          },
         },
         networkConfigurationsByChainId: {
           '0x1': {
@@ -44,6 +47,10 @@ describe('AssetListControlBar', () => {
             ],
           },
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
         internalAccounts: {
           selectedAccount: 'selectedAccount',
           accounts: {

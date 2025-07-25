@@ -97,9 +97,8 @@ async function requestPermissionsImplementation(
 
   let grantedPermissions: GrantedPermissions = {};
 
-  const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
-    requestedPermissions,
-  );
+  const [frozenGrantedPermissions] =
+    await requestPermissionsForOrigin(requestedPermissions);
 
   grantedPermissions = { ...frozenGrantedPermissions };
 

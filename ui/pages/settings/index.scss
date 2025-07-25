@@ -5,6 +5,7 @@
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
+@import 'security-tab/index';
 
 .settings-page {
   position: relative;
@@ -26,11 +27,15 @@
     &__title-container {
       display: grid;
       align-items: center;
-      grid-template-columns: 197px 1fr 1fr;
+      grid-template-columns: 197px 1fr 40px;
+
+      &--hide-search {
+        grid-template-columns: 197px 1fr;
+      }
 
       @include design-system.screen-sm-max {
         grid-template-rows: 1fr 1fr;
-        grid-template-columns: 0.5fr 2fr 0.5fr;
+        grid-template-columns: 0.5fr 3fr 0.5fr;
         gap: 16px;
         grid-template-areas:
           'back title close'
@@ -51,6 +56,11 @@
 
         &__search {
           grid-area: search;
+        }
+
+        &--hide-search {
+          grid-template-rows: 1fr;
+          grid-template-areas: 'back title close';
         }
       }
 

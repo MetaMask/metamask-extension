@@ -50,7 +50,7 @@ import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
-import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {
@@ -74,7 +74,9 @@ export const BridgeQuoteCard = () => {
     useState(false);
 
   const dispatch = useDispatch();
-  const isStxEnabled = useSelector(getSmartTransactionsEnabled);
+  const isStxEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   return (
@@ -113,14 +115,24 @@ export const BridgeQuoteCard = () => {
                       trackUnifiedSwapBridgeEvent(
                         UnifiedSwapBridgeEventName.AllQuotesOpened,
                         {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           stx_enabled: isStxEnabled,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           token_symbol_source:
                             fromToken?.symbol ??
                             getNativeAssetForChainId(fromChain.chainId).assetId,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           token_symbol_destination: toToken?.symbol ?? null,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           price_impact: Number(
                             activeQuote.quote?.priceData?.priceImpact ?? '0',
                           ),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           gas_included: false,
                         },
                       ),

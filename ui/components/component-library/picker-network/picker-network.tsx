@@ -19,6 +19,8 @@ import {
 } from './picker-network.types';
 
 export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'button'>(
     {
       className = '',

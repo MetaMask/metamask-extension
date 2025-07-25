@@ -9,6 +9,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
+import { NetworkManager } from '../../multichain/network-manager';
 import {
   CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
   ConfirmTurnOnBackupAndSyncModal,
@@ -278,6 +279,16 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
+    },
+  },
+
+  NETWORK_MANAGER: {
+    contents: <NetworkManager />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
     },
   },
 

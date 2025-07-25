@@ -27,7 +27,9 @@ import {
   getMetaMetricsDataDeletionId,
   getHDEntropyIndex,
   getPreferences,
-} from '../../../selectors/selectors';
+  getIsSocialLoginFlow,
+  getSocialLoginType,
+} from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
@@ -79,6 +81,8 @@ const mapStateToProps = (state) => {
     hdEntropyIndex: getHDEntropyIndex(state),
     skipDeepLinkInterstitial: Boolean(skipDeepLinkInterstitial),
     isSeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
+    socialLoginEnabled: getIsSocialLoginFlow(state),
+    socialLoginType: getSocialLoginType(state),
   };
 };
 

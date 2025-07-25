@@ -40,11 +40,19 @@ export type MultichainNetworkIds = `${MultichainNetworks}`;
 
 export enum MultichainNetworks {
   BITCOIN = BtcScope.Mainnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BITCOIN_TESTNET = BtcScope.Testnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BITCOIN_SIGNET = BtcScope.Signet,
 
   SOLANA = SolScope.Mainnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_DEVNET = SolScope.Devnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_TESTNET = SolScope.Testnet,
 }
 
@@ -55,6 +63,9 @@ export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
 > = {
   [BtcScope.Mainnet]: 'Bitcoin',
   [BtcScope.Testnet]: 'Bitcoin Testnet',
+  [BtcScope.Testnet4]: 'Bitcoin Testnet4',
+  [BtcScope.Signet]: 'Bitcoin Signet',
+  [BtcScope.Regtest]: 'Bitcoin Regtest',
   [SolScope.Mainnet]: 'Solana',
   [SolScope.Testnet]: 'Solana',
   [SolScope.Devnet]: 'Solana',

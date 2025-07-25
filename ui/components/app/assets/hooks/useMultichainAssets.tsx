@@ -1,7 +1,12 @@
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
+import { useMemo } from 'react';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
-import { getSelectedInternalAccount } from '../../../../selectors';
+import {
+  getEnabledNetworksByNamespace,
+  getSelectedInternalAccount,
+  isGlobalNetworkSelectorRemoved,
+} from '../../../../selectors';
 import {
   TranslateFunction,
   networkTitleOverrides,
@@ -16,16 +21,32 @@ import {
 } from '../../../../../shared/constants/multichain/networks';
 import { TokenWithFiatAmount } from '../types';
 import { getMultiChainAssets } from '../../../../selectors/assets';
+import { filterAssets } from '../util/filter';
+import useNetworkFilter from './useNetworkFilter';
 
 const useMultiChainAssets = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const { networkFilter } = useNetworkFilter();
 
   const multichainAssets = useSelector((state) =>
     getMultiChainAssets(state, selectedAccount),
   );
+
+  const filteredMultichainAssets = useMemo(() => {
+    return filterAssets(multichainAssets, [
+      {
+        key: 'chainId',
+        opts: isGlobalNetworkSelectorRemoved
+          ? enabledNetworksByNamespace
+          : networkFilter,
+        filterCallback: 'inclusive',
+      },
+    ]);
+  }, [multichainAssets, enabledNetworksByNamespace, networkFilter]);
 
   // the following condition is needed to satisfy e2e check-balance.spec.ts
   // this is because the new multichain data is not being mocked within the withSolanaAccountSnap test fixture
@@ -50,7 +71,7 @@ const useMultiChainAssets = () => {
     ];
   }
 
-  return multichainAssets.map((asset: TokenWithFiatAmount) => {
+  return filteredMultichainAssets.map((asset: TokenWithFiatAmount) => {
     const fiatAmount = formatWithThreshold(asset.secondary, 0.01, locale, {
       style: 'currency',
       currency: currentCurrency.toUpperCase(),

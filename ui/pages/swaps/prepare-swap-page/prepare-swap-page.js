@@ -479,8 +479,8 @@ export default function PrepareSwapPage({
         );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
-      t('etherscan')
+    ? (CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
+      t('etherscan'))
     : t('etherscan');
 
   const { address: toAddress } = toToken || {};

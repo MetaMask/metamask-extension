@@ -7,6 +7,8 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
+  getPinnedAccountsList,
+  getHiddenAccountsList,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
 import { getSelectedInternalAccount } from '../accounts';
@@ -40,12 +42,26 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
   getAccountTree,
   getOrderedConnectedAccountsForActiveTab,
   getSelectedInternalAccount,
+  getPinnedAccountsList,
+  getHiddenAccountsList,
   (
     internalAccounts: MergedInternalAccount[],
     accountTree: AccountTreeState,
     connectedAccounts: InternalAccount[],
     selectedAccount: InternalAccount,
+    pinnedAccounts: string[],
+    hiddenAccounts: string[],
   ): ConsolidatedWallets => {
+    // Precompute lookups for pinned and hidden accounts
+    const pinnedAccountsSet = new Set(pinnedAccounts);
+    const hiddenAccountsSet = new Set(hiddenAccounts);
+
+    // Precompute connected account IDs for faster lookup
+    const connectedAccountIdsSet = new Set(
+      connectedAccounts.map((account) => account.id),
+    );
+
+    // Create a mapping of accounts by ID for quick access
     const accountsById = internalAccounts.reduce(
       (accounts: Record<string, MergedInternalAccount>, account) => {
         accounts[account.id] = account;
@@ -65,24 +81,22 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
         };
 
         Object.entries(wallet.groups).forEach(([groupId, group]) => {
-          const accountsFromGroup = group.accounts.reduce(
-            (accountsWithMetadata, accountId) => {
-              const accountWithMetadata = accountsById[accountId];
+          const accountsFromGroup = group.accounts.map((accountId) => {
+            const accountWithMetadata = { ...accountsById[accountId] };
 
-              accountWithMetadata.active = Boolean(
-                selectedAccount.id === accountWithMetadata.id &&
-                  connectedAccounts.find(
-                    (connectedAccount) =>
-                      connectedAccount.id === accountWithMetadata.id,
-                  ),
-              );
+            // Set flags for pinned, hidden, and active accounts
+            accountWithMetadata.pinned = pinnedAccountsSet.has(
+              accountWithMetadata.address,
+            );
+            accountWithMetadata.hidden = hiddenAccountsSet.has(
+              accountWithMetadata.address,
+            );
+            accountWithMetadata.active =
+              selectedAccount.id === accountWithMetadata.id &&
+              connectedAccountIdsSet.has(accountWithMetadata.id);
 
-              accountsWithMetadata.push(accountWithMetadata);
-
-              return accountsWithMetadata;
-            },
-            [] as MergedInternalAccount[],
-          );
+            return accountWithMetadata;
+          });
 
           consolidatedWallets[walletId as AccountWalletId].groups[
             groupId as AccountGroupId
@@ -97,5 +111,40 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
       },
       {} as ConsolidatedWallets,
     );
+  },
+);
+
+export type WalletMetadata = {
+  id: string;
+  name: string;
+};
+
+/**
+ * Retrieve the wallet ID and name for an account with a given address.
+ *
+ * @param walletsWithAccounts - The consolidated wallets with accounts.
+ * @param address - The address of the account to find.
+ * @returns The wallet ID and name for the account, or null if not found.
+ */
+export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
+  getWalletsWithAccounts,
+  (_, address: string) => address,
+  (walletsWithAccounts: ConsolidatedWallets, address: string) => {
+    // Find the wallet that contains the account with the given address
+    for (const [walletId, wallet] of Object.entries(walletsWithAccounts)) {
+      for (const group of Object.values(wallet.groups)) {
+        const account = group.accounts.find(
+          (acc) => acc.address.toLowerCase() === address.toLowerCase(),
+        );
+        if (account) {
+          return {
+            id: walletId,
+            name: wallet.metadata.name,
+          };
+        }
+      }
+    }
+
+    return null;
   },
 );

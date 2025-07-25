@@ -120,7 +120,7 @@ describe('ConfirmNav', () => {
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     fireEvent.click(rejectAllButton);
     expect(rejectSpy).toHaveBeenCalledTimes(1);
   });

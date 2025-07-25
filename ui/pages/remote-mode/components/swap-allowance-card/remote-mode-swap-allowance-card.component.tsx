@@ -38,6 +38,8 @@ import { SUPPORTED_CHAINS_IDS } from '../../remote.constants';
  * @param props.onRemove - Callback function triggered when the remove button is clicked
  * @returns A card component displaying swap allowance info
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeSwapAllowanceCard({
   swapAllowance,
   onRemove,

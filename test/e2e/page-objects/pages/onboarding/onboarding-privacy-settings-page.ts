@@ -85,6 +85,8 @@ class OnboardingPrivacySettingsPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -188,9 +190,9 @@ class OnboardingPrivacySettingsPage {
     await this.driver.clickElement(this.assetsSettings);
     await this.driver.waitForSelector(this.assetsSettingsMessage);
     await Promise.all(
-      (
-        await this.driver.findClickableElements(this.assetsPrivacyToggle)
-      ).map((toggle) => toggle.click()),
+      (await this.driver.findClickableElements(this.assetsPrivacyToggle)).map(
+        (toggle) => toggle.click(),
+      ),
     );
     await this.navigateBackToSettingsPage();
   }

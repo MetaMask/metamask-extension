@@ -7,6 +7,11 @@ import { mockSegment } from './mocks/segment';
 
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
+    const eventsToMock = [
+      'Wallet Import Started',
+      'Wallet Setup Completed',
+      'Wallet Created',
+    ];
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -16,11 +21,7 @@ describe('Wallet Created Events - Imported Account', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
-          return await mockSegment(server, [
-            'Wallet Import Started',
-            'Wallet Setup Completed',
-            'Wallet Created',
-          ]);
+          return await mockSegment(server, eventsToMock);
         },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -30,33 +31,84 @@ describe('Wallet Created Events - Imported Account', function () {
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 3);
 
-        assert.deepStrictEqual(events[0].properties, {
+        // Filter events to only include expected ones and remove duplicates as
+        // events are currently being restructured
+        const filteredEvents = events.filter((event) =>
+          eventsToMock.includes(event.event),
+        );
+
+        const uniqueEvents = [];
+        const seenEventTypes = new Set();
+
+        for (const event of filteredEvents) {
+          if (!seenEventTypes.has(event.event)) {
+            uniqueEvents.push(event);
+            seenEventTypes.add(event.event);
+          }
+        }
+
+        assert.equal(uniqueEvents.length, eventsToMock.length);
+
+        const walletImportStarted = uniqueEvents.find(
+          (e) => e.event === 'Wallet Import Started',
+        );
+        const walletSetupCompleted = uniqueEvents.find(
+          (e) => e.event === 'Wallet Setup Completed',
+        );
+        const walletCreated = uniqueEvents.find(
+          (e) => e.event === 'Wallet Created',
+        );
+
+        assert.deepStrictEqual(walletImportStarted.properties, {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'imported',
           category: 'Onboarding',
           locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
         });
 
-        assert.deepStrictEqual(events[1].properties, {
+        assert.deepStrictEqual(walletSetupCompleted.properties, {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           wallet_setup_type: 'import',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_wallet: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'imported',
           category: 'Onboarding',
           locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
         });
 
-        assert.deepStrictEqual(events[2].properties, {
+        assert.deepStrictEqual(walletCreated.properties, {
           method: 'import',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_profile_syncing_enabled: true,
           category: 'Onboarding',
           locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         });
       },

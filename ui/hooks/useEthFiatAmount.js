@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import { getShouldShowFiat } from '../selectors';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
@@ -39,6 +40,20 @@ export function useEthFiatAmount(
     ethAmount === undefined
   ) {
     return undefined;
+  }
+
+  const fiatAmount = new BigNumber(ethAmount.toString()).times(conversionRate);
+  if (
+    ethAmount &&
+    fiatAmount.lt(new BigNumber(0.01)) &&
+    fiatAmount.greaterThan(new BigNumber(0))
+  ) {
+    return hideCurrencySymbol
+      ? `< ${formatCurrency(0.01, currentCurrency)}`
+      : `< ${formatCurrency(
+          0.01,
+          currentCurrency,
+        )} ${currentCurrency.toUpperCase()}`;
   }
 
   return hideCurrencySymbol

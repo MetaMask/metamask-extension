@@ -1,0 +1,27 @@
+@use "design-system";
+
+.wallet-details-page {
+  max-width: 600px;
+
+  .wallet-details-page__rows-container {
+    .wallet-details-page__row {
+      margin-bottom: 1px;
+
+      &:first-of-type {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+
+      &:last-of-type {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        margin-bottom: 0;
+      }
+
+      &.wallet-details-page__srp-button {
+        cursor: pointer;
+        border: none;
+      }
+    }
+  }
+}

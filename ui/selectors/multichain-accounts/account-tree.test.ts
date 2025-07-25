@@ -27,6 +27,8 @@ describe('Multichain Accounts Selectors', () => {
                   address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
                   balance: '0x346ba7725f412cbfdb',
                   id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  pinned: false,
+                  hidden: false,
                   metadata: {
                     importTime: 0,
                     keyring: {
@@ -52,6 +54,8 @@ describe('Multichain Accounts Selectors', () => {
                   address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
                   balance: '0x0',
                   id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+                  pinned: false,
+                  hidden: false,
                   metadata: {
                     importTime: 0,
                     keyring: {
@@ -93,6 +97,8 @@ describe('Multichain Accounts Selectors', () => {
                   address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
                   balance: '0x0',
                   id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+                  pinned: false,
+                  hidden: false,
                   metadata: {
                     importTime: 0,
                     keyring: {
@@ -134,6 +140,8 @@ describe('Multichain Accounts Selectors', () => {
                   address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
                   balance: '0x0',
                   id: '694225f4-d30b-4e77-a900-c8bbce735b42',
+                  pinned: false,
+                  hidden: false,
                   metadata: {
                     importTime: 0,
                     keyring: {
@@ -173,6 +181,8 @@ describe('Multichain Accounts Selectors', () => {
                   address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
                   balance: '0x0',
                   id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+                  pinned: false,
+                  hidden: false,
                   metadata: {
                     importTime: 0,
                     keyring: {
@@ -212,6 +222,8 @@ describe('Multichain Accounts Selectors', () => {
                   address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
                   balance: '0x0',
                   id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
+                  pinned: false,
+                  hidden: false,
                   metadata: {
                     importTime: 0,
                     keyring: {

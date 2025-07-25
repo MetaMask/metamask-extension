@@ -8,9 +8,15 @@ const E2E_TESTS_REGEX =
 // include JS and JSX files only in the app, offscreen, shared, and ui directories
 const JS_REGEX = /^(app|offscreen|shared|ui)\/.*\.(js|jsx)$/u;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 enum AUTOMATION_TYPE {
   CI = 'ci',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   PRE_COMMIT_HOOK = 'pre-commit-hook',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   PRE_PUSH_HOOK = 'pre-push-hook',
 }
 

@@ -1,10 +1,5 @@
-import React from 'react';
-import {
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '../../../../component-library';
+import React, { FC } from 'react';
+import { Box, Text } from '../../../../component-library';
 import {
   Display,
   JustifyContent,
@@ -14,15 +9,11 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../../../helpers/constants/design-system';
-import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
 
-export function DeFiEmptyStateMessage({
-  primaryText,
-  secondaryText,
-}: {
+export const DeFiEmptyStateMessage: FC<{
   primaryText: string;
   secondaryText: string;
-}) {
+}> = ({ primaryText, secondaryText }) => {
   return (
     <Box
       paddingTop={6}
@@ -42,16 +33,13 @@ export function DeFiEmptyStateMessage({
       >
         {primaryText}
       </Text>
-      {
-        <ButtonLink
-          size={ButtonLinkSize.Md}
-          href={getPortfolioUrl('stake', 'ext_stake_button')}
-          externalLink
-          data-testid="defi-tab-start-earning-link"
-        >
-          {secondaryText}
-        </ButtonLink>
-      }
+      <Text
+        color={TextColor.textAlternative}
+        variant={TextVariant.bodyMdMedium}
+        textAlign={TextAlign.Center}
+      >
+        {secondaryText}
+      </Text>
     </Box>
   );
-}
+};

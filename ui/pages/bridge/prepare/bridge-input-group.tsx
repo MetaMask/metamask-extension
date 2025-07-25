@@ -266,73 +266,75 @@ export const BridgeInputGroup = ({
         </AssetPicker>
       </Row>
 
-      <Row justifyContent={JustifyContent.spaceBetween}>
-        <Row>
-          <Text
-            variant={TextVariant.bodyMd}
-            fontWeight={FontWeight.Normal}
-            color={
-              isAmountReadOnly && isEstimatedReturnLow
-                ? TextColor.warningDefault
-                : TextColor.textAlternativeSoft
-            }
-            textAlign={TextAlign.End}
-            ellipsis
-          >
-            {isAmountReadOnly && isLoading && amountFieldProps.value === '0'
-              ? t('bridgeCalculatingAmount')
-              : undefined}
-            {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
-          </Text>
-        </Row>
+      <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>
         <Text
-          display={Display.Flex}
-          gap={1}
           variant={TextVariant.bodyMd}
+          fontWeight={FontWeight.Normal}
           color={
-            !isAmountReadOnly && isInsufficientBalance(balanceAmount)
-              ? TextColor.errorDefault
+            isAmountReadOnly && isEstimatedReturnLow
+              ? TextColor.warningDefault
               : TextColor.textAlternativeSoft
           }
-          onClick={() => {
-            if (isAmountReadOnly && token && selectedChainId) {
-              handleAddressClick();
-            } else if (token && selectedChainId) {
-              handleCopy(token.address);
-            }
-          }}
-          as={isAmountReadOnly ? 'a' : 'p'}
-          style={{
-            cursor: isAmountReadOnly ? 'pointer' : 'default',
-            textDecoration: isAmountReadOnly ? 'underline' : 'none',
-          }}
+          textAlign={TextAlign.End}
+          ellipsis
         >
-          {isAmountReadOnly &&
-            token &&
-            selectedChainId &&
-            (isNativeAddress(token.address)
-              ? undefined
-              : shortenString(token.address, {
-                  truncatedCharLimit: 11,
-                  truncatedStartChars: 4,
-                  truncatedEndChars: 4,
-                  skipCharacterInEnd: false,
-                }))}
-          {!isAmountReadOnly && balanceAmount
-            ? formatTokenAmount(locale, balanceAmount.toString(), token?.symbol)
+          {isAmountReadOnly && isLoading && amountFieldProps.value === '0'
+            ? t('bridgeCalculatingAmount')
             : undefined}
-          {onMaxButtonClick &&
-            token &&
-            !isNativeAddress(token.address) &&
-            balanceAmount && (
+          {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
+        </Text>
+        {!isAmountReadOnly && balanceAmount && token && (
+          <Text
+            display={Display.Flex}
+            gap={1}
+            variant={TextVariant.bodyMd}
+            color={
+              isInsufficientBalance(balanceAmount)
+                ? TextColor.errorDefault
+                : TextColor.textAlternativeSoft
+            }
+            style={{
+              cursor: 'default',
+              textDecoration: 'none',
+            }}
+          >
+            {formatTokenAmount(locale, balanceAmount.toString(), token.symbol)}
+            {onMaxButtonClick && (
               <ButtonLink
                 variant={TextVariant.bodyMd}
-                onClick={() => onMaxButtonClick(balanceAmount?.toFixed())}
+                onClick={() => onMaxButtonClick(balanceAmount.toFixed())}
               >
                 {t('max')}
               </ButtonLink>
             )}
-        </Text>
+          </Text>
+        )}
+        {isAmountReadOnly &&
+          token &&
+          selectedChainId &&
+          !isNativeAddress(token.address) && (
+            <Text
+              display={Display.Flex}
+              gap={1}
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternativeSoft}
+              onClick={() => {
+                handleAddressClick();
+              }}
+              as={'a'}
+              style={{
+                cursor: isAmountReadOnly ? 'pointer' : 'default',
+                textDecoration: isAmountReadOnly ? 'underline' : 'none',
+              }}
+            >
+              {shortenString(token.address, {
+                truncatedCharLimit: 11,
+                truncatedStartChars: 4,
+                truncatedEndChars: 4,
+                skipCharacterInEnd: false,
+              })}
+            </Text>
+          )}
       </Row>
     </Column>
   );
