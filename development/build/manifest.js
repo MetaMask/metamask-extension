@@ -294,7 +294,6 @@ async function getBuildModifications(buildType, platform) {
 function loadManifestKey(manifest, isReleaseCandidate = false) {
   // to assert the platform is firefox,
   // we check if the manifest_version is 2 and if the applications.gecko.id exists.
-  console.log('manifest.applications', manifest.applications);
   const isFirefox =
     manifest.manifest_version === 2 && manifest?.applications?.gecko?.id;
   if (isFirefox) {
