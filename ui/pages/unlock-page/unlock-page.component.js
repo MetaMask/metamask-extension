@@ -392,7 +392,9 @@ class UnlockPage extends Component {
   onForgotPasswordOrLoginWithDiffMethods = () => {
     const { isSocialLoginFlow, history, isOnboardingCompleted } = this.props;
 
-    if (!isOnboardingCompleted) {
+    // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
+    // we can redirect to `onboarding_welcome` route to select a different login method
+    if (!isOnboardingCompleted && isSocialLoginFlow) {
       history.replace(ONBOARDING_WELCOME_ROUTE);
       return;
     }
@@ -423,7 +425,7 @@ class UnlockPage extends Component {
 
   render() {
     const { password, error, isLocked, showResetPasswordModal } = this.state;
-    const { isOnboardingCompleted } = this.props;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
@@ -537,9 +539,9 @@ class UnlockPage extends Component {
               onClick={() => this.onForgotPasswordOrLoginWithDiffMethods()}
               marginBottom={6}
             >
-              {isOnboardingCompleted
-                ? t('forgotPassword')
-                : t('useDifferentLoginMethod')}
+              {isSocialLoginFlow && !isOnboardingCompleted
+                ? t('useDifferentLoginMethod')
+                : t('forgotPassword')}
             </Button>
 
             <Text>
