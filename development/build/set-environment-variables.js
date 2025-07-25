@@ -200,8 +200,17 @@ function getGoogleClientId({
       );
     }
     return variables.get('GOOGLE_CLIENT_ID');
-  } else if (environment === ENVIRONMENT.PRODUCTION) {
-    return assertAndLoadEnvVar('GOOGLE_CLIENT_ID_REF', buildType, variables);
+  } else if (
+    environment === ENVIRONMENT.PRODUCTION ||
+    environment === ENVIRONMENT.RELEASE_CANDIDATE ||
+    environment === ENVIRONMENT.PULL_REQUEST
+  ) {
+    const googleClientIdRef = assertAndLoadEnvVar(
+      'GOOGLE_CLIENT_ID_REF',
+      buildType,
+      variables,
+    );
+    return assertAndLoadEnvVar(googleClientIdRef, buildType, variables);
   }
 
   const envToLoad =
@@ -236,8 +245,17 @@ function getAppleClientId({
       );
     }
     return variables.get('APPLE_CLIENT_ID');
-  } else if (environment === ENVIRONMENT.PRODUCTION) {
-    return assertAndLoadEnvVar('APPLE_CLIENT_ID_REF', buildType, variables);
+  } else if (
+    environment === ENVIRONMENT.PRODUCTION ||
+    environment === ENVIRONMENT.RELEASE_CANDIDATE ||
+    environment === ENVIRONMENT.PULL_REQUEST
+  ) {
+    const appleClientIdRef = assertAndLoadEnvVar(
+      'APPLE_CLIENT_ID_REF',
+      buildType,
+      variables,
+    );
+    return assertAndLoadEnvVar(appleClientIdRef, buildType, variables);
   }
 
   const envToLoad =

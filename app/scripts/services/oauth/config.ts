@@ -127,6 +127,22 @@ function isProductionBuild() {
 }
 
 /**
+ * Check if the build is a Release Candidate build.
+ *
+ * @returns true if the build is a Release Candidate build, false otherwise
+ */
+function isReleaseCandidateBuild() {
+  console.log(
+    'process.env.METAMASK_ENVIRONMENT',
+    process.env.METAMASK_ENVIRONMENT,
+  );
+  return (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PULL_REQUEST
+  );
+}
+
+/**
  * Load the OAuth config based on the build type and environment.
  *
  * @returns the OAuth config
@@ -138,7 +154,7 @@ export function loadOAuthConfig(): OAuthConfig {
   if (buildType === 'main') {
     if (isDevOrTestBuild()) {
       buildTypeEnv = BuildTypeEnv.DevMain;
-    } else if (isProductionBuild()) {
+    } else if (isProductionBuild() || isReleaseCandidateBuild()) {
       buildTypeEnv = BuildTypeEnv.ProdMain;
     } else {
       buildTypeEnv = BuildTypeEnv.UatMain;
@@ -146,7 +162,7 @@ export function loadOAuthConfig(): OAuthConfig {
   } else if (buildType === 'flask') {
     if (isDevOrTestBuild()) {
       buildTypeEnv = BuildTypeEnv.DevFlask;
-    } else if (isProductionBuild()) {
+    } else if (isProductionBuild() || isReleaseCandidateBuild()) {
       buildTypeEnv = BuildTypeEnv.ProdFlask;
     } else {
       buildTypeEnv = BuildTypeEnv.UatFlask;

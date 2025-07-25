@@ -38,6 +38,7 @@ export default class OAuthService {
       ...env,
       ...oauthConfig,
     };
+    console.log('oauthService.#env', this.#env);
     this.#webAuthenticator = webAuthenticator;
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;

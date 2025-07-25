@@ -55,10 +55,11 @@ function createManifestTasks({
   shouldIncludeOcapKernel = false,
   shouldIncludeSnow,
 }) {
+  const environment = getEnvironment({ buildTarget: entryTask });
+
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
-    const isDevelopment =
-      getEnvironment({ buildTarget: entryTask }) === 'development';
+    const isDevelopment = environment === 'development';
     const manifestFlags = isDevelopment ? await loadManifestFlags() : undefined;
     return Promise.all(
       browserPlatforms.map(async (platform) => {
@@ -124,7 +125,10 @@ function createManifestTasks({
 
   const envScriptDist = createTaskForModifyManifestForEnvironment(
     (manifest) => {
-      loadManifestKey(manifest);
+      const isReleaseCandidate =
+        environment === ENVIRONMENT.RELEASE_CANDIDATE ||
+        environment === ENVIRONMENT.PULL_REQUEST;
+      loadManifestKey(manifest, isReleaseCandidate);
     },
   );
 
@@ -175,8 +179,6 @@ function createManifestTasks({
 
   // For non-production builds only, modify the extension's name and description
   function modifyNameAndDescForNonProd(manifest) {
-    const environment = getEnvironment({ buildTarget: entryTask });
-
     if (environment === ENVIRONMENT.PRODUCTION) {
       return;
     }
