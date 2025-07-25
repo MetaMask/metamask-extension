@@ -23,7 +23,6 @@ import {
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
-  setToChainId,
   setToToken,
 } from '../../ducks/bridge/actions';
 import {
@@ -179,15 +178,15 @@ export const useBridgeQueryParams = (
         const { chainId, assetReference } = parseCaipAssetType(
           fromTokenMetadata.assetId,
         );
+        const nativeAsset = getNativeAssetForChainId(chainId);
         // TODO remove this after v36.0.0 bridge-controller bump
-        const isNativeReference =
-          getNativeAssetForChainId(chainId)?.assetId.includes(assetReference);
+        const isNativeReference = nativeAsset?.assetId.includes(assetReference);
         const token = {
           ...fromTokenMetadata,
           chainId,
           address:
             isNativeReference || isNativeAddress(assetReference)
-              ? ''
+              ? (nativeAsset?.address ?? '')
               : assetReference,
         };
         // Only update if chain is different
@@ -218,7 +217,6 @@ export const useBridgeQueryParams = (
       const { chainId, assetReference } = parseCaipAssetType(
         toTokenMetadata.assetId,
       );
-      dispatch(setToChainId(chainId));
       dispatch(
         setToToken({
           ...toTokenMetadata,
