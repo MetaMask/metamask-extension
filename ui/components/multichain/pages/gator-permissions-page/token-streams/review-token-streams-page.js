@@ -8,6 +8,7 @@ import {
   ButtonIconSize,
   IconName,
   Text,
+  Button,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -26,6 +27,8 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modu
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
+import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
+import { getSelectedInternalAccount } from '../../../../../selectors';
 
 export const ReviewTokenStreamsPage = () => {
   const t = useI18nContext();
@@ -34,6 +37,13 @@ export const ReviewTokenStreamsPage = () => {
   const { chainId } = useParams();
   const [networkName, setNetworkName] = useState('');
   const [totalTokenStreams, setTotalTokenStreams] = useState(0);
+
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { revokeGatorPermission, revokeGatorPermissionBatch } =
+    useRevokeGatorPermissions({
+      accountAddress: selectedAccount.address,
+      chainId,
+    });
 
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const nativeTokenStreams = useSelector((state) =>
@@ -56,17 +66,34 @@ export const ReviewTokenStreamsPage = () => {
     setTotalTokenStreams(nativeTokenStreams.length + erc20TokenStreams.length);
   }, [chainId, nativeTokenStreams, erc20TokenStreams, networks]);
 
-  const handleNativeTokenStreamRevokeClick = (nativeTokenStream) => {
-    // TODO: Implement revoke logic
-    console.log('nativeTokenStream to revoke:', nativeTokenStream);
+  const handleRevokeClick = async (permissionContext, delegationManager) => {
+    await revokeGatorPermission(permissionContext, delegationManager);
   };
 
-  const handleErc20TokenStreamRevokeClick = (erc20TokenStream) => {
-    // TODO: Implement revoke logic
-    console.log('erc20TokenStream to revoke:', erc20TokenStream);
+  const handleRevokeBatchClick = async () => {
+    const revokeGatorPermissionArgs = [];
+
+    nativeTokenStreams.forEach((nativeTokenStream) => {
+      const { permissionResponse } = nativeTokenStream;
+      revokeGatorPermissionArgs.push({
+        permissionContext: permissionResponse.context,
+        delegationManagerAddress:
+          permissionResponse.signerMeta.delegationManager,
+      });
+    });
+
+    erc20TokenStreams.forEach((erc20TokenStream) => {
+      const { permissionResponse } = erc20TokenStream;
+      revokeGatorPermissionArgs.push({
+        permissionContext: permissionResponse.context,
+        delegationManager: permissionResponse.signerMeta.delegationManager,
+      });
+    });
+
+    await revokeGatorPermissionBatch(revokeGatorPermissionArgs);
   };
 
-  const renderTokenStreams = (streams, clickHandler) =>
+  const renderTokenStreams = (streams) =>
     streams.map((stream) => {
       const { permissionResponse, siteOrigin } = stream;
       const fullNetworkName = extractNetworkName(
@@ -82,7 +109,12 @@ export const ReviewTokenStreamsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() => clickHandler(stream)}
+          onRevokeClick={() =>
+            handleRevokeClick(
+              permissionResponse.context,
+              permissionResponse.signerMeta.delegationManager,
+            )
+          }
         />
       );
     });
@@ -114,14 +146,14 @@ export const ReviewTokenStreamsPage = () => {
         <Box ref={headerRef}></Box>
         {totalTokenStreams > 0 ? (
           <>
-            {renderTokenStreams(
-              nativeTokenStreams,
-              handleNativeTokenStreamRevokeClick,
-            )}
-            {renderTokenStreams(
-              erc20TokenStreams,
-              handleErc20TokenStreamRevokeClick,
-            )}
+            {renderTokenStreams(nativeTokenStreams)}
+            {renderTokenStreams(erc20TokenStreams)}
+            <Button
+              onClick={handleRevokeBatchClick}
+              disabled={totalTokenStreams === 0}
+            >
+              Revoke All(test)
+            </Button>
           </>
         ) : (
           <Box

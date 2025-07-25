@@ -26,6 +26,8 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modu
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
+import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
+import { getSelectedInternalAccount } from '../../../../../selectors';
 
 export const ReviewTokenSubscriptionsPage = () => {
   const t = useI18nContext();
@@ -43,15 +45,19 @@ export const ReviewTokenSubscriptionsPage = () => {
       chainId,
     ),
   );
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { revokeGatorPermission } = useRevokeGatorPermissions({
+    accountAddress: selectedAccount.address,
+    chainId,
+  });
 
   useEffect(() => {
     setNetworkName(extractNetworkName(networks, chainId));
     setTotalTokenSubscriptions(nativeTokenPeriodicPermissions.length);
   }, [chainId, nativeTokenPeriodicPermissions, networks]);
 
-  const handleRevokeClick = (subscription) => {
-    // TODO: Implement revoke logic
-    console.log('subscription to revoke:', subscription);
+  const handleRevokeClick = async (permissionContext, delegationManager) => {
+    await revokeGatorPermission(permissionContext, delegationManager);
   };
 
   const renderTokenSubscriptions = (subscriptions) =>
@@ -69,7 +75,12 @@ export const ReviewTokenSubscriptionsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() => handleRevokeClick(subscription)}
+          onRevokeClick={() =>
+            handleRevokeClick(
+              permissionResponse.context,
+              permissionResponse.signerMeta.delegationManager,
+            )
+          }
         />
       );
     });

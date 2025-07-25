@@ -267,6 +267,7 @@
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.9.0",
     "@metamask/delegation-controller": "^0.4.0",
+    "@metamask/delegation-core": "0.1.0",
     "@metamask/delegation-deployments": "^0.11.0",
     "@metamask/design-tokens": "^7.1.0",
     "@metamask/ens-controller": "^15.0.2",
