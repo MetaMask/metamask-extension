@@ -108,12 +108,11 @@ describe('swcLoader', () => {
         // properties; it is mostly intended as sanity check.
         const swcConfig: SwcConfig = {
           args: { watch },
-          safeVariables: {},
           browsersListQuery: '',
           isDevelopment,
         };
 
-        const loader = getSwcLoader(syntax, enableJsx, swcConfig);
+        const loader = getSwcLoader(syntax, enableJsx, {}, swcConfig);
         assert.strictEqual(
           loader.loader,
           require.resolve('../utils/loaders/swcLoader'),

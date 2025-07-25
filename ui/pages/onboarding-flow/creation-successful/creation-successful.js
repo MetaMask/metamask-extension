@@ -18,14 +18,12 @@ import {
   FontWeight,
   TextColor,
   IconColor,
-  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
   Text,
   IconName,
   IconSize,
-  ButtonBase,
   Icon,
   ButtonLink,
   ButtonLinkSize,
@@ -199,11 +197,11 @@ export default function CreationSuccessful() {
             className="creation-successful__settings-actions"
             gap={4}
           >
-            <ButtonBase
+            <Button
+              variant={ButtonVariant.Secondary}
               data-testid="manage-default-settings"
               borderRadius={BorderRadius.LG}
               width={BlockSize.Full}
-              backgroundColor={BackgroundColor.backgroundMuted}
               onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
             >
               <Box display={Display.Flex} alignItems={AlignItems.center}>
@@ -224,7 +222,7 @@ export default function CreationSuccessful() {
                 color={IconColor.iconAlternative}
                 size={IconSize.Sm}
               />
-            </ButtonBase>
+            </Button>
           </Box>
         )}
       </Box>
