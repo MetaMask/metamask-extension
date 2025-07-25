@@ -59,7 +59,9 @@
     "termsOfUseLastAgreed": "number",
     "snapsInstallPrivacyWarningShown": true,
     "enableEnforcedSimulations": true,
-    "enableEnforcedSimulationsForTransactions": "object"
+    "enableEnforcedSimulationsForTransactions": "object",
+    "enforcedSimulationsSlippage": "number",
+    "enforcedSimulationsSlippageForTransactions": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -136,6 +138,7 @@
     "dataCollectionForMarketing": "boolean",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
+    "tracesBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"

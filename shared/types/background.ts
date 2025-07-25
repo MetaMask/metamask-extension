@@ -135,6 +135,8 @@ export type ControllerStatePropertiesEnumerated = {
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   enableEnforcedSimulations: AppStateControllerState['enableEnforcedSimulations'];
   enableEnforcedSimulationsForTransactions: AppStateControllerState['enableEnforcedSimulationsForTransactions'];
+  enforcedSimulationsSlippage: AppStateControllerState['enforcedSimulationsSlippage'];
+  enforcedSimulationsSlippageForTransactions: AppStateControllerState['enforcedSimulationsSlippageForTransactions'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -168,6 +170,7 @@ export type ControllerStatePropertiesEnumerated = {
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
   eventsBeforeMetricsOptIn: MetaMetricsControllerState['eventsBeforeMetricsOptIn'];
+  tracesBeforeMetricsOptIn: MetaMetricsControllerState['tracesBeforeMetricsOptIn'];
   fragments: MetaMetricsControllerState['fragments'];
   metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
   participateInMetaMetrics: MetaMetricsControllerState['participateInMetaMetrics'];
