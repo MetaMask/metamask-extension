@@ -304,6 +304,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      GOOGLE_PROD_CLIENT_ID: 00000000000
+      APPLE_PROD_CLIENT_ID: 00000000000
+      GOOGLE_BETA_CLIENT_ID: 00000000000
+      APPLE_BETA_CLIENT_ID: 00000000000
+      GOOGLE_FLASK_CLIENT_ID: 00000000000
+      APPLE_FLASK_CLIENT_ID: 00000000000
+
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
