@@ -133,7 +133,6 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
-import useBridgeDefaultToToken from '../../../hooks/bridge/useBridgeDefaultToToken';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -265,8 +264,6 @@ const PrepareBridgePage = () => {
     ? selectedEvmAccount
     : selectedMultichainAccount;
 
-  useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
-
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
   const hardwareWalletName = useSelector(getHardwareWalletName);
@@ -361,35 +358,6 @@ const PrepareBridgePage = () => {
       clearTimeout(switchButtonTimer);
     };
   }, [rotateSwitchTokens]);
-
-  useEffect(() => {
-    // If there's an active quote, assume that the user is returning to the page
-    if (activeQuote) {
-      // Get input data from active quote
-      const { srcAsset, destAsset, destChainId, srcChainId } =
-        activeQuote.quote;
-
-      if (srcAsset && destAsset && destChainId) {
-        // Set inputs to values from active quote
-        dispatch(setToChainId(destChainId));
-        dispatch(
-          setToToken({
-            ...destAsset,
-            chainId: destChainId,
-          }),
-        );
-        dispatch(
-          setFromToken({
-            ...srcAsset,
-            chainId: srcChainId,
-          }),
-        );
-      }
-    } else {
-      // Reset controller and inputs on load
-      dispatch(resetBridgeState());
-    }
-  }, []);
 
   // Scroll to bottom of the page when banners are shown
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
@@ -510,7 +478,7 @@ const PrepareBridgePage = () => {
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
-    debouncedUpdateQuoteRequestInController(quoteParams, {
+    const eventProperties = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_enabled: smartTransactionsEnabled,
@@ -522,8 +490,11 @@ const PrepareBridgePage = () => {
       token_symbol_destination: toToken?.symbol ?? '',
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      security_warnings: [],
-    });
+      security_warnings: [txAlert?.descriptionId, tokenAlert?.titleId].filter(
+        Boolean,
+      ) as string[],
+    };
+    debouncedUpdateQuoteRequestInController(quoteParams, eventProperties);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteParams]);
 
@@ -556,59 +527,37 @@ const PrepareBridgePage = () => {
       name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
       timestamp: Date.now(),
     });
+
+    // If there's an active quote, assume that the user is returning to the page
+    if (activeQuote) {
+      // Get input data from active quote
+      const { srcAsset, destAsset, destChainId, srcChainId } =
+        activeQuote.quote;
+
+      if (srcAsset && destAsset && destChainId) {
+        dispatch(
+          setFromToken({
+            ...srcAsset,
+            chainId: srcChainId,
+          }),
+        );
+        // Set inputs to values from active quote
+        dispatch(
+          setToToken({
+            ...destAsset,
+            chainId: destChainId,
+          }),
+        );
+      }
+    } else {
+      // Reset controller and inputs on load
+      dispatch(resetBridgeState());
+    }
   }, []);
 
-  const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
+  useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
 
-  // Track whether defaults have been applied separately for chain and token
-  const [defaultChainApplied, setDefaultChainApplied] = useState(false);
-  const [defaultTokenApplied, setDefaultTokenApplied] = useState(false);
-
-  useEffect(() => {
-    // Only set default chain if user hasn't already selected one and default hasn't been applied
-    if (!toChain && defaultToChainId && fromChain && !defaultChainApplied) {
-      dispatch(setToChainId(defaultToChainId));
-      // Track the input change event for the prefilled chain
-      trackInputEvent({
-        input: 'chain_destination',
-        value: String(defaultToChainId),
-      });
-      setDefaultChainApplied(true);
-    }
-  }, [
-    defaultToChainId,
-    toChain,
-    fromChain,
-    dispatch,
-    trackInputEvent,
-    defaultChainApplied,
-  ]);
-
-  useEffect(() => {
-    // Only set default token if user hasn't already selected one and default hasn't been applied
-    if (!toToken && defaultToToken && toChain && !defaultTokenApplied) {
-      dispatch(setToToken(defaultToToken));
-      // Track the input change event for the prefilled token
-      if (defaultToToken.address) {
-        trackInputEvent({
-          input: 'token_destination',
-          value: defaultToToken.address,
-        });
-      }
-      setDefaultTokenApplied(true);
-    }
-  }, [
-    defaultToToken,
-    toToken,
-    toChain,
-    dispatch,
-    trackInputEvent,
-    defaultTokenApplied,
-  ]);
-
-  const occurrences = Number(
-    toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
-  );
+  const occurrences = toToken?.occurrences ?? toToken?.aggregators?.length;
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
 
@@ -822,9 +771,6 @@ const PrepareBridgePage = () => {
                       selectedEvmAccount,
                     }),
                   );
-                  if (fromChain?.chainId) {
-                    dispatch(setToChainId(fromChain.chainId));
-                  }
                 }
                 dispatch(setToToken(fromToken));
               }}
@@ -1099,8 +1045,8 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
-            (!defaultToToken || toToken.address !== defaultToToken.address) &&
-            occurrences < 2 && (
+            occurrences &&
+            Number(occurrences) < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
                 title={t('bridgeTokenCannotVerifyTitle')}
