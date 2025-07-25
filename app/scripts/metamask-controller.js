@@ -6720,8 +6720,15 @@ export default class MetamaskController extends EventEmitter {
     if (!caip25Caveat) {
       return;
     }
+
+    // The optional chain operator below shouldn't be needed as
+    // the existence of sessionProperties is enforced by the caveat
+    // validator, but we are still seeing some instances where it
+    // isn't defined in production. This suggests state corruption,
+    // but we can't find definitive proof that. For now we are using
+    // this patch which is harmless and silences the error in Sentry.
     const solanaAccountsChangedNotifications =
-      caip25Caveat.value.sessionProperties[
+      caip25Caveat.value.sessionProperties?.[
         KnownSessionProperties.SolanaAccountChangedNotifications
       ];
 
