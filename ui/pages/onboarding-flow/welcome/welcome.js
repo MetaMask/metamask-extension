@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
+import { captureException } from '@sentry/browser';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -13,10 +14,19 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
-import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
+import {
+  getCurrentKeyring,
+  getFirstTimeFlowType,
+  getParticipateInMetaMetrics,
+  getIsParticipateInMetaMetricsSet,
+} from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
+import {
+  setFirstTimeFlowType,
+  setOnboardingErrorReport,
+  startOAuthLogin,
+} from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventAccountType,
@@ -30,12 +40,7 @@ import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
-import {
-  LOGIN_ERROR,
-  LOGIN_OPTION,
-  LOGIN_TYPE,
-  WelcomePageState,
-} from './types';
+import { LOGIN_OPTION, LOGIN_TYPE, WelcomePageState } from './types';
 import LoginErrorModal from './login-error-modal';
 
 export default function OnboardingWelcome({
@@ -48,6 +53,10 @@ export default function OnboardingWelcome({
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
 
@@ -59,11 +68,14 @@ export default function OnboardingWelcome({
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
-        firstTimeFlowType === FirstTimeFlowType.socialImport
+        firstTimeFlowType === FirstTimeFlowType.socialImport ||
+        firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
-      } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
+        history.replace(
+          isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+        );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (getBrowserName() === PLATFORM_FIREFOX) {
           history.replace(ONBOARDING_COMPLETION_ROUTE);
@@ -79,7 +91,9 @@ export default function OnboardingWelcome({
     history,
     firstTimeFlowType,
     newAccountCreationInProgress,
+    isParticipateInMetaMetricsSet,
   ]);
+
   const trackEvent = useContext(MetaMetricsContext);
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     trackEvent;
@@ -169,8 +183,27 @@ export default function OnboardingWelcome({
         name: TraceName.OnboardingSocialLoginAttempt,
         data: { success: false },
       });
+
+      if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+        setLoginError(null);
+      } else if (isMetaMetricsEnabled) {
+        captureException(error, {
+          tags: {
+            view: 'Onboarding',
+            context: 'OAuth login failed - user consented to analytics',
+          },
+        });
+      } else {
+        dispatch(setOnboardingErrorReport({ error, view: 'Onboarding' }));
+      }
     },
-    [onboardingParentContext, bufferedTrace, bufferedEndTrace],
+    [
+      onboardingParentContext,
+      bufferedTrace,
+      bufferedEndTrace,
+      dispatch,
+      isMetaMetricsEnabled,
+    ],
   );
 
   const onSocialLoginCreateClick = useCallback(
@@ -277,16 +310,6 @@ export default function OnboardingWelcome({
     ],
   );
 
-  const handleLoginError = useCallback((error) => {
-    log.error('handleLoginError::error', error);
-    const errorMessage = error.message;
-    if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
-      setLoginError(null);
-    } else {
-      setLoginError(LOGIN_ERROR.GENERIC);
-    }
-  }, []);
-
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
       try {
@@ -305,7 +328,7 @@ export default function OnboardingWelcome({
           }
         }
       } catch (error) {
-        handleLoginError(error);
+        log.error('handleLoginError::error', error);
       }
     },
     [
@@ -314,7 +337,6 @@ export default function OnboardingWelcome({
       onSocialLoginCreateClick,
       onSocialLoginImportClick,
       isSeedlessOnboardingFeatureEnabled,
-      handleLoginError,
     ],
   );
 
