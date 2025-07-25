@@ -14,9 +14,9 @@ import React, {
 import PropTypes from 'prop-types';
 import { matchPath, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { captureException, captureMessage } from '@sentry/browser';
 
 import { omit } from 'lodash';
+import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';

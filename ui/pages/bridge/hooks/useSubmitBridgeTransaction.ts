@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import { createProjectLogger } from '@metamask/utils';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { captureException } from '@sentry/browser';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -18,6 +17,7 @@ import {
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
 import { getFromChain } from '../../../ducks/bridge/selectors';
+import { captureException } from '../../../../shared/lib/sentry';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
