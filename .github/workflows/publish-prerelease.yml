@@ -34,7 +34,7 @@ jobs:
           yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Find the associated PR
-        if: ${{ startsWith(env.BRANCH, 'Version-v') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
+        if: ${{ (startsWith(env.BRANCH, 'Version-v') || startsWith(env.BRANCH, 'release/')) && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
         uses: actions/github-script@v7
         with:
           script: |
