@@ -200,9 +200,14 @@ export const useBalanceChanges = ({
   const erc20UsdRates = useAsyncResultOrThrow(
     async () =>
       fiatCurrency === CURRENCY_USD
-        ? (erc20FiatRates.value as ContractExchangeRates)
-        : fetchTokenExchangeRates(CURRENCY_USD, erc20TokenAddresses, chainId),
-    [JSON.stringify(erc20TokenAddresses), chainId],
+        ? (erc20FiatRates.value ?? {})
+        : fetchTokenFiatRates(CURRENCY_USD, erc20TokenAddresses, chainId),
+    [
+      JSON.stringify(erc20TokenAddresses),
+      chainId,
+      fiatCurrency,
+      erc20FiatRates.value,
+    ],
   );
 
   if (
