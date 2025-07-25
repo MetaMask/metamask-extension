@@ -7344,15 +7344,15 @@ __metadata:
   linkType: hard
 
 "@metamask/snaps-sdk@npm:^9.1.0":
-  version: 9.3.0
-  resolution: "@metamask/snaps-sdk@npm:9.3.0"
+  version: 9.1.0
+  resolution: "@metamask/snaps-sdk@npm:9.1.0"
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.2"
-  checksum: 10/1e84195a568553d1d7929b9140469204611d2504ab5bc63a6bdad7edc70150765795d402d6d8263bc8d665f9d6656e60da64e4530c240287d8d9ae51cf6d2843
+  checksum: 10/58560c71e971fc98266a8ee87e3b7e67fd8126041926d527343a452c8ca64f88345b5999455b7afb13bcea8187bdeb69b4255c31a2511b7e79f891c6eb0ceef0
   languageName: node
   linkType: hard
 
