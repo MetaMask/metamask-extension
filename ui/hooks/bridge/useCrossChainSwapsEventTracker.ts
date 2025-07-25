@@ -94,6 +94,9 @@ export type CrossChainSwapsEventProperties = {
       | 'chain_destination'
       | 'slippage';
     value: string;
+    // Add optional chain_id to allow overriding the default
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    chain_id?: string;
   };
   [MetaMetricsEventName.CrossChainSwapsQuoteError]: RequestParams &
     RequestMetadata & {
