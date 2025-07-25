@@ -4848,25 +4848,22 @@ export default class MetamaskController extends EventEmitter {
             `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
           );
           if (err instanceof RecoveryError) {
+            // Keyring controller password verification succeeds and seedless controller failed.
+            if (
+              err?.message ===
+                SeedlessOnboardingControllerErrorMessage.IncorrectPassword &&
+              isKeyringPasswordValid
+            ) {
+              throw new Error(
+                SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+              );
+            }
             throw new JsonRpcError(-32603, err.message, err.data);
           } else if (
             err.message ===
             SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
           ) {
             isPasswordSynced = false;
-          } else if (
-            err.message.includes(
-              SeedlessOnboardingControllerErrorMessage.IncorrectPassword,
-            )
-          ) {
-            // Case 2: Keyring controller password verification succeeds and seedless controller failed.
-            if (isKeyringPasswordValid) {
-              throw new Error(
-                SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
-              );
-            }
-            // Case 3: Both keyring and seedless controller password verification failed.
-            throw err;
           } else {
             throw err;
           }
