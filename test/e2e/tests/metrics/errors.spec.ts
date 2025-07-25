@@ -329,6 +329,10 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors: [
+            // The UI logs the expected error
+            "TypeError: Cannot read properties of undefined (reading 'version')",
+          ],
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -665,6 +669,10 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors: [
+            // The UI logs the expected error
+            "TypeError: Cannot read properties of undefined (reading 'version')",
+          ],
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
