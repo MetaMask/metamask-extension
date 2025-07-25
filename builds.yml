@@ -92,6 +92,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
+      - PERMISSIONS_PAGE_V2: true
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -303,6 +304,8 @@ env:
   - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
   # Temporary mechanism to enable trust signals middleware in production
   - TRUST_SIGNALS_PROD_ENABLED: 'false'
+  # Determines if the new permissions page (V2) should be used
+  - PERMISSIONS_PAGE_V2: false
 
   # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
