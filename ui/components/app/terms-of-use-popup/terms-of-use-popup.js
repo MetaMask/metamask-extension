@@ -4,8 +4,8 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   Box,
   Button,
-  ButtonIcon,
   ButtonLink,
+  ButtonPrimary,
   ButtonSize,
   ButtonVariant,
   Checkbox,
@@ -25,12 +25,10 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   TextAlign,
   TextColor,
   TextVariant,
@@ -1213,13 +1211,11 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
           </Box>
           {shouldShowScrollButton && (
             <Box className="terms-of-use-popup__scroll-button-container">
-              <ButtonIcon
-                backgroundColor={BackgroundColor.primaryMuted}
-                iconName={IconName.ArrowDown}
-                color={IconColor.primaryDefault}
-                borderRadius={BorderRadius.full}
-                iconProps={{ size: IconSize.Md }}
+              <ButtonPrimary
                 onClick={handleScrollDownClick}
+                borderRadius={BorderRadius.full}
+                startIconName={IconName.ArrowDown}
+                startIconProps={{ size: IconSize.Md, marginRight: 0 }}
                 className="terms-of-use-popup__scroll-button"
                 data-testid="terms-of-use-scroll-button"
               />

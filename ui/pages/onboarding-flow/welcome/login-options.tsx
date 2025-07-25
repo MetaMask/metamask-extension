@@ -26,7 +26,6 @@ import {
   FontWeight,
   IconColor,
   JustifyContent,
-  TextAlign,
   TextColor,
   TextTransform,
   TextVariant,
@@ -90,9 +89,7 @@ export default function LoginOptions({
       <ModalOverlay />
       <ModalContent size={ModalContentSize.Sm} alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
-          <Text textAlign={TextAlign.Center} variant={TextVariant.headingMd}>
-            {t('onboardingOptionTitle')}
-          </Text>
+          {t('onboardingOptionTitle')}
         </ModalHeader>
         <Box paddingInline={4}>
           <SocialButton

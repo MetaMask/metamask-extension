@@ -23,10 +23,6 @@
     bottom: 8px;
     right: 32px;
     z-index: 201;
-    background-color: var(--color-overlay-inverse);
-    // SRP_OVERRIDE: this is not on design system shadows yet
-    box-shadow: 0 3px 8px 0 rgba(5, 33, 255, 0.35);
-    border-radius: 50%;
   }
 
   &__scroll-button {
