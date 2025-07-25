@@ -43,12 +43,14 @@ class TestDappMultichain {
     this.driver = driver;
   }
 
+  // eslint-disable-next-line @metamask/design-tokens/color-no-hex
   addCustomAccountAddressInput(i: number) {
-    return `#add-custom-caip\\ address-button-${i}`;
+    return `[id="add-custom-caip address-button-${i}"]`;
   }
 
+  // eslint-disable-next-line @metamask/design-tokens/color-no-hex
   addCustomScopeButton(i: number) {
-    return `#add-custom-scope-button-${i}`;
+    return `[id="add-custom-scope-button-${i}"]`;
   }
 
   customAccountAddressInput(i: number) {
