@@ -2,7 +2,6 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import * as reactRouterUtils from 'react-router-dom-v5-compat';
 import * as ReactReduxModule from 'react-redux';
-import { zeroAddress } from 'ethereumjs-util';
 import { userEvent } from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderHook } from '@testing-library/react-hooks';
@@ -62,21 +61,6 @@ describe('PrepareBridgePage', () => {
             ],
           },
         },
-      },
-      bridgeStateOverrides: {
-        srcTokens: {
-          '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2': {
-            address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
-          }, // UNI,
-          [zeroAddress()]: { address: zeroAddress() },
-          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-            address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-            decimals: 6,
-          }, // USDC
-        },
-        srcTopAssets: [
-          { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984' },
-        ],
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
@@ -162,7 +146,7 @@ describe('PrepareBridgePage', () => {
     expect(container).toMatchSnapshot();
 
     expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
-    expect(getByRole('button', { name: /Bridge to/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /USDC/u })).toBeInTheDocument();
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();

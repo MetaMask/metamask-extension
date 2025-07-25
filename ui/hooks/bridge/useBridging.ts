@@ -8,7 +8,10 @@ import {
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
-import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
+import {
+  resetInputFields,
+  trackUnifiedSwapBridgeEvent,
+} from '../../ducks/bridge/actions';
 import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
@@ -122,6 +125,7 @@ const useBridging = () => {
           token_symbol_destination: null,
         }),
       );
+      dispatch(resetInputFields());
       let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
       const assetId = toAssetId(
         token.address,
