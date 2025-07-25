@@ -45,7 +45,7 @@ export function getMultichainAccountServiceMessenger(
     allowedEvents: [
       'KeyringController:stateChange',
       'AccountsController:accountAdded',
-      'AccountsController:accountRemoved'
+      'AccountsController:accountRemoved',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
