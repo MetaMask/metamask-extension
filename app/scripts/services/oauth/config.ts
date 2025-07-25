@@ -127,19 +127,13 @@ function isProductionBuild() {
 }
 
 /**
- * Check if the build is a Release Candidate build.
+ * Check if the build is from the release candidate branch.
+ * Example: `Version-v13.0.0` branch.
  *
- * @returns true if the build is a Release Candidate build, false otherwise
+ * @returns true if the build is from the release candidate branch, false otherwise
  */
 function isReleaseCandidateBuild() {
-  console.log(
-    'process.env.METAMASK_ENVIRONMENT',
-    process.env.METAMASK_ENVIRONMENT,
-  );
-  return (
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE ||
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PULL_REQUEST
-  );
+  return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE;
 }
 
 /**
