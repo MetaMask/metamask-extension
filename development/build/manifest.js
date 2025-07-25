@@ -125,9 +125,7 @@ function createManifestTasks({
 
   const envScriptDist = createTaskForModifyManifestForEnvironment(
     (manifest) => {
-      const isReleaseCandidate =
-        environment === ENVIRONMENT.RELEASE_CANDIDATE ||
-        environment === ENVIRONMENT.PULL_REQUEST;
+      const isReleaseCandidate = environment === ENVIRONMENT.RELEASE_CANDIDATE;
       loadManifestKey(manifest, isReleaseCandidate);
     },
   );
