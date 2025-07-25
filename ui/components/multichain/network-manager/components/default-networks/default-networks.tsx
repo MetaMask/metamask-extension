@@ -78,7 +78,7 @@ const DefaultNetworks = memo(() => {
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
   // Use the shared state hook
-  const { nonTestNetworks, testNetworks, isNetworkInDefaultNetworkTab } =
+  const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
     useNetworkManagerState({ showDefaultNetworks: true });
 
   // Memoize sorted networks to avoid expensive sorting on every render
