@@ -100,7 +100,7 @@ export const BaseAccountDetails = ({
 
   const handleNavigation = useCallback(() => {
     dispatch(setAccountDetailsAddress(''));
-    history.goBack();
+    history.push(DEFAULT_ROUTE);
   }, [history, dispatch]);
 
   // we can never have a scenario where an account is not associated with a wallet.
