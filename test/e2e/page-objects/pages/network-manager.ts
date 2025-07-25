@@ -31,6 +31,11 @@ class NetworkManager {
 
   private readonly tabList = '.tabs__list.network-manager__tab-list';
 
+  private readonly addNetworkButton = '[data-testid="additional-network-item"]';
+
+  private readonly approveAddNetworkButton =
+    '[data-testid="confirmation-submit-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -84,6 +89,13 @@ class NetworkManager {
     await this.checkNetworkIsDeselected(networkName);
   }
 
+  async deselectNetworkWithoutChecking(networkName: string): Promise<void> {
+    console.log(`Deselecting network: ${networkName}`);
+    await this.driver.delay(regularDelayMs);
+    await this.driver.clickElementSafe(this.networkListItem(networkName));
+    await this.driver.delay(regularDelayMs);
+  }
+
   // Method to check if a network is currently selected/active
   async checkNetworkIsSelected(networkName: string): Promise<void> {
     console.log(`Checking if network is selected: ${networkName}`);
@@ -134,6 +146,24 @@ class NetworkManager {
       text: tabName,
     });
     console.log(`${tabName} tab is properly selected`);
+  }
+
+  async clickCustomNetworkTab(): Promise<void> {
+    console.log(`Clicking custom network tab`);
+    await this.driver.clickElement({
+      css: this.tabList,
+      text: 'Custom',
+    });
+  }
+
+  async addNetwork(): Promise<void> {
+    console.log(`Adding network`);
+    await this.driver.clickElement(this.addNetworkButton);
+  }
+
+  async approveAddNetwork(): Promise<void> {
+    console.log(`Approving add network`);
+    await this.driver.clickElement(this.approveAddNetworkButton);
   }
 }
 
