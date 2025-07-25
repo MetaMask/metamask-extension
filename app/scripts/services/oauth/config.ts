@@ -133,6 +133,11 @@ function isProductionBuild() {
  */
 export function loadOAuthConfig(): OAuthConfig {
   const buildType = process.env.METAMASK_BUILD_TYPE;
+  console.log('loadOAuthConfig::buildType', buildType);
+  console.log(
+    'loadOAuthConfig::process.env.METAMASK_ENVIRONMENT',
+    process.env.METAMASK_ENVIRONMENT,
+  );
 
   let buildTypeEnv = BuildTypeEnv.DevMain;
   if (buildType === 'main') {

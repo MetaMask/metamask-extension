@@ -575,7 +575,7 @@ describe('MetaMaskController', function () {
         jest
           .spyOn(
             metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
+            'submitGlobalPasswordAndSync',
           )
           .mockRejectedValue(
             new RecoveryError(
@@ -599,7 +599,7 @@ describe('MetaMaskController', function () {
         jest
           .spyOn(
             metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
+            'submitGlobalPasswordAndSync',
           )
           .mockResolvedValue();
         jest
@@ -610,12 +610,6 @@ describe('MetaMaskController', function () {
           .mockResolvedValue(currentPasswordEncryptionKey);
         jest
           .spyOn(metamaskController, 'submitEncryptionKey')
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'syncLatestGlobalPassword',
-          )
           .mockResolvedValue();
         jest
           .spyOn(metamaskController.keyringController, 'changePassword')
@@ -637,7 +631,8 @@ describe('MetaMaskController', function () {
           metamaskController.keyringController.verifyPassword,
         ).toHaveBeenCalledWith(password);
         expect(
-          metamaskController.seedlessOnboardingController.submitGlobalPassword,
+          metamaskController.seedlessOnboardingController
+            .submitGlobalPasswordAndSync,
         ).toHaveBeenCalledWith({
           globalPassword: password,
           maxKeyChainLength: 20,
@@ -650,63 +645,9 @@ describe('MetaMaskController', function () {
           currentPasswordEncryptionKey,
         );
         expect(
-          metamaskController.seedlessOnboardingController
-            .syncLatestGlobalPassword,
-        ).toHaveBeenCalledWith({
-          globalPassword: password,
-        });
-        expect(
           metamaskController.keyringController.changePassword,
         ).toHaveBeenCalledWith(password);
         expect(metamaskController.syncKeyringEncryptionKey).toHaveBeenCalled();
-        expect(
-          metamaskController.seedlessOnboardingController
-            .checkIsPasswordOutdated,
-        ).toHaveBeenCalledWith({
-          skipCache: true,
-        });
-        expect(releaseLock).toHaveBeenCalled();
-      });
-
-      it('should lock wallet and throw error when sync fails', async function () {
-        const releaseLock = jest.fn();
-        const syncError = new Error('Sync failed');
-
-        jest
-          .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockRejectedValue(new Error('Incorrect password'));
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
-          )
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'loadKeyringEncryptionKey',
-          )
-          .mockResolvedValue('encryption-key');
-        jest
-          .spyOn(metamaskController, 'submitEncryptionKey')
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'syncLatestGlobalPassword',
-          )
-          .mockRejectedValue(syncError);
-        jest.spyOn(metamaskController, 'setLocked').mockResolvedValue();
-
-        metamaskController.syncSeedlessGlobalPasswordMutex.acquire.mockResolvedValue(
-          releaseLock,
-        );
-
-        await expect(
-          metamaskController.syncPasswordAndUnlockWallet(password),
-        ).rejects.toThrow('Sync failed');
-
-        expect(metamaskController.setLocked).toHaveBeenCalled();
         expect(releaseLock).toHaveBeenCalled();
       });
 
@@ -720,7 +661,7 @@ describe('MetaMaskController', function () {
         jest
           .spyOn(
             metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
+            'submitGlobalPasswordAndSync',
           )
           .mockResolvedValue();
         jest
@@ -731,12 +672,6 @@ describe('MetaMaskController', function () {
           .mockResolvedValue('encryption-key');
         jest
           .spyOn(metamaskController, 'submitEncryptionKey')
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'syncLatestGlobalPassword',
-          )
           .mockResolvedValue();
         jest
           .spyOn(metamaskController.keyringController, 'changePassword')
@@ -765,7 +700,7 @@ describe('MetaMaskController', function () {
         jest
           .spyOn(
             metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
+            'submitGlobalPasswordAndSync',
           )
           .mockResolvedValue();
         jest
@@ -776,12 +711,6 @@ describe('MetaMaskController', function () {
           .mockResolvedValue('encryption-key');
         jest
           .spyOn(metamaskController, 'submitEncryptionKey')
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'syncLatestGlobalPassword',
-          )
           .mockResolvedValue();
         jest
           .spyOn(metamaskController.keyringController, 'changePassword')
@@ -819,7 +748,7 @@ describe('MetaMaskController', function () {
         jest
           .spyOn(
             metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
+            'submitGlobalPasswordAndSync',
           )
           .mockRejectedValue(new Error('Recovery failed'));
 

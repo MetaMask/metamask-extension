@@ -4849,7 +4849,7 @@ export default class MetamaskController extends EventEmitter {
       // 2. Seedless controller failed but Keyring controller password verification succeeded.
       // 3. Both keyring and seedless controller password verification failed.
       await this.seedlessOnboardingController
-        .submitGlobalPassword({
+        .submitGlobalPasswordAndSync({
           globalPassword: password,
           maxKeyChainLength: 20,
         })
@@ -4903,11 +4903,6 @@ export default class MetamaskController extends EventEmitter {
 
       let changePasswordSuccess = false;
       try {
-        // update seedlessOnboardingController to use latest global password
-        await this.seedlessOnboardingController.syncLatestGlobalPassword({
-          globalPassword: password,
-        });
-
         this.metaMetricsController.bufferedTrace?.({
           name: TraceName.OnboardingResetPassword,
           op: TraceOperation.OnboardingSecurityOp,
