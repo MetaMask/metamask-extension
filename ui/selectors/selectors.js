@@ -3908,12 +3908,12 @@ export function getShowUpdateModal(state) {
   const extensionCurrentVersion = semver.valid(
     semver.coerce(global.platform?.getVersion()),
   );
-  const extensionMinimumVersion = semver.valid(
-    semver.coerce(remoteFeatureFlags.extensionMinimumVersion),
+  const minimumExtensionVersion = semver.valid(
+    semver.coerce(remoteFeatureFlags.minimumExtensionVersion),
   );
   const isExtensionOutdated =
-    extensionCurrentVersion && extensionMinimumVersion
-      ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
+    extensionCurrentVersion && minimumExtensionVersion
+      ? semver.lt(extensionCurrentVersion, minimumExtensionVersion)
       : false;
 
   const currentTime = Date.now();
