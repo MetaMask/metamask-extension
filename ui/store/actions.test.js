@@ -357,6 +357,7 @@ describe('Actions', () => {
         { type: 'UNLOCK_IN_PROGRESS' },
         { type: 'UNLOCK_SUCCEEDED', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'HIDE_WARNING' },
       ];
 
       await store.dispatch(actions.tryUnlockMetamask());
@@ -3131,6 +3132,7 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'HIDE_WARNING' },
         { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
@@ -3215,7 +3217,7 @@ describe('Actions', () => {
       background.syncSeedPhrases.resolves();
       setBackgroundConnection(background);
 
-      const expectedActions = [];
+      const expectedActions = [{ type: 'HIDE_WARNING' }];
 
       await store.dispatch(actions.syncSeedPhrases());
 
