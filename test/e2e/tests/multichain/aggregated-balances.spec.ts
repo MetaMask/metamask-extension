@@ -28,16 +28,12 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerOnPolygon()
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
-          .withTokensControllerERC20({ chainId: 1337 })
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.POLYGON]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
               [CHAIN_IDS.SEPOLIA]: true,
             },
           })
@@ -46,6 +42,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           hardfork: 'muirGlacier',
         },
         smartContract,
+        ethConversionInUsd: 3401, // 25 ETH × $3401 = $85,025.00
         title: this.test?.fullTitle(),
       },
       async ({
