@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Số lượng Token phải là số nguyên"
   },
-  "followUsOnX": {
-    "message": "Theo dõi chúng tôi trên $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Cổng kết nối IPFS không được phép: Vui lòng chỉ định một cổng kết nối CID"
   },

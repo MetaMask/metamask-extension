@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Le nombre de jetons doit être un nombre entier"
   },
-  "followUsOnX": {
-    "message": "Suivez-nous sur $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Passerelle IPFS interdite : veuillez spécifier une passerelle CID"
   },

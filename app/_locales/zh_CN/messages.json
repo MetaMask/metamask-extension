@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "代币金额必须是整数"
   },
-  "followUsOnX": {
-    "message": "在 $1上关注我们",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "禁用的 IPFS 网关：请指定一个 CID 网关"
   },

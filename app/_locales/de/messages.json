@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Token-Betrag muss eine ganze Zahl sein"
   },
-  "followUsOnX": {
-    "message": "Folgen Sie uns auf $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Verbotene IPFS-Gateway: Bitte geben Sie ein CID-Gateway an."
   },

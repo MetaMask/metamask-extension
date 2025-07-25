@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Ang halaga ng token ay dapat isang integer"
   },
-  "followUsOnX": {
-    "message": "I-follow kami sa $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Tumukoy ng CID gateway"
   },

@@ -44,24 +44,11 @@ import {
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
-import { getHDEntropyIndex } from '../../selectors/selectors';
-import {
-  Box,
-  Button,
-  ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../components/component-library';
+import { Box } from '../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -72,7 +59,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextVariant,
 } from '../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -99,16 +85,12 @@ import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingError from './onboarding-error/onboarding-error';
 
-const TWITTER_URL = 'https://twitter.com/MetaMask';
-
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { pathname, search } = useLocation();
   const history = useHistory();
-  const t = useI18nContext();
-  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
@@ -405,41 +387,6 @@ export default function OnboardingFlow() {
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </Box>
-      {pathname === ONBOARDING_COMPLETION_ROUTE && (
-        <Button
-          variant={ButtonVariant.Link}
-          href={TWITTER_URL}
-          marginInline="auto"
-          marginTop={isPopup ? 0 : 4}
-          marginBottom={isPopup ? 4 : 0}
-          target="_blank"
-          rel="noopener noreferrer"
-          textProps={{
-            variant: TextVariant.bodyLgMedium,
-          }}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.OnboardingTwitterClick,
-              properties: {
-                text: t('followUsOnX', ['X']),
-                location: MetaMetricsEventName.WalletCreated,
-                url: TWITTER_URL,
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-          }}
-        >
-          {t('followUsOnX', [
-            <Icon
-              key="x-icon"
-              className="onboarding-flow__x-button__icon"
-              name={IconName.X}
-              size={IconSize.Lg}
-            />,
-          ])}
-        </Button>
-      )}
       {isLoading && <LoadingScreen />}
     </Box>
   );
