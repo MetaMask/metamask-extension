@@ -21,6 +21,7 @@ const switchEthereumChain = {
     setTokenNetworkFilter: true,
     setEnabledNetworks: true,
     hasApprovalRequestsForOrigin: true,
+    notifyChainChanged: true,
   },
 };
 
@@ -42,6 +43,7 @@ async function switchEthereumChainHandler(
     setTokenNetworkFilter,
     setEnabledNetworks,
     hasApprovalRequestsForOrigin,
+    notifyChainChanged,
   },
 ) {
   let chainId;
@@ -94,5 +96,6 @@ async function switchEthereumChainHandler(
     hasApprovalRequestsForOrigin,
     toNetworkConfiguration,
     fromNetworkConfiguration,
+    notifyChainChanged,
   });
 }

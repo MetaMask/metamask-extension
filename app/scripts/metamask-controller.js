@@ -7392,9 +7392,10 @@ export default class MetamaskController extends EventEmitter {
    *
    * @private
    * @param {string} origin - The connection's origin string.
+   * @param {JsonRpcEngine} engine - JSON-RPC request and response processor.
    * @returns {object} The shared hooks.
    */
-  setupCommonMiddlewareHooks(origin) {
+  setupCommonMiddlewareHooks(origin, engine) {
     return {
       // Miscellaneous
       addSubjectMetadata:
@@ -7488,6 +7489,13 @@ export default class MetamaskController extends EventEmitter {
         this.alertController.setWeb3ShimUsageRecorded.bind(
           this.alertController,
         ),
+
+      // Permission-related
+      notifyChainChanged: this._notifyChainChangeForConnection.bind(
+        this,
+        { engine },
+        origin,
+      ),
       rejectApprovalRequestsForOrigin: () =>
         this.rejectOriginPendingApprovals(origin),
     };
@@ -7668,7 +7676,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createEip1193MethodMiddleware({
         subjectType,
-        ...this.setupCommonMiddlewareHooks(origin),
+        ...this.setupCommonMiddlewareHooks(origin, engine),
 
         // Miscellaneous
         metamaskState: this.getState(),
@@ -8064,7 +8072,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createMultichainMethodMiddleware({
         subjectType,
-        ...this.setupCommonMiddlewareHooks(origin),
+        ...this.setupCommonMiddlewareHooks(origin, engine),
       }),
     );
     engine.push(this.metamaskMiddleware);
@@ -8350,14 +8358,11 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Handle memory state updates.
    * - Ensure isClientOpenAndUnlocked is updated
-   * - Notifies all connections with the new provider network state
-   *   - The external providers handle diffing the state
    *
    * @param newState
    */
   _onStateUpdate(newState) {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
-    this._notifyChainChange();
   }
 
   /**
@@ -8968,16 +8973,6 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       API_TYPE.CAIP_MULTICHAIN,
-    );
-  }
-
-  async _notifyChainChange() {
-    this.notifyAllConnections(
-      async (origin) => ({
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(origin),
-      }),
-      API_TYPE.EIP1193,
     );
   }
 

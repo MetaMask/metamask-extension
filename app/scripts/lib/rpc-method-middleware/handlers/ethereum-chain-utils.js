@@ -181,6 +181,7 @@ export function validateAddEthereumChainParams(params) {
  * @param {Function} hooks.hasApprovalRequestsForOrigin - Function to check if there are pending approval requests from the origin.
  * @param {object} hooks.toNetworkConfiguration - Network configutation of network switching to.
  * @param {object} hooks.fromNetworkConfiguration - Network configutation of network switching from.
+ * @param {Function} hooks.notifyChainChanged - The callback to notify chain changed via event.
  * @returns a null response on success or an error if user rejects an approval when autoApprove is false or on unexpected errors.
  */
 export async function switchChain(
@@ -203,6 +204,7 @@ export async function switchChain(
     hasApprovalRequestsForOrigin,
     toNetworkConfiguration,
     fromNetworkConfiguration,
+    notifyChainChanged,
   },
 ) {
   try {
@@ -257,6 +259,8 @@ export async function switchChain(
       const { namespace } = parseCaipChainId(chainId);
       setEnabledNetworks(chainId, namespace);
     }
+
+    notifyChainChanged();
 
     response.result = null;
     return end();
