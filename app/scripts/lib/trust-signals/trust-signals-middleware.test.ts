@@ -628,7 +628,7 @@ describe('createTrustSignalsMiddleware', () => {
   describe('eth_accounts', () => {
     describe('when user is connected', () => {
       beforeEach(() => {
-        getPermittedAccounts.mockReturnValue(TEST_ADDRESSES.FROM);
+        getPermittedAccounts.mockReturnValue([TEST_ADDRESSES.FROM]);
       });
 
       it('scans URL when origin is present', async () => {
@@ -687,6 +687,7 @@ describe('createTrustSignalsMiddleware', () => {
     });
 
     it('does not scan URL when user is not connected', async () => {
+      getPermittedAccounts.mockReturnValue([]);
       const { middleware, phishingController } = createMiddleware();
       const req = createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS);
       const res = createMockResponse();

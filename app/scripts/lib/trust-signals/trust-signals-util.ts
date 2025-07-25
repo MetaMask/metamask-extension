@@ -62,7 +62,7 @@ export function isConnected(
     return false;
   }
   const permittedAccounts = getPermittedAccounts(req.origin);
-  return permittedAccounts.length > 0;
+  return Array.isArray(permittedAccounts) && permittedAccounts.length > 0;
 }
 
 export function connectScreenHasBeenPrompted(req: JsonRpcRequest): boolean {
