@@ -5628,8 +5628,8 @@ __metadata:
 
 "@metamask/bitcoin-wallet-snap@file:../snap-bitcoin-wallet/packages/snap::locator=metamask-crx%40workspace%3A.":
   version: 0.17.0
-  resolution: "@metamask/bitcoin-wallet-snap@file:../snap-bitcoin-wallet/packages/snap#../snap-bitcoin-wallet/packages/snap::hash=f1a8af&locator=metamask-crx%40workspace%3A."
-  checksum: 10/dcbf640be64f33166a83774da1c276ce859f7b41541f2990c80d5df15fba3e2fd5d485e9b504e2c39f3ec374743a8928f7095016282f8be926dcb032eacb17c6
+  resolution: "@metamask/bitcoin-wallet-snap@file:../snap-bitcoin-wallet/packages/snap#../snap-bitcoin-wallet/packages/snap::hash=af5231&locator=metamask-crx%40workspace%3A."
+  checksum: 10/e9fc2fcd0a587c4471b2b867e6eec4e8754f75e3cf45124b8386e4afb33b0bc9b56db408b864b07de05c82c13c41dd3d97f6c9b108410b566e6ce490e10ffbe4
   languageName: node
   linkType: hard
 

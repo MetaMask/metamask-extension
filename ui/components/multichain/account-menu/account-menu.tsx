@@ -137,7 +137,7 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
   },
   [ACTION_MODES.ADD_BITCOIN_TESTNET]: {
     clientType: WalletClientType.Bitcoin,
-    chainId: MultichainNetworks.BITCOIN_TESTNET,
+    chainId: MultichainNetworks.BITCOIN_SIGNET,
   },
   [ACTION_MODES.ADD_SOLANA]: {
     clientType: WalletClientType.Solana,

@@ -1077,6 +1077,10 @@ export default class MetamaskController extends EventEmitter {
           [KnownCaipNamespace.Solana]: {
             [SolScope.Mainnet]: true,
           },
+          [KnownCaipNamespace.Bip122]: {
+            [BtcScope.Mainnet]: true,
+            [BtcScope.Testnet]: true,
+          },
         },
       };
     }
