@@ -126,7 +126,7 @@ exports[`useBridgeQueryParams should set src token after navigating from ERC20 a
 exports[`useBridgeQueryParams should set src token after navigating from native asset page 1`] = `
 {
   "fromToken": {
-    "address": "",
+    "address": "0x0000000000000000000000000000000000000000",
     "assetId": "eip155:59144/slip44:60",
     "balance": "0",
     "chainId": "eip155:59144",
