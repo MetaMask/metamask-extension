@@ -7150,9 +7150,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^22.0.0":
-  version: 22.0.0
-  resolution: "@metamask/profile-sync-controller@npm:22.0.0"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@21.0.0-preview-03ea8543":
+  version: 21.0.0-preview-03ea8543
+  resolution: "@metamask-previews/profile-sync-controller@npm:21.0.0-preview-03ea8543"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/snaps-sdk": "npm:^9.0.0"
@@ -7163,12 +7163,12 @@ __metadata:
     loglevel: "npm:^1.8.1"
     siwe: "npm:^2.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^32.0.0
+    "@metamask/accounts-controller": ^31.0.0
     "@metamask/keyring-controller": ^22.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/77c33e45c22d50d2e170c910257fa131aa0d2f4ff3918e2e55cce6132ac18248e238bfac09ca03028276facc659ecfbcbc20334b8878511f05f0480b751f7839
+  checksum: 10/757d8f417ba017680c4e19eec505f962b8046acf3bb10043037a1692a8cf7ec85ba9fa8f336448bce0a6f84c997df3b70d0f5ce703603efbea9b30bfbb076e83
   languageName: node
   linkType: hard
 
@@ -31995,7 +31995,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.6.0"
-    "@metamask/profile-sync-controller": "npm:^22.0.0"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@21.0.0-preview-03ea8543"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
