@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
 import {
   Box,
@@ -10,7 +11,6 @@ import {
   Text,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useGatorPermissions } from '../../../../hooks/gator-permissions/useGatorPermissions';
 import {
   BackgroundColor,
   BlockSize,
@@ -21,179 +21,46 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-  AlignItems,
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
-  SITES,
-  TOKEN_STREAMS_ROUTE,
-  TOKEN_SUBSCRIPTIONS_ROUTE,
+  REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
-import { getGatorPermissionsList } from '../../../../selectors/gator-permissions/gator-permissions';
-import { PermissionListItem } from './permission-list-item';
+import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
-  const [totalTokenStreamsPermissions, setTotalTokenStreamsPermissions] =
-    useState(0);
-  const [
-    totalTokenSubscriptionsPermissions,
-    setTotalTokenSubscriptionsPermissions,
-  ] = useState(0);
-  const [totalPermissions, setTotalPermissions] = useState(0);
-
   const sitesConnectionsList = useSelector(
     getConnectedSitesListWithNetworkInfo,
   );
-  const gatorPermissionsList = useSelector(getGatorPermissionsList);
-
-  // Use the hook to fetch gator permissions on component mount
-  const { loading: gatorPermissionsLoading, error: gatorPermissionsError } =
-    useGatorPermissions();
 
   useEffect(() => {
-    const totalSites = Object.keys(sitesConnectionsList).length;
-    const nativeTokenStream =
-      Object.values(gatorPermissionsList['native-token-stream']).flat()
-        .length || 0;
-    const erc20TokenStream =
-      Object.values(gatorPermissionsList['erc20-token-stream']).flat().length ||
-      0;
-    const totalTokenSubscriptions =
-      Object.values(gatorPermissionsList['native-token-periodic']).flat()
-        .length || 0;
-    const totalTokenStreams = nativeTokenStream + erc20TokenStream;
+    setTotalConnections(Object.keys(sitesConnectionsList).length);
+  }, [sitesConnectionsList]);
 
-    setTotalConnections(totalSites);
-    setTotalTokenStreamsPermissions(totalTokenStreams);
-    setTotalTokenSubscriptionsPermissions(totalTokenSubscriptions);
-    setTotalPermissions(
-      totalConnections + totalTokenStreams + totalTokenSubscriptions,
-    );
-  }, [
-    sitesConnectionsList,
-    gatorPermissionsList,
-    totalConnections,
-    totalTokenStreamsPermissions,
-    totalTokenSubscriptionsPermissions,
-  ]);
+  const handleConnectionClick = (connection) => {
+    const hostName = connection.origin;
+    const safeEncodedHost = encodeURIComponent(hostName);
 
-  const handleAssetClick = async (assetType) => {
-    switch (assetType) {
-      case 'sites':
-        history.push(SITES);
-        break;
-      case 'token-streams':
-        history.push(TOKEN_STREAMS_ROUTE);
-        break;
-      case 'token-subscriptions':
-        history.push(TOKEN_SUBSCRIPTIONS_ROUTE);
-        break;
-      default:
-        console.error('Invalid asset type:', assetType);
-        break;
-    }
+    history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
   };
 
-  const renderPermissionList = () => {
-    return (
-      <Box
-        data-testid="permission-list"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.baseline}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        padding={4}
-        gap={4}
-      >
-        {/* Sites */}
-        {totalConnections > 0 && (
-          <PermissionListItem
-            total={totalConnections}
-            name="Sites"
-            onClick={() => handleAssetClick('sites')}
-          />
-        )}
-
-        {/* Assets */}
-        <PermissionListItem
-          total={totalTokenStreamsPermissions}
-          name="Token Streams"
-          onClick={() => handleAssetClick('token-streams')}
+  const renderConnectionsList = (connectionList) =>
+    Object.entries(connectionList).map(([itemKey, connection]) => {
+      const isSnap = isSnapId(connection.origin);
+      return isSnap ? null : (
+        <ConnectionListItem
+          data-testid="connection-list-item"
+          key={itemKey}
+          connection={connection}
+          onClick={() => handleConnectionClick(connection)}
         />
-        <PermissionListItem
-          total={totalTokenSubscriptionsPermissions}
-          name="Token Subscriptions"
-          onClick={() => handleAssetClick('token-subscriptions')}
-        />
-      </Box>
-    );
-  };
-
-  // Show error state if gator permissions failed to load
-  if (gatorPermissionsError) {
-    console.error('Failed to load gator permissions:', gatorPermissionsError);
-  }
-
-  const renderContent = () => {
-    if (gatorPermissionsLoading) {
-      return (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          height={BlockSize.Full}
-          gap={2}
-          padding={4}
-        >
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            backgroundColor={BackgroundColor.backgroundDefault}
-            textAlign={TextAlign.Center}
-          >
-            {t('loading')}
-          </Text>
-        </Box>
       );
-    }
-
-    if (totalPermissions > 0) {
-      return renderPermissionList();
-    }
-
-    return (
-      <Box
-        data-testid="no-connections"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        height={BlockSize.Full}
-        gap={2}
-        padding={4}
-      >
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          textAlign={TextAlign.Center}
-        >
-          {t('permissionsPageEmptyContent')}
-        </Text>
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          textAlign={TextAlign.Center}
-        >
-          {t('permissionsPageEmptySubContent')}
-        </Text>
-      </Box>
-    );
-  };
+    });
 
   return (
     <Page className="main-container" data-testid="permissions-page">
@@ -220,7 +87,35 @@ export const PermissionsPage = () => {
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
-        {renderContent()}
+        {totalConnections > 0 ? (
+          renderConnectionsList(sitesConnectionsList)
+        ) : (
+          <Box
+            data-testid="no-connections"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.center}
+            height={BlockSize.Full}
+            gap={2}
+            padding={4}
+          >
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              textAlign={TextAlign.Center}
+            >
+              {t('permissionsPageEmptyContent')}
+            </Text>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              textAlign={TextAlign.Center}
+            >
+              {t('permissionsPageEmptySubContent')}
+            </Text>
+          </Box>
+        )}
       </Content>
     </Page>
   );

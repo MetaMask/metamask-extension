@@ -135,6 +135,11 @@ const DeFiPage = mmLazy(() => import('../defi'));
 const PermissionsPage = mmLazy(() =>
   import('../../components/multichain/pages/permissions-page/permissions-page'),
 );
+const PermissionsPageV2 = mmLazy(() =>
+  import(
+    '../../components/multichain/pages/permissions-page/permissions-page-v2'
+  ),
+);
 const SitesPage = mmLazy(() =>
   import('../../components/multichain/pages/sites-page/sites-page'),
 );
@@ -315,6 +320,10 @@ export default class Routes extends Component {
     const { autoLockTimeLimit, setLastActiveTime, forgottenPassword } =
       this.props;
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
+    console.log(
+      'process.env.PERMISSIONS_PAGE_V2',
+      process.env.PERMISSIONS_PAGE_V2,
+    );
 
     const routes = (
       <Suspense fallback={null}>
@@ -405,7 +414,16 @@ export default class Routes extends Component {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
-          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+          <Authenticated
+            path={PERMISSIONS}
+            component={
+              process.env.PERMISSIONS_PAGE_V2 === true ||
+              process.env.PERMISSIONS_PAGE_V2 === 'true'
+                ? PermissionsPageV2
+                : PermissionsPage
+            }
+            exact
+          />
           <Authenticated path={SITES} component={SitesPage} exact />
           <Authenticated
             path={TOKEN_STREAMS_ROUTE}
