@@ -622,7 +622,8 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(phishingController.scanUrl).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
-    });  });
+    });
+  });
 
   describe('eth_accounts', () => {
     describe('when user is connected', () => {
@@ -696,7 +697,6 @@ describe('createTrustSignalsMiddleware', () => {
       expect(phishingController.scanUrl).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
     });
-
   });
 
   describe('non-transaction methods', () => {

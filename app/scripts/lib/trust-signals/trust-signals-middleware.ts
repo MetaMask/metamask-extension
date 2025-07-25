@@ -15,7 +15,6 @@ import {
   isConnected,
   connectScreenHasBeenPrompted,
 } from './trust-signals-util';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
 export function createTrustSignalsMiddleware(
   networkController: NetworkController,
