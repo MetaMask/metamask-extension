@@ -12,7 +12,10 @@ import {
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
-import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
+import {
+  RecoveryError,
+  SeedlessOnboardingControllerErrorMessage,
+} from '@metamask/seedless-onboarding-controller';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import MetaMaskController from './metamask-controller';
@@ -575,7 +578,7 @@ describe('MetaMaskController', function () {
             'submitGlobalPassword',
           )
           .mockRejectedValue(
-            new Error(
+            new RecoveryError(
               SeedlessOnboardingControllerErrorMessage.IncorrectPassword,
             ),
           );
