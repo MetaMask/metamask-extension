@@ -2431,10 +2431,6 @@
   "floatAmountToken": {
     "message": "Token amount must be an integer"
   },
-  "followUsOnX": {
-    "message": "Follow us on $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
   },

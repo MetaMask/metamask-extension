@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "トークンの金額は整数で入力する必要があります"
   },
-  "followUsOnX": {
-    "message": "$1でフォロー",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "IPFSゲートウェイの使用は禁止されています。CIDゲートウェイを指定してください"
   },
