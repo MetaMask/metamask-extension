@@ -329,6 +329,15 @@ function setupStateHooks(store) {
     };
   }
 
+  /**
+   * Reload the extension.
+   *
+   * This is used for the `first-install` E2E test, which uses a production-like build. This
+   * function must be present even if `process.env.IN_TEST` is false.
+   */
+  window.stateHooks.reloadExtension = () => {
+    browser.runtime.reload();
+  };
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     // we use the manifest.json version from getVersion and not
