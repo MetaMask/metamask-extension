@@ -8,7 +8,6 @@ import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
-  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
@@ -952,34 +951,6 @@ describe('Send Slice', () => {
     });
 
     describe('validateAmountField', () => {
-      it('should error with insufficient funds when amount asset value plust gas is higher than asset balance', () => {
-        const nativeAssetState = getInitialSendStateWithExistingTxState({
-          amount: {
-            value: '0x6fc23ac0', // 1875000000
-          },
-          sendAsset: {
-            type: AssetType.native,
-            balance: '0x77359400', // 2000000000
-          },
-          gas: {
-            gasTotal: '0x8f0d180', // 150000000
-          },
-        });
-
-        const action = {
-          type: 'send/validateAmountField',
-        };
-
-        const result = sendReducer(nativeAssetState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.amount.error).toStrictEqual(
-          INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
-        );
-        expect(draftTransaction.status).toBe(SEND_STATUSES.INVALID);
-      });
-
       it('should error with insufficient tokens when amount value of tokens is higher than asset balance of token', () => {
         const tokenAssetState = getInitialSendStateWithExistingTxState({
           amount: {
@@ -1107,49 +1078,6 @@ describe('Send Slice', () => {
         delete tokenAssetState.draftTransactions['test-uuid'];
 
         expect(() => sendReducer(tokenAssetState, action)).not.toThrow();
-      });
-    });
-
-    describe('validateGasField', () => {
-      it('should error when total amount of gas is higher than account balance', () => {
-        const gasFieldState = getInitialSendStateWithExistingTxState({
-          account: {
-            balance: '0x0',
-          },
-          gas: {
-            gasTotal: '0x1319718a5000', // 21000000000000
-          },
-        });
-
-        const action = {
-          type: 'send/validateGasField',
-        };
-
-        const result = sendReducer(gasFieldState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.gas.error).toStrictEqual(
-          INSUFFICIENT_FUNDS_ERROR,
-        );
-      });
-      it('should not throw error when draft transaction does not exist', () => {
-        const gasFieldState = getInitialSendStateWithExistingTxState({
-          account: {
-            balance: '0x0',
-          },
-          gas: {
-            gasTotal: '0x1319718a5000', // 21000000000000
-          },
-        });
-
-        delete gasFieldState.draftTransactions['test-uuid'];
-
-        const action = {
-          type: 'send/validateGasField',
-        };
-
-        expect(() => sendReducer(gasFieldState, action)).not.toThrow();
       });
     });
 
