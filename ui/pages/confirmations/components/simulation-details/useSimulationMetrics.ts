@@ -224,7 +224,7 @@ function getProperties(
     ),
   );
 
-  const fiatAmounts = changes.map((change) => change.fiatAmount);
+  const fiatAmounts = changes.map((change) => change.usdAmount);
   const totalFiat = calculateTotalFiat(fiatAmounts);
   const totalValue = totalFiat ? Math.abs(totalFiat) : undefined;
 
