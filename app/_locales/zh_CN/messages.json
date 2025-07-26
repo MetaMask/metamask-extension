@@ -175,6 +175,9 @@
     "message": "添加 $1 账户",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "添加账户或钱包"
+  },
   "addAccountToMetaMask": {
     "message": "向 MetaMask 添加账户"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "地址"
   },
+  "addressCopied": {
+    "message": "地址已复制"
+  },
   "addressMismatch": {
     "message": "网站地址不匹配"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "您手动更新费用后，我们才能继续进行此交易。"
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "已确定其为恶意。我们建议不要与此网站交互。"
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "已确定其为可疑。我们建议不要与此网站交互。"
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "提出请求的网站不是您正在登录的网站。这可能试图窃取您的登录凭据。"
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "无法使用费用估算"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "恶意网站"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "可疑网站"
   },
   "alertReasonPendingTransactions": {
     "message": "待定交易"
@@ -1940,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "下载 Google Chrome 浏览器"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "即使忘记密码，也能通过面容 ID 轻松登录我们的应用。MetaMask 伴您随身畅行！"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "扫描此二维码开始。"
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "下载我们的移动应用程序"
+  },
   "downloadNow": {
     "message": "立即下载"
   },
@@ -2427,10 +2454,6 @@
   "forgotPasswordSocialStep1Biometrics": {
     "message": "生物识别已启用"
   },
-  "forgotPasswordSocialStep2": {
-    "message": "如果您有 $1，您可以重设当前钱包并使用 $1 重新导入。",
-    "description": "$1 is bold Secret Recovery Phrase"
-  },
   "form": {
     "message": "表格"
   },
@@ -2717,6 +2740,13 @@
   },
   "importAccountMsg": {
     "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "导入的私钥会备份到您的账户中，并在您使用相同的 Google 或 Apple 账户登录时自动同步。"
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "通过 $1 了解导入密钥的工作原理",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "导入 NFT"
@@ -3058,6 +3088,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "以太坊交易输入数据填充不足。"
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "我们在连接 Ledger 时遇到问题。请查看我们的 "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " 了解如何连接硬件钱包，然后重试。"
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger 不再支持 Firefox，因此您可能需要使用其他浏览器。"
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "指南"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "不支持 Firefox"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live 应用程序"
@@ -3496,6 +3541,9 @@
   "networkIsBusy": {
     "message": "网络繁忙。燃料价格较高，估值较不准确。"
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "必须至少启用一个网络"
+  },
   "networkMenu": {
     "message": "网络菜单"
   },
@@ -3712,6 +3760,9 @@
   },
   "noConversionRateAvailable": {
     "message": "无可用汇率"
+  },
+  "noDeFiPositions": {
+    "message": "找不到您要查找的内容吗？"
   },
   "noDomainResolution": {
     "message": "没有提供域名解析。"
@@ -4181,9 +4232,6 @@
   "password": {
     "message": "密码"
   },
-  "passwordChangedRecently": {
-    "message": "您的密码已更改"
-  },
   "passwordChangedRecentlyDescription": {
     "message": "输入您的新密码以保持登录 MetaMask。"
   },
@@ -4198,6 +4246,9 @@
     "message": "强密码可以提高钱包的安全性，以防设备被盗或被入侵。"
   },
   "passwordTermsWarning": {
+    "message": "如果我忘记该密码，MetaMask 将无法为我重设。"
+  },
+  "passwordTermsWarningSocial": {
     "message": "如果我忘记该密码，我将永久失去钱包的访问权限。MetaMask 无法为我重设该密码。"
   },
   "passwordToggleHide": {
@@ -4608,6 +4659,9 @@
   "proposedApprovalLimit": {
     "message": "拟议的审批上限"
   },
+  "protocolNotSupported": {
+    "message": "我们可能尚不支持您的协议。"
+  },
   "provide": {
     "message": "提供"
   },
@@ -4850,9 +4904,6 @@
   "reset": {
     "message": "重置"
   },
-  "resetWallet": {
-    "message": "重置钱包"
-  },
   "resetWalletSubHeader": {
     "message": "MetaMask不会保留密码的副本。如果您在解锁账户时遇到问题，需要重置您的钱包。您可以提供设置钱包时使用的私钥助记词，以进行重置。"
   },
@@ -5050,10 +5101,6 @@
   "securityDescription": {
     "message": "减少您加入不安全网络的机会并保护您的账户"
   },
-  "securityLoginWithSocial": {
-    "message": "使用 $1 登录",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
   "securityLoginWithSrpBackedUp": {
     "message": "私钥助记词已备份"
   },
@@ -5069,10 +5116,6 @@
   },
   "securitySocialLoginEnabled": {
     "message": "已启用"
-  },
-  "securitySocialLoginEnabledDescription": {
-    "message": "该电子邮箱和您的 MetaMask 密码将帮助您找回账户及助记词。",
-    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 找回",
@@ -5432,6 +5475,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMask 借记卡"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "钱包随身，随行随付"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "下载 MetaMask 移动版"
+  },
   "slideFundWalletDescription": {
     "message": "添加或转入代币即可开始使用"
   },
@@ -5494,6 +5543,9 @@
   },
   "smartAccountSameAccount": {
     "message": "账户相同，功能更加智能化。"
+  },
+  "smartAccountSplashInfo": {
+    "message": "智能账户"
   },
   "smartAccountSplashTitle": {
     "message": "使用智能账户？"
@@ -5883,10 +5935,6 @@
   "srpPasteFailedTooManyWords": {
     "message": "粘贴失败，因为它包含超过24个单词。一个私钥助记词最多可包含24个单词。",
     "description": "Description of SRP paste error when the pasted content has too many words"
-  },
-  "srpPasteTip": {
-    "message": "您可以将整个私钥助记词粘贴到任何字段中",
-    "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
     "message": "开始"
@@ -6917,9 +6965,6 @@
   },
   "unlockPageIncorrectPassword": {
     "message": "密码不正确。请重试。"
-  },
-  "unlockPageTooManyFailedAttempts": {
-    "message": "尝试失败次数过多，请于下述时间后重试： "
   },
   "unpin": {
     "message": "取消置顶"

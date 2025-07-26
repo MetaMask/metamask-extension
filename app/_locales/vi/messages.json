@@ -175,6 +175,9 @@
     "message": "Thêm tài khoản $1",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Thêm tài khoản hoặc ví"
+  },
   "addAccountToMetaMask": {
     "message": "Thêm tài khoản vào MetaMask"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "Địa chỉ"
   },
+  "addressCopied": {
+    "message": "Đã sao chép địa chỉ"
+  },
   "addressMismatch": {
     "message": "Địa chỉ trang web không khớp"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "Chúng tôi không thể tiếp tục giao dịch này cho đến khi bạn cập nhật phí thủ công."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Địa chỉ này đã được xác định là độc hại. Chúng tôi khuyên bạn không nên tương tác với trang web này."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Địa chỉ này đã được xác định là đáng ngờ. Chúng tôi khuyên bạn không nên tương tác với trang web này."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "Trang web đưa ra yêu cầu không phải là trang web bạn đang đăng nhập. Đây có thể là một nỗ lực đánh cắp thông tin đăng nhập của bạn."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Ước tính phí không có sẵn"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Trang web độc hại"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Trang web đáng ngờ"
   },
   "alertReasonPendingTransactions": {
     "message": "Giao dịch đang chờ xử lý"
@@ -1940,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "Tải Google Chrome xuống"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Face ID trên ứng dụng của chúng tôi cho phép bạn đăng nhập ngay cả khi quên mật khẩu. Mang MetaMask theo bạn mọi lúc mọi nơi!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Quét mã QR này để bắt đầu."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Tải ứng dụng di động của chúng tôi"
+  },
   "downloadNow": {
     "message": "Tải xuống ngay"
   },
@@ -2427,10 +2454,6 @@
   "forgotPasswordSocialStep1Biometrics": {
     "message": "sinh trắc học đã được bật"
   },
-  "forgotPasswordSocialStep2": {
-    "message": "Nếu bạn có $1, bạn có thể đặt lại ví hiện tại và nhập lại bằng $1.",
-    "description": "$1 is bold Secret Recovery Phrase"
-  },
   "form": {
     "message": "mẫu"
   },
@@ -2717,6 +2740,13 @@
   },
   "importAccountMsg": {
     "message": "Tài khoản đã nhập sẽ không được liên kết với Cụm từ khôi phục bí mật MetaMask của bạn. Tìm hiểu thêm về tài khoản đã nhập"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "Khóa riêng tư đã nhập sẽ được sao lưu vào tài khoản của bạn và tự động đồng bộ khi bạn đăng nhập bằng cùng một tài khoản Google hoặc Apple."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 về cách hoạt động của các khóa đã nhập",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "Nhập NFT"
@@ -3058,6 +3088,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Không có đủ phần đệm trong dữ liệu đầu vào của giao dịch Ethereum."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Chúng tôi đang gặp sự cố khi kết nối với Ledger. Hãy xem "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " hướng dẫn về cách kết nối ví cứng, sau đó thử lại."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger không còn hỗ trợ Firefox, vì vậy bạn có thể cần sử dụng trình duyệt khác."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "hướng dẫn"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox không được hỗ trợ"
   },
   "ledgerLiveApp": {
     "message": "Ứng dụng Ledger Live"
@@ -3496,6 +3541,9 @@
   "networkIsBusy": {
     "message": "Mạng đang bận. Giá gas cao và ước tính kém chính xác hơn."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Phải bật ít nhất một mạng"
+  },
   "networkMenu": {
     "message": "Trình đơn mạng"
   },
@@ -3712,6 +3760,9 @@
   },
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
+  },
+  "noDeFiPositions": {
+    "message": "Không tìm thấy điều bạn đang tìm kiếm?"
   },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
@@ -4181,9 +4232,6 @@
   "password": {
     "message": "Mật khẩu"
   },
-  "passwordChangedRecently": {
-    "message": "Mật khẩu của bạn đã được thay đổi"
-  },
   "passwordChangedRecentlyDescription": {
     "message": "Nhập mật khẩu mới của bạn để tiếp tục đăng nhập vào MetaMask."
   },
@@ -4198,6 +4246,9 @@
     "message": "Một mật khẩu mạnh có thể giúp tăng cường bảo mật cho ví nếu thiết bị của bạn bị đánh cắp hoặc xâm phạm."
   },
   "passwordTermsWarning": {
+    "message": "Nếu tôi quên mật khẩu này, MetaMask không thể đặt lại mật khẩu cho tôi."
+  },
+  "passwordTermsWarningSocial": {
     "message": "Nếu tôi quên mật khẩu này, tôi sẽ mất quyền truy cập vào ví vĩnh viễn. MetaMask không thể đặt lại mật khẩu cho tôi."
   },
   "passwordToggleHide": {
@@ -4608,6 +4659,9 @@
   "proposedApprovalLimit": {
     "message": "Giới hạn chấp thuận đề xuất"
   },
+  "protocolNotSupported": {
+    "message": "Chúng tôi có thể chưa hỗ trợ giao thức của bạn."
+  },
   "provide": {
     "message": "Cung cấp"
   },
@@ -4850,9 +4904,6 @@
   "reset": {
     "message": "Đặt lại"
   },
-  "resetWallet": {
-    "message": "Đặt lại ví"
-  },
   "resetWalletSubHeader": {
     "message": "MetaMask không lưu giữ bản sao mật khẩu của bạn. Nếu bạn đang gặp sự cố khi mở khóa tài khoản, bạn sẽ cần đặt lại ví của mình. Bạn có thể thực hiện bằng cách cung cấp Cụm từ khôi phục bí mật mà bạn đã sử dụng khi thiết lập ví."
   },
@@ -5050,10 +5101,6 @@
   "securityDescription": {
     "message": "Giảm khả năng tham gia các mạng không an toàn và bảo vệ tài khoản của bạn"
   },
-  "securityLoginWithSocial": {
-    "message": "Đăng nhập với $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
   "securityLoginWithSrpBackedUp": {
     "message": "Cụm từ khôi phục bí mật đã được sao lưu"
   },
@@ -5069,10 +5116,6 @@
   },
   "securitySocialLoginEnabled": {
     "message": "Đã bật"
-  },
-  "securitySocialLoginEnabledDescription": {
-    "message": "Email này và mật khẩu MetaMask của bạn sẽ giúp bạn khôi phục tài khoản và cụm từ khôi phục.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "KHÔI PHỤC $1",
@@ -5432,6 +5475,12 @@
   "slideDebitCardTitle": {
     "message": "Thẻ ghi nợ MetaMask"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Mang ví của bạn đi khắp mọi nơi"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Tải ứng dụng MetaMask di động xuống"
+  },
   "slideFundWalletDescription": {
     "message": "Thêm hoặc chuyển token để bắt đầu"
   },
@@ -5494,6 +5543,9 @@
   },
   "smartAccountSameAccount": {
     "message": "Tài khoản giữ nguyên, tính năng thông minh hơn."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Tài khoản thông minh"
   },
   "smartAccountSplashTitle": {
     "message": "Sử dụng tài khoản thông minh?"
@@ -5883,10 +5935,6 @@
   "srpPasteFailedTooManyWords": {
     "message": "Dán không thành công vì cụm từ có nhiều hơn 24 từ. Cụm từ khôi phục bí mật chỉ có tối đa 24 từ.",
     "description": "Description of SRP paste error when the pasted content has too many words"
-  },
-  "srpPasteTip": {
-    "message": "Bạn có thể dán toàn bộ cụm từ khôi phục bí mật vào bất kỳ trường nào",
-    "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
     "message": "Bắt đầu"
@@ -6917,9 +6965,6 @@
   },
   "unlockPageIncorrectPassword": {
     "message": "Mật khẩu không chính xác. Vui lòng thử lại."
-  },
-  "unlockPageTooManyFailedAttempts": {
-    "message": "Quá nhiều lần thử không thành công. Vui lòng thử lại sau "
   },
   "unpin": {
     "message": "Bỏ ghim"

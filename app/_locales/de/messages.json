@@ -175,6 +175,9 @@
     "message": "$1-Konto hinzufügen",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Konto oder Wallet hinzufügen"
+  },
   "addAccountToMetaMask": {
     "message": "Konto zu MetaMask hinzufügen"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "Adresse"
   },
+  "addressCopied": {
+    "message": "Adresse kopiert"
+  },
   "addressMismatch": {
     "message": "Nichtübereinstimmung der Website-Adresse"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "Wir können mit dieser Transaktion nicht fortfahren, bis Sie die Gebühr manuell aktualisieren."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Dies wurde als bösartig identifiziert. Wir empfehlen, nicht mit dieser Website zu interagieren."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Dies wurde als verdächtig identifiziert. Wir empfehlen, nicht mit dieser Website zu interagieren."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "Die Website, die die Anfrage stellt, ist nicht die Website, bei der Sie sich anmelden. Dies könnte ein Versuch sein, Ihre Anmeldedaten zu stehlen."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Gebührenschätzung nicht verfügbar"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Bösartige Website"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Verdächtige Website"
   },
   "alertReasonPendingTransactions": {
     "message": "Ausstehende Transaktion"
@@ -1940,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "Google Chrome herunterladen"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Mit Face ID in unserer App können Sie sich selbst dann anmelden, wenn Sie Ihr Passwort vergessen haben. Nehmen Sie MetaMask überall mit hin!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Scannen Sie diesen QR-Code, um loszulegen."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Holen Sie sich unsere mobile App"
+  },
   "downloadNow": {
     "message": "Jetzt herunterladen"
   },
@@ -2427,10 +2454,6 @@
   "forgotPasswordSocialStep1Biometrics": {
     "message": "biometrische Daten eingeschaltet"
   },
-  "forgotPasswordSocialStep2": {
-    "message": "Wenn Sie Ihre $1 haben, können Sie Ihr aktuelles Wallet zurücksetzen und mit $1 neu importieren.",
-    "description": "$1 is bold Secret Recovery Phrase"
-  },
   "form": {
     "message": "Formular"
   },
@@ -2717,6 +2740,13 @@
   },
   "importAccountMsg": {
     "message": "Importierte Konten werden nicht mit der geheimen Wiederherstellungsphrase von MetaMask verknüpft. Erfahren Sie mehr über importierte Konten."
+  },
+  "importAccountWithSocialMsg": {
+    "message": "Importierte private Schlüssel werden in Ihrem Konto gesichert und automatisch synchronisiert, sobald Sie sich mit demselben Google- oder Apple-Login anmelden."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 darüber, wie importierte Schlüssel funktionieren",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "NFT importieren"
@@ -3058,6 +3088,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Die Eingabedaten der Ethereum-Transaktion sind nicht ausreichend aufgefüllt."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Wir haben Probleme mit der Verbindungsherstellung zu Ledger. Sehen Sie sich unsere "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " an, wie man eine Hardware-Wallet anschließt, und versuchen Sie es dann erneut."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger unterstützt Firefox nicht länger, sodass Sie möglicherweise einen anderen Browser verwenden müssen."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "Anleitung"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox wird nicht unterstützt"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -3496,6 +3541,9 @@
   "networkIsBusy": {
     "message": "Das Netzwerk ist ausgelastet. Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Mindestens ein Netzwerk muss aktiviert sein"
+  },
   "networkMenu": {
     "message": "Netzwerkmenü"
   },
@@ -3712,6 +3760,9 @@
   },
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
+  },
+  "noDeFiPositions": {
+    "message": "Sie finden nicht, wonach Sie suchen?"
   },
   "noDomainResolution": {
     "message": "Keine Auflösung für die Domain angegeben."
@@ -4181,9 +4232,6 @@
   "password": {
     "message": "Passwort"
   },
-  "passwordChangedRecently": {
-    "message": "Ihr Passwort wurde geändert"
-  },
   "passwordChangedRecentlyDescription": {
     "message": "Geben Sie Ihr neues Passwort ein, um bei MetaMask angemeldet zu bleiben."
   },
@@ -4198,6 +4246,9 @@
     "message": "Ein starkes Passwort kann die Sicherheit Ihrer Wallet erhöhen, falls Ihr Gerät gestohlen oder kompromittiert wird."
   },
   "passwordTermsWarning": {
+    "message": "Wenn ich dieses Passwort vergesse, kann MetaMask es nicht für mich zurücksetzen."
+  },
+  "passwordTermsWarningSocial": {
     "message": "Wenn ich dieses Passwort vergesse, verliere ich dauerhaft den Zugang zu meiner Wallet. MetaMask kann es nicht für mich zurücksetzen."
   },
   "passwordToggleHide": {
@@ -4608,6 +4659,9 @@
   "proposedApprovalLimit": {
     "message": "Vorgeschlagenes Genehmigungslimit"
   },
+  "protocolNotSupported": {
+    "message": "Möglicherweise unterstützen wir Ihr Protokoll noch nicht."
+  },
   "provide": {
     "message": "Bereitstellen"
   },
@@ -4850,9 +4904,6 @@
   "reset": {
     "message": "Zurücksetzen"
   },
-  "resetWallet": {
-    "message": "Wallet zurücksetzen"
-  },
   "resetWalletSubHeader": {
     "message": "MetaMask speichert keine Kopie Ihres Passworts. Wenn Sie Probleme haben, Ihr Konto zu entsperren, müssen Sie Ihre Wallet zurücksetzen. Sie können dies tun, indem Sie die geheime Wiederherstellungsphrase angeben, die Sie bei der Einrichtung Ihrer Wallet verwendet haben."
   },
@@ -5050,10 +5101,6 @@
   "securityDescription": {
     "message": "Verringern Sie das Risiko, sich mit unsicheren Netzwerken zu verbinden und sichern Sie Ihre Konten"
   },
-  "securityLoginWithSocial": {
-    "message": "Mit $1 anmelden",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
   "securityLoginWithSrpBackedUp": {
     "message": "Geheime Wiederherstellungsphrase gesichert"
   },
@@ -5069,10 +5116,6 @@
   },
   "securitySocialLoginEnabled": {
     "message": "Aktiviert"
-  },
-  "securitySocialLoginEnabledDescription": {
-    "message": "Mit dieser E-Mail und Ihrem MetaMask-Passwort können Sie Ihr Konto und Ihre Wiederherstellungsphrasen wiederherstellen.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 WIEDERHERSTELLUNG",
@@ -5432,6 +5475,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMask-Debitkarte"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Nehmen Sie Ihre Wallet mit, wohin Sie gehen"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "MetaMask Mobile herunterladen"
+  },
   "slideFundWalletDescription": {
     "message": "Token hinzufügen oder übertragen, um loszulegen"
   },
@@ -5494,6 +5543,9 @@
   },
   "smartAccountSameAccount": {
     "message": "Dasselbe Konto, intelligentere Funktionen."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Smart-Konten"
   },
   "smartAccountSplashTitle": {
     "message": "Smart-Konto verwenden?"
@@ -5883,10 +5935,6 @@
   "srpPasteFailedTooManyWords": {
     "message": "Das Einfügen schlug fehl, weil sie mehr als 24 Wörter enthielt. Eine geheime Wiederherstellungsphrase darf maximal 24 Wörter enthalten.",
     "description": "Description of SRP paste error when the pasted content has too many words"
-  },
-  "srpPasteTip": {
-    "message": "Sie können Ihre vollständige geheime Wiederherstellungsphrase in ein beliebiges Feld einfügen.",
-    "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
     "message": "Erste Schritte"
@@ -6917,9 +6965,6 @@
   },
   "unlockPageIncorrectPassword": {
     "message": "Falsches Passwort. Bitte versuchen Sie es erneut."
-  },
-  "unlockPageTooManyFailedAttempts": {
-    "message": "Zu viele Fehlversuche. Bitte versuchen Sie es erneut in "
   },
   "unpin": {
     "message": "Lösen"
