@@ -3,7 +3,7 @@ import {
   PPOMControllerMessenger,
 } from '@metamask/ppom-validator';
 import { Messenger } from '@metamask/base-controller';
-import { PreferencesController } from '../../controllers/preferences-controller';
+import { PreferencesController } from '@metamask/preferences-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {

@@ -65,9 +65,10 @@ export default class Backup {
     /**
      * We can remove these properties since we will won't be restoring identities from backup
      */
-    delete userData.preferences.identities;
-    delete userData.preferences.lostIdentities;
-    delete userData.preferences.selectedAddress;
+    // After migration 173, these are at the top level
+    delete userData.identities;
+    delete userData.lostIdentities;
+    delete userData.selectedAddress;
 
     const result = JSON.stringify(userData);
 

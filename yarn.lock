@@ -7129,15 +7129,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "@metamask/preferences-controller@npm:17.0.0"
+"@metamask/preferences-controller@file:../core/packages/preferences-controller::locator=metamask-crx%40workspace%3A.":
+  version: 18.4.1
+  resolution: "@metamask/preferences-controller@file:../core/packages/preferences-controller#../core/packages/preferences-controller::hash=c459b2&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/controller-utils": "npm:^11.11.0"
   peerDependencies:
-    "@metamask/keyring-controller": ^21.0.0
-  checksum: 10/1afd6d3df1b667211009334d92fbad8b934fee7d86093c6c46b7b9e79c7193f988e92cb11e49a652b10ac882f8d04459dbba3a9da0ad47d9f2144be6c0382ada
+    "@metamask/keyring-controller": ^22.0.0
+  checksum: 10/0d8fa9f0d5beedfbd0e41a738e86bf369747ba04bd6c3c179089639551868b77e70fbcfd783cad81a80eb3ee9e8228d2217f51a00cd9b41490eda22f7e697d7b
   languageName: node
   linkType: hard
 
@@ -31993,7 +31993,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^5.0.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.36.0"
-    "@metamask/preferences-controller": "npm:^17.0.0"
+    "@metamask/preferences-controller": "file:../core/packages/preferences-controller"
     "@metamask/preinstalled-example-snap": "npm:^0.6.0"
     "@metamask/profile-sync-controller": "npm:^22.0.0"
     "@metamask/providers": "npm:^22.1.0"

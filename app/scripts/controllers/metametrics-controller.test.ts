@@ -34,9 +34,9 @@ import MetaMetricsController, {
   MetaMetricsControllerOptions,
 } from './metametrics-controller';
 import {
-  getDefaultPreferencesControllerState,
-  PreferencesControllerState,
-} from './preferences-controller';
+  getDefaultPreferencesState as getDefaultPreferencesControllerState,
+  PreferencesState as PreferencesControllerState,
+} from '@metamask/preferences-controller';
 
 const segmentMock = createSegmentMock(2);
 

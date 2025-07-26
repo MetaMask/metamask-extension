@@ -84,10 +84,10 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 
 import { KeyringType } from '../../../shared/constants/keyring';
 import type {
-  PreferencesControllerState,
+  PreferencesState as PreferencesControllerState,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
-} from './preferences-controller';
+} from '@metamask/preferences-controller';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
@@ -182,17 +182,15 @@ export type MetaMaskState = {
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
   securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
-  tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
+  tokenSortConfig: PreferencesControllerState['tokenSortConfig'];
   names: NameControllerState['names'];
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   security_providers: string[];
   addressBook: AddressBookControllerState['addressBook'];
   currentCurrency: string;
-  preferences: {
-    privacyMode: PreferencesControllerState['preferences']['privacyMode'];
-    tokenNetworkFilter: string[];
-  };
+  privacyMode: PreferencesControllerState['privacyMode'];
+  tokenNetworkFilter: PreferencesControllerState['tokenNetworkFilter'];
   srpSessionData: AuthenticationControllerState['srpSessionData'];
   keyrings: { type: string; accounts: string[] }[];
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
@@ -1333,9 +1331,9 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.TokenSortPreference]:
         metamaskState.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
-        metamaskState.preferences.privacyMode,
+        metamaskState.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
-        metamaskState.preferences.tokenNetworkFilter || {},
+        metamaskState.tokenNetworkFilter || {},
       ),
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},

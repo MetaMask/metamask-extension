@@ -3,7 +3,7 @@ import { JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { PreferencesController } from '../../controllers/preferences-controller';
+import { PreferencesController } from '@metamask/preferences-controller';
 import { SupportedEVMChain } from './types';
 
 // isSecurityAlertsEnabledByUser is a function that checks if the security alerts are enabled in the preferences controller.
