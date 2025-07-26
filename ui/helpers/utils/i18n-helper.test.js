@@ -1,11 +1,15 @@
 import React from 'react';
-import * as Sentry from '@sentry/browser';
+import { captureException } from '../../../shared/lib/sentry';
 import { getMessage as getMessageShared } from '../../../shared/modules/i18n';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { getMessage } from './i18n-helper';
 
 jest.mock('../../../shared/modules/i18n');
-jest.mock('@sentry/browser');
+jest.mock('../../../shared/lib/sentry', () => ({
+  captureException: jest.fn(),
+  sentryLogger: jest.requireActual('../../../shared/lib/sentry').sentryLogger,
+}));
+const mockedCaptureException = jest.mocked(captureException);
 
 const localeCodeMock = 'te';
 const keyMock = 'testKey';
@@ -43,8 +47,8 @@ describe('I18N Helper', () => {
       const onErrorCallback = getMessageShared.mock.calls[0][4];
       onErrorCallback(errorMock);
 
-      expect(Sentry.captureException).toHaveBeenCalledTimes(1);
-      expect(Sentry.captureException).toHaveBeenCalledWith(errorMock);
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureException).toHaveBeenCalledWith(errorMock);
     });
 
     it('does not provide custom join logic if only strings in substitutions', () => {
