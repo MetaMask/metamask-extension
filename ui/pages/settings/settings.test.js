@@ -1,7 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
+import { ABOUT_US_ROUTE } from '../../helpers/constants/routes';
 import Settings from '.';
 import 'jest-canvas-mock';
 
@@ -41,5 +43,23 @@ describe('SettingsPage', () => {
     );
 
     expect(queryByPlaceholderText('Search')).toBeInTheDocument();
+  });
+
+  it('should trigger support modal when click support link', () => {
+    const { queryByTestId } = renderWithProvider(
+      <Settings {...props} />,
+      mockStore,
+      ABOUT_US_ROUTE,
+    );
+
+    const supportLink = queryByTestId('info-tab-support-center-button');
+    expect(supportLink).toBeInTheDocument();
+    fireEvent.click(supportLink);
+
+    waitFor(() =>
+      expect(
+        queryByTestId('visit-support-data-consent-modal'),
+      ).toBeInTheDocument(),
+    );
   });
 });
