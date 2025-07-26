@@ -988,6 +988,7 @@ export default class MetamaskController extends EventEmitter {
       includeUsdRate: true,
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
+      useExternalServices: () => this.preferencesController.state.useExternalServices,
     });
     const initialFetchMultiExchangeRate =
       this.currencyRateController.fetchMultiExchangeRate.bind(
@@ -1471,6 +1472,8 @@ export default class MetamaskController extends EventEmitter {
           'TokenListController:getState',
           'TokensController:getState',
           'TokensController:addDetectedTokens',
+          'TokensController:addTokens',
+          'NetworkController:findNetworkClientIdByChainId',
         ],
         allowedEvents: [
           'AccountsController:selectedEvmAccountChange',
@@ -1492,6 +1495,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       useAccountsAPI: true,
       platform: 'extension',
+      useTokenDetection: () =>
+        this.preferencesController.state.useTokenDetection,
+      useExternalServices: () => this.preferencesController.state.useExternalServices,
     });
 
     const addressBookControllerMessenger =
