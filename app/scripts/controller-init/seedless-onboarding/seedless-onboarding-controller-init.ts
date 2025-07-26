@@ -31,6 +31,7 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
     messenger: controllerMessenger,
     state: persistedState.SeedlessOnboardingController,
     network,
+    passwordOutdatedCacheTTL: 15_000, // 15 seconds
     refreshJWTToken: refreshOAuthToken,
     revokeRefreshToken: revokeAndGetNewRefreshToken,
     encryptor: {
