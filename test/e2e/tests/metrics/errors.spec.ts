@@ -75,7 +75,7 @@ const removedBackgroundFields = [
 
 const ignoredConsoleErrors = [
   // The UI logs the expected error
-  "TypeError: Cannot read properties of undefined (reading 'version')",
+  "Cannot read properties of undefined (reading 'version')",
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
