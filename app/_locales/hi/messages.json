@@ -175,6 +175,9 @@
     "message": "$1 अकाउंट जोड़ें",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "अकाउंट या वॉलेट जोड़ें"
+  },
   "addAccountToMetaMask": {
     "message": "MetaMask में अकाउंट जोड़ें"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "एड्रेस"
   },
+  "addressCopied": {
+    "message": "एड्रेस कॉपी किया गया"
+  },
   "addressMismatch": {
     "message": "साइट एड्रेस का मैच न होना"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "जब तक आप शुल्क को मैन्युअल रूप से अपडेट नहीं करते, हम इस ट्रांसेक्शन को आगे नहीं बढ़ा सकते।"
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "इसे बुरी नीयत वाला के रूप में पहचाना गया है। हम इस साइट के साथ इंटरैक्ट न करने की सलाह देते हैं।"
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "इसे संदिग्ध के रूप में पहचाना गया है। हम इस साइट के साथ इंटरैक्ट न करने की सलाह देते हैं।"
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "अनुरोध करने वाली साइट वह साइट नहीं है जिस पर आप साइन इन कर रहे हैं। यह आपके लॉगिन क्रेडेंशियल चुराने का प्रयास हो सकता है।"
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "शुल्क अनुमान अनुपलब्ध है"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "बुरी नियत वाला साइट"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "संदिग्ध साइट"
   },
   "alertReasonPendingTransactions": {
     "message": "अभी तक पूरा नहीं हुआ ट्रांसेक्शन"
@@ -1940,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "Google Chrome डाउनलोड करें"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "हमारे ऐप में फेस ID से आप पासवर्ड भूल जाने पर भी लॉग इन कर सकते हैं। MetaMask को अपने साथ हर जगह लेकर जाएं!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "शुरू करने के लिए इस QR कोड को स्कैन करें।"
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "हमारा मोबाइल ऐप प्राप्त करें"
+  },
   "downloadNow": {
     "message": "अभी डाउनलोड करें"
   },
@@ -2427,10 +2454,6 @@
   "forgotPasswordSocialStep1Biometrics": {
     "message": "बायोमेट्रिक्स चालू है"
   },
-  "forgotPasswordSocialStep2": {
-    "message": "यदि आपके पास अपना $1 है, तो आप अपने वर्तमान वॉलेट को रीसेट कर सकते हैं और $1 का उपयोग करके फिर से इंपोर्ट कर सकते हैं।",
-    "description": "$1 is bold Secret Recovery Phrase"
-  },
   "form": {
     "message": "फॉर्म"
   },
@@ -2717,6 +2740,13 @@
   },
   "importAccountMsg": {
     "message": "इम्पोर्ट किए एकाउंट्स आपके MetaMask सीक्रेट रिकवरी फ्रेज़ से जुड़े नहीं होंगे। इम्पोर्ट किए एकाउंट्स के बारे में अधिक जानें"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "इंपोर्ट किए गए प्राइवेट कीज़ (keys) का आपके अकाउंट में बैकअप ले लिया जाता है और जब आप उसी Google या Apple लॉगिन से साइन इन करते हैं तो वे स्वचालित रूप से सिंक हो जाती हैं।"
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "इंपोर्ट की गई कीज़ कैसे काम करती हैं, इसके बारे में $1",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "NFT इंपोर्ट करें"
@@ -3058,6 +3088,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum ट्रांसेक्शन का इनपुट डेटा पर्याप्त रूप से पैडेड नहीं है।"
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "हमें Ledger से कनेक्ट करने में समस्या आ रही है। देखें हमारा "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " कि हार्डवेयर वॉलेट कैसे कनेक्ट करें तब, फिर से प्रयास करें।"
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger अब Firefox को सपोर्ट नहीं करता है, इसलिए आपको एक अलग ब्राउज़र का उपयोग करने की आवश्यकता हो सकती है।"
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "गाइड"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox सपोर्टेड नहीं है"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live ऐप"
@@ -3496,6 +3541,9 @@
   "networkIsBusy": {
     "message": "नेटवर्क व्यस्त है। गैस प्राइसें अधिक हैं और अनुमान कम सटीक हैं।"
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "कम से कम एक नेटवर्क चालू होना चाहिए"
+  },
   "networkMenu": {
     "message": "नेटवर्क मेन्यू"
   },
@@ -3712,6 +3760,9 @@
   },
   "noConversionRateAvailable": {
     "message": "कोई भी कन्वर्शन दर उपलब्ध नहीं है"
+  },
+  "noDeFiPositions": {
+    "message": "आप जो खोज रहे हैं वह आपको नहीं मिल रहा?"
   },
   "noDomainResolution": {
     "message": "डोमेन के लिए कोई रिज़ॉल्यूशन प्रदान नहीं किया गया।"
@@ -4181,9 +4232,6 @@
   "password": {
     "message": "पासवर्ड"
   },
-  "passwordChangedRecently": {
-    "message": "आपका पासवर्ड बदला गया"
-  },
   "passwordChangedRecentlyDescription": {
     "message": "MetaMask में लॉग इन रहने के लिए अपना नया पासवर्ड दर्ज करें।"
   },
@@ -4198,6 +4246,9 @@
     "message": "अगर आपका डिवाइस चोरी हो गया हो या उसके साथ छेड़छाड़ की गई है, तब एक मजबूत पासवर्ड आपके वॉलेट की सुरक्षा को बेहतर बना सकता है।"
   },
   "passwordTermsWarning": {
+    "message": "अगर मैं यह पासवर्ड भूल गया, तो MetaMask इसे मेरे लिए रीसेट नहीं कर सकता।"
+  },
+  "passwordTermsWarningSocial": {
     "message": "अगर मैं यह पासवर्ड भूल गया, तो मैं अपने वॉलेट तक हमेशा के लिए पहुँच खो दूँगा। MetaMask इसे मेरे लिए रीसेट नहीं कर सकता।"
   },
   "passwordToggleHide": {
@@ -4608,6 +4659,9 @@
   "proposedApprovalLimit": {
     "message": "प्रस्तावित एप्रूवल सीमा"
   },
+  "protocolNotSupported": {
+    "message": "हो सकता है कि हम अभी आपके प्रोटोकॉल को सपोर्ट न करें।"
+  },
   "provide": {
     "message": "प्रदान करें"
   },
@@ -4850,9 +4904,6 @@
   "reset": {
     "message": "रीसेट करें"
   },
-  "resetWallet": {
-    "message": "वॉलेट रीसेट करें"
-  },
   "resetWalletSubHeader": {
     "message": "MetaMask आपके पासवर्ड की कॉपी नहीं रखता है। अगर आपको अपना अकाउंट अनलॉक करने में दिक्कत हो रही है, तो आपको अपना वॉलेट रीसेट करना होगा। सीक्रेट रिकवरी फ़्रेज़ प्रदान करके आप ऐसा कर सकते हैं जिसका इस्तेमाल आपने अपना वॉलेट सेट करते समय किया था।"
   },
@@ -5050,10 +5101,6 @@
   "securityDescription": {
     "message": "असुरक्षित नेटवर्क में शामिल होने की संभावना कम करें और अपने एकाउंट्स की सुरक्षा करें"
   },
-  "securityLoginWithSocial": {
-    "message": "$1 के साथ लॉगिन करें",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
   "securityLoginWithSrpBackedUp": {
     "message": "सीक्रेट रिकवरी फ्रेज़ का बैकअप लिया गया"
   },
@@ -5069,10 +5116,6 @@
   },
   "securitySocialLoginEnabled": {
     "message": "चालू किया गया"
-  },
-  "securitySocialLoginEnabledDescription": {
-    "message": "यह ईमेल और आपका MetaMask पासवर्ड आपको अपना अकाउंट और रिकवरी फ्रेज़ रिकवर करने में सहायता करेगा।",
-    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 रिकवरी",
@@ -5432,6 +5475,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMask डेबिट कार्ड"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "जहां भी जाएं अपना वॉलेट साथ ले जाएं"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "MetaMask मोबाइल डाउनलोड करें"
+  },
   "slideFundWalletDescription": {
     "message": "शुरू करने के लिए टोकन जोड़ें या स्थानांतरित करें"
   },
@@ -5494,6 +5543,9 @@
   },
   "smartAccountSameAccount": {
     "message": "वही अकाउंट, और स्मार्ट फीचर्स।"
+  },
+  "smartAccountSplashInfo": {
+    "message": "स्मार्ट एकाउंट्स"
   },
   "smartAccountSplashTitle": {
     "message": "स्मार्ट अकाउंट का प्रयोग करना है?"
@@ -5883,10 +5935,6 @@
   "srpPasteFailedTooManyWords": {
     "message": "पेस्ट नहीं हो पाया क्योंकि उसमें 24 से ज़्यादा शब्द हैं। सीक्रेट रिकवरी फ़्रेज़ में अधिकतम 24 शब्द हो सकते हैं।",
     "description": "Description of SRP paste error when the pasted content has too many words"
-  },
-  "srpPasteTip": {
-    "message": "आप अपना पूरा सीक्रेट रिकवरी फ़्रेज किसी भी फ़ील्ड में पेस्ट कर सकते हैं",
-    "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
     "message": "शुरू करें"
@@ -6917,9 +6965,6 @@
   },
   "unlockPageIncorrectPassword": {
     "message": "पासवर्ड गलत है। कृपया फिर से प्रयास करें।"
-  },
-  "unlockPageTooManyFailedAttempts": {
-    "message": "बहुत सारे असफल प्रयास। कृपया इतने समय में फिर से प्रयास करें "
   },
   "unpin": {
     "message": "अनपिन करें"

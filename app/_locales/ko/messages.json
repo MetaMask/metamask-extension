@@ -175,6 +175,9 @@
     "message": "$1 계정 추가",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "계정 또는 지갑 추가"
+  },
   "addAccountToMetaMask": {
     "message": "MetaMask에 계정 추가"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "주소"
   },
+  "addressCopied": {
+    "message": "주소가 복사되었습니다"
+  },
   "addressMismatch": {
     "message": "사이트 주소 불일치"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "수수료를 직접 업데이트할 때까지는 이 트랜잭션을 진행할 수 없습니다."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "이 사이트는 악성으로 식별되었습니다. 이 사이트와의 상호작용은 권장하지 않습니다."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "이 사이트는 의심스러운 사이트로 식별되었습니다. 이 사이트와의 상호작용은 권장하지 않습니다."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "요청을 보낸 사이트에 로그인되어 있지 않습니다. 이는 로그인 정보를 도용하려는 시도일 수 있습니다."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "수수료 견적 제공 불가"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "악성 사이트"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "의심스러운 사이트"
   },
   "alertReasonPendingTransactions": {
     "message": "보류 중인 트랜잭션"
@@ -1724,7 +1742,7 @@
     "message": "이동할 URL이 제공되지 않았습니다."
   },
   "deepLink_ErrorOtherDescription": {
-    "message": "이것은 버그이며 MetaMask에 신고해야 합니다."
+    "message": "버그입니다. MetaMask에 신고해 주세요."
   },
   "deepLink_ErrorOtherTitle": {
     "message": "딥링크 처리 중 오류가 발생했습니다"
@@ -1939,6 +1957,15 @@
   },
   "downloadGoogleChrome": {
     "message": "Google Chrome 다운로드"
+  },
+  "downloadMetaMaskMobileDescription": {
+    "message": "비밀번호를 잊어버려도 앱의 Face ID로 로그인할 수 있습니다. MetaMask를 어디서든 사용하세요!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "이 QR 코드를 스캔하여 시작하세요."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "모바일 앱 받기"
   },
   "downloadNow": {
     "message": "지금 다운로드"
@@ -2427,10 +2454,6 @@
   "forgotPasswordSocialStep1Biometrics": {
     "message": "바이오메트릭이 활성화되었습니다"
   },
-  "forgotPasswordSocialStep2": {
-    "message": "$1이(가) 있다면 현재 지갑을 초기화하고 $1을(를) 사용하여 다시 가져올 수 있습니다.",
-    "description": "$1 is bold Secret Recovery Phrase"
-  },
   "form": {
     "message": "양식"
   },
@@ -2717,6 +2740,13 @@
   },
   "importAccountMsg": {
     "message": "가져온 계정은 MetaMask 계정 비밀복구구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "가져온 개인 키는 계정에 백업되며 동일한 Google 또는 Apple 로그인으로 로그인할 때 자동으로 동기화됩니다."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "가져온 키의 작동 방식에 대한 $1",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "NFT 가져오기"
@@ -3058,6 +3088,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "이더리움 트랜잭션의 입력 데이터가 충분히 패딩되지 않았습니다."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Ledger 연결에 문제가 있습니다. 하드웨어 지갑 "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " 연결 방법을 확인한 후 다시 시도하세요."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger는 더 이상 Firefox를 지원하지 않으므로 다른 브라우저를 사용해야 할 수 있습니다."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "가이드"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox 지원되지 않음"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live 앱"
@@ -3496,6 +3541,9 @@
   "networkIsBusy": {
     "message": "네트워크 사용량이 많습니다. 가스비가 높고 견적의 정확도도 떨어집니다."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "한 개 이상의 네트워크가 활성화되어야 합니다"
+  },
   "networkMenu": {
     "message": "네트워크 메뉴"
   },
@@ -3712,6 +3760,9 @@
   },
   "noConversionRateAvailable": {
     "message": "사용 가능한 환율 없음"
+  },
+  "noDeFiPositions": {
+    "message": "원하는 것을 찾을 수 없나요?"
   },
   "noDomainResolution": {
     "message": "도메인에 대한 해결 방법이 제공되지 않았습니다."
@@ -4027,7 +4078,7 @@
     "message": "MetaMask 개선을 위해 기본 사용량과 진단 데이터를 수집하고자 합니다. 수집되는 정보는 항상 다음과 같습니다."
   },
   "onboardingMetametricsInfuraTerms": {
-    "message": "이 데이터를 다른 목적으로 사용할 계획이 있다면 알려드리겠습니다. 언제든 $1을(를) 확인할 수 있습니다(여기에 제공된 데이터를 판매하지 않습니다).",
+    "message": "이 데이터를 다른 목적으로 사용할 계획이 있다면 알려드리겠습니다. 언제든 $1을 확인할 수 있습니다(여기에 제공된 데이터를 판매하지 않습니다).",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
   "onboardingMetametricsInfuraTermsPolicy": {
@@ -4048,7 +4099,7 @@
     "message": "일반:"
   },
   "onboardingMetametricsNeverSellData": {
-    "message": "$1 언제든지 설정에서 사용 데이터를 공유할지 삭제할지 결정할 수 있습니다.",
+    "message": "$1 사용자는 언제든지 설정에서 사용 데이터를 공유할지 삭제할지 결정할 수 있습니다.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
@@ -4181,9 +4232,6 @@
   "password": {
     "message": "비밀번호"
   },
-  "passwordChangedRecently": {
-    "message": "비밀번호가 변경되었습니다"
-  },
   "passwordChangedRecentlyDescription": {
     "message": "MetaMask 로그인 상태를 유지하려면 새 비밀번호를 입력하세요."
   },
@@ -4198,7 +4246,10 @@
     "message": "장치가 도난되거나 해킹되는 경우에 대비해 강력한 암호를 설정하면 지갑의 보안을 향상시킬 수 있습니다."
   },
   "passwordTermsWarning": {
-    "message": "이 비밀번호를 잊어버리면 지갑을 영구적으로 이용할 수 없습니다. MetaMask는 비밀번호를 초기화할 수 없습니다."
+    "message": "이 비밀번호를 잊은 경우, MetaMask는 회원님을 대신하여 비밀번호를 초기화해드릴 수 없습니다."
+  },
+  "passwordTermsWarningSocial": {
+    "message": "이 비밀번호를 잊으면 지갑에 영구적으로 접근할 수 없게 됩니다. MetaMask는 회원님을 대신하여 비밀번호를 초기화할 수 없습니다."
   },
   "passwordToggleHide": {
     "message": "비밀번호 숨기기"
@@ -4608,6 +4659,9 @@
   "proposedApprovalLimit": {
     "message": "제안된 승인 한도"
   },
+  "protocolNotSupported": {
+    "message": "회원님의 프로토콜은 아직 지원되지 않을 수 있습니다."
+  },
   "provide": {
     "message": "제공"
   },
@@ -4735,7 +4789,7 @@
     "message": "나중에 알림"
   },
   "recoveryPhraseReminderSubText": {
-    "message": "지갑을 백업하지 않으면 앱에 접근할 수 없거나 새 기기를 사용할 때 자산 접근 권한을 잃게 됩니다."
+    "message": "지갑을 백업하지 않으면 앱에서 이를 이용할 수 없거나 새 기기를 사용할 때 자산 접근 권한을 잃게 됩니다."
   },
   "recoveryPhraseReminderTitle": {
     "message": "지갑 보호"
@@ -4849,9 +4903,6 @@
   },
   "reset": {
     "message": "재설정"
-  },
-  "resetWallet": {
-    "message": "지갑 초기화"
   },
   "resetWalletSubHeader": {
     "message": "MetaMask는 사용자의 비밀번호를 보관하지 않습니다. 계정 잠금을 해제하는 데 문제가 있는 경우, 지갑 설정 시 사용한 비밀복구구문을 이용하여 지갑을 초기화해야 합니다."
@@ -5013,7 +5064,7 @@
     "message": "앱이 잠기거나 새 기기를 사용할 때 지갑을 복구할 수 있는 유일한 방법입니다."
   },
   "secureWalletWalletSaveSrp": {
-    "message": "자산을 잃지 않으려면 $1을(를) 신뢰할 수 있는 장소에 저장해 지갑을 보호하세요.",
+    "message": "자산을 잃지 않으려면 $1을 신뢰할 수 있는 장소에 저장해 지갑을 보호하세요.",
     "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
@@ -5050,10 +5101,6 @@
   "securityDescription": {
     "message": "안전하지 않은 네트워크에 가입할 가능성을 줄이고 계정을 보호하세요"
   },
-  "securityLoginWithSocial": {
-    "message": "$1(으)로 로그인",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
   "securityLoginWithSrpBackedUp": {
     "message": "비밀복구구문 백업 완료"
   },
@@ -5069,10 +5116,6 @@
   },
   "securitySocialLoginEnabled": {
     "message": "활성화됨"
-  },
-  "securitySocialLoginEnabledDescription": {
-    "message": "이 이메일과 MetaMask 비밀번호를 사용하여 계정과 복구구문을 복구할 수 있습니다.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 복구",
@@ -5205,7 +5248,7 @@
     "description": "Symbol of the specified token"
   },
   "sentTokenAsToken": {
-    "message": "$1을(를) $2(으)로 전송함",
+    "message": "$1을 $2로 전송함",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sepolia": {
@@ -5348,7 +5391,7 @@
     "message": "예상 변동 사항은 이 트랜잭션을 진행할 경우 발생하는 결과를 예측한 것입니다. 이는 예측일 뿐 결과를 보장하지는 않습니다."
   },
   "simulationDetailsTitleTooltipEnforced": {
-    "message": "잔액 변동은 보장됩니다. 이 결과가 불가능할 경우, 트랜잭션이 중단됩니다."
+    "message": "잔액은 반드시 변경됩니다. 그렇지 않을 경우, 트랜잭션이 중단됩니다."
   },
   "simulationDetailsTotalFiat": {
     "message": "합계 = $1",
@@ -5432,6 +5475,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMask 직불카드"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "어디에서든 지갑을 사용하세요"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "MetaMask 모바일 다운로드"
+  },
   "slideFundWalletDescription": {
     "message": "시작하려면 토큰을 추가하거나 전송하세요"
   },
@@ -5494,6 +5543,9 @@
   },
   "smartAccountSameAccount": {
     "message": "같은 계정, 더 스마트한 기능."
+  },
+  "smartAccountSplashInfo": {
+    "message": "스마트 계정"
   },
   "smartAccountSplashTitle": {
     "message": "스마트 계정을 사용하시겠어요?"
@@ -5883,10 +5935,6 @@
   "srpPasteFailedTooManyWords": {
     "message": "단어가 24개를 초과하여 붙여넣기에 실패했습니다. 비밀복구구문은 24개 이하의 단어로 이루어집니다.",
     "description": "Description of SRP paste error when the pasted content has too many words"
-  },
-  "srpPasteTip": {
-    "message": "비밀복구구문 전체를 아무 입력란에 붙여넣을 수 있습니다",
-    "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
     "message": "시작하기"
@@ -6917,9 +6965,6 @@
   },
   "unlockPageIncorrectPassword": {
     "message": "비밀번호가 올바르지 않습니다. 다시 시도하세요."
-  },
-  "unlockPageTooManyFailedAttempts": {
-    "message": "실패 시도가 너무 많습니다. 다음 시간 후에 다시 시도하세요 "
   },
   "unpin": {
     "message": "고정 해제"

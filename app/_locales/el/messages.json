@@ -175,6 +175,9 @@
     "message": "Προσθήκη λογαριασμού σε $1",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Προσθήκη λογαριασμού ή πορτοφολιού"
+  },
   "addAccountToMetaMask": {
     "message": "Προσθήκη λογαριασμού στο MetaMask"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "Διεύθυνση"
   },
+  "addressCopied": {
+    "message": "Η διεύθυνση αντιγράφηκε"
+  },
   "addressMismatch": {
     "message": "Αναντιστοιχία διεύθυνσης ιστότοπου"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "Δεν μπορούμε να συνεχίσουμε με αυτή τη συναλλαγή μέχρι να ενημερώσετε τα τέλη μη αυτόματα."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Αυτό έχει αναγνωριστεί ως κακόβουλο. Σας συνιστούμε να μην αλληλεπιδράτε με αυτόν τον ιστότοπο."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Αυτό έχει αναγνωριστεί ως ύποπτο. Σας συνιστούμε να μην αλληλεπιδράτε με αυτόν τον ιστότοπο."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "Ο ιστότοπος που υποβάλλει το αίτημα δεν είναι ο ιστότοπος στον οποίο έχετε συνδεθεί. Αυτό θα μπορούσε να είναι μια απόπειρα κλοπής των στοιχείων σύνδεσής σας."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Δεν είναι διαθέσιμη η εκτίμηση των τελών"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Κακόβουλος ιστότοπος"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Ύποπτος ιστότοπος"
   },
   "alertReasonPendingTransactions": {
     "message": "Εκκρεμής συναλλαγή"
@@ -1940,6 +1958,15 @@
   "downloadGoogleChrome": {
     "message": "Κατεβάστε το Google Chrome"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Η λειτουργία Face ID στην εφαρμογή μας σας επιτρέπει να συνδέεστε ακόμα κι αν ξεχάσετε τον κωδικό πρόσβασής σας. Πάρτε το MetaMask παντού μαζί σας!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Σαρώστε αυτόν τον QR κωδικό για να ξεκινήσετε."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Κατεβάστε την εφαρμογή μας για κινητά"
+  },
   "downloadNow": {
     "message": "Λήψη Τώρα"
   },
@@ -2427,10 +2454,6 @@
   "forgotPasswordSocialStep1Biometrics": {
     "message": "ενεργοποιημένα βιομετρικά δεδομένα"
   },
-  "forgotPasswordSocialStep2": {
-    "message": "Αν έχετε τη $1, μπορείτε να επαναφέρετε το τρέχον πορτοφόλι σας και να το επανεισαγάγετε χρησιμοποιώντας τη $1.",
-    "description": "$1 is bold Secret Recovery Phrase"
-  },
   "form": {
     "message": "φόρμα"
   },
@@ -2717,6 +2740,13 @@
   },
   "importAccountMsg": {
     "message": "Οι λογαριασμοί που έχουν εισαχθεί δεν θα συσχετίζονται με τη Μυστική Φράση Ανάκτησης στο MetaTask. Μάθετε περισσότερα για τους λογαριασμούς που έχουν εισαχθεί"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "Τα ιδιωτικά κλειδιά που εισάγετε δημιουργούν αντίγραφα ασφαλείας στον λογαριασμό σας και συγχρονίζονται αυτόματα όταν συνδέεστε με τα ίδια στοιχεία στο Google ή Apple."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 σχετικά με το πώς λειτουργούν τα κλειδιά που εισάγετε",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "Εισαγωγή NFT"
@@ -3058,6 +3088,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Η εισαγωγή δεδομένων στις συναλλαγές με Ethereum δεν έχει πραγματοποιηθεί επαρκώς."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Αντιμετωπίζουμε πρόβλημα σύνδεσης με το Ledger. Δείτε το "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " πώς να συνδέσετε ένα πορτοφόλι υλικού και προσπαθήστε ξανά."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Το Ledger δεν υποστηρίζει πλέον τον Firefox, επομένως ίσως χρειαστεί να χρησιμοποιήσετε κάποιο άλλο πρόγραμμα περιήγησης."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "οδηγός"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Το Firefox δεν υποστηρίζεται"
   },
   "ledgerLiveApp": {
     "message": "Εφαρμογή Ledger Live"
@@ -3496,6 +3541,9 @@
   "networkIsBusy": {
     "message": "Το δίκτυο είναι απασχολημένο. Τα τέλη συναλλαγής είναι υψηλά και οι εκτιμήσεις λιγότερο ακριβείς."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Πρέπει να είναι ενεργοποιημένο τουλάχιστον ένα δίκτυο"
+  },
   "networkMenu": {
     "message": "Μενού δικτύου"
   },
@@ -3712,6 +3760,9 @@
   },
   "noConversionRateAvailable": {
     "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
+  },
+  "noDeFiPositions": {
+    "message": "Δεν μπορείτε να βρείτε αυτό που ψάχνετε;"
   },
   "noDomainResolution": {
     "message": "Δεν παρέχεται ανάλυση για τον τομέα."
@@ -4181,9 +4232,6 @@
   "password": {
     "message": "Κωδικός πρόσβασης"
   },
-  "passwordChangedRecently": {
-    "message": "Ο κωδικός πρόσβασής σας άλλαξε"
-  },
   "passwordChangedRecentlyDescription": {
     "message": "Εισάγετε τον νέο σας κωδικό πρόσβασης για να παραμείνετε συνδεδεμένοι στο MetaMask."
   },
@@ -4198,7 +4246,10 @@
     "message": "Ένας ισχυρός κωδικός πρόσβασης μπορεί να βελτιώσει την ασφάλεια του πορτοφολιού σας εάν η συσκευή σας κλαπεί ή παραβιαστεί."
   },
   "passwordTermsWarning": {
-    "message": "Αν ξεχάσω τον κωδικό πρόσβασης, θα χάσω μόνιμα την πρόσβαση στο πορτοφόλι μου. Το MetaMask δεν μπορεί να τον επαναφέρει για εμένα."
+    "message": "Αν ξεχάσω τον κωδικό πρόσβασης, το MetaMask δεν μπορεί να τον επαναφέρει για μένα."
+  },
+  "passwordTermsWarningSocial": {
+    "message": "Αν ξεχάσω τον κωδικό πρόσβασης, θα χάσω οριστικά την πρόσβαση στο πορτοφόλι μου. Το MetaMask δεν μπορεί να τον επαναφέρει για μένα."
   },
   "passwordToggleHide": {
     "message": "Απόκρυψη κωδικού πρόσβασης"
@@ -4608,6 +4659,9 @@
   "proposedApprovalLimit": {
     "message": "Προτεινόμενο όριο έγκρισης"
   },
+  "protocolNotSupported": {
+    "message": "Ενδέχεται να μην υποστηρίζουμε ακόμη το πρωτόκολλό σας."
+  },
   "provide": {
     "message": "Παροχή"
   },
@@ -4850,9 +4904,6 @@
   "reset": {
     "message": "Επαναφορά"
   },
-  "resetWallet": {
-    "message": "Επαναφορά πορτοφολιού"
-  },
   "resetWalletSubHeader": {
     "message": "Το MetaMask δεν διατηρεί αντίγραφο του κωδικού πρόσβασής σας. Εάν αντιμετωπίζετε κάποιο πρόβλημα με το ξεκλείδωμα του λογαριασμού σας, θα χρειαστεί να πραγματοποιήσετε επαναφορά του πορτοφολιού σας. Μπορείτε να το κάνετε μέσω της Μυστικής Φράσης Ανάκτησης που χρησιμοποιήσατε όταν δημιουργήσατε το πορτοφόλι σας."
   },
@@ -5050,10 +5101,6 @@
   "securityDescription": {
     "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς σας"
   },
-  "securityLoginWithSocial": {
-    "message": "Σύνδεση με $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
   "securityLoginWithSrpBackedUp": {
     "message": "Δημιουργήθηκε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
@@ -5069,10 +5116,6 @@
   },
   "securitySocialLoginEnabled": {
     "message": "Ενεργοποιημένο"
-  },
-  "securitySocialLoginEnabledDescription": {
-    "message": "Αυτό το email και ο κωδικός σας πρόσβασης στο MetaMask θα σας βοηθήσουν να ανακτήσετε τον λογαριασμό σας και τις φράσεις ανάκτησης.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "ΑΝΑΚΤΗΣΗ ΜΕΣΩ $1",
@@ -5432,6 +5475,12 @@
   "slideDebitCardTitle": {
     "message": "Χρεωστική κάρτα από το MetaMask"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Πάρτε το πορτοφόλι σας παντού μαζί σας"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Κατεβάστε το MetaMask για κινητά"
+  },
   "slideFundWalletDescription": {
     "message": "Προσθέστε ή μεταφέρετε tokens για να ξεκινήσετε"
   },
@@ -5494,6 +5543,9 @@
   },
   "smartAccountSameAccount": {
     "message": "Ίδιος λογαριασμός, πιο έξυπνες λειτουργίες."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Έξυπνοι λογαριασμοί"
   },
   "smartAccountSplashTitle": {
     "message": "Χρήση έξυπνου λογαριασμού;"
@@ -5883,10 +5935,6 @@
   "srpPasteFailedTooManyWords": {
     "message": "Η επικόλληση απέτυχε επειδή περιείχε περισσότερες από 24 λέξεις. Μια μυστική φράση ανάκτησης μπορεί να αποτελείται από το πολύ 24 λέξεις.",
     "description": "Description of SRP paste error when the pasted content has too many words"
-  },
-  "srpPasteTip": {
-    "message": "Μπορείτε να επικολλήσετε ολόκληρη τη μυστική φράση ανάκτησής σας σε οποιοδήποτε πεδίο",
-    "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
     "message": "Ξεκινήστε"
@@ -6917,9 +6965,6 @@
   },
   "unlockPageIncorrectPassword": {
     "message": "Ο κωδικός πρόσβασης είναι λανθασμένος. Προσπαθήστε ξανά."
-  },
-  "unlockPageTooManyFailedAttempts": {
-    "message": "Πάρα πολλές αποτυχημένες προσπάθειες. Προσπαθήστε ξανά σε "
   },
   "unpin": {
     "message": "Ξεκαρφίτσωμα"
