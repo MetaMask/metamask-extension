@@ -3749,6 +3749,7 @@ export function setFeatureFlag(
           }
           notificationType && dispatch(showModal({ name: notificationType }));
           resolve(updatedFeatureFlags as TemporaryFeatureFlagDef);
+          forceUpdateMetamaskState(dispatch);
         },
       );
     });
@@ -3779,6 +3780,7 @@ export function setPreference(
             return;
           }
           resolve(updatedPreferences as TemporaryPreferenceFlagDef);
+          forceUpdateMetamaskState(dispatch);
         },
       );
     });
