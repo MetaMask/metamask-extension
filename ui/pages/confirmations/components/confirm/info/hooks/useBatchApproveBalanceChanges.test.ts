@@ -47,6 +47,7 @@ const BALANCE_CHANGE_MOCK: BalanceChange = {
   amount: new BigNumber('123.56'),
   fiatAmount: 12.34,
   isApproval: false,
+  usdAmount: 12.34,
 };
 
 async function runHook({

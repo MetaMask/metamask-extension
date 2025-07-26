@@ -72,6 +72,7 @@ const MOCK_APPROVAL_BALANCE_CHANGE: ApprovalBalanceChange = {
   isAllApproval: false,
   isUnlimitedApproval: false,
   nestedTransactionIndex: 0,
+  usdAmount: null,
 };
 
 const createMockNestedTransaction = (
