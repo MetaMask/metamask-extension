@@ -19,7 +19,6 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import RemoteSignerInformation from '../../../pages/remote-mode/components/remote-signer-information';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -56,7 +55,6 @@ export default class TransactionListItemDetails extends PureComponent {
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
-    remoteSignerAddress: PropTypes.string,
   };
 
   state = {
@@ -165,7 +163,6 @@ export default class TransactionListItemDetails extends PureComponent {
       showCancel,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
-      remoteSignerAddress,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -285,12 +282,6 @@ export default class TransactionListItemDetails extends PureComponent {
                 }}
               />
             </div>
-            {remoteSignerAddress && (
-              <RemoteSignerInformation
-                signerAddress={remoteSignerAddress}
-                originalSenderAddress={senderAddress}
-              />
-            )}
             <div className="transaction-list-item-details__cards-container">
               <TransactionBreakdown
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
@@ -302,7 +293,6 @@ export default class TransactionListItemDetails extends PureComponent {
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
                 chainId={chainId}
-                gasPaidByAddress={remoteSignerAddress}
               />
               {transactionGroup.initialTransaction.type !==
                 TransactionType.incoming && (
