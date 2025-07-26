@@ -30,8 +30,8 @@ export const useTokenDetails = (transactionMeta: TransactionMeta) => {
       return null;
     }
 
-    // If token has a chainId, ensure it matches the current chain
-    if (token.chainId && hexToDecimal(token.chainId) !== hexToDecimal(chainId)) {
+    // If token has a chainId and we have a valid chainId, ensure they match
+    if (token.chainId && chainId && hexToDecimal(token.chainId) !== hexToDecimal(chainId)) {
       return null;
     }
 
