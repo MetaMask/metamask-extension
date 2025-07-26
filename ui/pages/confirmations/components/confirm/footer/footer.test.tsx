@@ -27,8 +27,14 @@ import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
+import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
+import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import Footer from './footer';
 
+jest.mock('../../../hooks/gas/useIsGaslessLoading');
+jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
+jest.mock('../../../hooks/gas/useIsGaslessSupported');
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => jest.fn(),
@@ -53,12 +59,29 @@ const render = (args?: Record<string, unknown>) => {
   return renderWithConfirmContextProvider(<Footer />, store);
 };
 
+const ALERT_MOCK = [
+  {
+    key: 'insufficientNativeToken',
+    severity: Severity.Danger,
+    message: 'Not enough native token to cover fees',
+  },
+] as Alert[];
+
 describe('ConfirmFooter', () => {
   const mockUseOriginThrottling = useOriginThrottling as jest.Mock;
+  const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
+  const useInsufficientBalanceAlertsMock = jest.mocked(
+    useInsufficientBalanceAlerts,
+  );
+  const useIsGaslessLoadingMock = jest.mocked(useIsGaslessLoading);
 
   beforeEach(() => {
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: false,
+    });
+
+    useIsGaslessLoadingMock.mockReturnValue({
+      isGaslessLoading: false,
     });
   });
 
@@ -111,6 +134,45 @@ describe('ConfirmFooter', () => {
       const confirmButton = getByText('Confirm');
       expect(confirmButton).not.toBeDisabled();
     });
+
+    it('when simulation is enabled and fetched', () => {
+      useIsGaslessSupportedMock.mockReturnValue({
+        isSmartTransaction: true,
+        isSupported: true,
+      });
+      useInsufficientBalanceAlertsMock.mockReturnValue(ALERT_MOCK);
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: {
+          ...genUnapprovedContractInteractionConfirmation(),
+          simulationData: {
+            tokenBalanceChanges: [],
+          },
+        },
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+      });
+
+      const mockState2 = {
+        ...getMockContractInteractionConfirmState(),
+        metamask: {
+          ...getMockContractInteractionConfirmState().metamask,
+          useTransactionSimulations: true,
+        },
+        appState: {
+          ...getMockContractInteractionConfirmState().appState,
+          confirmAlerts: {
+            alerts: {
+              '1': ALERT_MOCK,
+            },
+            confirmed: {},
+          },
+        },
+      };
+
+      const { getByText } = render(mockState2);
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).not.toBeDisabled();
+    });
   });
 
   describe('renders disabled "Confirm" Button', () => {
@@ -123,6 +185,33 @@ describe('ConfirmFooter', () => {
       const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).toBeDisabled();
+    });
+
+    it('disables confirm button when gas fee tokens are still loading', () => {
+      useIsGaslessLoadingMock.mockReturnValue({
+        isGaslessLoading: true,
+      });
+
+      const mockState2 = {
+        ...getMockContractInteractionConfirmState(),
+        metamask: {
+          ...getMockContractInteractionConfirmState().metamask,
+          useTransactionSimulations: true,
+        },
+        appState: {
+          ...getMockContractInteractionConfirmState().appState,
+          confirmAlerts: {
+            alerts: {
+              '1': ALERT_MOCK,
+            },
+            confirmed: {},
+          },
+        },
+      };
+
+      const { getByText } = render(mockState2);
       const confirmButton = getByText('Confirm');
       expect(confirmButton).toBeDisabled();
     });

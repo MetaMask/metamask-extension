@@ -35,6 +35,12 @@ jest.mock('../hooks/useAssetDetails', () => ({
   }),
 }));
 
+jest.mock('../hooks/gas/useIsGaslessLoading', () => ({
+  useIsGaslessLoading: () => {
+    return { isGaslessLoading: false };
+  },
+}));
+
 const middleware = [thunk];
 const mockedAssetDetails = jest.mocked(useAssetDetails);
 
