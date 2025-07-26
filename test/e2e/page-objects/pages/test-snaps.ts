@@ -92,6 +92,7 @@ export const buttonLocator = {
   signEntropyMessageButton: '#signEntropyMessage',
   signTypedDataButton: '#signTypedDataButton',
   submitClientStatusButton: '#sendClientStatusTest',
+  trackErrorButton: '#trackError',
   clearStateButton: '#clearState',
   sendUnencryptedStateButton: '#sendUnencryptedState',
   sendGetUnencryptedStateButton: '#sendGetUnencryptedState',
