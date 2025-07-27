@@ -211,7 +211,7 @@ import {
   CaveatTypes,
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
+import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -2371,29 +2371,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  // Provides a method for getting feature flags for the multichain
-  // initial rollout, such that we can remotely modify polling interval
-  getInfuraFeatureFlags() {
-    fetchWithCache({
-      url: 'https://swap.api.cx.metamask.io/featureFlags',
-      cacheRefreshTime: MINUTE * 20,
-    })
-      .then(this.onFeatureFlagResponseReceived)
-      .catch((e) => {
-        // API unreachable (?)
-        log.warn('Feature flag endpoint is unreachable', e);
-      });
-  }
-
-  onFeatureFlagResponseReceived(response) {
-    const { multiChainAssets = {} } = response;
-    const { pollInterval } = multiChainAssets;
-    // Polling interval is provided in seconds
-    if (pollInterval > 0) {
-      this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
-    }
-  }
-
   postOnboardingInitialization() {
     const { usePhishDetect } = this.preferencesController.state;
 
@@ -2406,7 +2383,6 @@ export default class MetamaskController extends EventEmitter {
 
   triggerNetworkrequests() {
     this.tokenDetectionController.enable();
-    this.getInfuraFeatureFlags();
     if (
       !isEvmAccountType(
         this.accountsController.getSelectedMultichainAccount().type,
