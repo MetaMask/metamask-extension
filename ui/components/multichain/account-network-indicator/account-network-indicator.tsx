@@ -80,7 +80,7 @@ export const AccountNetworkIndicator = ({ scopes }: { scopes: string[] }) => {
                     color={TextColor.textMuted}
                     variant={TextVariant.bodyMdMedium}
                   >
-                    t('moreNetworks', [networks.length - TOOLTIP_LIMIT])
+                    {t('moreNetworks', [networks.length - TOOLTIP_LIMIT])}
                   </Text>
                 </Box>
               ) : null}
