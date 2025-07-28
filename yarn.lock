@@ -7196,6 +7196,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/shield-controller@file:./metamask-shield-controller-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/shield-controller@file:./metamask-shield-controller-0.0.0.tgz#./metamask-shield-controller-0.0.0.tgz::hash=fea7d3&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/utils": "npm:^11.4.2"
+  peerDependencies:
+    "@metamask/transaction-controller": ^58.1.1
+  checksum: 10/d93d1ac2345e3412abfeb4bf3e509115eac8874a727ae3d0a0c524713d96a6b3c3ba8d31b5a51e87515b23c55a16355c359b1c0938981780d11914c78369ba81
+  languageName: node
+  linkType: hard
+
 "@metamask/signature-controller@npm:^30.0.0":
   version: 30.0.0
   resolution: "@metamask/signature-controller@npm:30.0.0"
@@ -32030,6 +32042,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:2.2.0"
     "@metamask/selected-network-controller": "npm:^22.1.0"
+    "@metamask/shield-controller": ./metamask-shield-controller-0.0.0.tgz
     "@metamask/signature-controller": "npm:^30.0.0"
     "@metamask/smart-transactions-controller": "npm:^17.0.0"
     "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A14.1.0#~/.yarn/patches/@metamask-snaps-controllers-npm-14.1.0-889bb9f9d9.patch"

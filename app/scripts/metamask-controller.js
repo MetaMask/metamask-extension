@@ -431,6 +431,7 @@ import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
+import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1964,6 +1965,7 @@ export default class MetamaskController extends EventEmitter {
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
+      ShieldController: ShieldControllerInit,
     };
 
     const {
@@ -2020,6 +2022,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountWalletController = controllersByName.AccountTreeController;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
+    this.shieldController = controllersByName.ShieldController;
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -2288,6 +2291,7 @@ export default class MetamaskController extends EventEmitter {
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
         PhishingController: this.phishingController,
+        ShieldController: this.shieldController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
