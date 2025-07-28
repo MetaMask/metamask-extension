@@ -422,6 +422,31 @@ describe('PPOM Utils', () => {
       });
     });
 
+    it('sanitizes request params if second param is an object', async () => {
+      const params = [
+        SIGN_TYPED_DATA_PARAMS_MOCK_1,
+        { primaryType: 'Permit', domain: {}, types: {} },
+      ];
+
+      const request = {
+        ...REQUEST_MOCK,
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        params,
+      } as unknown as JsonRpcRequest;
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+        request,
+      });
+
+      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+        ...request,
+        params: [SIGN_TYPED_DATA_PARAMS_MOCK_1, SIGN_TYPED_DATA_PARAMS_MOCK_2],
+      });
+    });
+
     it('removes unnecessary properties from request', async () => {
       updateSecurityAlertResponseMock.mockResolvedValue({
         txParams: TRANSACTION_PARAMS_MOCK_1,

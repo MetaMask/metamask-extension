@@ -67,7 +67,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-smart-account-optin"
     >
       <div
@@ -143,7 +143,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-dismiss-smart-account-suggestion-enabled"
     >
       <div
@@ -211,7 +211,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-enable-smart-transactions"
     >
       <div
@@ -291,7 +291,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-hex-data"
     >
       <div
@@ -357,7 +357,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-show-testnet-conversion"
     >
       <div
@@ -423,7 +423,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-show-testnet-conversion"
     >
       <div
@@ -489,7 +489,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-dismiss-reminder"
     >
       <div
@@ -555,7 +555,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-show-extension-in-full-size-view"
     >
       <div
@@ -703,7 +703,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-dismiss-reminder"
     >
       <div
