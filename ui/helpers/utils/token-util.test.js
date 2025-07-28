@@ -122,7 +122,7 @@ describe('getAssetDetails', () => {
       transactionData: '0xTransactionData',
       existingNfts: [
         {
-          address: '0xAddrEss',
+          address: '0xAddrEssToken',
           name: null,
           standard: 'ERC721',
           tokenId: '1',
@@ -139,8 +139,8 @@ describe('getAssetDetails', () => {
       standard: TokenStandard.ERC721,
     });
     const result = await getAssetDetails(
-      erc721Params.currentUserAddress,
       erc721Params.tokenAddress,
+      erc721Params.currentUserAddress,
       erc721Params.transactionData,
       erc721Params.existingNfts,
     );
@@ -159,7 +159,7 @@ describe('getAssetDetails', () => {
       transactionData: '0xTransactionData',
       existingNfts: [
         {
-          address: '0xAddrEss',
+          address: '0xAddrEssToken',
           name: 'myToken',
           symbol: 'MTK',
           standard: 'ERC721',
@@ -177,8 +177,8 @@ describe('getAssetDetails', () => {
       standard: TokenStandard.ERC721,
     });
     const result = await getAssetDetails(
-      erc721ParamsWithName.currentUserAddress,
       erc721ParamsWithName.tokenAddress,
+      erc721ParamsWithName.currentUserAddress,
       erc721ParamsWithName.transactionData,
       erc721ParamsWithName.existingNfts,
     );
