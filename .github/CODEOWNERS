@@ -19,7 +19,7 @@ lavamoat/                            @MetaMask/extension-devs @MetaMask/policy-r
 # file is responsible, at present, for loading the snaps execution environment
 # for MV3. Any changes to this file should require at least one member of the
 # snaps development team to review and approve the changes.
-offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
+offscreen/scripts/offscreen.ts       @MetaMask/core-platform
 
 
 # The privacy-snapshot.json file includes a list of all hosts that the
@@ -91,13 +91,13 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/ramps/**                                           @MetaMask/ramp
 
 # Snaps
-**/snaps/**                          @MetaMask/snaps-devs
-shared/constants/permissions.ts      @MetaMask/snaps-devs
-ui/helpers/utils/permission.js       @MetaMask/snaps-devs
-app/scripts/constants/snaps.ts       @MetaMask/snaps-devs
+**/snaps/**                          @MetaMask/core-platform
+shared/constants/permissions.ts      @MetaMask/core-platform
+ui/helpers/utils/permission.js       @MetaMask/core-platform
+app/scripts/constants/snaps.ts       @MetaMask/core-platform
 
 # Co-owned by Confirmations and Snaps
-ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/snaps-devs
+ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
 # Wallet UX
 ui/components/app/whats-new-popup     @MetaMask/wallet-ux
