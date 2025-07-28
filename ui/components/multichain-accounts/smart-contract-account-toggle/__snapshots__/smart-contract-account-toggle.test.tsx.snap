@@ -55,7 +55,7 @@ exports[`SmartContractAccountToggle Basic Rendering shows toggle as OFF for unsu
 </div>
 `;
 
-exports[`SmartContractAccountToggle Basic Rendering shows toggle as ON for supported networks 1`] = `
+exports[`SmartContractAccountToggle Basic Rendering shows toggle as enabled for supported networks 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
