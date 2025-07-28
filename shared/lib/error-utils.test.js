@@ -62,7 +62,7 @@ describe('Error utils Tests', function () {
 
     const error = new Error('Test error');
     fetchLocale.mockReturnValue(mockStore.localeMessages.current);
-    const localeContext = await maybeGetLocaleContext(mockStore.metamask);
+    const localeContext = await maybeGetLocaleContext(mockStore.metamask.currentLocale);
     const errorHtml = getErrorHtml(
       'troubleStarting',
       error,
