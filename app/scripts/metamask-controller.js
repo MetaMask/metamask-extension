@@ -38,7 +38,6 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import { nanoid } from 'nanoid';
-import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
   ApprovalController,
@@ -183,6 +182,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import { captureException } from '../../shared/lib/sentry';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -8513,7 +8513,7 @@ export default class MetamaskController extends EventEmitter {
     setTimeout(() => {
       const error = new Error(message);
       error.name = 'TestError';
-      global.sentry.captureException(error);
+      captureException(error);
     });
   }
 
