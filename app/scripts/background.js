@@ -502,7 +502,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
       // general errors
       tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
         error: errorLike,
-        currentLocale: controller?.metamaskController?.state?.currentLocale,
+        currentLocale: controller?.preferencesController?.state?.currentLocale,
       });
     }
   }
