@@ -38,7 +38,7 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-export default function setupSentry() {
+export default function setupSentry(skipConsentFilter = false) {
   if (!RELEASE) {
     throw new Error('Missing release');
   }
@@ -63,7 +63,7 @@ export default function setupSentry() {
       log('Error getting extension installType', error);
     });
   integrateLogging();
-  setSentryClient();
+  setSentryClient(skipConsentFilter);
 
   return {
     ...Sentry,
@@ -71,7 +71,7 @@ export default function setupSentry() {
   };
 }
 
-function getClientOptions() {
+function getClientOptions(skipConsentFilter = false) {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
@@ -91,7 +91,11 @@ function getClientOptions() {
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
         },
       }),
-      filterEvents({ getMetaMetricsEnabled, log }),
+      filterEvents({
+        getMetaMetricsEnabled,
+        log,
+        skipConsentFilter,
+      }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -102,7 +106,7 @@ function getClientOptions() {
     // `false`.
     sendClientReports: false,
     tracesSampleRate: getTracesSampleRate(sentryTarget),
-    transport: makeTransport,
+    transport: (option) => makeTransport(option, skipConsentFilter),
   };
 }
 
@@ -256,8 +260,8 @@ async function getMetaMetricsEnabled() {
   }
 }
 
-function setSentryClient() {
-  const clientOptions = getClientOptions();
+function setSentryClient(skipConsentFilter = false) {
+  const clientOptions = getClientOptions(skipConsentFilter);
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**
@@ -544,11 +548,11 @@ function addDebugListeners() {
   log('Added debug listeners');
 }
 
-function makeTransport(options) {
+function makeTransport(options, skipConsentFilter = false) {
   return Sentry.makeFetchTransport(options, async (...args) => {
     const metricsEnabled = await getMetaMetricsEnabled();
 
-    if (!metricsEnabled) {
+    if (!metricsEnabled && !skipConsentFilter) {
       throw new Error('Network request skipped as metrics disabled');
     }
 

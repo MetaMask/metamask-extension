@@ -1,7 +1,4 @@
-import type {
-  AccountGroupId,
-  AccountWalletId,
-} from '@metamask/account-tree-controller';
+import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
