@@ -49,6 +49,8 @@ jest.mock('../../../../shared/constants/network', () => ({
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
@@ -101,7 +103,9 @@ describe('AssetPage', () => {
       },
       useCurrencyRateCheck: true,
       preferences: {},
-      enabledNetworkMap: {},
+      enabledNetworkMap: {
+        eip155: {},
+      },
       internalAccounts: {
         accounts: {
           [selectedAccountAddress]: {
@@ -300,15 +304,6 @@ describe('AssetPage', () => {
     const bridgeButton = queryByTestId('token-overview-bridge');
     expect(bridgeButton).toBeInTheDocument();
     expect(bridgeButton).not.toBeDisabled();
-
-    fireEvent.click(bridgeButton as HTMLElement);
-
-    await waitFor(() => {
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-      expect(openTabSpy).toHaveBeenCalledWith({
-        url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
-      });
-    });
   });
 
   it('should disable Bridge button if chain id is not supported', async () => {

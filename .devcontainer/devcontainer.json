@@ -2,12 +2,13 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "dbaeumer.vscode-eslint",
         "eamodio.gitlens",
+        "esbenp.prettier-vscode",
         "github.codespaces",
         "github.copilot",
         "github.copilot-chat",
         "ms-azuretools.vscode-docker",
-        "rvest.vs-code-prettier-eslint",
         "streetsidesoftware.code-spell-checker",
         "DigitalBrainstem.javascript-ejs-support"
       ],

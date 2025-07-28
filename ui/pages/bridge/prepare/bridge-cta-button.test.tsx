@@ -2,6 +2,7 @@ import React from 'react';
 import {
   RequestStatus,
   formatChainIdToCaip,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
@@ -78,7 +79,10 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: null,
-        fromToken: 'ETH',
+        fromToken: {
+          symbol: 'ETH',
+          assetId: getNativeAssetForChainId(1).assetId,
+        },
         toToken: null,
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
@@ -88,7 +92,40 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select token and amount')).toBeInTheDocument();
+    expect(getByText('Select amount')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render the component when amount, dest chain and dest token are missing (defaults set', () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        extensionConfig: {
+          chains: {
+            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
+            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
+            [CHAIN_IDS.LINEA_MAINNET]: {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+          },
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: null,
+        fromToken: {
+          symbol: 'ETH',
+          assetId: getNativeAssetForChainId(1).assetId,
+        },
+        toToken: null,
+        toChainId: null,
+      },
+    });
+    const { getByText, container } = renderWithProvider(
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      configureStore(mockStore),
+    );
+
+    expect(getByText('Select amount')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 

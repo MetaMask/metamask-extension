@@ -88,6 +88,10 @@ PATH_NAME_MAP.set(
   'Reveal Secret Recovery Phrase List Page',
 );
 
+export const SECURITY_PASSWORD_CHANGE_ROUTE =
+  '/settings/security-and-privacy/password-change';
+PATH_NAME_MAP.set(SECURITY_PASSWORD_CHANGE_ROUTE, 'Change Password');
+
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
 PATH_NAME_MAP.set(BACKUPANDSYNC_ROUTE, 'Backup And Sync Settings Page');
@@ -332,6 +336,7 @@ PATH_NAME_MAP.set(SWAPS_ERROR_ROUTE, 'Swaps Error Page');
 export const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 
 export const ONBOARDING_ROUTE = '/onboarding';
+export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 export const ONBOARDING_CONFIRM_SRP_ROUTE =
   '/onboarding/confirm-recovery-phrase';
@@ -349,6 +354,7 @@ export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
+export const ONBOARDING_ERROR_ROUTE = '/onboarding/error';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
@@ -357,3 +363,6 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 
 export const DEEP_LINK_ROUTE = '/link';
 PATH_NAME_MAP.set(DEEP_LINK_ROUTE, 'Deep link Redirect Page');
+
+export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
+PATH_NAME_MAP.set(WALLET_DETAILS_ROUTE, 'Wallet Details Page');

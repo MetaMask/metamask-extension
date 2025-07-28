@@ -18,6 +18,8 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_REVEAL_SRP_ROUTE,
+  ONBOARDING_ERROR_ROUTE,
 } from '../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
@@ -25,6 +27,7 @@ import {
   unlockAndGetSeedPhrase,
 } from '../../store/actions';
 import { mockNetworkState } from '../../../test/stub/networks';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingFlow from './onboarding-flow';
 
 jest.mock('../../store/actions', () => ({
@@ -69,6 +72,7 @@ describe('Onboarding Flow', () => {
     },
     appState: {
       externalServicesOnboardingToggleState: true,
+      onboardingErrorReport: null,
     },
   };
 
@@ -102,6 +106,9 @@ describe('Onboarding Flow', () => {
       localeMessages: {
         currentLocale: 'en',
       },
+      appState: {
+        onboardingErrorReport: null,
+      },
     };
 
     const completedOnboardingStore = configureMockStore()(
@@ -132,7 +139,13 @@ describe('Onboarding Flow', () => {
     it('should call createNewVaultAndGetSeedPhrase when creating a new wallet password', async () => {
       const { queryByTestId, queryByText } = renderWithProvider(
         <OnboardingFlow />,
-        store,
+        configureMockStore()({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            firstTimeFlowType: FirstTimeFlowType.create,
+          },
+        }),
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
@@ -167,18 +180,19 @@ describe('Onboarding Flow', () => {
     expect(secureYourWallet).toBeInTheDocument();
   });
 
-  it('should render review recovery phrase', () => {
-    const { queryByTestId } = renderWithProvider(
+  it('should redirect to reveal recovery phrase when going to review recovery phrase without srp', () => {
+    const { history } = renderWithProvider(
       <OnboardingFlow />,
       store,
       ONBOARDING_REVIEW_SRP_ROUTE,
     );
 
-    const recoveryPhrase = queryByTestId('recovery-phrase');
-    expect(recoveryPhrase).toBeInTheDocument();
+    expect(history.location.pathname).toStrictEqual(
+      `${ONBOARDING_REVEAL_SRP_ROUTE}/`,
+    );
   });
 
-  it('should render to review recovery phrase from confirm recovery phrase', () => {
+  it('should redirect to reveal recovery phrase when going to confirm recovery phrase without srp', () => {
     const { history } = renderWithProvider(
       <OnboardingFlow />,
       store,
@@ -186,7 +200,7 @@ describe('Onboarding Flow', () => {
     );
 
     expect(history.location.pathname).toStrictEqual(
-      ONBOARDING_REVIEW_SRP_ROUTE,
+      `${ONBOARDING_REVEAL_SRP_ROUTE}/`,
     );
   });
 
@@ -213,10 +227,16 @@ describe('Onboarding Flow', () => {
       expect(unlockPage).toBeInTheDocument();
     });
 
-    it('should', async () => {
+    it('should call unlockAndGetSeedPhrase when unlocking with a password', async () => {
       const { getByLabelText, getByText } = renderWithProvider(
         <OnboardingFlow />,
-        store,
+        configureMockStore()({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            firstTimeFlowType: FirstTimeFlowType.import,
+          },
+        }),
         ONBOARDING_UNLOCK_ROUTE,
       );
 
@@ -264,9 +284,34 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding pin extension screen', () => {
+    const mockStateWithCurrentKeyring = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            accountId: {
+              address: '0x0000000000000000000000000000000000000000',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                  accounts: ['0x0000000000000000000000000000000000000000'],
+                },
+              },
+            },
+          },
+          selectedAccount: 'accountId',
+        },
+      },
+    };
+
+    const mockStoreWithCurrentKeyring = configureMockStore()(
+      mockStateWithCurrentKeyring,
+    );
+
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlow />,
-      store,
+      mockStoreWithCurrentKeyring,
       ONBOARDING_PIN_EXTENSION_ROUTE,
     );
 
@@ -294,5 +339,37 @@ describe('Onboarding Flow', () => {
 
     const onboardingMetametrics = queryByTestId('experimental-area');
     expect(onboardingMetametrics).toBeInTheDocument();
+  });
+
+  it('should redirect to onboarding error page when the error thrown in login', () => {
+    const onboardingErrorState = {
+      metamask: {
+        internalAccounts: {
+          accounts: {},
+          selectedAccount: '',
+        },
+        metaMetricsId: '0x00000000',
+        keyrings: [],
+      },
+      localeMessages: {
+        currentLocale: 'en',
+      },
+      appState: {
+        onboardingErrorReport: {
+          error: new Error('login error'),
+          view: 'welcome',
+        },
+      },
+    };
+
+    const onboardingErrorStore = configureMockStore()(onboardingErrorState);
+
+    const { history } = renderWithProvider(
+      <OnboardingFlow />,
+      onboardingErrorStore,
+      ONBOARDING_WELCOME_ROUTE,
+    );
+
+    expect(history.location.pathname).toStrictEqual(ONBOARDING_ERROR_ROUTE);
   });
 });

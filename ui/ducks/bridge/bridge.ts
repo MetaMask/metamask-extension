@@ -4,15 +4,9 @@ import {
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
-  isSolanaChainId,
-  formatChainIdToHex,
-  isNativeAddress,
 } from '@metamask/bridge-controller';
-import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
-import { getTokenExchangeRate } from './utils';
+import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
 
 const initialState: BridgeState = {
@@ -50,69 +44,52 @@ export const setTxAlerts = createAsyncThunk(
   fetchTxAlerts,
 );
 
-const getTokenImage = (payload: TokenPayload['payload']) => {
-  if (!payload) {
-    return '';
-  }
-  const { image, iconUrl, icon, chainId, address, assetId } = payload;
-  const caipChainId = formatChainIdToCaip(chainId);
-  // If the token is native, return the SVG image asset
-  if (isNativeAddress(address)) {
-    if (isSolanaChainId(chainId)) {
-      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
-    }
-    return CHAIN_ID_TOKEN_IMAGE_MAP[
-      formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-    ];
-  }
-  // If the token is not native, return the image from the payload
-  const imageFromPayload = image ?? iconUrl ?? icon;
-  if (imageFromPayload) {
-    return imageFromPayload;
-  }
-  // If there's no image from the payload, build the asset image URL and return it
-  const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
-  return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
-};
-
 const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
   reducers: {
     setToChainId: (state, { payload }: ChainIdPayload) => {
       state.toChainId = payload ? formatChainIdToCaip(payload) : null;
+      state.toToken = null;
     },
     setFromToken: (state, { payload }: TokenPayload) => {
-      if (payload) {
-        state.fromToken = {
-          ...payload,
-          balance: payload.balance ?? '0',
-          string: payload.string ?? '0',
-          chainId: payload.chainId,
-          image: getTokenImage(payload),
-        };
-      } else {
-        state.fromToken = payload;
+      state.fromToken = toBridgeToken(payload);
+      // Unset toToken if it's the same as the fromToken
+      if (
+        state.fromToken?.assetId &&
+        state.toToken?.assetId &&
+        state.fromToken.assetId.toLowerCase() ===
+          state.toToken.assetId.toLowerCase()
+      ) {
+        state.toToken = null;
       }
     },
     setToToken: (state, { payload }: TokenPayload) => {
-      if (payload) {
-        state.toToken = {
-          ...payload,
-          balance: payload.balance ?? '0',
-          string: payload.string ?? '0',
-          chainId: payload.chainId,
-          image: getTokenImage(payload),
-          address:
-            payload.address ||
-            getNativeAssetForChainId(payload.chainId).address,
-        };
-      } else {
-        state.toToken = payload;
+      const toToken = toBridgeToken(payload);
+      state.toToken = toToken
+        ? {
+            ...toToken,
+            address:
+              toToken.address ||
+              getNativeAssetForChainId(toToken.chainId)?.address,
+          }
+        : toToken;
+      // Update toChainId if it's different from the toToken chainId
+      if (
+        toToken?.chainId &&
+        (state.toChainId
+          ? formatChainIdToCaip(toToken.chainId) !==
+            formatChainIdToCaip(state.toChainId)
+          : true)
+      ) {
+        state.toChainId = formatChainIdToCaip(toToken.chainId);
       }
     },
-    setFromTokenInputValue: (state, action) => {
-      state.fromTokenInputValue = action.payload;
+    setFromTokenInputValue: (
+      state,
+      { payload }: { payload: string | null },
+    ) => {
+      state.fromTokenInputValue = payload;
     },
     resetInputFields: () => ({
       ...initialState,

@@ -10,6 +10,8 @@ export default class PersonalSignConfirmation extends Confirmation {
     this.driver = driver;
   }
 
+  private signatureHeadingTitle = { text: 'Signature request' };
+
   private originSelector = { text: DAPP_HOST_ADDRESS };
 
   private messageSelector = { text: 'Example `personal_sign` message' };
@@ -43,6 +45,8 @@ export default class PersonalSignConfirmation extends Confirmation {
     assert.ok(await message);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_siweMessage() {
     console.log('Verify sign in with ethereum message on confirmation screen');
     await this.driver.waitForMultipleSelectors([
@@ -51,5 +55,10 @@ export default class PersonalSignConfirmation extends Confirmation {
       this.siweMessage,
       this.signinMessageUrl,
     ]);
+  }
+
+  async verifyConfirmationHeadingTitle() {
+    console.log('Verify confirmation heading title is Signature request');
+    await this.driver.waitForSelector(this.signatureHeadingTitle);
   }
 }

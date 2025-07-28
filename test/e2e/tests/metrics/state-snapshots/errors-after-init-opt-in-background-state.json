@@ -34,6 +34,7 @@
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
+    "showDownloadMobileAppSlide": "boolean",
     "showPermissionsTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
@@ -45,7 +46,6 @@
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "surveyLinkLastClickedOrClosed": "object",
-    "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
     "throttledOrigins": "object",
     "isUpdateAvailable": false,
@@ -55,10 +55,13 @@
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "addressSecurityAlertResponses": "object",
-    "switchedNetworkDetails": null,
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
-    "snapsInstallPrivacyWarningShown": true
+    "snapsInstallPrivacyWarningShown": true,
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": "object",
+    "enforcedSimulationsSlippage": "number",
+    "enforcedSimulationsSlippageForTransactions": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -135,6 +138,7 @@
     "dataCollectionForMarketing": "boolean",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
+    "tracesBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
@@ -175,7 +179,10 @@
   },
   "NetworkOrderController": {
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": { "0x539": "boolean" }
+    "enabledNetworkMap": {
+      "eip155": "object",
+      "solana": "object"
+    }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -212,6 +219,7 @@
     "permissionHistory": "object",
     "permissionActivityLog": "object"
   },
+  "PhishingController": { "urlScanCache": "object" },
   "PreferencesController": {
     "selectedAddress": "string",
     "useBlockie": false,
@@ -272,6 +280,7 @@
     },
     "cacheTimestamp": "number"
   },
+  "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "signatureRequests": "object",

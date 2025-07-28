@@ -5,11 +5,13 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 import { getValidUrl } from '../../util';
 
 export function validateChainId(chainId) {
@@ -175,6 +177,7 @@ export function validateAddEthereumChainParams(params) {
  * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.setTokenNetworkFilter - The callback to set the token network filter.
  * @param {Function} hooks.setEnabledNetworks - The callback to set the enabled networks.
+ * @param {Function} hooks.getEnabledNetworks - The callback to get the current enabled networks for a namespace.
  * @param {Function} hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
  * @param {Function} hooks.requestUserApproval - The callback to trigger user approval flow.
  * @param {Function} hooks.hasApprovalRequestsForOrigin - Function to check if there are pending approval requests from the origin.
@@ -197,6 +200,7 @@ export async function switchChain(
     requestPermittedChainsPermissionIncrementalForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
+    getEnabledNetworks,
     rejectApprovalRequestsForOrigin,
     requestUserApproval,
     hasApprovalRequestsForOrigin,
@@ -245,8 +249,41 @@ export async function switchChain(
     rejectApprovalRequestsForOrigin?.();
 
     await setActiveNetwork(networkClientId);
+
+    // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
+    // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
     setTokenNetworkFilter(chainId);
-    setEnabledNetworks(chainId);
+
+    if (isPrefixedFormattedHexString(chainId)) {
+      const existingEnabledNetworks = getEnabledNetworks(
+        KnownCaipNamespace.Eip155,
+      );
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+
+      if (!existingChainIds.includes(chainId)) {
+        const isFeaturedNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
+
+        if (isFeaturedNetwork) {
+          const featuredExistingChainIds = existingChainIds.filter((id) =>
+            FEATURED_NETWORK_CHAIN_IDS.includes(id),
+          );
+          setEnabledNetworks(
+            [...featuredExistingChainIds, chainId],
+            KnownCaipNamespace.Eip155,
+          );
+        } else {
+          setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
+        }
+      }
+    } else {
+      const { namespace } = parseCaipChainId(chainId);
+      const existingEnabledNetworks = getEnabledNetworks(namespace);
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+      if (!existingChainIds.includes(chainId)) {
+        setEnabledNetworks([...existingChainIds, chainId], namespace);
+      }
+    }
+
     response.result = null;
     return end();
   } catch (error) {

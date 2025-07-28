@@ -52,6 +52,8 @@ const REQUEST_MOCK = {
 };
 
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: 'success',
   reason: 'success',
   source: SecurityAlertSource.Local,
@@ -210,6 +212,8 @@ describe('PPOM Utils', () => {
         validateRequestWithPPOMOptionsBase.request.method,
         SECURITY_ALERT_ID_MOCK,
         {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',
@@ -230,6 +234,8 @@ describe('PPOM Utils', () => {
         validateRequestWithPPOMOptionsBase.request.method,
         SECURITY_ALERT_ID_MOCK,
         {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',
@@ -413,6 +419,31 @@ describe('PPOM Utils', () => {
       expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
         ...request,
         params: firstTwoParams,
+      });
+    });
+
+    it('sanitizes request params if second param is an object', async () => {
+      const params = [
+        SIGN_TYPED_DATA_PARAMS_MOCK_1,
+        { primaryType: 'Permit', domain: {}, types: {} },
+      ];
+
+      const request = {
+        ...REQUEST_MOCK,
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        params,
+      } as unknown as JsonRpcRequest;
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+        request,
+      });
+
+      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+        ...request,
+        params: [SIGN_TYPED_DATA_PARAMS_MOCK_1, SIGN_TYPED_DATA_PARAMS_MOCK_2],
       });
     });
 

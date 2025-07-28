@@ -236,6 +236,12 @@ export const getTokens = (state) => {
   return allTokens?.[chainId]?.[selectedAddress] || [];
 };
 
+export const getTokensByChainId = (state, chainId) => {
+  const { allTokens } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  return allTokens?.[chainId]?.[selectedAddress] || [];
+};
+
 export function getNftsDropdownState(state) {
   return state.metamask.nftsDropdownState;
 }
@@ -289,6 +295,10 @@ export function getNativeCurrency(state) {
 export function getConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.conversionRate;
+}
+
+export function getConversionRateByTicker(state, ticker) {
+  return state.metamask.currencyRates[ticker]?.conversionRate;
 }
 
 export function getCurrencyRates(state) {
@@ -521,6 +531,16 @@ export function getIsPrimarySeedPhraseBackedUp(state) {
   }
 
   return state.metamask.seedPhraseBackedUp;
+}
+
+/**
+ * Retrieves the outdated status of the seedless password.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {boolean} True if the seedless password is considered outdated, false otherwise.
+ */
+export function getIsSeedlessPasswordOutdated(state) {
+  return Boolean(state.metamask.passwordOutdatedCache?.isExpiredPwd);
 }
 
 /**

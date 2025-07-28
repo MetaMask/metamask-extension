@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
-import { withFixtures, getCleanAppState } from '../../../helpers';
+import { withFixtures, getCleanAppState, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
@@ -11,7 +11,6 @@ import {
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
-import { completeNewWalletFlowIdentity } from '../flows';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import { arrangeContactSyncingTestUtils } from './helpers';
 
@@ -24,7 +23,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -36,7 +35,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await completeNewWalletFlowIdentity(driver);
+          await unlockWallet(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -120,13 +119,12 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI (like the account syncing test does)
-          await header.openSettingsPage();
           const settingsPage2 = new SettingsPage(driver);
-          await settingsPage2.check_pageIsLoaded();
           await settingsPage2.goToContactsSettings();
 
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.check_pageIsLoaded();
+
           await contactsSettings.addContact(
             'New Contact Not Synced',
             '0x9999999999999999999999999999999999999999',
@@ -147,7 +145,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
       // Launch a new instance to verify the change wasn't synced
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -158,7 +156,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await completeNewWalletFlowIdentity(driver);
+          await unlockWallet(driver);
 
           const { getCurrentContacts } = arrangeContactSyncingTestUtils(
             driver,
@@ -194,7 +192,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(
@@ -205,7 +203,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await completeNewWalletFlowIdentity(driver);
+          await unlockWallet(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -263,9 +261,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
             );
 
           // Add a new contact via UI to test that syncing works when enabled
-          await header.openSettingsPage();
           const settingsPage2 = new SettingsPage(driver);
-          await settingsPage2.check_pageIsLoaded();
           await settingsPage2.goToContactsSettings();
 
           const contactsSettings = new ContactsSettings(driver);

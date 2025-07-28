@@ -3,12 +3,8 @@ import { Box, Text } from '../../../components/component-library';
 import {
   JustifyContent,
   Display,
-  FlexDirection,
-  AlignItems,
-  TextAlign,
   TextVariant,
   BlockSize,
-  OverflowWrap,
 } from '../../../helpers/constants/design-system';
 
 type TransactionDetailRowProps = {
@@ -16,6 +12,8 @@ type TransactionDetailRowProps = {
   value: React.ReactNode;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function TransactionDetailRow({
   title,
   value,
@@ -34,17 +32,7 @@ export default function TransactionDetailRow({
       >
         {title}
       </Text>
-      <Text
-        display={Display.Flex}
-        overflowWrap={OverflowWrap.Anywhere}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexEnd}
-        textAlign={TextAlign.Right}
-        paddingLeft={1}
-        variant={TextVariant.bodyMd}
-      >
-        {value}
-      </Text>
+      {value}
     </Box>
   );
 }
