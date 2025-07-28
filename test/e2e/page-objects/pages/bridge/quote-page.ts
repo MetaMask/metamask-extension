@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 export type BridgeQuote = {
@@ -58,6 +59,8 @@ class BridgeQuotePage {
     css: '.mm-text--body-md',
   };
 
+  private switchTokensButton = '[data-testid="switch-tokens"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -116,6 +119,27 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.backButton);
   };
 
+  async searchAssetAndVerifyCount(
+    searchInput: string,
+    count: number,
+  ): Promise<void> {
+    console.log(`Fill search input with ${searchInput}`);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, searchInput);
+    await this.driver.elementCountBecomesN(this.tokenButton, count);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_tokenIsDisabled() {
+    const [tkn] = await this.driver.findElements(this.tokenButton);
+
+    await tkn.click();
+    const isSelected = await tkn.isSelected();
+    assert.equal(isSelected, false);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_noTradeRouteMessageIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.noOptionAvailable);
@@ -128,6 +152,8 @@ class BridgeQuotePage {
     console.log('The message "no trade route is available" is displayed');
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_insufficientFundsButtonIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.insufficientFundsButton);
@@ -138,6 +164,8 @@ class BridgeQuotePage {
     console.log('The button "Insufficient funds" is displayed');
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_moreETHneededIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.moreETHneededForGas);
@@ -150,6 +178,8 @@ class BridgeQuotePage {
     console.log('The message "More ETH needed for gas" is displayed');
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_expectedNetworkFeeIsDisplayed(): Promise<void> {
     try {
       const balance = await this.driver.waitForSelector(this.networkFees);
@@ -168,6 +198,10 @@ class BridgeQuotePage {
       throw e;
     }
     console.log('Price matches expected format');
+  }
+
+  async switchTokens(): Promise<void> {
+    await this.driver.clickElement(this.switchTokensButton);
   }
 }
 

@@ -8,6 +8,8 @@ export type SecurityAlertResponse = {
   features?: string[];
   providerRequestsCount?: Record<string, number>;
   reason: string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: string;
   securityAlertId?: string;
   source?: SecurityAlertSource;
