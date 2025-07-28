@@ -177,7 +177,7 @@ describe('Preinstalled example Snap', function () {
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
           return isPending === false;
-        });
+        }, largeDelayMs);
 
         const requests = await mockedEndpoint.getSeenRequests();
         assert.equal(requests.length, 1, 'Expected one request to Sentry.');
