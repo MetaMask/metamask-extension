@@ -43,7 +43,7 @@ import type {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
 } from './onboarding';
-import { PreferencesControllerGetStateAction } from './preferences-controller';
+import { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
 
 // Unique name for the controller
 const controllerName = 'AccountTrackerController';

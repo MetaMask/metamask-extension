@@ -1,6 +1,10 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import { FALLBACK_VARIATION, NameOrigin } from '@metamask/name-controller';
-import { PreferencesControllerState } from '../controllers/preferences-controller';
+
+// Local type definition for the state structure as it existed at migration 109
+type PreferencesControllerState = {
+  identities: Record<string, { name?: string; address?: string }>;
+};
 
 type VersionedData = {
   meta: { version: number };

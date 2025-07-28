@@ -15,7 +15,7 @@ import { detectSIWE } from '@metamask/controller-utils';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import { PreferencesController } from '../../controllers/preferences-controller';
+import { PreferencesController } from '@metamask/preferences-controller';
 import { AppStateController } from '../../controllers/app-state-controller';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';

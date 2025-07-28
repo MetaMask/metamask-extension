@@ -26,8 +26,8 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 
 import {
   PreferencesControllerGetStateAction,
-  PreferencesControllerState,
-} from '../../controllers/preferences-controller';
+  PreferencesState as PreferencesControllerState,
+} from '@metamask/preferences-controller';
 import { isRelaySupported as isRelaySupportedOriginal } from './transaction-relay';
 import {
   AtomicCapabilityStatus,
