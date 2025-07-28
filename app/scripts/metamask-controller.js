@@ -988,6 +988,8 @@ export default class MetamaskController extends EventEmitter {
       includeUsdRate: true,
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
+      useExternalServices: () =>
+        this.preferencesController.state.useExternalServices,
     });
     const initialFetchMultiExchangeRate =
       this.currencyRateController.fetchMultiExchangeRate.bind(
@@ -1471,6 +1473,8 @@ export default class MetamaskController extends EventEmitter {
           'TokenListController:getState',
           'TokensController:getState',
           'TokensController:addDetectedTokens',
+          'TokensController:addTokens',
+          'NetworkController:findNetworkClientIdByChainId',
         ],
         allowedEvents: [
           'AccountsController:selectedEvmAccountChange',
@@ -1492,6 +1496,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       useAccountsAPI: true,
       platform: 'extension',
+      useTokenDetection: () =>
+        this.preferencesController.state.useTokenDetection,
+      useExternalServices: () =>
+        this.preferencesController.state.useExternalServices,
     });
 
     const addressBookControllerMessenger =
@@ -7830,7 +7838,10 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:get',
         ),
         trackError: (error) => {
-          return captureException(error);
+          // `captureException` imported from `@sentry/browser` does not seem to
+          // work in E2E tests. This is a workaround which works in both E2E
+          // tests and production.
+          return global.sentry?.captureException?.(error);
         },
         trackEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
