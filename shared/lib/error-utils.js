@@ -71,8 +71,9 @@ export function getErrorHtmlBase(errorBody) {
  * @returns {Promise<{preferredLocale: string, t: (any) => any}>} A promise that resolves to an object containing the preferred locale and a translation function.
  */
 export async function maybeGetLocaleContext(currentLocale) {
+  let preferredLocale;
   try {
-    const preferredLocale = currentLocale ?? (await getFirstPreferredLangCode());
+    preferredLocale = currentLocale ?? (await getFirstPreferredLangCode());
     const response = await setupLocale(preferredLocale);
     const { currentLocaleMessages, enLocaleMessages } = response;
     const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
