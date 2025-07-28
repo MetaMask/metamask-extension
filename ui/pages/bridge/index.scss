@@ -13,19 +13,22 @@
   --size: 12px;
 }
 
+// TODO: Replace with design tokens @MetaMask/swaps-engineer - temporary theme-specific colors
+/* stylelint-disable color-no-hex */
 [data-theme='light'],
 .light {
-  --color-background-alternative-soft: #f9fafb;
-  --color-text-alternative-soft: #6a737d;
-  --color-icon-alternative-soft: #6a737d;
+  --color-background-alternative-soft: #f9fafb; // TODO: Needs design token replacement
+  --color-text-alternative-soft: #6a737d; // TODO: Needs design token replacement
+  --color-icon-alternative-soft: #6a737d; // TODO: Needs design token replacement
 }
 
 [data-theme='dark'],
 .dark {
-  --color-background-alternative-soft: #1f2124;
-  --color-text-alternative-soft: #848c96;
-  --color-icon-alternative-soft: #848c96;
+  --color-background-alternative-soft: #1f2124; // TODO: Needs design token replacement
+  --color-text-alternative-soft: #848c96; // TODO: Needs design token replacement
+  --color-icon-alternative-soft: #848c96; // TODO: Needs design token replacement
 }
+/* stylelint-enable color-no-hex */
 
 .mm-box--color-text-alternative-soft {
   color: var(--color-text-alternative-soft);
