@@ -48,4 +48,53 @@ describe('Switch ethereum chain', function (this: Suite) {
       },
     );
   });
+
+  it('should only show additional network requested when multiple network permissions already exist', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPopularNetworks()
+          .withPermissionControllerConnectedToTestDappWithChains([
+            '0x1', // Hex Chain ID for Ethereum Mainnet
+            '0x89', // Hex Chain ID for Polygon
+          ])
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+
+        const switchEthereumChainRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x2105' }], // Hex Chain ID for Base Mainnet
+        });
+
+        await driver.executeScript(
+          `window.ethereum.request(${switchEthereumChainRequest})`,
+        );
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.findVisibleElement({
+          text: 'Base Mainnet',
+          tag: 'p',
+        });
+
+        await driver.assertElementNotPresent({
+          text: 'Ethereum Mainnet',
+          tag: 'p',
+        });
+
+        await driver.assertElementNotPresent({
+          text: 'Polygon',
+          tag: 'p',
+        });
+      },
+    );
+  });
 });
