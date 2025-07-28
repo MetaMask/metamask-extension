@@ -7474,6 +7474,11 @@ export default class MetamaskController extends EventEmitter {
       setEnabledNetworks: (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworks(chainIds, namespace);
       },
+      getEnabledNetworks: (namespace) => {
+        return (
+          this.networkOrderController.state.enabledNetworkMap[namespace] || {}
+        );
+      },
       getCurrentChainIdForDomain: (domain) => {
         const networkClientId =
           this.selectedNetworkController.getNetworkClientIdForDomain(domain);
@@ -7814,7 +7819,10 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:get',
         ),
         trackError: (error) => {
-          return captureException(error);
+          // `captureException` imported from `@sentry/browser` does not seem to
+          // work in E2E tests. This is a workaround which works in both E2E
+          // tests and production.
+          return global.sentry?.captureException?.(error);
         },
         trackEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,

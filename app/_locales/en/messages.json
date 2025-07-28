@@ -5790,6 +5790,9 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
+  "snapUIAccountSelectorTitle": {
+    "message": "Select account"
+  },
   "snapUIAssetSelectorTitle": {
     "message": "Select an asset"
   },
