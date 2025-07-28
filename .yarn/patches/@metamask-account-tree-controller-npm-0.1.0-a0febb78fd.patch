@@ -1,0 +1,16 @@
+diff --git a/dist/AccountTreeController.cjs b/dist/AccountTreeController.cjs
+index d70e8360f903a99394416604501cfb2bf0909032..8cb12157170c614cc641f19998c82dc9da56b265 100644
+--- a/dist/AccountTreeController.cjs
++++ b/dist/AccountTreeController.cjs
+@@ -127,6 +127,11 @@ class AccountTreeController extends base_controller_1.BaseController {
+             state.accountTree.wallets = wallets;
+         });
+     }
++    clearState() {
++        this.update((state) => {
++            state.accountTree.wallets = {};
++        });
++    }
+ }
+ exports.AccountTreeController = AccountTreeController;
+ _AccountTreeController_reverse = new WeakMap(), _AccountTreeController_rules = new WeakMap(), _AccountTreeController_instances = new WeakSet(), _AccountTreeController_handleAccountAdded = function _AccountTreeController_handleAccountAdded(account) {
