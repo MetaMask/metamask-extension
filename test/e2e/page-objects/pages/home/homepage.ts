@@ -72,11 +72,19 @@ class HomePage {
     testId: 'refreshList',
   };
 
+  private readonly surveyToast = '[data-testid="survey-toast"]';
+
   private readonly tokensTab = {
     testId: 'account-overview__asset-tab',
   };
 
+  private readonly closeSurveyToastBannerButton =
+    '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
+
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
+  private readonly connectionsRemovedModal =
+    '[data-testid="connections-removed-modal"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -97,6 +105,15 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  async closeSurveyToast(surveyName: string): Promise<void> {
+    console.log(`Close survey toast for ${surveyName}`);
+    await this.driver.waitForSelector({
+      css: this.surveyToast,
+      text: surveyName,
+    });
+    await this.driver.clickElement(this.closeSurveyToastBannerButton);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {
@@ -214,7 +231,7 @@ class HomePage {
   async check_disabledButtonTooltip(tooltipText: string): Promise<void> {
     console.log(`Check if disabled button tooltip is displayed on homepage`);
     await this.driver.waitForSelector(
-      `.icon-button-round--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
+      `.icon-button--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
     );
   }
 
@@ -367,6 +384,13 @@ class HomePage {
     });
   }
 
+  async checkNoSurveyToastIsDisplayed(): Promise<void> {
+    console.log('Check no survey toast is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.surveyToast, {
+      timeout: 5000,
+    });
+  }
+
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_portfolioLinkIsDisplayed(): Promise<void> {
@@ -397,6 +421,12 @@ class HomePage {
       this.copyAddressButton,
     );
     return accountAddress.getText();
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_connectionsRemovedModalIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.connectionsRemovedModal);
   }
 }
 

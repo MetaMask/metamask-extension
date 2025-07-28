@@ -1,15 +1,20 @@
 import React from 'react';
 import { act } from '@testing-library/react';
 import * as reactRouterUtils from 'react-router-dom-v5-compat';
-import { zeroAddress } from 'ethereumjs-util';
+import * as ReactReduxModule from 'react-redux';
 import { userEvent } from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { renderHook } from '@testing-library/react-hooks';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
-import PrepareBridgePage from './prepare-bridge-page';
+import * as SelectorsModule from '../../../selectors/multichain/networks';
+import * as ActionsModule from '../../../store/actions';
+import PrepareBridgePage, {
+  useEnableMissingNetwork,
+} from './prepare-bridge-page';
 
 describe('PrepareBridgePage', () => {
   beforeAll(() => {
@@ -56,21 +61,6 @@ describe('PrepareBridgePage', () => {
             ],
           },
         },
-      },
-      bridgeStateOverrides: {
-        srcTokens: {
-          '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2': {
-            address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
-          }, // UNI,
-          [zeroAddress()]: { address: zeroAddress() },
-          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-            address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-            decimals: 6,
-          }, // USDC
-        },
-        srcTopAssets: [
-          { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984' },
-        ],
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
@@ -156,7 +146,7 @@ describe('PrepareBridgePage', () => {
     expect(container).toMatchSnapshot();
 
     expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
-    expect(getByRole('button', { name: /Bridge to/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /USDC/u })).toBeInTheDocument();
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
@@ -270,5 +260,70 @@ describe('PrepareBridgePage', () => {
 
     userEvent.paste('2abc.131.123456123456123456123456');
     expect(getByTestId('from-amount').closest('input')).toHaveValue('2.131');
+  });
+});
+
+describe('useEnableMissingNetwork', () => {
+  const arrangeReactReduxMocks = () => {
+    jest
+      .spyOn(ReactReduxModule, 'useSelector')
+      .mockImplementation((selector) => selector({}));
+    jest.spyOn(ReactReduxModule, 'useDispatch').mockReturnValue(jest.fn());
+  };
+
+  const arrange = () => {
+    arrangeReactReduxMocks();
+
+    const mockGetEnabledNetworksByNamespace = jest
+      .spyOn(SelectorsModule, 'getEnabledNetworksByNamespace')
+      .mockReturnValue({
+        '0x1': true,
+        '0xe708': true,
+      });
+    const mockSetEnabledNetworks = jest.spyOn(
+      ActionsModule,
+      'setEnabledNetworks',
+    );
+
+    return {
+      mockGetEnabledNetworksByNamespace,
+      mockSetEnabledNetworks,
+    };
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('enables popular network when not already enabled', () => {
+    const mocks = arrange();
+    mocks.mockGetEnabledNetworksByNamespace.mockReturnValue({ '0xe708': true }); // Missing 0x1.
+    const hook = renderHook(() => useEnableMissingNetwork());
+
+    // Act - enable 0x1
+    hook.result.current('0x1');
+
+    // Assert - Adds 0x1 to enabled networks
+    expect(mocks.mockSetEnabledNetworks).toHaveBeenCalledWith(
+      ['0x1', '0xe708'],
+      'eip155',
+    );
+  });
+
+  it('does not enable popular network if already enabled', () => {
+    const mocks = arrange();
+    const hook = renderHook(() => useEnableMissingNetwork());
+
+    // Act - enable 0x1 (already enabled)
+    hook.result.current('0x1');
+    expect(mocks.mockSetEnabledNetworks).not.toHaveBeenCalled();
+  });
+
+  it('does not enable non-popular network', () => {
+    const mocks = arrange();
+    const hook = renderHook(() => useEnableMissingNetwork());
+
+    hook.result.current('0x1111'); // not popular network
+    expect(mocks.mockSetEnabledNetworks).not.toHaveBeenCalled();
   });
 });

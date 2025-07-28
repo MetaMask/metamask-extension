@@ -38,7 +38,7 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-export default function setupSentry() {
+export default function setupSentry(skipConsentFilter = false) {
   if (!RELEASE) {
     throw new Error('Missing release');
   }
@@ -63,7 +63,7 @@ export default function setupSentry() {
       log('Error getting extension installType', error);
     });
   integrateLogging();
-  setSentryClient();
+  setSentryClient(skipConsentFilter);
 
   return {
     ...Sentry,
@@ -71,7 +71,7 @@ export default function setupSentry() {
   };
 }
 
-function getClientOptions() {
+function getClientOptions(skipConsentFilter = false) {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
@@ -91,7 +91,11 @@ function getClientOptions() {
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
         },
       }),
-      filterEvents({ getMetaMetricsEnabled, log }),
+      filterEvents({
+        getMetaMetricsEnabled,
+        log,
+        skipConsentFilter,
+      }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -102,7 +106,7 @@ function getClientOptions() {
     // `false`.
     sendClientReports: false,
     tracesSampleRate: getTracesSampleRate(sentryTarget),
-    transport: makeTransport,
+    transport: (option) => makeTransport(option, skipConsentFilter),
   };
 }
 
@@ -197,41 +201,6 @@ function getMetaMetricsEnabledFromPersistedState(persistedState) {
   );
 }
 
-/**
- * Returns whether onboarding has completed, given the application state.
- *
- * @param {Record<string, unknown>} appState - Application state
- * @returns `true` if onboarding has completed, `false` otherwise.
- */
-function getOnboardingCompleteFromAppState(appState) {
-  // during initialization after loading persisted state
-  if (appState.persistedState) {
-    return getOnboardingCompleteFromPersistedState(appState.persistedState);
-    // After initialization
-  } else if (appState.state) {
-    // UI
-    if (appState.state.metamask) {
-      return Boolean(appState.state.metamask.completedOnboarding);
-    }
-    // background
-    return Boolean(appState.state.OnboardingController?.completedOnboarding);
-  }
-  // during initialization, before first persisted state is read
-  return false;
-}
-
-/**
- * Returns whether onboarding has completed, given the persisted state.
- *
- * @param {Record<string, unknown>} persistedState - Persisted state
- * @returns `true` if onboarding has completed, `false` otherwise.
- */
-function getOnboardingCompleteFromPersistedState(persistedState) {
-  return Boolean(
-    persistedState.data?.OnboardingController?.completedOnboarding,
-  );
-}
-
 function getSentryEnvironment() {
   if (METAMASK_BUILD_TYPE === 'main') {
     return METAMASK_ENVIRONMENT;
@@ -277,28 +246,22 @@ async function getMetaMetricsEnabled() {
   const appState = getState();
 
   if (appState.state || appState.persistedState) {
-    return (
-      getMetaMetricsEnabledFromAppState(appState) &&
-      getOnboardingCompleteFromAppState(appState)
-    );
+    return getMetaMetricsEnabledFromAppState(appState);
   }
 
   // If we reach here, it means the error was thrown before initialization
   // completed, and before we loaded the persisted state for the first time.
   try {
     const persistedState = await globalThis.stateHooks.getPersistedState();
-    return (
-      getMetaMetricsEnabledFromPersistedState(persistedState) &&
-      getOnboardingCompleteFromPersistedState(persistedState)
-    );
+    return getMetaMetricsEnabledFromPersistedState(persistedState);
   } catch (error) {
     log('Error retrieving persisted state', error);
     return false;
   }
 }
 
-function setSentryClient() {
-  const clientOptions = getClientOptions();
+function setSentryClient(skipConsentFilter = false) {
+  const clientOptions = getClientOptions(skipConsentFilter);
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**
@@ -361,7 +324,6 @@ export function beforeBreadcrumb() {
     const appState = getState();
     if (
       !getMetaMetricsEnabledFromAppState(appState) ||
-      !getOnboardingCompleteFromAppState(appState) ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;
@@ -586,11 +548,11 @@ function addDebugListeners() {
   log('Added debug listeners');
 }
 
-function makeTransport(options) {
+function makeTransport(options, skipConsentFilter = false) {
   return Sentry.makeFetchTransport(options, async (...args) => {
     const metricsEnabled = await getMetaMetricsEnabled();
 
-    if (!metricsEnabled) {
+    if (!metricsEnabled && !skipConsentFilter) {
       throw new Error('Network request skipped as metrics disabled');
     }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { capitalize } from 'lodash';
 import {
   Box,
   Icon,
@@ -32,7 +33,6 @@ import {
 } from '../../../../selectors';
 import Card from '../../../../components/ui/card';
 import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
-import Spinner from '../../../../components/ui/spinner';
 
 export const RevealSrpList = () => {
   const t = useI18nContext();
@@ -42,7 +42,9 @@ export const RevealSrpList = () => {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
   const socialLoginEmail = useSelector(getSocialLoginEmail);
-  const { loading: syncSRPsLoading } = useSyncSRPs();
+
+  // sync SRPs list when page loads
+  useSyncSRPs();
 
   const onSrpActionComplete = (keyringId: string, triggerBackup?: boolean) => {
     if (triggerBackup) {
@@ -125,7 +127,9 @@ export const RevealSrpList = () => {
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
           >
-            {t('securitySocialLoginEnabledDescription')}
+            {t('securitySocialLoginEnabledDescription', [
+              capitalize(socialLoginType),
+            ])}
           </Text>
           <Box
             width={BlockSize.Full}
@@ -149,32 +153,11 @@ export const RevealSrpList = () => {
         >
           {t('securitySrpLabel')}
         </Text>
-        {syncSRPsLoading && (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            marginTop={12}
-          >
-            <Spinner className="change-password__spinner" />
-            <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
-              {t('syncingSeedPhrases')}
-            </Text>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-            >
-              {t('syncingSeedPhrasesNote')}
-            </Text>
-          </Box>
-        )}
-        {!syncSRPsLoading && (
-          <SrpList
-            onActionComplete={onSrpActionComplete}
-            hideShowAccounts={false}
-            isSettingsPage={true}
-          />
-        )}
+        <SrpList
+          onActionComplete={onSrpActionComplete}
+          hideShowAccounts={false}
+          isSettingsPage={true}
+        />
       </Box>
       {srpQuizModalVisible && selectedKeyringId && (
         <SRPQuizModal

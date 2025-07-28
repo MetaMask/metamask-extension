@@ -336,6 +336,7 @@ PATH_NAME_MAP.set(SWAPS_ERROR_ROUTE, 'Swaps Error Page');
 export const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 
 export const ONBOARDING_ROUTE = '/onboarding';
+export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 export const ONBOARDING_CONFIRM_SRP_ROUTE =
   '/onboarding/confirm-recovery-phrase';
@@ -353,6 +354,7 @@ export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
+export const ONBOARDING_ERROR_ROUTE = '/onboarding/error';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';

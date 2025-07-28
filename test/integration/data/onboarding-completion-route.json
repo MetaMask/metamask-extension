@@ -86,6 +86,8 @@
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
   "domains": {},
+  "enableEnforcedSimulations": "boolean",
+  "enableEnforcedSimulationsForTransactions": "object",
   "enableMV3TimestampSave": true,
   "enabledNetworkMap": {
     "eip155": {
@@ -94,6 +96,8 @@
   },
   "encryptionKey": "{\"key\":{\"alg\":\"A256GCM\",\"ext\":true,\"k\":\"IWP6tqC2WeYfTxhHhTFU2m1hhO9GD5YhgYe2iRzu5GU\",\"key_ops\":[\"encrypt\",\"decrypt\"],\"kty\":\"oct\"},\"derivationOptions\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}}}",
   "encryptionSalt": "6AA1VP9N1aU5bglaSiAhmE9PdLH3YCqiKJagv+wQCR8=",
+  "enforcedSimulationsSlippage": "number",
+  "enforcedSimulationsSlippageForTransactions": "object",
   "ensEntries": {},
   "ensResolutionsByAddress": {},
   "estimatedGasFeeTimeBounds": {},
@@ -438,8 +442,6 @@
     "swapsStxGetTransactionsRefreshTime": 10000,
     "swapsStxMaxFeeMultiplier": 2
   },
-  "switchedNetworkDetails": null,
-  "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1715944006161,
   "theme": "os",
   "tokenBalances": {
@@ -453,6 +455,7 @@
   "tokenList": {},
   "tokens": [],
   "tokensChainsCache": {},
+  "tracesBeforeMetricsOptIn": [],
   "traits": {},
   "transactions": [],
   "trezorModel": null,

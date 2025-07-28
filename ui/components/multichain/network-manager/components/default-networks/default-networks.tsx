@@ -3,6 +3,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  FEATURED_NETWORK_CHAIN_IDS,
   FEATURED_RPCS,
 } from '../../../../../../shared/constants/network';
 import {
@@ -22,7 +23,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { setEnabledNetworks } from '../../../../../store/actions';
+import {
+  setActiveNetwork,
+  setEnabledNetworks,
+} from '../../../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -50,6 +54,7 @@ import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../../../selectors';
+import Tooltip from '../../../../ui/tooltip';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -82,13 +87,6 @@ const DefaultNetworks = memo(() => {
     [nonTestNetworks, orderedNetworksList],
   );
 
-  // Memoize the all networks selected calculation
-  const allNetworksSelected = useMemo(() => {
-    return (
-      Object.keys(enabledNetworksByNamespace).length === orderedNetworks.length
-    );
-  }, [enabledNetworksByNamespace, orderedNetworks.length]);
-
   // Memoize the featured networks calculation
   const featuredNetworksNotYetEnabled = useMemo(
     () =>
@@ -100,21 +98,40 @@ const DefaultNetworks = memo(() => {
 
   // Use useCallback for stable function references
   const selectAllDefaultNetworks = useCallback(() => {
-    const evmChainIds = orderedNetworks
-      .filter((network) => network.isEvm)
-      .map(
-        (network) => convertCaipToHexChainId(network.chainId) as CaipChainId,
-      );
-    dispatch(setEnabledNetworks(evmChainIds, namespace));
-  }, [dispatch, namespace, orderedNetworks]);
+    const evmNetworksList = orderedNetworks.filter((network) => network.isEvm);
 
-  const deselectAllDefaultNetworks = useCallback(() => {
-    dispatch(setEnabledNetworks([], namespace));
-  }, [dispatch, namespace]);
+    if (evmNetworksList.length === 0) {
+      return;
+    }
+
+    const evmChainIds = evmNetworksList
+      .map((network) => convertCaipToHexChainId(network.chainId))
+      .filter((chainId) => FEATURED_NETWORK_CHAIN_IDS.includes(chainId));
+
+    // Use the first EVM network's chain ID for getting RPC data
+    const firstEvmChainId = evmNetworksList[0].chainId;
+    const { defaultRpcEndpoint } = getRpcDataByChainId(
+      firstEvmChainId,
+      evmNetworks,
+    );
+    const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
+
+    dispatch(setEnabledNetworks(evmChainIds, namespace));
+    // deferring execution to keep select all unblocked
+    setTimeout(() => {
+      dispatch(setActiveNetwork(finalNetworkClientId));
+    }, 0);
+  }, [dispatch, evmNetworks, namespace, orderedNetworks]);
+
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
 
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
-    async (chainId: CaipChainId) => {
+    async (chainId: CaipChainId, isLastRemainingNetwork: boolean) => {
+      if (isLastRemainingNetwork) {
+        return;
+      }
+
       await handleNetworkChange(chainId);
     },
     [handleNetworkChange],
@@ -122,6 +139,8 @@ const DefaultNetworks = memo(() => {
 
   // Memoize the network list items to avoid recreation on every render
   const networkListItems = useMemo(() => {
+    const enabledChainIds = Object.keys(enabledNetworks);
+
     return orderedNetworks
       .filter((network) => {
         // If EVM network is selected, only show EVM networks
@@ -142,16 +161,31 @@ const DefaultNetworks = memo(() => {
           return null;
         }
 
-        const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
+        const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
           getItemCallbacks(network);
         const iconSrc = getNetworkIcon(network);
         const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
           hexChainId,
         );
 
+        const singleRemainingNetwork = enabledChainIds.length === 1;
+        const isLastRemainingNetwork =
+          singleRemainingNetwork && enabledChainIds[0] === hexChainId;
+
         return (
           <NetworkListItem
-            startAccessory={<Checkbox label="" isChecked={isEnabled} />}
+            startAccessory={
+              singleRemainingNetwork && isLastRemainingNetwork ? (
+                <Tooltip
+                  title={t('networkManagerMustHaveAtLeastOneNetworkEnabled')}
+                  position="top"
+                >
+                  <Checkbox label="" isChecked={isEnabled} />
+                </Tooltip>
+              ) : (
+                <Checkbox label="" isChecked={isEnabled} />
+              )
+            }
             key={network.chainId}
             chainId={network.chainId}
             name={network.name}
@@ -163,15 +197,21 @@ const DefaultNetworks = memo(() => {
                     .defaultRpcEndpoint
                 : undefined
             }
-            onClick={() => handleNetworkChangeCallback(network.chainId)}
+            onClick={() =>
+              handleNetworkChangeCallback(
+                network.chainId,
+                isLastRemainingNetwork,
+              )
+            }
             onDeleteClick={onDelete}
             onEditClick={onEdit}
             onDiscoverClick={onDiscoverClick}
-            onRpcEndpointClick={onRpcConfigEdit}
+            onRpcEndpointClick={onRpcSelect}
           />
         );
       });
   }, [
+    enabledNetworks,
     orderedNetworks,
     isEvmNetworkSelected,
     isNetworkInDefaultNetworkTab,
@@ -240,15 +280,14 @@ const DefaultNetworks = memo(() => {
           paddingTop={4}
           paddingLeft={4}
         >
-          {allNetworksSelected ? (
-            <ButtonLink onClick={deselectAllDefaultNetworks}>
-              {t('deselectAll')}
-            </ButtonLink>
-          ) : (
-            <ButtonLink onClick={selectAllDefaultNetworks}>
+          {isEvmNetworkSelected ? (
+            <ButtonLink
+              onClick={selectAllDefaultNetworks}
+              data-testid="network-manager-select-all"
+            >
               {t('selectAll')}
             </ButtonLink>
-          )}
+          ) : null}
         </Box>
         {networkListItems}
         {isEvmNetworkSelected && (
