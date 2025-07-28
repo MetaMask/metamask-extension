@@ -16,7 +16,7 @@ export const Container: ContainerComponent = React.forwardRef(
       <Box
         className={classnames(
           'mm-container',
-          `mm-container--max-width-${maxWidth}`,
+          maxWidth && `mm-container--max-width-${maxWidth}`,
           className,
         )}
         ref={ref}

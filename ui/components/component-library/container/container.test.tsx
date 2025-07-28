@@ -18,6 +18,16 @@ describe('Container', () => {
     expect(getByTestId('classname')).toHaveClass('mm-container mm-test');
   });
 
+  it('should not render max-width class when maxWidth is undefined', () => {
+    const { getByTestId } = render(
+      <Container data-testid="no-max-width" />,
+    );
+    const element = getByTestId('no-max-width');
+    expect(element).toHaveClass('mm-container');
+    expect(element.className).not.toContain('undefined');
+    expect(element.className).not.toContain('mm-container--max-width');
+  });
+
   it('should render the Container sizes', () => {
     const { getByTestId } = render(
       <>
