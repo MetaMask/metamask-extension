@@ -206,6 +206,8 @@ ${Object.entries(env)
         INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
         SEGMENT_WRITE_KEY: '-',
         SEGMENT_PROD_WRITE_KEY: '-',
+        GOOGLE_PROD_CLIENT_ID: '00000000000',
+        APPLE_PROD_CLIENT_ID: '00000000000',
       },
     );
     // webpack logs a warning if we specify `watch: true`, `getWebpackInstance`
