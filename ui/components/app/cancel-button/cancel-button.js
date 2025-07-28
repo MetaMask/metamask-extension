@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import Button from '../../ui/button';
+import { Button, ButtonVariant } from '../../component-library';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -36,7 +36,8 @@ export default function CancelButton({
   const btn = (
     <Button
       onClick={cancelTransaction}
-      type="secondary"
+      variant={ButtonVariant.Secondary}
+      block
       className={classnames({
         'transaction-list-item__header-button': !detailsModal,
         'transaction-list-item-details__header-button-rounded-button':
