@@ -7198,13 +7198,13 @@ __metadata:
 
 "@metamask/shield-controller@file:./metamask-shield-controller-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/shield-controller@file:./metamask-shield-controller-0.0.0.tgz#./metamask-shield-controller-0.0.0.tgz::hash=fea7d3&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/shield-controller@file:./metamask-shield-controller-0.0.0.tgz#./metamask-shield-controller-0.0.0.tgz::hash=28fa29&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/utils": "npm:^11.4.2"
   peerDependencies:
     "@metamask/transaction-controller": ^58.1.1
-  checksum: 10/d93d1ac2345e3412abfeb4bf3e509115eac8874a727ae3d0a0c524713d96a6b3c3ba8d31b5a51e87515b23c55a16355c359b1c0938981780d11914c78369ba81
+  checksum: 10/6e55669c143d12a126ae39f4045a26b1464e2e45c3162c085f2ceddf16cd49944d9c48bd33edd8a92857d1016778799f524357b0b9664b1d04b44a11dd92d183
   languageName: node
   linkType: hard
 
