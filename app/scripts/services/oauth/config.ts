@@ -81,7 +81,7 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
   },
   [BuildTypeEnv.ProdMain]: {
     googleAuthConnectionId: 'mm-google-main-extension',
-    appleAuthConnectionId: 'mm-apple-main-extension',
+    appleAuthConnectionId: 'mm-apple-main-common',
     googleGroupedAuthConnectionId: 'mm-google-main',
     appleGroupedAuthConnectionId: 'mm-apple-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
@@ -89,7 +89,7 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
   },
   [BuildTypeEnv.ProdFlask]: {
     googleAuthConnectionId: 'mm-google-flask-main-extension',
-    appleAuthConnectionId: 'mm-apple-flask-main-extension',
+    appleAuthConnectionId: 'mm-apple-flask-main-common',
     googleGroupedAuthConnectionId: 'mm-google-flask-main',
     appleGroupedAuthConnectionId: 'mm-apple-flask-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
@@ -97,7 +97,7 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
   },
   [BuildTypeEnv.Beta]: {
     googleAuthConnectionId: 'mm-google-main-extension',
-    appleAuthConnectionId: 'mm-apple-main-extension',
+    appleAuthConnectionId: 'mm-apple-main-common',
     googleGroupedAuthConnectionId: 'mm-google-main',
     appleGroupedAuthConnectionId: 'mm-apple-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
