@@ -83,6 +83,11 @@ const CONTRACT_INTERACTION_TYPES = [
   TransactionType.swapApproval,
 ];
 
+enum MetricsTransactionType {
+  swap = 'mm_swap',
+  bridge = 'mm_bridge',
+}
+
 /**
  * This function is called when a transaction is added to the controller.
  *
@@ -1042,12 +1047,18 @@ async function buildEventFragmentProperties({
   if (transactionContractMethod === contractMethodNames.APPROVE) {
     properties = {
       ...properties,
+      simulation_receiving_assets_total_value:
+        properties.simulation_receiving_assets_total_value ??
+        // TODO: Remove when we have fiatValue in transactionMeta
+        // https://github.com/MetaMask/core/pull/6178
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (transactionMeta as any)?.assetsFiatValues?.receiving,
       simulation_sending_assets_total_value:
         properties.simulation_sending_assets_total_value ??
         // TODO: Remove when we have fiatValue in transactionMeta
         // https://github.com/MetaMask/core/pull/6178
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (transactionMeta as any).fiatValue,
+        (transactionMeta as any)?.assetsFiatValues?.sending,
       transaction_approval_amount_type: transactionApprovalAmountType,
     };
   }
@@ -1328,11 +1339,13 @@ function isInsufficientNativeBalance(
   return new Numeric(totalCost, 16).greaterThan(new Numeric(nativeBalance, 16));
 }
 
-function getMMSwapOrBridgeType(type: TransactionType): string | null {
+function getMMSwapOrBridgeType(
+  type: TransactionType,
+): MetricsTransactionType | null {
   if (type === TransactionType.swap) {
-    return 'mm_swap';
+    return MetricsTransactionType.swap;
   } else if (type === TransactionType.bridge) {
-    return 'mm_bridge';
+    return MetricsTransactionType.bridge;
   }
   return null;
 }
