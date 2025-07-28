@@ -51,12 +51,12 @@
         "TextEncoder": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@ethereumjs/rlp": {
+    "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/rlp": {
+    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
@@ -132,19 +132,6 @@
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/rlp": true,
-        "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "webpack>events": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
-      }
-    },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@ethereumjs/util": {
       "globals": {
         "console.warn": true
@@ -164,6 +151,19 @@
       },
       "packages": {
         "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "browserify>buffer": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "webpack>events": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -890,9 +890,9 @@
         "react": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
       "packages": {
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
         "axios": true
       }
     },
@@ -901,17 +901,17 @@
         "console.warn": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
       "packages": {
         "ethers>@ethersproject/constants": true,
         "@ethersproject/hash": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "axios": true,
         "@metamask/ppom-validator>crypto-js": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": {
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": {
       "globals": {
         "console.warn": true
       },
@@ -919,18 +919,18 @@
         "@ethersproject/abi": true,
         "ethers>@ethersproject/rlp": true,
         "ethers>@ethersproject/transactions": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": true,
         "@ledgerhq/errors": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
         "axios": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": true,
         "browserify>buffer": true,
         "semver": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
       "globals": {
         "clearTimeout": true,
         "console.warn": true,
@@ -938,12 +938,12 @@
       },
       "packages": {
         "@ledgerhq/errors": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
         "browserify>buffer": true,
         "webpack>events": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
       "globals": {
         "console.warn": true
       },
@@ -951,7 +951,7 @@
         "wait-on>rxjs": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": {
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": {
       "globals": {
         "__ledgerLogsListen": "write",
         "console.error": true
@@ -1036,38 +1036,10 @@
         "react-redux>react-is": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring": {
-      "globals": {
-        "addEventListener": true,
-        "console.error": true,
-        "document.createElement": true,
-        "document.head.appendChild": true,
-        "fetch": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask-previews/eth-ledger-bridge-keyring>@ethereumjs/rlp": true,
-        "@ethereumjs/tx": true,
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "@metamask/eth-trezor-keyring>hdkey": true
-      }
-    },
     "@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/abi-utils>@metamask/utils": true
-      }
-    },
-    "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
@@ -1077,6 +1049,12 @@
       }
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true
@@ -1466,6 +1444,28 @@
         "uuid": true
       }
     },
+    "@metamask/eth-ledger-bridge-keyring": {
+      "globals": {
+        "addEventListener": true,
+        "console.error": true,
+        "document.createElement": true,
+        "document.head.appendChild": true,
+        "fetch": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": true,
+        "@ethereumjs/tx": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
+        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "@metamask/eth-trezor-keyring>hdkey": true
+      }
+    },
     "@metamask/controller-utils>@metamask/eth-query": {
       "packages": {
         "@metamask/ppom-validator>json-rpc-random-id": true,
@@ -1478,18 +1478,6 @@
         "@metamask/abi-utils": true,
         "@metamask/eth-sig-util>@metamask/utils": true,
         "@metamask/eth-sig-util>@scure/base": true,
-        "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "tweetnacl": true
-      }
-    },
-    "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util": {
-      "packages": {
-        "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/rlp": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
-        "@metamask/utils": true,
-        "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1514,6 +1502,18 @@
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": true,
+        "browserify>buffer": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "tweetnacl": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": {
+      "packages": {
+        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/rlp": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
+        "@metamask/utils": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -2780,12 +2780,6 @@
         "TextEncoder": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@scure/base": {
       "globals": {
         "TextDecoder": true,
@@ -2793,6 +2787,12 @@
       }
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -3494,7 +3494,7 @@
         "define": true
       }
     },
-    "@metamask-previews/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": {
+    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true

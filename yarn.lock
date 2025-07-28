@@ -5330,20 +5330,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/eth-ledger-bridge-keyring@npm:11.1.1-f024bb4":
-  version: 11.1.1-f024bb4
-  resolution: "@metamask-previews/eth-ledger-bridge-keyring@npm:11.1.1-f024bb4"
-  dependencies:
-    "@ethereumjs/rlp": "npm:^5.0.2"
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@ledgerhq/hw-app-eth": "npm:^6.42.0"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    hdkey: "npm:^2.1.0"
-  checksum: 10/aaf67b92152db667ba7e9d1a43bf2b23b6b06eab3ea46019a44004ff32aff811e1477aa326f1d5e5ad696b6482b1dea6a3b72accc53d0d24671e07337fe4d0b7
-  languageName: node
-  linkType: hard
-
 "@metamask/abi-utils@npm:^2.0.2, @metamask/abi-utils@npm:^2.0.3, @metamask/abi-utils@npm:^2.0.4":
   version: 2.0.4
   resolution: "@metamask/abi-utils@npm:2.0.4"
@@ -6030,6 +6016,20 @@ __metadata:
     "@metamask/utils": "npm:^11.1.0"
     uuid: "npm:^8.3.2"
   checksum: 10/8247f22a23ec0cae7f80c7755b00bfa337a27cc4d2ea416ed08f65a898cd6110057a3710e55e0454db7406c114a4a570b9a286baa8136db6f1c485f62a6c2800
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-ledger-bridge-keyring@npm:11.1.2":
+  version: 11.1.2
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:11.1.2"
+  dependencies:
+    "@ethereumjs/rlp": "npm:^5.0.2"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ledgerhq/hw-app-eth": "npm:^6.42.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    hdkey: "npm:^2.1.0"
+  checksum: 10/3e9b10f366d2b33569a5eb95639db89798cff8b79629c47318a4e10c26da4a2fac10ed61002493683ef2472521c517d5379e5c39998027891b98cc2c76ecc853
   languageName: node
   linkType: hard
 
@@ -31986,7 +31986,6 @@ __metadata:
     "@ledgerhq/errors": "npm:^6.21.0"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
-    "@metamask-previews/eth-ledger-bridge-keyring": "npm:11.1.1-f024bb4"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-tree-controller": "npm:^0.1.0"
     "@metamask/account-watcher": "npm:^4.1.3"
@@ -32023,6 +32022,7 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
+    "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^15.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"

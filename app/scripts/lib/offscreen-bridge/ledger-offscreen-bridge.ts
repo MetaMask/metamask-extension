@@ -2,7 +2,7 @@ import {
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
-} from '@metamask-previews/eth-ledger-bridge-keyring';
+} from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
 import {
   LedgerAction,

@@ -2,7 +2,7 @@ import type { TrezorBridge } from '@metamask/eth-trezor-keyring';
 import type {
   LedgerBridge,
   LedgerBridgeOptions,
-} from '@metamask-previews/eth-ledger-bridge-keyring';
+} from '@metamask/eth-ledger-bridge-keyring';
 import { KeyringClass, Json } from '@metamask/utils';
 import { FakeKeyringBridge } from '../../../test/stub/keyring-bridge';
 
