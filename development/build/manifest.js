@@ -9,7 +9,12 @@ const baseManifest = isManifestV3
   : require('../../app/manifest/v2/_base.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
-const { TASKS, ENVIRONMENT, MANIFEST_DEV_KEY } = require('./constants');
+const {
+  TASKS,
+  ENVIRONMENT,
+  MANIFEST_DEV_KEY,
+  MANIFEST_RELEASE_CANDIDATE_KEY,
+} = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getEnvironment, getBuildName } = require('./utils');
 const { fromIniFile } = require('./config');
@@ -50,10 +55,11 @@ function createManifestTasks({
   shouldIncludeOcapKernel = false,
   shouldIncludeSnow,
 }) {
+  const environment = getEnvironment({ buildTarget: entryTask });
+
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
-    const isDevelopment =
-      getEnvironment({ buildTarget: entryTask }) === 'development';
+    const isDevelopment = environment === 'development';
     const manifestFlags = isDevelopment ? await loadManifestFlags() : undefined;
     return Promise.all(
       browserPlatforms.map(async (platform) => {
@@ -92,7 +98,7 @@ function createManifestTasks({
   // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
-    manifest.key = MANIFEST_DEV_KEY;
+    loadManifestKey(manifest);
   });
 
   // testDev: add perms
@@ -103,7 +109,7 @@ function createManifestTasks({
       'http://localhost/*',
       'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
-    manifest.key = MANIFEST_DEV_KEY;
+    loadManifestKey(manifest);
   });
 
   // test: add permissions
@@ -114,12 +120,13 @@ function createManifestTasks({
       'http://localhost/*',
       'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
-    manifest.key = MANIFEST_DEV_KEY;
+    loadManifestKey(manifest);
   });
 
   const envScriptDist = createTaskForModifyManifestForEnvironment(
     (manifest) => {
-      manifest.key = MANIFEST_DEV_KEY;
+      const isReleaseCandidate = environment === ENVIRONMENT.RELEASE_CANDIDATE;
+      loadManifestKey(manifest, isReleaseCandidate);
     },
   );
 
@@ -170,8 +177,6 @@ function createManifestTasks({
 
   // For non-production builds only, modify the extension's name and description
   function modifyNameAndDescForNonProd(manifest) {
-    const environment = getEnvironment({ buildTarget: entryTask });
-
     if (environment === ENVIRONMENT.PRODUCTION) {
       return;
     }
@@ -268,4 +273,28 @@ async function getBuildModifications(buildType, platform) {
   }
 
   return buildModifications;
+}
+
+/**
+ * Load the manifest key for the given manifest (for chrome).
+ *
+ * For Firefox, we don't need a key because we can assign the id to the extension via `applications.gecko.id`.
+ *
+ * @param {object} manifest - The manifest to load the key for.
+ * @param {boolean} isReleaseCandidate - Whether the build is for a release candidate.
+ */
+function loadManifestKey(manifest, isReleaseCandidate = false) {
+  // to assert the platform is firefox,
+  // we check if the manifest_version is 2 and if the applications.gecko.id exists.
+  const isFirefox =
+    manifest.manifest_version === 2 && manifest?.applications?.gecko?.id;
+  if (isFirefox) {
+    // delete the key if it exists for firefox
+    delete manifest.key;
+  } else {
+    // assign the key for chrome
+    manifest.key = isReleaseCandidate
+      ? MANIFEST_RELEASE_CANDIDATE_KEY
+      : MANIFEST_DEV_KEY;
+  }
 }
