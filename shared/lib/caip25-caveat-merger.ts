@@ -4,6 +4,8 @@ import {
   setChainIdsInCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
+  Caip25EndowmentPermissionName,
+  Caip25CaveatType,
 } from '@metamask/chain-agnostic-permission';
 
 /**
@@ -55,4 +57,31 @@ export function mergeCaip25CaveatValues(
   );
 
   return mergedCaveatValue;
+}
+
+/**
+ * Converts a diff map format to a standard permission object format.
+ * The diff map has a nested structure: diffMap?.[Caip25EndowmentPermissionName]?.[Caip25CaveatType]?.Caip25CaveatValue
+ * This is different from the standard permission object format which has caveats array.
+ *
+ * @param diffMap - The diff map with nested `endowment:caip25` permission specification
+ * @param diffMap.Caip25EndowmentPermissionName - The permission name key containing the caveat type
+ * @param diffMap.Caip25EndowmentPermissionName.Caip25CaveatType - The caveat type key containing the caveat value
+ * @returns An `endowment:caip25` permission object with proper caveats structure
+ */
+export function getPermissionsFromDiffMap(diffMap: {
+  [Caip25EndowmentPermissionName]: { [Caip25CaveatType]: Caip25CaveatValue };
+}) {
+  const caveatValue =
+    diffMap?.[Caip25EndowmentPermissionName]?.[Caip25CaveatType];
+  return {
+    [Caip25EndowmentPermissionName]: {
+      caveats: [
+        {
+          type: Caip25CaveatType,
+          value: caveatValue,
+        },
+      ],
+    },
+  };
 }

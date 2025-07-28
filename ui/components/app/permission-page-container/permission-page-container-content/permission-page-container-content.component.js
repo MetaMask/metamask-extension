@@ -1,10 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { SubjectType } from '@metamask/permission-controller';
-import {
-  Caip25EndowmentPermissionName,
-  getPermittedEthChainIds,
-} from '@metamask/chain-agnostic-permission';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
   AlignItems,
@@ -68,13 +64,6 @@ export default class PermissionPageContainerContent extends PureComponent {
     const displayOrigin =
       subjectType === SubjectType.Website ? getURLHost(origin) : origin;
 
-    const permissionDiffMap = request.diff?.permissionDiffMap;
-    const permissionDiffRequestedChainIds = getPermittedEthChainIds(
-      permissionDiffMap?.[Caip25EndowmentPermissionName]?.authorizedScopes ?? {
-        requiredScopes: {},
-        optionalScopes: {},
-      },
-    );
     return (
       <Box
         className="permission-page-container-content"
@@ -126,11 +115,7 @@ export default class PermissionPageContainerContent extends PureComponent {
             permissions={selectedPermissions}
             subjectName={subjectMetadata.origin}
             accounts={accounts}
-            requestedChainIds={
-              permissionDiffRequestedChainIds.length > 0
-                ? permissionDiffRequestedChainIds
-                : requestedChainIds
-            }
+            requestedChainIds={requestedChainIds}
           />
         </Box>
       </Box>
