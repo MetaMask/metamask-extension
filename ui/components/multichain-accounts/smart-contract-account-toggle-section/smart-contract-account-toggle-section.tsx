@@ -28,8 +28,6 @@ export const SmartContractAccountToggleSection = ({
   const t = useI18nContext();
   const { network7702List, pending } = useEIP7702Networks(address);
 
-  // No more local state needed! Redux manages pendingToggleStates now
-
   const networkList = useMemo(() => {
     if (pending) {
       return (
