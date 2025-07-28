@@ -34,7 +34,9 @@ async function mockSentryTrace(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {},
+        json: {
+          id: '1234567890abcdef',
+        },
       };
     });
 }
