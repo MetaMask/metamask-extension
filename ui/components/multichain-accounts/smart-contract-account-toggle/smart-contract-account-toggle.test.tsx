@@ -203,7 +203,8 @@ describe('SmartContractAccountToggle', () => {
         upgradeContractAddress: undefined,
       };
 
-      render({
+      render(
+        {
           networkConfig: networkWithoutUpgradeAddress,
         },
         false,
