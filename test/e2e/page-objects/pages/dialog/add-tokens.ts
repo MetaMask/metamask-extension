@@ -38,6 +38,15 @@ class AddTokensModal {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_SuggestedTokensCount(expectedTokenCount: number) {
+    // Wait for the expected number of tokens to appear
+    await this.driver.waitUntil(
+      async () => {
+        const tokens = await this.driver.findElements(this.tokenListItem);
+        return tokens.length === expectedTokenCount;
+      },
+      { timeout: 10000, interval: 100 },
+    );
+
     const multipleSuggestedTokens = await this.driver.findElements(
       this.tokenListItem,
     );
