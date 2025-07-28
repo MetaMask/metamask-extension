@@ -1,4 +1,4 @@
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+// import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -56,10 +56,10 @@ export const MESSAGE_TYPE = {
   WALLET_SESSION_CHANGED: 'wallet_sessionChanged',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
-  SNAP_DIALOG_ALERT: DIALOG_APPROVAL_TYPES.alert,
-  SNAP_DIALOG_CONFIRMATION: DIALOG_APPROVAL_TYPES.confirmation,
-  SNAP_DIALOG_PROMPT: DIALOG_APPROVAL_TYPES.prompt,
-  SNAP_DIALOG_DEFAULT: DIALOG_APPROVAL_TYPES.default,
+  SNAP_DIALOG_ALERT: 'snap_dialog:alert',
+  SNAP_DIALOG_CONFIRMATION: 'snap_dialog:confirmation',
+  SNAP_DIALOG_PROMPT: 'snap_dialog:prompt',
+  SNAP_DIALOG_DEFAULT: 'snap_dialog',
 } as const;
 
 export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
