@@ -1,0 +1,43 @@
+name: Stable Branch Sync
+
+on:
+  push:
+    branches:
+      - stable
+      - master
+
+jobs:
+  get-next-version:
+    name: Get next version vX.Y.Z
+    runs-on: ubuntu-latest
+    outputs:
+      next-version: ${{ env.NEXT_SEMVER_VERSION }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Get the next semver version
+        id: get-next-semver-version
+        env:
+          FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
+        run: ./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
+        working-directory: '.github/scripts'
+
+  run-stable-sync:
+    name: Run Stable branch sync
+    needs: get-next-version
+    uses: metamask/github-tools/.github/workflows/stable-sync.yml@86272c846618950a4e5518ff5d8dffc5679d88ce
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.STABLE_SYNC_TOKEN }}
+    with:
+      semver-version: ${{ needs.get-next-version.outputs.next-version }}
+      repo-type: 'extension' # Accepts 'mobile' or 'extension'
+      github-tools-version: '86272c846618950a4e5518ff5d8dffc5679d88ce'
+      stable-branch-name: 'master' # Defaults to `stable`
