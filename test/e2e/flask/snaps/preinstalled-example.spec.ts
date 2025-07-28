@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { promise } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixture-builder';
@@ -10,13 +9,11 @@ import {
   WINDOW_TITLES,
   sentryRegEx,
   largeDelayMs,
-  veryLargeDelayMs,
 } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { MOCK_META_METRICS_ID } from '../../constants';
-import delayed = promise.delayed;
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer
