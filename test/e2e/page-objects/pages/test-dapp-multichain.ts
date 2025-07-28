@@ -44,10 +44,14 @@ class TestDappMultichain {
   }
 
   addCustomAccountAddressInput(i: number) {
+    // Not a hex color value
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
     return `#add-custom-caip\\ address-button-${i}`;
   }
 
   addCustomScopeButton(i: number) {
+    // Not a hex color value
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
     return `#add-custom-scope-button-${i}`;
   }
 
@@ -59,6 +63,8 @@ class TestDappMultichain {
     return `#custom-Scope-input-${i}`;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.dappTitle);
@@ -218,6 +224,8 @@ class TestDappMultichain {
    * @param index - The index of the wallet session changed result. 0-based index.
    * @returns The wallet session changed result.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async get_walletSessionChangedResult(index: number): Promise<string> {
     console.log(
       `Getting wallet session changed result for index ${index} on multichain test dapp.`,
@@ -387,6 +395,8 @@ class TestDappMultichain {
    *
    * @param scope - The CAIP-2 scope.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_walletNotifyResult(scope: string): Promise<void> {
     console.log(
       `Checking wallet notify result for scope ${scope} on multichain test dapp.`,

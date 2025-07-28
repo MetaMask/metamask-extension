@@ -22,6 +22,8 @@ type PasswordFormProps = {
   confirmPwdInputTestId?: string;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function PasswordForm({
   onChange,
   pwdInputTestId,
@@ -188,7 +190,6 @@ export default function PasswordForm({
         }}
         helpText={confirmPasswordError}
         value={confirmPassword}
-        disabled={password.length < PASSWORD_MIN_LENGTH}
         inputProps={{
           'data-testid':
             confirmPwdInputTestId || 'create-password-confirm-input',

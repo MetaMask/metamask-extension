@@ -1,5 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 import Card from '../../../ui/card';
 import {
   Box,
@@ -73,7 +74,9 @@ export const SrpList = ({
 
   return (
     <Box
-      className="srp-list__container"
+      className={classnames('srp-list__container', {
+        'srp-list__container--settings': isSettingsPage,
+      })}
       padding={isSettingsPage ? 0 : 4}
       data-testid="srp-list"
     >
@@ -90,6 +93,8 @@ export const SrpList = ({
                 category: MetaMetricsEventCategory.Accounts,
                 event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
                 properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   button_type: 'srp_select',
                 },
               });
@@ -121,14 +126,28 @@ export const SrpList = ({
                         event:
                           MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
                         properties: {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           button_type: 'details',
                         },
                       });
-                      setShowAccounts((prevState) =>
-                        prevState.map((value, i) =>
+                      setShowAccounts((prevState) => {
+                        const accountListLength =
+                          hdKeyringsWithSnapAccounts.length;
+                        let newState = prevState;
+                        if (accountListLength > prevState.length) {
+                          // Extend the state with `false` for new accounts
+                          newState = [
+                            ...prevState,
+                            ...Array(accountListLength - prevState.length).fill(
+                              false,
+                            ),
+                          ];
+                        }
+                        return newState.map((value, i) =>
                           i === index ? !value : value,
-                        ),
-                      );
+                        );
+                      });
                     }}
                   >
                     {showHideText(index, keyring.accounts.length)}

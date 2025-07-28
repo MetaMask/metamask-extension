@@ -36,3 +36,29 @@ export const oldestPendingConfirmationSelector = createDeepEqualSelector(
   firstPendingConfirmationSelector,
   (firstPendingConfirmation) => firstPendingConfirmation,
 );
+
+export function selectEnableEnforcedSimulations(
+  state: ConfirmMetamaskState,
+  transactionId: string,
+): boolean {
+  return (
+    state.metamask.enableEnforcedSimulationsForTransactions[transactionId] ??
+    state.metamask.enableEnforcedSimulations
+  );
+}
+
+export function selectEnforcedSimulationsDefaultSlippage(
+  state: ConfirmMetamaskState,
+): number {
+  return state.metamask.enforcedSimulationsSlippage;
+}
+
+export function selectEnforcedSimulationsSlippage(
+  state: ConfirmMetamaskState,
+  transactionId: string,
+): number {
+  return (
+    state.metamask.enforcedSimulationsSlippageForTransactions[transactionId] ??
+    state.metamask.enforcedSimulationsSlippage
+  );
+}

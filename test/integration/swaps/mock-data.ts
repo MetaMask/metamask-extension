@@ -92,6 +92,8 @@ export const TOP_ASSETS_API_MOCK_RESULT = [
   },
 ];
 
+// External API response data with third-party service branding colors - these hex values represent external service brand colors
+/* eslint-disable @metamask/design-tokens/color-no-hex */
 export const AGGREGATOR_METADATA_API_MOCK_RESULT = {
   airswapLight: {
     color: '#2B71FF',
@@ -176,6 +178,8 @@ export const FEATURE_FLAGS_API_MOCK_RESULT = [
       mobileActive: false,
       extensionActive: false,
     },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     updated_at: '2022-03-17T15:54:00.360Z',
   },
 ];

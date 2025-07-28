@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { capitalize } from 'lodash';
 import {
   Box,
   Icon,
@@ -31,6 +32,7 @@ import {
   getSocialLoginType,
 } from '../../../../selectors';
 import Card from '../../../../components/ui/card';
+import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
 
 export const RevealSrpList = () => {
   const t = useI18nContext();
@@ -40,6 +42,9 @@ export const RevealSrpList = () => {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
   const socialLoginEmail = useSelector(getSocialLoginEmail);
+
+  // sync SRPs list when page loads
+  useSyncSRPs();
 
   const onSrpActionComplete = (keyringId: string, triggerBackup?: boolean) => {
     if (triggerBackup) {
@@ -122,7 +127,9 @@ export const RevealSrpList = () => {
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
           >
-            {t('securitySocialLoginEnabledDescription')}
+            {t('securitySocialLoginEnabledDescription', [
+              capitalize(socialLoginType),
+            ])}
           </Text>
           <Box
             width={BlockSize.Full}

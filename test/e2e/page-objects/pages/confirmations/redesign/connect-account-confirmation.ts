@@ -3,6 +3,10 @@ import { Driver } from '../../../../webdriver/driver';
 class ConnectAccountConfirmation {
   driver: Driver;
 
+  private readonly addSolanaAccountButton = {
+    testId: 'submit-add-account-with-name',
+  };
+
   private readonly cancelConnectButton = {
     testId: 'cancel-btn',
   };
@@ -21,6 +25,10 @@ class ConnectAccountConfirmation {
     tag: 'p',
   };
 
+  private readonly createSolanaAccountModalButton = {
+    testId: 'create-solana-account',
+  };
+
   private readonly editAccountButton = {
     text: 'Edit accounts',
     tag: 'button',
@@ -36,6 +44,8 @@ class ConnectAccountConfirmation {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -83,6 +93,42 @@ class ConnectAccountConfirmation {
     await editButtons[1].click();
   }
 
+  async createCreateSolanaAccountFromModal(): Promise<void> {
+    console.log('Create Solana account from modal');
+    const createSolanaAccountModalButton = await this.driver.findElement(
+      this.createSolanaAccountModalButton,
+    );
+    await createSolanaAccountModalButton.click();
+
+    const addSolanaAccountButton = await this.driver.findClickableElement(
+      this.addSolanaAccountButton,
+      {
+        timeout: 1000,
+      },
+    );
+    await addSolanaAccountButton.click();
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_isCreateSolanaAccountModalButtonVisible(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(
+        this.createSolanaAccountModalButton,
+        {
+          timeout: 1000,
+        },
+      );
+    } catch (e) {
+      console.log('Create Solana account button not enabled', e);
+      return false;
+    }
+    console.log('Create Solana account button is enabled');
+    return true;
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_isConfirmButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.confirmConnectButton, {

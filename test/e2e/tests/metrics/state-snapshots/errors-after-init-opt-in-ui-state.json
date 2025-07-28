@@ -20,6 +20,8 @@
     "showPermittedNetworkToastOpen": "boolean",
     "showIpfsModalOpen": "boolean",
     "showBasicFunctionalityModal": "boolean",
+    "showConnectionsRemovedModal": "boolean",
+    "showCopyAddressToast": "boolean",
     "externalServicesOnboardingToggleState": "boolean",
     "keyringRemovalSnapModal": "object",
     "showKeyringRemovalSnapModal": "boolean",
@@ -31,7 +33,7 @@
     "showNftDetectionEnablementToast": "boolean",
     "showPasswordChangeToast": null,
     "loadingMessage": "undefined",
-    "warning": "string",
+    "warning": "undefined",
     "buyView": "object",
     "defaultHdPaths": "object",
     "networksTabSelectedRpcUrl": "string",
@@ -56,6 +58,7 @@
     "newTokensImported": "string",
     "newTokensImportedError": "string",
     "onboardedInThisUISession": "boolean",
+    "onboardingErrorReport": null,
     "customTokenAmount": "string",
     "scrollToBottom": "boolean",
     "txId": null,
@@ -67,13 +70,17 @@
     "isMultiRpcOnboarding": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
     "errorInSettings": null,
-    "showNewSrpAddedToast": "boolean"
+    "showNewSrpAddedToast": "boolean",
+    "showSupportDataConsentModal": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",
   "gas": { "customData": { "price": null, "limit": null } },
-  "history": { "mostRecentOverviewPage": "/" },
+  "history": {
+    "mostRecentOverviewPage": "/",
+    "redirectAfterDefaultPage": null
+  },
   "invalidCustomNetwork": "object",
   "localeMessages": "object",
   "metamask": {
@@ -131,6 +138,7 @@
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
+    "showDownloadMobileAppSlide": "boolean",
     "showPermissionsTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
@@ -142,7 +150,6 @@
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "surveyLinkLastClickedOrClosed": "object",
-    "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
@@ -151,7 +158,6 @@
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "addressSecurityAlertResponses": "object",
-    "switchedNetworkDetails": null,
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
     "snapsInstallPrivacyWarningShown": true,
@@ -213,6 +219,7 @@
     "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
+    "tracesBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
     "segmentApiCalls": "object",
@@ -231,7 +238,8 @@
     "announcements": "object",
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
     "enabledNetworkMap": {
-      "eip155": "object"
+      "eip155": "object",
+      "solana": "object"
     },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
@@ -304,6 +312,7 @@
     "cacheTimestamp": "number",
     "allDeFiPositions": "object",
     "allDeFiPositionsCount": "object",
+    "urlScanCache": "object",
     "accounts": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
@@ -370,7 +379,11 @@
     "encryptionKey": "string",
     "encryptionSalt": "string",
     "socialBackupsMetadata": "object",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": "object",
+    "enforcedSimulationsSlippage": "number",
+    "enforcedSimulationsSlippageForTransactions": "object"
   },
   "ramps": "object",
   "send": "object",

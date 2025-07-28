@@ -51,6 +51,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
+import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -76,7 +77,10 @@ class SettingsPage extends PureComponent {
     initialBreadCrumbKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
+    isPasswordChangePage: PropTypes.bool,
     isPopup: PropTypes.bool,
+    isRevealSrpListPage: PropTypes.bool,
+    isSeedlessPasswordOutdated: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
@@ -127,11 +131,14 @@ class SettingsPage extends PureComponent {
       currentPath,
       mostRecentOverviewPage,
       addNewNetwork,
+      isPasswordChangePage,
+      isRevealSrpListPage,
+      isSeedlessPasswordOutdated,
     } = this.props;
 
-    const { searchResults, isSearchList, searchText } = this.state;
     const { t } = this.context;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const isSearchHidden = isRevealSrpListPage || isPasswordChangePage;
 
     return (
       <div
@@ -142,12 +149,18 @@ class SettingsPage extends PureComponent {
           },
         )}
       >
+        {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
         <Box
           className="settings-page__header"
           padding={4}
           paddingBottom={[2, 4]}
         >
-          <div className="settings-page__header__title-container">
+          <div
+            className={classnames('settings-page__header__title-container', {
+              'settings-page__header__title-container--hide-search':
+                isSearchHidden,
+            })}
+          >
             {isPopup && (
               <>
                 {currentPath === SETTINGS_ROUTE ? (
@@ -171,27 +184,7 @@ class SettingsPage extends PureComponent {
               </>
             )}
             {this.renderTitle()}
-            <Box
-              className="settings-page__header__title-container__search"
-              display={[Display.Block]}
-            >
-              <SettingsSearch
-                onSearch={({ searchQuery = '', results = [] }) => {
-                  this.setState({
-                    isSearchList: searchQuery !== '',
-                    searchResults: results,
-                    searchText: searchQuery,
-                  });
-                }}
-                settingsRoutesList={getSettingsRoutes()}
-              />
-              {isSearchList && searchText.length >= 3 && (
-                <SettingsSearchList
-                  results={searchResults}
-                  onClickSetting={(setting) => this.handleClickSetting(setting)}
-                />
-              )}
-            </Box>
+            {this.renderSearch()}
             <ButtonIcon
               className="settings-page__header__title-container__close-button"
               iconName={IconName.Close}
@@ -243,6 +236,39 @@ class SettingsPage extends PureComponent {
           {titleText}
         </Text>
       </div>
+    );
+  }
+
+  renderSearch() {
+    const { isSearchList, searchText, searchResults } = this.state;
+    const { isRevealSrpListPage, isPasswordChangePage } = this.props;
+
+    if (isRevealSrpListPage || isPasswordChangePage) {
+      return null;
+    }
+
+    return (
+      <Box
+        className="settings-page__header__title-container__search"
+        display={[Display.Block]}
+      >
+        <SettingsSearch
+          onSearch={({ searchQuery = '', results = [] }) => {
+            this.setState({
+              isSearchList: searchQuery !== '',
+              searchResults: results,
+              searchText: searchQuery,
+            });
+          }}
+          settingsRoutesList={getSettingsRoutes()}
+        />
+        {isSearchList && searchText.length >= 3 && (
+          <SettingsSearchList
+            results={searchResults}
+            onClickSetting={(setting) => this.handleClickSetting(setting)}
+          />
+        )}
+      </Box>
     );
   }
 

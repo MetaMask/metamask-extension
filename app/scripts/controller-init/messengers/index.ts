@@ -50,8 +50,10 @@ import {
 import {
   getAccountTreeControllerMessenger,
   getAccountTreeControllerInitMessenger,
+  getMultichainAccountServiceMessenger,
 } from './accounts';
 import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
+import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -164,6 +166,14 @@ export const CONTROLLER_MESSENGERS = {
   },
   WebSocketService: {
     getMessenger: getWebSocketServiceMessenger,
+    getInitMessenger: noop,
+  },
+  SmartTransactionsController: {
+    getMessenger: getSmartTransactionsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainAccountService: {
+    getMessenger: getMultichainAccountServiceMessenger,
     getInitMessenger: noop,
   },
 } as const;

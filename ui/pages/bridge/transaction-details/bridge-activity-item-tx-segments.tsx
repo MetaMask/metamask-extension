@@ -58,6 +58,8 @@ const getDestTxStatus = ({
  * @param options.bridgeTxHistoryItem - The bridge history item for the transaction
  * @param options.transactionGroup - The transaction group for the transaction
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function BridgeActivityItemTxSegments({
   bridgeTxHistoryItem,
   transactionGroup,

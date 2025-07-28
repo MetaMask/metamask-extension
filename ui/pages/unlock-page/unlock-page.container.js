@@ -13,8 +13,14 @@ import {
   tryUnlockMetamask,
   markPasswordForgotten,
   forceUpdateMetamaskState,
+  setOnboardingErrorReport,
+  checkIsSeedlessPasswordOutdated,
 } from '../../store/actions';
-import { getIsSocialLoginFlow } from '../../selectors';
+import {
+  getIsSocialLoginFlow,
+  getParticipateInMetaMetrics,
+} from '../../selectors';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -24,6 +30,8 @@ const mapStateToProps = (state) => {
   return {
     isUnlocked,
     isSocialLoginFlow: getIsSocialLoginFlow(state),
+    isMetaMetricsEnabled: getParticipateInMetaMetrics(state),
+    isOnboardingCompleted: getCompletedOnboarding(state),
   };
 };
 
@@ -32,15 +40,17 @@ const mapDispatchToProps = (dispatch) => {
     tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
+    setOnboardingErrorReport: (error) =>
+      dispatch(setOnboardingErrorReport(error)),
+    checkIsSeedlessPasswordOutdated: () =>
+      dispatch(checkIsSeedlessPasswordOutdated()),
   };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
-    // eslint-disable-next-line no-shadow
-    markPasswordForgotten,
-    // eslint-disable-next-line no-shadow
-    tryUnlockMetamask,
+    markPasswordForgotten: propsMarkPasswordForgotten,
+    tryUnlockMetamask: propsTryUnlockMetamask,
     ...restDispatchProps
   } = dispatchProps;
   const {
@@ -51,16 +61,16 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   } = ownProps;
 
   const onImport = async () => {
-    await markPasswordForgotten();
+    await propsMarkPasswordForgotten();
     history.push(RESTORE_VAULT_ROUTE);
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-      global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE);
+      global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
     }
   };
 
   const onSubmit = async (password) => {
-    await tryUnlockMetamask(password);
+    await propsTryUnlockMetamask(password);
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
     if (location.state?.from?.pathname) {
