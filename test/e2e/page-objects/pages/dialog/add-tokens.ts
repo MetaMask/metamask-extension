@@ -31,6 +31,27 @@ class AddTokensModal {
   }
 
   /**
+   * Waits for the specified number of suggested tokens to appear.
+   *
+   * @param expectedTokenCount - The expected count of suggested tokens to wait for.
+   * @param timeout - Optional timeout in milliseconds (default: 10000).
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async waitFor_SuggestedTokensCount(
+    expectedTokenCount: number,
+    timeout: number = 10000,
+  ): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        const tokens = await this.driver.findElements(this.tokenListItem);
+        return tokens.length === expectedTokenCount;
+      },
+      { timeout, interval: 100 },
+    );
+  }
+
+  /**
    * Checks the count of suggested tokens.
    *
    * @param expectedTokenCount - The expected count of suggested tokens.
@@ -38,15 +59,6 @@ class AddTokensModal {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_SuggestedTokensCount(expectedTokenCount: number) {
-    // Wait for the expected number of tokens to appear
-    await this.driver.waitUntil(
-      async () => {
-        const tokens = await this.driver.findElements(this.tokenListItem);
-        return tokens.length === expectedTokenCount;
-      },
-      { timeout: 10000, interval: 100 },
-    );
-
     const multipleSuggestedTokens = await this.driver.findElements(
       this.tokenListItem,
     );
