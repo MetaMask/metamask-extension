@@ -112,6 +112,17 @@ export function useRevokeGatorPermissions({
     [],
   );
 
+  const assertDelegatorAddress = useCallback(
+    (delegation: Delegation) => {
+      if (delegation.delegator.toLowerCase() !== accountAddress.toLowerCase()) {
+        throw new Error(
+          `Delegator address does not match. Expected: ${accountAddress}, Got: ${delegation.delegator}`,
+        );
+      }
+    },
+    [accountAddress],
+  );
+
   const revokeGatorPermission = useCallback(
     async (
       permissionContext: Hex,
@@ -119,6 +130,8 @@ export function useRevokeGatorPermissions({
     ): Promise<TransactionMeta> => {
       const delegation =
         extractDelegationFromGatorPermissionContext(permissionContext);
+
+      assertDelegatorAddress(delegation);
 
       const encodedCallData = encodeDisableDelegation({
         delegation,
@@ -144,6 +157,7 @@ export function useRevokeGatorPermissions({
     },
     [
       extractDelegationFromGatorPermissionContext,
+      assertDelegatorAddress,
       networkClientId,
       accountAddress,
     ],

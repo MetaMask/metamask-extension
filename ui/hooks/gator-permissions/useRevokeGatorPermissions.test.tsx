@@ -214,6 +214,47 @@ describe('useRevokeGatorPermissions', () => {
       );
     });
 
+    it('should throw error when delegator address does not match account address', async () => {
+      const differentAccountAddress =
+        '0x1234567890123456789012345678901234567890';
+      const mockDelegationWithDifferentDelegator = {
+        ...mockDelegation,
+        delegator: differentAccountAddress as Hex,
+      };
+
+      mockDecodeDelegations.mockReturnValue([
+        mockDelegationWithDifferentDelegator,
+      ]);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            accountAddress: mockSelectedAccountAddress as `0x${string}`,
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermission(
+            mockPermissionContext,
+            mockDelegationManagerAddress,
+          ),
+        ).rejects.toThrow(
+          `Delegator address does not match. Expected: ${mockSelectedAccountAddress}, Got: ${differentAccountAddress}`,
+        );
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).not.toHaveBeenCalled();
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+    });
+
     it('should handle navigation when transaction is pending', async () => {
       mockConfirmations.push({
         id: 'test-transaction-id',
