@@ -988,7 +988,8 @@ export default class MetamaskController extends EventEmitter {
       includeUsdRate: true,
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
-      useExternalServices: () => this.preferencesController.state.useExternalServices,
+      useExternalServices: () =>
+        this.preferencesController.state.useExternalServices,
     });
     const initialFetchMultiExchangeRate =
       this.currencyRateController.fetchMultiExchangeRate.bind(
@@ -1497,7 +1498,8 @@ export default class MetamaskController extends EventEmitter {
       platform: 'extension',
       useTokenDetection: () =>
         this.preferencesController.state.useTokenDetection,
-      useExternalServices: () => this.preferencesController.state.useExternalServices,
+      useExternalServices: () =>
+        this.preferencesController.state.useExternalServices,
     });
 
     const addressBookControllerMessenger =
