@@ -74,8 +74,6 @@ const render = (
   props: {
     networkConfig?: EIP7702NetworkConfiguration;
     address?: Hex;
-    pendingToggleState?: boolean | null;
-    setPendingToggleState?: (value: boolean | null) => void;
     returnToPage?: string;
   } = {},
 ) => {
@@ -83,8 +81,6 @@ const render = (
   const defaultProps = {
     networkConfig: mockNetworkConfig,
     address: mockAddress,
-    pendingToggleState: null,
-    setPendingToggleState: jest.fn(),
     ...props,
   };
   return renderWithProvider(
@@ -246,39 +242,6 @@ describe('SmartContractAccountToggle', () => {
       fireEvent.click(toggle);
 
       expect(setPendingToggleState).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Pending Toggle State Management', () => {
-    it('disables toggle when pendingToggleState is not null', () => {
-      render({
-        pendingToggleState: true,
-      });
-
-      const toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass(
-        'toggle-button--disabled',
-      );
-    });
-
-    it('uses pendingToggleState as primary source of truth', () => {
-      render({
-        pendingToggleState: false,
-      });
-
-      const toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass(
-        'toggle-button--off',
-      );
-    });
-
-    it('falls back to actual state when pendingToggleState is null', () => {
-      render({
-        pendingToggleState: null,
-      });
-
-      const toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass('toggle-button--on');
     });
   });
 
