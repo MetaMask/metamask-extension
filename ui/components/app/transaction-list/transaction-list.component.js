@@ -613,6 +613,7 @@ export default function TransactionList({
         <AssetListControlBar
           showSortControl={false}
           showTokenFiatBalance={false}
+          showImportTokenButton={false}
         />
       );
     }

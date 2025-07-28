@@ -126,6 +126,7 @@ class SendTokenPage {
 
   async clickSendFlowBackButton() {
     await this.driver.clickElement(this.sendFlowBackButton);
+    await this.driver.delay(2000); // Delay to ensure that the send page has cleared up
   }
 
   async clickFirstTokenListButton() {

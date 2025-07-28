@@ -1,8 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { waitFor } from '@testing-library/dom';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
-import * as Actions from '../../../store/actions';
 import Welcome from './welcome';
 import { WelcomePageState } from './types';
 
@@ -59,30 +57,5 @@ describe('Welcome Page', () => {
     const agreeButton = getByTestId('terms-of-use-agree-button');
     expect(agreeButton).toBeInTheDocument();
     expect(agreeButton).toBeDisabled();
-  });
-
-  it('should show the error modal when the error thrown in login', async () => {
-    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
-
-    jest
-      .spyOn(Actions, 'startOAuthLogin')
-      .mockRejectedValue(new Error('login error'));
-
-    const { getByText, getByTestId } = renderWithProvider(
-      <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
-      mockStore,
-    );
-
-    const createButton = getByText('Create a new wallet');
-    fireEvent.click(createButton);
-
-    const createWithGoogleButton = getByTestId(
-      'onboarding-create-with-google-button',
-    );
-    fireEvent.click(createWithGoogleButton);
-
-    await waitFor(() => {
-      expect(getByTestId('login-error-modal')).toBeInTheDocument();
-    });
   });
 });
