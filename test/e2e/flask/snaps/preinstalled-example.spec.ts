@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
+import { promise } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixture-builder';
@@ -9,16 +10,30 @@ import {
   WINDOW_TITLES,
   sentryRegEx,
   largeDelayMs,
+  veryLargeDelayMs,
 } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { MOCK_META_METRICS_ID } from '../../constants';
+import delayed = promise.delayed;
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer
     .forPost(sentryRegEx)
     .withBodyIncluding('This is a test error.')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+}
+
+async function mockSentryTrace(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(sentryRegEx)
+    .withBodyIncluding('Test Snap Trace')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -131,6 +146,52 @@ describe('Preinstalled example Snap', function () {
 
         assert.equal(error.type, 'TestError');
         assert.equal(error.value, 'This is a test error.');
+      },
+    );
+  });
+
+  it('starts and ends a performance trace in Sentry with `snap_startTrace` and `snap_endTrace`', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: MOCK_META_METRICS_ID,
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSentryTrace,
+        manifestFlags: {
+          sentry: { forceEnable: false },
+        },
+      },
+      async ({ driver, mockedEndpoint }) => {
+        await loginWithBalanceValidation(driver);
+
+        const testSnaps = new TestSnaps(driver);
+        await testSnaps.openPage();
+
+        // Click the button to start and end a trace.
+        await testSnaps.scrollAndClickButton('startTraceButton');
+        await driver.delay(100);
+        await testSnaps.scrollAndClickButton('endTraceButton');
+
+        // Wait for the mocked Sentry endpoint to be called.
+        await driver.wait(async () => {
+          const isPending = await mockedEndpoint.isPending();
+          return isPending === false;
+        });
+
+        const requests = await mockedEndpoint.getSeenRequests();
+        assert.equal(requests.length, 1, 'Expected one request to Sentry.');
+
+        const request = requests[0];
+        const [, , data] = (await request.body.getText()).split('\n');
+        const json = JSON.parse(data);
+
+        assert.equal(json.contexts.trace.op, 'custom');
+        assert.equal(json.contexts.trace.origin, 'manual');
+        assert.equal(json.transaction, 'Test Snap Trace');
       },
     );
   });
