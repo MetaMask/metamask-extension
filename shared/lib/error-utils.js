@@ -56,7 +56,7 @@ export function getErrorHtmlBase(errorBody) {
 }
 
 /**
- * Tries really hard to get te locale context function from the given locale.
+ * Tries really hard to get the locale context function from the given locale.
  *
  * It falls back to the default browser locale, or 'en' if that fails.
  * If we can't get the locale context from some reason (the `messages.json`
