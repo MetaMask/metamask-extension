@@ -3,12 +3,12 @@ import { Web3Provider } from '@ethersproject/providers';
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 import { GasFeeState } from '@metamask/gas-fee-controller';
 import { TransactionParams } from '@metamask/transaction-controller';
-import { captureException } from '@sentry/browser';
 import { BigNumber } from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import { cloneDeep, mapValues } from 'lodash';
 import { NetworkClient, NetworkClientId } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
+import { captureException } from '../../../../shared/lib/sentry';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
