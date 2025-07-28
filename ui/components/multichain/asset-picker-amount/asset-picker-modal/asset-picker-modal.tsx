@@ -250,6 +250,7 @@ export function AssetPickerModal({
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
+
   // This only returns the detected tokens for the selected EVM account address
   const allDetectedTokens = useMemo(
     () =>
@@ -443,10 +444,15 @@ export function AssetPickerModal({
       tokenChainId?: string,
     ) => {
       const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
+      const isSymbolMatch = symbol?.toLowerCase().includes(trimmedSearchQuery);
+      // only check for matching address if search term has 6 characters or more
+      // users are expected to copy and paste addresses instead of typing them
+      const isAddressMatch =
+        trimmedSearchQuery.length >= 6 &&
+        address?.toLowerCase().includes(trimmedSearchQuery);
+
       const isMatchedBySearchQuery = Boolean(
-        !trimmedSearchQuery ||
-          symbol?.toLowerCase().indexOf(trimmedSearchQuery) !== -1 ||
-          address?.toLowerCase().indexOf(trimmedSearchQuery) !== -1,
+        !trimmedSearchQuery || isSymbolMatch || isAddressMatch,
       );
       const isTokenInSelectedChain = isMultiselectEnabled
         ? tokenChainId && selectedChainIds?.indexOf(tokenChainId) !== -1
