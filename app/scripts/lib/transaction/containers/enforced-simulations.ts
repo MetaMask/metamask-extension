@@ -5,6 +5,7 @@ import {
   TransactionParams,
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   DeleGatorEnvironment,
@@ -27,27 +28,36 @@ const MOCK_DELEGATION_SIGNATURE =
   '0x2261a7810ed3e9cde160895909e138e2f68adb2da86fcf98ea0840701df107721fb369ab9b52550ea98832c09f8185284aca4c94bd345e867a4f4461868dd7751b';
 
 export async function enforceSimulations({
-  chainId,
   messenger,
-  simulationData,
-  txParams,
+  transactionMeta,
   useRealSignature = false,
 }: {
-  chainId: Hex;
   messenger: TransactionControllerInitMessenger;
-  simulationData: SimulationData;
-  txParams: TransactionParams;
+  transactionMeta: TransactionMeta;
   useRealSignature?: boolean;
 }) {
+  log('Enforcing simulations', {
+    transactionMeta,
+    useRealSignature,
+  });
+
+  const {
+    chainId,
+    simulationData = { tokenBalanceChanges: [] },
+    txParams,
+  } = transactionMeta;
+
   const from = txParams.from as Hex;
   const chainIdDecimal = hexToNumber(chainId);
   const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
   const delegationManagerAddress = delegationEnvironment.DelegationManager;
+  const slippage = getSlippage(messenger, transactionMeta.id);
 
   const delegation = generateDelegation({
     accountAddress: from,
     environment: delegationEnvironment,
     simulationData,
+    slippage,
   });
 
   log('Delegation', delegation);
@@ -88,12 +98,19 @@ function generateDelegation({
   accountAddress,
   environment,
   simulationData,
+  slippage,
 }: {
   accountAddress: Hex;
   environment: DeleGatorEnvironment;
   simulationData: SimulationData;
+  slippage: number;
 }): UnsignedDelegation {
-  const caveats = generateCaveats(accountAddress, environment, simulationData);
+  const caveats = generateCaveats(
+    accountAddress,
+    environment,
+    simulationData,
+    slippage,
+  );
 
   log('Caveats', caveats);
 
@@ -137,18 +154,21 @@ function generateCaveats(
   recipient: Hex,
   environment: DeleGatorEnvironment,
   simulationData: SimulationData,
+  slippage: number,
 ) {
   const caveatBuilder = createCaveatBuilder(environment);
   const { nativeBalanceChange, tokenBalanceChanges = [] } = simulationData;
 
   if (nativeBalanceChange) {
     const { difference, isDecrease: enforceDecrease } = nativeBalanceChange;
-    const delta = BigInt(difference);
+    const delta = applySlippage(difference, slippage, enforceDecrease);
 
     log('Caveat - Native Balance Change', {
       enforceDecrease,
       recipient,
-      delta,
+      delta: BigInt(difference),
+      slippage,
+      deltaWithSlippage: delta,
     });
 
     caveatBuilder.addCaveat(
@@ -169,6 +189,13 @@ function generateCaveats(
     } = tokenChange;
 
     const delta = BigInt(difference);
+
+    const deltaWithSlippage = applySlippage(
+      difference,
+      slippage,
+      enforceDecrease,
+    );
+
     const tokenId = tokenIdHex ? BigInt(tokenIdHex) : 0n;
 
     log('Caveat - Token Balance Change', {
@@ -176,6 +203,8 @@ function generateCaveats(
       token,
       recipient,
       delta,
+      slippage,
+      deltaWithSlippage,
     });
 
     switch (standard) {
@@ -185,7 +214,7 @@ function generateCaveats(
           enforceDecrease,
           token,
           recipient,
-          delta,
+          deltaWithSlippage,
         );
         break;
 
@@ -217,4 +246,29 @@ function generateCaveats(
   }
 
   return caveatBuilder.build();
+}
+
+function getSlippage(
+  messenger: TransactionControllerInitMessenger,
+  transactionId: string,
+): number {
+  const appControllerState = messenger.call('AppStateController:getState');
+  const defaultValue = appControllerState.enforcedSimulationsSlippage;
+
+  const transactionOverride =
+    appControllerState.enforcedSimulationsSlippageForTransactions[
+      transactionId
+    ];
+
+  return transactionOverride ?? defaultValue;
+}
+
+function applySlippage(
+  value: Hex,
+  slippage: number,
+  isDecrease: boolean,
+): bigint {
+  const valueBN = new BigNumber(value);
+  const slippageMultiplier = (100 + (isDecrease ? slippage : -slippage)) / 100;
+  return BigInt(valueBN.mul(slippageMultiplier).toFixed(0));
 }

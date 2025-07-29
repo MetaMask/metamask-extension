@@ -91,6 +91,7 @@ import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
+import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -601,6 +602,8 @@ async function initialize(backup) {
     : {};
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
+  const cronjobControllerStorageManager = new CronjobControllerStorageManager();
+  await cronjobControllerStorageManager.init();
 
   const { update, requestSafeReload } =
     getRequestSafeReload(persistenceManager);
@@ -614,6 +617,7 @@ async function initialize(backup) {
     offscreenPromise,
     preinstalledSnaps,
     requestSafeReload,
+    cronjobControllerStorageManager,
   );
 
   controller.store.on('update', update);
@@ -965,6 +969,7 @@ function trackAppOpened(environment) {
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
  * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
+ * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
  */
 export function setupController(
   initState,
@@ -975,6 +980,7 @@ export function setupController(
   offscreenPromise,
   preinstalledSnaps,
   requestSafeReload,
+  cronjobControllerStorageManager,
 ) {
   //
   // MetaMask Controller
@@ -1004,6 +1010,7 @@ export function setupController(
     offscreenPromise,
     preinstalledSnaps,
     requestSafeReload,
+    cronjobControllerStorageManager,
   });
 
   setupEnsIpfsResolver({

@@ -200,15 +200,26 @@ function getGoogleClientId({
       );
     }
     return variables.get('GOOGLE_CLIENT_ID');
-  } else if (environment === ENVIRONMENT.PRODUCTION) {
-    return assertAndLoadEnvVar('GOOGLE_CLIENT_ID_REF', buildType, variables);
+  } else if (
+    environment === ENVIRONMENT.PRODUCTION ||
+    environment === ENVIRONMENT.RELEASE_CANDIDATE
+  ) {
+    // we will only load the Production client Id for production builds and release candidate builds
+    // prod builds -> `yarn build prod`
+    // release candidate builds -> `yarn build dist` in the release candidate branches (e.g. `Version-v*`)
+    const googleClientIdRef = assertAndLoadEnvVar(
+      'GOOGLE_CLIENT_ID_REF',
+      buildType,
+      variables,
+    );
+    return assertAndLoadEnvVar(googleClientIdRef, buildType, variables);
   }
 
   const envToLoad =
     buildType === 'flask'
       ? 'GOOGLE_CLIENT_ID_FLASK_UAT'
       : 'GOOGLE_CLIENT_ID_UAT';
-  return assertAndLoadEnvVar(envToLoad, buildType, variables);
+  return variables.get(envToLoad);
 }
 
 /**
@@ -236,13 +247,24 @@ function getAppleClientId({
       );
     }
     return variables.get('APPLE_CLIENT_ID');
-  } else if (environment === ENVIRONMENT.PRODUCTION) {
-    return assertAndLoadEnvVar('APPLE_CLIENT_ID_REF', buildType, variables);
+  } else if (
+    environment === ENVIRONMENT.PRODUCTION ||
+    environment === ENVIRONMENT.RELEASE_CANDIDATE
+  ) {
+    // we will only load the Production client Id for production builds and release candidate builds
+    // prod builds -> `yarn build prod`
+    // release candidate builds -> `yarn build dist` in the release candidate branches (e.g. `Version-v*`)
+    const appleClientIdRef = assertAndLoadEnvVar(
+      'APPLE_CLIENT_ID_REF',
+      buildType,
+      variables,
+    );
+    return assertAndLoadEnvVar(appleClientIdRef, buildType, variables);
   }
 
   const envToLoad =
     buildType === 'flask' ? 'APPLE_CLIENT_ID_FLASK_UAT' : 'APPLE_CLIENT_ID_UAT';
-  return assertAndLoadEnvVar(envToLoad, buildType, variables);
+  return variables.get(envToLoad);
 }
 
 /**

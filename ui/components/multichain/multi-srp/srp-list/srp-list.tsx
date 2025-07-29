@@ -1,5 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 import Card from '../../../ui/card';
 import {
   Box,
@@ -73,7 +74,9 @@ export const SrpList = ({
 
   return (
     <Box
-      className="srp-list__container"
+      className={classnames('srp-list__container', {
+        'srp-list__container--settings': isSettingsPage,
+      })}
       padding={isSettingsPage ? 0 : 4}
       data-testid="srp-list"
     >
