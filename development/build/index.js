@@ -494,11 +494,11 @@ function getIgnoredFiles(target) {
 Please fix builds.yml or specify a compatible set of features.`);
   }
 
-  if (isDevBuild(target) || isTestBuild(target)) {
+  if (target.includes(BUILD_TARGETS.DEV) || target.includes(BUILD_TARGETS.TEST)) {
     return ignoredPaths;
   }
 
-  // For all production builds exclude test files too.
+  // For all production build tasks exclude test files.
   const testPaths = globby(['./test', './app/scripts/fixtures']);
   return [...ignoredPaths, ...testPaths];
 }
