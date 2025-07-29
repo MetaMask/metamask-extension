@@ -18,6 +18,7 @@ import mockDefaultState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MultichainAccountListMenu } from '.';
+import { AccountWalletCategory, toAccountWalletId, toDefaultAccountGroupId } from '@metamask/account-api';
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockGetEnvironmentType = jest.fn();
@@ -171,7 +172,11 @@ describe('MultichainAccountListMenu', () => {
     });
 
     const mockPrimaryHdKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
-    const mockWalletId1 = `entropy:${mockPrimaryHdKeyringId}`;
+    const mockWalletId1 = toAccountWalletId(
+      AccountWalletCategory.Entropy,
+      mockPrimaryHdKeyringId,
+    );
+    const mockGroupId1 = toDefaultAccountGroupId(mockWalletId1);
     const mockState = {
       ...mockDefaultState,
       metamask: {
@@ -197,12 +202,13 @@ describe('MultichainAccountListMenu', () => {
           },
         ],
         accountTree: {
+          selectedAccountGroup: mockGroupId1,
           wallets: {
             [mockWalletId1]: {
               id: mockWalletId1,
               groups: {
-                [`${mockWalletId1}:default`]: {
-                  id: `${mockWalletId1}:default`,
+                [mockGroupId1]: {
+                  id: mockGroupId1,
                   accounts: [mockAccount.id, mockBtcAccount.id],
                   metadata: {
                     name: 'Default',
@@ -211,6 +217,11 @@ describe('MultichainAccountListMenu', () => {
               },
               metadata: {
                 name: 'Wallet 1',
+                type: AccountWalletCategory.Entropy,
+                entropy: {
+                  id: mockPrimaryHdKeyringId,
+                  index: 0,
+                },
               },
             },
           },
