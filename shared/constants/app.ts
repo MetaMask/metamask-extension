@@ -78,13 +78,6 @@ export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
     'smartTransaction:showSmartTransactionStatusPage',
 };
 
-/**
- * Custom messages to send and be received by the extension
- */
-export const EXTENSION_MESSAGES = {
-  READY: 'METAMASK_EXTENSION_READY',
-} as const;
-
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
