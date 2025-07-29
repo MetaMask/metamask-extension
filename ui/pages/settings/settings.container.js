@@ -39,7 +39,10 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-import { toggleNetworkMenu } from '../../store/actions';
+import {
+  setShowSupportDataConsentModal,
+  toggleNetworkMenu,
+} from '../../store/actions';
 import { getSnapName } from '../../helpers/utils/util';
 import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
@@ -71,6 +74,7 @@ const mapStateToProps = (state, ownProps) => {
   const { ticker } = getProviderConfig(state);
   const {
     metamask: { currencyRates, socialLoginEmail },
+    appState: { showSupportDataConsentModal },
   } = state;
   const settingsPageSnapsIds = getSettingsPageSnapsIds(state);
   const snapsMetadata = getSnapsMetadata(state);
@@ -154,6 +158,7 @@ const mapStateToProps = (state, ownProps) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
     settingsPageSnaps,
+    showSupportDataConsentModal,
     snapSettingsTitle,
     useExternalServices,
   };
@@ -161,6 +166,8 @@ const mapStateToProps = (state, ownProps) => {
 
 function mapDispatchToProps(dispatch) {
   return {
+    setShowSupportDataConsentModal: (show) =>
+      dispatch(setShowSupportDataConsentModal(show)),
     toggleNetworkMenu: (payload) => dispatch(toggleNetworkMenu(payload)),
   };
 }
