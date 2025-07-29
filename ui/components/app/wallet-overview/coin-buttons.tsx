@@ -51,6 +51,7 @@ import {
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
+  getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
@@ -132,6 +133,8 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+
+  const isTestnet = useSelector(getMultichainIsTestnet);
 
   const isNonEvmAccountWithoutExternalServices =
     !isExternalServicesEnabled && isNonEvmAccount(account);
@@ -420,7 +423,7 @@ const CoinButtons = ({
         round={!displayNewIconButtons}
       />
       {/* the bridge button is redundant if unified ui is enabled */}
-      {isUnifiedUIEnabled ? null : (
+      {isUnifiedUIEnabled || isTestnet ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={
