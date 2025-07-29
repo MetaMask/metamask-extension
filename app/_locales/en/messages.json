@@ -2431,10 +2431,6 @@
   "floatAmountToken": {
     "message": "Token amount must be an integer"
   },
-  "followUsOnX": {
-    "message": "Follow us on $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
   },
@@ -4161,7 +4157,7 @@
     "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
-    "message": "Continue with Secret Recovery Phrase"
+    "message": "Use Secret Recovery Phrase"
   },
   "onboardingSrpImport": {
     "message": "Import using Secret Recovery Phrase"
@@ -6726,7 +6722,7 @@
     "message": "Agree"
   },
   "termsOfUseAgreeText": {
-    "message": "I agree to the Terms of use, which apply to my use of MetaMask and all of its features"
+    "message": "I agree to the Terms of Use, which apply to my use of MetaMask and all of its features."
   },
   "termsOfUseFooterText": {
     "message": "Please scroll to read all sections"
