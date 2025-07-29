@@ -88,6 +88,32 @@
         "Atomics": true,
         "SharedArrayBuffer": true
       }
+    },
+    "@metamask/keyring-controller>ulid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "ethers>@ethersproject/random": {
+      "globals": {
+        "crypto": true,
+        "crypto.getRandomValues": true
+      }
+    },
+    "core-js-pure": {
+      "globals": {
+        "navigator": true,
+        "navigator.userAgent": true,
+        "navigator.userAgent.Symbol(Symbol.toPrimitive)": true,
+        "MessageChannel": true,
+        "location": true,
+        "MessageChannel.prototype": true,
+        "MessageChannel.prototype.port2": true,
+        "MessageChannel.prototype.port2.port1": true,
+        "MessageChannel.prototype.port2.postMessage": true,
+        "MessageChannel.prototype.port2.postMessage.length": true,
+        "MessageChannel.prototype.port2.postMessage.length.name": true
+      }
     }
   }
 }
