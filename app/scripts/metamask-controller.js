@@ -7911,6 +7911,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getNetworkClientById',
         ),
         startTrace: (options) => {
+          // We intentionally strip out `_isStandaloneSpan` since it can be undefined
           // eslint-disable-next-line no-unused-vars
           const { _isStandaloneSpan, ...result } = trace(options);
           return result;
