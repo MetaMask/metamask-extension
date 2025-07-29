@@ -11,8 +11,9 @@ import {
   isEthSignTypedData,
   isEthSendTransaction,
   hasValidTransactionParams,
-  isEthAccounts,
   isSecurityAlertsEnabledByUser,
+  isConnected,
+  connectScreenHasBeenPrompted,
 } from './trust-signals-util';
 
 export function createTrustSignalsMiddleware(
@@ -20,9 +21,10 @@ export function createTrustSignalsMiddleware(
   appStateController: AppStateController,
   phishingController: PhishingController,
   preferencesController: PreferencesController,
+  getPermittedAccounts: (origin: string) => string[],
 ) {
   return async (
-    req: JsonRpcRequest & { mainFrameOrigin?: string },
+    req: JsonRpcRequest & { origin?: string },
     _res: JsonRpcResponse,
     next: () => void,
   ) => {
@@ -40,7 +42,9 @@ export function createTrustSignalsMiddleware(
       } else if (isEthSignTypedData(req)) {
         handleEthSignTypedData(req, appStateController, networkController);
         scanUrl(req, phishingController);
-      } else if (isEthAccounts(req)) {
+      } else if (isConnected(req, getPermittedAccounts)) {
+        scanUrl(req, phishingController);
+      } else if (connectScreenHasBeenPrompted(req)) {
         scanUrl(req, phishingController);
       }
     } catch (error) {
@@ -52,11 +56,11 @@ export function createTrustSignalsMiddleware(
 }
 
 function scanUrl(
-  req: JsonRpcRequest & { mainFrameOrigin?: string },
+  req: JsonRpcRequest & { origin?: string },
   phishingController: PhishingController,
 ) {
-  if (req.mainFrameOrigin) {
-    phishingController.scanUrl(req.mainFrameOrigin).catch((error) => {
+  if (req.origin) {
+    phishingController.scanUrl(req.origin).catch((error) => {
       console.error('[createTrustSignalsMiddleware] error:', error);
     });
   }
