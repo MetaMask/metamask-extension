@@ -28,10 +28,6 @@ const setup = (
   return new ExtensionStore();
 };
 describe('ExtensionStore', () => {
-  beforeEach(() => {
-    jest.replaceProperty(global, 'sentry', { captureException: jest.fn() });
-  });
-
   afterEach(() => {
     jest.resetModules();
   });
