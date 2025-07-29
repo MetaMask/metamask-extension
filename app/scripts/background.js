@@ -583,7 +583,9 @@ async function initialize(backup) {
   // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
   // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
   if (process.env.IN_TEST && window.navigator?.webdriver) {
-    const { getSocketBackgroundToMocha } = require('../../test/e2e/background-socket/socket-background-to-mocha');
+    const { getSocketBackgroundToMocha } =
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+      require('../../test/e2e/background-socket/socket-background-to-mocha');
     getSocketBackgroundToMocha();
   }
 
@@ -609,8 +611,12 @@ async function initialize(backup) {
   const overrides = inTest
     ? {
         keyrings: {
-          trezorBridge: require('../../test/stub/keyring-bridge').FakeTrezorBridge,
-          ledgerBridge: require('../../test/stub/keyring-bridge').FakeLedgerBridge,
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          trezorBridge: require('../../test/stub/keyring-bridge')
+            .FakeTrezorBridge,
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          ledgerBridge: require('../../test/stub/keyring-bridge')
+            .FakeLedgerBridge,
         },
       }
     : {};
@@ -764,6 +770,7 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence(backup) {
   if (process.env.WITH_STATE) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
     const { generateWalletState } = require('./fixtures/generate-wallet-state');
     const stateOverrides = await generateWalletState();
     firstTimeState = { ...firstTimeState, ...stateOverrides };
@@ -804,7 +811,8 @@ export async function loadStateFromPersistence(backup) {
   const migrator = new Migrator({
     migrations,
     defaultVersion: process.env.WITH_STATE
-      ? require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
+      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
       : null,
   });
 

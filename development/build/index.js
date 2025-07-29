@@ -494,7 +494,10 @@ function getIgnoredFiles(target) {
 Please fix builds.yml or specify a compatible set of features.`);
   }
 
-  if (target.includes(BUILD_TARGETS.DEV) || target.includes(BUILD_TARGETS.TEST)) {
+  if (
+    target.includes(BUILD_TARGETS.DEV) ||
+    target.includes(BUILD_TARGETS.TEST)
+  ) {
     return ignoredPaths;
   }
 
