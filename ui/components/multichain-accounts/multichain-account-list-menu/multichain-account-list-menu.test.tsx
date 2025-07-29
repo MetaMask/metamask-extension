@@ -13,12 +13,16 @@ import {
 import { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { DeepPartial } from 'redux';
+import {
+  AccountWalletCategory,
+  toAccountWalletId,
+  toDefaultAccountGroupId,
+} from '@metamask/account-api';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MultichainAccountListMenu } from '.';
-import { AccountWalletCategory, toAccountWalletId, toDefaultAccountGroupId } from '@metamask/account-api';
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockGetEnvironmentType = jest.fn();
