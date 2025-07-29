@@ -4816,6 +4816,14 @@ export default class MetamaskController extends EventEmitter {
     // we will proceed with the normal flow and use the password to unlock the vault
     if (!isSocialLoginFlow || !isPasswordOutdated) {
       await this.submitPassword(password);
+      if (isSocialLoginFlow) {
+        // revoke seedless refresh token asynchronously
+        this.seedlessOnboardingController
+          .revokeRefreshToken(password)
+          .catch((err) => {
+            log.error('error while revoking seedless refresh token', err);
+          });
+      }
       isPasswordSynced = true;
       return isPasswordSynced;
     }
@@ -4911,6 +4919,13 @@ export default class MetamaskController extends EventEmitter {
         await this.seedlessOnboardingController.checkIsPasswordOutdated({
           skipCache: true,
         });
+
+        // revoke seedless refresh token asynchronously
+        this.seedlessOnboardingController
+          .revokeRefreshToken(password)
+          .catch((err) => {
+            log.error('error while revoking seedless refresh token', err);
+          });
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Unknown error';

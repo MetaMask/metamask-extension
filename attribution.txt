@@ -27257,7 +27257,7 @@ THE SOFTWARE.
 ******************************
 
 @metamask/seedless-onboarding-controller
-2.4.0 <https://github.com/MetaMask/core>
+2.5.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -27805,7 +27805,7 @@ authors: undefined
 ******************************
 
 @metamask/toprf-secure-backup
-0.7.0 <https://github.com/MetaMask/toprf-secure-backup>
+0.7.1 <https://github.com/MetaMask/toprf-secure-backup>
 MIT License
 
 Copyright (c) 2024 MetaMask
