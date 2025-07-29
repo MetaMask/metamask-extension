@@ -117,6 +117,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: max button was shown on native assets incorrectly causing invalid quotes (#34293)
 - fix: migrate BSC network RPC from bsc-dataseed.binance.org to bsc infura (#33997)
 
+## [12.22.3]
+### Fixed
+- fix: resolve infinite loading on spending cap when selected chain differs from dapp (#34355)
+- fix: prevent frequent writes while the wallet UI is closed (#34413, #34465, #34506, #34473, #34474)
+
 ## [12.22.2]
 ### Fixed
 - Fix crash on older browsers (#34255)
@@ -210,7 +215,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.23.0...HEAD
-[12.23.0]: https://github.com/MetaMask/metamask-extension/compare/v12.22.2...v12.23.0
+[12.23.0]: https://github.com/MetaMask/metamask-extension/compare/v12.22.3...v12.23.0
+[12.22.3]: https://github.com/MetaMask/metamask-extension/compare/v12.22.2...v12.22.3
 [12.22.2]: https://github.com/MetaMask/metamask-extension/compare/v12.22.1...v12.22.2
 [12.22.1]: https://github.com/MetaMask/metamask-extension/compare/v12.22.0...v12.22.1
 [12.22.0]: https://github.com/MetaMask/metamask-extension/compare/v12.20.1...v12.22.0
