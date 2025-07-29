@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.23.1]
+### Changed
+- Update: rename extension minimum version flag (#34636)
 
 ## [12.23.0]
 ### Added
