@@ -6825,9 +6825,6 @@
     "message": "我们在连接您的 $1 时遇到问题，尝试检查 $2 并重试。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleStarting": {
-    "message": "MetaMask无法启动。可能发生间歇性错误，因此请尝试重新启动扩展程序。"
-  },
   "tryAgain": {
     "message": "重试"
   },
