@@ -128,10 +128,6 @@ type AppState = {
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
   showPasswordChangeToast: PasswordChangeToastType | null;
-  onboardingErrorReport: {
-    error: Error;
-    view: string;
-  } | null;
   showConnectionsRemovedModal: boolean;
   showCopyAddressToast: boolean;
 };
@@ -235,7 +231,6 @@ const initialState: AppState = {
   showPasswordChangeToast: null,
   showCopyAddressToast: false,
   showSupportDataConsentModal: false,
-  onboardingErrorReport: null,
   showConnectionsRemovedModal: false,
 };
 
@@ -784,12 +779,6 @@ export default function reduceApp(
       return {
         ...appState,
         showSupportDataConsentModal: action.payload,
-      };
-
-    case actionConstants.SET_ONBOARDING_ERROR_REPORT:
-      return {
-        ...appState,
-        onboardingErrorReport: action.payload,
       };
 
     case actionConstants.SET_SHOW_CONNECTIONS_REMOVED:
