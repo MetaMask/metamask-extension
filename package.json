@@ -285,7 +285,7 @@
     "@metamask/error-reporting-service": "^2.0.0",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^17.0.0",
-    "@metamask/eth-ledger-bridge-keyring": "^11.1.1",
+    "@metamask/eth-ledger-bridge-keyring": "11.1.2",
     "@metamask/eth-sig-util": "^7.0.1",
     "@metamask/eth-snap-keyring": "^15.0.0",
     "@metamask/eth-token-tracker": "^10.0.2",
