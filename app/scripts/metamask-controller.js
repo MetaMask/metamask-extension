@@ -7910,7 +7910,11 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'NetworkController:getNetworkClientById',
         ),
-        startTrace: trace,
+        startTrace: (options) => {
+          // eslint-disable-next-line no-unused-vars
+          const { _isStandaloneSpan, ...result } = trace(options);
+          return result;
+        },
         endTrace,
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         handleSnapRpcRequest: (args) =>
