@@ -9,7 +9,7 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "foundryup": "npx mm-foundryup",
+    "foundryup": "yarn mm-foundryup",
     "postinstall": "yarn webpack:clearcache && yarn foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
@@ -465,7 +465,7 @@
     "@metamask/eslint-plugin-design-tokens": "^1.1.0",
     "@metamask/eth-json-rpc-provider": "^4.1.6",
     "@metamask/forwarder": "^1.1.0",
-    "@metamask/foundryup": "^1.0.0",
+    "@metamask/foundryup": "^1.0.1",
     "@metamask/phishing-warning": "^5.0.0",
     "@metamask/preferences-controller": "^17.0.0",
     "@metamask/superstruct": "^3.2.1",
