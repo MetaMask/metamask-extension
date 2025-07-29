@@ -320,10 +320,6 @@ export default class Routes extends Component {
     const { autoLockTimeLimit, setLastActiveTime, forgottenPassword } =
       this.props;
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
-    console.log(
-      'process.env.PERMISSIONS_PAGE_V2',
-      process.env.PERMISSIONS_PAGE_V2,
-    );
 
     const routes = (
       <Suspense fallback={null}>

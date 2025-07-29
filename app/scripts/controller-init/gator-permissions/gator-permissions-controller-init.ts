@@ -1,6 +1,9 @@
+import {
+  GatorPermissionsController,
+  type GatorPermissionsControllerConfig,
+} from '@metamask/gator-permissions-controller';
 import { ControllerInitFunction } from '../types';
 import { type GatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
-import { GatorPermissionsController, type GatorPermissionsControllerConfig } from '@metamask/gator-permissions-controller';
 
 export const GatorPermissionsControllerInit: ControllerInitFunction<
   GatorPermissionsController,
@@ -17,9 +20,12 @@ export const GatorPermissionsControllerInit: ControllerInitFunction<
   return {
     controller,
     api: {
-      enableGatorPermissions: controller.enableGatorPermissions.bind(controller),
-      disableGatorPermissions: controller.disableGatorPermissions.bind(controller),
-      fetchAndUpdateGatorPermissions: controller.fetchAndUpdateGatorPermissions.bind(controller),
+      enableGatorPermissions:
+        controller.enableGatorPermissions.bind(controller),
+      disableGatorPermissions:
+        controller.disableGatorPermissions.bind(controller),
+      fetchAndUpdateGatorPermissions:
+        controller.fetchAndUpdateGatorPermissions.bind(controller),
     },
   };
 };

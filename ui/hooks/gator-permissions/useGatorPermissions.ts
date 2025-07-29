@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { GatorPermissionsMap } from '@metamask/gator-permissions-controller';
 import {
   enableGatorPermissions,
   fetchAndUpdateGatorPermissions,
 } from '../../store/controller-actions/gator-permissions-controller';
-import { GatorPermissionsList } from '@metamask/gator-permissions-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 
 export function useGatorPermissions() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(true);
-  const [data, setData] = useState<GatorPermissionsList | undefined>(undefined);
+  const [data, setData] = useState<GatorPermissionsMap | undefined>(undefined);
   const [error, setError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export function useGatorPermissions() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [dispatch]);
 
   return { data, error, loading };
 }
