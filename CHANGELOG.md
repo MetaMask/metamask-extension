@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.23.1]
+### Fixed
+- fix: ensure "Update extension to the latest version" button in the update prompt work in browser-action popup (#34372)
 
 ## [12.23.0]
 ### Added
@@ -65,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set confirm srp quiz word to readonly (#34225)
 
 ### Fixed
-- Fix: solve when private key import field to always be in error state (#34050)
+- fix: solve when private key import field to always be in error state (#34050)
 - fix: solve `Error: Ledger: Unknown error while signing transaction` (#33581)
 - fix: regression of lanchdarkly flag key (#34045)
 - fix: private key import field to always be in error state (#34050)
