@@ -204,7 +204,6 @@ function getApi(
       controller.updateTransactionGasFees.bind(controller),
     updateTransactionSendFlowHistory:
       controller.updateTransactionSendFlowHistory.bind(controller),
-    addTransactionBatch: controller.addTransactionBatch.bind(controller),
   };
 }
 

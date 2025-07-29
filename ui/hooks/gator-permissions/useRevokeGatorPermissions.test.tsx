@@ -12,7 +12,6 @@ import {
 import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { addTransaction } from '../../store/actions';
-import { addTransactionBatch } from '../../store/controller-actions/transaction-controller';
 import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
 import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
 
@@ -51,37 +50,8 @@ jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
   }),
 }));
 
-// Mock useEIP7702Account hook
-const mockUpgradeAccountEIP7702 = jest.fn();
-const mockIsUpgraded = jest.fn();
-
-jest.mock('../../pages/confirmations/hooks/useEIP7702Account', () => ({
-  useEIP7702Account: () => ({
-    upgradeAccount: mockUpgradeAccountEIP7702,
-    isUpgraded: mockIsUpgraded,
-  }),
-}));
-
-// Mock useEIP7702Networks hook
-jest.mock('../../pages/confirmations/hooks/useEIP7702Networks', () => ({
-  useEIP7702Networks: () => ({
-    network7702List: [
-      {
-        chainId: '0x1',
-        chainIdHex: '0x1',
-        isSupported: true,
-        upgradeContractAddress: '0x1234567890123456789012345678901234567890',
-      },
-    ],
-    pending: false,
-  }),
-}));
-
 const mockAddTransaction = addTransaction as jest.MockedFunction<
   typeof addTransaction
->;
-const mockAddTransactionBatch = addTransactionBatch as jest.MockedFunction<
-  typeof addTransactionBatch
 >;
 const mockDecodeDelegations = decodeDelegations as jest.MockedFunction<
   typeof decodeDelegations
@@ -152,8 +122,6 @@ describe('useRevokeGatorPermissions', () => {
     jest.clearAllMocks();
     mockConfirmations.length = 0;
     mockNavigateToId.mockClear();
-    mockUpgradeAccountEIP7702.mockClear();
-    mockIsUpgraded.mockClear();
 
     // Setup default mock implementations
     mockDecodeDelegations.mockReturnValue([mockDelegation]);
@@ -161,9 +129,6 @@ describe('useRevokeGatorPermissions', () => {
       '0xencodeddata' as `0x${string}`,
     );
     mockAddTransaction.mockResolvedValue(mockTransactionMeta as never);
-    mockAddTransactionBatch.mockResolvedValue({ batchId: 'test-batch-id' });
-    mockIsUpgraded.mockResolvedValue(true);
-    mockUpgradeAccountEIP7702.mockResolvedValue(undefined);
   });
 
   describe('revokeGatorPermission', () => {
@@ -366,25 +331,90 @@ describe('useRevokeGatorPermissions', () => {
       expect(mockEncodeDisableDelegation).toHaveBeenCalled();
       expect(mockAddTransaction).toHaveBeenCalled();
     });
-  });
 
-  describe('revokeGatorPermissionBatch', () => {
-    it('should revoke multiple gator permissions in a batch', async () => {
+    it('should throw error when no delegation is found in permission context', async () => {
+      mockDecodeDelegations.mockReturnValue([]);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            accountAddress: mockSelectedAccountAddress as `0x${string}`,
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermission(
+            mockPermissionContext,
+            mockDelegationManagerAddress,
+          ),
+        ).rejects.toThrow('No delegation found');
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).not.toHaveBeenCalled();
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+    });
+
+    it('should handle transaction meta without id', async () => {
+      const mockTransactionMetaWithoutId = {
+        ...mockTransactionMeta,
+        id: undefined,
+      };
+
+      mockAddTransaction.mockResolvedValue(
+        mockTransactionMetaWithoutId as never,
+      );
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            accountAddress: mockSelectedAccountAddress as `0x${string}`,
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        const transactionMeta = await result.current.revokeGatorPermission(
+          mockPermissionContext,
+          mockDelegationManagerAddress,
+        );
+
+        expect(transactionMeta).toBe(mockTransactionMetaWithoutId);
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+    });
+
+    it('should handle onRedirect callback when provided', async () => {
+      const mockOnRedirect = jest.fn();
+      mockConfirmations.push({
+        id: 'test-transaction-id',
+        status: TransactionStatus.unapproved,
+      } as unknown as ApprovalRequest<Record<string, Json>>);
+
       const mockDispatch = jest.fn().mockResolvedValue(mockTransactionMeta);
       store.dispatch = mockDispatch;
 
-      const batchTransactionMeta = {
-        ...mockTransactionMeta,
-        id: 'test-batch-transaction-id',
-        batchId: 'test-batch-id',
-      };
-      mockConfirmations.push(batchTransactionMeta);
-
       const { result } = renderHook(
         () =>
           useRevokeGatorPermissions({
             accountAddress: mockSelectedAccountAddress as `0x${string}`,
             chainId: mockChainId,
+            onRedirect: mockOnRedirect,
           }),
         {
           wrapper: ({ children }) => (
@@ -394,77 +424,24 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        const transactionMeta = await result.current.revokeGatorPermissionBatch(
-          [
-            {
-              permissionContext: '0x1234567890abcdef' as Hex,
-              delegationManagerAddress: mockDelegationManagerAddress,
-            },
-            {
-              permissionContext: '0xfedcba0987654321' as Hex,
-              delegationManagerAddress: mockDelegationManagerAddress,
-            },
-          ],
+        await result.current.revokeGatorPermission(
+          mockPermissionContext,
+          mockDelegationManagerAddress,
         );
-
-        expect(transactionMeta).toBe(batchTransactionMeta);
       });
 
-      expect(mockIsUpgraded).toHaveBeenCalledWith(mockSelectedAccountAddress);
-      expect(mockDecodeDelegations).toHaveBeenCalledTimes(2);
-      expect(mockEncodeDisableDelegation).toHaveBeenCalledTimes(2);
-      expect(mockAddTransactionBatch).toHaveBeenCalledWith({
-        from: mockSelectedAccountAddress as `0x${string}`,
-        networkClientId: 'mock-network-client-id',
-        origin: 'metamask',
-        requireApproval: true,
-        securityAlertId: expect.any(String),
-        transactions: [
-          {
-            params: {
-              to: mockDelegationManagerAddress,
-              data: '0xencodeddata',
-              value: '0x0' as `0x${string}`,
-            },
-          },
-          {
-            params: {
-              to: mockDelegationManagerAddress,
-              data: '0xencodeddata',
-              value: '0x0' as `0x${string}`,
-            },
-          },
-        ],
-      });
+      expect(mockNavigateToId).toHaveBeenCalledWith('test-transaction-id');
+      expect(mockOnRedirect).toHaveBeenCalled();
     });
 
-    it('should handle empty permission contexts array', async () => {
-      const { result } = renderHook(
-        () =>
-          useRevokeGatorPermissions({
-            accountAddress: mockSelectedAccountAddress as `0x${string}`,
-            chainId: mockChainId,
-          }),
-        {
-          wrapper: ({ children }) => (
-            <Provider store={store}>{children}</Provider>
-          ),
-        },
-      );
+    it('should handle case when onRedirect is not provided', async () => {
+      mockConfirmations.push({
+        id: 'test-transaction-id',
+        status: TransactionStatus.unapproved,
+      } as unknown as ApprovalRequest<Record<string, Json>>);
 
-      await act(async () => {
-        await expect(
-          result.current.revokeGatorPermissionBatch([]),
-        ).rejects.toThrow('No permission contexts provided');
-      });
-
-      expect(mockAddTransactionBatch).not.toHaveBeenCalled();
-    });
-
-    it('should handle batch transaction creation failure', async () => {
-      mockAddTransactionBatch.mockRejectedValue(
-        new Error('Batch creation failed'),
-      );
+      const mockDispatch = jest.fn().mockResolvedValue(mockTransactionMeta);
+      store.dispatch = mockDispatch;
 
       const { result } = renderHook(
         () =>
@@ -480,17 +457,13 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        await expect(
-          result.current.revokeGatorPermissionBatch([
-            {
-              permissionContext: mockPermissionContext,
-              delegationManagerAddress: mockDelegationManagerAddress,
-            },
-          ]),
-        ).rejects.toThrow('Batch creation failed');
+        await result.current.revokeGatorPermission(
+          mockPermissionContext,
+          mockDelegationManagerAddress,
+        );
       });
 
-      expect(mockAddTransactionBatch).toHaveBeenCalled();
+      expect(mockNavigateToId).toHaveBeenCalledWith('test-transaction-id');
     });
   });
 });
