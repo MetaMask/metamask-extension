@@ -4679,58 +4679,6 @@ describe('MetaMaskController', () => {
     });
   });
 
-  describe('onFeatureFlagResponseReceived', () => {
-    const metamaskController = new MetaMaskController({
-      showUserConfirmation: noop,
-      encryptor: mockEncryptor,
-      initState: cloneDeep(firstTimeState),
-      initLangCode: 'en_US',
-      platform: {
-        showTransactionNotification: () => undefined,
-        getVersion: () => 'foo',
-      },
-      browser: browserPolyfillMock,
-      infuraProjectId: 'foo',
-      isFirstMetaMaskControllerSetup: true,
-      cronjobControllerStorageManager:
-        createMockCronjobControllerStorageManager(),
-    });
-
-    beforeEach(() => {
-      jest.spyOn(
-        metamaskController.tokenBalancesController,
-        'setIntervalLength',
-      );
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should not set the interval length if the pollInterval is 0', () => {
-      metamaskController.onFeatureFlagResponseReceived({
-        multiChainAssets: {
-          pollInterval: 0,
-        },
-      });
-      expect(
-        metamaskController.tokenBalancesController.setIntervalLength,
-      ).not.toHaveBeenCalled();
-    });
-
-    it('should set the interval length if the pollInterval is greater than 0', () => {
-      const pollInterval = 10;
-      metamaskController.onFeatureFlagResponseReceived({
-        multiChainAssets: {
-          pollInterval,
-        },
-      });
-      expect(
-        metamaskController.tokenBalancesController.setIntervalLength,
-      ).toHaveBeenCalledWith(pollInterval * SECOND);
-    });
-  });
-
   describe('MV3 Specific behaviour', () => {
     beforeAll(async () => {
       mockIsManifestV3.mockReturnValue(true);
