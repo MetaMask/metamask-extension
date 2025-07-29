@@ -1,9 +1,5 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
-import {
-  MOCK_AUTH_CONNECTION_ID,
-  MOCK_GROUPED_AUTH_CONNECTION_ID,
-} from '../../../../test/e2e/constants';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { BaseLoginHandler } from './base-login-handler';
@@ -273,6 +269,10 @@ export default class OAuthService {
     let groupedAuthConnectionId = '';
 
     if (process.env.IN_TEST) {
+      const {
+        MOCK_AUTH_CONNECTION_ID,
+        MOCK_GROUPED_AUTH_CONNECTION_ID,
+      } = require('../../../../test/e2e/constants');
       authConnectionId = MOCK_AUTH_CONNECTION_ID;
       groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
     } else if (loginHandler.authConnection === AuthConnection.Google) {
