@@ -16,7 +16,6 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
-import { getPermissionsFromDiffMap } from '../../../shared/lib/caip25-caveat-merger';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -46,16 +45,9 @@ function getDefaultSelectedAccounts(currentAddress, permissions) {
   return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
 }
 
-function getRequestedChainIds(permissionRequest) {
-  const permissions = permissionRequest?.permissions;
-  const permissionDiffMap = permissionRequest?.diff?.permissionDiffMap;
-
-  const permissionsDiff = getPermissionsFromDiffMap(permissionDiffMap);
-
-  const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
-    permissionDiffMap ? permissionsDiff : permissions,
-  );
-
+function getRequestedChainIds(permissions) {
+  const requestedCaip25CaveatValue =
+    getCaip25CaveatValueFromPermissions(permissions);
   return getPermittedEthChainIds(requestedCaip25CaveatValue);
 }
 
@@ -402,7 +394,9 @@ export default class PermissionConnect extends Component {
                   selectedAccounts={accounts.filter((account) =>
                     selectedAccountAddresses.has(account.address),
                   )}
-                  requestedChainIds={getRequestedChainIds(permissionsRequest)}
+                  requestedChainIds={getRequestedChainIds(
+                    permissionsRequest?.permissions,
+                  )}
                   targetSubjectMetadata={targetSubjectMetadata}
                   history={history}
                   connectPath={connectPath}
