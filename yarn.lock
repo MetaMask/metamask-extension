@@ -6287,9 +6287,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/foundryup@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/foundryup@npm:1.0.0"
+"@metamask/foundryup@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/foundryup@npm:1.0.1"
   dependencies:
     minipass: "npm:^7.1.2"
     tar: "npm:^7.4.3"
@@ -6298,7 +6298,7 @@ __metadata:
     yargs-parser: "npm:^21.1.1"
   bin:
     mm-foundryup: ./dist/cli.mjs
-  checksum: 10/20296930936a87525331ae9244a144cbd272a61cb658a367194ad7101379633daeb4a5294a6843b013aa14198d7b8bf99ee754ec2c4729880097b486e3754587
+  checksum: 10/57305fd670e078164ef5d437df6f8fe76955430a4a18f591b3f1e3efbed63bccdadafeac2ce186cf1ccfcd25fb3601fdae3e7b8d41947c01aecc459bc835af87
   languageName: node
   linkType: hard
 
@@ -32184,7 +32184,7 @@ __metadata:
     "@metamask/eth-trezor-keyring": "npm:^9.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
-    "@metamask/foundryup": "npm:^1.0.0"
+    "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^23.0.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.1"
     "@metamask/jazzicon": "npm:^2.0.0"
