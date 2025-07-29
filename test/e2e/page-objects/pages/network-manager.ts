@@ -39,11 +39,14 @@ class NetworkManager {
   async openNetworkManager(): Promise<void> {
     console.log(`Opening the network manager`);
     await this.driver.clickElement(this.networkManagerToggle);
+    await this.driver.waitForSelector(this.networkManagerCloseButton);
   }
 
   async closeNetworkManager(): Promise<void> {
     console.log(`Closing the network manager`);
-    await this.driver.clickElement(this.networkManagerCloseButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.networkManagerCloseButton,
+    );
   }
 
   async selectTab(tabName: string): Promise<void> {
