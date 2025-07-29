@@ -63,6 +63,7 @@ function getRedirectURL(): string {
 export function webAuthenticatorFactory(): WebAuthenticator {
   if (process.env.IN_TEST) {
     const { mockWebAuthenticator } =
+      // Use `require` to make it easier to exclude this test code from the Browserify build.
       // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
       require('../../../../test/e2e/helpers/seedless-onboarding/mock-web-authenticator');
     return mockWebAuthenticator();
