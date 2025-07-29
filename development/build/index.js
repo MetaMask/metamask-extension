@@ -188,7 +188,7 @@ async function defineAndRunBuildTasks() {
 
   const browserVersionMap = getBrowserVersionMap(browserPlatforms, version);
 
-  const ignoredFiles = getIgnoredFiles();
+  const ignoredFiles = getIgnoredFiles(entryTask);
 
   const staticTasks = createStaticAssetTasks({
     browserPlatforms,
@@ -462,7 +462,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
  * @returns {string[] | null} The array of files to be ignored by the current
  * build, or `null` if no files are to be ignored.
  */
-function getIgnoredFiles() {
+function getIgnoredFiles(target) {
   const buildConfig = loadBuildTypesConfig();
   const cwd = process.cwd();
 
@@ -491,6 +491,11 @@ function getIgnoredFiles() {
     throw new Error(`The following paths are required exclusively by both active and inactive features:
 \t-> ${conflicts.join('\n\t-> ')}
 Please fix builds.yml or specify a compatible set of features.`);
+  }
+
+  if (!isDevBuild(target)) {
+    const testPaths = globby(['./test', './app/scripts/fixtures']);
+    return [...ignoredPaths, ...testPaths];
   }
 
   return ignoredPaths;
