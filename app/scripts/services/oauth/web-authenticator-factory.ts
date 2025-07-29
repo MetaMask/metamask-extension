@@ -1,5 +1,4 @@
 import browser from 'webextension-polyfill';
-import { mockWebAuthenticator } from '../../../../test/e2e/helpers/seedless-onboarding/mock-web-authenticator';
 import { WebAuthenticator } from './types';
 import { base64urlencode } from './utils';
 
@@ -63,6 +62,7 @@ function getRedirectURL(): string {
 
 export function webAuthenticatorFactory(): WebAuthenticator {
   if (process.env.IN_TEST) {
+    const { mockWebAuthenticator } = require('../../../../test/e2e/helpers/seedless-onboarding/mock-web-authenticator');
     return mockWebAuthenticator();
   }
 

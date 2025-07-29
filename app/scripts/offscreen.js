@@ -3,7 +3,6 @@ import {
   OFFSCREEN_LOAD_TIMEOUT,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 
 /**
  * Returns whether the offscreen document already exists or not.
@@ -54,6 +53,9 @@ export async function createOffscreen() {
         // If the Offscreen Document sees `navigator.webdriver === true` and we are in a test environment,
         // start the SocketBackgroundToMocha.
         if (process.env.IN_TEST && msg.webdriverPresent) {
+          const {
+            getSocketBackgroundToMocha,
+          } = require('../../test/e2e/background-socket/socket-background-to-mocha');
           getSocketBackgroundToMocha();
         }
       }
