@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
 import log from 'loglevel';
+import { captureException } from '../../../shared/lib/sentry';
 
 type VersionedData = {
   meta: { version: number };
@@ -175,7 +176,7 @@ function removeObsoletePhishingControllerState(
   if (!hasProperty(state, 'PhishingController')) {
     return;
   } else if (!isObject(state.PhishingController)) {
-    global.sentry.captureException(
+    captureException(
       new Error(
         `Migration ${version}: Invalid PhishingController state of type '${typeof state.PhishingController}'`,
       ),

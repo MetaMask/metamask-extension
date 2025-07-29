@@ -31,7 +31,6 @@ import {
   NftControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import { captureException as sentryCaptureException } from '@sentry/browser';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -83,6 +82,7 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
 import { KeyringType } from '../../../shared/constants/keyring';
+import type { captureException } from '../../../shared/lib/sentry';
 import type {
   PreferencesControllerState,
   PreferencesControllerGetStateAction,
@@ -331,9 +331,7 @@ export type MetaMetricsControllerMessenger = RestrictedMessenger<
   AllowedEvents['type']
 >;
 
-type CaptureException =
-  | typeof sentryCaptureException
-  | ((err: unknown) => void);
+type CaptureException = typeof captureException | ((err: unknown) => void);
 
 export type MetaMetricsControllerOptions = {
   state?: Partial<MetaMetricsControllerState>;
