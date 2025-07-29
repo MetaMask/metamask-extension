@@ -53,9 +53,7 @@ function getRequestedChainIds(permissionRequest) {
   const permissionsDiff = getPermissionsFromDiffMap(permissionDiffMap);
 
   const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
-    permissionDiffMap && Object.keys(permissionDiffMap).length > 0
-      ? permissionsDiff
-      : permissions,
+    permissionDiffMap ? permissionsDiff : permissions,
   );
 
   return getPermittedEthChainIds(requestedCaip25CaveatValue);
