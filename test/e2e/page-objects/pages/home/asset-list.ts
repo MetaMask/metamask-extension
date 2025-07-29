@@ -65,6 +65,12 @@ class AssetListPage {
   private readonly sortByPopoverToggle =
     '[data-testid="sort-by-popover-toggle"]';
 
+  private readonly coinSendButton = '[data-testid="coin-overview-send"]';
+
+  private readonly swapButton = '[data-testid="eth-overview-swap"]';
+
+  private readonly buySellButton = '[data-testid="coin-overview-buy"]';
+
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
 
@@ -187,6 +193,16 @@ class AssetListPage {
     console.log('Dismissing token imported success message');
     await this.driver.clickElement(this.tokenImportedMessageCloseButton);
     await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage);
+  }
+
+  async clickCoinSendButton(): Promise<void> {
+    console.log(`Clicking on the send button`);
+    await this.driver.clickElement(this.coinSendButton);
+  }
+
+  async clickSwapButton(): Promise<void> {
+    console.log(`Clicking on the swap button`);
+    await this.driver.clickElement(this.swapButton);
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
@@ -362,6 +378,20 @@ class AssetListPage {
       },
       { timeout: 5000, interval: 100 },
     );
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_buySellButtonIsPresent(): Promise<void> {
+    console.log(`Verify the buy/sell button is displayed`);
+    await this.driver.waitForSelector(this.buySellButton);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_multichainTokenListButtonIsPresent(): Promise<void> {
+    console.log(`Verify the multichain-token-list-button is displayed`);
+    await this.driver.waitForSelector(this.tokenListItem);
   }
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
