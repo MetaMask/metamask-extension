@@ -24,7 +24,7 @@ export function createTrustSignalsMiddleware(
   getPermittedAccounts: (origin: string) => string[],
 ) {
   return async (
-    req: JsonRpcRequest & { mainFrameOrigin?: string },
+    req: JsonRpcRequest & { origin?: string },
     _res: JsonRpcResponse,
     next: () => void,
   ) => {
@@ -56,11 +56,11 @@ export function createTrustSignalsMiddleware(
 }
 
 function scanUrl(
-  req: JsonRpcRequest & { mainFrameOrigin?: string },
+  req: JsonRpcRequest & { origin?: string },
   phishingController: PhishingController,
 ) {
-  if (req.mainFrameOrigin) {
-    phishingController.scanUrl(req.mainFrameOrigin).catch((error) => {
+  if (req.origin) {
+    phishingController.scanUrl(req.origin).catch((error) => {
       console.error('[createTrustSignalsMiddleware] error:', error);
     });
   }

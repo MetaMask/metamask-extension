@@ -41,13 +41,13 @@ const getPermittedAccounts = jest.fn();
 const createMockRequest = (
   method: string,
   params: Json[] = [],
-  mainFrameOrigin: string = 'https://example.com',
-): JsonRpcRequest & { mainFrameOrigin?: string } => ({
+  origin: string = 'https://example.com',
+): JsonRpcRequest & { origin?: string } => ({
   method,
   params,
   id: 1,
   jsonrpc: '2.0',
-  mainFrameOrigin,
+  origin,
 });
 
 const createMockResponse = (): JsonRpcResponse => ({
@@ -178,9 +178,7 @@ describe('createTrustSignalsMiddleware', () => {
         appStateController,
         networkController,
       );
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(
-        req.mainFrameOrigin,
-      );
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
       expect(next).toHaveBeenCalled();
     });
 
@@ -577,11 +575,11 @@ describe('createTrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(phishingController.scanUrl).toHaveBeenCalledWith(mainFrameOrigin);
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
       expect(next).toHaveBeenCalled();
     });
 
-    it('does not scan URL when mainFrameOrigin is not present', async () => {
+    it('does not scan URL when origin is not present', async () => {
       const { middleware, phishingController } = createMiddleware();
       const req = createMockRequest(MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS);
       req.origin = undefined;
