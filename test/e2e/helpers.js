@@ -386,44 +386,63 @@ async function withFixtures(options, testSuite) {
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
-      await fixtureServer.stop();
+      const shutdownTasks = [async () => fixtureServer.stop()];
+
       for (const server of localNodes) {
         if (server) {
-          await server.quit();
+          shutdownTasks.push(async () => await server.quit());
         }
       }
 
       if (useBundler) {
-        await bundlerServer.stop();
+        shutdownTasks.push(async () => await bundlerServer.stop());
       }
 
       if (webDriver) {
-        await driver.quit();
+        shutdownTasks.push(async () => await driver.quit());
       }
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
-            await new Promise((resolve, reject) => {
-              dappServer[i].close((error) => {
-                if (error) {
-                  return reject(error);
-                }
-                return resolve();
+            shutdownTasks.push(async () => {
+              return await new Promise((resolve, reject) => {
+                dappServer[i].close((error) => {
+                  if (error) {
+                    return reject(error);
+                  }
+                  return resolve();
+                });
               });
             });
           }
         }
       }
       if (phishingPageServer.isRunning()) {
-        await phishingPageServer.quit();
+        shutdownTasks.push(async () => await phishingPageServer.quit());
       }
 
-      // Since mockServer could be stop'd at another location,
-      // use a try/catch to avoid an error
-      try {
-        await mockServer.stop();
-      } catch (e) {
-        console.log('mockServer already stopped');
+      shutdownTasks.push(async () => {
+        // Since mockServer could be stop'd at another location,
+        // use a try/catch to avoid an error
+        try {
+          await mockServer.stop();
+        } catch (e) {
+          console.log('mockServer already stopped');
+        }
+      });
+
+      const results = await Promise.allSettled(shutdownTasks);
+      const failures = results.filter((result) => result.status === 'rejected');
+      for (const { reason } of failures) {
+        console.error('Failed to shut down:', reason);
+      }
+      if (failures.length) {
+        // A test error may get overridden here by the shutdown error, but this is OK because a
+        // shutdown error indicates a bug in our test tooling that might invalidate later tests.
+        // eslint-disable-next-line no-unsafe-finally
+        throw new Error('Failed to shut down test servers', {
+          cause: failures[0].reason,
+        });
       }
     }
   }
