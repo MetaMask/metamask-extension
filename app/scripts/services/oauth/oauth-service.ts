@@ -270,6 +270,7 @@ export default class OAuthService {
 
     if (process.env.IN_TEST) {
       const { MOCK_AUTH_CONNECTION_ID, MOCK_GROUPED_AUTH_CONNECTION_ID } =
+        // Use `require` to make it easier to exclude this test code from the Browserify build.
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
         require('../../../../test/e2e/constants');
       authConnectionId = MOCK_AUTH_CONNECTION_ID;
