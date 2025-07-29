@@ -19,7 +19,7 @@ import {
   PHISHING_SAFELIST,
   PHISHING_STREAM,
 } from '../constants/stream';
-import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
+import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
