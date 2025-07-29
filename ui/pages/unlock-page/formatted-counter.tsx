@@ -4,18 +4,14 @@ import { Text } from '../../components/component-library';
 
 const formatTimeToUnlock = (timeInSeconds: number) => {
   if (timeInSeconds <= 60) {
-    return `${timeInSeconds}s.`;
-  } else if (timeInSeconds < 3600) {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
-    return `${minutes}m:${seconds.toString().padStart(2, '0')}s.`;
+    return `${timeInSeconds} seconds.`;
   }
   const hours = Math.floor(timeInSeconds / 3600);
   const minutes = Math.floor((timeInSeconds % 3600) / 60);
   const seconds = timeInSeconds % 60;
-  return `${hours}hr:${minutes.toString().padStart(2, '0')}m:${seconds
+  return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds
     .toString()
-    .padStart(2, '0')}s.`;
+    .padStart(2, '0')}.`;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

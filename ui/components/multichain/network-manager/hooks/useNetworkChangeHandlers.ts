@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { parseCaipChainId, type CaipChainId } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,7 +16,6 @@ import {
   setEnabledNetworks,
   setNetworkClientIdForDomain,
   setNextNonce,
-  setTokenNetworkFilter,
   showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../../store/actions';
@@ -29,9 +28,7 @@ import {
   getOriginOfCurrentTab,
   getPermittedEVMAccountsForSelectedTab,
   getPermittedEVMChainsForSelectedTab,
-  getPreferences,
   getSelectedMultichainNetworkChainId,
-  isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
@@ -66,7 +63,6 @@ export const useNetworkChangeHandlers = () => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { tokenNetworkFilter } = useSelector(getPreferences);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const domains = useSelector(getAllDomains);
   const [multichainNetworks, evmNetworks] = useSelector(
@@ -90,6 +86,19 @@ export const useNetworkChangeHandlers = () => {
     useState<CaipChainId>();
 
   const [actionMode, setActionMode] = useState(ACTION_MODE.LIST);
+
+  useEffect(() => {
+    // Fire and forget async operations for better performance
+    // setTimeout with 0 delay pushes these operations to the next event loop tick,
+    // preventing them from blocking the current execution stack and improving UI responsiveness.
+    // This technique is called "yielding to the event loop" - it allows higher priority
+    // tasks (like UI updates) to execute first before these background operations run.
+    setTimeout(() => {
+      dispatch(updateCustomNonce(''));
+      dispatch(setNextNonce(''));
+      dispatch(detectNfts(allChainIds));
+    }, 0);
+  }, [enabledNetworksByNamespace, dispatch, allChainIds]);
 
   const handleEvmNetworkChange = useCallback(
     (chainId: CaipChainId) => {
@@ -132,49 +141,6 @@ export const useNetworkChangeHandlers = () => {
         );
       }
 
-      const isDeselecting = Object.keys(enabledNetworksByNamespace).some(
-        (key) => key === hexChainId,
-      );
-
-      if (isGlobalNetworkSelectorRemoved && isDeselecting) {
-        const firstEnabledNetwork = enabledNetworkKeys[0];
-
-        const firstEnabledNetworkConfig = firstEnabledNetwork
-          ? evmNetworks[firstEnabledNetwork as keyof typeof evmNetworks]
-          : null;
-        const firstEnabledNetworkClientId =
-          firstEnabledNetworkConfig?.rpcEndpoints?.[
-            firstEnabledNetworkConfig.defaultRpcEndpointIndex
-          ]?.networkClientId;
-
-        dispatch(
-          setActiveNetwork(firstEnabledNetworkClientId || finalNetworkClientId),
-        );
-      } else {
-        dispatch(setActiveNetwork(finalNetworkClientId));
-      }
-
-      dispatch(updateCustomNonce(''));
-      dispatch(setNextNonce(''));
-      dispatch(detectNfts(allChainIds));
-
-      // as a user, I don't want my network selection to force update my filter
-      // when I have "All Networks" toggled on however, if I am already filtered
-      // on "Current Network", we'll want to filter by the selected network when
-      // the network changes.
-      if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
-        dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
-      } else {
-        const allOpts = Object.keys(evmNetworks).reduce(
-          (acc, id) => {
-            acc[id] = true;
-            return acc;
-          },
-          {} as Record<string, boolean>,
-        );
-        dispatch(setTokenNetworkFilter(allOpts));
-      }
-
       // If presently on a dapp, communicate a change to
       // the dapp via silent switchEthereumChain that the
       // network has changed due to user action
@@ -197,8 +163,6 @@ export const useNetworkChangeHandlers = () => {
       evmNetworks,
       dispatch,
       enabledNetworksByNamespace,
-      allChainIds,
-      tokenNetworkFilter,
       selectedTabOrigin,
       domains,
       permittedAccountAddresses.length,

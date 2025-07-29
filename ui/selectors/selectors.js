@@ -272,6 +272,14 @@ export function getKeyringSnapRemovalResult(state) {
 
 export const getPendingTokens = (state) => state.appState.pendingTokens;
 
+export function getShowConnectionsRemovedModal(state) {
+  return state.appState.showConnectionsRemovedModal;
+}
+
+export function getOnboardingErrorReport(state) {
+  return state.appState.onboardingErrorReport || null;
+}
+
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {
@@ -1832,6 +1840,7 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * `balance` and `string` values of the same type as in regular ERC-20 token
  * objects, per the above description.
  *
+ * @deprecated Use getNativeAssetForChainId instead because this only supports EVM chains
  * @param {object} state - the redux state object
  * @param {string} overrideChainId - the chainId to override the current chainId
  * @returns {SwapsEthToken} The token object representation of the currently
@@ -3899,12 +3908,12 @@ export function getShowUpdateModal(state) {
   const extensionCurrentVersion = semver.valid(
     semver.coerce(global.platform?.getVersion()),
   );
-  const extensionMinimumVersion = semver.valid(
-    semver.coerce(remoteFeatureFlags.extensionMinimumVersion),
+  const extensionUpdatePromptMinimumVersion = semver.valid(
+    semver.coerce(remoteFeatureFlags.extensionUpdatePromptMinimumVersion),
   );
   const isExtensionOutdated =
-    extensionCurrentVersion && extensionMinimumVersion
-      ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
+    extensionCurrentVersion && extensionUpdatePromptMinimumVersion
+      ? semver.lt(extensionCurrentVersion, extensionUpdatePromptMinimumVersion)
       : false;
 
   const currentTime = Date.now();

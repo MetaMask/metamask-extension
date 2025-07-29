@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "代币金额必须是整数"
   },
-  "followUsOnX": {
-    "message": "在 $1上关注我们",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "禁用的 IPFS 网关：请指定一个 CID 网关"
   },
@@ -5071,7 +5067,8 @@
     "message": "已启用"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "该电子邮箱和您的 MetaMask 密码将帮助您找回账户及助记词。"
+    "message": "该电子邮箱和您的 MetaMask 密码将帮助您找回账户及助记词。",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 找回",

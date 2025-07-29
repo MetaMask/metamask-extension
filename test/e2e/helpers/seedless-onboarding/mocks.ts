@@ -8,9 +8,12 @@ import { decrypt, encrypt } from '@toruslabs/eccrypto';
 import { SecretType } from '@metamask/seedless-onboarding-controller';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
+import { E2E_SRP } from '../../default-fixture';
 import {
   AuthServer,
   MetadataService,
+  PasswordChangeItemId,
   SSSBaseUrlRgx,
   SSSNodeKeyPairs,
 } from './constants';
@@ -23,9 +26,10 @@ import {
 } from './types';
 import {
   MockAuthPubKey,
-  MockEncryptionKey,
+  InitialMockEncryptionKey,
   MockKeyShareData,
   MockJwtPrivateKey,
+  NewMockPwdEncryptionKeyAfterPasswordChange,
 } from './data';
 
 function generateMockJwtToken(userId: string) {
@@ -117,11 +121,39 @@ async function generateEncryptedSecretData(
     });
     const secretBytes = stringToBytes(secretMetadata);
 
-    const aes = managedNonce(gcm)(MockEncryptionKey);
+    const aes = managedNonce(gcm)(InitialMockEncryptionKey);
     const cipherText = aes.encrypt(secretBytes);
     return bytesToBase64(cipherText);
   });
   return encData;
+}
+
+/**
+ * Generate a mock encrypted password change item for Metadata Service.
+ * This is to mock the password change operation for social login flow.
+ *
+ * @returns The encrypted password change item.
+ */
+async function generateEncryptedPasswordChangeItem() {
+  const pwdChangeItem = {
+    itemId: PasswordChangeItemId,
+    data: utf8ToBytes(
+      JSON.stringify({
+        pw: 'newPassword',
+        encKey: bytesToHex(NewMockPwdEncryptionKeyAfterPasswordChange),
+        authKeyPair: {
+          sk: '1',
+          pk: 'deadbeef',
+        },
+      }),
+    ),
+  };
+
+  const aes = managedNonce(gcm)(NewMockPwdEncryptionKeyAfterPasswordChange);
+  const cipherText = aes.encrypt(pwdChangeItem.data);
+  const encryptedPwdChangeItem = bytesToBase64(cipherText);
+
+  return encryptedPwdChangeItem;
 }
 
 // Mock OAuth Service and Authentication Server
@@ -273,9 +305,7 @@ export class OAuthMockttpService {
   }
 
   async onPostMetadataGet() {
-    const mockSeedPhrase =
-      'horse pupil style brush dust borrow simple easily bean margin actor valve';
-    const seedPhraseAsBuffer = Buffer.from(mockSeedPhrase, 'utf8');
+    const seedPhraseAsBuffer = Buffer.from(E2E_SRP, 'utf8');
     const indices = seedPhraseAsBuffer
       .toString()
       .split(' ')
@@ -289,13 +319,17 @@ export class OAuthMockttpService {
         type: SecretType.Mnemonic,
       },
     ];
+
     const encryptedSecretData = await generateEncryptedSecretData(secretData);
+    const encryptedPwdChangeItem = await generateEncryptedPasswordChangeItem();
+    encryptedSecretData.push(encryptedPwdChangeItem);
+
     return {
       statusCode: 200,
       json: {
         success: true,
         data: encryptedSecretData,
-        ids: [],
+        ids: ['', PasswordChangeItemId],
       },
     };
   }
@@ -306,11 +340,13 @@ export class OAuthMockttpService {
    * @param server - The Mockttp server instance.
    * @param options - The options for the mock server.
    * @param options.userEmail - The email of the user to mock. If not provided, random generated email will be used.
+   * @param options.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
    */
   async setup(
     server: Mockttp,
     options?: {
       userEmail?: string;
+      passwordOutdated?: boolean;
     },
   ) {
     server
@@ -345,11 +381,13 @@ export class OAuthMockttpService {
    * @param request - The request object.
    * @param options - The options for the mock responses.
    * @param options.userEmail - The email of the user to mock. If not provided, random generated email will be used.
+   * @param options.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
    */
   async #handleToprfMockResponses(
     request: CompletedRequest,
     options?: {
       userEmail?: string;
+      passwordOutdated?: boolean;
     },
   ) {
     const nodeIndex = this.#extractNodeIndexFromUrl(request.url);
@@ -399,7 +437,11 @@ export class OAuthMockttpService {
           id: 1,
           jsonrpc: '2.0',
           result: {
-            pub_key: this.#latestAuthPubKey,
+            pub_key: options?.passwordOutdated
+              ? MockAuthPubKey
+              : this.#latestAuthPubKey,
+            key_index: 1,
+            node_index: nodeIndex,
           },
         },
       };

@@ -1,9 +1,6 @@
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
-import {
-  searchAndSwitchToNetworkFromGlobalMenuFlow,
-  switchToNetworkFromSendFlow,
-} from '../../page-objects/flows/network.flow';
+import { searchAndSwitchToNetworkFromGlobalMenuFlow } from '../../page-objects/flows/network.flow';
 import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
@@ -50,9 +47,6 @@ describe('Bridge tests', function (this: Suite) {
           2,
         );
 
-        // Switch to Ethereum to set it as the current network
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
-
         await bridgeTransaction(
           driver,
           {
@@ -64,9 +58,6 @@ describe('Bridge tests', function (this: Suite) {
           },
           4,
         );
-
-        // Switch to Arbitrum One to set it as the current network
-        await switchToNetworkFromSendFlow(driver, 'Arbitrum One');
 
         await bridgeTransaction(
           driver,

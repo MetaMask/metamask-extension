@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "टोकन अमाउंट एक पूर्णांक होना चाहिए"
   },
-  "followUsOnX": {
-    "message": "$1 पर हमें फॉलो करें",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "निषिद्ध IPFS गेटवे: कृपया एक CID गेटवे बताएं"
   },
@@ -5071,7 +5067,8 @@
     "message": "चालू किया गया"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "यह ईमेल और आपका MetaMask पासवर्ड आपको अपना अकाउंट और रिकवरी फ्रेज़ रिकवर करने में सहायता करेगा।"
+    "message": "यह ईमेल और आपका MetaMask पासवर्ड आपको अपना अकाउंट और रिकवरी फ्रेज़ रिकवर करने में सहायता करेगा।",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 रिकवरी",

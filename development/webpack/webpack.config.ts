@@ -11,7 +11,6 @@ import {
   ProvidePlugin,
   type Configuration,
   type WebpackPluginInstance,
-  type Chunk,
   type MemoryCacheOptions,
   type FileCacheOptions,
 } from 'webpack';
@@ -30,6 +29,7 @@ import {
   getMinimizers,
   NODE_MODULES_RE,
   __HMR_READY__,
+  SNOW_MODULE_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -159,7 +159,7 @@ const plugins: WebpackPluginInstance[] = [
     // Make a global `Buffer` variable that points to the `buffer` package.
     Buffer: ['buffer', 'Buffer'],
     // Make a global `process` variable that points to the `process` package.
-    process: 'process/browser',
+    process: 'process/browser.js',
     // polyfill usages of `setImmediate`, ideally this would be automatically
     // handled by `swcLoader`'s `env.usage = 'entry'` option, but that setting
     // results in a compilation error: `Module parse failed: 'import' and
@@ -167,7 +167,7 @@ const plugins: WebpackPluginInstance[] = [
     // hours trying to figure it out but couldn't. So, this is the workaround.
     // Note: we should probably remove usages of `setImmediate` from our
     // codebase so we don't have to polyfill it.
-    setImmediate: 'core-js-pure/actual/set-immediate',
+    setImmediate: 'core-js-pure/actual/set-immediate.js',
   }),
   new CopyPlugin({
     patterns: [
@@ -260,10 +260,11 @@ if (args.progress) {
 }
 // #endregion plugins
 
-const swcConfig = { args, safeVariables, browsersListQuery, isDevelopment };
-const tsxLoader = getSwcLoader('typescript', true, swcConfig);
-const jsxLoader = getSwcLoader('ecmascript', true, swcConfig);
-const ecmaLoader = getSwcLoader('ecmascript', false, swcConfig);
+const swcConfig = { args, browsersListQuery, isDevelopment };
+const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
+const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
+const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
+const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
 const config = {
   entry,
@@ -331,8 +332,11 @@ const config = {
   // note: loaders in a `use` array are applied in *reverse* order, i.e., bottom
   // to top, (or right to left depending on the current formatting of the file)
   module: {
-    // don't parse lodash, as it's large and already minified
-    noParse: /^lodash$/u,
+    noParse: [
+      // don't parse lodash, as it's large, already minified, and doesn't need
+      // to be transformed
+      /^lodash$/u,
+    ],
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
@@ -354,15 +358,38 @@ const config = {
         exclude: NODE_MODULES_RE,
         use: [jsxLoader, codeFenceLoader],
       },
-      // vendor javascript
+      // vendor javascript. We must transform all npm modules to ensure browser
+      // compatibility.
       {
-        test: /\.(?:js|mjs)$/u,
-        include: NODE_MODULES_RE,
-        // never process `@lavamoat/snow/**.*`
-        exclude: /^.*\/node_modules\/@lavamoat\/snow\/.*$/u,
-        // can be removed once https://github.com/MetaMask/key-tree/issues/152 is resolved
-        resolve: { fullySpecified: false },
-        use: ecmaLoader,
+        oneOf: [
+          {
+            test: /\.m?js$/u,
+            include: NODE_MODULES_RE,
+            exclude: [
+              // security team requires that we never process `@lavamoat/snow/**.*`
+              SNOW_MODULE_RE,
+
+              // these trezor libraries are .js files with CJS exports, they
+              // must be processed with the CJS loader
+              /^.*\/node_modules\/@trezor\/connect\/.*$/u,
+              /^.*\/node_modules\/@trezor\/connect-web\/.*$/u,
+              /^.*\/node_modules\/@trezor\/connect-common\/.*$/u,
+              /^.*\/node_modules\/@trezor\/utils\/.*$/u,
+              /^.*\/node_modules\/@trezor\/websocket-client\/.*$/u,
+              /^.*\/node_modules\/@trezor\/schema-utils\/.*$/u,
+            ],
+            use: npmLoader,
+          },
+          {
+            test: /\.c?js$/u,
+            include: NODE_MODULES_RE,
+            exclude: [
+              // security team requires that we never process `@lavamoat/snow/**.*`
+              SNOW_MODULE_RE,
+            ],
+            use: cjsLoader,
+          },
+        ],
       },
       // css, sass/scss
       {
@@ -459,7 +486,9 @@ const config = {
     // platform is responsible for loading them and splitting these files
     // would require updating the manifest to include the other chunks.
     runtimeChunk: {
-      name: (chunk: Chunk) => (canBeChunked(chunk) ? 'runtime' : false),
+      // casting to string as webpack's types are wrong, `false` is allowed, and
+      // is actually the default value.
+      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false) as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations

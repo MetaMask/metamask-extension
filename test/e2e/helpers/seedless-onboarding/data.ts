@@ -60,7 +60,14 @@ export const MockKeyShareData = {
   ],
 };
 
-export const MockEncryptionKey = new Uint8Array([
+// used to encrypt the SecretData (Seed Phrase, Private Key, etc.)
+export const InitialMockEncryptionKey = new Uint8Array([
   178, 255, 51, 33, 212, 66, 206, 202, 159, 154, 43, 149, 176, 145, 103, 252,
   73, 194, 181, 254, 61, 207, 217, 213, 198, 247, 182, 19, 181, 59, 196, 123,
+]);
+
+// used to encrypt the Old encryption key during password change
+export const NewMockPwdEncryptionKeyAfterPasswordChange = new Uint8Array([
+  214, 244, 30, 35, 54, 75, 114, 95, 131, 18, 136, 3, 155, 172, 60, 9, 225, 189,
+  127, 189, 135, 49, 226, 4, 138, 59, 220, 157, 139, 71, 15, 109,
 ]);

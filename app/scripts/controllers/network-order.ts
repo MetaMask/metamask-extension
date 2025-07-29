@@ -208,6 +208,9 @@ export class NetworkOrderController extends BaseController<
     if (namespace === (KnownCaipNamespace.Eip155 as string)) {
       this.update((state) => {
         delete state.enabledNetworkMap[namespace][networkId];
+        if (Object.keys(state.enabledNetworkMap[namespace]).length === 0) {
+          state.enabledNetworkMap[namespace]['0x1'] = true;
+        }
       });
     } else {
       this.update((state) => {

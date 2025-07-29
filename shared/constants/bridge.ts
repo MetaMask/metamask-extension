@@ -35,9 +35,10 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   ///: END:ONLY_INCLUDE_IF
 ];
 
-const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP = ALLOWED_EVM_BRIDGE_CHAIN_IDS.map(
-  toEvmCaipChainId,
-).concat(ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS);
+export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
+  ALLOWED_EVM_BRIDGE_CHAIN_IDS.map(toEvmCaipChainId).concat(
+    ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS,
+  );
 
 export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]

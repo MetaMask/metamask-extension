@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Số lượng Token phải là số nguyên"
   },
-  "followUsOnX": {
-    "message": "Theo dõi chúng tôi trên $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Cổng kết nối IPFS không được phép: Vui lòng chỉ định một cổng kết nối CID"
   },
@@ -5071,7 +5067,8 @@
     "message": "Đã bật"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Email này và mật khẩu MetaMask của bạn sẽ giúp bạn khôi phục tài khoản và cụm từ khôi phục."
+    "message": "Email này và mật khẩu MetaMask của bạn sẽ giúp bạn khôi phục tài khoản và cụm từ khôi phục.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "KHÔI PHỤC $1",

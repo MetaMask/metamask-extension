@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "A quantidade de tokens deve ser um número inteiro"
   },
-  "followUsOnX": {
-    "message": "Siga-nos no $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Gateway IPFS proibido: especifique um gateway de CID"
   },
@@ -5071,7 +5067,8 @@
     "message": "Ativado"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Esse e-mail e sua senha da MetaMask ajudarão você a recuperar sua conta e frases de recuperação."
+    "message": "Esse e-mail e sua senha da MetaMask ajudarão você a recuperar sua conta e frases de recuperação.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "RECUPERAÇÃO DE $1",

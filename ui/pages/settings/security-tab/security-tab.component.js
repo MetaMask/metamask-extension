@@ -1,4 +1,4 @@
-import { startCase } from 'lodash';
+import { capitalize, startCase } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import {
@@ -183,7 +183,7 @@ export default class SecurityTab extends PureComponent {
 
     const getBannerDescription = () => {
       if (socialLoginEnabled) {
-        return t('securityLoginWithSocial', [socialLoginType]);
+        return t('securityLoginWithSocial', [capitalize(socialLoginType)]);
       }
 
       return isSeedPhraseBackedUp

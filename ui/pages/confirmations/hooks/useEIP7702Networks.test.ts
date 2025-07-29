@@ -155,4 +155,17 @@ describe('useEIP7702Networks', () => {
     const decimalChainIds = chainIds.map((id: string) => parseInt(id, 16));
     expect(decimalChainIds).toEqual([1, 5, 6342, 11155111]);
   });
+
+  it('returns the correct values for non-EVM accounts', () => {
+    const { result } = runHook('ledger');
+
+    expect(result.current.pending).toBe(false);
+    expect(result.current.network7702List).toHaveLength(0);
+    expect(result.current.networkSupporting7702Present).toBe(false);
+    expect(result.current).toEqual({
+      network7702List: [],
+      networkSupporting7702Present: false,
+      pending: false,
+    });
+  });
 });

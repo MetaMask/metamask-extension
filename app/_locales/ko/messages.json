@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "토큰 금액은 정수여야 합니다"
   },
-  "followUsOnX": {
-    "message": "$1에서 팔로우하기",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "금지된 IPFS 게이트웨이: CID 게이트웨이를 지정하세요."
   },
@@ -5071,7 +5067,8 @@
     "message": "활성화됨"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "이 이메일과 MetaMask 비밀번호를 사용하여 계정과 복구구문을 복구할 수 있습니다."
+    "message": "이 이메일과 MetaMask 비밀번호를 사용하여 계정과 복구구문을 복구할 수 있습니다.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 복구",

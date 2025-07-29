@@ -126,6 +126,6 @@ export const MOCK_GROUPED_AUTH_CONNECTION_ID = 'torus-test-health-aggregate';
 /* Mock Google account used in Social login flow e2e tests*/
 export const MOCK_GOOGLE_ACCOUNT = 'e2e-user-mock@gmail.com';
 export const MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS =
-  '0x697e8404FB6C03eBB50422c1aCDE7e40b345f4D8';
+  '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 /* Mock Apple account used in Social login flow e2e tests*/
 export const MOCK_APPLE_ACCOUNT = 'e2e-user-mock@appleid.com';
