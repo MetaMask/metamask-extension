@@ -28,10 +28,10 @@ export const ENTRYPOINT_PATTERNS = [
   'app/scripts/inpage',
   'app/scripts/phishing-detect',
   'app/scripts/sentry-install',
-  'app/scripts/ui',
+  // 'app/scripts/ui',
   'development/build/index',
-  '**/*.stories',
-  '**/*.test',
+  // '**/*.stories',
+  // '**/*.test',
 ];
 export const FILES_TO_CONVERT_PATH = path.join(
   PROJECT_DIRECTORY_PATH,
