@@ -4,26 +4,13 @@ import { getCoverageStatus, type ShieldState } from '../../../../selectors';
 import { useSelector } from 'react-redux';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { Confirmation } from '../../types/confirm';
 import { useMemo } from 'react';
-
-const isTransactionMeta = (confirmation: Confirmation): confirmation is TransactionMeta => {
-  return (confirmation as TransactionMeta).txParams !== undefined;
-};
 
 export const useShieldAlerts = (): Alert[] => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
-  if (!isTransactionMeta(currentConfirmation)) {
-    return [];
-  }
-
   const coverageStatus = useSelector((state) => getCoverageStatus(state as ShieldState, currentConfirmation.id));
-  if (!coverageStatus) {
-    return [];
-  }
 
   return useMemo(() => {
     switch (coverageStatus) {
@@ -55,5 +42,5 @@ export const useShieldAlerts = (): Alert[] => {
     default:
       return [];
     }
-  }, [coverageStatus]);
+  }, [coverageStatus, currentConfirmation.id, t]);
 };
