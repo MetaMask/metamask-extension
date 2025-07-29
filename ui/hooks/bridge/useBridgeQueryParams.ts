@@ -23,7 +23,6 @@ import {
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
-  setToChainId,
   setToToken,
 } from '../../ducks/bridge/actions';
 import {
@@ -109,15 +108,10 @@ export const useBridgeQueryParams = (
     [search, history],
   );
 
-  const [parsedAssetIds, setParsedAssetIds] = useState<{
-    parsedFromAssetId: ReturnType<typeof parseAsset>;
-    parsedToAssetId: ReturnType<typeof parseAsset>;
-  }>({
-    parsedFromAssetId: null,
-    parsedToAssetId: null,
-  });
-
-  const { parsedFromAssetId, parsedToAssetId } = parsedAssetIds;
+  const [parsedFromAssetId, setParsedFromAssetId] =
+    useState<ReturnType<typeof parseAsset>>(null);
+  const [parsedToAssetId, setParsedToAssetId] =
+    useState<ReturnType<typeof parseAsset>>(null);
 
   const [parsedAmount, setParsedAmount] = useState<string | null>(null);
 
@@ -128,43 +122,45 @@ export const useBridgeQueryParams = (
     };
   }, []);
 
-  // Only update parsed values if the search params are set (once) to prevent infinite re-renders
+  const [assetMetadataByAssetId, setAssetMetadataByAssetId] = useState<Awaited<
+    ReturnType<typeof fetchAssetMetadataForAssetIds>
+  > | null>(null);
+
+  // Only update parsed values and fetch metadata if the search params
+  // are set (once) to prevent infinite re-renders
   useEffect(() => {
-    if (
-      parseAsset(searchParams.get(BridgeQueryParams.FROM)) ||
-      parseAsset(searchParams.get(BridgeQueryParams.TO))
-    ) {
-      setParsedAssetIds({
-        parsedFromAssetId: parseAsset(searchParams.get(BridgeQueryParams.FROM)),
-        parsedToAssetId: parseAsset(searchParams.get(BridgeQueryParams.TO)),
-      });
-      setParsedAmount(searchParams.get(BridgeQueryParams.AMOUNT));
+    const searchParamsFrom = parseAsset(
+      searchParams.get(BridgeQueryParams.FROM),
+    );
+    const searchParamsTo = parseAsset(searchParams.get(BridgeQueryParams.TO));
+    const searchParamsAmount = searchParams.get(BridgeQueryParams.AMOUNT);
+
+    if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
+      setParsedToAssetId(searchParamsTo);
+      setParsedFromAssetId(searchParamsFrom);
+      if (searchParamsAmount) {
+        setParsedAmount(searchParamsAmount);
+      }
       cleanupUrlParams([
         BridgeQueryParams.FROM,
         BridgeQueryParams.TO,
         BridgeQueryParams.AMOUNT,
       ]);
+
+      // Fetch asset metadata for both tokens in 1 call
+      if (searchParamsTo?.assetId || searchParamsFrom?.assetId) {
+        abortController.current.abort();
+        abortController.current = new AbortController();
+        fetchAssetMetadata(
+          abortController.current.signal,
+          searchParamsFrom?.assetId,
+          searchParamsTo?.assetId,
+        ).then((result) => {
+          setAssetMetadataByAssetId(result);
+        });
+      }
     }
   }, [searchParams]);
-
-  const [assetMetadataByAssetId, setAssetMetadataByAssetId] = useState<Awaited<
-    ReturnType<typeof fetchAssetMetadataForAssetIds>
-  > | null>(null);
-
-  // Fetch asset metadata for both tokens in 1 call
-  useEffect(() => {
-    if (parsedFromAssetId?.assetId || parsedToAssetId?.assetId) {
-      abortController.current.abort();
-      abortController.current = new AbortController();
-      fetchAssetMetadata(
-        abortController.current.signal,
-        parsedFromAssetId?.assetId,
-        parsedToAssetId?.assetId,
-      ).then((result) => {
-        setAssetMetadataByAssetId(result);
-      });
-    }
-  }, [parsedFromAssetId?.assetId, parsedToAssetId?.assetId]);
 
   // Set fromChain and fromToken
   const setFromChainAndToken = useCallback(
@@ -182,15 +178,15 @@ export const useBridgeQueryParams = (
         const { chainId, assetReference } = parseCaipAssetType(
           fromTokenMetadata.assetId,
         );
+        const nativeAsset = getNativeAssetForChainId(chainId);
         // TODO remove this after v36.0.0 bridge-controller bump
-        const isNativeReference =
-          getNativeAssetForChainId(chainId)?.assetId.includes(assetReference);
+        const isNativeReference = nativeAsset?.assetId.includes(assetReference);
         const token = {
           ...fromTokenMetadata,
           chainId,
           address:
             isNativeReference || isNativeAddress(assetReference)
-              ? ''
+              ? (nativeAsset?.address ?? '')
               : assetReference,
         };
         // Only update if chain is different
@@ -217,20 +213,19 @@ export const useBridgeQueryParams = (
   );
 
   const setToChainAndToken = useCallback(
-    async (toTokenMetadata: AssetMetadata | undefined) => {
-      if (toTokenMetadata) {
-        const { chainId, assetReference } = parseCaipAssetType(
-          toTokenMetadata.assetId,
-        );
-        dispatch(setToChainId(chainId));
-        dispatch(
-          setToToken({
-            ...toTokenMetadata,
-            chainId,
-            address: assetReference,
-          }),
-        );
-      }
+    async (toTokenMetadata: AssetMetadata) => {
+      const { chainId, assetReference } = parseCaipAssetType(
+        toTokenMetadata.assetId,
+      );
+      dispatch(
+        setToToken({
+          ...toTokenMetadata,
+          chainId,
+          address: assetReference,
+        }),
+      );
+      // Clear parsed to asset ID after successful processing
+      setParsedToAssetId(null);
     },
     [],
   );
@@ -280,25 +275,31 @@ export const useBridgeQueryParams = (
       assetMetadataByAssetId?.[
         parsedToAssetId.assetId.toLowerCase() as unknown as CaipAssetType
       ];
-    setToChainAndToken(toTokenMetadata);
+    if (toTokenMetadata) {
+      setToChainAndToken(toTokenMetadata);
+    }
   }, [parsedToAssetId, assetMetadataByAssetId]);
 
   // Process amount after fromToken is set
   useEffect(() => {
     if (
-      parsedAmount &&
       parsedFromAssetId &&
       fromToken &&
       fromToken.assetId?.toLowerCase() ===
         parsedFromAssetId.assetId.toLowerCase()
     ) {
-      dispatch(
-        setFromTokenInputValue(
-          calcTokenAmount(parsedAmount, fromToken.decimals).toFixed(
-            fromToken.decimals,
+      // Clear parsed from asset ID after successful processing
+      setParsedFromAssetId(null);
+      if (parsedAmount) {
+        dispatch(
+          setFromTokenInputValue(
+            calcTokenAmount(parsedAmount, fromToken.decimals).toFixed(
+              fromToken.decimals,
+            ),
           ),
-        ),
-      );
+        );
+        setParsedAmount(null);
+      }
     }
   }, [parsedAmount, parsedFromAssetId, fromToken]);
 };

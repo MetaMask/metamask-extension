@@ -83,6 +83,9 @@ class HomePage {
 
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
 
+  private readonly connectionsRemovedModal =
+    '[data-testid="connections-removed-modal"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -418,6 +421,12 @@ class HomePage {
       this.copyAddressButton,
     );
     return accountAddress.getText();
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_connectionsRemovedModalIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.connectionsRemovedModal);
   }
 }
 

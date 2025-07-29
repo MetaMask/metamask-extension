@@ -1,3 +1,4 @@
+import { ChainId, formatChainIdToCaip } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -37,6 +38,16 @@ jest.mock('../../ducks/bridge/selectors', () => ({
 describe('useTokenAlerts', () => {
   it('should set token alert when toChain is Solana', async () => {
     const mockStoreState = createBridgeMockStore({
+      featureFlagOverrides: {
+        extensionConfig: {
+          chains: {
+            [formatChainIdToCaip(ChainId.SOLANA)]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
+      },
       bridgeSliceOverrides: {
         fromToken: {
           address: '0x3fa807b6f8d4c407e6e605368f4372d14658b38c',
@@ -54,6 +65,6 @@ describe('useTokenAlerts', () => {
     const { result, waitForNextUpdate } = renderUseSolanaAlerts(mockStoreState);
     await waitForNextUpdate();
 
-    expect(result.current.tokenAlert).toBeTruthy();
+    expect(result.current.tokenAlert).toStrictEqual(mockResponse);
   });
 });

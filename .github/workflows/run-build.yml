@@ -54,7 +54,6 @@ jobs:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
-      SEEDLESS_ONBOARDING_ENABLED: ${{ secrets.SEEDLESS_ONBOARDING_ENABLED }}
       GOOGLE_PROD_CLIENT_ID: ${{ secrets.GOOGLE_PROD_CLIENT_ID }}
       APPLE_PROD_CLIENT_ID: ${{ secrets.APPLE_PROD_CLIENT_ID }}
       GOOGLE_CLIENT_ID_UAT: ${{ secrets.GOOGLE_CLIENT_ID_UAT }}

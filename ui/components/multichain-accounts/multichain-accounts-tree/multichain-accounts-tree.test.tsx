@@ -1,10 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import type {
-  AccountGroupId,
-  AccountWalletId,
-} from '@metamask/account-tree-controller';
+import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
@@ -14,11 +11,9 @@ import { MultichainAccountsTreeProps } from './multichain-accounts-tree';
 import { MultichainAccountsTree } from '.';
 
 const walletOneId: AccountWalletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
-const walletOneGroupId: AccountGroupId =
-  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ:default';
+const walletOneGroupId: AccountGroupId = `${walletOneId}/default`;
 const walletTwoId: AccountWalletId = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
-const walletTwoGroupId: AccountGroupId =
-  'entropy:01JKAF3PJ247KAM6C03G5Q0NP8:default';
+const walletTwoGroupId: AccountGroupId = `${walletTwoId}/default`;
 
 const createAccount = ({
   id,

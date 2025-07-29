@@ -279,9 +279,34 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding pin extension screen', () => {
+    const mockStateWithCurrentKeyring = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            accountId: {
+              address: '0x0000000000000000000000000000000000000000',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                  accounts: ['0x0000000000000000000000000000000000000000'],
+                },
+              },
+            },
+          },
+          selectedAccount: 'accountId',
+        },
+      },
+    };
+
+    const mockStoreWithCurrentKeyring = configureMockStore()(
+      mockStateWithCurrentKeyring,
+    );
+
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlow />,
-      store,
+      mockStoreWithCurrentKeyring,
       ONBOARDING_PIN_EXTENSION_ROUTE,
     );
 

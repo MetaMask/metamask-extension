@@ -24,13 +24,17 @@ import {
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 ///: END:ONLY_INCLUDE_IF
-import { getIsParticipateInMetaMetricsSet } from '../../../selectors';
+import {
+  getIsParticipateInMetaMetricsSet,
+  getIsSocialLoginFlow,
+} from '../../../selectors';
 
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isUnlocked = useSelector(getIsUnlocked);
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
@@ -53,6 +57,19 @@ export default function OnboardingFlowSwitch() {
   }
 
   if (isUnlocked) {
+    // if the vault is already unlocked and the user is in a social login flow but the onboarding is not completed,
+    // we need to redirect to the onboarding completion route
+    if (isSocialLoginFlow && !completedOnboarding) {
+      return (
+        <Redirect
+          to={{
+            pathname: isParticipateInMetaMetricsSet
+              ? ONBOARDING_COMPLETION_ROUTE
+              : ONBOARDING_METAMETRICS,
+          }}
+        />
+      );
+    }
     return <Redirect to={{ pathname: LOCK_ROUTE }} />;
   }
 

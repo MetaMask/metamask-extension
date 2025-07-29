@@ -28,6 +28,7 @@ import {
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   getShowUpdateModal,
+  getShowConnectionsRemovedModal,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -193,6 +194,7 @@ const mapStateToProps = (state) => {
     redirectAfterDefaultPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
+    showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
   };
 };
 

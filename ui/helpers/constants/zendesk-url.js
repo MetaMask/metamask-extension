@@ -30,6 +30,12 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/nfts/nft-tokens-in-your-metamask-wallet/',
   PASSWORD_AND_SRP_ARTICLE:
     'https://support.metamask.io/getting-started/user-guide-secret-recovery-phrase-password-and-private-keys/',
+  RESET_ADD_MISSING_ACCOUNT:
+    'https://support.metamask.io/configure/accounts/how-to-add-missing-accounts-after-restoring-with-secret-recovery-phrase/',
+  RESET_DISPLAY_TOKENS:
+    'https://support.metamask.io/manage-crypto/tokens/how-to-display-tokens-in-metamask/',
+  RESET_IMPORT_AN_ACCOUNT:
+    'https://support.metamask.io/start/how-to-import-an-account/',
   SECRET_RECOVERY_PHRASE:
     'https://support.metamask.io/privacy-and-security/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/',
   NON_CUSTODIAL_WALLET:

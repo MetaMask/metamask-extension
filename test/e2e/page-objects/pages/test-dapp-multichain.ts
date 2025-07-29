@@ -44,10 +44,14 @@ class TestDappMultichain {
   }
 
   addCustomAccountAddressInput(i: number) {
+    // Not a hex color value
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
     return `#add-custom-caip\\ address-button-${i}`;
   }
 
   addCustomScopeButton(i: number) {
+    // Not a hex color value
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
     return `#add-custom-scope-button-${i}`;
   }
 

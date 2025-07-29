@@ -15,12 +15,20 @@ import {
   type TxData,
   BridgeClientId,
   formatChainIdToCaip,
+  getNativeAssetForChainId,
+  isNativeAddress,
+  isSolanaChainId,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
-import { toAssetId } from '../../../shared/lib/asset-utils';
+import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
+import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import type { TokenPayload, BridgeToken } from './types';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -192,3 +200,98 @@ export const isNetworkAdded = (
 ): v is NetworkConfiguration =>
   v !== undefined &&
   'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+
+const getTokenImage = (payload: TokenPayload['payload']) => {
+  if (!payload) {
+    return '';
+  }
+  const { image, iconUrl, icon, chainId, address, assetId } = payload;
+  const caipChainId = formatChainIdToCaip(chainId);
+  // If the token is native, return the SVG image asset
+  if (isNativeAddress(address)) {
+    if (isSolanaChainId(chainId)) {
+      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
+    }
+    return CHAIN_ID_TOKEN_IMAGE_MAP[
+      formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+    ];
+  }
+  // If the token is not native, return the image from the payload
+  const imageFromPayload = image ?? iconUrl ?? icon;
+  if (imageFromPayload) {
+    return imageFromPayload;
+  }
+  // If there's no image from the payload, build the asset image URL and return it
+  const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
+  return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
+};
+
+export const toBridgeToken = (
+  payload: TokenPayload['payload'],
+): BridgeToken | null => {
+  if (!payload) {
+    return null;
+  }
+  const caipChainId = formatChainIdToCaip(payload.chainId);
+  return {
+    ...payload,
+    balance: payload.balance ?? '0',
+    string: payload.string ?? '0',
+    chainId: payload.chainId,
+    image: getTokenImage(payload),
+    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
+  };
+};
+const createBridgeTokenPayload = (
+  tokenData: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    name?: string;
+    assetId?: string;
+  },
+  chainId: ChainId | Hex,
+): TokenPayload['payload'] | null => {
+  const { assetId, ...rest } = tokenData;
+  return toBridgeToken({
+    ...rest,
+    chainId,
+  });
+};
+
+export const getDefaultToToken = (
+  { chainId: targetChainId }: NetworkConfiguration | AddNetworkFields,
+  fromToken: NonNullable<TokenPayload['payload']>,
+) => {
+  const commonPair =
+    BRIDGE_CHAINID_COMMON_TOKEN_PAIR[
+      targetChainId as keyof typeof BRIDGE_CHAINID_COMMON_TOKEN_PAIR
+    ];
+
+  if (commonPair) {
+    // If source is native token, default to USDC on same chain
+    if (isNativeAddress(fromToken.address)) {
+      return createBridgeTokenPayload(commonPair, targetChainId);
+    }
+
+    // If source is USDC (or other common pair token), default to native token
+    if (fromToken.address?.toLowerCase() === commonPair.address.toLowerCase()) {
+      const nativeAsset = getNativeAssetForChainId(targetChainId);
+      if (nativeAsset) {
+        return createBridgeTokenPayload(nativeAsset, targetChainId);
+      }
+    }
+
+    // For any other token, default to USDC
+    return createBridgeTokenPayload(commonPair, targetChainId);
+  }
+
+  // Last resort: native token
+  const nativeAsset = getNativeAssetForChainId(targetChainId);
+  if (nativeAsset) {
+    // return nativeAsset
+    return createBridgeTokenPayload(nativeAsset, targetChainId);
+  }
+
+  return null;
+};

@@ -43,6 +43,15 @@ export const ImportAccount = ({ onActionComplete }) => {
     const loadingMessage = getLoadingMessage(strategy);
 
     try {
+      if (isSocialLoginFlow) {
+        const isPasswordOutdated = await dispatch(
+          actions.checkIsSeedlessPasswordOutdated(true),
+        );
+        if (isPasswordOutdated) {
+          return false;
+        }
+      }
+
       const { selectedAddress } = await dispatch(
         actions.importNewAccount(strategy, importArgs, loadingMessage),
       );

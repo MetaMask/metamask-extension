@@ -236,6 +236,12 @@ export const getTokens = (state) => {
   return allTokens?.[chainId]?.[selectedAddress] || [];
 };
 
+export const getTokensByChainId = (state, chainId) => {
+  const { allTokens } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  return allTokens?.[chainId]?.[selectedAddress] || [];
+};
+
 export function getNftsDropdownState(state) {
   return state.metamask.nftsDropdownState;
 }
@@ -289,6 +295,10 @@ export function getNativeCurrency(state) {
 export function getConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.conversionRate;
+}
+
+export function getConversionRateByTicker(state, ticker) {
+  return state.metamask.currencyRates[ticker]?.conversionRate;
 }
 
 export function getCurrencyRates(state) {

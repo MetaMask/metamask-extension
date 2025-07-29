@@ -1,3 +1,4 @@
+import { regularDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
 export enum NetworkId {
@@ -38,11 +39,14 @@ class NetworkManager {
   async openNetworkManager(): Promise<void> {
     console.log(`Opening the network manager`);
     await this.driver.clickElement(this.networkManagerToggle);
+    await this.driver.waitForSelector(this.networkManagerCloseButton);
   }
 
   async closeNetworkManager(): Promise<void> {
     console.log(`Closing the network manager`);
-    await this.driver.clickElement(this.networkManagerCloseButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.networkManagerCloseButton,
+    );
   }
 
   async selectTab(tabName: string): Promise<void> {
@@ -65,15 +69,21 @@ class NetworkManager {
   // Method to select/click on a network item
   async selectNetwork(networkName: string): Promise<void> {
     console.log(`Selecting network: ${networkName}`);
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsDeselected(networkName);
+    await this.driver.delay(regularDelayMs);
     await this.driver.clickElementSafe(this.networkListItem(networkName));
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsSelected(networkName);
   }
 
   async deselectNetwork(networkName: string): Promise<void> {
     console.log(`Deselecting network: ${networkName}`);
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsSelected(networkName);
+    await this.driver.delay(regularDelayMs);
     await this.driver.clickElementSafe(this.networkListItem(networkName));
+    await this.driver.delay(regularDelayMs);
     await this.checkNetworkIsDeselected(networkName);
   }
 

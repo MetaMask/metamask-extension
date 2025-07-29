@@ -5,9 +5,13 @@ import {
   type BridgeAsset,
   formatChainIdToCaip,
   type GenericQuoteRequest,
+  getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
-import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
+import {
+  resetInputFields,
+  trackUnifiedSwapBridgeEvent,
+} from '../../ducks/bridge/actions';
 import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
@@ -26,9 +30,10 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
+import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
+import { getMultichainProviderConfig } from '../../selectors/multichain';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 
 const useBridging = () => {
@@ -40,19 +45,30 @@ const useBridging = () => {
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const providerConfig = useSelector(getProviderConfig);
 
-  const isBridgeChain = useSelector(getIsBridgeChain);
+  const providerConfig = useSelector(getMultichainProviderConfig);
 
+  const isBridgeChain = useSelector((state) =>
+    getIsBridgeChain(state, providerConfig?.chainId),
+  );
   const openBridgeExperience = useCallback(
     (
       location: string,
-      token: Pick<BridgeAsset, 'symbol' | 'address'> & {
+      srcToken?: Pick<BridgeAsset, 'symbol' | 'address'> & {
         chainId: GenericQuoteRequest['srcChainId'];
       },
       isSwap = false,
     ) => {
-      if (!isBridgeChain || !providerConfig) {
+      const token =
+        srcToken ?? getNativeAssetForChainId(providerConfig.chainId);
+      const isBridgeToken =
+        token?.chainId &&
+        ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP.includes(
+          formatChainIdToCaip(token.chainId),
+        );
+      const isChainOrTokenSupported = isBridgeChain || isBridgeToken;
+
+      if (!isChainOrTokenSupported || !providerConfig) {
         return;
       }
 
@@ -109,6 +125,7 @@ const useBridging = () => {
           token_symbol_destination: null,
         }),
       );
+      dispatch(resetInputFields());
       let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
       const assetId = toAssetId(
         token.address,

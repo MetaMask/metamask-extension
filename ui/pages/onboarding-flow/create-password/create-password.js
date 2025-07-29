@@ -48,7 +48,6 @@ import {
 } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PasswordForm from '../../../components/app/password-form/password-form';
-import LoadingScreen from '../../../components/ui/loading-screen';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { resetOAuthLoginState } from '../../../store/actions';
@@ -422,7 +421,6 @@ export default function CreatePassword({
           data-testid="create-password-iframe"
         />
       ) : null}
-      {newAccountCreationInProgress && <LoadingScreen />}
     </Box>
   );
 }

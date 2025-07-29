@@ -1,3 +1,4 @@
+import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { NetworkController } from '@metamask/network-controller';
@@ -91,7 +92,8 @@ export type Controller =
   | NftDetectionController
   | AssetsContractController
   | AccountTreeController
-  | WebSocketService;
+  | WebSocketService
+  | MultichainAccountService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.

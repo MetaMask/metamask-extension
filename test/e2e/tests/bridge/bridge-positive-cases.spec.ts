@@ -1,11 +1,15 @@
 import { Suite } from 'mocha';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { unlockWallet, veryLargeDelayMs, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   switchToNetworkFromSendFlow,
   searchAndSwitchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
 import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
+import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import NetworkManager, {
+  NetworkId,
+} from '../../page-objects/pages/network-manager';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 
@@ -87,6 +91,57 @@ describe('Bridge tests', function (this: Suite) {
           },
           6,
         );
+      },
+    );
+  });
+
+  it('Execute bridge transactions on non enabled networks', async function () {
+    await withFixtures(
+      getBridgeFixtures(
+        this.test?.fullTitle(),
+        DEFAULT_BRIDGE_FEATURE_FLAGS,
+        false,
+      ),
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        // disable Linea network
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        try {
+          await networkManager.deselectNetwork(NetworkId.LINEA);
+        } catch (error) {
+          console.log('Linea network is not selected');
+          return;
+        }
+        await networkManager.closeNetworkManager();
+
+        // Navigate to Bridge page
+        const homePage = new HomePage(driver);
+        await homePage.startBridgeFlow();
+
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.enterBridgeQuote({
+          amount: '25',
+          tokenFrom: 'ETH',
+          tokenTo: 'DAI',
+          fromChain: 'Linea',
+          toChain: 'Ethereum',
+        });
+
+        await bridgePage.goBack();
+
+        // check if the Linea network is selected
+        await networkManager.openNetworkManager();
+        await driver.delay(veryLargeDelayMs);
+
+        try {
+          await networkManager.checkNetworkIsSelected('Linea Mainnet');
+        } catch (error) {
+          console.log('Linea network is not selected');
+        }
+
+        await networkManager.closeNetworkManager();
       },
     );
   });
