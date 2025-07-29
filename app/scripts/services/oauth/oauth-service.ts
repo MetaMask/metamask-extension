@@ -269,10 +269,9 @@ export default class OAuthService {
     let groupedAuthConnectionId = '';
 
     if (process.env.IN_TEST) {
-      const {
-        MOCK_AUTH_CONNECTION_ID,
-        MOCK_GROUPED_AUTH_CONNECTION_ID,
-      } = require('../../../../test/e2e/constants');
+      const { MOCK_AUTH_CONNECTION_ID, MOCK_GROUPED_AUTH_CONNECTION_ID } =
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        require('../../../../test/e2e/constants');
       authConnectionId = MOCK_AUTH_CONNECTION_ID;
       groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
     } else if (loginHandler.authConnection === AuthConnection.Google) {
