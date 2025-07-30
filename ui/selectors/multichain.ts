@@ -53,6 +53,10 @@ import {
   isSolanaAccount,
 } from './accounts';
 import {
+  getSelectedMultichainNetworkConfiguration,
+  type MultichainNetworkConfigState,
+} from './multichain/networks';
+import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
@@ -61,10 +65,6 @@ import {
   getShowFiatInTestnets,
   getUseCurrencyRateCheck,
 } from './selectors';
-import {
-  getSelectedMultichainNetworkConfiguration,
-  type MultichainNetworkConfigState,
-} from './multichain/networks';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -268,6 +268,16 @@ export function getMultichainIsSolana(
   const { symbol } = getMultichainDefaultToken(state, account);
 
   return !isEvm && symbol === 'SOL';
+}
+
+export function getMultichainIsTron(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const isEvm = getMultichainIsEvm(state, account);
+  const { symbol } = getMultichainDefaultToken(state, account);
+
+  return !isEvm && symbol === 'TRX';
 }
 
 /**
@@ -574,6 +584,42 @@ export const getMultichainNetworkConfigurationsByChainId = (
       ],
       defaultRpcEndpointIndex: 0,
       chainId: MultichainNetworks.BITCOIN_SIGNET as unknown as Hex,
+    },
+    [MultichainNetworks.TRON]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON].nickname ?? '',
+      nativeCurrency: 'TRX',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.TRON as unknown as Hex,
+    },
+    [MultichainNetworks.TRON_NILE]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_NILE],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_NILE].nickname ?? '',
+      nativeCurrency: 'TRX',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.TRON_NILE as unknown as Hex,
+    },
+    [MultichainNetworks.TRON_SHASTA]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_SHASTA],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_SHASTA].nickname ?? '',
+      nativeCurrency: 'TRX',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.TRON_SHASTA as unknown as Hex,
     },
   };
 };

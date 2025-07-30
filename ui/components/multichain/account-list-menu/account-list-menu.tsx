@@ -12,6 +12,7 @@ import {
   EthAccountType,
   SolAccountType,
   KeyringAccountType,
+  TrxAccountType,
 } from '@metamask/keyring-api';
 import {
   Box,
@@ -81,6 +82,7 @@ export const AccountListMenu = ({
     BtcAccountType.P2wpkh,
     BtcAccountType.P2tr,
     SolAccountType.DataAccount,
+    TrxAccountType.Eoa,
   ],
 }: AccountListMenuProps) => {
   const t = useI18nContext();

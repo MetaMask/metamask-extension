@@ -8,6 +8,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  TrxScope,
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
   Box,
@@ -245,6 +248,14 @@ const WalletDetails = () => {
       );
     }
     ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
+    else if (accountType === WalletClientType.Tron) {
+      success = await handleCreateSnapAccount(
+        WalletClientType.Tron,
+        TrxScope.Mainnet as CaipChainId,
+      );
+    }
+    ///: END:ONLY_INCLUDE_IF
 
     if (success) {
       handleCloseModal();
@@ -385,35 +396,33 @@ const WalletDetails = () => {
                 {...rowStylesProps}
               />
             ))}
-            {isEntropyWallet ? (
+            <Box
+              className="wallet-details-page__row wallet-details-page__add-account-button"
+              padding={4}
+              width={BlockSize.Full}
+              textAlign={TextAlign.Left}
+              {...rowStylesProps}
+              as="button"
+              onClick={handleAddAccount}
+            >
               <Box
-                className="wallet-details-page__row wallet-details-page__add-account-button"
-                padding={4}
-                width={BlockSize.Full}
-                textAlign={TextAlign.Left}
-                {...rowStylesProps}
-                as="button"
-                onClick={handleAddAccount}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                gap={3}
               >
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  gap={3}
+                <Icon
+                  name={IconName.Add}
+                  size={IconSize.Md}
+                  color={IconColor.primaryDefault}
+                />
+                <Text
+                  variant={TextVariant.bodyMdMedium}
+                  color={TextColor.primaryDefault}
                 >
-                  <Icon
-                    name={IconName.Add}
-                    size={IconSize.Md}
-                    color={IconColor.primaryDefault}
-                  />
-                  <Text
-                    variant={TextVariant.bodyMdMedium}
-                    color={TextColor.primaryDefault}
-                  >
-                    {t('addAccount')}
-                  </Text>
-                </Box>
+                  {t('addAccount')}
+                </Text>
               </Box>
-            ) : null}
+            </Box>
           </Box>
         )}
       </Content>

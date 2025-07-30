@@ -1,7 +1,11 @@
 import React from 'react';
 import { AccountOverviewNonEvm } from './account-overview-non-evm';
 import { AccountOverviewCommonProps } from './common';
-import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  SolAccountType,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 
 export default {
   title: 'Components/Multichain/AccountOverviewNonEvm',
@@ -14,6 +18,9 @@ export default {
 export const DefaultStory = (
   args: JSX.IntrinsicAttributes &
     AccountOverviewCommonProps & {
-      accountType: BtcAccountType.P2wpkh | SolAccountType.DataAccount;
+      accountType:
+        | BtcAccountType.P2wpkh
+        | SolAccountType.DataAccount
+        | TrxAccountType.Eoa;
     },
 ) => <AccountOverviewNonEvm {...args} />;

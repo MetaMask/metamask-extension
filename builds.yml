@@ -87,6 +87,7 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - bitcoin
+      - tron
       - multi-srp
       - multichain
     env:
@@ -155,6 +156,10 @@ features:
     assets:
       - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/bitcoin-wallet-snap.json
+  tron:
+    assets:
+      - src: ./node_modules/@metamask/tron-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/tron-wallet-snap.json
   multi-srp:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
