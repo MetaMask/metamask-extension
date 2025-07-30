@@ -1,14 +1,17 @@
-import { CaipChainId } from '@metamask/utils';
 import {
   BtcAccountType,
-  SolAccountType,
   BtcScope,
+  SolAccountType,
   SolScope,
+  TrxAccountType,
+  TrxScope,
 } from '@metamask/keyring-api';
+import { CaipChainId } from '@metamask/utils';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
   isSolanaAddress,
+  isTronAddress,
 } from '../../lib/multichain/accounts';
 import { MultichainBlockExplorerFormatUrls } from '../../lib/multichain/networks';
 
@@ -54,6 +57,14 @@ export enum MultichainNetworks {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_TESTNET = SolScope.Testnet,
+
+  TRON = TrxScope.Mainnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  TRON_NILE = TrxScope.Nile,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  TRON_SHASTA = TrxScope.Shasta,
 }
 
 // TODO: This data should be provided by the snap
@@ -69,6 +80,9 @@ export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
   [SolScope.Mainnet]: 'Solana',
   [SolScope.Testnet]: 'Solana',
   [SolScope.Devnet]: 'Solana',
+  [TrxScope.Mainnet]: 'Tron',
+  [TrxScope.Nile]: 'Tron',
+  [TrxScope.Shasta]: 'Tron',
 } as const;
 
 export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
@@ -77,6 +91,7 @@ export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
   [BtcAccountType.P2sh]: MultichainNetworks.BITCOIN,
   [BtcAccountType.P2tr]: MultichainNetworks.BITCOIN,
   [SolAccountType.DataAccount]: MultichainNetworks.SOLANA,
+  [TrxAccountType.Eoa]: MultichainNetworks.TRON,
 } as const;
 
 export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
@@ -86,6 +101,9 @@ export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
+  [MultichainNetworks.TRON]: 'Tron',
+  [MultichainNetworks.TRON_NILE]: 'Tron Nile Testnet',
+  [MultichainNetworks.TRON_SHASTA]: 'Tron Shasta Testnet',
 } as const;
 
 // TODO: This data should be provided by the snap
@@ -99,9 +117,18 @@ export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';
 export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
 export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 
+export const TRON_TOKEN_IMAGE_URL = './images/tron-logo.svg';
+export const TRON_NILE_TOKEN_IMAGE_URL = './images/tron-nile-logo.svg';
+export const TRON_SHASTA_TOKEN_IMAGE_URL = './images/tron-shasta-logo.svg';
+
 export const BITCOIN_BLOCK_EXPLORER_URL = 'https://mempool.space';
 export const BITCOIN_SIGNET_BLOCK_EXPLORER_URL = 'https://mutinynet.com';
+
 export const SOLANA_BLOCK_EXPLORER_URL = 'https://solscan.io';
+
+export const TRON_BLOCK_EXPLORER_URL = 'https://tronscan.org';
+export const TRON_NILE_BLOCK_EXPLORER_URL = 'https://nile.tronscan.org';
+export const TRON_SHASTA_BLOCK_EXPLORER_URL = 'https://shasta.tronscan.org';
 
 export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
   CaipChainId,
@@ -138,6 +165,21 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
     address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}?cluster=testnet`,
     transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}?cluster=testnet`,
   },
+  [MultichainNetworks.TRON]: {
+    url: TRON_BLOCK_EXPLORER_URL,
+    address: `${TRON_BLOCK_EXPLORER_URL}/#/address/{address}`,
+    transaction: `${TRON_BLOCK_EXPLORER_URL}/#/transaction/{txId}`,
+  },
+  [MultichainNetworks.TRON_NILE]: {
+    url: TRON_NILE_BLOCK_EXPLORER_URL,
+    address: `${TRON_NILE_BLOCK_EXPLORER_URL}/#/address/{address}`,
+    transaction: `${TRON_NILE_BLOCK_EXPLORER_URL}/#/transaction/{txId}`,
+  },
+  [MultichainNetworks.TRON_SHASTA]: {
+    url: TRON_SHASTA_BLOCK_EXPLORER_URL,
+    address: `${TRON_SHASTA_BLOCK_EXPLORER_URL}/#/address/{address}`,
+    transaction: `${TRON_SHASTA_BLOCK_EXPLORER_URL}/#/transaction/{txId}`,
+  },
 } as const;
 
 export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
@@ -147,6 +189,9 @@ export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.SOLANA]: SOLANA_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
+  [MultichainNetworks.TRON]: TRON_TOKEN_IMAGE_URL,
+  [MultichainNetworks.TRON_NILE]: TRON_TOKEN_IMAGE_URL,
+  [MultichainNetworks.TRON_SHASTA]: TRON_TOKEN_IMAGE_URL,
 } as const;
 
 /**
@@ -289,6 +334,69 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
         MultichainNetworks.SOLANA_TESTNET
       ],
     isAddressCompatible: isSolanaAddress,
+  },
+  [MultichainNetworks.TRON]: {
+    chainId: MultichainNetworks.TRON,
+    rpcUrl: '', // not used
+    ticker: 'TRX',
+    nickname: 'Tron',
+    id: 'tron-mainnet',
+    type: 'rpc',
+    decimals: 5,
+    rpcPrefs: {
+      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.TRON],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.TRON
+        ].url,
+    },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.TRON
+      ],
+    isAddressCompatible: isTronAddress,
+  },
+  [MultichainNetworks.TRON_NILE]: {
+    chainId: MultichainNetworks.TRON_NILE,
+    rpcUrl: '', // not used
+    ticker: 'TRX',
+    nickname: 'Tron (nile)',
+    id: 'tron-nile',
+    type: 'rpc',
+    decimals: 5,
+    rpcPrefs: {
+      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.TRON_NILE],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.TRON_NILE
+        ].url,
+    },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.TRON_NILE
+      ],
+    isAddressCompatible: isTronAddress,
+  },
+  [MultichainNetworks.TRON_SHASTA]: {
+    chainId: MultichainNetworks.TRON_SHASTA,
+    rpcUrl: '', // not used
+    ticker: 'TRX',
+    nickname: 'Tron (shasta)',
+    id: 'tron-shasta',
+    type: 'rpc',
+    decimals: 5,
+    rpcPrefs: {
+      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.TRON_SHASTA],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.TRON_SHASTA
+        ].url,
+    },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.TRON_SHASTA
+      ],
+    isAddressCompatible: isTronAddress,
   },
 };
 
