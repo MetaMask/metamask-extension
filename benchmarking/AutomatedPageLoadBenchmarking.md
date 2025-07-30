@@ -16,13 +16,13 @@ The MetaMask extension already has a sophisticated benchmarking pipeline:
 1. **RPC Pipeline**: Well-documented communication flow between dApps, content scripts, and background processes
 2. **CI Integration**: GitHub Actions workflows that run benchmarks on pull requests
 3. **Metrics Collection**: Existing scripts that measure UI startup times and bundle sizes
-4. **Bot Reporting**: `development/metamaskbot-build-announce.ts` automatically reports metrics on PRs
+4. **Bot Reporting**: `development/metamaskbot-build-announce.ts` [script](https://github.com/MetaMask/metamask-extension/blob/main/development/metamaskbot-build-announce.ts) automatically reports metrics on PRs
 
 ### Current Benchmarking Scripts
 
-- **E2E Benchmark**: `test/e2e/benchmark.mjs` - Automated page load benchmarking using Selenium
-- **User Actions**: `test/e2e/user-actions-benchmark.ts` - Benchmarking specific user interactions
-- **CI Workflow**: `.github/workflows/run-benchmarks.yml` - Orchestrates benchmark execution
+- **E2E Benchmark**: `test/e2e/benchmark.mjs` [script](https://github.com/MetaMask/metamask-extension/blob/main/test/e2e/benchmark.mjs) - Automated page load benchmarking using Selenium
+- **User Actions**: `test/e2e/user-actions-benchmark.ts` [script](https://github.com/MetaMask/metamask-extension/blob/main/test/e2e/user-actions-benchmark.ts) - Benchmarking specific user interactions
+- **CI Workflow**: `.github/workflows/run-benchmarks.yml` [markdown](https://github.com/MetaMask/metamask-extension/blob/main/.github/workflows/run-benchmarks.yml) - Orchestrates benchmark execution
 
 ## Suggested Approaches for Automated Page Load Speed Benchmarking
 
