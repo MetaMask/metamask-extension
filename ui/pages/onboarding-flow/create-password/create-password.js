@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { captureException } from '@sentry/browser';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   JustifyContent,
@@ -51,10 +50,7 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import {
-  resetOAuthLoginState,
-  setOnboardingErrorReport,
-} from '../../../store/actions';
+import { resetOAuthLoginState } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { getPasswordStrengthCategory } from '../../../helpers/utils/common.util';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
@@ -137,7 +133,7 @@ export default function CreatePassword({
       properties: {
         text: 'Learn More',
         location: 'create_password',
-        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+        url: ZENDESK_URLS.PASSWORD_ARTICLE,
       },
     });
   };
@@ -306,22 +302,6 @@ export default function CreatePassword({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletSetupFailure,
       });
-      if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
-        if (participateInMetaMetrics) {
-          captureException(error, {
-            tags: {
-              view: 'Create Password - Social login',
-            },
-          });
-        } else {
-          dispatch(
-            setOnboardingErrorReport({
-              error,
-              view: 'Create Password - Social login',
-            }),
-          );
-        }
-      }
     }
   };
 
@@ -329,7 +309,7 @@ export default function CreatePassword({
     <a
       onClick={handleLearnMoreClick}
       key="create-password__link-text"
-      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
+      href={ZENDESK_URLS.PASSWORD_ARTICLE}
       target="_blank"
       rel="noopener noreferrer"
     >

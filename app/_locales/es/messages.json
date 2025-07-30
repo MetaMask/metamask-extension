@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "La cantidad de tokens debe ser un número entero"
   },
-  "followUsOnX": {
-    "message": "Síguenos en $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Puerta de enlace de IPFS prohibida: especifique una puerta de enlace de CID"
   },
@@ -6828,9 +6824,6 @@
   "troubleConnectingToWallet": {
     "message": "Tuvimos problemas al conectar su $1. Pruebe revisar $2 e inténtelo de nuevo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask tuvo problemas para iniciar. Este error podría ser intermitente, así que intente reiniciar la extensión."
   },
   "tryAgain": {
     "message": "Vuelva a intentarlo"

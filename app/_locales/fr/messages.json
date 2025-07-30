@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Le nombre de jetons doit être un nombre entier"
   },
-  "followUsOnX": {
-    "message": "Suivez-nous sur $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Passerelle IPFS interdite : veuillez spécifier une passerelle CID"
   },
@@ -6828,9 +6824,6 @@
   "troubleConnectingToWallet": {
     "message": "Nous avons eu des difficultés à nous connecter à votre $1. Essayez de vérifier votre $2 et réessayez.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "Impossible de démarrer MetaMask. Cette erreur peut être occasionnelle, essayez donc de redémarrer lextension."
   },
   "tryAgain": {
     "message": "Réessayez"
