@@ -35,10 +35,10 @@ class UpdateModal {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsNotPresent() {
     console.log('Checking if update modal is not present');
-    const isPresent = await this.driver.isElementPresent(this.updateModal);
-    if (isPresent) {
-      throw new Error('Update modal should not be present');
-    }
+    await this.driver.assertElementNotPresent(this.updateModal, {
+      waitAtLeastGuard: 2000, // Wait at least 2s before checking
+      timeout: 5000, // Wait up to 5 seconds
+    });
   }
 
   async confirm() {
