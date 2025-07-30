@@ -7118,7 +7118,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^22.0.0":
+"@metamask/profile-sync-controller@npm:22.0.0":
   version: 22.0.0
   resolution: "@metamask/profile-sync-controller@npm:22.0.0"
   dependencies:
@@ -7137,6 +7137,28 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/77c33e45c22d50d2e170c910257fa131aa0d2f4ff3918e2e55cce6132ac18248e238bfac09ca03028276facc659ecfbcbc20334b8878511f05f0480b751f7839
+  languageName: node
+  linkType: hard
+
+"@metamask/profile-sync-controller@patch:@metamask/profile-sync-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-22.0.0-1f01869af8.patch":
+  version: 22.0.0
+  resolution: "@metamask/profile-sync-controller@patch:@metamask/profile-sync-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-22.0.0-1f01869af8.patch::version=22.0.0&hash=ccac89"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/snaps-sdk": "npm:^9.0.0"
+    "@metamask/snaps-utils": "npm:^11.0.0"
+    "@noble/ciphers": "npm:^0.5.2"
+    "@noble/hashes": "npm:^1.4.0"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    siwe: "npm:^2.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^32.0.0
+    "@metamask/keyring-controller": ^22.0.0
+    "@metamask/providers": ^22.0.0
+    "@metamask/snaps-controllers": ^14.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/5bfb711ec76f48041dd68fda97ca531a1db22ac50eaba7672e3391269b64aaa855952438055954c791a23db20c47631d54ff559e09d4f4354d2111e649d8d5d9
   languageName: node
   linkType: hard
 
@@ -32213,7 +32235,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.6.0"
-    "@metamask/profile-sync-controller": "npm:^22.0.0"
+    "@metamask/profile-sync-controller": "patch:@metamask/profile-sync-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-22.0.0-1f01869af8.patch"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
