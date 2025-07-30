@@ -9,6 +9,7 @@ module.exports = {
   globals: {
     document: 'readonly',
     window: 'readonly',
+    AggregateError: 'readonly',
   },
 
   rules: {

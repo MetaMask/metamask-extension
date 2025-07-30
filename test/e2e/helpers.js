@@ -440,9 +440,10 @@ async function withFixtures(options, testSuite) {
         // A test error may get overridden here by the shutdown error, but this is OK because a
         // shutdown error indicates a bug in our test tooling that might invalidate later tests.
         // eslint-disable-next-line no-unsafe-finally
-        throw new Error('Failed to shut down test servers', {
-          cause: failures[0].reason,
-        });
+        throw new AggregateError(
+          failures.map((failure) => failure.reason),
+          'Failed to shut down test servers',
+        );
       }
     }
   }
