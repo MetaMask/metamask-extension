@@ -5425,7 +5425,7 @@ export default class MetamaskController extends EventEmitter {
       // newly created accounts.
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
-      this.accountTreeController.init();
+      this.accountWalletController.init();
 
       if (completedOnboarding) {
         await this._addAccountsWithBalance();
