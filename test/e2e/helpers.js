@@ -418,7 +418,7 @@ async function withFixtures(options, testSuite) {
         }
       }
       if (phishingPageServer.isRunning()) {
-        shutdownTasks.push(await phishingPageServer.quit());
+        shutdownTasks.push(phishingPageServer.quit());
       }
 
       shutdownTasks.push(
