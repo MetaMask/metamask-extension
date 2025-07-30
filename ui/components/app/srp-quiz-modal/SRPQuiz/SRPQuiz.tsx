@@ -55,7 +55,7 @@ const rightAnswerIcon = (
 
 const openSupportArticle = (): void => {
   global.platform.openTab({
-    url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+    url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
   });
 };
 

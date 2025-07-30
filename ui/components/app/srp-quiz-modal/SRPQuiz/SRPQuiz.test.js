@@ -54,7 +54,9 @@ describe('srp-reveal-quiz', () => {
 
     await waitFor(() =>
       expect(openTabSpy).toHaveBeenCalledWith({
-        url: expect.stringMatching(ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE),
+        url: expect.stringMatching(
+          `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
+        ),
       }),
     );
 

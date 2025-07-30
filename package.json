@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.23.0",
+  "version": "12.23.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -327,7 +327,7 @@
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/ppom-validator": "0.36.0",
     "@metamask/preinstalled-example-snap": "^0.6.0",
-    "@metamask/profile-sync-controller": "^22.0.0",
+    "@metamask/profile-sync-controller": "patch:@metamask/profile-sync-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-22.0.0-1f01869af8.patch",
     "@metamask/providers": "^22.1.0",
     "@metamask/rate-limit-controller": "^6.0.3",
     "@metamask/remote-feature-flag-controller": "^1.6.0",
