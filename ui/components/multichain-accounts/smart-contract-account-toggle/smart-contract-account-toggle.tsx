@@ -63,7 +63,7 @@ export const SmartContractAccountToggle = ({
 
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
-  // Use pendingToggleState as primary source, fallback to actual account state
+  // Use toggleState as primary source, fallback to actual account state
   const toggleValue = toggleState ?? addressSupportSmartAccount;
 
   // Keep toggle disabled when user has pending intent OR when there are pending requests
