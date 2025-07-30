@@ -276,10 +276,6 @@ export function getShowConnectionsRemovedModal(state) {
   return state.appState.showConnectionsRemovedModal;
 }
 
-export function getOnboardingErrorReport(state) {
-  return state.appState.onboardingErrorReport || null;
-}
-
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {
