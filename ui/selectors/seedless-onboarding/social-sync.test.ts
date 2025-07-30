@@ -1,5 +1,10 @@
-import { AuthConnection } from "@metamask/seedless-onboarding-controller";
-import { BackupState, getIsSocialLoginFlowInitialized, getSocialLoginEmail, getSocialLoginType } from "./social-sync";
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import {
+  BackupState,
+  getIsSocialLoginFlowInitialized,
+  getSocialLoginEmail,
+  getSocialLoginType,
+} from './social-sync';
 
 const MOCK_NODE_AUTH_TOKENS = [
   {
@@ -44,7 +49,13 @@ describe('social-sync selectors', () => {
     });
 
     it('returns undefined if the social login email is not set', () => {
-      const state = { ...MOCK_STATE, metamask: { ...MOCK_STATE.metamask, socialLoginEmail: undefined } };
+      const state = {
+        ...MOCK_STATE,
+        metamask: {
+          ...MOCK_STATE.metamask,
+          socialLoginEmail: undefined,
+        },
+      };
       expect(getSocialLoginEmail(state)).toBeUndefined();
     });
   });
@@ -55,17 +66,35 @@ describe('social-sync selectors', () => {
     });
 
     it('returns false if the social login flow has not been initialized', () => {
-      const state = { ...MOCK_STATE, metamask: { ...MOCK_STATE.metamask, socialLoginEmail: undefined } };
+      const state = {
+        ...MOCK_STATE,
+        metamask: {
+          ...MOCK_STATE.metamask,
+          socialLoginEmail: undefined,
+        },
+      };
       expect(getIsSocialLoginFlowInitialized(state)).toBe(false);
     });
 
     it('returns false if the user is not authenticated', () => {
-      const state = { ...MOCK_STATE, metamask: { ...MOCK_STATE.metamask, userId: undefined } };
+      const state = {
+        ...MOCK_STATE,
+        metamask: {
+          ...MOCK_STATE.metamask,
+          userId: undefined,
+        },
+      };
       expect(getIsSocialLoginFlowInitialized(state)).toBe(false);
     });
 
     it('returns false if the `accessToken` is not set in the state', () => {
-      const state = { ...MOCK_STATE, metamask: { ...MOCK_STATE.metamask, accessToken: undefined } };
+      const state = {
+        ...MOCK_STATE,
+        metamask: {
+          ...MOCK_STATE.metamask,
+          accessToken: undefined,
+        },
+      };
       expect(getIsSocialLoginFlowInitialized(state)).toBe(false);
     });
   });
