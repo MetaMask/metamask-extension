@@ -146,6 +146,10 @@ class Confirmation {
     }
   }
 
+  async clickRejectAllNoWait(): Promise<void> {
+    await this.driver.clickElement(this.rejectAllButton);
+  }
+
   async clickRejectAll(): Promise<void> {
     await this.driver.clickElementAndWaitForWindowToClose(this.rejectAllButton);
   }
