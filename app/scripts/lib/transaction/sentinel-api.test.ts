@@ -11,7 +11,8 @@ import {
 jest.mock('../../../../shared/modules/fetch-with-timeout');
 jest.mock('../../../../shared/modules/conversion.utils');
 
-const fetchMock: jest.MockedFunction<ReturnType<typeof getFetchWithTimeout>> = jest.fn();
+const fetchMock: jest.MockedFunction<ReturnType<typeof getFetchWithTimeout>> =
+  jest.fn();
 
 const NETWORK_ETHEREUM_MOCK = 'ethereum-mainnet';
 
@@ -105,8 +106,12 @@ describe('sentinel-api', () => {
     beforeEach(() => {
       // Default mock: hexToDecimal returns decimal string
       (hexToDecimal as jest.Mock).mockImplementation((hex: string) => {
-        if (hex === '0x1') return '1';
-        if (hex === '0x89') return '137';
+        if (hex === '0x1') {
+          return '1';
+        }
+        if (hex === '0x89') {
+          return '137';
+        }
         return '12345';
       });
     });
@@ -145,7 +150,9 @@ describe('sentinel-api', () => {
 
     it('throws if getNetworkData throws', async () => {
       fetchMock.mockRejectedValueOnce(new Error('API connection error'));
-      await expect(getNetworkDataByChainId('0x1' as Hex)).rejects.toThrow('API connection error');
+      await expect(getNetworkDataByChainId('0x1' as Hex)).rejects.toThrow(
+        'API connection error',
+      );
     });
   });
 });

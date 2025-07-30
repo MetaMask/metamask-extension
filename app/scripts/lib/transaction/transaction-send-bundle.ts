@@ -1,16 +1,19 @@
 import { createProjectLogger, Hex } from '@metamask/utils';
-import { getNetworkData, getNetworkDataByChainId } from './sentinel-api';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { getNetworkData, getNetworkDataByChainId } from './sentinel-api';
 
 const log = createProjectLogger('transaction-send-bundle');
 
 /**
  * Returns true if this chain supports sendBundle feature.
+ *
+ * @param chainId - The chain ID to check.
+ * @returns A promise that resolves to true if sendBundle is supported, false otherwise.
  */
 export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
   const network = await getNetworkDataByChainId(chainId);
 
-    if (!network?.sendBundle) {
+  if (!network?.sendBundle) {
     log('Chain is not supported', chainId);
     return false;
   }
@@ -20,6 +23,9 @@ export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
 
 /**
  * Returns a map of chain IDs to whether sendBundle is supported for each chain.
+ *
+ * @param chainIds - The chain IDs to check.
+ * @returns A map of chain IDs to their sendBundle support status.
  */
 export async function getSendBundleSupportedChains(
   chainIds: Hex[],

@@ -36,8 +36,13 @@ export async function getNetworkData(): Promise<SentinelNetworkMap> {
 
 /**
  * Get Sentinel Network data by chainId
+ *
+ * @param chainId - The chain ID to get the network data for.
+ * @returns A promise that resolves to the Sentinel network data for the given chain ID, or undefined if not found.
  */
-export async function getNetworkDataByChainId(chainId: Hex): Promise<SentinelNetwork | undefined> {
+export async function getNetworkDataByChainId(
+  chainId: Hex,
+): Promise<SentinelNetwork | undefined> {
   const chainIdDecimal = hexToDecimal(chainId);
   const networks = await getNetworkData();
   return networks[chainIdDecimal];
@@ -45,6 +50,9 @@ export async function getNetworkDataByChainId(chainId: Hex): Promise<SentinelNet
 
 /**
  * Returns api base url for a given subdomain.
+ *
+ * @param subdomain - The subdomain to use in the URL.
+ * @returns The complete URL with the subdomain.
  */
 export function buildUrl(subdomain: string): string {
   return BASE_URL.replace('{0}', subdomain);

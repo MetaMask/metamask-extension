@@ -1,5 +1,5 @@
 import { Hex } from '@metamask/utils';
-import { getNetworkDataByChainId } from './sentinel-api';
+import { getNetworkDataByChainId, SentinelNetwork } from './sentinel-api';
 import { isSendBundleSupported } from './transaction-send-bundle';
 
 jest.mock('./sentinel-api');
@@ -65,14 +65,18 @@ describe('isSendBundleSupported', () => {
   });
 
   it('returns true if network supports sendBundle', async () => {
-    getNetworkDataByChainIdMock.mockResolvedValueOnce(ETH_MAINNET_SEND_BUNDLE_TRUE);
+    getNetworkDataByChainIdMock.mockResolvedValueOnce(
+      ETH_MAINNET_SEND_BUNDLE_TRUE,
+    );
     const result = await isSendBundleSupported('0x1' as Hex);
     expect(result).toBe(true);
     expect(getNetworkDataByChainIdMock).toHaveBeenCalledWith('0x1');
   });
 
   it('returns false if sendBundle is false', async () => {
-    getNetworkDataByChainIdMock.mockResolvedValueOnce(ETH_MAINNET_SEND_BUNDLE_FALSE);
+    getNetworkDataByChainIdMock.mockResolvedValueOnce(
+      ETH_MAINNET_SEND_BUNDLE_FALSE,
+    );
     const result = await isSendBundleSupported('0x1' as Hex);
     expect(result).toBe(false);
     expect(getNetworkDataByChainIdMock).toHaveBeenCalledWith('0x1');
@@ -86,7 +90,7 @@ describe('isSendBundleSupported', () => {
   });
 
   it('returns false if sendBundle is missing', async () => {
-    const BAD_NETWORK = { ...BASE_ETH_MAINNET } as any;
+    const BAD_NETWORK = { ...BASE_ETH_MAINNET } as unknown as SentinelNetwork;
     getNetworkDataByChainIdMock.mockResolvedValueOnce(BAD_NETWORK);
     const result = await isSendBundleSupported('0x1' as Hex);
     expect(result).toBe(false);
@@ -94,7 +98,9 @@ describe('isSendBundleSupported', () => {
   });
 
   it('returns false for another network where sendBundle is false', async () => {
-    getNetworkDataByChainIdMock.mockResolvedValueOnce(POLYGON_SEND_BUNDLE_FALSE);
+    getNetworkDataByChainIdMock.mockResolvedValueOnce(
+      POLYGON_SEND_BUNDLE_FALSE,
+    );
     const result = await isSendBundleSupported('0x89' as Hex);
     expect(result).toBe(false);
     expect(getNetworkDataByChainIdMock).toHaveBeenCalledWith('0x89');
