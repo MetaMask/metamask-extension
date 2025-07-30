@@ -1,16 +1,19 @@
-const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-const {
+import { strict as assert } from 'assert';
+import { Suite } from 'mocha';
+import FixtureBuilder from '../../fixture-builder';
+import {
   withFixtures,
-  openDapp,
-  unlockWallet,
   DAPP_URL,
   DAPP_ONE_URL,
-  regularDelayMs,
   WINDOW_TITLES,
-} = require('../../helpers');
+} from '../../helpers';
+import { Driver } from '../../webdriver/driver';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 
-describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function () {
+describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function (this: Suite) {
   it('should queue `eth_requestAccounts` requests when the requesting dapp does not already have connected accounts', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -34,71 +37,55 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
             },
           },
         ],
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // Open Dapp One
-        await openDapp(driver, undefined, DAPP_URL);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         // Dapp Send Button
-        await driver.clickElement('#sendButton');
-        await driver.delay(regularDelayMs);
+        await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForSelector({
-          text: 'Cancel',
-          tag: 'button',
-        });
-
-        await driver.delay(regularDelayMs);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.check_pageIsLoaded();
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
         // Leave the confirmation pending
-        await openDapp(driver, undefined, DAPP_ONE_URL);
+        const secondTestDapp = new TestDapp(driver);
+        await secondTestDapp.openTestDappPage({ url: DAPP_ONE_URL });
+        await secondTestDapp.check_pageIsLoaded();
 
-        const accountsOnload = await (
-          await driver.findElement('#accounts')
-        ).getText();
-        assert.deepStrictEqual(accountsOnload, '');
+        // Verify the account is not connected initially
+        await secondTestDapp.check_connectedAccounts('0x5cfe73b6021e818b776b421b1c4db2474086a7e1', false);
 
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await secondTestDapp.clickConnectAccountButton();
 
-        await driver.delay(regularDelayMs);
-
-        const accountsBeforeConnect = await (
-          await driver.findElement('#accounts')
-        ).getText();
-        assert.deepStrictEqual(accountsBeforeConnect, '');
+        // Verify account is still not connected before confirmation
+        await secondTestDapp.check_connectedAccounts('0x5cfe73b6021e818b776b421b1c4db2474086a7e1', false);
 
         // Reject the pending confirmation from the first dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
-          text: 'Cancel',
-          tag: 'button',
-        });
+        await transactionConfirmation.clickFooterCancelButton();
 
         // Wait for switch confirmation to close then request accounts confirmation to show for the second dapp
-        await driver.delay(regularDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
+        const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
+        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
-        await driver.waitForSelector({
-          text: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          css: '#accounts',
-        });
+        await secondTestDapp.check_connectedAccounts('0x5cfe73b6021e818b776b421b1c4db2474086a7e1');
       },
     );
   });
@@ -126,20 +113,23 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
             },
           },
         ],
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // Open Dapp One
-        await openDapp(driver, undefined, DAPP_URL);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         // Dapp Send Button
-        await driver.clickElement('#sendButton');
+        await testDapp.clickSimpleSendButton();
 
         // Leave the confirmation pending
-
-        await openDapp(driver, undefined, DAPP_ONE_URL);
+        const secondTestDapp = new TestDapp(driver);
+        await secondTestDapp.openTestDappPage({ url: DAPP_ONE_URL });
+        await secondTestDapp.check_pageIsLoaded();
 
         const ethRequestAccounts = JSON.stringify({
           jsonrpc: '2.0',
