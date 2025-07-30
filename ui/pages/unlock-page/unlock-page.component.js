@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { captureException } from '@sentry/browser';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import log from 'loglevel';
 import {
@@ -93,17 +92,9 @@ class UnlockPage extends Component {
      */
     isSocialLoginFlow: PropTypes.bool,
     /**
-     * setOnboardingErrorReport
-     */
-    setOnboardingErrorReport: PropTypes.func,
-    /**
      * Sentry trace context ref for onboarding journey tracing
      */
     onboardingParentContext: PropTypes.object,
-    /**
-     * isMetaMetricsEnabled
-     */
-    isMetaMetricsEnabled: PropTypes.bool,
   };
 
   state = {
@@ -292,25 +283,6 @@ class UnlockPage extends Component {
         },
       });
     }
-
-    // If the user is on a social login flow and the error is not expected
-    if (this.props.isSocialLoginFlow && !errorReason) {
-      if (this.props.isMetaMetricsEnabled) {
-        captureException(error, {
-          tags: {
-            view: 'Unlock - Login with social account',
-            context: 'OAuth login failed - user consented to analytics',
-          },
-        });
-      } else {
-        this.props.setOnboardingErrorReport({
-          error,
-          view: 'Unlock - Login with social account',
-        });
-      }
-      return;
-    }
-
     this.setState({
       error: finalErrorMessage,
       unlockDelayPeriod: finalUnlockDelayPeriod,
@@ -392,7 +364,9 @@ class UnlockPage extends Component {
   onForgotPasswordOrLoginWithDiffMethods = () => {
     const { isSocialLoginFlow, history, isOnboardingCompleted } = this.props;
 
-    if (!isOnboardingCompleted) {
+    // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
+    // we can redirect to `onboarding_welcome` route to select a different login method
+    if (!isOnboardingCompleted && isSocialLoginFlow) {
       history.replace(ONBOARDING_WELCOME_ROUTE);
       return;
     }
@@ -423,7 +397,7 @@ class UnlockPage extends Component {
 
   render() {
     const { password, error, isLocked, showResetPasswordModal } = this.state;
-    const { isOnboardingCompleted } = this.props;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
@@ -537,9 +511,9 @@ class UnlockPage extends Component {
               onClick={() => this.onForgotPasswordOrLoginWithDiffMethods()}
               marginBottom={6}
             >
-              {isOnboardingCompleted
-                ? t('forgotPassword')
-                : t('useDifferentLoginMethod')}
+              {isSocialLoginFlow && !isOnboardingCompleted
+                ? t('useDifferentLoginMethod')
+                : t('forgotPassword')}
             </Button>
 
             <Text>

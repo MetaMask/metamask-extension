@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "टोकन अमाउंट एक पूर्णांक होना चाहिए"
   },
-  "followUsOnX": {
-    "message": "$1 पर हमें फॉलो करें",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "निषिद्ध IPFS गेटवे: कृपया एक CID गेटवे बताएं"
   },
@@ -6828,9 +6824,6 @@
   "troubleConnectingToWallet": {
     "message": "हमें आपके $1 से कनेक्ट करने में परेशानी हुई, $2 की समीक्षा करने की कोशिश करें और दोबारा कोशिश करें।",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask को शुरू करने में परेशानी आई। यह गड़बड़ी रुक-रुक कर हो सकती है, इसलिए एक्सटेंशन को फिर से शुरू करके देखें।"
   },
   "tryAgain": {
     "message": "फिर से कोशिश करें"
