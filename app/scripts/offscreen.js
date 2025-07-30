@@ -40,7 +40,7 @@ export async function createOffscreen() {
 
   let offscreenDocumentLoadedListener;
   const loadPromise = new Promise((resolve) => {
-    offscreenDocumentLoadedListener = async (msg) => {
+    offscreenDocumentLoadedListener = (msg) => {
       if (
         msg.target === OffscreenCommunicationTarget.extensionMain &&
         msg.isBooted
@@ -54,10 +54,9 @@ export async function createOffscreen() {
         // start the SocketBackgroundToMocha.
         if (process.env.IN_TEST && msg.webdriverPresent) {
           const { getSocketBackgroundToMocha } =
-            // Use `import` to make it easier to exclude this test code from the Browserify build.
-            await import(
-              '../../test/e2e/background-socket/socket-background-to-mocha'
-            );
+            // Use `require` to make it easier to exclude this test code from the Browserify build.
+            // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+            require('../../test/e2e/background-socket/socket-background-to-mocha');
           getSocketBackgroundToMocha();
         }
       }
