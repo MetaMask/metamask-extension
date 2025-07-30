@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Platform } from '@metamask/profile-sync-controller/sdk';
-import { getUserProfileMetaMetrics, updateSlides } from '../../store/actions';
+import { getUserProfileLineage, updateSlides } from '../../store/actions';
 import {
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
@@ -212,7 +212,7 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../../store/actions', () => ({
   updateSlides: jest.fn(),
-  getUserProfileMetaMetrics: jest.fn().mockResolvedValue({
+  getUserProfileLineage: jest.fn().mockResolvedValue({
     lineage: [
       {
         agent: 'extension',
@@ -590,7 +590,7 @@ describe('useCarouselManagement', () => {
     it('should display if user is not available on mobile', async () => {
       mockGetUseExternalServices.mockReturnValue(true);
 
-      jest.mocked(getUserProfileMetaMetrics).mockResolvedValue({
+      jest.mocked(getUserProfileLineage).mockResolvedValue({
         lineage: [
           {
             agent: Platform.EXTENSION,
@@ -629,7 +629,7 @@ describe('useCarouselManagement', () => {
     it('should not display if user is available on mobile', async () => {
       mockGetUseExternalServices.mockReturnValue(true);
 
-      jest.mocked(getUserProfileMetaMetrics).mockResolvedValue({
+      jest.mocked(getUserProfileLineage).mockResolvedValue({
         lineage: [
           {
             agent: Platform.MOBILE,
