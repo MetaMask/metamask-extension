@@ -4,13 +4,14 @@ on:
   pull_request:
     branches:
       - master
+      - stable
     types:
       - closed
 
 jobs:
   close-bug-report:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'Version-v')
+    if: github.event.pull_request.merged == true && ( startsWith(github.event.pull_request.head.ref, 'Version-v') || startsWith(github.event.pull_request.head.ref, 'release/') )
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1

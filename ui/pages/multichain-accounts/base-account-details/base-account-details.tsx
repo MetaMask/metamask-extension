@@ -181,7 +181,7 @@ export const BaseAccountDetails = ({
               : AvatarAccountVariant.Jazzicon
           }
           size={AvatarAccountSize.Xl}
-          style={{ margin: '0 auto', marginBottom: '32px' }}
+          style={{ margin: '0 auto', marginBottom: '8px' }}
         />
         <Box className="multichain-account-details__section">
           <AccountDetailsRow
