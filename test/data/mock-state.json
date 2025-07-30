@@ -535,19 +535,29 @@
       }
     },
     "accountTree": {
-      "selectedAccountGroup": "01JKAF3DSGM3AB87EM9N0K41AJ:default",
+      "selectedAccountGroup": "entropy:01K1EG2TK3QKGJ36GTW6YB8572/0",
       "wallets": {
-        "01JKAF3DSGM3AB87EM9N0K41AJ": {
-          "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
+        "entropy:01K1EG2TK3QKGJ36GTW6YB8572": {
+          "id": "entropy:01K1EG2TK3QKGJ36GTW6YB8572",
           "groups": {
-            "01JKAF3DSGM3AB87EM9N0K41AJ:default": {
-              "id": "01JKAF3DSGM3AB87EM9N0K41AJ:default",
+            "entropy:01K1EG2TK3QKGJ36GTW6YB8572/0": {
+              "id": "entropy:01K1EG2TK3QKGJ36GTW6YB8572/0",
               "accounts": [
                 "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
                 "07c2cfec-36c9-46c4-8115-3836d3ac9047"
               ],
               "metadata": {
-                "name": "Default"
+                "name": "Group 0"
+              }
+            },
+            "entropy:01K1EG2TK3QKGJ36GTW6YB8572/1": {
+              "id": "entropy:01K1EG2TK3QKGJ36GTW6YB8572/1",
+              "accounts": [
+                "d12581f4-3425-441b-94c4-23892f6a8e87",
+                "08d34637-d54c-4830-aab3-635fda3bd840"
+              ],
+              "metadata": {
+                "name": "Group 1"
               }
             }
           },
@@ -555,14 +565,14 @@
             "name": "Wallet 1"
           }
         },
-        "01JKAF3PJ247KAM6C03G5Q0NP8": {
-          "id": "01JKAF3PJ247KAM6C03G5Q0NP8",
+        "entropy:01JKAF3PJ247KAM6C03G5Q0NP8": {
+          "id": "entropy:01JKAF3PJ247KAM6C03G5Q0NP8",
           "groups": {
-            "01JKAF3PJ247KAM6C03G5Q0NP8:default": {
-              "id": "01JKAF3PJ247KAM6C03G5Q0NP8:default",
+            "entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0": {
+              "id": "entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0",
               "accounts": ["784225f4-d30b-4e77-a900-c8bbce735b88"],
               "metadata": {
-                "name": "Default"
+                "name": "Group 0"
               }
             }
           },
@@ -630,7 +640,7 @@
             }
           },
           "options": {
-            "entropySource": "01JKAF3DSGM3AB87EM9N0K41AJ"
+            "entropySource": "entropy:01K1EG2TK3QKGJ36GTW6YB8572"
           },
           "methods": [
             "personal_sign",
@@ -653,7 +663,7 @@
             }
           },
           "options": {
-            "entropySource": "01JKAF3DSGM3AB87EM9N0K41AJ"
+            "entropySource": "entropy:01K1EG2TK3QKGJ36GTW6YB8572"
           },
           "methods": [
             "personal_sign",
@@ -664,6 +674,66 @@
           ],
           "scopes": ["eip155:0"],
           "type": "eip155:eoa"
+        },
+        "d12581f4-3425-441b-94c4-23892f6a8e87": {
+          "address": "H3Lq23RBHV7qwWN25r3u5JWZhHQMwr7xepH2uxsbuDca",
+          "id": "d12581f4-3425-441b-94c4-23892f6a8e87",
+          "metadata": {
+            "importTime": 1753907033790,
+            "name": "Solana Account 1",
+            "keyring": {
+              "type": "Snap Keyring"
+            },
+            "snap": {
+              "id": "npm:@metamask/solana-wallet-snap",
+              "name": "Solana",
+              "enabled": true
+            }
+          },
+          "options": {
+            "entropySource": "entropy:01K1EG2TK3QKGJ36GTW6YB8572",
+            "derivationPath": "m/44'/501'/0'/0'",
+            "type": "mnemonic",
+            "groupIndex": 0
+          },
+          "methods": [
+            "signAndSendTransaction",
+            "signTransaction",
+            "signMessage",
+            "signIn"
+          ],
+          "scopes": ["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],
+          "type": "solana:data-account"
+        },
+        "08d34637-d54c-4830-aab3-635fda3bd840": {
+          "address": "97EnCNkv3PruBTDRwsnYcLfoqXeGwTnJqErt3Hfeu9ta",
+          "id": "08d34637-d54c-4830-aab3-635fda3bd840",
+          "metadata": {
+            "importTime": 1723404053678,
+            "name": "Solana Account 2",
+            "keyring": {
+              "type": "Snap Keyring"
+            },
+            "snap": {
+              "id": "npm:@metamask/solana-wallet-snap",
+              "name": "Solana",
+              "enabled": true
+            }
+          },
+          "options": {
+            "entropySource": "entropy:01K1EG2TK3QKGJ36GTW6YB8572",
+            "derivationPath": "m/44'/501'/1'/0'",
+            "type": "mnemonic",
+            "groupIndex": 0
+          },
+          "methods": [
+            "signAndSendTransaction",
+            "signTransaction",
+            "signMessage",
+            "signIn"
+          ],
+          "scopes": ["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],
+          "type": "solana:data-account"
         },
         "15e69915-2a1a-4019-93b3-916e11fd432f": {
           "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
@@ -697,7 +767,7 @@
             }
           },
           "options": {
-            "entropySource": "01JKAF3PJ247KAM6C03G5Q0NP8"
+            "entropySource": "entropy:01JKAF3PJ247KAM6C03G5Q0NP8"
           },
           "methods": [
             "personal_sign",
@@ -768,7 +838,7 @@
           "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
         ],
         "metadata": {
-          "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
+          "id": "entropy:01K1EG2TK3QKGJ36GTW6YB8572",
           "name": ""
         }
       },
