@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Token miktarı tam sayı olmalıdır"
   },
-  "followUsOnX": {
-    "message": "Bizi $1 üzerinden takip edin",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Yasaklı IPFS Ağ Geçidi: Lütfen bir CID ağ geçidi belirtin"
   },
@@ -6828,9 +6824,6 @@
   "troubleConnectingToWallet": {
     "message": "$1 ile bağlantı kurmada sorun yaşıyoruz, $2 kısmını inceleyip tekrar deneyin.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
   },
   "tryAgain": {
     "message": "Tekrar dene"

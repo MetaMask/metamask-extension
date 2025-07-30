@@ -33,7 +33,7 @@ describe('Update modal', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
           },
         },
       },
@@ -56,7 +56,7 @@ describe('Update modal', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
           },
         },
       },
@@ -82,7 +82,7 @@ describe('Update modal', function (this: Suite) {
         disableServerMochaToBackground: true,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
           },
         },
         // we need to mock the updating page that is opened when the user confirms the update
@@ -119,7 +119,7 @@ describe('Update modal', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
           },
         },
       },
@@ -143,7 +143,7 @@ describe('Update modal', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
           },
         },
       },
