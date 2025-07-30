@@ -9,7 +9,6 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import SignTypedDataConfirmation from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
 import { Driver } from '../../webdriver/driver';
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
@@ -124,14 +123,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the signTypedData confirmation.
-        const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
-          driver,
-        );
-        await reviewPermissionsConfirmation.check_networkIsDisplayed(
+        const signTypedDataConfirmation = new SignTypedDataConfirmation(driver);
+        await signTypedDataConfirmation.check_networkIsDisplayed(
           'Localhost 8546',
         );
 
-        const signTypedDataConfirmation = new SignTypedDataConfirmation(driver);
         await signTypedDataConfirmation.clickFooterCancelButton();
       },
     );
