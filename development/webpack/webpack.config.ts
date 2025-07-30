@@ -189,6 +189,13 @@ if (args.lavamoat) {
       inlineLockdown: /^runtime|contentscript\.js/u,
       unlockedChunksUnsafe: /inpage\.js/u,
       debugRuntime: false,
+      lockdown: {
+        consoleTaming: 'unsafe',
+        errorTaming: 'unsafe',
+        stackFiltering: 'verbose',
+        overrideTaming: 'severe',
+        localeTaming: 'unsafe',
+      },
       scuttleGlobalThis: {
         enabled: true,
         // scuttlerName: 'SCUTTLER', // TODO(weizman) SUPPORT SNOW AND SCUTTLER
@@ -217,6 +224,7 @@ if (args.lavamoat) {
           'fetch', // Used by browser to generate notifications
           'OffscreenCanvas', // Used by browser to generate notifications
           // globals chromedriver needs to function
+          // @ts-expect-error - regex is not included in the types for some reason
           /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
           'name',
           'performance',

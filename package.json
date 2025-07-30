@@ -257,7 +257,7 @@
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.3",
-    "@lavamoat/webpack": "patch:@lavamoat/webpack@npm%3A1.0.0#~/.yarn/patches/@lavamoat-webpack-npm-1.0.0-eafcf5b6d5.patch",
+    "@lavamoat/webpack": "1.1.0",
     "@ledgerhq/errors": "^6.21.0",
     "@material-ui/core": "^4.12.4",
     "@metamask/abi-utils": "^2.0.2",
