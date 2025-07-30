@@ -6,6 +6,7 @@ import configureStore from '../../../store/store';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
+import { setToggleState } from '../../../ducks/smart-accounts/smart-accounts';
 import { SmartContractAccountToggle } from './smart-contract-account-toggle';
 
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Account');
@@ -74,19 +75,28 @@ const render = (
   props: {
     networkConfig?: EIP7702NetworkConfiguration;
     address?: Hex;
-    pendingToggleState?: boolean | null;
-    setPendingToggleState?: (value: boolean | null) => void;
     returnToPage?: string;
   } = {},
+  toggleState: boolean | null = null,
+  transactions: {
+    id: string;
+    txParams: { from: string };
+    chainId: string;
+    time: number;
+  }[] = [],
 ) => {
   const store = configureStore({});
   const defaultProps = {
     networkConfig: mockNetworkConfig,
     address: mockAddress,
-    pendingToggleState: null,
-    setPendingToggleState: jest.fn(),
     ...props,
   };
+
+  // Mock useSelector to return values in the order they're called
+  mockUseSelectorImpl
+    .mockReturnValueOnce(transactions) // First call: unconfirmedTransactionsListSelector
+    .mockReturnValueOnce(toggleState); // Second call: selectToggleState
+
   return renderWithProvider(
     <SmartContractAccountToggle {...defaultProps} />,
     store,
@@ -106,8 +116,6 @@ describe('SmartContractAccountToggle', () => {
     mockUseBatchAuthorizationRequests.mockReturnValue({
       hasPendingRequests: false,
     });
-
-    mockUseSelectorImpl.mockReturnValue([]);
   });
 
   describe('Basic Rendering', () => {
@@ -118,13 +126,13 @@ describe('SmartContractAccountToggle', () => {
       expect(screen.getByRole('checkbox')).toBeInTheDocument();
     });
 
-    it('shows toggle as ON for supported networks', () => {
-      const { container } = render({
-        networkConfig: mockNetworkConfig,
-      });
+    it('shows toggle as enabled for supported networks', () => {
+      const { container } = render();
 
       const toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass('toggle-button--on');
+      expect(toggle.closest('.toggle-button')).not.toHaveClass(
+        'toggle-button--disabled',
+      );
       expect(container).toMatchSnapshot();
     });
 
@@ -150,56 +158,61 @@ describe('SmartContractAccountToggle', () => {
   });
 
   describe('Toggle Actions', () => {
-    it('downgrades account when turning OFF supported network', async () => {
-      const setPendingToggleState = jest.fn();
-      render({
-        networkConfig: mockNetworkConfig,
-        setPendingToggleState,
-      });
+    it('upgrades account when turning ON supported network', async () => {
+      render({}, false);
 
       const toggle = screen.getByRole('checkbox');
       fireEvent.click(toggle);
 
       await waitFor(() => {
-        expect(setPendingToggleState).toHaveBeenCalledWith(false);
+        expect(mockDispatch).toHaveBeenCalledWith(
+          setToggleState({
+            address: mockAddress,
+            chainId: mockNetworkConfig.chainIdHex,
+            value: true,
+          }),
+        );
+      });
+      expect(mockUpgradeAccount).toHaveBeenCalledWith(
+        mockAddress,
+        mockNetworkConfig.upgradeContractAddress,
+      );
+    });
+
+    it('downgrades account when turning OFF supported network', async () => {
+      render({}, true);
+
+      const toggle = screen.getByRole('checkbox');
+      fireEvent.click(toggle);
+
+      await waitFor(() => {
+        expect(mockDispatch).toHaveBeenCalledWith(
+          setToggleState({
+            address: mockAddress,
+            chainId: mockNetworkConfig.chainIdHex,
+            value: false,
+          }),
+        );
       });
       expect(mockDowngradeAccount).toHaveBeenCalledWith(mockAddress);
     });
 
-    it('upgrades account when turning ON unsupported network', async () => {
-      const setPendingToggleState = jest.fn();
-      render({
-        networkConfig: mockUnsupportedNetworkConfig,
-        setPendingToggleState,
-      });
-
-      const toggle = screen.getByRole('checkbox');
-      fireEvent.click(toggle);
-
-      await waitFor(() => {
-        expect(setPendingToggleState).toHaveBeenCalledWith(true);
-      });
-      expect(mockUpgradeAccount).toHaveBeenCalledWith(
-        mockAddress,
-        mockUnsupportedNetworkConfig.upgradeContractAddress,
-      );
-    });
-
     it('prevents upgrade when contract address is missing', async () => {
-      const setPendingToggleState = jest.fn();
       const networkWithoutUpgradeAddress = {
-        ...mockUnsupportedNetworkConfig,
+        ...mockNetworkConfig,
         upgradeContractAddress: undefined,
       };
 
-      render({
-        networkConfig: networkWithoutUpgradeAddress,
-        setPendingToggleState,
-      });
+      render(
+        {
+          networkConfig: networkWithoutUpgradeAddress,
+        },
+        false,
+      );
 
       const toggle = screen.getByRole('checkbox');
       expect(toggle.closest('.toggle-button')).toHaveClass(
-        'toggle-button--disabled',
+        'toggle-button--off',
       );
     });
   });
@@ -210,7 +223,7 @@ describe('SmartContractAccountToggle', () => {
         hasPendingRequests: true,
       });
 
-      const { container } = render();
+      const { container } = render({}, true);
 
       const toggle = screen.getByRole('checkbox');
       expect(toggle.closest('.toggle-button')).toHaveClass(
@@ -237,89 +250,81 @@ describe('SmartContractAccountToggle', () => {
         hasPendingRequests: true,
       });
 
-      const setPendingToggleState = jest.fn();
-      render({
-        setPendingToggleState,
-      });
+      render();
 
       const toggle = screen.getByRole('checkbox');
       fireEvent.click(toggle);
 
-      expect(setPendingToggleState).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Pending Toggle State Management', () => {
-    it('disables toggle when pendingToggleState is not null', () => {
-      render({
-        pendingToggleState: true,
-      });
-
-      const toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass(
-        'toggle-button--disabled',
-      );
-    });
-
-    it('uses pendingToggleState as primary source of truth', () => {
-      render({
-        pendingToggleState: false,
-      });
-
-      const toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass(
-        'toggle-button--off',
-      );
-    });
-
-    it('falls back to actual state when pendingToggleState is null', () => {
-      render({
-        pendingToggleState: null,
-      });
-
-      const toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass('toggle-button--on');
+      expect(mockDispatch).not.toHaveBeenCalled();
     });
   });
 
   describe('Error Handling', () => {
-    it('resets pendingToggleState when upgradeAccount throws error', async () => {
-      const setPendingToggleState = jest.fn();
+    it('resets toggleState when upgradeAccount throws error', async () => {
       mockUpgradeAccount.mockRejectedValue(new Error('Upgrade failed'));
 
-      render({
-        networkConfig: mockUnsupportedNetworkConfig,
-        setPendingToggleState,
-      });
+      render({}, false);
 
       const toggle = screen.getByRole('checkbox');
       fireEvent.click(toggle);
 
+      // Should dispatch the intent first
       await waitFor(() => {
-        expect(setPendingToggleState).toHaveBeenCalledWith(null);
+        expect(mockDispatch).toHaveBeenCalledWith(
+          setToggleState({
+            address: mockAddress,
+            chainId: mockNetworkConfig.chainIdHex,
+            value: true,
+          }),
+        );
+      });
+
+      // Then reset after error
+      await waitFor(() => {
+        expect(mockDispatch).toHaveBeenCalledWith(
+          setToggleState({
+            address: mockAddress,
+            chainId: mockNetworkConfig.chainIdHex,
+            value: null,
+          }),
+        );
       });
     });
 
-    it('resets pendingToggleState when downgradeAccount throws error', async () => {
-      const setPendingToggleState = jest.fn();
+    it('resets toggleState when downgradeAccount throws error', async () => {
       mockDowngradeAccount.mockRejectedValue(new Error('Downgrade failed'));
 
-      render({
-        networkConfig: mockNetworkConfig,
-        setPendingToggleState,
-      });
+      render({}, true);
 
       const toggle = screen.getByRole('checkbox');
       fireEvent.click(toggle);
 
+      // Should dispatch the intent first
       await waitFor(() => {
-        expect(setPendingToggleState).toHaveBeenCalledWith(null);
+        expect(mockDispatch).toHaveBeenCalledWith(
+          setToggleState({
+            address: mockAddress,
+            chainId: mockNetworkConfig.chainIdHex,
+            value: false,
+          }),
+        );
+      });
+
+      // Then reset after error
+      await waitFor(() => {
+        expect(mockDispatch).toHaveBeenCalledWith(
+          setToggleState({
+            address: mockAddress,
+            chainId: mockNetworkConfig.chainIdHex,
+            value: null,
+          }),
+        );
       });
     });
   });
 
   describe('Transaction Monitoring', () => {
-    it('redirects to transaction confirmation when pendingToggleState is set and transaction is found', () => {
+    it('redirects to transaction confirmation when toggleState is set and transaction is found', () => {
       const mockTransactions = [
         {
           id: 'tx-123',
@@ -329,11 +334,12 @@ describe('SmartContractAccountToggle', () => {
         },
       ];
 
-      mockUseSelectorImpl.mockReturnValue(mockTransactions);
-
-      render({
-        pendingToggleState: true,
+      // Set hasPendingRequests to true to trigger the transaction monitoring useEffect
+      mockUseBatchAuthorizationRequests.mockReturnValue({
+        hasPendingRequests: true,
       });
+
+      render({}, true, mockTransactions); // toggleState = true
 
       expect(mockPush).toHaveBeenCalledWith('/confirm-transaction/tx-123');
     });
@@ -348,13 +354,18 @@ describe('SmartContractAccountToggle', () => {
         },
       ];
 
-      mockUseSelectorImpl.mockReturnValue(mockTransactions);
+      mockUseBatchAuthorizationRequests.mockReturnValue({
+        hasPendingRequests: true,
+      });
 
       const returnToPage = '/home';
-      render({
-        pendingToggleState: true,
-        returnToPage,
-      });
+      render(
+        {
+          returnToPage,
+        },
+        true,
+        mockTransactions,
+      );
 
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'SET_REDIRECT_AFTER_DEFAULT_PAGE',
@@ -372,13 +383,18 @@ describe('SmartContractAccountToggle', () => {
         },
       ];
 
-      mockUseSelectorImpl.mockReturnValue(mockTransactions);
+      mockUseBatchAuthorizationRequests.mockReturnValue({
+        hasPendingRequests: true,
+      });
 
       const returnToPage = '/account-details';
-      render({
-        pendingToggleState: true,
-        returnToPage,
-      });
+      render(
+        {
+          returnToPage,
+        },
+        true,
+        mockTransactions,
+      );
 
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'SET_REDIRECT_AFTER_DEFAULT_PAGE',
@@ -405,11 +421,11 @@ describe('SmartContractAccountToggle', () => {
         },
       ];
 
-      mockUseSelectorImpl.mockReturnValue(mockTransactions);
-
-      render({
-        pendingToggleState: true,
+      mockUseBatchAuthorizationRequests.mockReturnValue({
+        hasPendingRequests: true,
       });
+
+      render({}, true, mockTransactions);
 
       expect(mockPush).toHaveBeenCalledWith('/confirm-transaction/tx-new');
     });
@@ -424,19 +440,21 @@ describe('SmartContractAccountToggle', () => {
         },
       ];
 
-      mockUseSelectorImpl.mockReturnValue(mockTransactions);
-
-      const setPendingToggleState = jest.fn();
-      render({
-        pendingToggleState: true,
-        setPendingToggleState,
+      mockUseBatchAuthorizationRequests.mockReturnValue({
+        hasPendingRequests: true,
       });
+
+      render({}, true, mockTransactions);
 
       expect(mockPush).not.toHaveBeenCalled();
     });
 
-    it('resets pendingToggleState after timeout when no transaction is found', async () => {
+    it('resets toggleState after timeout when no transaction is found', async () => {
       jest.useFakeTimers();
+
+      mockUseBatchAuthorizationRequests.mockReturnValue({
+        hasPendingRequests: true,
+      });
 
       const mockTransactions = [
         {
@@ -447,19 +465,19 @@ describe('SmartContractAccountToggle', () => {
         },
       ];
 
-      mockUseSelectorImpl.mockReturnValue(mockTransactions);
-
-      const setPendingToggleState = jest.fn();
-      render({
-        pendingToggleState: true,
-        setPendingToggleState,
-      });
+      render({}, true, mockTransactions);
 
       // Fast-forward time by 5 seconds
       jest.advanceTimersByTime(5000);
 
       await waitFor(() => {
-        expect(setPendingToggleState).toHaveBeenCalledWith(null);
+        expect(mockDispatch).toHaveBeenCalledWith(
+          setToggleState({
+            address: mockAddress,
+            chainId: mockNetworkConfig.chainIdHex,
+            value: null,
+          }),
+        );
       });
 
       jest.useRealTimers();
