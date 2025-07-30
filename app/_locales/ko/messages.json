@@ -5440,12 +5440,6 @@
   "slideMultiSrpTitle": {
     "message": "여러 비밀복구구문 추가"
   },
-  "slideRemoteModeDescription": {
-    "message": "콜드 월렛을 무선으로 사용하세요"
-  },
-  "slideRemoteModeTitle": {
-    "message": "콜드 스토리지, 빠른 접근"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "같은 주소, 더욱 스마트한 기능"
   },
