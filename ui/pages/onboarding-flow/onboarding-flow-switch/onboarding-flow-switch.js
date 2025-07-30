@@ -13,6 +13,7 @@ import {
   ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
   ///: END:ONLY_INCLUDE_IF
   ONBOARDING_METAMETRICS,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -25,10 +26,12 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-d
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 ///: END:ONLY_INCLUDE_IF
 import {
+  getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
   getIsSocialLoginFlow,
   getIsSocialLoginFlowInitialized,
 } from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
@@ -38,6 +41,7 @@ export default function OnboardingFlowSwitch() {
     getIsSocialLoginFlowInitialized,
   );
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isUnlocked = useSelector(getIsUnlocked);
   const isParticipateInMetaMetricsSet = useSelector(
@@ -79,6 +83,13 @@ export default function OnboardingFlowSwitch() {
       );
     ///: END:ONLY_INCLUDE_IF
     return redirect;
+  }
+  if (
+    !isInitialized &&
+    isSocialLoginFlowInitialized &&
+    firstTimeFlowType === FirstTimeFlowType.socialCreate
+  ) {
+    return <Redirect to={{ pathname: ONBOARDING_CREATE_PASSWORD_ROUTE }} />;
   }
 
   return <Redirect to={{ pathname: ONBOARDING_UNLOCK_ROUTE }} />;

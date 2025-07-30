@@ -27,9 +27,11 @@ export function getSocialLoginEmail(state: BackupState): string | undefined {
 export function getIsSocialLoginFlowInitialized(state: BackupState): boolean {
   const hasSocialLoginType = Boolean(getSocialLoginType(state));
   const hasSocialLoginEmail = Boolean(getSocialLoginEmail(state));
+
+  // below is the assertion that the user is authenticated
+  // and the SeedlessOnboardingController has necessary state data to proceed with the create/import flow
   const isUserAuthenticated =
     Array.isArray(state.metamask.nodeAuthTokens) &&
-    state.metamask.nodeAuthTokens.length > 3 &&
     typeof state.metamask.userId === 'string' &&
     typeof state.metamask.accessToken === 'string' &&
     typeof state.metamask.refreshToken === 'string';
