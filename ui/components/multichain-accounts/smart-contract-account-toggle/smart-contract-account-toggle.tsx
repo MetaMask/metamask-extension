@@ -75,6 +75,27 @@ export const SmartContractAccountToggle = ({
       const checkUpgradeStatus = async () => {
         try {
           const upgraded = await isUpgraded(address);
+
+          // Only check for mismatch if:
+          // 1. User has intent (toggleState !== null)
+          // 2. Intent doesn't match reality (toggleState !== upgraded)
+          // 3. No pending requests (transaction completed)
+          // 4. User isn't in the middle of clicking (not hasUserInteracted)
+          if (
+            toggleState !== null &&
+            toggleState !== upgraded &&
+            !hasPendingRequests &&
+            !hasUserInteracted
+          ) {
+            dispatch(
+              setToggleState({
+                address,
+                chainId: chainIdHex,
+                value: null,
+              }),
+            );
+          }
+
           setAddressSupportSmartAccount(upgraded);
         } catch (error) {
           setAddressSupportSmartAccount(isSupported);
@@ -82,7 +103,16 @@ export const SmartContractAccountToggle = ({
       };
       checkUpgradeStatus();
     }
-  }, [hasPendingRequests, toggleState, isUpgraded, address, isSupported]);
+  }, [
+    hasPendingRequests,
+    toggleState,
+    isUpgraded,
+    address,
+    isSupported,
+    dispatch,
+    chainIdHex,
+    hasUserInteracted,
+  ]);
 
   const findAndRedirectToTransaction = useCallback(() => {
     const matchingTransactions = unconfirmedTransactions.filter(
