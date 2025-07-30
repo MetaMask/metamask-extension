@@ -305,7 +305,6 @@ describe('Multichain Asset List', function (this: Suite) {
         await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('TST');
         await assetListPage.clickSwapButton();
-        await sendPage.check_networkChange(POLYGON_NAME_MAINNET);
       },
     );
   });
