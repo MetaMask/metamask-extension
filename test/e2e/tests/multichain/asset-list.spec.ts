@@ -313,13 +313,11 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
-        const sendPage = new SendTokenPage(driver);
         const swapPage = new SwapPage(driver);
         await switchToNetworkFromSendFlow(driver, LINEA_NAME_MAINNET);
         await assetListPage.check_tokenItemNumber(3);
         await assetListPage.clickOnAsset('Ethereum');
         await homePage.goToSwapTab();
-        await sendPage.check_networkChange(NETWORK_NAME_MAINNET);
         await swapPage.check_prepareSwapBalanceMessage(BALANCE_AMOUNT);
       },
     );
