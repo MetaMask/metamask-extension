@@ -4,10 +4,8 @@
 
 The MetaMask extension team currently tracks page load performance through manual benchmarking using browser console scripts and existing CI pipeline metrics. However, this approach has several limitations:
 
-1. **Manual Process**: Current benchmarking relies on running `benchmarking/ManualPageLoadBenchmarkingScript.js` as a browser snippet, which requires manual intervention and is not scalable
-2. **Inconsistent Baselines**: Establishing reliable baseline metrics is challenging with manual processes
-3. **Limited Integration**: While the CI pipeline includes UI startup metrics and bundle size tracking, there's no automated page load speed benchmarking
-4. **No Regression Detection**: Performance regressions may go undetected until manual testing reveals issues
+1. **Limited Integration**: While the CI pipeline includes UI startup metrics and bundle size tracking, there's no automated page load speed benchmarking
+2. **No Regression Detection**: Performance regressions may go undetected until manual testing reveals issues
 
 ## Current Architecture Overview
 
@@ -22,7 +20,6 @@ The MetaMask extension already has a sophisticated benchmarking pipeline:
 
 ### Current Benchmarking Scripts
 
-- **Manual Script**: `benchmarking/ManualPageLoadBenchmarkingScript.js` - Browser console snippet for manual testing
 - **E2E Benchmark**: `test/e2e/benchmark.mjs` - Automated page load benchmarking using Selenium
 - **User Actions**: `test/e2e/user-actions-benchmark.ts` - Benchmarking specific user interactions
 - **CI Workflow**: `.github/workflows/run-benchmarks.yml` - Orchestrates benchmark execution
@@ -44,7 +41,7 @@ The MetaMask extension already has a sophisticated benchmarking pipeline:
 
 1. **Create Puppeteer Benchmark Runner**
    ```typescript
-   // benchmarking/puppeteer-benchmark-runner.ts
+   // test/e2e/puppeteer-benchmark-runner.ts
    - Load extension in Puppeteer
    - Navigate to test pages
    - Collect performance metrics using Performance API
@@ -88,27 +85,12 @@ The MetaMask extension already has a sophisticated benchmarking pipeline:
 
 ## Baseline Establishment Strategies
 
-### Current Approach Assessment
-
-The current manual script approach has these characteristics:
-
-**Strengths**:
-- Direct measurement in real browser environment
-- Captures actual user experience
-- Simple to understand and debug
-
-**Weaknesses**:
-- Inconsistent execution environment
-- Manual intervention required
-- No historical tracking
-- Limited statistical significance
-
 ### Recommended Baseline Strategy
 
 #### 1. Automated Baseline Collection
 
 **Implementation**:
-- Run automated benchmarks on main/master branch daily
+- Run automated benchmarks on main branch daily
 - Store results in time-series database or JSON files
 - Calculate rolling averages and percentiles
 - Establish confidence intervals for each metric
@@ -158,7 +140,7 @@ The current manual script approach has these characteristics:
 
 ## Implementation Roadmap
 
-### Phase 1: Foundation (Weeks 1-2)
+### Phase 1: Foundation
 
 1. **Set up Puppeteer infrastructure**
    - Create Puppeteer benchmark runner
@@ -170,7 +152,7 @@ The current manual script approach has these characteristics:
    - Set initial baseline thresholds
    - Create regression detection logic
 
-### Phase 2: Integration (Weeks 3-4)
+### Phase 2: Integration
 
 1. **CI Pipeline Integration**
    - Add Puppeteer benchmarks to PR workflow
@@ -182,7 +164,7 @@ The current manual script approach has these characteristics:
    - Establish statistical significance
    - Document baseline values
 
-### Phase 3: Optimization (Weeks 5-6)
+### Phase 3: Optimization
 
 1. **Performance Optimization**
    - Optimize benchmark execution time
@@ -265,7 +247,7 @@ The current manual script approach has these characteristics:
 
 The recommended approach combines the reliability of Puppeteer with the existing CI infrastructure to create a robust, automated page load speed benchmarking system. This solution will:
 
-1. **Automate** the currently manual benchmarking process
+1. **Automate** the benchmarking process
 2. **Establish** reliable baselines through statistical analysis
 3. **Integrate** seamlessly with existing CI/CD pipeline
 4. **Provide** actionable feedback to developers
