@@ -386,50 +386,52 @@ async function withFixtures(options, testSuite) {
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
-      const shutdownTasks = [async () => fixtureServer.stop()];
+      const shutdownTasks = [fixtureServer.stop()];
 
       for (const server of localNodes) {
         if (server) {
-          shutdownTasks.push(async () => await server.quit());
+          shutdownTasks.push(server.quit());
         }
       }
 
       if (useBundler) {
-        shutdownTasks.push(async () => await bundlerServer.stop());
+        shutdownTasks.push(bundlerServer.stop());
       }
 
       if (webDriver) {
-        shutdownTasks.push(async () => await driver.quit());
+        shutdownTasks.push(driver.quit());
       }
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
-            shutdownTasks.push(async () => {
-              return await new Promise((resolve, reject) => {
+            shutdownTasks.push(
+              new Promise((resolve, reject) => {
                 dappServer[i].close((error) => {
                   if (error) {
                     return reject(error);
                   }
                   return resolve();
                 });
-              });
-            });
+              }),
+            );
           }
         }
       }
       if (phishingPageServer.isRunning()) {
-        shutdownTasks.push(async () => await phishingPageServer.quit());
+        shutdownTasks.push(await phishingPageServer.quit());
       }
 
-      shutdownTasks.push(async () => {
-        // Since mockServer could be stop'd at another location,
-        // use a try/catch to avoid an error
-        try {
-          await mockServer.stop();
-        } catch (e) {
-          console.log('mockServer already stopped');
-        }
-      });
+      shutdownTasks.push(
+        (async () => {
+          // Since mockServer could be stop'd at another location,
+          // use a try/catch to avoid an error
+          try {
+            await mockServer.stop();
+          } catch (e) {
+            console.log('mockServer already stopped');
+          }
+        })(),
+      );
 
       const results = await Promise.allSettled(shutdownTasks);
       const failures = results.filter((result) => result.status === 'rejected');
