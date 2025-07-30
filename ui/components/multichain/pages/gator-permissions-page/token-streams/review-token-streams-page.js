@@ -8,6 +8,7 @@ import {
   ButtonIconSize,
   IconName,
   Text,
+  Button,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -24,8 +25,13 @@ import {
 import { TOKEN_STREAMS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
-import { extractNetworkName } from '../gator-permissions-page-helper';
+import {
+  extractNetworkName,
+  handleRevokeClick,
+  handleRevokeBatchClick,
+} from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
+import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 
 export const ReviewTokenStreamsPage = () => {
   const t = useI18nContext();
@@ -34,6 +40,14 @@ export const ReviewTokenStreamsPage = () => {
   const { chainId } = useParams();
   const [networkName, setNetworkName] = useState('');
   const [totalTokenStreams, setTotalTokenStreams] = useState(0);
+
+  const {
+    revokeGatorPermission,
+    revokeGatorPermissionBatch,
+    findDelegatorFromInternalAccounts,
+  } = useRevokeGatorPermissions({
+    chainId,
+  });
 
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const nativeTokenStreams = useSelector((state) =>
@@ -56,17 +70,7 @@ export const ReviewTokenStreamsPage = () => {
     setTotalTokenStreams(nativeTokenStreams.length + erc20TokenStreams.length);
   }, [chainId, nativeTokenStreams, erc20TokenStreams, networks]);
 
-  const handleNativeTokenStreamRevokeClick = (nativeTokenStream) => {
-    // TODO: Implement revoke logic
-    console.log('nativeTokenStream to revoke:', nativeTokenStream);
-  };
-
-  const handleErc20TokenStreamRevokeClick = (erc20TokenStream) => {
-    // TODO: Implement revoke logic
-    console.log('erc20TokenStream to revoke:', erc20TokenStream);
-  };
-
-  const renderTokenStreams = (streams, clickHandler) =>
+  const renderTokenStreams = (streams) =>
     streams.map((stream) => {
       const { permissionResponse, siteOrigin } = stream;
       const fullNetworkName = extractNetworkName(
@@ -82,10 +86,20 @@ export const ReviewTokenStreamsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() => clickHandler(stream)}
+          onRevokeClick={() =>
+            handleRevokeClick({
+              gatorPermission: stream,
+              findDelegatorFromInternalAccounts,
+              revokeGatorPermission,
+            })
+          }
         />
       );
     });
+
+  const groupPermissions = (nativeStreams, erc20Streams) => {
+    return [...nativeStreams, ...erc20Streams];
+  };
 
   return (
     <Page className="main-container" data-testid="review-token-streams-page">
@@ -114,14 +128,24 @@ export const ReviewTokenStreamsPage = () => {
         <Box ref={headerRef}></Box>
         {totalTokenStreams > 0 ? (
           <>
-            {renderTokenStreams(
-              nativeTokenStreams,
-              handleNativeTokenStreamRevokeClick,
-            )}
-            {renderTokenStreams(
-              erc20TokenStreams,
-              handleErc20TokenStreamRevokeClick,
-            )}
+            {renderTokenStreams(nativeTokenStreams)}
+            {renderTokenStreams(erc20TokenStreams)}
+
+            {/* Temporary button to revoke all token streams */}
+            <Button
+              onClick={() => {
+                handleRevokeBatchClick({
+                  gatorPermissions: groupPermissions(
+                    nativeTokenStreams,
+                    erc20TokenStreams,
+                  ),
+                  findDelegatorFromInternalAccounts,
+                  revokeGatorPermissionBatch,
+                });
+              }}
+            >
+              Revoke All
+            </Button>
           </>
         ) : (
           <Box

@@ -5472,6 +5472,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/delegation-core@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/delegation-core@npm:0.1.0"
+  dependencies:
+    "@metamask/abi-utils": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.4.0"
+    "@noble/hashes": "npm:^1.8.0"
+  checksum: 10/d964fbb4f8a4b1ba85035ef771449e1c91d9ea5505302f90af467f930226ccf766efa83f4b05fbf7943aa8f91cff3a2692954da7f50704ea1b2267860229b366
+  languageName: node
+  linkType: hard
+
 "@metamask/delegation-deployments@npm:^0.11.0":
   version: 0.11.0
   resolution: "@metamask/delegation-deployments@npm:0.11.0"
@@ -6760,9 +6771,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^30.0.0":
+"@metamask/signature-controller@file:./deps/signature-controller.tgz::locator=metamask-crx%40workspace%3A.":
   version: 30.0.0
-  resolution: "@metamask/signature-controller@npm:30.0.0"
+  resolution: "@metamask/signature-controller@file:./deps/signature-controller.tgz#./deps/signature-controller.tgz::hash=4cfc64&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/controller-utils": "npm:^11.9.0"
@@ -6777,7 +6788,7 @@ __metadata:
     "@metamask/keyring-controller": ^22.0.0
     "@metamask/logging-controller": ^6.0.0
     "@metamask/network-controller": ^23.0.0
-  checksum: 10/0b14f08c119bf70a98a5a1f378bf3865e91ff068c603e0b6528969f0c0c53c25e2ee1caa97baa5c4789e92682deaf5bb799b705eed5aeea9bd32c5bd95f8f15a
+  checksum: 10/28687d3ac443e06ed5de3e423bf8e07f4c151701bef3503530728b949fb64000b287259824a1150158ea289eec1eb1f973c78b2ba446c4861f46d3a82c65ccf6
   languageName: node
   linkType: hard
 
@@ -7432,7 +7443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:^1.7.1, @noble/hashes@npm:~1.8.0":
+"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:^1.7.1, @noble/hashes@npm:^1.8.0, @noble/hashes@npm:~1.8.0":
   version: 1.8.0
   resolution: "@noble/hashes@npm:1.8.0"
   checksum: 10/474b7f56bc6fb2d5b3a42132561e221b0ea4f91e590f4655312ca13667840896b34195e2b53b7f097ec080a1fdd3b58d902c2a8d0fbdf51d2e238b53808a177e
@@ -30423,6 +30434,7 @@ __metadata:
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.9.0"
     "@metamask/delegation-controller": "npm:^0.4.0"
+    "@metamask/delegation-core": "npm:0.1.0"
     "@metamask/delegation-deployments": "npm:^0.11.0"
     "@metamask/design-tokens": "npm:^7.1.0"
     "@metamask/ens-controller": "npm:^15.0.2"
@@ -30489,7 +30501,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^22.1.0"
-    "@metamask/signature-controller": "npm:^30.0.0"
+    "@metamask/signature-controller": "file:./deps/signature-controller.tgz"
     "@metamask/smart-transactions-controller": "npm:^16.3.1"
     "@metamask/snaps-controllers": "npm:^13.0.0"
     "@metamask/snaps-execution-environments": "npm:^9.0.0"
