@@ -176,7 +176,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set confirm srp quiz word to readonly (#34225)
 
 ### Fixed
-- Fix: solve when private key import field to always be in error state (#34050)
+- fix: solve when private key import field to always be in error state (#34050)
+- fix: regression of lanchdarkly flag key (#34045)
 - fix: solve `Error: Ledger: Unknown error while signing transaction` (#33581)
 - fix: bitcoin account type (#34021)
 - fix: hides bridge button on non-native asset page if unified is enabled (#34044)
