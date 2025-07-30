@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import browser from 'webextension-polyfill';
 
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
@@ -11,7 +17,6 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  FontWeight,
   IconColor,
   JustifyContent,
   TextColor,
@@ -28,22 +33,22 @@ import {
   ButtonIconSize,
   IconName,
   IconSize,
-  PickerNetwork,
   Text,
 } from '../../component-library';
-import Tooltip from '../../ui/tooltip';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { toggleAccountMenu } from '../../../store/actions';
+import {
+  setShowSupportDataConsentModal,
+  toggleAccountMenu,
+} from '../../../store/actions';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
-  getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
   getUseBlockie,
 } from '../../../selectors';
@@ -57,11 +62,13 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
-import { getNetworkIcon } from '../../../../shared/modules/network.utils';
-import { TraceName, trace } from '../../../../shared/lib/trace';
+import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
+import {
+  getShowSupportDataConsentModal,
+  setShowCopyAddressToast,
+} from '../../../ducks/app/app';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
@@ -73,10 +80,6 @@ type AppHeaderUnlockedContentProps = {
 };
 
 export const AppHeaderUnlockedContent = ({
-  popupStatus,
-  currentNetwork,
-  networkOpenCallback,
-  disableNetworkPicker,
   disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
@@ -87,8 +90,6 @@ export const AppHeaderUnlockedContent = ({
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const useBlockie = useSelector(getUseBlockie);
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
-  const networkIconSrc = getNetworkIcon(currentNetwork);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -101,9 +102,13 @@ export const AppHeaderUnlockedContent = ({
 
   // Passing non-evm address to checksum function will throw an error
   const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
-  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(MINUTE, {
+  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(2000, {
     expireClipboard: false,
   });
+
+  const showSupportDataConsentModal = useSelector(
+    getShowSupportDataConsentModal,
+  );
 
   // Reset copy state when a switching accounts
   useEffect(() => {
@@ -111,6 +116,14 @@ export const AppHeaderUnlockedContent = ({
       resetCopyState();
     }
   }, [normalizedCurrentAddress, resetCopyState]);
+
+  useEffect(() => {
+    if (copied) {
+      dispatch(setShowCopyAddressToast(true));
+    } else {
+      dispatch(setShowCopyAddressToast(false));
+    }
+  }, [copied, dispatch]);
 
   const showConnectedStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -132,11 +145,15 @@ export const AppHeaderUnlockedContent = ({
     history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
   };
 
+  const handleCopyClick = useCallback(() => {
+    handleCopy(normalizedCurrentAddress);
+  }, [handleCopy, normalizedCurrentAddress]);
+
   const CopyButton = useMemo(
     () => (
       <ButtonBase
         className="multichain-app-header__address-copy-button"
-        onClick={() => handleCopy(normalizedCurrentAddress)}
+        onClick={handleCopyClick}
         size={ButtonBaseSize.Sm}
         backgroundColor={BackgroundColor.transparent}
         borderRadius={BorderRadius.LG}
@@ -145,8 +162,8 @@ export const AppHeaderUnlockedContent = ({
           color: IconColor.iconAlternative,
           size: IconSize.Sm,
         }}
-        paddingLeft={0}
-        paddingRight={0}
+        paddingLeft={2}
+        paddingRight={2}
         ellipsis
         textProps={{
           display: Display.Flex,
@@ -166,36 +183,33 @@ export const AppHeaderUnlockedContent = ({
         </Text>
       </ButtonBase>
     ),
-    [copied, handleCopy, normalizedCurrentAddress, shortenedAddress],
+    [copied, handleCopyClick, shortenedAddress],
   );
 
   const AppContent = useMemo(
     () => (
       <>
-        {process.env.REMOVE_GNS ? (
-          <AvatarAccount
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            address={internalAccount.address}
-            size={AvatarAccountSize.Md}
-          />
-        ) : null}
+        <AvatarAccount
+          variant={
+            useBlockie
+              ? AvatarAccountVariant.Blockies
+              : AvatarAccountVariant.Jazzicon
+          }
+          address={internalAccount.address}
+          size={AvatarAccountSize.Md}
+        />
         {internalAccount && (
           <Text
             as="div"
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            alignItems={
-              process.env.REMOVE_GNS ? AlignItems.flexStart : AlignItems.center
-            }
+            alignItems={AlignItems.flexStart}
             ellipsis
           >
             <AccountPicker
               address={internalAccount.address}
               name={internalAccount.metadata.name}
+              showAvatarAccount={false}
               onClick={() => {
                 dispatch(toggleAccountMenu());
 
@@ -208,20 +222,10 @@ export const AppHeaderUnlockedContent = ({
                 });
               }}
               disabled={disableAccountPicker}
-              labelProps={{ fontWeight: FontWeight.Bold }}
-              paddingLeft={0}
-              paddingRight={0}
+              paddingLeft={2}
+              paddingRight={2}
             />
-            {process.env.REMOVE_GNS ? (
-              <>{CopyButton}</>
-            ) : (
-              <Tooltip
-                position="left"
-                title={copied ? t('addressCopied') : t('copyToClipboard')}
-              >
-                {CopyButton}
-              </Tooltip>
-            )}
+            <>{CopyButton}</>
           </Text>
         )}
       </>
@@ -240,85 +244,23 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      {process.env.REMOVE_GNS ? null : (
-        <>
-          {popupStatus ? (
-            <Box className="multichain-app-header__contents__container">
-              <Tooltip title={currentNetwork.name} position="right">
-                <PickerNetwork
-                  avatarNetworkProps={{
-                    backgroundColor: testNetworkBackgroundColor,
-                    role: 'img',
-                    name: currentNetwork.name,
-                  }}
-                  className="multichain-app-header__contents--avatar-network"
-                  ref={menuRef}
-                  as="button"
-                  src={networkIconSrc}
-                  label={currentNetwork.name}
-                  aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
-                  labelProps={{
-                    display: Display.None,
-                  }}
-                  onClick={(e: React.MouseEvent<HTMLElement>) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    trace({ name: TraceName.NetworkList });
-                    networkOpenCallback();
-                  }}
-                  display={[Display.Flex, Display.None]} // show on popover hide on desktop
-                  disabled={disableNetworkPicker}
-                />
-              </Tooltip>
-            </Box>
-          ) : (
-            <div>
-              <PickerNetwork
-                avatarNetworkProps={{
-                  backgroundColor: testNetworkBackgroundColor,
-                  role: 'img',
-                  name: currentNetwork.name,
-                }}
-                margin={2}
-                aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
-                label={currentNetwork.name}
-                src={networkIconSrc}
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  trace({ name: TraceName.NetworkList });
-                  networkOpenCallback();
-                }}
-                display={[Display.None, Display.Flex]} // show on desktop hide on popover
-                className="multichain-app-header__contents__network-picker"
-                disabled={disableNetworkPicker}
-                data-testid="network-display"
-              />
-            </div>
-          )}
-        </>
-      )}
-      {process.env.REMOVE_GNS ? (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
-          gap={2}
-        >
-          {AppContent}
-        </Box>
-      ) : (
-        <>{AppContent}</>
-      )}
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+        gap={2}
+      >
+        {AppContent}
+      </Box>
       <Box
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.flexEnd}
         style={{ marginLeft: 'auto' }}
       >
-        <Box display={Display.Flex} gap={4}>
+        <Box display={Display.Flex} gap={3}>
           {showConnectedStatus && (
-            <Box ref={menuRef}>
+            <Box ref={menuRef} data-testid="connection-menu">
               <ConnectedStatusIndicator
                 onClick={() => handleConnectionsRoute()}
               />
@@ -353,6 +295,10 @@ export const AppHeaderUnlockedContent = ({
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
           closeMenu={() => setAccountOptionsMenuOpen(false)}
+        />
+        <VisitSupportDataConsentModal
+          isOpen={showSupportDataConsentModal}
+          onClose={() => dispatch(setShowSupportDataConsentModal(false))}
         />
       </Box>
     </>

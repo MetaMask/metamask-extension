@@ -38,12 +38,17 @@ class SelectNetwork {
     '[data-testid="network-redesign-modal-search-input"]';
 
   private readonly selectNetworkMessage = {
-    text: 'Select a network',
+    text: 'Manage networks',
     tag: 'h4',
   };
 
   private readonly selectRpcMessage = {
     text: 'Select RPC URL',
+    tag: 'h4',
+  };
+
+  private readonly yourNetworksMessage = {
+    text: 'Your networks',
     tag: 'h4',
   };
 
@@ -61,6 +66,21 @@ class SelectNetwork {
         this.selectNetworkMessage,
         this.searchInput,
       ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for select network dialog to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Select network dialog is loaded');
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_yourNetworksDialogIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.yourNetworksMessage);
     } catch (e) {
       console.log(
         'Timeout while waiting for select network dialog to be loaded',

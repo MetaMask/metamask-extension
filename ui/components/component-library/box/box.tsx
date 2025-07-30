@@ -136,6 +136,8 @@ const generateClassNames = memoize(
     }
     return classNamesObject;
   },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   (styleDeclaration, value) => `${styleDeclaration}${value}`,
 );
 

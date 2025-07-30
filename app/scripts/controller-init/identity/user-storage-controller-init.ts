@@ -3,13 +3,14 @@ import {
   UserStorageControllerState,
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
-import { captureException } from '@sentry/browser';
 import { ControllerInitFunction } from '../types';
 import { isProduction } from '../../../../shared/modules/environment';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { trace } from '../../../../shared/lib/trace';
+import { captureException } from '../../../../shared/lib/sentry';
 
 /**
  * Initialize the UserStorage controller.
@@ -27,6 +28,8 @@ export const UserStorageControllerInit: ControllerInitFunction<
   const controller = new UserStorageController({
     messenger: controllerMessenger,
     state: persistedState.UserStorageController as UserStorageControllerState,
+    // @ts-expect-error Controller uses string for names rather than enum
+    trace,
     config: {
       accountSyncing: {
         maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,

@@ -1,15 +1,48 @@
 import { strict as assert } from 'assert';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import {
+  withFixtures,
+  WINDOW_TITLES,
+  sentryRegEx,
+  largeDelayMs,
+} from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
+import { MOCK_META_METRICS_ID } from '../../constants';
+
+async function mockSentryTestError(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(sentryRegEx)
+    .withBodyIncluding('This is a test error.')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+}
+
+async function mockSentryTrace(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(sentryRegEx)
+    .withBodyIncluding('Test Snap Trace')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          id: '1234567890abcdef',
+        },
+      };
+    });
+}
 
 describe('Preinstalled example Snap', function () {
-  it('can display the Snap settings page', async function () {
+  it('displays the Snap settings page', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -29,6 +62,9 @@ describe('Preinstalled example Snap', function () {
           true,
         );
         await preInstalledExample.check_selectedDropdownOption('Option 2');
+        await driver.clickElement(
+          '.settings-page__header__title-container__close-button',
+        );
 
         // Navigate to `test-snaps` page, we don't need to connect because the Snap uses
         // initialConnections to pre-approve the dapp.
@@ -45,7 +81,7 @@ describe('Preinstalled example Snap', function () {
     );
   });
 
-  it('can use initialConnections to allow JSON-RPC', async function () {
+  it('uses `initialConnections` to allow JSON-RPC', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -69,6 +105,95 @@ describe('Preinstalled example Snap', function () {
       },
     );
   });
+
+  it('tracks an error in Sentry with `snap_trackError`', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: MOCK_META_METRICS_ID,
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSentryTestError,
+        manifestFlags: {
+          sentry: { forceEnable: false },
+        },
+      },
+      async ({ driver, mockedEndpoint }) => {
+        await loginWithBalanceValidation(driver);
+
+        const testSnaps = new TestSnaps(driver);
+        await testSnaps.openPage();
+
+        // Click the button to track an error.
+        await testSnaps.scrollAndClickButton('trackErrorButton');
+
+        // Wait for the mocked Sentry endpoint to be called.
+        await driver.wait(async () => {
+          const isPending = await mockedEndpoint.isPending();
+          return isPending === false;
+        }, largeDelayMs);
+
+        const requests = await mockedEndpoint.getSeenRequests();
+        assert.equal(requests.length, 1, 'Expected one request to Sentry.');
+
+        const request = requests[0];
+        const [, , data] = (await request.body.getText()).split('\n');
+        const [error] = JSON.parse(data).exception.values;
+
+        assert.equal(error.type, 'TestError');
+        assert.equal(error.value, 'This is a test error.');
+      },
+    );
+  });
+
+  it('starts and ends a performance trace in Sentry with `snap_startTrace` and `snap_endTrace`', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: MOCK_META_METRICS_ID,
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSentryTrace,
+        manifestFlags: {
+          sentry: { forceEnable: false },
+        },
+      },
+      async ({ driver, mockedEndpoint }) => {
+        await loginWithBalanceValidation(driver);
+
+        const testSnaps = new TestSnaps(driver);
+        await testSnaps.openPage();
+
+        // Click the button to start and end a trace.
+        await testSnaps.scrollAndClickButton('startTraceButton');
+        await driver.delay(100);
+        await testSnaps.scrollAndClickButton('endTraceButton');
+
+        // Wait for the mocked Sentry endpoint to be called.
+        await driver.wait(async () => {
+          const isPending = await mockedEndpoint.isPending();
+          return isPending === false;
+        }, largeDelayMs);
+
+        const requests = await mockedEndpoint.getSeenRequests();
+        assert.equal(requests.length, 1, 'Expected one request to Sentry.');
+
+        const request = requests[0];
+        const [, , data] = (await request.body.getText()).split('\n');
+        const json = JSON.parse(data);
+
+        assert.equal(json.contexts.trace.op, 'custom');
+        assert.equal(json.contexts.trace.origin, 'manual');
+        assert.equal(json.transaction, 'Test Snap Trace');
+      },
+    );
+  });
 });
 
 async function navigateToPreInstalledExample(driver: Driver) {
@@ -77,7 +202,6 @@ async function navigateToPreInstalledExample(driver: Driver) {
   const preInstalledExample = new PreinstalledExampleSettings(driver);
 
   await headerNavbar.openSettingsPage();
-  await headerNavbar.check_pageIsLoaded();
 
   await settingsPage.goToPreInstalledExample();
   await preInstalledExample.check_pageIsLoaded();

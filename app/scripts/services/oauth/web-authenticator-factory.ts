@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import { mockWebAuthenticator } from '../../../../test/e2e/helpers/seedless-onboarding/mocks';
+import { mockWebAuthenticator } from '../../../../test/e2e/helpers/seedless-onboarding/mock-web-authenticator';
 import { WebAuthenticator } from './types';
 import { base64urlencode } from './utils';
 

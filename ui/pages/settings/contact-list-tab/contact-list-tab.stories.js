@@ -14,7 +14,6 @@ export default {
 
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argsTypes: {
-    addressBook: { control: 'object' },
     internalAccounts: { control: 'object' },
     hideAddressBook: { control: 'boolean' },
     selectedAddress: { control: 'select' },
@@ -37,6 +36,7 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
+  completeAddressBook: addresses,
   addressBook: addresses,
   internalAccounts,
   hideAddressBook: false,

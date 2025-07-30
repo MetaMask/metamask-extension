@@ -13,7 +13,22 @@ import {
   TrustSignalDisplayState,
   useTrustSignal,
 } from '../../../../../hooks/useTrustSignals';
+import { getExperience } from '../../../../../../shared/constants/verification';
+import { EXPERIENCES_TYPE } from '../../../../../../shared/constants/first-party-contracts';
 import { useFirstTimeInteractionAlert } from './useFirstTimeInteractionAlert';
+
+jest.mock('../../../../../hooks/useTrustSignals', () => {
+  const actual = jest.requireActual('../../../../../hooks/useTrustSignals');
+  return {
+    ...actual,
+    useTrustSignal: jest.fn(),
+  };
+});
+
+jest.mock('../../../../../../shared/constants/verification', () => ({
+  ...jest.requireActual('../../../../../../shared/constants/verification'),
+  getExperience: jest.fn(),
+}));
 
 const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const ACCOUNT_ADDRESS_2_MOCK = '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
@@ -72,12 +87,15 @@ function runHook({
 
 describe('useFirstTimeInteractionAlert', () => {
   const mockUseTrustSignal = jest.mocked(useTrustSignal);
+  const mockIsFirstPartyContract = jest.mocked(getExperience);
+
   beforeEach(() => {
     jest.resetAllMocks();
     mockUseTrustSignal.mockReturnValue({
       state: TrustSignalDisplayState.Unknown,
       label: null,
     });
+    mockIsFirstPartyContract.mockReturnValue(undefined);
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -231,5 +249,24 @@ describe('useFirstTimeInteractionAlert', () => {
         severity: Severity.Warning,
       },
     ]);
+  });
+
+  it('does not return alert if recipient is a first-party contract', () => {
+    mockIsFirstPartyContract.mockReturnValue(EXPERIENCES_TYPE.METAMASK_BRIDGE);
+
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: CONTRACT_ADDRESS_MOCK,
+      },
+    };
+
+    const alerts = runHook({
+      currentConfirmation: firstTimeConfirmation,
+    });
+
+    expect(alerts).toEqual([]);
   });
 });

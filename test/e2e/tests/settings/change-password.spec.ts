@@ -9,11 +9,12 @@ import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   completeCreateNewWalletOnboardingFlow,
-  createNewWalletWithSocialLoginOnboardingFlow,
+  importWalletWithSocialLoginOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
+import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 
 async function doPasswordChangeAndLockWallet(
   driver: Driver,
@@ -45,16 +46,16 @@ async function doPasswordChangeAndLockWallet(
 
   await privacySettings.check_passwordChangeSuccessToastIsDisplayed();
 
-  if (isSocialLogin) {
-    // Wait for the password change to be applied to the social login user
-    await driver.delay(2_000);
-  }
+  await settingsPage.closeSettingsPage();
+
+  // Wait for the password change to be applied
+  await driver.delay(2_000);
 
   await headerNavbar.lockMetaMask();
 }
 
 describe('Change wallet password', function () {
-  const OLD_PASSWORD = 'oldPassword';
+  const OLD_PASSWORD = WALLET_PASSWORD;
   const NEW_PASSWORD = 'newPassword';
 
   it('should change wallet password and able to unlock with new password', async function () {
@@ -95,17 +96,20 @@ describe('Change wallet password', function () {
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
-          return oAuthMockttpService.setup(server);
+          return oAuthMockttpService.setup(server, {
+            userEmail: MOCK_GOOGLE_ACCOUNT,
+          });
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await createNewWalletWithSocialLoginOnboardingFlow({
+        await importWalletWithSocialLoginOnboardingFlow({
           driver,
           password: OLD_PASSWORD,
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.completeOnboarding();
+        const isSocialImportFlow = true;
+        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();

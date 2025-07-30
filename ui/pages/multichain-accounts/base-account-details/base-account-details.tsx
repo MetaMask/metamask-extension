@@ -100,7 +100,7 @@ export const BaseAccountDetails = ({
 
   const handleNavigation = useCallback(() => {
     dispatch(setAccountDetailsAddress(''));
-    history.push(DEFAULT_ROUTE);
+    history.goBack();
   }, [history, dispatch]);
 
   // we can never have a scenario where an account is not associated with a wallet.
@@ -181,7 +181,7 @@ export const BaseAccountDetails = ({
               : AvatarAccountVariant.Jazzicon
           }
           size={AvatarAccountSize.Xl}
-          style={{ margin: '0 auto', marginBottom: '32px' }}
+          style={{ margin: '0 auto', marginBottom: '8px' }}
         />
         <Box className="multichain-account-details__section">
           <AccountDetailsRow
@@ -193,15 +193,10 @@ export const BaseAccountDetails = ({
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('edit')}
-                onClick={() => setIsEditingAccountName(true)}
                 marginLeft={2}
               />
             }
-            style={{
-              marginBottom: '1px',
-              borderTopLeftRadius: '8px',
-              borderTopRightRadius: '8px',
-            }}
+            onClick={() => setIsEditingAccountName(true)}
           />
           <AccountDetailsRow
             label={t('address')}
@@ -212,13 +207,11 @@ export const BaseAccountDetails = ({
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('next')}
-                onClick={handleShowAddress}
                 marginLeft={2}
+                data-testid="account-address-navigation-button"
               />
             }
-            style={{
-              marginBottom: '1px',
-            }}
+            onClick={handleShowAddress}
           />
           <AccountDetailsRow
             label={t('wallet')}
@@ -229,15 +222,12 @@ export const BaseAccountDetails = ({
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('next')}
-                onClick={() => {
-                  history.push(walletRoute);
-                }}
                 marginLeft={2}
+                data-testid="wallet-details-link"
               />
             }
-            style={{
-              borderBottomLeftRadius: '8px',
-              borderBottomRightRadius: '8px',
+            onClick={() => {
+              history.push(walletRoute);
             }}
           />
         </Box>

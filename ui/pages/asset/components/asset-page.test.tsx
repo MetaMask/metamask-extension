@@ -304,15 +304,6 @@ describe('AssetPage', () => {
     const bridgeButton = queryByTestId('token-overview-bridge');
     expect(bridgeButton).toBeInTheDocument();
     expect(bridgeButton).not.toBeDisabled();
-
-    fireEvent.click(bridgeButton as HTMLElement);
-
-    await waitFor(() => {
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-      expect(openTabSpy).toHaveBeenCalledWith({
-        url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
-      });
-    });
   });
 
   it('should disable Bridge button if chain id is not supported', async () => {

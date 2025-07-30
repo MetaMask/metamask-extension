@@ -13,7 +13,6 @@ import {
   waitForElementById,
   waitForElementByText,
 } from '../helpers';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
@@ -53,7 +52,7 @@ describe('Import Wallet Events', () => {
   });
 
   it('are sent when onboarding user who chooses to opt in metrics', async () => {
-    const { findByTestId } = await integrationTestRender({
+    await integrationTestRender({
       preloadedState: {
         ...mockMetaMaskState,
         firstTimeFlowType: 'import',
@@ -63,72 +62,52 @@ describe('Import Wallet Events', () => {
       backgroundConnection: backgroundConnectionMocked,
     });
 
-    const completeOnboardingBtnId = 'onboarding-complete-done';
-    const pinExtensionNextBtnId = 'pin-extension-next';
-    const pinExtensionDoneBtnId = 'pin-extension-done';
-    expect(await findByTestId(completeOnboardingBtnId)).toBeInTheDocument();
-    await waitForElementById(completeOnboardingBtnId);
-    await clickElementById(completeOnboardingBtnId);
-    await waitForElementById(pinExtensionNextBtnId);
+    await waitForElementByText('Your wallet is ready!');
+    await clickElementById('onboarding-complete-done');
 
-    let confirmAccountDetailsModalMetricsEvent;
+    await waitForElementById('pin-extension-next');
+    await clickElementById('pin-extension-next');
 
-    await waitFor(() => {
-      confirmAccountDetailsModalMetricsEvent =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackMetaMetricsEvent',
-        );
+    await waitForElementById('pin-extension-done');
+    await clickElementById('pin-extension-done');
 
-      expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
-      );
-    });
-
-    expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingWalletCreationComplete,
-          properties: {
-            method: FirstTimeFlowType.import,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_profile_syncing_enabled: true,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: 0,
-          },
-        }),
-      ]),
-    );
-
-    await clickElementById(pinExtensionNextBtnId);
-
-    let onboardingPinExtensionMetricsEvent;
+    // Verify both completeOnboarding and ExtensionPinned event are called
+    let completeOnboardingCall;
+    let extensionPinnedEvent;
 
     await waitFor(() => {
-      onboardingPinExtensionMetricsEvent =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackMetaMetricsEvent',
-        );
-      expect(onboardingPinExtensionMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
-      );
-    });
-
-    await waitForElementByText(
-      `Access your MetaMask wallet with 1 click by clicking on the extension.`,
-    );
-
-    await clickElementById(pinExtensionDoneBtnId);
-
-    await waitFor(() => {
-      const completeOnboardingBackgroundRequest =
+      // Check for completeOnboarding call
+      completeOnboardingCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => call[0] === 'completeOnboarding',
         );
 
-      expect(completeOnboardingBackgroundRequest).toBeTruthy();
+      // Check for ExtensionPinned tracking event
+      extensionPinnedEvent =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'trackMetaMetricsEvent',
+        );
+
+      expect(completeOnboardingCall?.[0]).toBe('completeOnboarding');
+      expect(extensionPinnedEvent?.[0]).toBe('trackMetaMetricsEvent');
     });
+
+    // Verify ExtensionPinned event has correct properties for import flow
+    expect(extensionPinnedEvent?.[1]).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.ExtensionPinned,
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            wallet_setup_type: 'import',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_wallet: false,
+          },
+        }),
+      ]),
+    );
   });
 });

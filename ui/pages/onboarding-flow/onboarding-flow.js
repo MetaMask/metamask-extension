@@ -22,6 +22,7 @@ import {
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
   SECURITY_ROUTE,
+  ONBOARDING_REVEAL_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -41,25 +42,11 @@ import {
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import RevealSRPModal from '../../components/app/reveal-SRP-modal';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
-import { getHDEntropyIndex } from '../../selectors/selectors';
-import {
-  Box,
-  Button,
-  ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../components/component-library';
+import { Box } from '../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -70,13 +57,14 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextVariant,
 } from '../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import LoadingScreen from '../../components/ui/loading-screen';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -92,16 +80,14 @@ import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
 import { WelcomePageState } from './welcome/types';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
-
-const TWITTER_URL = 'https://twitter.com/MetaMask';
+import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { pathname, search } = useLocation();
   const history = useHistory();
-  const t = useI18nContext();
-  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
@@ -109,6 +95,7 @@ export default function OnboardingFlow() {
     'isFromSettingsSecurity',
   );
   const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, onboardingParentContext } = trackEvent;
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -176,53 +163,67 @@ export default function OnboardingFlow() {
     isFromSettingsSecurity,
   ]);
 
-  const handleCreateNewAccount = async (password) => {
-    let newSecretRecoveryPhrase;
-    if (
-      isSeedlessOnboardingFeatureEnabled &&
-      firstTimeFlowType === FirstTimeFlowType.socialCreate
-    ) {
-      newSecretRecoveryPhrase = await dispatch(
-        createNewVaultAndSyncWithSocial(password),
-      );
-    } else if (firstTimeFlowType === FirstTimeFlowType.create) {
-      newSecretRecoveryPhrase = await dispatch(
-        createNewVaultAndGetSeedPhrase(password),
-      );
+  useEffect(() => {
+    const trace = bufferedTrace?.({
+      name: TraceName.OnboardingJourneyOverall,
+      op: TraceOperation.OnboardingUserJourney,
+    });
+    if (onboardingParentContext) {
+      onboardingParentContext.current = trace;
     }
+  }, [onboardingParentContext, bufferedTrace]);
 
-    setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+  const handleCreateNewAccount = async (password) => {
+    try {
+      setIsLoading(true);
+      let newSecretRecoveryPhrase;
+      if (
+        isSeedlessOnboardingFeatureEnabled &&
+        firstTimeFlowType === FirstTimeFlowType.socialCreate
+      ) {
+        newSecretRecoveryPhrase = await dispatch(
+          createNewVaultAndSyncWithSocial(password),
+        );
+      } else if (firstTimeFlowType === FirstTimeFlowType.create) {
+        newSecretRecoveryPhrase = await dispatch(
+          createNewVaultAndGetSeedPhrase(password),
+        );
+      }
+
+      setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleUnlock = async (password) => {
-    let retrievedSecretRecoveryPhrase;
+    try {
+      setIsLoading(true);
+      let retrievedSecretRecoveryPhrase;
 
-    if (
-      isSeedlessOnboardingFeatureEnabled &&
-      firstTimeFlowType === FirstTimeFlowType.socialImport
-    ) {
-      retrievedSecretRecoveryPhrase = await dispatch(
-        restoreSocialBackupAndGetSeedPhrase(password),
-      );
-    } else {
-      retrievedSecretRecoveryPhrase = await dispatch(
-        unlockAndGetSeedPhrase(password),
-      );
+      if (
+        isSeedlessOnboardingFeatureEnabled &&
+        firstTimeFlowType === FirstTimeFlowType.socialImport
+      ) {
+        retrievedSecretRecoveryPhrase = await dispatch(
+          restoreSocialBackupAndGetSeedPhrase(password),
+        );
+      } else {
+        retrievedSecretRecoveryPhrase = await dispatch(
+          unlockAndGetSeedPhrase(password),
+        );
+      }
+
+      setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      history.replace(nextRoute);
+    } finally {
+      setIsLoading(false);
     }
-
-    setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
-    history.push(nextRoute);
   };
 
   const handleImportWithRecoveryPhrase = async (password, srp) => {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
-
-  const showPasswordModalToAllowSRPReveal =
-    pathname === `${ONBOARDING_REVIEW_SRP_ROUTE}/` &&
-    completedOnboarding &&
-    !secretRecoveryPhrase &&
-    isFromReminder;
 
   let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
@@ -253,11 +254,6 @@ export default function OnboardingFlow() {
       })}
     >
       {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
-      <RevealSRPModal
-        setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-        onClose={() => history.goBack()}
-        isOpen={showPasswordModalToAllowSRPReveal}
-      />
       <Box
         className={classnames('onboarding-flow__container', {
           'onboarding-flow__container--full': isFullPage,
@@ -295,6 +291,14 @@ export default function OnboardingFlow() {
           <Route
             path={ONBOARDING_SECURE_YOUR_WALLET_ROUTE}
             component={SecureYourWallet}
+          />
+          <Route
+            path={ONBOARDING_REVEAL_SRP_ROUTE}
+            render={() => (
+              <RevealRecoveryPhrase
+                setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+              />
+            )}
           />
           <Route
             path={ONBOARDING_REVIEW_SRP_ROUTE}
@@ -371,40 +375,7 @@ export default function OnboardingFlow() {
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </Box>
-      {pathname === ONBOARDING_COMPLETION_ROUTE && (
-        <Button
-          variant={ButtonVariant.Link}
-          href={TWITTER_URL}
-          marginInline="auto"
-          marginTop={4}
-          target="_blank"
-          rel="noopener noreferrer"
-          textProps={{
-            variant: TextVariant.bodyLgMedium,
-          }}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.OnboardingTwitterClick,
-              properties: {
-                text: t('followUsOnX', ['X']),
-                location: MetaMetricsEventName.OnboardingWalletCreationComplete,
-                url: TWITTER_URL,
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-          }}
-        >
-          {t('followUsOnX', [
-            <Icon
-              key="x-icon"
-              className="onboarding-flow__x-button__icon"
-              name={IconName.X}
-              size={IconSize.Lg}
-            />,
-          ])}
-        </Button>
-      )}
+      {isLoading && <LoadingScreen />}
     </Box>
   );
 }

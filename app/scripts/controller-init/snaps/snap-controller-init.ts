@@ -56,6 +56,12 @@ export const SnapControllerInit: ControllerInitFunction<
     process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION,
   );
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const forcePreinstalledSnaps = getBooleanFlag(
+    process.env.FORCE_PREINSTALLED_SNAPS,
+  );
+  ///: END:ONLY_INCLUDE_IF
+
   async function getMnemonicSeed() {
     const keyrings = initMessenger.call(
       'KeyringController:getKeyringsByType',
@@ -109,6 +115,9 @@ export const SnapControllerInit: ControllerInitFunction<
       allowLocalSnaps,
       requireAllowlist,
       rejectInvalidPlatformVersion,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      forcePreinstalledSnaps,
+      ///: END:ONLY_INCLUDE_IF
       useCaip25Permission: true,
     },
 

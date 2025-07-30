@@ -69,6 +69,7 @@ import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
+import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -162,7 +163,12 @@ export default class Home extends PureComponent {
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
+    redirectAfterDefaultPage: PropTypes.object,
+    clearRedirectAfterDefaultPage: PropTypes.func,
+    setAccountDetailsAddress: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
+    isPrimarySeedPhraseBackedUp: PropTypes.bool,
+    showConnectionsRemovedModal: PropTypes.bool,
   };
 
   state = {
@@ -233,10 +239,35 @@ export default class Home extends PureComponent {
     }
   }
 
+  checkRedirectAfterDefaultPage() {
+    const {
+      redirectAfterDefaultPage,
+      history,
+      clearRedirectAfterDefaultPage,
+      setAccountDetailsAddress,
+    } = this.props;
+
+    if (
+      redirectAfterDefaultPage?.shouldRedirect &&
+      redirectAfterDefaultPage?.path
+    ) {
+      // Set the account details address if provided
+      if (redirectAfterDefaultPage?.address) {
+        setAccountDetailsAddress(redirectAfterDefaultPage.address);
+      }
+
+      history.push(redirectAfterDefaultPage.path);
+      clearRedirectAfterDefaultPage();
+    }
+  }
+
   componentDidMount() {
     this.checkStatusAndNavigate();
 
     this.props.fetchBuyableChains();
+
+    // Check for redirect after default page
+    this.checkRedirectAfterDefaultPage();
   }
 
   static getDerivedStateFromProps(props) {
@@ -274,6 +305,9 @@ export default class Home extends PureComponent {
     } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
     }
+
+    // Check for redirect after default page on updates
+    this.checkRedirectAfterDefaultPage();
   }
 
   onRecoveryPhraseReminderClose = () => {
@@ -344,6 +378,7 @@ export default class Home extends PureComponent {
       setNewTokensImportedError,
       clearNewNetworkAdded,
       clearEditedNetwork,
+      isPrimarySeedPhraseBackedUp,
     } = this.props;
 
     const onAutoHide = () => {
@@ -573,7 +608,7 @@ export default class Home extends PureComponent {
           checkboxTooltipText={t('canToggleInSettings')}
         />
       ) : null,
-      shouldShowSeedPhraseReminder ? (
+      !isPrimarySeedPhraseBackedUp && shouldShowSeedPhraseReminder ? (
         <HomeNotification
           key="show-seed-phrase-reminder"
           descriptionText={t('backupApprovalNotice')}
@@ -788,6 +823,8 @@ export default class Home extends PureComponent {
       showMultiRpcModal,
       showUpdateModal,
       isSeedlessPasswordOutdated,
+      isPrimarySeedPhraseBackedUp,
+      showConnectionsRemovedModal,
     } = this.props;
 
     if (forgottenPassword) {
@@ -840,7 +877,9 @@ export default class Home extends PureComponent {
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
           {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew && showRecoveryPhraseReminder ? (
+          {!showWhatsNew &&
+          showRecoveryPhraseReminder &&
+          !isPrimarySeedPhraseBackedUp ? (
             <RecoveryPhraseReminder
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
@@ -848,6 +887,7 @@ export default class Home extends PureComponent {
           {showTermsOfUse ? (
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
+          {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}

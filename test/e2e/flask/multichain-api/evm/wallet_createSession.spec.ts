@@ -130,6 +130,8 @@ describe('Multichain API', function () {
           assert.deepEqual(
             expectedSessionScope.accounts,
             result,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `${expectedSessionScope.accounts} does not match accounts in scope ${result}`,
           );
         },
@@ -492,6 +494,8 @@ describe('Multichain API', function () {
             assert.deepEqual(
               expectedScopeObject.accounts,
               resultAccounts,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
               `${expectedScopeObject.accounts} do not match accounts in scope ${scopeName}`,
             );
           }

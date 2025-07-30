@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   generateCaip25Caveat,
@@ -15,6 +21,7 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 
+import { isEqual } from 'lodash';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPermissions,
@@ -184,6 +191,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     [nonTestNetworkConfigurations, testNetworkConfigurations],
   );
 
+  const [userHasModifiedSelection, setUserHasModifiedSelection] =
+    useState(false);
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
     useState(false);
@@ -244,6 +253,16 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     defaultSelectedChainIds as CaipChainId[],
   );
 
+  const handleChainIdsSelected = useCallback(
+    (newSelectedChainIds: CaipChainId[], { isUserModified = true } = {}) => {
+      if (isUserModified) {
+        setUserHasModifiedSelection(true);
+      }
+      setSelectedChainIds(newSelectedChainIds);
+    },
+    [setUserHasModifiedSelection, setSelectedChainIds],
+  );
+
   const allAccounts = useSelector(
     getUpdatedAndSortedAccountsWithCaipAccountId,
   ) as MergedInternalAccountWithCaipAccountId[];
@@ -285,11 +304,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     ({ caipAccountId }) => caipAccountId,
   );
 
-  const [selectedCaipAccountAddresses, _setSelectedCaipAccountAddresses] =
+  const [selectedCaipAccountAddresses, setSelectedCaipAccountAddresses] =
     useState(defaultCaipAccountAddresses);
 
-  const setSelectedCaipAccountAddresses = useCallback(
-    (caipAccountAddresses: CaipAccountId[]) => {
+  const handleCaipAccountAddressesSelected = useCallback(
+    (caipAccountAddresses: CaipAccountId[], { isUserModified = true } = {}) => {
+      if (isUserModified) {
+        setUserHasModifiedSelection(true);
+      }
       let updatedSelectedChains = [...selectedChainIds];
 
       caipAccountAddresses.forEach((caipAccountAddress) => {
@@ -326,16 +348,35 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         }
       });
 
-      setSelectedChainIds(updatedSelectedChains);
-      _setSelectedCaipAccountAddresses(caipAccountAddresses);
+      handleChainIdsSelected(updatedSelectedChains, { isUserModified });
+      setSelectedCaipAccountAddresses(caipAccountAddresses);
     },
     [
-      _setSelectedCaipAccountAddresses,
+      setUserHasModifiedSelection,
+      setSelectedCaipAccountAddresses,
       selectedChainIds,
-      setSelectedChainIds,
+      handleChainIdsSelected,
       allNetworksList,
     ],
   );
+
+  // Ensures the selected account state is kept in sync with the default selected account value
+  // until the user makes modifications to the selected account/network values.
+  useEffect(() => {
+    if (
+      !userHasModifiedSelection &&
+      !isEqual(defaultCaipAccountAddresses, selectedCaipAccountAddresses)
+    ) {
+      handleCaipAccountAddressesSelected(defaultCaipAccountAddresses, {
+        isUserModified: false,
+      });
+    }
+  }, [
+    userHasModifiedSelection,
+    handleCaipAccountAddressesSelected,
+    selectedCaipAccountAddresses,
+    JSON.stringify(defaultCaipAccountAddresses),
+  ]);
 
   const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
     return selectedCaipAccountAddresses.some((selectedCaipAccountId) => {
@@ -568,7 +609,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   accounts={allAccounts}
                   defaultSelectedAccountAddresses={selectedCaipAccountAddresses}
                   onClose={handleCloseEditAccountsModal}
-                  onSubmit={setSelectedCaipAccountAddresses}
+                  onSubmit={handleCaipAccountAddressesSelected}
                 />
               )}
             </Box>
@@ -589,8 +630,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                 nonTestNetworks={nonTestNetworkConfigurations}
                 testNetworks={testNetworkConfigurations}
                 accounts={allAccounts}
-                onSelectAccountAddresses={setSelectedCaipAccountAddresses}
-                onSelectChainIds={setSelectedChainIds}
+                onSelectAccountAddresses={handleCaipAccountAddressesSelected}
+                onSelectChainIds={handleChainIdsSelected}
                 selectedAccountAddresses={selectedCaipAccountAddresses}
                 selectedChainIds={selectedChainIds}
                 isConnectFlow

@@ -65,6 +65,17 @@ const removedBackgroundFields = [
   'PPOMController.versionInfo',
   // This property is timing-dependent
   'MetaMetricsController.latestNonAnonymousEventTimestamp',
+  // PhishingController properties (except urlScanCache which is masked)
+  'PhishingController.c2DomainBlocklistLastFetched',
+  'PhishingController.hotlistLastFetched',
+  'PhishingController.phishingLists',
+  'PhishingController.stalelistLastFetched',
+  'PhishingController.whitelist',
+];
+
+const ignoredConsoleErrors = [
+  // The UI logs the expected error
+  "Cannot read properties of undefined (reading 'version')",
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
@@ -249,6 +260,7 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors,
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -279,6 +291,7 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors,
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -319,6 +332,7 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors,
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -364,6 +378,7 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors,
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -582,6 +597,7 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors,
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -651,6 +667,10 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors: [
+            // The UI logs the expected error
+            "TypeError: Cannot read properties of undefined (reading 'version')",
+          ],
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();

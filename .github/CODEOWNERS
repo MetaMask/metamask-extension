@@ -19,20 +19,8 @@ lavamoat/                            @MetaMask/extension-devs @MetaMask/policy-r
 # file is responsible, at present, for loading the snaps execution environment
 # for MV3. Any changes to this file should require at least one member of the
 # snaps development team to review and approve the changes.
-offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
+offscreen/scripts/offscreen.ts       @MetaMask/core-platform
 
-
-# The .circleci/ folder instructs Circle CI on the process by which it
-# should test, build and publish releases of our application. Due to the
-# impact that changes to the files contained within this folder may have
-# on our releases, only those with the knowledge and responsibility to
-# publish libraries under the MetaMask name may approve those changes.
-# Note to reviewers: We employ the use of CircleCI "Orbs", which are
-# remotely hosted sections of CircleCI configuration and scripts, to
-# empower our CI steps. ANY addition of orbs to our CircleCI config
-# should be brought to the attention of engineering leadership for
-# discussion
-.circleci/                           @MetaMask/extension-security-team
 
 # The privacy-snapshot.json file includes a list of all hosts that the
 # extension communicates with during the E2E test suite runs. It is not a
@@ -63,6 +51,7 @@ development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBr
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
 ui/components/component-library      @MetaMask/design-system-engineers
+tailwind.config.js                   @MetaMask/design-system-engineers
 
 # The Notifications team is responsible for code related to notifications
 
@@ -102,13 +91,13 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/ramps/**                                           @MetaMask/ramp
 
 # Snaps
-**/snaps/**                          @MetaMask/snaps-devs
-shared/constants/permissions.ts      @MetaMask/snaps-devs
-ui/helpers/utils/permission.js       @MetaMask/snaps-devs
-app/scripts/constants/snaps.ts       @MetaMask/snaps-devs
+**/snaps/**                          @MetaMask/core-platform
+shared/constants/permissions.ts      @MetaMask/core-platform
+ui/helpers/utils/permission.js       @MetaMask/core-platform
+app/scripts/constants/snaps.ts       @MetaMask/core-platform
 
 # Co-owned by Confirmations and Snaps
-ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/snaps-devs
+ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
 # Wallet UX
 ui/components/app/whats-new-popup     @MetaMask/wallet-ux
@@ -148,3 +137,7 @@ ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 # Extension Platform
 .yarnrc.yml                                           @MetaMask/extension-platform
 test/e2e/mock-e2e-allowlist.js                        @MetaMask/extension-platform
+
+# Smart Transactions
+app/scripts/controller-init/smart-transactions    @MetaMask/transactions
+app/scripts/lib/smart-transaction                 @MetaMask/transactions

@@ -13,6 +13,7 @@ import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
 
 const MOCK_CHAINLIST_RESPONSE = [
   {
@@ -73,8 +74,7 @@ describe('Popular Networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
@@ -96,7 +96,6 @@ describe('Popular Networks', function (this: Suite) {
 
         // verify network is switched
         await new Homepage(driver).check_pageIsLoaded();
-        await headerNavbar.check_currentSelectedNetwork('Arbitrum One');
       },
     );
   });
@@ -134,7 +133,7 @@ describe('Popular Networks', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const homepage = new Homepage(driver);
-        await homepage.headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
@@ -142,7 +141,7 @@ describe('Popular Networks', function (this: Suite) {
 
         await homepage.check_pageIsLoaded();
         await homepage.check_expectedBalanceIsDisplayed();
-        await homepage.headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         // check that arbitrum is on the list of popular network
         await selectNetworkDialog.check_pageIsLoaded();
@@ -178,8 +177,7 @@ describe('Popular Networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
@@ -202,7 +200,6 @@ describe('Popular Networks', function (this: Suite) {
         );
         await addRpcUrlModal.fillAddRpcNameInput('testName');
         await addRpcUrlModal.saveAddRpcUrl();
-        await addEditNetworkModal.addExplorerUrl('https://block-explorer.url');
 
         // check the error message is displayed
         await addEditNetworkModal.check_chainIdInputErrorMessageIsDisplayed(
@@ -262,7 +259,7 @@ describe('Popular Networks', function (this: Suite) {
         const homepage = new Homepage(driver);
         await homepage.check_pageIsLoaded();
         await homepage.check_expectedBalanceIsDisplayed();
-        await homepage.headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();

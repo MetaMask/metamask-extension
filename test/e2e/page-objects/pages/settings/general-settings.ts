@@ -64,11 +64,9 @@ class GeneralSettings {
       'on general settings page',
     );
     await this.check_noLoadingOverlaySpinner();
-    await this.driver.clickElement(this.selectLanguageField);
-    await this.driver.clickElement({
-      text: languageToSelect,
-      tag: 'option',
-    });
+    // We use send keys, because clicking the dropdown causes flakiness, if it's not auto closed after selecting the language
+    const dropdown = await this.driver.findElement(this.selectLanguageField);
+    await dropdown.sendKeys(languageToSelect);
     await this.check_noLoadingOverlaySpinner();
   }
 

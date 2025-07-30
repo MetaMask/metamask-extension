@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Switching between account from different networks', function (this: Suite) {
@@ -11,15 +11,15 @@ describe('Switching between account from different networks', function (this: Su
       { title: this.test?.fullTitle() },
       async (driver) => {
         const headerNavbar = new HeaderNavbar(driver);
+        console.log('Starting test');
+        const assetList = new AssetListPage(driver);
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.check_accountLabel('Solana 1');
-        await headerNavbar.check_ifNetworkPickerClickable(true);
-        await headerNavbar.check_currentSelectedNetwork('Solana');
+        await assetList.check_networkFilterText('Solana');
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.selectAccount('Account 1');
-        await headerNavbar.check_ifNetworkPickerClickable(true);
-        await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
+        await assetList.check_networkFilterText('Localhost 8545');
       },
     );
   });
@@ -28,40 +28,19 @@ describe('Switching between account from different networks', function (this: Su
       { title: this.test?.fullTitle() },
       async (driver) => {
         const headerNavbar = new HeaderNavbar(driver);
+        const assetList = new AssetListPage(driver);
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.selectAccount('Account 1');
-        await headerNavbar.check_ifNetworkPickerClickable(true);
-        await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
+        await assetList.check_networkFilterText('Localhost 8545');
         await headerNavbar.openAccountMenu();
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Solana,
           accountName: 'Solana Account 2',
         });
-        await headerNavbar.check_ifNetworkPickerClickable(true);
-        await headerNavbar.check_currentSelectedNetwork('Solana');
+        await assetList.check_networkFilterText('Solana');
         await headerNavbar.check_accountLabel('Solana Account 2');
-      },
-    );
-  });
-  it('Create a Solana account and switch to another network', async function () {
-    await withSolanaAccountSnap(
-      { title: this.test?.fullTitle() },
-      async (driver) => {
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.clickSwitchNetworkDropDown();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.selectNetworkName('Solana');
-        await headerNavbar.check_currentSelectedNetwork('Solana');
-        await headerNavbar.openAccountMenu();
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-        });
-        await headerNavbar.check_accountLabel('Account 2');
       },
     );
   });

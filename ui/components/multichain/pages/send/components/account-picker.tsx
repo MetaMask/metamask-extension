@@ -56,8 +56,8 @@ export const SendPageAccountPicker = ({
         showAddress
         borderColor={BorderColor.borderMuted}
         borderWidth={1}
-        paddingTop={4}
-        paddingBottom={4}
+        paddingTop={3}
+        paddingBottom={3}
         paddingLeft={3}
         block
         justifyContent={JustifyContent.flexStart}

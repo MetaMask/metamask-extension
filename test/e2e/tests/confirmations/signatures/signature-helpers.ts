@@ -383,6 +383,8 @@ function compareSecurityAlertProperties(
       actualProperties.security_alert_response !== 'Benign'
     ) {
       assert.fail(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `${eventName} event properties do not match: security_alert_response is ${actualProperties.security_alert_response}`,
       );
     }
@@ -397,6 +399,8 @@ function compareSecurityAlertProperties(
       expectedProperties.security_alert_source !== 'api'
     ) {
       assert.fail(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `${eventName} event properties do not match: security_alert_source is ${actualProperties.security_alert_source}`,
       );
     }
@@ -423,16 +427,22 @@ function compareDecodingAPIResponse(
     assert.deepStrictEqual(
       actualProperties.decoding_change_types,
       expectedProperties.decoding_change_types,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `${eventName} event properties do not match: decoding_change_types is ${actualProperties.decoding_change_types}`,
     );
     assert.equal(
       actualProperties.decoding_response,
       expectedProperties.decoding_response,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `${eventName} event properties do not match: decoding_response is ${actualProperties.decoding_response}`,
     );
     assert.equal(
       actualProperties.decoding_description,
       expectedProperties.decoding_description,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `${eventName} event properties do not match: decoding_response is ${actualProperties.decoding_description}`,
     );
   }

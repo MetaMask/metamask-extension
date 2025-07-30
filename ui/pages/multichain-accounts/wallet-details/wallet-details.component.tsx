@@ -1,10 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  AccountGroupId,
-  AccountWalletId,
-} from '@metamask/account-tree-controller';
+import { AccountWalletId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import {
   SolScope,
@@ -153,11 +150,10 @@ const WalletDetails = () => {
   const isFirstHdKeyring = hdKeyrings[0]?.metadata?.id === keyringId;
   const shouldShowBackupReminder = !seedPhraseBackedUp && isFirstHdKeyring;
 
-  const groupKeys = Object.keys(wallet.groups || {});
-  // For now it's just the default group, but in the future we will have multiple groups
-  const firstGroup =
-    groupKeys.length > 0 ? wallet.groups[groupKeys[0] as AccountGroupId] : null;
-  const accounts = firstGroup?.accounts || [];
+  // Now, wallets are composed of multiple groups, so we have to flatten everything.
+  const accounts = Object.values(wallet.groups).flatMap(
+    (group) => group.accounts,
+  );
 
   const handleAddAccount = () => {
     setIsModalOpen(true);
@@ -170,7 +166,7 @@ const WalletDetails = () => {
   const handleCreateEthereumAccount = async (): Promise<boolean> => {
     trace({ name: TraceName.AddAccount });
     try {
-      await dispatch(addNewAccount(keyringId));
+      await dispatch(addNewAccount(keyringId, false));
       return true;
     } catch (error) {
       console.error('Error creating Ethereum account:', error);
@@ -197,6 +193,8 @@ const WalletDetails = () => {
       }
       ///: END:ONLY_INCLUDE_IF
       else {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         console.error(`Unsupported client type: ${clientType}`);
         return false;
       }
@@ -387,33 +385,35 @@ const WalletDetails = () => {
                 {...rowStylesProps}
               />
             ))}
-            <Box
-              className="wallet-details-page__row wallet-details-page__add-account-button"
-              padding={4}
-              width={BlockSize.Full}
-              textAlign={TextAlign.Left}
-              {...rowStylesProps}
-              as="button"
-              onClick={handleAddAccount}
-            >
+            {isEntropyWallet ? (
               <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={3}
+                className="wallet-details-page__row wallet-details-page__add-account-button"
+                padding={4}
+                width={BlockSize.Full}
+                textAlign={TextAlign.Left}
+                {...rowStylesProps}
+                as="button"
+                onClick={handleAddAccount}
               >
-                <Icon
-                  name={IconName.Add}
-                  size={IconSize.Md}
-                  color={IconColor.primaryDefault}
-                />
-                <Text
-                  variant={TextVariant.bodyMdMedium}
-                  color={TextColor.primaryDefault}
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  gap={3}
                 >
-                  {t('addAccount')}
-                </Text>
+                  <Icon
+                    name={IconName.Add}
+                    size={IconSize.Md}
+                    color={IconColor.primaryDefault}
+                  />
+                  <Text
+                    variant={TextVariant.bodyMdMedium}
+                    color={TextColor.primaryDefault}
+                  >
+                    {t('addAccount')}
+                  </Text>
+                </Box>
               </Box>
-            </Box>
+            ) : null}
           </Box>
         )}
       </Content>

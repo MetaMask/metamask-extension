@@ -61,6 +61,10 @@
   },
   "metamask": {
     "allTokens": {},
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": {},
+    "enforcedSimulationsSlippage": 10,
+    "enforcedSimulationsSlippageForTransactions": {},
     "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
@@ -531,6 +535,7 @@
       }
     },
     "accountTree": {
+      "selectedAccountGroup": "01JKAF3DSGM3AB87EM9N0K41AJ:default",
       "wallets": {
         "01JKAF3DSGM3AB87EM9N0K41AJ": {
           "id": "01JKAF3DSGM3AB87EM9N0K41AJ",

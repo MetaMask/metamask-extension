@@ -1,11 +1,18 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 
-export class AssetPicker {
+class AssetPicker {
   private driver: Driver;
 
   // Selectors
   private readonly assetPickerButton = '[data-testid="asset-picker-button"]';
+
+  private readonly nftTab = { css: 'button', text: 'NFTs' };
+
+  private readonly noNftInfo = {
+    text: 'No NFTs yet',
+    tag: 'p',
+  };
 
   private readonly searchInput =
     '[data-testid="asset-picker-modal-search-input"]';
@@ -29,6 +36,11 @@ export class AssetPicker {
     await buttons[indexOfButtonToClick].click();
   }
 
+  async openNftAssetPicker(): Promise<void> {
+    console.log('Opening NFT asset picker');
+    await this.driver.clickElement(this.nftTab);
+  }
+
   /**
    * Searches for an asset and verifies the expected count of results
    *
@@ -43,6 +55,24 @@ export class AssetPicker {
     await this.driver.pasteIntoField(this.searchInput, searchInput);
 
     await this.driver.elementCountBecomesN(this.tokenListButton, expectedCount);
+  }
+
+  /**
+   * Checks if the NFT item with the specified name is displayed in the asset picker.
+   *
+   * @param nftName - The name of the NFT to check for.
+   */
+  async checkNftNameIsDisplayed(nftName: string): Promise<void> {
+    console.log(`Check that NFT item ${nftName} is displayed in asset picker`);
+    await this.driver.waitForSelector({
+      tag: 'p',
+      text: nftName,
+    });
+  }
+
+  async checkNoNftInfoIsDisplayed(): Promise<void> {
+    console.log('Check that no NFT info is displayed on asset picker');
+    await this.driver.waitForSelector(this.noNftInfo);
   }
 
   /**
