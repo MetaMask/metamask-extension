@@ -6825,9 +6825,6 @@
     "message": "Nagkaproblema kami sa pagkonekta sa iyong $1, subukang suriin ang $2 at subukan ulit.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleStarting": {
-    "message": "Nagkaproblema ang MetaMask sa pagsisimula. Maaaring paulit-ulit ang error na ito, kaya subukang i-restart ang extension."
-  },
   "tryAgain": {
     "message": "Subukan ulit"
   },

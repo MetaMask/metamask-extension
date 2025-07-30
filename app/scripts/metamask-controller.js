@@ -5432,17 +5432,22 @@ export default class MetamaskController extends EventEmitter {
         seedPhraseAsUint8Array,
       );
 
+      // We re-created the vault, meaning we only have 1 new HD keyring
+      // now. We re-create the internal list of accounts (which is
+      // not an expensive operation, since we should only have 1 HD
+      // keyring that has one default account.
+      // TODO: Remove this once the `accounts-controller` once only
+      // depends only on keyrings `:stateChange`.
+      await this.accountsController.updateAccounts();
+
+      // And we re-init the account tree controller too, to use the
+      // newly created accounts.
+      // TODO: Remove this once the `accounts-controller` once only
+      // depends only on keyrings `:stateChange`.
+      this.accountTreeController.init();
+
       if (completedOnboarding) {
         await this._addAccountsWithBalance();
-
-        // This must be set as soon as possible to communicate to the
-        // keyring's iframe and have the setting initialized properly
-        // Optimistically called to not block MetaMask login due to
-        // Ledger Keyring GitHub downtime
-        this.#withKeyringForDevice(
-          { name: HardwareDeviceNames.ledger },
-          async (keyring) => this.setLedgerTransportPreference(keyring),
-        );
       }
 
       if (getIsSeedlessOnboardingFeatureEnabled()) {
@@ -5775,7 +5780,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} params.encryptionKey - The user's encryption key.
    */
   async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
-    const { completedOnboarding } = this.onboardingController.state;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
@@ -5804,17 +5808,6 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
-
-    if (completedOnboarding) {
-      // This must be set as soon as possible to communicate to the
-      // keyring's iframe and have the setting initialized properly
-      // Optimistically called to not block MetaMask login due to
-      // Ledger Keyring GitHub downtime
-      this.#withKeyringForDevice(
-        { name: HardwareDeviceNames.ledger },
-        async (keyring) => this.setLedgerTransportPreference(keyring),
-      );
-    }
   }
 
   async _loginUser(password) {
@@ -5940,10 +5933,6 @@ export default class MetamaskController extends EventEmitter {
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
-        if (deviceName === HardwareDeviceNames.ledger) {
-          await this.setLedgerTransportPreference(keyring);
-        }
-
         let accounts = [];
         switch (page) {
           case -1:
@@ -9405,6 +9394,10 @@ export default class MetamaskController extends EventEmitter {
 
         if (options.name === HardwareDeviceNames.lattice) {
           keyring.appName = 'MetaMask';
+        }
+
+        if (options.name === HardwareDeviceNames.ledger) {
+          await this.setLedgerTransportPreference(keyring);
         }
 
         if (

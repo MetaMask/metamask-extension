@@ -6825,9 +6825,6 @@
     "message": "$1 연결 도중 문제가 발생했습니다. $2을(를) 검토하고 다시 시도해 보세요.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleStarting": {
-    "message": "MetaMask 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
-  },
   "tryAgain": {
     "message": "다시 시도"
   },
