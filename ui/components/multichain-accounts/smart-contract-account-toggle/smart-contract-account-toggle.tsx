@@ -69,24 +69,31 @@ export const SmartContractAccountToggle = ({
   // Keep toggle disabled when user has pending intent OR when there are pending requests
   const isToggleDisabled = hasPendingRequests || hasUserInteracted;
 
-  // Check account state on mount and when no pending requests
+  // Check account state on mount and when transactions complete
   useEffect(() => {
     if (!hasPendingRequests) {
       const checkUpgradeStatus = async () => {
         try {
           const upgraded = await isUpgraded(address);
+          setAddressSupportSmartAccount(upgraded);
+        } catch (error) {
+          setAddressSupportSmartAccount(isSupported);
+        }
+      };
+      checkUpgradeStatus();
+    }
+  }, [hasPendingRequests, isUpgraded, address, isSupported]);
 
-          // Only check for mismatch if:
-          // 1. User has intent (toggleState !== null)
-          // 2. Intent doesn't match reality (toggleState !== upgraded)
-          // 3. No pending requests (transaction completed)
-          // 4. User isn't in the middle of clicking (not hasUserInteracted)
-          if (
-            toggleState !== null &&
-            toggleState !== upgraded &&
-            !hasPendingRequests &&
-            !hasUserInteracted
-          ) {
+  // Separate effect for mismatch detection when toggleState changes
+  // Only runs when safe to check (no pending requests, user not actively clicking)
+  useEffect(() => {
+    if (!hasPendingRequests && toggleState !== null && !hasUserInteracted) {
+      const checkMismatch = async () => {
+        try {
+          const upgraded = await isUpgraded(address);
+
+          // If user intent doesn't match blockchain reality, clear the intent
+          if (toggleState !== upgraded) {
             dispatch(
               setToggleState({
                 address,
@@ -95,23 +102,20 @@ export const SmartContractAccountToggle = ({
               }),
             );
           }
-
-          setAddressSupportSmartAccount(upgraded);
         } catch (error) {
-          setAddressSupportSmartAccount(isSupported);
+          // If we can't check, assume no mismatch to avoid clearing valid user intent
         }
       };
-      checkUpgradeStatus();
+      checkMismatch();
     }
   }, [
-    hasPendingRequests,
     toggleState,
+    hasPendingRequests,
+    hasUserInteracted,
     isUpgraded,
     address,
-    isSupported,
     dispatch,
     chainIdHex,
-    hasUserInteracted,
   ]);
 
   const findAndRedirectToTransaction = useCallback(() => {
