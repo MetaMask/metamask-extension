@@ -1316,16 +1316,6 @@
         "lodash": true
       }
     },
-    "@metamask/multichain-api-middleware>@metamask/chain-agnostic-permission": {
-      "packages": {
-        "@metamask/multichain-api-middleware>@metamask/api-specs": true,
-        "@metamask/multichain-api-middleware>@metamask/controller-utils": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
     "@metamask/controller-utils": {
       "globals": {
         "URL": true,
@@ -1460,25 +1450,6 @@
       }
     },
     "@metamask/name-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
-      }
-    },
-    "@metamask/network-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
         "console.error": true,
@@ -2151,7 +2122,7 @@
       },
       "packages": {
         "@metamask/multichain-api-middleware>@metamask/api-specs": true,
-        "@metamask/multichain-api-middleware>@metamask/chain-agnostic-permission": true,
+        "@metamask/chain-agnostic-permission": true,
         "@metamask/multichain-api-middleware>@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
         "@metamask/json-rpc-engine": true,
@@ -2206,7 +2177,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/network-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/eth-json-rpc-middleware": true,
