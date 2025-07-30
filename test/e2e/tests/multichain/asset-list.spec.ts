@@ -14,7 +14,6 @@ import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.fl
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
 const LINEA_NAME_MAINNET = 'Linea';
-const POLYGON_NAME_MAINNET = 'Polygon';
 const BALANCE_AMOUNT = '24.9978';
 
 async function mockSwapSetup(mockServer: Mockttp) {
@@ -300,7 +299,6 @@ describe('Multichain Asset List', function (this: Suite) {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
-        const sendPage = new SendTokenPage(driver);
         await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
         await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('TST');
