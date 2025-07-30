@@ -5440,12 +5440,6 @@
   "slideMultiSrpTitle": {
     "message": "複数のシークレットリカバリーフレーズの追加"
   },
-  "slideRemoteModeDescription": {
-    "message": "コールドウォレットを無線で使用します"
-  },
-  "slideRemoteModeTitle": {
-    "message": "コールドストレージ、高速アクセス"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "同じアドレスでよりスマートな機能"
   },
