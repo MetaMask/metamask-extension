@@ -447,8 +447,6 @@ async function withFixtures(options, testSuite) {
           'Failed to shut down test servers',
         );
       }
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
   }
 }
