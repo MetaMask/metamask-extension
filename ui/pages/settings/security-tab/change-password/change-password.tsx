@@ -119,7 +119,7 @@ const ChangePassword = () => {
       dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Success));
     } catch (error) {
       console.error(error);
-      setStep(ChangePasswordSteps.VerifyCurrentPassword);
+      setStep(ChangePasswordSteps.ChangePassword);
       dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Errored));
     }
   };
