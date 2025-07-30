@@ -501,12 +501,12 @@ describe('useSimulationMetrics', () => {
         const balanceChange1 = {
           ...BALANCE_CHANGE_MOCK,
           amount: new BigNumber(isNegative ? -1 : 1),
-          fiatAmount: 1.23,
+          usdAmount: 1.23,
         };
 
         const balanceChange2 = {
           ...balanceChange1,
-          fiatAmount: 1.23,
+          usdAmount: 1.23,
         };
 
         renderHook(() =>

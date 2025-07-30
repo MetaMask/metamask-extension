@@ -58,7 +58,6 @@
     "newTokensImported": "string",
     "newTokensImportedError": "string",
     "onboardedInThisUISession": "boolean",
-    "onboardingErrorReport": null,
     "customTokenAmount": "string",
     "scrollToBottom": "boolean",
     "txId": null,
@@ -387,6 +386,7 @@
   },
   "ramps": "object",
   "send": "object",
+  "smartAccounts": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }
 }

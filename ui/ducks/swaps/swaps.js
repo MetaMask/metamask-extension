@@ -2,10 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 
-import { captureMessage } from '@sentry/browser';
-
 import { TransactionType } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
+import { captureMessage } from '../../../shared/lib/sentry';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   addToken,
