@@ -526,7 +526,17 @@ class Driver {
       }
     }
 
-    await this.driver.quit();
+    try {
+      await this.driver.quit();
+    } catch (error) {
+      if (
+        typeof error?.message === 'string' &&
+        error.message.startsWith('ECONNREFUSED')
+      ) {
+        console.info('Driver already shut down');
+      }
+      throw error;
+    }
   }
 
   /**
