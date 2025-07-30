@@ -52,7 +52,6 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { resetOAuthLoginState } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
-import { getPasswordStrengthCategory } from '../../../helpers/utils/common.util';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
@@ -163,7 +162,6 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletImported,
       properties: {
         biometrics_enabled: false,
-        password_strength: getPasswordStrengthCategory(password),
       },
     });
 
@@ -214,7 +212,6 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletCreated,
       properties: {
         biometrics_enabled: false,
-        password_strength: getPasswordStrengthCategory(password),
       },
     });
 
