@@ -36,6 +36,8 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/configure/wallet/passwords-and-metamask/',
   PASSWORD_AND_SRP_ARTICLE:
     'https://support.metamask.io/getting-started/user-guide-secret-recovery-phrase-password-and-private-keys/',
+  PASSWORD_RESET:
+    'https://support.metamask.io/configure/wallet/how-can-i-reset-my-password/',
   RESET_ADD_MISSING_ACCOUNT:
     'https://support.metamask.io/configure/accounts/how-to-add-missing-accounts-after-restoring-with-secret-recovery-phrase/',
   RESET_DISPLAY_TOKENS:
