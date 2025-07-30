@@ -132,7 +132,7 @@ const ChangePassword = () => {
       properties: {
         text: 'Learn More',
         location: 'change_password',
-        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+        url: ZENDESK_URLS.PASSWORD_ARTICLE,
       },
     });
   };
@@ -141,7 +141,7 @@ const ChangePassword = () => {
     <a
       onClick={handleLearnMoreClick}
       key="change-password__link-text"
-      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
+      href={ZENDESK_URLS.PASSWORD_ARTICLE}
       target="_blank"
       rel="noopener noreferrer"
     >
