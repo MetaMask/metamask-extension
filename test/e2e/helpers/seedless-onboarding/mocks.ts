@@ -440,6 +440,8 @@ export class OAuthMockttpService {
             pub_key: options?.passwordOutdated
               ? MockAuthPubKey
               : this.#latestAuthPubKey,
+            key_index: 1,
+            node_index: nodeIndex,
           },
         },
       };

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { Hex } from '@metamask/utils';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
@@ -28,52 +28,35 @@ export const SmartContractAccountToggleSection = ({
   const t = useI18nContext();
   const { network7702List, pending } = useEIP7702Networks(address);
 
-  // pendingToggleState per network
-  const [pendingToggleStateMap, setPendingToggleStateMap] = useState<
-    Record<string, boolean | null>
-  >({});
-  const setPendingToggleState = useCallback(
-    (chainIdHex: string, value: boolean | null) => {
-      setPendingToggleStateMap((prev) => ({ ...prev, [chainIdHex]: value }));
-    },
-    [],
-  );
+  const networkList = useMemo(() => {
+    if (pending) {
+      return (
+        <Box
+          paddingTop={12}
+          paddingBottom={12}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          data-testid="network-loader"
+        >
+          <Preloader size={24} />
+        </Box>
+      );
+    }
 
-  const NetworkList = () => {
     return (
-      <>
-        {pending ? (
-          <Box
-            paddingTop={12}
-            paddingBottom={12}
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-            data-testid="network-loader"
-          >
-            <Preloader size={24} />
-          </Box>
-        ) : (
-          <Box>
-            {network7702List.map((network) => (
-              <SmartContractAccountToggle
-                key={network.chainIdHex}
-                networkConfig={network}
-                address={address as Hex}
-                pendingToggleState={
-                  pendingToggleStateMap[network.chainIdHex] ?? null
-                }
-                setPendingToggleState={(value: boolean | null) =>
-                  setPendingToggleState(network.chainIdHex, value)
-                }
-                returnToPage={returnToPage}
-              />
-            ))}
-          </Box>
-        )}
-      </>
+      <Box>
+        {network7702List.map((network) => (
+          <SmartContractAccountToggle
+            key={network.chainIdHex}
+            networkConfig={network}
+            address={address as Hex}
+            returnToPage={returnToPage}
+          />
+        ))}
+      </Box>
     );
-  };
+  }, [pending, network7702List, address, returnToPage]);
 
   return (
     <Box
@@ -110,9 +93,7 @@ export const SmartContractAccountToggleSection = ({
           </ButtonLink>
         </Text>
       </Box>
-      <Box>
-        <NetworkList />
-      </Box>
+      <Box>{networkList}</Box>
     </Box>
   );
 };
