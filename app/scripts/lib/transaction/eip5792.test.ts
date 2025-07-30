@@ -29,6 +29,7 @@ import {
   PreferencesControllerState,
 } from '../../controllers/preferences-controller';
 import { isRelaySupported as isRelaySupportedOriginal } from './transaction-relay';
+import { getSendBundleSupportedChains } from './transaction-send-bundle';
 import {
   AtomicCapabilityStatus,
   EIP5792Messenger,
@@ -120,6 +121,10 @@ describe('EIP-5792', () => {
   const isRelaySupportedMock: jest.MockedFn<typeof isRelaySupportedOriginal> =
     jest.fn();
 
+  const getSendBundleSupportedChainsMock: jest.MockedFn<
+    typeof getSendBundleSupportedChains
+  > = jest.fn();
+
   const validateSecurityMock: jest.MockedFunction<
     Parameters<typeof processSendCalls>[0]['validateSecurity']
   > = jest.fn();
@@ -153,6 +158,7 @@ describe('EIP-5792', () => {
     isAtomicBatchSupported: isAtomicBatchSupportedMock,
     getIsSmartTransaction: getIsSmartTransactionMock,
     isRelaySupported: isRelaySupportedMock,
+    getSendBundleSupportedChains: getSendBundleSupportedChainsMock,
   };
 
   beforeEach(() => {
@@ -664,6 +670,9 @@ describe('EIP-5792', () => {
       } as unknown as PreferencesControllerState);
 
       isRelaySupportedMock.mockResolvedValue(true);
+      getSendBundleSupportedChainsMock.mockResolvedValue({
+        [CHAIN_ID_MOCK]: true,
+      });
     });
 
     it('includes atomic capability if already upgraded', async () => {
@@ -911,6 +920,68 @@ describe('EIP-5792', () => {
         [CHAIN_ID_MOCK]: {
           atomic: {
             status: AtomicCapabilityStatus.Supported,
+          },
+        },
+      });
+    });
+
+    it('returns alternateGasFees true if send bundle is supported', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        {
+          chainId: CHAIN_ID_MOCK,
+          delegationAddress: DELEGATION_ADDRESS_MOCK,
+          isSupported: true,
+        },
+      ]);
+      getSendBundleSupportedChainsMock.mockResolvedValue({
+        [CHAIN_ID_MOCK]: true,
+      });
+
+      const capabilities = await getCapabilities(
+        getCapabilitiesHooks,
+        messenger,
+        FROM_MOCK,
+        [CHAIN_ID_MOCK],
+      );
+
+      expect(capabilities).toStrictEqual({
+        [CHAIN_ID_MOCK]: {
+          atomic: {
+            status: AtomicCapabilityStatus.Supported,
+          },
+          alternateGasFees: {
+            supported: true,
+          },
+        },
+      });
+    });
+
+    it('returns alternateGasFees as false if send bundle is not supported', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        {
+          chainId: CHAIN_ID_MOCK,
+          delegationAddress: DELEGATION_ADDRESS_MOCK,
+          isSupported: true,
+        },
+      ]);
+      getSendBundleSupportedChainsMock.mockResolvedValue({
+        [CHAIN_ID_MOCK]: false,
+      });
+
+      const capabilities = await getCapabilities(
+        getCapabilitiesHooks,
+        messenger,
+        FROM_MOCK,
+        [CHAIN_ID_MOCK],
+      );
+
+      expect(capabilities).toStrictEqual({
+        [CHAIN_ID_MOCK]: {
+          atomic: {
+            status: AtomicCapabilityStatus.Supported,
+          },
+          alternateGasFees: {
+            supported: false,
           },
         },
       });
