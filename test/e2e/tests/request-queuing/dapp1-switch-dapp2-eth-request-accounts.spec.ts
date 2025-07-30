@@ -1,12 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { withFixtures, DAPP_ONE_URL, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -64,12 +59,18 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         await secondTestDapp.check_pageIsLoaded();
 
         // Verify the account is not connected initially
-        await secondTestDapp.check_connectedAccounts('0x5cfe73b6021e818b776b421b1c4db2474086a7e1', false);
+        await secondTestDapp.check_connectedAccounts(
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          false,
+        );
 
         await secondTestDapp.clickConnectAccountButton();
 
         // Verify account is still not connected before confirmation
-        await secondTestDapp.check_connectedAccounts('0x5cfe73b6021e818b776b421b1c4db2474086a7e1', false);
+        await secondTestDapp.check_connectedAccounts(
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          false,
+        );
 
         // Reject the pending confirmation from the first dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -79,13 +80,17 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         // Wait for switch confirmation to close then request accounts confirmation to show for the second dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
         await connectAccountConfirmation.check_pageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
-        await secondTestDapp.check_connectedAccounts('0x5cfe73b6021e818b776b421b1c4db2474086a7e1');
+        await secondTestDapp.check_connectedAccounts(
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        );
       },
     );
   });
