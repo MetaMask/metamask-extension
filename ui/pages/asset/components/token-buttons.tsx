@@ -22,7 +22,6 @@ import {
   getNetworkConfigurationIdByChainId,
   getSelectedInternalAccount,
   getSelectedMultichainNetworkConfiguration,
-  getIsCustomNetwork,
 } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
@@ -218,7 +217,6 @@ const TokenButtons = ({
   ]);
 
   const isTestnet = useSelector(getMultichainIsTestnet);
-  const isCustomNetwork = useSelector(getIsCustomNetwork);
 
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
@@ -346,7 +344,7 @@ const TokenButtons = ({
         disabled={!isSwapsChain}
       />
 
-      {!isUnifiedUIEnabled && !isTestnet && !isCustomNetwork && (
+      {!isUnifiedUIEnabled && !isTestnet && isBridgeChain && (
         <IconButton
           className="token-overview__button"
           data-testid="token-overview-bridge"

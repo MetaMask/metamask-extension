@@ -22,7 +22,6 @@ import {
   getNetworkConfigurationIdByChainId,
   isNonEvmAccount,
   getSwapsDefaultToken,
-  getIsCustomNetwork,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
@@ -136,7 +135,6 @@ const CoinButtons = ({
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
   const isTestnet = useSelector(getMultichainIsTestnet);
-  const isCustomNetwork = useSelector(getIsCustomNetwork);
 
   const isNonEvmAccountWithoutExternalServices =
     !isExternalServicesEnabled && isNonEvmAccount(account);
@@ -424,8 +422,8 @@ const CoinButtons = ({
         }
         round={!displayNewIconButtons}
       />
-      {/* the bridge button is redundant if unified ui is enabled */}
-      {isUnifiedUIEnabled || isTestnet || isCustomNetwork ? null : (
+      {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
+      {isUnifiedUIEnabled || isTestnet || !isBridgeChain ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={
