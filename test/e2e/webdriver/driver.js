@@ -534,8 +534,9 @@ class Driver {
         error.message.startsWith('ECONNREFUSED')
       ) {
         console.info('Driver already shut down');
+      } else {
+        throw error;
       }
-      throw error;
     }
   }
 
