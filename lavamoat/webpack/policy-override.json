@@ -135,6 +135,20 @@
         "Atomics": true,
         "SharedArrayBuffer": true
       }
+    },
+    "eth-lattice-keyring>gridplus-sdk>buffer": {
+      "globals": {
+        "SharedArrayBuffer": true,
+        "SharedArrayBuffer.Symbol(Symbol.hasInstance)": true,
+        "SharedArrayBuffer.Symbol(Symbol.hasInstance).name": true
+      }
+    },
+    "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": {
+      "globals": {
+        "DOMException": true,
+        "DOMException.prototype": true,
+        "fetch": true
+      }
     }
   }
 }
