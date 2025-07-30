@@ -68,7 +68,11 @@ export default class PermissionPageContainerContent extends PureComponent {
     const displayOrigin =
       subjectType === SubjectType.Website ? getURLHost(origin) : origin;
 
+    // permissionDiffMap is expected to be present when an incremental permission request is made
+    // This occurs when a "wallet_switchEthereumChain" request comes in and we already have a set of permissions
     const permissionDiffMap = request.diff?.permissionDiffMap;
+    // Extract the requested chain IDs from the permission diff, specifically from the CAIP-25 endowment permission
+    // This represents the new chains being requested in addition to existing permissions
     const permissionDiffRequestedChainIds = getPermittedEthChainIds(
       permissionDiffMap?.[Caip25EndowmentPermissionName]?.authorizedScopes ?? {
         requiredScopes: {},
@@ -126,6 +130,9 @@ export default class PermissionPageContainerContent extends PureComponent {
             permissions={selectedPermissions}
             subjectName={subjectMetadata.origin}
             accounts={accounts}
+            // On an incremental permission request, we only want to render the newly requested chains in the UI
+            // permissionDiffRequestedChainIds will only have content when an incremental permission request is made
+            // Otherwise, we fall back to the original requestedChainIds for initial permission requests
             requestedChainIds={
               permissionDiffRequestedChainIds.length > 0
                 ? permissionDiffRequestedChainIds
