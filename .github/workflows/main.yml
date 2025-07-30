@@ -49,6 +49,13 @@ jobs:
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
 
+      # Need to cache `.metamask` folder for the anvil binary
+      - name: Cache .metamask folder
+        uses: actions/cache/save@v4
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+
   lint-workflows:
     name: Lint workflows
     uses: metamask/github-tools/.github/workflows/lint-workflows.yml@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
@@ -186,6 +193,7 @@ jobs:
   run-benchmarks:
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
+      - prep-deps
       - build-test-browserify
       - build-test-webpack
 
