@@ -8,6 +8,7 @@ import {
   ButtonIconSize,
   IconName,
   Text,
+  Button,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -24,10 +25,13 @@ import {
 import { TOKEN_STREAMS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
-import { extractNetworkName } from '../gator-permissions-page-helper';
+import {
+  extractNetworkName,
+  handleRevokeClick,
+  handleRevokeBatchClick,
+} from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
-import { getSelectedInternalAccount } from '../../../../../selectors';
 
 export const ReviewTokenStreamsPage = () => {
   const t = useI18nContext();
@@ -37,9 +41,11 @@ export const ReviewTokenStreamsPage = () => {
   const [networkName, setNetworkName] = useState('');
   const [totalTokenStreams, setTotalTokenStreams] = useState(0);
 
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const { revokeGatorPermission } = useRevokeGatorPermissions({
-    accountAddress: selectedAccount.address,
+  const {
+    revokeGatorPermission,
+    revokeGatorPermissionBatch,
+    findDelegatorFromInternalAccounts,
+  } = useRevokeGatorPermissions({
     chainId,
   });
 
@@ -64,10 +70,6 @@ export const ReviewTokenStreamsPage = () => {
     setTotalTokenStreams(nativeTokenStreams.length + erc20TokenStreams.length);
   }, [chainId, nativeTokenStreams, erc20TokenStreams, networks]);
 
-  const handleRevokeClick = async (permissionContext, delegationManager) => {
-    await revokeGatorPermission(permissionContext, delegationManager);
-  };
-
   const renderTokenStreams = (streams) =>
     streams.map((stream) => {
       const { permissionResponse, siteOrigin } = stream;
@@ -85,14 +87,19 @@ export const ReviewTokenStreamsPage = () => {
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
           onRevokeClick={() =>
-            handleRevokeClick(
-              permissionResponse.context,
-              permissionResponse.signerMeta.delegationManager,
-            )
+            handleRevokeClick({
+              gatorPermission: stream,
+              findDelegatorFromInternalAccounts,
+              revokeGatorPermission,
+            })
           }
         />
       );
     });
+
+  const groupPermissions = (nativeStreams, erc20Streams) => {
+    return [...nativeStreams, ...erc20Streams];
+  };
 
   return (
     <Page className="main-container" data-testid="review-token-streams-page">
@@ -123,6 +130,22 @@ export const ReviewTokenStreamsPage = () => {
           <>
             {renderTokenStreams(nativeTokenStreams)}
             {renderTokenStreams(erc20TokenStreams)}
+
+            {/* Temporary button to revoke all token streams */}
+            <Button
+              onClick={() => {
+                handleRevokeBatchClick({
+                  gatorPermissions: groupPermissions(
+                    nativeTokenStreams,
+                    erc20TokenStreams,
+                  ),
+                  findDelegatorFromInternalAccounts,
+                  revokeGatorPermissionBatch,
+                });
+              }}
+            >
+              Revoke All
+            </Button>
           </>
         ) : (
           <Box

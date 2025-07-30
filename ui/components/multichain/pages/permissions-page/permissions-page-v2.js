@@ -30,7 +30,7 @@ import {
   TOKEN_SUBSCRIPTIONS_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
-import { getGatorPermissionsList } from '../../../../selectors/gator-permissions/gator-permissions';
+import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionListItem } from './permission-list-item';
 
 export const PermissionsPageV2 = () => {
@@ -49,7 +49,7 @@ export const PermissionsPageV2 = () => {
   const sitesConnectionsList = useSelector(
     getConnectedSitesListWithNetworkInfo,
   );
-  const gatorPermissionsList = useSelector(getGatorPermissionsList);
+  const gatorPermissionsMap = useSelector(getGatorPermissionsMap);
 
   // Use the hook to fetch gator permissions on component mount
   const { loading: gatorPermissionsLoading, error: gatorPermissionsError } =
@@ -58,13 +58,13 @@ export const PermissionsPageV2 = () => {
   useEffect(() => {
     const totalSites = Object.keys(sitesConnectionsList).length;
     const nativeTokenStream =
-      Object.values(gatorPermissionsList['native-token-stream']).flat()
-        .length || 0;
+      Object.values(gatorPermissionsMap['native-token-stream']).flat().length ||
+      0;
     const erc20TokenStream =
-      Object.values(gatorPermissionsList['erc20-token-stream']).flat().length ||
+      Object.values(gatorPermissionsMap['erc20-token-stream']).flat().length ||
       0;
     const totalTokenSubscriptions =
-      Object.values(gatorPermissionsList['native-token-periodic']).flat()
+      Object.values(gatorPermissionsMap['native-token-periodic']).flat()
         .length || 0;
     const totalTokenStreams = nativeTokenStream + erc20TokenStream;
 
@@ -76,7 +76,7 @@ export const PermissionsPageV2 = () => {
     );
   }, [
     sitesConnectionsList,
-    gatorPermissionsList,
+    gatorPermissionsMap,
     totalConnections,
     totalTokenStreamsPermissions,
     totalTokenSubscriptionsPermissions,

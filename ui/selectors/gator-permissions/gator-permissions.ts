@@ -1,16 +1,18 @@
 import type { Hex } from '@metamask/utils';
 import {
-  deserializeGatorPermissionsList,
-  GatorPermissionsList,
   SupportedGatorPermissionType,
-  GatorPermissionsListByPermissionType,
-  GatorPermissionsListItemsByPermissionTypeAndChainId,
+  GatorPermissionsMapByPermissionType,
+  StoredGatorPermissionSanitized,
+  SignerParam,
+  PermissionTypes,
+  GatorPermissionsMap,
+  deserializeGatorPermissionsMap,
 } from '@metamask/gator-permissions-controller';
 
 export type GatorPermissionState = {
   metamask: {
     isGatorPermissionsEnabled: boolean;
-    gatorPermissionsListStringify: string;
+    gatorPermissionsMapSerialized: string;
     isFetchingGatorPermissions: boolean;
   };
 };
@@ -22,30 +24,49 @@ export type GatorAssetItemListDetail = {
   };
 };
 
-export type GatorAssetListType = 'token-streams' | 'token-subscriptions';
+export type GatorAssetListType =
+  | 'token-streams'
+  | 'token-subscriptions'
+  | 'other';
 
 export type GatorAssetListDescriptionLookup = {
   'token-streams': string;
   'token-subscriptions': string;
+  other: string;
 };
 
 const defaultGatorAssetListDescriptionLookup: GatorAssetListDescriptionLookup =
   {
     'token-streams': 'streaming permissions',
     'token-subscriptions': 'subscription permissions',
+    other: 'custom permissions',
   };
 
 /**
- * Get gator permissions list from GatorPermissionsController.
+ * Get gator permissions map from GatorPermissionsController.
  *
  * @param state - The current state
- * @returns Gator permissions list
+ * @returns Gator permissions map
+ * @example
+ * const gatorPermissionsMap = getGatorPermissionsMap(state);
+ *
+ * // {
+ * //   'native-token-stream': {
+ * //     '0x1': [permission1, permission2],
+ * //     '0x89': [permission3, permission4],
+ * //   },
+ * //   'native-token-periodic': {
+ * //     '0x1': [permission5, permission6],
+ * //     '0x89': [permission7, permission8],
+ * //   },
+ * //   ...
+ * // }
  */
-export function getGatorPermissionsList(
+export function getGatorPermissionsMap(
   state: GatorPermissionState,
-): GatorPermissionsList {
-  return deserializeGatorPermissionsList(
-    state.metamask.gatorPermissionsListStringify,
+): GatorPermissionsMap {
+  return deserializeGatorPermissionsMap(
+    state.metamask.gatorPermissionsMapSerialized,
   );
 }
 
@@ -57,30 +78,28 @@ export function getGatorPermissionsList(
  * @param chainId - The chainId to get permissions for (e.g. 0x1)
  * @returns A list of gator permissions filtered by permission type and chainId.(e.g. [permission1, permission2] on chainId 0x1)
  */
-export function getGatorPermissionByPermissionTypeAndChainId<
-  T extends SupportedGatorPermissionType,
->(
+export function getGatorPermissionByPermissionTypeAndChainId(
   state: GatorPermissionState,
-  permissionType: T,
+  permissionType: SupportedGatorPermissionType,
   chainId: Hex,
-): GatorPermissionsListItemsByPermissionTypeAndChainId<T> {
-  const gatorPermissionsList = getGatorPermissionsList(state);
-  return gatorPermissionsList[permissionType][chainId] || [];
+): StoredGatorPermissionSanitized<SignerParam, PermissionTypes>[] {
+  const gatorPermissionsMap = getGatorPermissionsMap(state);
+  return gatorPermissionsMap[permissionType][chainId] || [];
 }
 
 /**
  * Get the total count of gator permissions of a specific permission type across chains.
  *
- * @param permissions - The gator permissions to get the total count of
+ * @param permissionsMapByPermissionType - The map of gator permissions by permission type
  * @returns The total count of gator permissions of a specific permission type across chains
  */
 function getTotalCountOfGatorPermissionsPerChainId(
-  permissionsByPermissionType: GatorPermissionsListByPermissionType<SupportedGatorPermissionType>,
+  permissionsMapByPermissionType: GatorPermissionsMapByPermissionType<SupportedGatorPermissionType>,
 ): Record<Hex, number> {
-  // Flatten the permissions list all permission types across chains
-  const flattenedStoredGatorPermissions = Object.values(
-    permissionsByPermissionType,
-  ).flat();
+  const flattenedStoredGatorPermissions: StoredGatorPermissionSanitized<
+    SignerParam,
+    PermissionTypes
+  >[] = Object.values(permissionsMapByPermissionType).flat();
   return flattenedStoredGatorPermissions.reduce((acc, gatorPermission) => {
     const { permissionResponse } = gatorPermission;
     acc[permissionResponse.chainId] =
@@ -103,7 +122,7 @@ function mergeRecords(
   const mergedRecord = { ...record1 };
 
   for (const [key, value] of Object.entries(record2)) {
-    mergedRecord[key] = (mergedRecord[key] || 0) + value;
+    mergedRecord[key as Hex] = (mergedRecord[key as Hex] || 0) + value;
   }
 
   return mergedRecord;
@@ -114,8 +133,8 @@ function mergeRecords(
  *
  * @param state - The current state
  * @param listType - The type of list to get (token-streams or token-subscriptions)
- * @returns A list of gator asset items
- *
+ * @param descriptionLookup - The lookup for the description of the list type
+ * @returns A list of gator asset items.
  * @example
  * const gatorAssetList = getGatorAssetListDetail(state, 'token-streams');
  *
@@ -135,7 +154,7 @@ export function getGatorAssetListDetail(
   listType: GatorAssetListType,
   descriptionLookup: GatorAssetListDescriptionLookup = defaultGatorAssetListDescriptionLookup,
 ): GatorAssetItemListDetail {
-  const gatorPermissionsList = getGatorPermissionsList(state);
+  const gatorPermissionsMap = getGatorPermissionsMap(state);
 
   let permissionsCountPerChainId: Record<Hex, number> = {};
 
@@ -143,18 +162,29 @@ export function getGatorAssetListDetail(
     case 'token-streams': {
       permissionsCountPerChainId = mergeRecords(
         getTotalCountOfGatorPermissionsPerChainId(
-          gatorPermissionsList['native-token-stream'],
+          gatorPermissionsMap['native-token-stream'],
         ),
         getTotalCountOfGatorPermissionsPerChainId(
-          gatorPermissionsList['erc20-token-stream'],
+          gatorPermissionsMap['erc20-token-stream'],
         ),
       );
 
       break;
     }
     case 'token-subscriptions': {
+      permissionsCountPerChainId = mergeRecords(
+        getTotalCountOfGatorPermissionsPerChainId(
+          gatorPermissionsMap['native-token-periodic'],
+        ),
+        getTotalCountOfGatorPermissionsPerChainId(
+          gatorPermissionsMap['erc20-token-periodic'],
+        ),
+      );
+      break;
+    }
+    case 'other': {
       permissionsCountPerChainId = getTotalCountOfGatorPermissionsPerChainId(
-        gatorPermissionsList['native-token-periodic'],
+        gatorPermissionsMap.other,
       );
       break;
     }
@@ -165,7 +195,7 @@ export function getGatorAssetListDetail(
 
   const gatorAssetItemList: GatorAssetItemListDetail = {};
   for (const [chainId, total] of Object.entries(permissionsCountPerChainId)) {
-    gatorAssetItemList[chainId] = {
+    gatorAssetItemList[chainId as Hex] = {
       total,
       description: descriptionLookup[listType] || 'No description',
     };

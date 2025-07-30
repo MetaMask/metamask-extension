@@ -13,7 +13,10 @@ import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { addTransaction } from '../../store/actions';
 import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
-import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
+import {
+  RevokeGatorPermissionArgs,
+  useRevokeGatorPermissions,
+} from './useRevokeGatorPermissions';
 
 // Mock the dependencies
 jest.mock('../../store/actions', () => ({
@@ -116,6 +119,22 @@ describe('useRevokeGatorPermissions', () => {
             defaultRpcEndpointIndex: 0,
           },
         },
+        internalAccounts: {
+          accounts: {
+            'mock-account-id': {
+              id: 'mock-account-id',
+              address: mockSelectedAccountAddress,
+              type: 'eoa',
+              metadata: {
+                name: 'Mock Account',
+                keyring: {
+                  type: 'hd',
+                },
+              },
+            },
+          },
+          selectedAccount: 'mock-account-id',
+        },
       },
     });
 
@@ -139,7 +158,6 @@ describe('useRevokeGatorPermissions', () => {
       const { result } = renderHook(
         () =>
           useRevokeGatorPermissions({
-            accountAddress: mockSelectedAccountAddress as `0x${string}`,
             chainId: mockChainId,
           }),
         {
@@ -150,10 +168,11 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        const transactionMeta = await result.current.revokeGatorPermission(
-          mockPermissionContext,
-          mockDelegationManagerAddress,
-        );
+        const transactionMeta = await result.current.revokeGatorPermission({
+          permissionContext: mockPermissionContext,
+          delegationManagerAddress: mockDelegationManagerAddress,
+          accountAddress: mockSelectedAccountAddress as `0x${string}`,
+        });
 
         expect(transactionMeta).toBe(mockTransactionMeta);
       });
@@ -194,7 +213,6 @@ describe('useRevokeGatorPermissions', () => {
       const { result } = renderHook(
         () =>
           useRevokeGatorPermissions({
-            accountAddress: mockSelectedAccountAddress as `0x${string}`,
             chainId: mockChainId,
           }),
         {
@@ -206,10 +224,11 @@ describe('useRevokeGatorPermissions', () => {
 
       await act(async () => {
         await expect(
-          result.current.revokeGatorPermission(
-            mockPermissionContext,
-            mockDelegationManagerAddress,
-          ),
+          result.current.revokeGatorPermission({
+            permissionContext: mockPermissionContext,
+            delegationManagerAddress: mockDelegationManagerAddress,
+            accountAddress: mockSelectedAccountAddress as `0x${string}`,
+          }),
         ).rejects.toThrow(
           `Delegator address does not match. Expected: ${mockSelectedAccountAddress}, Got: ${differentAccountAddress}`,
         );
@@ -234,7 +253,6 @@ describe('useRevokeGatorPermissions', () => {
       const { result } = renderHook(
         () =>
           useRevokeGatorPermissions({
-            accountAddress: mockSelectedAccountAddress as `0x${string}`,
             chainId: mockChainId,
             onRedirect: mockOnRedirect,
           }),
@@ -246,10 +264,11 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        await result.current.revokeGatorPermission(
-          mockPermissionContext,
-          mockDelegationManagerAddress,
-        );
+        await result.current.revokeGatorPermission({
+          permissionContext: mockPermissionContext,
+          delegationManagerAddress: mockDelegationManagerAddress,
+          accountAddress: mockSelectedAccountAddress as `0x${string}`,
+        });
       });
 
       expect(mockNavigateToId).toHaveBeenCalledWith('test-transaction-id');
@@ -265,7 +284,6 @@ describe('useRevokeGatorPermissions', () => {
       const { result } = renderHook(
         () =>
           useRevokeGatorPermissions({
-            accountAddress: mockSelectedAccountAddress as `0x${string}`,
             chainId: mockChainId,
             onRedirect: mockOnRedirect,
           }),
@@ -277,10 +295,11 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        await result.current.revokeGatorPermission(
-          mockPermissionContext,
-          mockDelegationManagerAddress,
-        );
+        await result.current.revokeGatorPermission({
+          permissionContext: mockPermissionContext,
+          delegationManagerAddress: mockDelegationManagerAddress,
+          accountAddress: mockSelectedAccountAddress as `0x${string}`,
+        });
       });
 
       expect(mockNavigateToId).not.toHaveBeenCalled();
@@ -298,6 +317,22 @@ describe('useRevokeGatorPermissions', () => {
               defaultRpcEndpointIndex: 0,
             },
           },
+          internalAccounts: {
+            accounts: {
+              'mock-account-id': {
+                id: 'mock-account-id',
+                address: mockSelectedAccountAddress,
+                type: 'eoa',
+                metadata: {
+                  name: 'Mock Account',
+                  keyring: {
+                    type: 'hd',
+                  },
+                },
+              },
+            },
+            selectedAccount: 'mock-account-id',
+          },
         },
       });
 
@@ -308,7 +343,6 @@ describe('useRevokeGatorPermissions', () => {
       const { result } = renderHook(
         () =>
           useRevokeGatorPermissions({
-            accountAddress: mockSelectedAccountAddress as `0x${string}`,
             chainId: mockChainId,
           }),
         {
@@ -320,10 +354,11 @@ describe('useRevokeGatorPermissions', () => {
 
       await act(async () => {
         await expect(
-          result.current.revokeGatorPermission(
-            mockPermissionContext,
-            mockDelegationManagerAddress,
-          ),
+          result.current.revokeGatorPermission({
+            permissionContext: mockPermissionContext,
+            delegationManagerAddress: mockDelegationManagerAddress,
+            accountAddress: mockSelectedAccountAddress as `0x${string}`,
+          }),
         ).rejects.toThrow('Failed to add transaction');
       });
 
@@ -338,7 +373,6 @@ describe('useRevokeGatorPermissions', () => {
       const { result } = renderHook(
         () =>
           useRevokeGatorPermissions({
-            accountAddress: mockSelectedAccountAddress as `0x${string}`,
             chainId: mockChainId,
           }),
         {
@@ -350,10 +384,11 @@ describe('useRevokeGatorPermissions', () => {
 
       await act(async () => {
         await expect(
-          result.current.revokeGatorPermission(
-            mockPermissionContext,
-            mockDelegationManagerAddress,
-          ),
+          result.current.revokeGatorPermission({
+            permissionContext: mockPermissionContext,
+            delegationManagerAddress: mockDelegationManagerAddress,
+            accountAddress: mockSelectedAccountAddress as `0x${string}`,
+          }),
         ).rejects.toThrow('No delegation found');
       });
 
@@ -375,7 +410,6 @@ describe('useRevokeGatorPermissions', () => {
       const { result } = renderHook(
         () =>
           useRevokeGatorPermissions({
-            accountAddress: mockSelectedAccountAddress as `0x${string}`,
             chainId: mockChainId,
           }),
         {
@@ -386,10 +420,11 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        const transactionMeta = await result.current.revokeGatorPermission(
-          mockPermissionContext,
-          mockDelegationManagerAddress,
-        );
+        const transactionMeta = await result.current.revokeGatorPermission({
+          permissionContext: mockPermissionContext,
+          delegationManagerAddress: mockDelegationManagerAddress,
+          accountAddress: mockSelectedAccountAddress as `0x${string}`,
+        });
 
         expect(transactionMeta).toBe(mockTransactionMetaWithoutId);
       });
@@ -412,7 +447,6 @@ describe('useRevokeGatorPermissions', () => {
       const { result } = renderHook(
         () =>
           useRevokeGatorPermissions({
-            accountAddress: mockSelectedAccountAddress as `0x${string}`,
             chainId: mockChainId,
             onRedirect: mockOnRedirect,
           }),
@@ -424,10 +458,11 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        await result.current.revokeGatorPermission(
-          mockPermissionContext,
-          mockDelegationManagerAddress,
-        );
+        await result.current.revokeGatorPermission({
+          permissionContext: mockPermissionContext,
+          delegationManagerAddress: mockDelegationManagerAddress,
+          accountAddress: mockSelectedAccountAddress as `0x${string}`,
+        });
       });
 
       expect(mockNavigateToId).toHaveBeenCalledWith('test-transaction-id');
@@ -446,7 +481,6 @@ describe('useRevokeGatorPermissions', () => {
       const { result } = renderHook(
         () =>
           useRevokeGatorPermissions({
-            accountAddress: mockSelectedAccountAddress as `0x${string}`,
             chainId: mockChainId,
           }),
         {
@@ -457,13 +491,363 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        await result.current.revokeGatorPermission(
-          mockPermissionContext,
-          mockDelegationManagerAddress,
+        await result.current.revokeGatorPermission({
+          permissionContext: mockPermissionContext,
+          delegationManagerAddress: mockDelegationManagerAddress,
+          accountAddress: mockSelectedAccountAddress as `0x${string}`,
+        });
+      });
+
+      expect(mockNavigateToId).toHaveBeenCalledWith('test-transaction-id');
+    });
+
+    it('should find delegator from internal accounts', () => {
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      const foundAccount = result.current.findDelegatorFromInternalAccounts(
+        mockSelectedAccountAddress as Hex,
+      );
+
+      expect(foundAccount).toBeDefined();
+      expect(foundAccount?.address).toBe(mockSelectedAccountAddress);
+      expect(foundAccount?.id).toBe('mock-account-id');
+    });
+
+    it('should return undefined when delegator is not found in internal accounts', () => {
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      const foundAccount = result.current.findDelegatorFromInternalAccounts(
+        '0x1234567890123456789012345678901234567890' as Hex,
+      );
+
+      expect(foundAccount).toBeUndefined();
+    });
+  });
+
+  describe('revokeGatorPermissionBatch', () => {
+    const mockRevokeGatorPermissionArgs: RevokeGatorPermissionArgs[] = [
+      {
+        permissionContext: mockPermissionContext,
+        delegationManagerAddress: mockDelegationManagerAddress,
+        accountAddress: mockSelectedAccountAddress as `0x${string}`,
+      },
+      {
+        permissionContext: '0x9876543210fedcba' as Hex,
+        delegationManagerAddress:
+          '0x1234567890123456789012345678901234567890' as Hex,
+        accountAddress: mockSelectedAccountAddress as `0x${string}`,
+      },
+    ];
+
+    const mockTransactionMeta2 = {
+      id: 'test-transaction-id-2',
+      chainId: mockChainId,
+      hash: '0xabcdef1234567890',
+      txParams: {
+        from: mockSelectedAccountAddress,
+        to: '0x1234567890123456789012345678901234567890',
+        data: '0xencodeddata2',
+        value: '0x0',
+      },
+      type: TransactionType.contractInteraction,
+      status: TransactionStatus.unapproved,
+      time: Date.now(),
+    } as TransactionMeta;
+
+    it('should revoke multiple gator permissions in batch', async () => {
+      mockAddTransaction
+        .mockResolvedValueOnce(mockTransactionMeta)
+        .mockResolvedValueOnce(mockTransactionMeta2);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        const transactionMetas =
+          await result.current.revokeGatorPermissionBatch(
+            mockRevokeGatorPermissionArgs,
+          );
+
+        expect(transactionMetas).toHaveLength(2);
+        expect(transactionMetas[0]).toBe(mockTransactionMeta);
+        expect(transactionMetas[1]).toBe(mockTransactionMeta2);
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledTimes(2);
+      expect(mockEncodeDisableDelegation).toHaveBeenCalledTimes(2);
+      expect(mockAddTransaction).toHaveBeenCalledTimes(2);
+    });
+
+    it('should throw error when no permission contexts provided', async () => {
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermissionBatch([]),
+        ).rejects.toThrow('No permission contexts provided');
+      });
+
+      expect(mockDecodeDelegations).not.toHaveBeenCalled();
+      expect(mockEncodeDisableDelegation).not.toHaveBeenCalled();
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+    });
+
+    it('should throw error when delegator address does not match account address in batch', async () => {
+      const differentAccountAddress =
+        '0x1234567890123456789012345678901234567890';
+      const mockDelegationWithDifferentDelegator = {
+        ...mockDelegation,
+        delegator: differentAccountAddress as Hex,
+      };
+
+      mockDecodeDelegations.mockReturnValue([
+        mockDelegationWithDifferentDelegator,
+      ]);
+      mockEncodeDisableDelegation.mockClear();
+      mockAddTransaction.mockClear();
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermissionBatch([
+            {
+              permissionContext: mockPermissionContext,
+              delegationManagerAddress: mockDelegationManagerAddress,
+              accountAddress: mockSelectedAccountAddress as `0x${string}`,
+            },
+          ]),
+        ).rejects.toThrow(
+          `Delegator address does not match. Expected: ${mockSelectedAccountAddress}, Got: ${differentAccountAddress}`,
+        );
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).toHaveBeenCalled();
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+    });
+
+    it('should throw error when no delegation is found in permission context in batch', async () => {
+      mockDecodeDelegations.mockReturnValue([]);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermissionBatch([
+            {
+              permissionContext: mockPermissionContext,
+              delegationManagerAddress: mockDelegationManagerAddress,
+              accountAddress: mockSelectedAccountAddress as `0x${string}`,
+            },
+          ]),
+        ).rejects.toThrow('No delegation found');
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).not.toHaveBeenCalled();
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+    });
+
+    it('should handle navigation when first transaction is pending', async () => {
+      mockConfirmations.push({
+        id: 'test-transaction-id',
+        status: TransactionStatus.unapproved,
+      } as unknown as ApprovalRequest<Record<string, Json>>);
+
+      const mockOnRedirect = jest.fn();
+
+      mockAddTransaction
+        .mockResolvedValueOnce(mockTransactionMeta)
+        .mockResolvedValueOnce(mockTransactionMeta2);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+            onRedirect: mockOnRedirect,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await result.current.revokeGatorPermissionBatch(
+          mockRevokeGatorPermissionArgs,
         );
       });
 
       expect(mockNavigateToId).toHaveBeenCalledWith('test-transaction-id');
+      expect(mockOnRedirect).toHaveBeenCalled();
+    });
+
+    it('should handle single permission context in batch', async () => {
+      mockAddTransaction.mockResolvedValue(mockTransactionMeta);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        const transactionMetas =
+          await result.current.revokeGatorPermissionBatch([
+            {
+              permissionContext: mockPermissionContext,
+              delegationManagerAddress: mockDelegationManagerAddress,
+              accountAddress: mockSelectedAccountAddress as `0x${string}`,
+            },
+          ]);
+
+        expect(transactionMetas).toHaveLength(1);
+        expect(transactionMetas[0]).toBe(mockTransactionMeta);
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+    });
+
+    it('should handle transaction failure in batch', async () => {
+      mockAddTransaction.mockRejectedValue(
+        new Error('Failed to add transaction'),
+      );
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermissionBatch([
+            {
+              permissionContext: mockPermissionContext,
+              delegationManagerAddress: mockDelegationManagerAddress,
+              accountAddress: mockSelectedAccountAddress as `0x${string}`,
+            },
+          ]),
+        ).rejects.toThrow('Failed to add transaction');
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+    });
+
+    it('should handle different delegation manager addresses in batch', async () => {
+      mockAddTransaction
+        .mockResolvedValueOnce(mockTransactionMeta)
+        .mockResolvedValueOnce(mockTransactionMeta2);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        const transactionMetas =
+          await result.current.revokeGatorPermissionBatch([
+            {
+              permissionContext: mockPermissionContext,
+              delegationManagerAddress: mockDelegationManagerAddress,
+              accountAddress: mockSelectedAccountAddress as `0x${string}`,
+            },
+            {
+              permissionContext: '0x9876543210fedcba' as Hex,
+              delegationManagerAddress:
+                '0xabcdef1234567890123456789012345678901234' as Hex,
+              accountAddress: mockSelectedAccountAddress as `0x${string}`,
+            },
+          ]);
+
+        expect(transactionMetas).toHaveLength(2);
+      });
+
+      expect(mockAddTransaction).toHaveBeenCalledTimes(2);
     });
   });
 });

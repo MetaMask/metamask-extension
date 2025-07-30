@@ -3348,7 +3348,7 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameSepolia": {
+ "networkNameSepolia": {
     "message": "Sepolia"
   },
   "networkNameLinea": {

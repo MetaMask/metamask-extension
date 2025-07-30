@@ -6,6 +6,7 @@ import {
   type GatorPermissionsControllerMessenger,
   getGatorPermissionsControllerMessenger,
   getGatorPermissionsControllerInitMessenger,
+  type GatorPermissionsControllerInitMessenger,
 } from '../messengers/gator-permissions';
 import { GatorPermissionsControllerInit } from './gator-permissions-controller-init';
 
@@ -14,7 +15,7 @@ jest.mock('@metamask/gator-permissions-controller');
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
     GatorPermissionsControllerMessenger,
-    GatorPermissionsControllerMessenger
+    GatorPermissionsControllerInitMessenger
   >
 > {
   const baseControllerMessenger = new Messenger();
@@ -33,7 +34,9 @@ function buildInitRequestMock(): jest.Mocked<
 }
 
 describe('GatorPermissionsControllerInit', () => {
-  const GatorPermissionsControllerClassMock = jest.mocked(GatorPermissionsController);
+  const GatorPermissionsControllerClassMock = jest.mocked(
+    GatorPermissionsController,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -41,9 +44,9 @@ describe('GatorPermissionsControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(GatorPermissionsControllerInit(requestMock).controller).toBeInstanceOf(
-      GatorPermissionsController,
-    );
+    expect(
+      GatorPermissionsControllerInit(requestMock).controller,
+    ).toBeInstanceOf(GatorPermissionsController);
   });
 
   it('initializes with correct messenger and state', () => {
@@ -108,7 +111,9 @@ describe('GatorPermissionsControllerInit', () => {
                 isAdjustmentAllowed: true,
                 signer: {
                   type: 'account',
-                  data: { address: '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63' },
+                  data: {
+                    address: '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63',
+                  },
                 },
                 permission: {
                   type: 'native-token-stream',
@@ -146,10 +151,12 @@ describe('GatorPermissionsControllerInit', () => {
       }),
     );
     expect(
-      Object.keys(
-        GatorPermissionsControllerClassMock.mock.calls[0][0].state,
-      ),
-    ).toEqual(['isFetchingGatorPermissions', 'isGatorPermissionsEnabled', 'gatorPermissionsListStringify']);
+      Object.keys(GatorPermissionsControllerClassMock.mock.calls[0][0].state),
+    ).toEqual([
+      'isFetchingGatorPermissions',
+      'isGatorPermissionsEnabled',
+      'gatorPermissionsListStringify',
+    ]);
   });
 
   it('handles undefined persisted state', () => {

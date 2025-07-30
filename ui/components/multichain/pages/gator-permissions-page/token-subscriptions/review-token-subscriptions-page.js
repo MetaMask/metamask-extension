@@ -24,10 +24,12 @@ import {
 import { TOKEN_SUBSCRIPTIONS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
-import { extractNetworkName } from '../gator-permissions-page-helper';
+import {
+  extractNetworkName,
+  handleRevokeClick,
+} from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
-import { getSelectedInternalAccount } from '../../../../../selectors';
 
 export const ReviewTokenSubscriptionsPage = () => {
   const t = useI18nContext();
@@ -45,20 +47,23 @@ export const ReviewTokenSubscriptionsPage = () => {
       chainId,
     ),
   );
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const { revokeGatorPermission } = useRevokeGatorPermissions({
-    accountAddress: selectedAccount.address,
-    chainId,
-  });
+  const erc20TokenPeriodicPermissions = useSelector((state) =>
+    getGatorPermissionByPermissionTypeAndChainId(
+      state,
+      'erc20-token-periodic',
+      chainId,
+    ),
+  );
+
+  const { revokeGatorPermission, findDelegatorFromInternalAccounts } =
+    useRevokeGatorPermissions({
+      chainId,
+    });
 
   useEffect(() => {
     setNetworkName(extractNetworkName(networks, chainId));
     setTotalTokenSubscriptions(nativeTokenPeriodicPermissions.length);
   }, [chainId, nativeTokenPeriodicPermissions, networks]);
-
-  const handleRevokeClick = async (permissionContext, delegationManager) => {
-    await revokeGatorPermission(permissionContext, delegationManager);
-  };
 
   const renderTokenSubscriptions = (subscriptions) =>
     subscriptions.map((subscription) => {
@@ -76,10 +81,11 @@ export const ReviewTokenSubscriptionsPage = () => {
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
           onRevokeClick={() =>
-            handleRevokeClick(
-              permissionResponse.context,
-              permissionResponse.signerMeta.delegationManager,
-            )
+            handleRevokeClick({
+              gatorPermission: subscription,
+              findDelegatorFromInternalAccounts,
+              revokeGatorPermission,
+            })
           }
         />
       );
@@ -114,7 +120,10 @@ export const ReviewTokenSubscriptionsPage = () => {
       <Content padding={0}>
         <Box ref={headerRef}></Box>
         {totalTokenSubscriptions > 0 ? (
-          renderTokenSubscriptions(nativeTokenPeriodicPermissions)
+          <>
+            {renderTokenSubscriptions(nativeTokenPeriodicPermissions)}
+            {renderTokenSubscriptions(erc20TokenPeriodicPermissions)}
+          </>
         ) : (
           <Box
             data-testid="no-connections"
