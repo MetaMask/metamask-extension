@@ -87,21 +87,80 @@ async function start() {
   // identify window type (popup, notification)
   const windowType = getEnvironmentType();
 
-  // setup stream to background
-  const extensionPort = browser.runtime.connect({ name: windowType });
+  // Connection state management
+  /**
+   * @type {browser.Runtime.Port}
+   */
+  let extensionPort;
+  /**
+   * @type {PortStream}
+   */
+  let connectionStream;
+  /**
+   * @type {ReturnType<typeof connectSubstreams>}
+   */
+  let subStreams;
+  /**
+   * @type {ReturnType<typeof metaRPCClientFactory>}
+   */
+  let backgroundConnection;
+  /**
+   * @type {CriticalStartupErrorHandler}
+   */
+  let criticalErrorHandler;
+  let isInitialized = false;
 
-  // Set up error handlers as early as possible to ensure we are ready to
-  // handle any errors that occur at any time
-  const criticalErrorHandler = new CriticalStartupErrorHandler(
-    extensionPort,
-    container,
-  );
-  criticalErrorHandler.install();
+  async function createConnections() {
+    // setup stream to background
+    extensionPort = browser.runtime.connect({ name: windowType });
 
-  const connectionStream = new PortStream(extensionPort);
-  const subStreams = connectSubstreams(connectionStream);
-  const backgroundConnection = metaRPCClientFactory(subStreams.controller);
-  connectToBackground(backgroundConnection, handleStartUISync);
+    // Set up error handlers as early as possible to ensure we are ready to
+    // handle any errors that occur at any time
+    criticalErrorHandler = new CriticalStartupErrorHandler(
+      extensionPort,
+      container,
+    );
+    criticalErrorHandler.install();
+
+    connectionStream = new PortStream(extensionPort);
+    subStreams = connectSubstreams(connectionStream);
+    backgroundConnection = metaRPCClientFactory(subStreams.controller);
+
+    // Set up disconnect handler for reconnection
+    // TODO: check if this is only need for MV3
+    extensionPort.onDisconnect.addListener(() => {
+      log.warn('Extension port disconnected, attempting to reconnect...');
+      handleDisconnection();
+    });
+
+    connectToBackground(backgroundConnection, handleStartUISync);
+  }
+
+  async function handleDisconnection() {
+    try {
+      // Destroy existing connections
+      if (criticalErrorHandler) {
+        criticalErrorHandler.uninstall();
+      }
+
+      // Clear the global provider
+      if (global.ethereumProvider) {
+        delete global.ethereumProvider;
+      }
+
+      // Wait a bit before reconnecting to avoid rapid reconnection attempts
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Recreate all connections
+      await createConnections();
+
+      log.info('Successfully reconnected to background');
+    } catch (error) {
+      log.error('Failed to reconnect:', error);
+      // Retry reconnection after a delay
+      setTimeout(handleDisconnection, 1000);
+    }
+  }
 
   async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
@@ -118,17 +177,24 @@ async function start() {
 
     const activeTab = await queryCurrentActiveTab(windowType);
 
-    await initializeUiWithTab(
-      activeTab,
-      backgroundConnection,
-      windowType,
-      traceContext,
-    );
+    // Only initialize UI once, subsequent reconnections shouldn't re-initialize the UI
+    if (!isInitialized) {
+      await initializeUiWithTab(
+        activeTab,
+        backgroundConnection,
+        windowType,
+        traceContext,
+      );
+      isInitialized = true;
+    }
 
     if (isManifestV3) {
       await loadPhishingWarningPage();
     }
   }
+
+  // Initial connection setup
+  await createConnections();
 
   trace({
     name: TraceName.BackgroundConnect,
@@ -333,5 +399,6 @@ async function setupProviderConnection(connectionStream) {
   providerStream.on('error', console.error.bind(console));
 
   await providerStream.initialize();
+  // TODO: can we make this a getter function that we swap out at anytime?
   global.ethereumProvider = providerStream;
 }
