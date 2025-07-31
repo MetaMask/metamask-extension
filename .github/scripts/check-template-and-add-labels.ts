@@ -155,10 +155,10 @@ async function main(): Promise<void> {
       );
 
       // Add regression label to the bug report issue
-      addRegressionLabelToIssue(octokit, labelable);
+      await addRegressionLabelToIssue(octokit, labelable);
 
       // Add needs triage label to the bug report issue
-      addNeedsTriageLabelToIssue(octokit, labelable);
+      await addNeedsTriageLabelToIssue(octokit, labelable);
     } else {
       const errorMessage =
         "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
