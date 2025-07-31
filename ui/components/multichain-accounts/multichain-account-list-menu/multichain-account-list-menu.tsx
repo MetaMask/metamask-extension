@@ -77,7 +77,6 @@ export const MultichainAccountListMenu = ({
   const dispatch = useDispatch();
 
   const walletAccountCollection = useSelector(getWalletsWithAccountsSimplified);
-  console.log('walletAccountCollection', walletAccountCollection);
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
   );
