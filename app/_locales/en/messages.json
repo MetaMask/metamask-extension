@@ -5547,12 +5547,6 @@
   "slideMultiSrpTitle": {
     "message": "Add multiple Secret Recovery Phrases"
   },
-  "slideRemoteModeDescription": {
-    "message": "Use your cold wallet wirelessly"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold storage, fast access"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Same address, smarter features"
   },

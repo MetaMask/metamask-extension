@@ -19,13 +19,11 @@ import {
   getSlides,
   getUseExternalServices,
 } from '../../selectors';
-import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
   FUND_SLIDE,
   BRIDGE_SLIDE,
   CARD_SLIDE,
   CASH_SLIDE,
-  REMOTE_MODE_SLIDE,
   SMART_ACCOUNT_UPGRADE_SLIDE,
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
@@ -73,7 +71,6 @@ export const useCarouselManagement = ({
   const slides: CarouselSlide[] = useSelector(getSlides);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
-  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const useExternalServices = useSelector(getUseExternalServices);
   const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
@@ -110,10 +107,6 @@ export const useCarouselManagement = ({
     defaultSlides.push(SOLANA_SLIDE);
     ///: END:ONLY_INCLUDE_IF
     defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
-
-    if (isRemoteModeEnabled) {
-      defaultSlides.unshift(REMOTE_MODE_SLIDE);
-    }
 
     // Handle sweepstakes slide
     const currentDate = testDate
@@ -216,7 +209,6 @@ export const useCarouselManagement = ({
   }, [
     dispatch,
     hasZeroBalance,
-    isRemoteModeEnabled,
     remoteFeatureFlags,
     testDate,
     inTest,
