@@ -10,7 +10,7 @@ import {
 } from '../../data/mock-data';
 
 export function mockSwapsTokens() {
-  const mockEndpoint = nock('https://swap.api.cx.metamask.io:443', {
+  const mockEndpoint = nock('https://bridge.api.cx.metamask.io:443', {
     encodedQueryParams: true,
   })
     .persist()
@@ -23,7 +23,7 @@ export function mockSwapsTokens() {
 }
 
 export function mockSwapsFeatureFlags() {
-  const mockEndpoint = nock('https://swap.api.cx.metamask.io:443', {
+  const mockEndpoint = nock('https://bridge.api.cx.metamask.io:443', {
     encodedQueryParams: true,
   })
     .persist()
@@ -33,7 +33,7 @@ export function mockSwapsFeatureFlags() {
 }
 
 export function mockSwapsAggregatorMetadata() {
-  const mockEndpoint = nock('https://swap.api.cx.metamask.io:443', {
+  const mockEndpoint = nock('https://bridge.api.cx.metamask.io:443', {
     encodedQueryParams: true,
   })
     .persist()
@@ -43,7 +43,7 @@ export function mockSwapsAggregatorMetadata() {
 }
 
 export function mockSwapsTopAssets() {
-  const mockEndpoint = nock('https://swap.api.cx.metamask.io:443', {
+  const mockEndpoint = nock('https://bridge.api.cx.metamask.io:443', {
     encodedQueryParams: true,
   })
     .persist()
@@ -63,7 +63,7 @@ export function mockSwapsGasPrices() {
 }
 
 export function mockSwapsTrades() {
-  const mockEndpoint = nock('https://swap.api.cx.metamask.io:443', {
+  const mockEndpoint = nock('https://bridge.api.cx.metamask.io:443', {
     encodedQueryParams: true,
   })
     .persist()
@@ -73,7 +73,7 @@ export function mockSwapsTrades() {
 }
 
 export function mockSwapsNetworks() {
-  const mockEndpoint = nock('https://swap.api.cx.metamask.io:443', {
+  const mockEndpoint = nock('https://bridge.api.cx.metamask.io:443', {
     encodedQueryParams: true,
   })
     .persist()
