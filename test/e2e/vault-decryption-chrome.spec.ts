@@ -169,10 +169,8 @@ describe('Vault Decryptor Page', function () {
       },
       async ({ driver }) => {
         // we don't need to use navigate since MM will automatically open a new window in prod build
-        await driver.waitUntilXWindowHandles(2);
-
-        // we cannot use the customized driver functions as there is no socket for window communications in prod builds
-        await driver.switchToWindowByTitleWithoutSocket(
+        await driver.waitAndSwitchToWindowWithTitle(
+          2,
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
@@ -229,10 +227,9 @@ describe('Vault Decryptor Page', function () {
       },
       async ({ driver }) => {
         // we don't need to use navigate since MM will automatically open a new window in prod build
-        await driver.waitUntilXWindowHandles(2);
 
-        // we cannot use the customized driver functions as there is no socket for window communications in prod builds
-        await driver.switchToWindowByTitleWithoutSocket(
+        await driver.waitAndSwitchToWindowWithTitle(
+          2,
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 

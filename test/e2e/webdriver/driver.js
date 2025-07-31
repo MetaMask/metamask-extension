@@ -12,6 +12,7 @@ const {
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const lodash = require('lodash');
+const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
@@ -119,18 +120,35 @@ until.foundElementCountIs = function foundElementCountIs(locator, n) {
 };
 
 /**
+ * Error messages used by driver methods.
+ */
+const errorMessages = {
+  waitUntilXWindowHandlesTimeout:
+    'waitUntilXWindowHandles timed out polling window handles',
+};
+
+/**
  * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
  * https://www.selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
  */
 class Driver {
   /**
-   * @param {!ThenableWebDriver} driver - A {@code WebDriver} instance
-   * @param {string} browser - The type of browser this driver is controlling
-   * @param {string} extensionUrl
-   * @param {number} timeout - Defaults to 10000 milliseconds (10 seconds)
+   * @param {object} args - Constructor arguments.
+   * @param {!ThenableWebDriver} args.driver - A {@code WebDriver} instance
+   * @param {string} args.browser - The type of browser this driver is controlling
+   * @param {string} args.extensionUrl
+   * @param {number} args.timeout - Defaults to 10000 milliseconds (10 seconds)
+   * @param {boolean} args.disableServerMochaToBackground - Determines whether the background mocha
+   * server is used.
    */
-  constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
+  constructor({
+    driver,
+    browser,
+    extensionUrl,
+    timeout = 10 * 1000,
+    disableServerMochaToBackground,
+  }) {
     this.driver = driver;
     this.browser = browser;
     this.extensionUrl = extensionUrl;
@@ -138,7 +156,9 @@ class Driver {
     this.exceptions = [];
     this.errors = [];
     this.eventProcessingStack = [];
-    this.windowHandles = new WindowHandles(this.driver);
+    this.windowHandles = disableServerMochaToBackground
+      ? null
+      : new WindowHandles(this.driver);
 
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
@@ -1060,7 +1080,9 @@ class Driver {
    */
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
-    await this.windowHandles.getCurrentWindowProperties(null, handle);
+    if (this.windowHandles) {
+      await this.windowHandles.getCurrentWindowProperties(null, handle);
+    }
   }
 
   /**
@@ -1089,7 +1111,10 @@ class Driver {
    *     be resolved with an array of window handles.
    */
   async getAllWindowHandles() {
-    return await this.windowHandles.getAllWindowHandles();
+    if (this.windowHandles) {
+      return await this.windowHandles.getAllWindowHandles();
+    }
+    return await this.driver.getAllWindowHandles();
   }
 
   /**
@@ -1160,7 +1185,7 @@ class Driver {
     }
 
     throw new Error(
-      `waitUntilXWindowHandles timed out polling window handles. Expected: ${x}, Actual: ${windowHandles.length}`,
+      `${errorMessages.waitUntilXWindowHandlesTimeout}. Expected: ${x}, Actual: ${windowHandles.length}`,
     );
   }
 
@@ -1200,7 +1225,42 @@ class Driver {
    * @throws {Error} throws an error if no window with the specified title is found
    */
   async switchToWindowWithTitle(title) {
-    return await this.windowHandles.switchToWindowWithProperty('title', title);
+    if (this.windowHandles) {
+      return await this.windowHandles.switchToWindowWithProperty(
+        'title',
+        title,
+      );
+    }
+
+    let windowHandles = await this.driver.getAllWindowHandles();
+    let timeElapsed = 0;
+
+    while (timeElapsed <= this.timeout) {
+      for (const handle of windowHandles) {
+        // Wait 25 x 200ms = 5 seconds for the title to match the target title
+        const handleTitle = await retry(
+          {
+            retries: 25,
+            delay: 200,
+          },
+          async () => {
+            await this.driver.switchTo().window(handle);
+            return await this.driver.getTitle();
+          },
+        );
+
+        if (handleTitle === title) {
+          return handle;
+        }
+      }
+      const delayTime = 1000;
+      await this.delay(delayTime);
+      timeElapsed += delayTime;
+      // refresh the window handles
+      windowHandles = await this.driver.getAllWindowHandles();
+    }
+
+    throw new Error(`No window with title: ${title}`);
   }
 
   /**
@@ -1224,6 +1284,11 @@ class Driver {
    * @throws {Error} throws an error if no window with the specified URL is found
    */
   async switchToWindowWithUrl(url) {
+    if (!this.windowHandles) {
+      throw new Error(
+        'This is only supported when the Mocha background server is enabled',
+      );
+    }
     return await this.windowHandles.switchToWindowWithProperty(
       'url',
       new URL(url).toString(), // Make sure the URL has a trailing slash
@@ -1240,6 +1305,11 @@ class Driver {
    * @throws {Error} throws an error if no window with the specified URL is found
    */
   async switchToWindowIfKnown(title) {
+    if (!this.windowHandles) {
+      throw new Error(
+        'This is only supported when the Mocha background server is enabled',
+      );
+    }
     return await this.windowHandles.switchToWindowIfKnown(title);
   }
 
@@ -1338,46 +1408,6 @@ class Driver {
         await this.driver.close();
         await this.delay(1000);
       }
-    }
-  }
-
-  /**
-   * Switches to a window by its title without using the background socket.
-   * To be used in specs that run against production builds.
-   *
-   * @param {string} title - The target window title to switch to
-   * @returns {Promise<void>}
-   * @throws {Error} Will throw an error if the target window is not found
-   */
-  async switchToWindowByTitleWithoutSocket(title) {
-    const windowHandles = await this.driver.getAllWindowHandles();
-    let targetWindowFound = false;
-
-    // Iterate through each window handle
-    for (const handle of windowHandles) {
-      await this.driver.switchTo().window(handle);
-      let currentTitle = await this.driver.getTitle();
-
-      // Wait 25 x 200ms = 5 seconds for the title to match the target title
-      for (let i = 0; i < 25; i++) {
-        if (currentTitle === title) {
-          targetWindowFound = true;
-          console.log(`Switched to ${title} window`);
-          break;
-        }
-        await this.driver.sleep(200);
-        currentTitle = await this.driver.getTitle();
-      }
-
-      // If the target window is found, break out of the outer loop
-      if (targetWindowFound) {
-        break;
-      }
-    }
-
-    // If target window is not found, throw an error
-    if (!targetWindowFound) {
-      throw new Error(`${title} window not found`);
     }
   }
 
@@ -1632,4 +1662,4 @@ function sanitizeTestTitle(testTitle) {
     .replace(/^-+|-+$/gu, ''); // Trim leading/trailing dashes
 }
 
-module.exports = { Driver, PAGES };
+module.exports = { Driver, PAGES, errorMessages };
