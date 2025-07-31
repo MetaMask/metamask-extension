@@ -481,7 +481,7 @@
     "@open-rpc/mock-server": "^1.7.5",
     "@open-rpc/schema-utils-js": "^2.0.5",
     "@open-rpc/test-coverage": "^2.2.4",
-    "@playwright/test": "^1.39.0",
+    "@playwright/test": "^1.54.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
     "@sentry/cli": "^2.19.4",
     "@slack/types": "^2.14.0",

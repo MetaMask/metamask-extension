@@ -61,7 +61,7 @@ const config: PlaywrightTestConfig = {
       name: 'global',
       testMatch: '/global/specs/**.spec.ts',
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices['Desktop Firefox'],
         headless: true,
       },
     },

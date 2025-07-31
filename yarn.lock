@@ -8673,14 +8673,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.39.0":
-  version: 1.39.0
-  resolution: "@playwright/test@npm:1.39.0"
+"@playwright/test@npm:^1.54.1":
+  version: 1.54.1
+  resolution: "@playwright/test@npm:1.54.1"
   dependencies:
-    playwright: "npm:1.39.0"
+    playwright: "npm:1.54.1"
   bin:
     playwright: cli.js
-  checksum: 10/5d039234609395f3eab46b5954b259bdd80dacf79efe531369c1633647dcafce25a78d497e61e671d661274bf66076426a1bd46be585c44addf23bb5bfaa15a2
+  checksum: 10/75ea34818f57f11bd8a1e6e3ac202c752c520c98467607be67c0eccfe41ea8ff6ae6824e91cb5ecacbee403aef4e1e6210500ee3cc82dd9317a8ee7136af18d3
   languageName: node
   linkType: hard
 
@@ -32032,7 +32032,7 @@ __metadata:
     "@open-rpc/mock-server": "npm:^1.7.5"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     "@open-rpc/test-coverage": "npm:^2.2.4"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/test": "npm:^1.54.1"
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.6.1"
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
@@ -35471,15 +35471,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.39.0":
-  version: 1.39.0
-  resolution: "playwright-core@npm:1.39.0"
-  bin:
-    playwright-core: cli.js
-  checksum: 10/e4e01ddea024c7564bbfacdba5f545b004a4017b466af08ae90e5184da4f5bc61e74c96e37cc5e30b7d4f97341c0883cfb2038c8cfbfab65316d714f65b82d83
-  languageName: node
-  linkType: hard
-
 "playwright-core@npm:1.54.1, playwright-core@npm:>=1.2.0":
   version: 1.54.1
   resolution: "playwright-core@npm:1.54.1"
@@ -35489,22 +35480,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.39.0":
-  version: 1.39.0
-  resolution: "playwright@npm:1.39.0"
-  dependencies:
-    fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.39.0"
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    playwright: cli.js
-  checksum: 10/6f6b2f4381fccfbc560c4cd25e164f5093fec4e2046990587282e18618151d723b299b56c16741ce08e44a759c22e38c3e705b716d31238320e08e6ffcfa7319
-  languageName: node
-  linkType: hard
-
-"playwright@npm:^1.14.0, playwright@npm:^1.54.1":
+"playwright@npm:1.54.1, playwright@npm:^1.14.0, playwright@npm:^1.54.1":
   version: 1.54.1
   resolution: "playwright@npm:1.54.1"
   dependencies:
