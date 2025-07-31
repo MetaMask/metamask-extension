@@ -136,7 +136,7 @@ export default function CreatePassword({
       properties: {
         text: 'Learn More',
         location: 'create_password',
-        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+        url: ZENDESK_URLS.PASSWORD_ARTICLE,
       },
     });
   };
@@ -313,7 +313,7 @@ export default function CreatePassword({
     <a
       onClick={handleLearnMoreClick}
       key="create-password__link-text"
-      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
+      href={ZENDESK_URLS.PASSWORD_ARTICLE}
       target="_blank"
       rel="noopener noreferrer"
     >
