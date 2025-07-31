@@ -179,7 +179,6 @@ const ConfirmAddSuggestedToken = () => {
 
   useEffect(() => {
     goBackIfNoSuggestedTokensOnFirstRender();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

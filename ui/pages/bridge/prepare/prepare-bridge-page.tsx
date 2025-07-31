@@ -438,11 +438,14 @@ const PrepareBridgePage = () => {
     ],
   );
 
-  const debouncedUpdateQuoteRequestInController = useCallback(
+  // `useRef` is used here to manually memoize a function reference.
+  // `useCallback` and React Compiler don't understand that `debounce` returns an inline function reference.
+  // The function contains reactive dependencies, but they are `dispatch` and an action,
+  // making it safe not to worry about recreating this function on dependency updates.
+  const debouncedUpdateQuoteRequestInController = useRef(
     debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
       dispatch(updateQuoteRequestParams(...args));
     }, 300),
-    [dispatch],
   );
 
   // When entering the page for the first time emit an event for the page viewed
@@ -472,7 +475,8 @@ const PrepareBridgePage = () => {
     });
 
     return () => {
-      debouncedUpdateQuoteRequestInController.cancel();
+      // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
+      debouncedUpdateQuoteRequestInController.current.cancel();
     };
   }, []);
 
@@ -494,8 +498,10 @@ const PrepareBridgePage = () => {
         Boolean,
       ) as string[],
     };
-    debouncedUpdateQuoteRequestInController(quoteParams, eventProperties);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    debouncedUpdateQuoteRequestInController.current(
+      quoteParams,
+      eventProperties,
+    );
   }, [quoteParams]);
 
   const trackInputEvent = useCallback(
@@ -920,20 +926,23 @@ const PrepareBridgePage = () => {
                   nativeAssetBalance={nativeAssetBalance}
                   srcTokenBalance={srcTokenBalance}
                   onFetchNewQuotes={() => {
-                    debouncedUpdateQuoteRequestInController(quoteParams, {
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      stx_enabled: smartTransactionsEnabled,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_symbol_source: fromToken?.symbol ?? '',
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_symbol_destination: toToken?.symbol ?? '',
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      security_warnings: [], // TODO populate security warnings
-                    });
+                    debouncedUpdateQuoteRequestInController.current(
+                      quoteParams,
+                      {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        stx_enabled: smartTransactionsEnabled,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_symbol_source: fromToken?.symbol ?? '',
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_symbol_destination: toToken?.symbol ?? '',
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        security_warnings: [], // TODO populate security warnings
+                      },
+                    );
                   }}
                   needsDestinationAddress={
                     isSolanaBridgeEnabled &&
