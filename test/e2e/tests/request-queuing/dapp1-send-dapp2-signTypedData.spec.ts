@@ -118,8 +118,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await transactionConfirmation.clickFooterConfirmButton();
 
-        await driver.waitUntilXWindowHandles(4);
-
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the signTypedData confirmation.
