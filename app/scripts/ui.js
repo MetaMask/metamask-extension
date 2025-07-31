@@ -126,12 +126,14 @@ async function start() {
     subStreams = connectSubstreams(connectionStream);
     backgroundConnection = metaRPCClientFactory(subStreams.controller);
 
-    // Set up disconnect handler for reconnection
-    // TODO: check if this is only need for MV3
-    extensionPort.onDisconnect.addListener(() => {
-      log.warn('Extension port disconnected, attempting to reconnect...');
-      handleDisconnection();
-    });
+    if (isManifestV3) {
+      // Set up disconnect handler for reconnection, which is only necessary
+      // in MV3, as far as we know.
+      extensionPort.onDisconnect.addListener(() => {
+        log.warn('Extension port disconnected, attempting to reconnect...');
+        handleDisconnection();
+      });
+    }
 
     connectToBackground(backgroundConnection, handleStartUISync);
   }
@@ -157,8 +159,8 @@ async function start() {
       log.info('Successfully reconnected to background');
     } catch (error) {
       log.error('Failed to reconnect:', error);
-      // Retry reconnection after a delay
-      setTimeout(handleDisconnection, 1000);
+      // Retry reconnection
+      setTimeout(handleDisconnection, 0);
     }
   }
 
@@ -386,6 +388,7 @@ function connectSubstreams(connectionStream) {
   };
 }
 
+let _stream;
 /**
  * Establishes a streamed connection to a Web3 provider
  *
@@ -399,6 +402,21 @@ async function setupProviderConnection(connectionStream) {
   providerStream.on('error', console.error.bind(console));
 
   await providerStream.initialize();
-  // TODO: can we make this a getter function that we swap out at anytime?
-  global.ethereumProvider = providerStream;
+
+  if (!global.ethereumProvider) {
+    // we need to proxy all properties on the provider to the global object,
+    // and swap the proxied object out if it changes later
+    _stream = providerStream;
+    const proxy = new Proxy({}, {
+      get: (_, prop) => {
+        if (prop in _stream) {
+          return _stream[prop].bind(_stream);
+        }
+      },
+    });
+
+    global.ethereumProvider = proxy;
+  } else {
+    _stream = providerStream;
+  }
 }
