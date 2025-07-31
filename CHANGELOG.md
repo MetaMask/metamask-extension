@@ -48,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: replaced Reset Wallet button with Use a different method to Login in the Onboarding unlock page (#34505)
 - update: change unlock pages error message for too many attempts and time format (#34577)
 - update: remove the Use a different login method button from Unlock page if user is not on social-login flow (#34618)
+- update: rename Profile sync request from /api/v2/profile/metametrics to /api/v2/profile/lineage (#34735)
+- update: Update or add support links on password form, password change modal, import account modal, abd srp quiz modal (#34718)
 
 ### Fixed
 - fix: align asset page buttons and fix homepage scrolling (#34342)
@@ -150,6 +152,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: ensure user to login when seedless password is changed while user waiting for password submit rate limit (#34632)
 - fix: fix issue with PUMP token not appearing on asset picker (#34358)
 - fix: prevent asset reset to native on Send/Swap when navigating from token details (#34625)
+- fix: prevent where some old wallet data being wrongly kept (on the account list) after resetting the wallet (#34697)
+- fix: update smart contract account toggle components to remove flickering and inconsistent state (#34664)
+- fix: add logic to revert state for smart contract account toggle if there is a blockchain state mismatch (#34745)
 
 ## [12.23.1]
 ### Fixed
