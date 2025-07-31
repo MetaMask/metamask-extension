@@ -163,7 +163,12 @@ export const getBaseApi = function (type, chainId, useBridgeApi = false) {
     : chainId;
 
   if (useBridgeApi) {
-    const chainIdDecimal = parseInt(_chainId, 16);
+    const chainIdDecimal = _chainId && parseInt(_chainId, 16);
+
+    if (isNaN(chainIdDecimal)) {
+      throw new Error(`Invalid chainId for Bridge API: ${_chainId}`);
+    }
+
     const bridgeBaseUrl = `${BRIDGE_API_BASE_URL}/networks/${chainIdDecimal}`;
 
     switch (type) {
