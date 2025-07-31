@@ -529,14 +529,10 @@ class Driver {
     try {
       await this.driver.quit();
     } catch (error) {
-      if (
-        typeof error?.message === 'string' &&
-        error.message.startsWith('ECONNREFUSED')
-      ) {
-        console.info('Driver already shut down');
-      } else {
-        throw error;
-      }
+      console.warn(
+        'Failed to quit driver; continuing under assumption that it was already closed. Error:\n',
+        error,
+      );
     }
   }
 
