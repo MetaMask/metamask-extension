@@ -28,7 +28,6 @@ const knownBots = [
   'metamaskbot',
   'dependabot',
   'github-actions',
-  'sentry-io',
   'devin-ai-integration',
   'runway-github',
 ];
@@ -120,6 +119,20 @@ async function main(): Promise<void> {
         labelable,
         invalidIssueTemplateLabel,
       );
+      process.exit(0); // Stop the process and exit with a success status code
+    }
+
+    if (labelable.author === 'sentry-io') {
+      console.log(
+        `Issue ${labelable?.number} was created through Sentry. Issue's description doesn't need to match issue template in that case. Skip template checks.`,
+      );
+      await removeLabelFromLabelableIfPresent(
+        octokit,
+        labelable,
+        invalidIssueTemplateLabel,
+      );
+      // Add needs triage label to the bug report issue
+      await addNeedsTriageLabelToIssue(octokit, labelable);
       process.exit(0); // Stop the process and exit with a success status code
     }
 
