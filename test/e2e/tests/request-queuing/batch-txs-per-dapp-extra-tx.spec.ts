@@ -129,7 +129,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         // Reject All Transactions
         if (isManifestV3) {
-          await transactionConfirmation.clickRejectAllNoWait();
+          await transactionConfirmation.clickRejectAllButtonWithoutWaiting();
         } else {
           await transactionConfirmation.clickRejectAll();
         }
