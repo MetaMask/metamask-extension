@@ -136,8 +136,17 @@ ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
 # Extension Platform
 .yarnrc.yml                                           @MetaMask/extension-platform
-test/e2e/mock-e2e-allowlist.js                        @MetaMask/extension-platform
 
 # Smart Transactions
 app/scripts/controller-init/smart-transactions    @MetaMask/transactions
 app/scripts/lib/smart-transaction                 @MetaMask/transactions
+
+# QA Team - E2E Framework
+test/e2e/page-objects/                    @MetaMask/qa
+test/e2e/seeder/                          @MetaMask/qa
+test/e2e/default-fixture.js               @MetaMask/qa
+test/e2e/fixture-builder.js               @MetaMask/qa
+test/e2e/fixture-server.js                @MetaMask/qa
+test/e2e/helpers.js                       @MetaMask/qa
+test/e2e/mock-e2e-allowlist.js            @MetaMask/qa
+test/e2e/mock-e2e.js                      @MetaMask/qa

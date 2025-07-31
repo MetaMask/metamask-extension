@@ -13,6 +13,7 @@ import {
   ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
   ///: END:ONLY_INCLUDE_IF
   ONBOARDING_METAMETRICS,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -25,15 +26,22 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-d
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 ///: END:ONLY_INCLUDE_IF
 import {
+  getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
   getIsSocialLoginFlow,
+  getIsSocialLoginFlowInitialized,
 } from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
+  const isSocialLoginFlowInitialized = useSelector(
+    getIsSocialLoginFlowInitialized,
+  );
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isUnlocked = useSelector(getIsUnlocked);
   const isParticipateInMetaMetricsSet = useSelector(
@@ -44,7 +52,7 @@ export default function OnboardingFlowSwitch() {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
-  if (seedPhraseBackedUp !== null) {
+  if (seedPhraseBackedUp !== null || (isUnlocked && isSocialLoginFlow)) {
     return (
       <Redirect
         to={{
@@ -57,24 +65,11 @@ export default function OnboardingFlowSwitch() {
   }
 
   if (isUnlocked) {
-    // if the vault is already unlocked and the user is in a social login flow but the onboarding is not completed,
-    // we need to redirect to the onboarding completion route
-    if (isSocialLoginFlow && !completedOnboarding) {
-      return (
-        <Redirect
-          to={{
-            pathname: isParticipateInMetaMetricsSet
-              ? ONBOARDING_COMPLETION_ROUTE
-              : ONBOARDING_METAMETRICS,
-          }}
-        />
-      );
-    }
     return <Redirect to={{ pathname: LOCK_ROUTE }} />;
   }
 
   // TODO(ritave): Remove allow-list and only leave experimental_area exception
-  if (!isInitialized) {
+  if (!isInitialized && !isSocialLoginFlowInitialized) {
     let redirect;
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     redirect = <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
@@ -88,6 +83,13 @@ export default function OnboardingFlowSwitch() {
       );
     ///: END:ONLY_INCLUDE_IF
     return redirect;
+  }
+  if (
+    !isInitialized &&
+    isSocialLoginFlowInitialized &&
+    firstTimeFlowType === FirstTimeFlowType.socialCreate
+  ) {
+    return <Redirect to={{ pathname: ONBOARDING_CREATE_PASSWORD_ROUTE }} />;
   }
 
   return <Redirect to={{ pathname: ONBOARDING_UNLOCK_ROUTE }} />;
