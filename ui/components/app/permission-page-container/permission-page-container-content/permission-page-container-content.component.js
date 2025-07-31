@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { SubjectType } from '@metamask/permission-controller';
 import {
+  Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
@@ -74,7 +75,9 @@ export default class PermissionPageContainerContent extends PureComponent {
     // Extract the requested chain IDs from the permission diff, specifically from the CAIP-25 endowment permission
     // This represents the new chains being requested in addition to existing permissions
     const permissionDiffRequestedChainIds = getPermittedEthChainIds(
-      permissionDiffMap?.[Caip25EndowmentPermissionName]?.authorizedScopes ?? {
+      permissionDiffMap?.[Caip25EndowmentPermissionName]?.[
+        Caip25CaveatType
+      ] ?? {
         requiredScopes: {},
         optionalScopes: {},
       },

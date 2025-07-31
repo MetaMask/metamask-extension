@@ -5,8 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Fixed
-- fix: make sure permission request only shows additional networks (#34651)
 
 ## [12.23.0]
 ### Added
