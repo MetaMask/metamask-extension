@@ -1,3 +1,4 @@
+import { toChecksumAddress } from 'ethereumjs-util';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
@@ -47,29 +48,41 @@ describe('useBridging', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
-        '/cross-chain/swaps/prepare-swap-page?token=0x0000000000000000000000000000000000000000',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
         ETH_SWAPS_TOKEN_OBJECT,
         'Home',
+        false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page?token=0x0000000000000000000000000000000000000000',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
         ETH_SWAPS_TOKEN_OBJECT,
         MetaMetricsSwapsEventSource.TokenView,
+        false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page?token=0x00232f2jksdauo',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d&swaps=true',
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',
-          address: '0x00232f2jksdauo',
+          address: toChecksumAddress(
+            '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
+          ),
           balance: '0x5f5e100',
           string: '123',
+          chainId: '0xa',
+          decimals: 18,
         },
         MetaMetricsSwapsEventSource.TokenView,
+        true,
       ],
     ])(
       'should open %s with the currently selected token: %p',
-      async (expectedUrl: string, token: string, location: string) => {
+      async (
+        expectedUrl: string,
+        token: string,
+        location: string,
+        isSwap: boolean,
+      ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging({
           metamask: {
@@ -78,7 +91,6 @@ describe('useBridging', () => {
             metaMetricsId: MOCK_METAMETRICS_ID,
             remoteFeatureFlags: {
               bridgeConfig: {
-                support: true,
                 refreshRate: 5000,
                 minimumVersion: '0.0.0',
                 maxRefreshCount: 5,
@@ -97,9 +109,9 @@ describe('useBridging', () => {
           },
         });
 
-        result.current.openBridgeExperience(location, token);
+        result.current.openBridgeExperience(location, token, isSwap);
 
-        expect(mockDispatch.mock.calls).toHaveLength(1);
+        expect(mockDispatch.mock.calls).toHaveLength(2);
         expect(mockHistoryPush.mock.calls).toHaveLength(1);
         expect(mockHistoryPush).toHaveBeenCalledWith(expectedUrl);
         expect(openTabSpy).not.toHaveBeenCalled();

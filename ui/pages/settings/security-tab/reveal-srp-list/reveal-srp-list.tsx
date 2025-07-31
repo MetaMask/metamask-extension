@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { capitalize } from 'lodash';
 import {
   Box,
   Icon,
@@ -126,7 +127,9 @@ export const RevealSrpList = () => {
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
           >
-            {t('securitySocialLoginEnabledDescription')}
+            {t('securitySocialLoginEnabledDescription', [
+              capitalize(socialLoginType),
+            ])}
           </Text>
           <Box
             width={BlockSize.Full}

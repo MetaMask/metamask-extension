@@ -261,9 +261,9 @@ async function runInitialActions(store) {
     };
     await validateSeedlessPasswordOutdated(initialState);
     // periodically check seedless password outdated when app UI is open
-    setInterval(async () => {
+    setInterval(() => {
       const state = store.getState();
-      await validateSeedlessPasswordOutdated(state);
+      validateSeedlessPasswordOutdated(state);
     }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
   } catch (e) {
     log.error('[Metamask] checkIsSeedlessPasswordOutdated error', e);

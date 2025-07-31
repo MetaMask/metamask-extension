@@ -20,6 +20,7 @@
     "showPermittedNetworkToastOpen": "boolean",
     "showIpfsModalOpen": "boolean",
     "showBasicFunctionalityModal": "boolean",
+    "showConnectionsRemovedModal": "boolean",
     "showCopyAddressToast": "boolean",
     "externalServicesOnboardingToggleState": "boolean",
     "keyringRemovalSnapModal": "object",
@@ -32,7 +33,7 @@
     "showNftDetectionEnablementToast": "boolean",
     "showPasswordChangeToast": null,
     "loadingMessage": "undefined",
-    "warning": "string",
+    "warning": "undefined",
     "buyView": "object",
     "defaultHdPaths": "object",
     "networksTabSelectedRpcUrl": "string",
@@ -383,6 +384,7 @@
   },
   "ramps": "object",
   "send": "object",
+  "smartAccounts": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }
 }

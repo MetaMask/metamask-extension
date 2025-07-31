@@ -5071,7 +5071,8 @@
     "message": "Ativado"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Esse e-mail e sua senha da MetaMask ajudarão você a recuperar sua conta e frases de recuperação."
+    "message": "Esse e-mail e sua senha da MetaMask ajudarão você a recuperar sua conta e frases de recuperação.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "RECUPERAÇÃO DE $1",

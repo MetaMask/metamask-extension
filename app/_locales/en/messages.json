@@ -1465,6 +1465,12 @@
   "connectionRequest": {
     "message": "Connection request"
   },
+  "connectionsRemovedModalDescription": {
+    "message": "Some connections (like hardware wallets and snaps) were removed due to inactivity on this device. You can re-add them anytime in Settings."
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "Connections removed"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -2455,7 +2461,7 @@
     "message": "biometrics turned on"
   },
   "forgotPasswordSocialStep2": {
-    "message": "If you have your $1, you can reset your current wallet and reimport using $1.",
+    "message": "If you have your $1, you can reset your current wallet and reimport using Secret Recovery Phrase.",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
@@ -4237,7 +4243,7 @@
     "message": "Password"
   },
   "passwordChangedRecently": {
-    "message": "Your password changed"
+    "message": "Your password was changed"
   },
   "passwordChangedRecentlyDescription": {
     "message": "Enter your new password to stay logged into MetaMask."
@@ -4765,9 +4771,6 @@
   "rateIncludesMMFee": {
     "message": "Rate includes $1% fee"
   },
-  "rateIncludesMMFeeAndGas": {
-    "message": "Rate includes $1% fee and gas"
-  },
   "reAddAccounts": {
     "message": "re-add any other accounts"
   },
@@ -4915,16 +4918,34 @@
     "message": "Reset"
   },
   "resetWallet": {
-    "message": "Reset wallet"
+    "message": "Reset your wallet"
   },
   "resetWalletSubHeader": {
     "message": "MetaMask does not keep a copy of your password. If you’re having trouble unlocking your account, you will need to reset your wallet. You can do this by providing the Secret Recovery Phrase you used when you set up your wallet."
   },
+  "resetWalletSubHeaderSocial": {
+    "message": "MetaMask doesn’t keep a copy of your password. If you’re having trouble unlocking your account, you’ll need to reset your wallet. If you have a Secret Recovery Phrase, you can use it to erase your current wallet from this device, along with the list of your accounts."
+  },
   "resetWalletUsingSRP": {
     "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens you’ve added to an account will need to be $3 as well."
   },
+  "resetWalletUsingSRPSocial": {
+    "message": "After resetting with a Secret Recovery Phrase, you’ll see a new list of accounts. This list will include accounts that have a balance. You can $1 you made before. But you’ll need to add back any $2 and $3 you imported. "
+  },
+  "resetWalletUsingSRPSocialAccounts": {
+    "message": "add back any other accounts"
+  },
+  "resetWalletUsingSRPSocialCustomAccounts": {
+    "message": "custom accounts"
+  },
+  "resetWalletUsingSRPSocialCustomTokens": {
+    "message": "custom tokens"
+  },
   "resetWalletWarning": {
     "message": "Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this."
+  },
+  "resetWalletWarningSocial": {
+    "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
   },
   "restartMetamask": {
     "message": "Restart MetaMask"
@@ -5115,7 +5136,7 @@
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
   "securityLoginWithSocial": {
-    "message": "Login with $1",
+    "message": "Log in with $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securityLoginWithSrpBackedUp": {
@@ -5135,7 +5156,8 @@
     "message": "Enabled"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "This email and your MetaMask password will help you recover your account and recovery phrases."
+    "message": "Use your $1 login and MetaMask password to recover your account and Secret Recovery Phrases.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 RECOVERY",
@@ -5957,7 +5979,7 @@
     "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
-    "message": "You can paste your entire secret recovery phrase into any field",
+    "message": "You can paste your entire Secret Recovery Phrase into any field.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
@@ -6991,7 +7013,7 @@
     "message": "Password is incorrect. Please try again."
   },
   "unlockPageTooManyFailedAttempts": {
-    "message": "Too many failed attempts. Please try again in "
+    "message": "Too many attempts. Try again in "
   },
   "unpin": {
     "message": "Unpin"

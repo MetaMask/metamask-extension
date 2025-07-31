@@ -124,6 +124,7 @@ export function renderHookWithProvider(hook, state, pathname = '/', Container) {
   return {
     ...renderHook(hook, { wrapper }),
     history,
+    store,
   };
 }
 

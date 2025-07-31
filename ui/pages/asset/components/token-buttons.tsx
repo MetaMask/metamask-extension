@@ -216,15 +216,10 @@ const TokenButtons = ({
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
       await setCorrectChain();
+      // Handle clicking from the asset details page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.TokenView,
-        {
-          ...token,
-          iconUrl: token.image,
-          balance: token?.balance?.value,
-          string: token?.balance?.display,
-          name: token.name ?? '',
-        },
+        token,
         isSwap,
       );
     },

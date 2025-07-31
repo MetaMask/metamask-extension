@@ -48,7 +48,6 @@ import {
 } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PasswordForm from '../../../components/app/password-form/password-form';
-import LoadingScreen from '../../../components/ui/loading-screen';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { resetOAuthLoginState } from '../../../store/actions';
@@ -134,7 +133,7 @@ export default function CreatePassword({
       properties: {
         text: 'Learn More',
         location: 'create_password',
-        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+        url: ZENDESK_URLS.PASSWORD_ARTICLE,
       },
     });
   };
@@ -310,7 +309,7 @@ export default function CreatePassword({
     <a
       onClick={handleLearnMoreClick}
       key="create-password__link-text"
-      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
+      href={ZENDESK_URLS.PASSWORD_ARTICLE}
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -422,7 +421,6 @@ export default function CreatePassword({
           data-testid="create-password-iframe"
         />
       ) : null}
-      {newAccountCreationInProgress && <LoadingScreen />}
     </Box>
   );
 }

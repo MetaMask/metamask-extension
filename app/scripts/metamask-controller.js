@@ -181,6 +181,7 @@ import { ErrorReportingService } from '@metamask/error-reporting-service';
 import {
   SeedlessOnboardingControllerErrorMessage,
   SecretType,
+  RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -425,6 +426,7 @@ import {
 } from './lib/network-controller/messenger-action-handlers';
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
+import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
@@ -2402,11 +2404,19 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
+    if (
+      !isEvmAccountType(
+        this.accountsController.getSelectedMultichainAccount().type,
+      )
+    ) {
+      this.multichainRatesController.start();
+    }
   }
 
   stopNetworkRequests() {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
+    this.multichainRatesController.stop();
   }
 
   resetStates(resetMethods) {
@@ -3166,18 +3176,13 @@ export default class MetamaskController extends EventEmitter {
    * and subscribes to account changes.
    */
   setupMultichainDataAndSubscriptions() {
-    if (
-      !isEvmAccountType(
-        this.accountsController.getSelectedMultichainAccount().type,
-      )
-    ) {
-      this.multichainRatesController.start();
-    }
-
     this.controllerMessenger.subscribe(
       'AccountsController:selectedAccountChange',
       (selectedAccount) => {
-        if (isEvmAccountType(selectedAccount.type)) {
+        if (
+          this.activeControllerConnections === 0 ||
+          isEvmAccountType(selectedAccount.type)
+        ) {
           this.multichainRatesController.stop();
           return;
         }
@@ -4398,6 +4403,8 @@ export default class MetamaskController extends EventEmitter {
       // Other
       endTrace,
       isRelaySupported,
+      openUpdateTabAndReload: () =>
+        openUpdateTabAndReload(this.requestSafeReload.bind(this)),
       requestSafeReload: this.requestSafeReload.bind(this),
       applyTransactionContainersExisting: (transactionId, containerTypes) =>
         applyTransactionContainersExisting({
@@ -4795,13 +4802,16 @@ export default class MetamaskController extends EventEmitter {
    * Unlock the vault with the latest global password.
    *
    * @param {string} password - latest global seedless password
+   * @returns {boolean} true if the sync was successful, false otherwise. Sync can fail if user is on a very old device
+   * and user has changed password more than 20 times since the last time they used the app on this device.
    */
   async syncPasswordAndUnlockWallet(password) {
+    let isPasswordSynced = false;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     // check if the password is outdated
     const isPasswordOutdated = isSocialLoginFlow
       ? await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache: true,
+          skipCache: false,
         })
       : false;
 
@@ -4809,30 +4819,83 @@ export default class MetamaskController extends EventEmitter {
     // we will proceed with the normal flow and use the password to unlock the vault
     if (!isSocialLoginFlow || !isPasswordOutdated) {
       await this.submitPassword(password);
-      return;
+      if (isSocialLoginFlow) {
+        // revoke seedless refresh token asynchronously
+        this.seedlessOnboardingController
+          .revokeRefreshToken(password)
+          .catch((err) => {
+            log.error('error while revoking seedless refresh token', err);
+          });
+      }
+      isPasswordSynced = true;
+      return isPasswordSynced;
     }
-
     const releaseLock = await this.syncSeedlessGlobalPasswordMutex.acquire();
+
     try {
-      // verify the password validity first, to check if user is using the correct password
-      await this.keyringController.verifyPassword(password);
-      // if user is able to unlock the vault with the old password,
-      // throw an OutdatedPassword error to let the user to enter the updated password.
-      throw new Error(
-        SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
-      );
-    } catch (e) {
-      if (
-        e.message === SeedlessOnboardingControllerErrorMessage.OutdatedPassword
-      ) {
-        // if the password is outdated, we should throw an error and let the user to enter the updated password.
-        throw e;
+      const isKeyringPasswordValid = await this.keyringController
+        .verifyPassword(password)
+        .then(() => true)
+        .catch((err) => {
+          if (err.message.includes('Incorrect password')) {
+            return false;
+          }
+          log.error('error while verifying keyring password', err.message);
+          throw err;
+        });
+
+      // here e could be invalid password or outdated password error, which can result in following cases:
+      // 1. Seedless controller password verification succeeded.
+      // 2. Seedless controller failed but Keyring controller password verification succeeded.
+      // 3. Both keyring and seedless controller password verification failed.
+      await this.seedlessOnboardingController
+        .submitGlobalPassword({
+          globalPassword: password,
+          maxKeyChainLength: 20,
+        })
+        .then(() => {
+          // Case 1.
+          isPasswordSynced = true;
+        })
+        .catch((err) => {
+          log.error(
+            `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
+          );
+          if (err instanceof RecoveryError) {
+            // Keyring controller password verification succeeds and seedless controller failed.
+            if (
+              err?.message ===
+                SeedlessOnboardingControllerErrorMessage.IncorrectPassword &&
+              isKeyringPasswordValid
+            ) {
+              throw new Error(
+                SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+              );
+            }
+            throw new JsonRpcError(-32603, err.message, err.data);
+          } else if (
+            err.message ===
+            SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
+          ) {
+            isPasswordSynced = false;
+          } else {
+            throw err;
+          }
+        });
+
+      // we are unable to recover the old pwd enc key as user is on a very old device.
+      // create a new vault and encrypt the new vault with the latest global password.
+      // also show a info popup to user.
+      if (!isPasswordSynced) {
+        // refresh the current auth tokens to get the latest auth tokens
+        await this.seedlessOnboardingController.refreshAuthTokens();
+        // create a new vault and encrypt the new vault with the latest global password
+        await this.restoreSocialBackupAndGetSeedPhrase(password);
+        // display info popup to user based on the password sync status
+        return isPasswordSynced;
       }
 
-      // recover the keyring encryption key
-      await this.seedlessOnboardingController.submitGlobalPassword({
-        globalPassword: password,
-      });
+      // re-encrypt the old vault data with the latest global password
       const keyringEncryptionKey =
         await this.seedlessOnboardingController.loadKeyringEncryptionKey();
       // use encryption key to unlock the keyring vault
@@ -4859,6 +4922,13 @@ export default class MetamaskController extends EventEmitter {
         await this.seedlessOnboardingController.checkIsPasswordOutdated({
           skipCache: true,
         });
+
+        // revoke seedless refresh token asynchronously
+        this.seedlessOnboardingController
+          .revokeRefreshToken(password)
+          .catch((err) => {
+            log.error('error while revoking seedless refresh token', err);
+          });
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Unknown error';
@@ -4881,6 +4951,7 @@ export default class MetamaskController extends EventEmitter {
           data: { success: changePasswordSuccess },
         });
       }
+      return isPasswordSynced;
     } finally {
       releaseLock();
     }
@@ -4908,10 +4979,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async checkIsSeedlessPasswordOutdated(skipCache = false) {
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    const { completedOnboarding } = this.onboardingController.state;
 
-    if (!isSocialLoginFlow) {
-      // this is only available for seedless onboarding flow
-      return undefined;
+    if (!isSocialLoginFlow || !completedOnboarding) {
+      // this is only available for seedless onboarding flow and completed onboarding
+      return false;
     }
 
     const isPasswordOutdated =
@@ -5120,19 +5192,27 @@ export default class MetamaskController extends EventEmitter {
         },
       );
 
-      if (this.onboardingController.getIsSocialLoginFlow()) {
-        // if social backup is requested, add the seed phrase backup
-        await this.addNewSeedPhraseBackup(
-          mnemonic,
-          id,
-          shouldCreateSocialBackup,
-        );
-      }
-
       const [newAccountAddress] = await this.keyringController.withKeyring(
         { id },
         async ({ keyring }) => keyring.getAccounts(),
       );
+
+      if (this.onboardingController.getIsSocialLoginFlow()) {
+        try {
+          // if social backup is requested, add the seed phrase backup
+          await this.addNewSeedPhraseBackup(
+            mnemonic,
+            id,
+            shouldCreateSocialBackup,
+          );
+        } catch (err) {
+          // handle seedless controller import error by reverting keyring controller mnemonic import
+          // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
+          await this.keyringController.removeAccount(newAccountAddress);
+          throw err;
+        }
+      }
+
       if (shouldSelectAccount) {
         const account =
           this.accountsController.getAccountByAddress(newAccountAddress);
@@ -5226,31 +5306,39 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
    *
-   * @param password - The password.
+   * @param {string} password - The password.
    * @returns The seed phrase.
    */
   async restoreSocialBackupAndGetSeedPhrase(password) {
-    // get the first seed phrase from the array, this is the oldest seed phrase
-    // and we will use it to create the initial vault
-    const [firstSecretData, ...remainingSecretData] =
-      await this.fetchAllSecretData(password);
+    try {
+      // get the first seed phrase from the array, this is the oldest seed phrase
+      // and we will use it to create the initial vault
+      const [firstSecretData, ...remainingSecretData] =
+        await this.fetchAllSecretData(password);
 
-    const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
-      firstSecretData.data,
-    );
-    const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
-    const encodedSeedPhrase = Array.from(
-      Buffer.from(mnemonic, 'utf8').values(),
-    );
-    // restore the vault using the root seed phrase
-    await this.createNewVaultAndRestore(password, encodedSeedPhrase);
+      const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
+        firstSecretData.data,
+      );
+      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
+      const encodedSeedPhrase = Array.from(
+        Buffer.from(mnemonic, 'utf8').values(),
+      );
+      // restore the vault using the root seed phrase
+      await this.createNewVaultAndRestore(password, encodedSeedPhrase);
 
-    // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
-    if (remainingSecretData.length > 0) {
-      await this.restoreSeedPhrasesToVault(remainingSecretData);
+      // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
+      if (remainingSecretData.length > 0) {
+        await this.restoreSeedPhrasesToVault(remainingSecretData);
+      }
+
+      return mnemonic;
+    } catch (error) {
+      log.error('Error restoring social backup and getting seed phrase', error);
+      if (error instanceof RecoveryError) {
+        throw new JsonRpcError(-32603, error.message, error.data);
+      }
+      throw error;
     }
-
-    return mnemonic;
   }
 
   /**
@@ -5327,6 +5415,20 @@ export default class MetamaskController extends EventEmitter {
         password,
         seedPhraseAsUint8Array,
       );
+
+      // We re-created the vault, meaning we only have 1 new HD keyring
+      // now. We re-create the internal list of accounts (which is
+      // not an expensive operation, since we should only have 1 HD
+      // keyring that has one default account.
+      // TODO: Remove this once the `accounts-controller` once only
+      // depends only on keyrings `:stateChange`.
+      await this.accountsController.updateAccounts();
+
+      // And we re-init the account tree controller too, to use the
+      // newly created accounts.
+      // TODO: Remove this once the `accounts-controller` once only
+      // depends only on keyrings `:stateChange`.
+      this.accountWalletController.init();
 
       if (completedOnboarding) {
         await this._addAccountsWithBalance();
@@ -6367,12 +6469,19 @@ export default class MetamaskController extends EventEmitter {
           },
         );
 
-      // if social backup is requested, add the seed phrase backup
-      await this.addNewPrivateKeyBackup(
-        privateKeyFromKeyring,
-        keyringId,
-        shouldCreateSocialBackup,
-      );
+      try {
+        // if social backup is requested, add the seed phrase backup
+        await this.addNewPrivateKeyBackup(
+          privateKeyFromKeyring,
+          keyringId,
+          shouldCreateSocialBackup,
+        );
+      } catch (err) {
+        // handle seedless controller import error by reverting keyring controller mnemonic import
+        // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
+        await this.keyringController.removeAccount(importedAccountAddress);
+        throw err;
+      }
     }
 
     if (shouldSelectAccount) {
@@ -7378,6 +7487,11 @@ export default class MetamaskController extends EventEmitter {
       setEnabledNetworks: (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworks(chainIds, namespace);
       },
+      getEnabledNetworks: (namespace) => {
+        return (
+          this.networkOrderController.state.enabledNetworkMap[namespace] || {}
+        );
+      },
       getCurrentChainIdForDomain: (domain) => {
         const networkClientId =
           this.selectedNetworkController.getNetworkClientIdForDomain(domain);
@@ -7491,6 +7605,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.phishingController,
         this.preferencesController,
+        this.getPermittedAccounts.bind(this),
       ),
     );
 
@@ -9326,6 +9441,8 @@ export default class MetamaskController extends EventEmitter {
 
   #initControllers({ existingControllers, initFunctions, initState }) {
     const initRequest = {
+      getCronjobControllerStorageManager: () =>
+        this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
       getGlobalChainId: this.#getGlobalChainId.bind(this),
       getGlobalNetworkClientId: this.#getGlobalNetworkClientId.bind(this),

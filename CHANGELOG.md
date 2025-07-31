@@ -151,6 +151,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: fix issue with PUMP token not appearing on asset picker (#34358)
 - fix: prevent asset reset to native on Send/Swap when navigating from token details (#34625)
 
+## [12.23.1]
+### Fixed
+- fix: ensure "Update extension to the latest version" button in the update prompt work in browser-action popup (#34372)
+
 ## [12.23.0]
 ### Added
 - feat: gasIncluded swaps cp-12-23.0 (#33988)
@@ -208,7 +212,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set confirm srp quiz word to readonly (#34225)
 
 ### Fixed
-- Fix: solve when private key import field to always be in error state (#34050)
+- fix: solve when private key import field to always be in error state (#34050)
 - fix: regression of lanchdarkly flag key (#34045)
 - fix: solve `Error: Ledger: Unknown error while signing transaction` (#33581)
 - fix: bitcoin account type (#34021)
@@ -250,6 +254,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: Solana single-chain swap failure event not firing on src-chain (#33811)
 - fix: max button was shown on native assets incorrectly causing invalid quotes (#34293)
 - fix: migrate BSC network RPC from bsc-dataseed.binance.org to bsc infura (#33997)
+
+## [12.22.3]
+### Fixed
+- fix: resolve infinite loading on spending cap when selected chain differs from dapp (#34355)
+- fix: prevent frequent writes while the wallet UI is closed (#34413, #34465, #34506, #34473, #34474)
 
 ## [12.22.2]
 ### Fixed
@@ -344,8 +353,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.0.0...HEAD
-[13.0.0]: https://github.com/MetaMask/metamask-extension/compare/v12.23.0...v13.0.0
-[12.23.0]: https://github.com/MetaMask/metamask-extension/compare/v12.22.2...v12.23.0
+[13.0.0]: https://github.com/MetaMask/metamask-extension/compare/v12.23.1...v13.0.0
+[12.23.1]: https://github.com/MetaMask/metamask-extension/compare/v12.23.0...v12.23.1
+[12.23.0]: https://github.com/MetaMask/metamask-extension/compare/v12.22.3...v12.23.0
+[12.22.3]: https://github.com/MetaMask/metamask-extension/compare/v12.22.2...v12.22.3
 [12.22.2]: https://github.com/MetaMask/metamask-extension/compare/v12.22.1...v12.22.2
 [12.22.1]: https://github.com/MetaMask/metamask-extension/compare/v12.22.0...v12.22.1
 [12.22.0]: https://github.com/MetaMask/metamask-extension/compare/v12.20.1...v12.22.0

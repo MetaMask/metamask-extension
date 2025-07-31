@@ -594,6 +594,14 @@ class AssetListPage {
     console.log(`Token price and market cap verified successfully`);
   }
 
+  async checkTokenPrice(expectedPrice: string): Promise<void> {
+    console.log(`Verifying token price ${expectedPrice}`);
+    await this.driver.waitForSelector({
+      css: this.assetPriceInDetailsModal,
+      text: expectedPrice,
+    });
+  }
+
   /**
    * Verifies the token details in the token details modal
    *

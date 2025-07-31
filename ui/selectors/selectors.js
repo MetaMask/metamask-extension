@@ -272,6 +272,10 @@ export function getKeyringSnapRemovalResult(state) {
 
 export const getPendingTokens = (state) => state.appState.pendingTokens;
 
+export function getShowConnectionsRemovedModal(state) {
+  return state.appState.showConnectionsRemovedModal;
+}
+
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {
@@ -1808,6 +1812,7 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * @property {string} name - The name of the ETH currency, "Ether"
  * @property {string} address - A substitute address for the metaswap-api to
  * recognize the ETH token
+ * @property {string} chainId - The chainId of the ETH token
  * @property {string} decimals - The number of ETH decimals, i.e. 18
  * @property {string} balance - The user's ETH balance in decimal wei, with a
  * precision of 4 decimal places
@@ -1831,6 +1836,7 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * `balance` and `string` values of the same type as in regular ERC-20 token
  * objects, per the above description.
  *
+ * @deprecated Use getNativeAssetForChainId instead because this only supports EVM chains
  * @param {object} state - the redux state object
  * @param {string} overrideChainId - the chainId to override the current chainId
  * @returns {SwapsEthToken} The token object representation of the currently
@@ -1847,6 +1853,7 @@ export function getSwapsDefaultToken(state, overrideChainId = null) {
 
   return {
     ...defaultTokenObject,
+    chainId,
     balance: hexToDecimal(balance),
     string: getValueFromWeiHex({
       value: balance,
@@ -3897,12 +3904,12 @@ export function getShowUpdateModal(state) {
   const extensionCurrentVersion = semver.valid(
     semver.coerce(global.platform?.getVersion()),
   );
-  const extensionMinimumVersion = semver.valid(
-    semver.coerce(remoteFeatureFlags.extensionMinimumVersion),
+  const extensionUpdatePromptMinimumVersion = semver.valid(
+    semver.coerce(remoteFeatureFlags.extensionUpdatePromptMinimumVersion),
   );
   const isExtensionOutdated =
-    extensionCurrentVersion && extensionMinimumVersion
-      ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
+    extensionCurrentVersion && extensionUpdatePromptMinimumVersion
+      ? semver.lt(extensionCurrentVersion, extensionUpdatePromptMinimumVersion)
       : false;
 
   const currentTime = Date.now();

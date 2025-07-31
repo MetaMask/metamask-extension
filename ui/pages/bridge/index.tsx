@@ -84,13 +84,13 @@ const CrossChainSwap = () => {
   useTxAlerts();
 
   const redirectToDefaultRoute = async () => {
+    await resetControllerAndInputStates();
     history.push({
       pathname: DEFAULT_ROUTE,
       state: { stayOnHomePage: true },
     });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
-    await resetControllerAndInputStates();
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);

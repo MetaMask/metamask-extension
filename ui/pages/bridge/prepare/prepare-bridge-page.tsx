@@ -8,9 +8,8 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
-import { useHistory, useLocation } from 'react-router-dom';
 import { type TokenListMap } from '@metamask/assets-controllers';
-import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
   isSolanaChainId,
@@ -22,6 +21,7 @@ import {
   BRIDGE_DEFAULT_SLIPPAGE,
   GenericQuoteRequest,
 } from '@metamask/bridge-controller';
+import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -32,6 +32,7 @@ import {
   resetBridgeState,
   setSlippage,
   trackUnifiedSwapBridgeEvent,
+  setFromChain,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -82,10 +83,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
-import {
-  setActiveNetworkWithError,
-  setSelectedAccount,
-} from '../../../store/actions';
+import { setEnabledNetworks } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
@@ -106,6 +104,7 @@ import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
+  getEnabledNetworksByNamespace,
   getSelectedEvmInternalAccount,
   getSelectedInternalAccount,
   getTokenList,
@@ -127,22 +126,62 @@ import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import {
-  fetchAssetMetadata,
-  toAssetId,
-} from '../../../../shared/lib/asset-utils';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import useBridgeDefaultToToken from '../../../hooks/bridge/useBridgeDefaultToToken';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
+import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
 
+/**
+ * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
+ *
+ * @returns callback to enable a network config.
+ */
+export const useEnableMissingNetwork = () => {
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const dispatch = useDispatch();
+
+  const enableMissingNetwork = useCallback(
+    (chainId: Hex) => {
+      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
+
+      const caipChainId = formatChainIdToCaip(chainId);
+      const { namespace } = parseCaipChainId(caipChainId);
+
+      if (namespace) {
+        const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
+
+        if (isPopularNetwork) {
+          const isNetworkEnabled = enabledNetworkKeys.includes(chainId);
+          if (!isNetworkEnabled) {
+            const enabledEvmNetworks = enabledNetworkKeys.filter((key) =>
+              FEATURED_NETWORK_CHAIN_IDS.includes(key as Hex),
+            );
+            const newNetworkEnabledEvmNetworks = [
+              chainId,
+              ...enabledEvmNetworks,
+            ];
+            dispatch(
+              setEnabledNetworks(newNetworkEnabledEvmNetworks, namespace),
+            );
+          }
+        }
+      }
+    },
+    [dispatch, enabledNetworksByNamespace],
+  );
+
+  return enableMissingNetwork;
+};
+
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
+  const enableMissingNetwork = useEnableMissingNetwork();
 
   const t = useI18nContext();
 
@@ -320,35 +359,6 @@ const PrepareBridgePage = () => {
     };
   }, [rotateSwitchTokens]);
 
-  useEffect(() => {
-    // If there's an active quote, assume that the user is returning to the page
-    if (activeQuote) {
-      // Get input data from active quote
-      const { srcAsset, destAsset, destChainId, srcChainId } =
-        activeQuote.quote;
-
-      if (srcAsset && destAsset && destChainId) {
-        // Set inputs to values from active quote
-        dispatch(setToChainId(destChainId));
-        dispatch(
-          setToToken({
-            ...destAsset,
-            chainId: destChainId,
-          }),
-        );
-        dispatch(
-          setFromToken({
-            ...srcAsset,
-            chainId: srcChainId,
-          }),
-        );
-      }
-    } else {
-      // Reset controller and inputs on load
-      dispatch(resetBridgeState());
-    }
-  }, []);
-
   // Scroll to bottom of the page when banners are shown
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
@@ -468,7 +478,7 @@ const PrepareBridgePage = () => {
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
-    debouncedUpdateQuoteRequestInController(quoteParams, {
+    const eventProperties = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_enabled: smartTransactionsEnabled,
@@ -480,8 +490,11 @@ const PrepareBridgePage = () => {
       token_symbol_destination: toToken?.symbol ?? '',
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      security_warnings: [],
-    });
+      security_warnings: [txAlert?.descriptionId, tokenAlert?.titleId].filter(
+        Boolean,
+      ) as string[],
+    };
+    debouncedUpdateQuoteRequestInController(quoteParams, eventProperties);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteParams]);
 
@@ -496,90 +509,6 @@ const PrepareBridgePage = () => {
     },
     [],
   );
-
-  const { search } = useLocation();
-  const history = useHistory();
-
-  useEffect(() => {
-    if (!fromChain?.chainId || isFromTokensLoading) {
-      return;
-    }
-
-    const searchParams = new URLSearchParams(search);
-    const tokenAddressFromUrl = searchParams.get('token');
-    if (!tokenAddressFromUrl) {
-      return;
-    }
-
-    const removeTokenFromUrl = () => {
-      const newParams = new URLSearchParams(searchParams);
-      newParams.delete('token');
-      history.replace({
-        search: newParams.toString(),
-      });
-    };
-
-    const handleToken = async () => {
-      if (isSolanaChainId(fromChain.chainId)) {
-        const tokenAddress = tokenAddressFromUrl;
-        const assetId = toAssetId(
-          tokenAddress,
-          formatChainIdToCaip(fromChain.chainId),
-        );
-        if (!assetId) {
-          removeTokenFromUrl();
-          return;
-        }
-
-        const tokenMetadata = await fetchAssetMetadata(
-          tokenAddress,
-          fromChain.chainId,
-        );
-        if (!tokenMetadata) {
-          removeTokenFromUrl();
-          return;
-        }
-
-        dispatch(
-          setFromToken({
-            ...tokenMetadata,
-            chainId: fromChain.chainId,
-          }),
-        );
-        removeTokenFromUrl();
-        return;
-      }
-
-      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
-
-      switch (tokenAddressFromUrl) {
-        case fromToken?.address:
-          // If the token is already set, remove the query param
-          removeTokenFromUrl();
-          break;
-        case matchedToken?.address:
-        case matchedToken?.address
-          ? toChecksumAddress(matchedToken.address)
-          : undefined: {
-          // If there is a match, set it as the fromToken
-          dispatch(
-            setFromToken({
-              ...matchedToken,
-              chainId: fromChain.chainId,
-            }),
-          );
-          removeTokenFromUrl();
-          break;
-        }
-        default:
-          // Otherwise remove query param
-          removeTokenFromUrl();
-          break;
-      }
-    };
-
-    handleToken();
-  }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
   // Set slippage based on swap type
   const slippageInitializedRef = useRef(false);
@@ -598,59 +527,37 @@ const PrepareBridgePage = () => {
       name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
       timestamp: Date.now(),
     });
+
+    // If there's an active quote, assume that the user is returning to the page
+    if (activeQuote) {
+      // Get input data from active quote
+      const { srcAsset, destAsset, destChainId, srcChainId } =
+        activeQuote.quote;
+
+      if (srcAsset && destAsset && destChainId) {
+        dispatch(
+          setFromToken({
+            ...srcAsset,
+            chainId: srcChainId,
+          }),
+        );
+        // Set inputs to values from active quote
+        dispatch(
+          setToToken({
+            ...destAsset,
+            chainId: destChainId,
+          }),
+        );
+      }
+    } else {
+      // Reset controller and inputs on load
+      dispatch(resetBridgeState());
+    }
   }, []);
 
-  const { defaultToChainId, defaultToToken } = useBridgeDefaultToToken();
+  useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
 
-  // Track whether defaults have been applied separately for chain and token
-  const [defaultChainApplied, setDefaultChainApplied] = useState(false);
-  const [defaultTokenApplied, setDefaultTokenApplied] = useState(false);
-
-  useEffect(() => {
-    // Only set default chain if user hasn't already selected one and default hasn't been applied
-    if (!toChain && defaultToChainId && fromChain && !defaultChainApplied) {
-      dispatch(setToChainId(defaultToChainId));
-      // Track the input change event for the prefilled chain
-      trackInputEvent({
-        input: 'chain_destination',
-        value: String(defaultToChainId),
-      });
-      setDefaultChainApplied(true);
-    }
-  }, [
-    defaultToChainId,
-    toChain,
-    fromChain,
-    dispatch,
-    trackInputEvent,
-    defaultChainApplied,
-  ]);
-
-  useEffect(() => {
-    // Only set default token if user hasn't already selected one and default hasn't been applied
-    if (!toToken && defaultToToken && toChain && !defaultTokenApplied) {
-      dispatch(setToToken(defaultToToken));
-      // Track the input change event for the prefilled token
-      if (defaultToToken.address) {
-        trackInputEvent({
-          input: 'token_destination',
-          value: defaultToToken.address,
-        });
-      }
-      setDefaultTokenApplied(true);
-    }
-  }, [
-    defaultToToken,
-    toToken,
-    toChain,
-    dispatch,
-    trackInputEvent,
-    defaultTokenApplied,
-  ]);
-
-  const occurrences = Number(
-    toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
-  );
+  const occurrences = toToken?.occurrences ?? toToken?.aggregators?.length;
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
 
@@ -663,7 +570,7 @@ const PrepareBridgePage = () => {
 
   const getFromInputHeader = () => {
     if (isUnifiedUIEnabled) {
-      return t('yourNetworks');
+      return t('swapSelectToken');
     }
     return isSwap ? t('swapSwapFrom') : t('bridgeFrom');
   };
@@ -704,12 +611,6 @@ const PrepareBridgePage = () => {
             network: fromChain,
             networks: isSwap && !isUnifiedUIEnabled ? undefined : fromChains,
             onNetworkChange: (networkConfig) => {
-              networkConfig?.chainId &&
-                networkConfig.chainId !== fromChain?.chainId &&
-                trackInputEvent({
-                  input: 'chain_source',
-                  value: networkConfig.chainId,
-                });
               if (
                 !isUnifiedUIEnabled &&
                 networkConfig?.chainId &&
@@ -717,23 +618,16 @@ const PrepareBridgePage = () => {
               ) {
                 dispatch(setToChainId(null));
               }
-              if (
-                isSolanaChainId(networkConfig.chainId) &&
-                selectedSolanaAccount
-              ) {
-                dispatch(setSelectedAccount(selectedSolanaAccount.address));
-              } else if (isNetworkAdded(networkConfig)) {
-                dispatch(setSelectedAccount(selectedEvmAccount.address));
-                dispatch(
-                  setActiveNetworkWithError(
-                    networkConfig.rpcEndpoints[
-                      networkConfig.defaultRpcEndpointIndex
-                    ].networkClientId || networkConfig.chainId,
-                  ),
-                );
+              if (isNetworkAdded(networkConfig)) {
+                enableMissingNetwork(networkConfig.chainId);
               }
-              dispatch(setFromToken(null));
-              dispatch(setFromTokenInputValue(null));
+              dispatch(
+                setFromChain({
+                  networkConfig,
+                  selectedSolanaAccount,
+                  selectedEvmAccount,
+                }),
+              );
             },
             header: t('yourNetworks'),
           }}
@@ -869,36 +763,15 @@ const PrepareBridgePage = () => {
                 const shouldFlipNetworks = isUnifiedUIEnabled || !isSwap;
                 if (shouldFlipNetworks) {
                   // Handle account switching for Solana
-                  if (
-                    toChain?.chainId &&
-                    formatChainIdToCaip(toChain.chainId) ===
-                      MultichainNetworks.SOLANA &&
-                    selectedSolanaAccount
-                  ) {
-                    dispatch(setSelectedAccount(selectedSolanaAccount.address));
-                  } else {
-                    dispatch(setSelectedAccount(selectedEvmAccount.address));
-                  }
-
-                  // Get the network client ID for switching
-                  const toChainClientId =
-                    toChain?.defaultRpcEndpointIndex !== undefined &&
-                    toChain?.rpcEndpoints
-                      ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
-                      : undefined;
-                  const networkClientId =
-                    toChainClientId && 'networkClientId' in toChainClientId
-                      ? toChainClientId.networkClientId
-                      : toChain?.chainId;
-
-                  if (networkClientId) {
-                    dispatch(setActiveNetworkWithError(networkClientId));
-                  }
-                  if (fromChain?.chainId) {
-                    dispatch(setToChainId(fromChain.chainId));
-                  }
+                  dispatch(
+                    setFromChain({
+                      networkConfig: toChain,
+                      token: toToken,
+                      selectedSolanaAccount,
+                      selectedEvmAccount,
+                    }),
+                  );
                 }
-                dispatch(setFromToken(toToken));
                 dispatch(setToToken(fromToken));
               }}
             />
@@ -926,6 +799,9 @@ const PrepareBridgePage = () => {
                     network: toChain,
                     networks: toChains,
                     onNetworkChange: (networkConfig) => {
+                      if (isNetworkAdded(networkConfig)) {
+                        enableMissingNetwork(networkConfig.chainId);
+                      }
                       networkConfig.chainId !== toChain?.chainId &&
                         trackInputEvent({
                           input: 'chain_destination',
@@ -933,7 +809,7 @@ const PrepareBridgePage = () => {
                         });
                       dispatch(setToChainId(networkConfig.chainId));
                     },
-                    header: getToInputHeader(),
+                    header: t('yourNetworks'),
                     shouldDisableNetwork: isUnifiedUIEnabled
                       ? undefined
                       : ({ chainId }) => chainId === fromChain?.chainId,
@@ -1169,8 +1045,8 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
-            (!defaultToToken || toToken.address !== defaultToToken.address) &&
-            occurrences < 2 && (
+            occurrences &&
+            Number(occurrences) < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
                 title={t('bridgeTokenCannotVerifyTitle')}

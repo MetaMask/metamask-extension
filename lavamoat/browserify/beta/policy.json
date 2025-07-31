@@ -1301,7 +1301,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
@@ -1309,7 +1308,8 @@
         "browserify>buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
+        "eslint>fast-deep-equal": true,
+        "lodash": true
       }
     },
     "@metamask/delegation-controller": {
@@ -2194,8 +2194,7 @@
         "@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
-        "@metamask/name-controller>async-mutex": true,
-        "browserify>buffer": true
+        "@metamask/name-controller>async-mutex": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -4264,7 +4263,7 @@
         "string.prototype.matchall>get-intrinsic>get-proto": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>has-symbols": true,
-        "depcheck>is-core-module>hasown": true,
+        "axios>form-data>hasown": true,
         "string.prototype.matchall>get-intrinsic>math-intrinsics": true
       }
     },
@@ -4348,7 +4347,7 @@
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true
       }
     },
-    "depcheck>is-core-module>hasown": {
+    "axios>form-data>hasown": {
       "packages": {
         "browserify>has>function-bind": true
       }
@@ -4435,7 +4434,7 @@
     "string.prototype.matchall>internal-slot": {
       "packages": {
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "depcheck>is-core-module>hasown": true,
+        "axios>form-data>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
     },
