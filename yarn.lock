@@ -6270,10 +6270,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/institutional-wallet-snap@npm:1.3.1":
-  version: 1.3.1
-  resolution: "@metamask/institutional-wallet-snap@npm:1.3.1"
-  checksum: 10/4f28bc4344976632263ad0a8dc81dc967c45d920b64b298386577ad4c1e32c401c2da6244777aff7a130c76a849a8c38af19564102d887f7e2d643cae297cae4
+"@metamask/institutional-wallet-snap@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@metamask/institutional-wallet-snap@npm:1.3.3"
+  checksum: 10/258319511e0ba214fd364d46e34a5b7b5480c023aeed647fc055f2f9a836049480c64ba66ccf3d6c45856ea1cec5507fc2111eacc4edfe12936e006f04ab0509
   languageName: node
   linkType: hard
 
@@ -32089,7 +32089,7 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^23.0.0"
-    "@metamask/institutional-wallet-snap": "npm:1.3.1"
+    "@metamask/institutional-wallet-snap": "npm:1.3.3"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
