@@ -7045,12 +7045,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preinstalled-example-snap@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/preinstalled-example-snap@npm:0.6.0"
+"@metamask/preinstalled-example-snap@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "@metamask/preinstalled-example-snap@npm:0.7.1"
   dependencies:
-    "@metamask/snaps-sdk": "npm:^9.1.0"
-  checksum: 10/86975eb74b5fb8760266932caa16ca2ee78ed2c05f807da2d9a3247d5d0891d3e9ca6f97198eec42e28081484ad153d4bb7e1722e86335ef64a3b734616263d8
+    "@metamask/snaps-sdk": "npm:^9.3.0"
+  checksum: 10/6b8a0e81de0cb6591d8379084711a5b110e967355b8151a8e23c03c5d62d735c1c19f0c6537b4e70f72ae57207b962630dfd47d2722c15b0f5e09bec807261ce
   languageName: node
   linkType: hard
 
@@ -32125,7 +32125,7 @@ __metadata:
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
-    "@metamask/preinstalled-example-snap": "npm:^0.6.0"
+    "@metamask/preinstalled-example-snap": "npm:^0.7.1"
     "@metamask/profile-sync-controller": "patch:@metamask/profile-sync-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-22.0.0-1f01869af8.patch"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
