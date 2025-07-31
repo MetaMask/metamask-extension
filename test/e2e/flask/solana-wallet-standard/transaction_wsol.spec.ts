@@ -16,7 +16,7 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
           mockGetTransactionSuccess: true,
-          walletConnect: true,
+          walletConnect: false,
         },
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
