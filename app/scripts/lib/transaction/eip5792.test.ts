@@ -956,7 +956,7 @@ describe('EIP-5792', () => {
       });
     });
 
-    it('returns alternateGasFees as false if send bundle is not supported', async () => {
+    it('does not add alternateGasFees property if send bundle is not supported', async () => {
       isAtomicBatchSupportedMock.mockResolvedValueOnce([
         {
           chainId: CHAIN_ID_MOCK,
@@ -979,9 +979,6 @@ describe('EIP-5792', () => {
         [CHAIN_ID_MOCK]: {
           atomic: {
             status: AtomicCapabilityStatus.Supported,
-          },
-          alternateGasFees: {
-            supported: false,
           },
         },
       });

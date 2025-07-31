@@ -545,12 +545,13 @@ async function getAlternateGasFeesCapability(
 
     const alternateGasFees =
       simulationEnabled &&
+      isSendBundleSupported &&
       (isSmartTransaction || (isSupported && relaySupportedForChain));
 
     if (alternateGasFees) {
       acc[chainId as Hex] = {
         alternateGasFees: {
-          supported: isSendBundleSupported,
+          supported: true,
         },
       };
     }
