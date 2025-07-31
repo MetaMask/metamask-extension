@@ -707,7 +707,11 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
  */
 export function getSelectedAccountTokensAcrossChains(state) {
   const { allTokens } = state.metamask;
-  const selectedAddress = getSelectedEvmInternalAccount(state).address;
+  const selectedAccount = getSelectedEvmInternalAccount(state);
+  if (!selectedAccount) {
+    return undefined;
+  }
+  const { address: selectedAddress } = selectedAccount;
 
   const tokensByChain = {};
 
