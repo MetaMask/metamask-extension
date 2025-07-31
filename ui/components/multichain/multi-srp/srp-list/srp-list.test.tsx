@@ -60,9 +60,9 @@ describe('SrpList', () => {
 
   it('shows/hides accounts when clicking show/hide text', () => {
     const { getByText } = render();
-    const showAccountsButton = getByText('Show 2 accounts');
+    const showAccountsButton = getByText('Show 4 accounts');
     fireEvent.click(showAccountsButton);
-    expect(getByText('Hide 2 accounts')).toBeInTheDocument();
+    expect(getByText('Hide 4 accounts')).toBeInTheDocument();
   });
 
   it('calls onActionComplete when clicking a keyring', () => {
@@ -81,7 +81,7 @@ describe('SrpList', () => {
     const account1Address = firstKeyringAccounts[0];
     const account2Address = firstKeyringAccounts[1];
 
-    const showAccountsButton = getByText('Show 2 accounts');
+    const showAccountsButton = getByText('Show 4 accounts');
     fireEvent.click(showAccountsButton);
 
     const shortenedAccount1 = shortenAddress(
