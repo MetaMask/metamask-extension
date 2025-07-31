@@ -40,11 +40,12 @@ import { pipeline } from 'readable-stream';
 
 import {
   getMultichainClient,
-  getDefaultTransport,
+  // getDefaultTransport,
 } from '@metamask/multichain-api-client';
 import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
 
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { getExternallyConnectableTransport } from './externallyConnectableTransport.cjs';
 import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
 
 // contexts
@@ -88,7 +89,7 @@ if (shouldInjectProvider()) {
   });
 
   const multichainClient = getMultichainClient({
-    transport: getDefaultTransport(),
+    transport: getExternallyConnectableTransport(),
   });
   registerSolanaWalletStandard({
     client: multichainClient,
