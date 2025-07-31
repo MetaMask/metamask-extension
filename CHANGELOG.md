@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.23.1]
+### Fixed
+- fix: ensure "Update extension to the latest version" button in the update prompt work in browser-action popup (#34372)
+
 ## [12.23.0]
 ### Added
 - feat: gasIncluded swaps cp-12-23.0 (#33988)
@@ -63,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set confirm srp quiz word to readonly (#34225)
 
 ### Fixed
-- Fix: solve when private key import field to always be in error state (#34050)
+- fix: solve when private key import field to always be in error state (#34050)
 - fix: solve `Error: Ledger: Unknown error while signing transaction` (#33581)
 - fix: regression of lanchdarkly flag key (#34045)
 - fix: private key import field to always be in error state (#34050)
@@ -212,7 +216,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.23.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.23.1...HEAD
+[12.23.1]: https://github.com/MetaMask/metamask-extension/compare/v12.23.0...v12.23.1
 [12.23.0]: https://github.com/MetaMask/metamask-extension/compare/v12.22.3...v12.23.0
 [12.22.3]: https://github.com/MetaMask/metamask-extension/compare/v12.22.2...v12.22.3
 [12.22.2]: https://github.com/MetaMask/metamask-extension/compare/v12.22.1...v12.22.2

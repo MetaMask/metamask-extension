@@ -1130,8 +1130,8 @@ export async function mockGetTokenAccountsTokenProgram2022Swaps(
 
 export async function mockGetTokenAccountsByOwner(
   mockServer: Mockttp,
-  account: string,
-  programId: string,
+  account: string = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
+  programId: string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
 ) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
@@ -1261,30 +1261,12 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
           slot: 317161313,
         },
         value: {
-          data: {
-            parsed: {
-              info: {
-                isNative: false,
-                mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-                owner: '3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c',
-                state: 'initialized',
-                tokenAmount: {
-                  amount: '3610951',
-                  decimals: 6,
-                  uiAmount: 3.610951,
-                  uiAmountString: '3.610951',
-                },
-              },
-              type: 'account',
-            },
-            program: 'spl-token',
-            space: 165,
-          },
+          data: ['', 'base58'],
           executable: false,
-          lamports: 2039280,
-          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          rentEpoch: 18446744073709552000,
-          space: 165,
+          lamports: 5312114,
+          owner: '11111111111111111111111111111111',
+          rentEpoch: 18446744073709551615,
+          space: 0,
         },
       },
     },
@@ -1294,15 +1276,15 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
-    .withJsonBodyIncluding({
+    /* .withJsonBodyIncluding({
       params: [
-        '4Dt7hvLAzSXGvxvpqFU7cRdQXXhU3orACV6ujY4KPv9D',
+        '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
         {
           encoding: 'jsonParsed',
           commitment: 'confirmed',
         },
       ],
-    })
+    })*/
     .thenCallback(() => {
       return response;
     });
@@ -1585,7 +1567,61 @@ async function startWebsocketMock(mockServer: Mockttp) {
             }),
           );
           console.log('Simulated message sent to the client');
-        }, 2000); // Delay the message by 5 second
+        }, 500); // Delay the message by 5 second
+      }
+      if (message.includes('accountSubscribe')) {
+        console.log('Account subscribe message received from client');
+        setTimeout(() => {
+          socket.send(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              result:
+                'b07ebf7caf2238a9b604d4dfcaf1934280fcd347d6eded62bc0def6cbb767d11',
+              id: '1',
+            }),
+          );
+          console.log(
+            'Simulated message for accountSubscribe sent to the client',
+          );
+        }, 500); // Delay the message by 5 second
+      }
+      if (
+        message.includes('programSubscribe') &&
+        message.includes('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
+      ) {
+        console.log('Program subscribe message received from client');
+        setTimeout(() => {
+          socket.send(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              result:
+                '568eafd45635c108d0d426361143de125a841628a58679f5a024cbab9a20b41c',
+              id: '1',
+            }),
+          );
+          console.log(
+            'Simulated message for programSubscribe Token2022 sent to the client',
+          );
+        }, 500); // Delay the message by 5 second
+      }
+      if (
+        message.includes('programSubscribe') &&
+        message.includes('TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb')
+      ) {
+        console.log('Program subscribe message received from client');
+        setTimeout(() => {
+          socket.send(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              result:
+                'f33dd9975158af47bf16c7f6062a73191d4595c59cfec605d5a51e25c65ffb51',
+              id: '1',
+            }),
+          );
+          console.log(
+            'Simulated message for programSubscribe sent to the client',
+          );
+        }, 500); // Delay the message by 5 second
       }
     });
 
@@ -1693,12 +1729,13 @@ export async function withSolanaAccountSnap(
           mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
           mockList.push(await mockGetAccountInfoDevnet(mockServer));
         } else {
-          mockList.push(
+          console.log('Entra aqui no?');
+          /* mockList.push(
             await mockGetTokenAccountsTokenProgramSwaps(mockServer),
           );
           mockList.push(
             await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
-          );
+          );*/
         }
         mockList.push(await mockGetMultipleAccounts(mockServer));
         if (mockGetTransactionSuccess) {
@@ -1714,9 +1751,11 @@ export async function withSolanaAccountSnap(
           mockList.push(await mockGetFailedTransaction(mockServer));
         }
 
+        mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
         mockList.push(
           await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
         );
+
         mockList.push(
           await mockGetMinimumBalanceForRentExemption(mockServer),
           await mockMultiCoinPrice(mockServer),

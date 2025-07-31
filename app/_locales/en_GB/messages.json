@@ -1508,14 +1508,8 @@
   "coolWallet": {
     "message": "CoolWallet"
   },
-  "copied": {
-    "message": "Copied"
-  },
   "copiedExclamation": {
     "message": "Copied."
-  },
-  "copy": {
-    "message": "Copy"
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
@@ -2258,6 +2252,10 @@
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
+  },
+  "errorDetails": {
+    "message": "Error details",
+    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
@@ -5267,9 +5265,6 @@
   "sendNoContactsTitle": {
     "message": "You don't have any contacts yet"
   },
-  "sendReport": {
-    "message": "Send report"
-  },
   "sendSelectReceiveAsset": {
     "message": "Select asset to receive"
   },
@@ -5303,23 +5298,6 @@
   "sentTokenAsToken": {
     "message": "Sent $1 as $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sentryErrorError": {
-    "message": "Error: $1",
-    "description": "The $1 error message"
-  },
-  "sentryErrorNote": {
-    "message": "Send us an error report to help fix the problem and improve MetaMask. It will be confidential and anonymous."
-  },
-  "sentryErrorReport": {
-    "message": "Error message report:"
-  },
-  "sentryErrorTitle": {
-    "message": "An error occurred"
-  },
-  "sentryErrorView": {
-    "message": "View: $1",
-    "description": "The $1 view type"
   },
   "sepolia": {
     "message": "Sepolia test network"
@@ -5568,12 +5546,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "Add multiple Secret Recovery Phrases"
-  },
-  "slideRemoteModeDescription": {
-    "message": "Use your cold wallet wirelessly"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold storage, fast access"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Same address, smarter features"
@@ -6960,8 +6932,11 @@
     "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleStarting": {
-    "message": "MetaMask had trouble starting. This error could be intermittent, so try restarting the extension."
+  "troubleStartingMessage": {
+    "message": "This error could be intermittent, so try restarting the extension."
+  },
+  "troubleStartingTitle": {
+    "message": "MetaMask had trouble starting."
   },
   "tryAgain": {
     "message": "Try again"

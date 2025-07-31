@@ -51,6 +51,7 @@ import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import {
   CorruptionHandler,
   hasVault,
@@ -91,6 +92,7 @@ import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
+import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 
 /**
@@ -454,12 +456,13 @@ browser.runtime.onConnect.addListener(async (...args) => {
     connectWindowPostMessage(...args);
   } catch (error) {
     sentry?.captureException(error);
+    const port = args[0];
 
     // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
     // restore from a backup, if we have one.
     if (isStateCorruptionError(error)) {
       await corruptionHandler.handleStateCorruptionError({
-        port: args[0],
+        port,
         error,
         database: persistenceManager,
         repairCallback: async (backup) => {
@@ -483,6 +486,23 @@ browser.runtime.onConnect.addListener(async (...args) => {
             await initBackground(null);
           }
         },
+      });
+    } else {
+      const errorLike = isObject(error)
+        ? {
+            message: error.message ?? 'Unknown error',
+            name: error.name ?? 'UnknownError',
+            stack: error.stack,
+          }
+        : {
+            message: String(error),
+            name: 'UnknownError',
+            stack: '',
+          };
+      // general errors
+      tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
+        error: errorLike,
+        currentLocale: controller?.preferencesController?.state?.currentLocale,
       });
     }
   }
