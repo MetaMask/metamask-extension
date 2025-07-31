@@ -109,7 +109,7 @@ const MOCK_STATE: TestState = {
   unconnectedAccount: {
     state: 'OPEN',
   },
-} as unknown as TestState;
+} as TestState;
 
 const render = (
   state: DeepPartial<TestState> = MOCK_STATE,
