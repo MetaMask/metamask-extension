@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 import {
   BRIDGE_DEV_API_BASE_URL,
-  BRIDGE_API_BASE_URL,
+  BRIDGE_PROD_API_BASE_URL,
 } from '@metamask/bridge-controller';
 import { CHAIN_IDS } from '../constants/network';
 import {
@@ -136,7 +136,7 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   const useDevApis = process.env.SWAPS_USE_DEV_APIS;
   const v2ApiBaseUrl = useDevApis
     ? BRIDGE_DEV_API_BASE_URL
-    : BRIDGE_API_BASE_URL;
+    : BRIDGE_PROD_API_BASE_URL;
   const gasApiBaseUrl = useDevApis ? GAS_DEV_API_BASE_URL : GAS_API_BASE_URL;
   const tokenApiBaseUrl = TOKEN_API_BASE_URL;
   const noNetworkSpecificTypes = ['refreshTime']; // These types don't need network info in the URL.
