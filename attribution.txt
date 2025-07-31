@@ -25855,7 +25855,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/institutional-wallet-snap
-1.3.1 <https://github.com/MetaMask/snap-institutional-wallet>
+1.3.3 <https://github.com/MetaMask/snap-institutional-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
