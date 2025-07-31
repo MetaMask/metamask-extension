@@ -33,6 +33,7 @@ import {
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
+  TOP_ASSETS_API_ETHEREUM_MOCK_RESULT,
 } from './constants';
 
 export class BridgePage {
@@ -169,6 +170,15 @@ async function mockTopAssetsLinea(mockServer: Mockttp) {
     return {
       statusCode: 200,
       json: TOP_ASSETS_API_LINEA_MOCK_RESULT,
+    };
+  });
+}
+
+async function mockTopAssetsEthereum(mockServer: Mockttp) {
+  return await mockServer.forGet(/1\/topAssets/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: TOP_ASSETS_API_ETHEREUM_MOCK_RESULT,
     };
   });
 }
@@ -707,6 +717,7 @@ export const getBridgeFixtures = (
       const standardMocks = [
         await mockPortfolioPage(mockServer),
         await mockGetTxStatus(mockServer),
+        await mockTopAssetsEthereum(mockServer),
         await mockTopAssetsLinea(mockServer),
         await mockTopAssetsArbitrum(mockServer),
         await mockTokensEthereum(mockServer),
@@ -806,6 +817,7 @@ export const getQuoteNegativeCasesFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
+      await mockTopAssetsEthereum(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockGetQuoteInvalid(mockServer, options),
       await mockTokensLinea(mockServer),
@@ -851,6 +863,7 @@ export const getBridgeNegativeCasesFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
+      await mockTopAssetsEthereum(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockTokensLinea(mockServer),
       await mockETHtoETH(mockServer),
@@ -897,6 +910,7 @@ export const getInsufficientFundsFixtures = (
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockTokensLinea(mockServer),
+      await mockTopAssetsEthereum(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockETHtoWETH(mockServer),
     ],
@@ -948,6 +962,7 @@ export const getBridgeL2Fixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
+      await mockTopAssetsEthereum(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockTopAssetsArbitrum(mockServer),
       await mockTokensArbitrum(mockServer),
