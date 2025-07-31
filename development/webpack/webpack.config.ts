@@ -3,7 +3,7 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { join, sep } from 'node:path';
+import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
@@ -28,6 +28,7 @@ import {
   NODE_MODULES_RE,
   __HMR_READY__,
   SNOW_MODULE_RE,
+  TREZOR_MODULE_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -298,10 +299,9 @@ const config = {
               // security team requires that we never process `@lavamoat/snow/**.*`
               SNOW_MODULE_RE,
 
-              // trezor libraries are .js files with CJS exports, they must be
-              // processed with the CJS loader
-              (value: string) =>
-                value.includes(`${sep}node_modules${sep}@trezor${sep}`),
+              // these trezor libraries are .js files with CJS exports, they
+              // must be processed with the CJS loader
+              TREZOR_MODULE_RE,
             ],
             use: npmLoader,
           },
