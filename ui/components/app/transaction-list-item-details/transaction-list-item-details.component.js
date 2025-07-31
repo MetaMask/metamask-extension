@@ -5,14 +5,11 @@ import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { TransactionType } from '@metamask/transaction-controller';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
-import Disclosure from '../../ui/disclosure';
-import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
-import { Box } from '../../component-library/box';
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
@@ -39,7 +36,6 @@ export default class TransactionListItemDetails extends PureComponent {
      * @see {@link https://github.com/MetaMask/metamask-extension/issues/28615}
      */
     // showRetry: PropTypes.bool,
-    isEarliestNonce: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     transactionGroup: PropTypes.object,
     title: PropTypes.string.isRequired,
@@ -156,7 +152,6 @@ export default class TransactionListItemDetails extends PureComponent {
       recipientAddress,
       recipientName,
       senderAddress,
-      isEarliestNonce,
       senderNickname,
       title,
       onClose,
