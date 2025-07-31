@@ -99,14 +99,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // eth_sendTransaction request
         await testDappOne.clickSimpleSendButton();
-        await driver.waitUntilXWindowHandles(4);
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
         // signTypedData request
         await testDappTwo.clickSignTypedData();
-
-        await driver.waitUntilXWindowHandles(4);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
