@@ -132,8 +132,10 @@ async function main(): Promise<void> {
         labelable,
         invalidIssueTemplateLabel,
       );
-      // Add needs triage label to the bug report issue
-      await addNeedsTriageLabelToIssue(octokit, labelable);
+      // Add needs triage label ONLY if issue is created (not updated)
+      if (context.payload.action === 'opened') {
+        await addNeedsTriageLabelToIssue(octokit, labelable);
+      }
       // Add area-Sentry label to the bug report issue
       await addAreaSentryLabelToIssue(octokit, labelable);
       process.exit(0); // Stop the process and exit with a success status code
@@ -157,8 +159,10 @@ async function main(): Promise<void> {
       // Add regression label to the bug report issue
       await addRegressionLabelToIssue(octokit, labelable);
 
-      // Add needs triage label to the bug report issue
-      await addNeedsTriageLabelToIssue(octokit, labelable);
+      // Add needs triage label ONLY if issue is created (not updated)
+      if (context.payload.action === 'opened') {
+        await addNeedsTriageLabelToIssue(octokit, labelable);
+      }
     } else {
       const errorMessage =
         "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
