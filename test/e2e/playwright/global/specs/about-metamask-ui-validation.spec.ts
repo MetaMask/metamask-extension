@@ -2,7 +2,7 @@
 // This file is a Playwright test, which differs significantly from our regular e2e tests.
 // The structure of this test includes nested tests and multiple global tests, which violate our linting rules.
 
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import FixtureBuilder from '../../../fixture-builder';
 import { withPlaywrightFixtures } from '../../shared/fixtures/with-fixtures';
 import packageJson from '../../../../../package.json';

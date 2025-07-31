@@ -30,9 +30,9 @@ export interface PlaywrightTestArguments {
   mockServer?: any;
 }
 
-// Helper functions for manifest backup/restore (same as Selenium)
+// Helper functions for manifest backup/restore
 function getManifestFolder(): string {
-  const browser = process.env.SELENIUM_BROWSER || 'chrome';
+  const browser = process.env.BROWSER || 'chrome';
   return path.join(process.cwd(), 'dist', browser);
 }
 
@@ -61,7 +61,7 @@ function restoreManifest() {
 }
 
 /**
- * Playwright equivalent of the Selenium withFixtures pattern
+ * Playwright fixture setup for MetaMask extension testing
  * This function sets up the complete test infrastructure:
  * - Manifest backup/modification (BEFORE extension loading)
  * - Anvil blockchain server
@@ -95,20 +95,20 @@ export async function withPlaywrightFixtures(
   const originalEnv = {
     WITH_STATE: process.env.WITH_STATE,
     IN_TEST: process.env.IN_TEST,
-    SELENIUM_BROWSER: process.env.SELENIUM_BROWSER
+    BROWSER: process.env.BROWSER
   };
 
   try {
-    // Log test execution similar to Selenium withFixtures pattern
+    // Log test execution
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     // Set environment variables for fixture state loading
     process.env.WITH_STATE = 'true';
     process.env.IN_TEST = 'true';
-    process.env.SELENIUM_BROWSER = 'chrome'; // Enable manifest flag system
-    console.log('Environment variables set: WITH_STATE=true, IN_TEST=true, SELENIUM_BROWSER=chrome');
+    process.env.BROWSER = 'chrome'; // Enable manifest flag system
+    console.log('Environment variables set: WITH_STATE=true, IN_TEST=true, BROWSER=chrome');
 
-    // STEP 1: Backup and modify manifest BEFORE launching browser (same as Selenium)
+    // STEP 1: Backup and modify manifest BEFORE launching browser
     console.log('Backing up and modifying manifest...');
     restoreManifest(); // Restore any previous backup first
     backupManifest(); // Backup current manifest
@@ -222,9 +222,6 @@ export async function withPlaywrightFixtures(
 
     console.log(`🔍 After waiting, fixture server was called ${fixtureRequests} times`);
 
-    // Do NOT login automatically - let the test handle the unlock screen (same as Selenium)
-    // await loginWithBalanceValidation(page);
-
     // Execute the test suite
     await testSuite({
       page,
@@ -239,7 +236,7 @@ export async function withPlaywrightFixtures(
     console.log(`\nFailure on testcase: '${title}', error:`, error);
     throw error;
   } finally {
-    // STEP 4: Restore manifest and cleanup (same as Selenium)
+    // STEP 4: Restore manifest and cleanup
     try {
       console.log('Restoring original manifest...');
       restoreManifest();
@@ -258,10 +255,10 @@ export async function withPlaywrightFixtures(
     } else {
       delete process.env.IN_TEST;
     }
-    if (originalEnv.SELENIUM_BROWSER !== undefined) {
-      process.env.SELENIUM_BROWSER = originalEnv.SELENIUM_BROWSER;
+    if (originalEnv.BROWSER !== undefined) {
+      process.env.BROWSER = originalEnv.BROWSER;
     } else {
-      delete process.env.SELENIUM_BROWSER;
+      delete process.env.BROWSER;
     }
 
     // Cleanup servers
@@ -306,7 +303,7 @@ export async function setupPlaywrightFixtures(options: PlaywrightFixtureOptions 
   // Set environment variables for fixture state loading
   process.env.WITH_STATE = 'true';
   process.env.IN_TEST = 'true';
-  process.env.SELENIUM_BROWSER = 'chrome'; // Enable manifest flag system
+  process.env.BROWSER = 'chrome'; // Enable manifest flag system
 
   // Backup and modify manifest
   restoreManifest();
@@ -352,9 +349,9 @@ export async function setupPlaywrightFixtures(options: PlaywrightFixtureOptions 
   }
 
   // Wait for extension to connect to fixture server and load state
-  await new Promise(resolve => setTimeout(resolve, 2000)); // Reduced from 10s to 2s
+  await new Promise(resolve => setTimeout(resolve, 1000)); // Brief wait for connection
 
-  // Do NOT login automatically - let the test handle the unlock screen (same as Selenium)
+  // Do NOT login automatically - let the test handle the unlock screen
   // await loginWithBalanceValidation(page);
 
   const cleanup = async () => {

@@ -1,12 +1,12 @@
 import path from 'path';
 import { chromium } from '@playwright/test';
 
-// Set browser for manifest flags (same as Selenium)
-if (process.env.SELENIUM_BROWSER === undefined) {
-  process.env.SELENIUM_BROWSER = 'chrome';
+// Set browser for manifest flags
+if (process.env.BROWSER === undefined) {
+  process.env.BROWSER = 'chrome';
 }
 
-const extensionPath = path.join(process.cwd(), 'dist', process.env.SELENIUM_BROWSER || 'chrome');
+const extensionPath = path.join(process.cwd(), 'dist', process.env.BROWSER || 'chrome');
 
 export class ChromeExtensionPage {
   async initExtension() {
