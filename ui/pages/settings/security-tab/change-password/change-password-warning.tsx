@@ -23,6 +23,7 @@ import {
   IconName,
   ButtonVariant,
 } from '../../../../components/component-library';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -34,6 +35,19 @@ export default function ChangePasswordWarning({
   onCancel: () => void;
 }) {
   const t = useI18nContext();
+
+  const changePasswordLearnMore = (
+    <a
+      key="change-password__link-text"
+      href={ZENDESK_URLS.PASSWORD_RESET}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span className="change-password__link-text">
+        {t('learnMoreUpperCase')}
+      </span>
+    </a>
+  );
 
   return (
     <Modal
@@ -61,7 +75,7 @@ export default function ChangePasswordWarning({
               {t('changePasswordWarning')}
             </Text>
             <Text variant={TextVariant.bodySm} marginTop={4}>
-              {t('changePasswordWarningDescription')}
+              {t('changePasswordWarningDescription')} {changePasswordLearnMore}
             </Text>
           </Box>
         </ModalHeader>
