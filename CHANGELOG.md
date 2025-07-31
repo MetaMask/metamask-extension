@@ -38,7 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: update fee label when gas is include in swap rate (#34146)
 - feat: integrate phishing controller actions into NFT messengers (#34216)
 - feat: add loader for onboarding unlock (#34518)
-- feat: add error reporting UI option while doing Seedless onboarding (#34208)
 
 ### Changed
 - update: change homepage button colors and header styling (#34209)
@@ -123,7 +122,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: show solana connection status in dapp view (#34375)
 - fix: check password outdated before import private key for social log in user (#34400)
 - fix: handle keyring remove when import srp seedless error (#34403)
-- fix: reset parsed search params after setting quote request inputs (#34408)
 - fix: validate if metametrics is done before redirecting to page on social (#34438)
 - fix: update reset wallet content for seedless accounts (#34466)
 - fix: ensure networks are enabled when performing swap/bridge (#34376)
