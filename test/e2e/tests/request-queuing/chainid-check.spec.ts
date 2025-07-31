@@ -114,7 +114,7 @@ describe('Request Queueing chainId proxy sync', function () {
         const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
           driver,
         );
-        await reviewPermissionsConfirmation.clickConfirmReviewPermissionsButton();
+        await reviewPermissionsConfirmation.confirmReviewPermissions();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
