@@ -96,7 +96,7 @@ describe('BridgeCTAButton', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render the component when amount, dest chain and dest token are missing', () => {
+  it('should render the component when amount, dest chain and dest token are missing (defaults set', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         extensionConfig: {
@@ -125,7 +125,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select token and amount')).toBeInTheDocument();
+    expect(getByText('Select amount')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 

@@ -1,3 +1,4 @@
+/* eslint-disable mocha/no-skipped-tests */
 import { Mockttp } from 'mockttp';
 import { withFixtures, unlockWallet } from '../../helpers';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../../data/mock-data';
@@ -15,7 +16,8 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   ];
 }
 
-describe('Swaps - notifications', function () {
+// Skipped as this will be supported in the new swap flow in the future
+describe.skip('Swaps - notifications', function () {
   async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/1/trades')

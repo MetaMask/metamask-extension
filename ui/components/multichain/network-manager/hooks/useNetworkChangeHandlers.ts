@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { parseCaipChainId, type CaipChainId } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,7 +16,6 @@ import {
   setEnabledNetworks,
   setNetworkClientIdForDomain,
   setNextNonce,
-  setTokenNetworkFilter,
   showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../../store/actions';
@@ -29,10 +28,8 @@ import {
   getOriginOfCurrentTab,
   getPermittedEVMAccountsForSelectedTab,
   getPermittedEVMChainsForSelectedTab,
-  getPreferences,
   getSelectedMultichainNetworkChainId,
 } from '../../../../selectors';
-import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -66,7 +63,6 @@ export const useNetworkChangeHandlers = () => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { tokenNetworkFilter } = useSelector(getPreferences);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const domains = useSelector(getAllDomains);
   const [multichainNetworks, evmNetworks] = useSelector(
@@ -79,10 +75,9 @@ export const useNetworkChangeHandlers = () => {
   const permittedAccountAddresses = useSelector((state) =>
     getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
   );
+
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allChainIds = useSelector(getAllChainsToPoll);
-
-  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   // This value needs to be tracked in case the user changes to a Non EVM
   // network and there is no account created for that network. This will
@@ -92,14 +87,25 @@ export const useNetworkChangeHandlers = () => {
 
   const [actionMode, setActionMode] = useState(ACTION_MODE.LIST);
 
+  useEffect(() => {
+    // Fire and forget async operations for better performance
+    // setTimeout with 0 delay pushes these operations to the next event loop tick,
+    // preventing them from blocking the current execution stack and improving UI responsiveness.
+    // This technique is called "yielding to the event loop" - it allows higher priority
+    // tasks (like UI updates) to execute first before these background operations run.
+    setTimeout(() => {
+      dispatch(updateCustomNonce(''));
+      dispatch(setNextNonce(''));
+      dispatch(detectNfts(allChainIds));
+    }, 0);
+  }, [enabledNetworksByNamespace, dispatch, allChainIds]);
+
   const handleEvmNetworkChange = useCallback(
     (chainId: CaipChainId) => {
       const { namespace } = parseCaipChainId(chainId);
       const hexChainId = convertCaipToHexChainId(chainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
-
-      dispatch(setActiveNetwork(finalNetworkClientId));
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
@@ -135,27 +141,6 @@ export const useNetworkChangeHandlers = () => {
         );
       }
 
-      dispatch(updateCustomNonce(''));
-      dispatch(setNextNonce(''));
-      dispatch(detectNfts(allChainIds));
-
-      // as a user, I don't want my network selection to force update my filter
-      // when I have "All Networks" toggled on however, if I am already filtered
-      // on "Current Network", we'll want to filter by the selected network when
-      // the network changes.
-      if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
-        dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
-      } else {
-        const allOpts = Object.keys(evmNetworks).reduce(
-          (acc, id) => {
-            acc[id] = true;
-            return acc;
-          },
-          {} as Record<string, boolean>,
-        );
-        dispatch(setTokenNetworkFilter(allOpts));
-      }
-
       // If presently on a dapp, communicate a change to
       // the dapp via silent switchEthereumChain that the
       // network has changed due to user action
@@ -178,8 +163,6 @@ export const useNetworkChangeHandlers = () => {
       evmNetworks,
       dispatch,
       enabledNetworksByNamespace,
-      allChainIds,
-      tokenNetworkFilter,
       selectedTabOrigin,
       domains,
       permittedAccountAddresses.length,
@@ -190,39 +173,10 @@ export const useNetworkChangeHandlers = () => {
   const handleNonEvmNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
       const { namespace } = parseCaipChainId(chainId);
-      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
-
-      if (enabledNetworkKeys.includes(chainId)) {
-        dispatch(setEnabledNetworks([], namespace));
-      } else {
-        if (hasAnyAccountsInNetwork(chainId)) {
-          dispatch(setActiveNetwork(chainId));
-          dispatch(setEnabledNetworks([chainId], namespace));
-          return;
-        }
-
-        if (enabledNetworkKeys.includes(chainId)) {
-          const filteredEnabledNetworks = enabledNetworkKeys.filter(
-            (key: string) => key !== chainId,
-          );
-          dispatch(
-            setEnabledNetworks(
-              filteredEnabledNetworks as CaipChainId[],
-              namespace,
-            ),
-          );
-        } else {
-          dispatch(
-            setEnabledNetworks(
-              [...enabledNetworkKeys, chainId] as CaipChainId[],
-              namespace,
-            ),
-          );
-        }
-        setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
-      }
+      dispatch(setActiveNetwork(chainId));
+      dispatch(setEnabledNetworks([chainId], namespace));
     },
-    [enabledNetworksByNamespace, dispatch, hasAnyAccountsInNetwork],
+    [dispatch],
   );
 
   const getMultichainNetworkConfigurationOrThrow = useCallback(

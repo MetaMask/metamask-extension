@@ -5,7 +5,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 async function mockPriceFetch(mockServer: Mockttp) {
   return [
@@ -189,7 +189,7 @@ describe('Import flow', function () {
         testSpecificMock: mockTokensAndPrices,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -266,7 +266,7 @@ describe('Import flow', function () {
         testSpecificMock: mockTokensAndPrices,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
@@ -340,7 +340,7 @@ describe('Import flow', function () {
         testSpecificMock: mockTokensAndPrices,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();

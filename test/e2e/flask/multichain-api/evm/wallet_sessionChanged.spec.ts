@@ -111,6 +111,8 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         assert.deepEqual(
           scopedAccounts,
           expectedScope.accounts,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `${expectedScope.accounts} does not match accounts in scope ${currentScope}`,
         );
 

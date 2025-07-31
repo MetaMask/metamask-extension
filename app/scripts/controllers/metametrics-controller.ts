@@ -38,6 +38,7 @@ import {
   ControllerStateChangeEvent,
   RestrictedMessenger,
 } from '@metamask/base-controller';
+import type { Json } from '@metamask/utils';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { AddressBookControllerState } from '@metamask/address-book-controller';
 import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
@@ -69,6 +70,13 @@ import {
 } from '../../../shared/constants/transaction';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import Analytics from '../lib/segment/analytics';
+import {
+  trace,
+  endTrace,
+  TraceRequest,
+  EndTraceRequest,
+  TraceCallback,
+} from '../../../shared/lib/trace';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { ENVIRONMENT } from '../../../development/build/constants';
@@ -147,6 +155,16 @@ const exceptionsToFilter: Record<string, boolean> = {
  */
 type SegmentEventType = 'identify' | 'track' | 'page';
 
+/**
+ * Represents a buffered trace that is stored before user consent.
+ * Simplified for JSON serialization - doesn't include callback functions.
+ */
+type BufferedTrace = {
+  type: 'start' | 'end';
+  request: Record<string, Json>;
+  parentTraceName?: string;
+};
+
 // TODO: Complete MetaMaskState by adding the full state definition and relocate it after the background is converted to TypeScript.
 export type MetaMaskState = {
   ledgerTransportType: LedgerTransportTypes;
@@ -208,6 +226,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
+  tracesBeforeMetricsOptIn: {
+    persist: true,
+    anonymous: false,
+  },
   traits: {
     persist: true,
     anonymous: false,
@@ -235,6 +257,7 @@ const controllerMetadata = {
  * @property latestNonAnonymousEventTimestamp - The timestamp at which last non anonymous event is tracked.
  * @property fragments - Object keyed by UUID with stored fragments as values.
  * @property eventsBeforeMetricsOptIn - Array of queued events added before a user opts into metrics.
+ * @property tracesBeforeMetricsOptIn - Array of queued traces added before a user opts into metrics.
  * @property traits - Traits that are not derived from other state keys.
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
@@ -246,6 +269,7 @@ export type MetaMetricsControllerState = {
   latestNonAnonymousEventTimestamp: number;
   fragments: Record<string, MetaMetricsEventFragment>;
   eventsBeforeMetricsOptIn: MetaMetricsEventPayload[];
+  tracesBeforeMetricsOptIn: BufferedTrace[];
   traits: MetaMetricsUserTraits;
   dataCollectionForMarketing: boolean | null;
   marketingCampaignCookieId: string | null;
@@ -332,6 +356,7 @@ export const getDefaultMetaMetricsControllerState =
     marketingCampaignCookieId: null,
     latestNonAnonymousEventTimestamp: 0,
     eventsBeforeMetricsOptIn: [],
+    tracesBeforeMetricsOptIn: [],
     traits: {},
     fragments: {},
     segmentApiCalls: {},
@@ -539,9 +564,13 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(
         `Must specify success event. Success event was: ${
           options.event
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         }. Payload keys were: ${Object.keys(options)}. ${
           typeof options.properties === 'object'
-            ? `Payload property keys were: ${Object.keys(options.properties)}`
+            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Payload property keys were: ${Object.keys(options.properties)}`
             : ''
         }`,
       );
@@ -784,6 +813,8 @@ export default class MetaMetricsController extends BaseController<
     // this.extension not currently defined in tests
     if (this.#extension && this.#extension.runtime) {
       this.#extension.runtime.setUninstallURL(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `${EXTENSION_UNINSTALL_URL}?${queryString}`,
       );
     }
@@ -813,6 +844,8 @@ export default class MetaMetricsController extends BaseController<
     if (participateInMetaMetrics) {
       this.trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
+      this.trackTracesAfterMetricsOptIn();
+      this.clearTracesAfterMetricsOptIn();
     } else if (this.state.marketingCampaignCookieId) {
       this.setMarketingCampaignCookieId(null);
     }
@@ -989,9 +1022,13 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(
         `Must specify event. Event was: ${
           payload.event
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         }. Payload keys were: ${Object.keys(payload)}. ${
           typeof payload.properties === 'object'
-            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Payload property keys were: ${Object.keys(payload.properties)}`
             : ''
         }`,
       );
@@ -1025,6 +1062,90 @@ export default class MetaMetricsController extends BaseController<
     this.update((state) => {
       state.eventsBeforeMetricsOptIn.push(event);
     });
+  }
+
+  // Track all queued traces after a user opted into metrics.
+  trackTracesAfterMetricsOptIn(): void {
+    const { tracesBeforeMetricsOptIn } = this.state;
+    tracesBeforeMetricsOptIn.forEach((bufferedTrace) => {
+      if (bufferedTrace.type === 'start') {
+        trace(bufferedTrace.request as TraceRequest);
+      } else if (bufferedTrace.type === 'end') {
+        endTrace(bufferedTrace.request as EndTraceRequest);
+      }
+    });
+  }
+
+  // Once we track queued traces after a user opts into metrics, we want to clear the trace queue.
+  clearTracesAfterMetricsOptIn(): void {
+    this.update((state) => {
+      state.tracesBeforeMetricsOptIn = [];
+    });
+  }
+
+  // It adds a trace into a queue, which is only tracked if a user opts into metrics.
+  addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
+    this.update((state) => {
+      state.tracesBeforeMetricsOptIn.push(traceData);
+    });
+  }
+
+  /**
+   * Buffered trace method that checks consent and either buffers or executes immediately
+   *
+   * @param request - The trace request
+   * @param fn - Optional callback function to trace
+   * @returns The result of the trace callback or undefined if buffered
+   */
+  bufferedTrace<TraceResultType>(
+    request: TraceRequest,
+    fn?: TraceCallback<TraceResultType>,
+  ): TraceResultType | undefined {
+    if (this.state.participateInMetaMetrics) {
+      return fn ? trace(request, fn) : (trace(request) as TraceResultType);
+    }
+
+    // Extract parent trace name if parentContext exists
+    let parentTraceName: string | undefined;
+    if (request.parentContext && typeof request.parentContext === 'object') {
+      const parentSpan = request.parentContext as { _name?: string };
+      parentTraceName = parentSpan?._name;
+    }
+
+    this.addTraceBeforeMetricsOptIn({
+      type: 'start',
+      request: {
+        ...request,
+        parentContext: undefined as unknown as Json, // Remove original parentContext to avoid invalid references
+        // Use Date.now() as performance.timeOrigin is only valid for measuring durations within
+        // the same session; it won't produce valid event times for Sentry if buffered and flushed later
+        startTime: request.startTime ?? Date.now(),
+      },
+      parentTraceName, // Store the parent trace name for later reconnection
+    });
+
+    return undefined;
+  }
+
+  /**
+   * Buffered end trace method that checks consent and either buffers or executes immediately
+   *
+   * @param request - The end trace request
+   */
+  bufferedEndTrace(request: EndTraceRequest): void {
+    if (this.state.participateInMetaMetrics) {
+      endTrace(request);
+    } else {
+      this.addTraceBeforeMetricsOptIn({
+        type: 'end',
+        request: {
+          ...request,
+          // Use Date.now() as performance.timeOrigin is only valid for measuring durations within
+          // the same session; it won't produce valid event times for Sentry if buffered and flushed later
+          timestamp: request.timestamp ?? Date.now(),
+        },
+      });
+    }
   }
 
   // Add or update traits for tracking.

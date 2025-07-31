@@ -36,3 +36,13 @@ export const oldestPendingConfirmationSelector = createDeepEqualSelector(
   firstPendingConfirmationSelector,
   (firstPendingConfirmation) => firstPendingConfirmation,
 );
+
+export function selectEnableEnforcedSimulations(
+  state: ConfirmMetamaskState,
+  transactionId: string,
+): boolean {
+  return (
+    state.metamask.enableEnforcedSimulationsForTransactions[transactionId] ??
+    state.metamask.enableEnforcedSimulations
+  );
+}

@@ -101,18 +101,6 @@ describe('getAssetDetails', () => {
     expect(result.standard).toStrictEqual(TokenStandard.ERC20);
   });
 
-  it('throws an error with the token address if token data cannot be parsed', async () => {
-    const tokenAddress = '0xAddrEssToken';
-    const currentUserAddress = '0xAccouNtAddress';
-    const transactionData = '0xTransactionData';
-
-    parseStandardTokenTransactionData.mockReturnValue(undefined);
-
-    await expect(
-      getAssetDetails(tokenAddress, currentUserAddress, transactionData, []),
-    ).rejects.toThrow('Unable to detect valid token data');
-  });
-
   it('returns asset details for an erc721 token transaction', async () => {
     const erc721Params = {
       tokenAddress: '0xAddrEssToken',
@@ -212,5 +200,19 @@ describe('getAssetDetails', () => {
     expect(getTokenStandardAndDetails).toHaveBeenCalled();
     expect(result.name).toStrictEqual('myERC20Token');
     expect(result.symbol).toStrictEqual('MTK');
+  });
+
+  it('throws an error with the token address if token data cannot be parsed', async () => {
+    const tokenAddress = '0xAddrEssToken';
+    const currentUserAddress = '0xAccouNtAddress';
+    const transactionData = '0xTransactionData';
+
+    parseStandardTokenTransactionData.mockReturnValue(undefined);
+
+    await expect(
+      getAssetDetails(tokenAddress, currentUserAddress, transactionData, []),
+    ).rejects.toThrow(
+      `Unable to detect valid token data for token: 0xAddrEssToken`,
+    );
   });
 });

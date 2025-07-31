@@ -19,10 +19,36 @@ import {
 
 describe('Solana Wallet Standard - e2e tests', function () {
   describe('Solana Wallet Standard - Connect & disconnect', function () {
-    it('Should connect', async function () {
+    it('Should onboard and connect when there are no existing Solana accounts in the wallet', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          numberOfAccounts: 0,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.check_pageIsLoaded();
+
+          await connectSolanaTestDapp(driver, testDapp, { onboard: true });
+
+          const header = await testDapp.getHeader();
+
+          const connectionStatus = await header.getConnectionStatus();
+          assertConnected(connectionStatus);
+
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+        },
+      );
+    });
+
+    it('Should connect when there is an existing Solana account in the wallet', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          numberOfAccounts: 1,
           title: this.test?.fullTitle(),
         },
         async (driver) => {

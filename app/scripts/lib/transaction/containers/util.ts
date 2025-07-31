@@ -1,5 +1,6 @@
 import {
   TransactionContainerType,
+  TransactionController,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
@@ -23,32 +24,24 @@ export async function applyTransactionContainers({
 }): Promise<{
   updateTransaction: (transaction: TransactionMeta) => void;
 }> {
-  const { chainId, simulationData, txParams, txParamsOriginal } =
-    transactionMeta;
+  const { chainId, simulationData, txParamsOriginal } = transactionMeta;
+  const finalMetadata = cloneDeep(transactionMeta);
 
-  const params = txParamsOriginal ?? txParams;
-  const updateTransactions: ((transaction: TransactionMeta) => void)[] = [];
+  if (txParamsOriginal) {
+    finalMetadata.txParams = cloneDeep(txParamsOriginal);
+  }
 
   if (types.includes(TransactionContainerType.EnforcedSimulations)) {
     const { updateTransaction } = await enforceSimulations({
       chainId,
       messenger,
       simulationData: simulationData ?? { tokenBalanceChanges: [] },
-      txParams: params,
+      txParams: finalMetadata.txParams,
       useRealSignature: isApproved,
     });
 
-    updateTransactions.push(updateTransaction);
+    updateTransaction(finalMetadata);
   }
-
-  const updateTransaction = (transaction: TransactionMeta) => {
-    updateTransactions.forEach((update) => {
-      update(transaction);
-    });
-  };
-
-  const finalMetadata = cloneDeep(transactionMeta);
-  updateTransaction(finalMetadata);
 
   let newGas: Hex | undefined;
 
@@ -69,13 +62,55 @@ export async function applyTransactionContainers({
 
   return {
     updateTransaction: (transaction: TransactionMeta) => {
-      updateTransaction(transaction);
-
       transaction.containerTypes = types;
+      transaction.txParams = cloneDeep(finalMetadata.txParams);
 
       if (newGas) {
         transaction.txParams.gas = newGas;
       }
     },
   };
+}
+
+export async function applyTransactionContainersExisting({
+  containerTypes,
+  transactionId,
+  messenger,
+  updateEditableParams,
+}: {
+  containerTypes: TransactionContainerType[];
+  transactionId: string;
+  messenger: TransactionControllerInitMessenger;
+  updateEditableParams: TransactionController['updateEditableParams'];
+}) {
+  const transactionControllerState = await messenger.call(
+    'TransactionController:getState',
+  );
+
+  const transactionMeta = transactionControllerState.transactions.find(
+    (tx) => tx.id === transactionId,
+  );
+
+  if (!transactionMeta) {
+    throw new Error(`Transaction with ID ${transactionId} not found.`);
+  }
+
+  const { updateTransaction } = await applyTransactionContainers({
+    isApproved: false,
+    messenger,
+    transactionMeta,
+    types: containerTypes,
+  });
+
+  const newTransactionMeta = cloneDeep(transactionMeta);
+
+  updateTransaction(newTransactionMeta);
+
+  updateEditableParams(transactionId, {
+    containerTypes,
+    data: newTransactionMeta.txParams.data,
+    gas: newTransactionMeta.txParams.gas,
+    to: newTransactionMeta.txParams.to,
+    value: newTransactionMeta.txParams.value,
+  });
 }

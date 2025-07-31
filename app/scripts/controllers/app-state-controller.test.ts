@@ -45,6 +45,8 @@ const extensionMock = {
   },
 } as unknown as jest.Mocked<Browser>;
 
+const TRANSACTION_ID_MOCK = '123-456';
+
 describe('AppStateController', () => {
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', async () => {
@@ -606,6 +608,46 @@ describe('AppStateController', () => {
           expect(
             controller.getThrottledOriginState('example.com'),
           ).toStrictEqual({ rejections: 1, lastRejection: expect.any(Number) });
+        });
+      });
+    });
+  });
+
+  describe('setEnableEnforcedSimulations', () => {
+    it('updates the enableEnforcedSimulations state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnableEnforcedSimulations(false);
+        expect(controller.state.enableEnforcedSimulations).toBe(false);
+
+        controller.setEnableEnforcedSimulations(true);
+        expect(controller.state.enableEnforcedSimulations).toBe(true);
+      });
+    });
+  });
+
+  describe('setEnableEnforcedSimulationsForTransaction', () => {
+    it('updates the enableEnforcedSimulationsForTransactions state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnableEnforcedSimulationsForTransaction(
+          TRANSACTION_ID_MOCK,
+          true,
+        );
+
+        expect(
+          controller.state.enableEnforcedSimulationsForTransactions,
+        ).toStrictEqual({
+          [TRANSACTION_ID_MOCK]: true,
+        });
+
+        controller.setEnableEnforcedSimulationsForTransaction(
+          TRANSACTION_ID_MOCK,
+          false,
+        );
+
+        expect(
+          controller.state.enableEnforcedSimulationsForTransactions,
+        ).toStrictEqual({
+          [TRANSACTION_ID_MOCK]: false,
         });
       });
     });

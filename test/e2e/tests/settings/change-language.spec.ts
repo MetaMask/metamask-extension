@@ -23,9 +23,8 @@ const selectors = {
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
   buttonText: { css: '[data-testid="auto-lockout-button"]', text: 'Gem' },
   dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'p' },
-  accountTooltipText: '[data-original-title="क्लिपबोर्ड पर कॉपी करें"]',
-  bridgeTooltipText: '[data-original-title="इस नेटवर्क पर उपलब्ध नहीं है"]',
   hyperText: { text: 'Tudjon meg többet', tag: 'a' },
+  discoverText: { text: 'खोजें', tag: 'a' },
   headerText: { text: 'الإعدادات', tag: 'h3' },
 };
 
@@ -194,25 +193,13 @@ describe('Settings - general tab', function (this: Suite) {
         const homepage = new Homepage(driver);
         await homepage.check_pageIsLoaded();
         await homepage.check_expectedBalanceIsDisplayed();
-
-        // Validate the account tooltip
-        const isAccountTooltipChanged = await driver.isElementPresent(
-          selectors.accountTooltipText,
+        const isDiscoverButtonTextChanged = await driver.isElementPresent(
+          selectors.discoverText,
         );
         assert.equal(
-          isAccountTooltipChanged,
+          isDiscoverButtonTextChanged,
           true,
-          'Language changes is not reflected on the account toolTip',
-        );
-
-        // Validate the bridge tooltip
-        const isBridgeTooltipChanged = await driver.isElementPresent(
-          selectors.bridgeTooltipText,
-        );
-        assert.equal(
-          isBridgeTooltipChanged,
-          true,
-          'Language changes is not reflected on the bridge toolTip',
+          'Language change is not reflected in headers',
         );
       },
     );

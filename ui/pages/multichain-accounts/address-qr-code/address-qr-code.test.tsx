@@ -4,10 +4,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter, Route } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import {
-  ACCOUNT_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_QR_CODE_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ACCOUNT_DETAILS_QR_CODE_ROUTE } from '../../../helpers/constants/routes';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -33,11 +30,11 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
 }));
 
 // Mock React Router
-const mockHistoryPush = jest.fn();
+const mockHistoryGoBack = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
-    push: mockHistoryPush,
+    goBack: mockHistoryGoBack,
   }),
 }));
 
@@ -168,9 +165,7 @@ describe('AddressQRCode', () => {
       const backButton = screen.getByLabelText('Back');
       fireEvent.click(backButton);
 
-      expect(mockHistoryPush).toHaveBeenCalledWith(
-        `${ACCOUNT_DETAILS_ROUTE}/${mockAccount.address}`,
-      );
+      expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
     });
   });
 

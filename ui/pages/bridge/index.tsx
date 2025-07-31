@@ -6,20 +6,17 @@ import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
   DEFAULT_ROUTE,
-  SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import { resetBackgroundSwapsState } from '../../store/actions';
-import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
 import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
-import { getIsBridgeEnabled } from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -53,7 +50,6 @@ const CrossChainSwap = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const isBridgeEnabled = useSelector(getIsBridgeEnabled);
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   const resetControllerAndInputStates = async () => {
@@ -88,13 +84,13 @@ const CrossChainSwap = () => {
   useTxAlerts();
 
   const redirectToDefaultRoute = async () => {
+    await resetControllerAndInputStates();
     history.push({
       pathname: DEFAULT_ROUTE,
       state: { stayOnHomePage: true },
     });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
-    await resetControllerAndInputStates();
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -128,24 +124,15 @@ const CrossChainSwap = () => {
       </Header>
       <Content padding={0}>
         <Switch>
-          <FeatureToggledRoute
-            redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-            flag={isBridgeEnabled}
-            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
-            render={() => {
-              return (
-                <>
-                  <BridgeTransactionSettingsModal
-                    isOpen={isSettingsModalOpen}
-                    onClose={() => {
-                      setIsSettingsModalOpen(false);
-                    }}
-                  />
-                  <PrepareBridgePage />
-                </>
-              );
-            }}
-          />
+          <Route path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}>
+            <BridgeTransactionSettingsModal
+              isOpen={isSettingsModalOpen}
+              onClose={() => {
+                setIsSettingsModalOpen(false);
+              }}
+            />
+            <PrepareBridgePage />
+          </Route>
           <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
             <Content>
               <AwaitingSignatures />

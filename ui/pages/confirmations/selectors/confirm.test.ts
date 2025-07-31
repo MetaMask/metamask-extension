@@ -39,6 +39,8 @@ describe('confirm selectors', () => {
         },
       },
       approvalFlows: [],
+      enableEnforcedSimulations: false,
+      enableEnforcedSimulationsForTransactions: {},
     },
   };
 

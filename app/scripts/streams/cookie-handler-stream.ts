@@ -163,6 +163,8 @@ const onDisconnectDestroyCookieStreams = () => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.warn(`${err} Resetting the cookie streams.`);
     setTimeout(setupCookieHandlerExtStreams, 1000);
   }

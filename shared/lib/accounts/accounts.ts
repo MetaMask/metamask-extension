@@ -12,9 +12,9 @@ import { Messenger } from '@metamask/base-controller';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
 import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/accounts-controller';
-import { captureException } from '@sentry/browser';
 ///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../constants/multichain/networks';
+import { captureException } from '../sentry';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 

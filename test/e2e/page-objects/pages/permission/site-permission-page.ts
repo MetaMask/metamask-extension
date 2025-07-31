@@ -112,6 +112,8 @@ class SitePermissionPage {
    * @param accountLabels - Account labels to edit
    */
   async editPermissionsForAccount(accountLabels: string[]): Promise<void> {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.log(`Edit permissions for accounts: ${accountLabels}`);
     await this.openAccountPermissionsModal();
 
@@ -129,6 +131,8 @@ class SitePermissionPage {
    * @param networkNames - Network names to edit
    */
   async editPermissionsForNetwork(networkNames: string[]): Promise<void> {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.log(`Edit permissions for networks: ${networkNames}`);
     await this.openNetworkPermissionsModal();
 

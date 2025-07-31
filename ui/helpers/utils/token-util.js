@@ -268,7 +268,9 @@ export async function getAssetDetails(
 ) {
   const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
-    throw new Error('Unable to detect valid token data');
+    throw new Error(
+      `Unable to detect valid token data for token: ${tokenAddress}`,
+    );
   }
 
   // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:

@@ -246,7 +246,7 @@ const withMetamaskConnectedToMainnet = {
   },
 };
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 describe('Defi positions list', () => {
   beforeEach(() => {

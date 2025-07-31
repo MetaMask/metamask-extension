@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   type UpdateNetworkFields,
+  NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString, parseCaipChainId } from '@metamask/utils';
@@ -31,6 +32,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
+  setActiveNetwork,
   setEditedNetwork,
   setEnabledNetworks,
   setTokenNetworkFilter,
@@ -306,7 +308,16 @@ export const NetworksForm = ({
             );
           }
         } else {
-          await dispatch(addNetwork(networkPayload));
+          const addedNetworkConfiguration = (await dispatch(
+            addNetwork(networkPayload),
+          )) as unknown as NetworkConfiguration;
+
+          const networkClientId =
+            addedNetworkConfiguration?.rpcEndpoints?.[
+              addedNetworkConfiguration.defaultRpcEndpointIndex
+            ]?.networkClientId;
+
+          await dispatch(setActiveNetwork(networkClientId));
           await dispatch(
             setEnabledNetworks([networkPayload.chainId], namespace),
           );

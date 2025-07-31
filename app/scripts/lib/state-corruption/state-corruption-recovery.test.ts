@@ -84,7 +84,7 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
                   method: '__INVALID__',
                 },
               });
-            } else if (message.data.method === 'RELOAD') {
+            } else if (message.data.method === 'RELOAD_WINDOW') {
               reloadFn(ui);
             }
           });

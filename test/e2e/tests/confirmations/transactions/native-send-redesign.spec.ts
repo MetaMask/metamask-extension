@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL } from '../../../constants';
-import {
-  unlockWallet,
-  veryLargeDelayMs,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
@@ -65,7 +62,7 @@ describe('Confirmation Redesign Native Send', function () {
 async function createWalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
 
   const testDapp = new TestDapp(driver);
 
@@ -90,7 +87,7 @@ async function createWalletInitiatedTransactionAndAssertDetails(
 }
 
 async function createDAppInitiatedTransactionAndAssertDetails(driver: Driver) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
 
   const testDapp = new TestDapp(driver);
 

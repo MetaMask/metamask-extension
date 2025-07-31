@@ -468,8 +468,8 @@ describe('preferences controller', () => {
 
   describe('setTheme', () => {
     const { controller } = setupController({});
-    it('should default to value "OS"', () => {
-      expect(controller.state.theme).toStrictEqual('os');
+    it('should default to value "Dark"', () => {
+      expect(controller.state.theme).toStrictEqual('dark');
     });
 
     it('should set the setTheme property in state', () => {

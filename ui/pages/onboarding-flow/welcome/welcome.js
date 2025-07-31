@@ -13,7 +13,11 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
-import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
+import {
+  getCurrentKeyring,
+  getFirstTimeFlowType,
+  getIsParticipateInMetaMetricsSet,
+} from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
@@ -27,6 +31,7 @@ import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/module
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
 import {
@@ -47,23 +52,28 @@ export default function OnboardingWelcome({
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
-
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
-        firstTimeFlowType === FirstTimeFlowType.socialImport
+        firstTimeFlowType === FirstTimeFlowType.socialImport ||
+        firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
-      } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
+        history.replace(
+          isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+        );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (getBrowserName() === PLATFORM_FIREFOX) {
           history.replace(ONBOARDING_COMPLETION_ROUTE);
@@ -79,8 +89,12 @@ export default function OnboardingWelcome({
     history,
     firstTimeFlowType,
     newAccountCreationInProgress,
+    isParticipateInMetaMetricsSet,
   ]);
+
   const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    trackEvent;
 
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -93,9 +107,14 @@ export default function OnboardingWelcome({
         account_type: MetaMetricsEventAccountType.Default,
       },
     });
+    bufferedTrace?.({
+      name: TraceName.OnboardingNewSrpCreateWallet,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext?.current,
+    });
 
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  }, [dispatch, history, trackEvent]);
+  }, [dispatch, history, trackEvent, onboardingParentContext, bufferedTrace]);
 
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -107,19 +126,63 @@ export default function OnboardingWelcome({
         account_type: MetaMetricsEventAccountType.Imported,
       },
     });
+    bufferedTrace?.({
+      name: TraceName.OnboardingExistingSrpImport,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext?.current,
+    });
 
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-  }, [dispatch, history, trackEvent]);
+  }, [dispatch, history, trackEvent, onboardingParentContext, bufferedTrace]);
 
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {
       if (isSeedlessOnboardingFeatureEnabled) {
-        const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
+        bufferedTrace?.({
+          name: TraceName.OnboardingSocialLoginAttempt,
+          op: TraceOperation.OnboardingUserJourney,
+          tags: { provider: socialConnectionType },
+          parentContext: onboardingParentContext?.current,
+        });
+        const isNewUser = await dispatch(
+          startOAuthLogin(
+            socialConnectionType,
+            bufferedTrace,
+            bufferedEndTrace,
+          ),
+        );
+        bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
         return isNewUser;
       }
       return true;
     },
-    [dispatch, isSeedlessOnboardingFeatureEnabled],
+    [
+      dispatch,
+      isSeedlessOnboardingFeatureEnabled,
+      onboardingParentContext,
+      bufferedTrace,
+      bufferedEndTrace,
+    ],
+  );
+
+  const handleSocialLoginError = useCallback(
+    (error, socialConnectionType) => {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      bufferedTrace?.({
+        name: TraceName.OnboardingSocialLoginError,
+        op: TraceOperation.OnboardingError,
+        tags: { provider: socialConnectionType, errorMessage },
+        parentContext: onboardingParentContext.current,
+      });
+      bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginError });
+      bufferedEndTrace?.({
+        name: TraceName.OnboardingSocialLoginAttempt,
+        data: { success: false },
+      });
+    },
+    [onboardingParentContext, bufferedTrace, bufferedEndTrace],
   );
 
   const onSocialLoginCreateClick = useCallback(
@@ -128,25 +191,50 @@ export default function OnboardingWelcome({
       setNewAccountCreationInProgress(true);
       await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
 
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletSetupStarted,
+        properties: {
+          account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+        },
+      });
+
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
+
+        // Track wallet setup completed for social login users
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.WalletSetupStarted,
+          event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
-            account_type: MetaMetricsEventAccountType.Social,
+            account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
           },
         });
         if (isNewUser) {
+          bufferedTrace?.({
+            name: TraceName.OnboardingNewSocialCreateWallet,
+            op: TraceOperation.OnboardingUserJourney,
+            parentContext: onboardingParentContext.current,
+          });
           history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
         } else {
           history.replace(ONBOARDING_ACCOUNT_EXIST);
         }
+      } catch (error) {
+        handleSocialLoginError(error, socialConnectionType);
       } finally {
         setIsLoggingIn(false);
       }
     },
-    [dispatch, handleSocialLogin, trackEvent, history],
+    [
+      dispatch,
+      handleSocialLogin,
+      trackEvent,
+      history,
+      onboardingParentContext,
+      handleSocialLoginError,
+      bufferedTrace,
+    ],
   );
 
   const onSocialLoginImportClick = useCallback(
@@ -154,27 +242,51 @@ export default function OnboardingWelcome({
       setIsLoggingIn(true);
       dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
 
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletImportStarted,
+        properties: {
+          account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+        },
+      });
+
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
 
+        // Track wallet login completed for existing social login users
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.WalletImportStarted,
+          event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
-            account_type: MetaMetricsEventAccountType.Social,
+            account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
           },
         });
 
         if (isNewUser) {
           history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
         } else {
+          bufferedTrace?.({
+            name: TraceName.OnboardingExistingSocialLogin,
+            op: TraceOperation.OnboardingUserJourney,
+            parentContext: onboardingParentContext.current,
+          });
           history.push(ONBOARDING_UNLOCK_ROUTE);
         }
+      } catch (error) {
+        handleSocialLoginError(error, socialConnectionType);
       } finally {
         setIsLoggingIn(false);
       }
     },
-    [dispatch, handleSocialLogin, trackEvent, history],
+    [
+      dispatch,
+      handleSocialLogin,
+      trackEvent,
+      history,
+      onboardingParentContext,
+      handleSocialLoginError,
+      bufferedTrace,
+    ],
   );
 
   const handleLoginError = useCallback((error) => {

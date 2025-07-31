@@ -39,6 +39,8 @@ function convertStandard(standard: SimulationTokenStandard) {
     case SimulationTokenStandard.erc1155:
       return TokenStandard.ERC1155;
     default:
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Unknown token standard: ${standard}`);
   }
 }

@@ -10,7 +10,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TokenList from '../../page-objects/pages/token-list';
-import { AssetPicker } from '../../page-objects/pages/asset-picker';
+import AssetPicker from '../../page-objects/pages/asset-picker';
 
 describe('AssetPickerSendFlow', function () {
   const chainId = CHAIN_IDS.MAINNET;

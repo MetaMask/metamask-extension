@@ -1315,6 +1315,14 @@ const slice = createSlice({
     updateRecipient: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
+
+      // If no transactions are found, reset to ADD_RECIPIENT state
+      if (!draftTransaction) {
+        state.stage = SEND_STAGES.ADD_RECIPIENT;
+        slice.caseReducers.validateSendState(state);
+        return;
+      }
+
       draftTransaction.recipient.error = null;
       state.recipientInput = '';
       draftTransaction.recipient.address = action.payload.address ?? '';
@@ -1975,20 +1983,6 @@ const slice = createSlice({
         if (draftTransaction) {
           draftTransaction.gas.gasLimit = action.payload.gasLimit;
           draftTransaction.gas.gasTotal = action.payload.gasTotal;
-          if (action.payload.chainHasChanged) {
-            // If the state was reinitialized as a result of the user changing
-            // the network from the network dropdown, then the selected asset is
-            // no longer valid and should be set to the native asset for the
-            // network.
-            draftTransaction.sendAsset.type = AssetType.native;
-            draftTransaction.sendAsset.balance =
-              draftTransaction.fromAccount?.balance ??
-              state.selectedAccount.balance;
-            draftTransaction.sendAsset.details = null;
-
-            draftTransaction.receiveAsset =
-              draftTransactionInitialState.receiveAsset;
-          }
         }
         slice.caseReducers.updateGasFeeEstimates(state, {
           payload: {

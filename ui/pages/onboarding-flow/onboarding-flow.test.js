@@ -18,6 +18,7 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_REVEAL_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
@@ -174,18 +175,19 @@ describe('Onboarding Flow', () => {
     expect(secureYourWallet).toBeInTheDocument();
   });
 
-  it('should render review recovery phrase', () => {
-    const { queryByTestId } = renderWithProvider(
+  it('should redirect to reveal recovery phrase when going to review recovery phrase without srp', () => {
+    const { history } = renderWithProvider(
       <OnboardingFlow />,
       store,
       ONBOARDING_REVIEW_SRP_ROUTE,
     );
 
-    const recoveryPhrase = queryByTestId('recovery-phrase');
-    expect(recoveryPhrase).toBeInTheDocument();
+    expect(history.location.pathname).toStrictEqual(
+      `${ONBOARDING_REVEAL_SRP_ROUTE}/`,
+    );
   });
 
-  it('should render to review recovery phrase from confirm recovery phrase', () => {
+  it('should redirect to reveal recovery phrase when going to confirm recovery phrase without srp', () => {
     const { history } = renderWithProvider(
       <OnboardingFlow />,
       store,
@@ -193,7 +195,7 @@ describe('Onboarding Flow', () => {
     );
 
     expect(history.location.pathname).toStrictEqual(
-      ONBOARDING_REVIEW_SRP_ROUTE,
+      `${ONBOARDING_REVEAL_SRP_ROUTE}/`,
     );
   });
 
@@ -277,9 +279,34 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding pin extension screen', () => {
+    const mockStateWithCurrentKeyring = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            accountId: {
+              address: '0x0000000000000000000000000000000000000000',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                  accounts: ['0x0000000000000000000000000000000000000000'],
+                },
+              },
+            },
+          },
+          selectedAccount: 'accountId',
+        },
+      },
+    };
+
+    const mockStoreWithCurrentKeyring = configureMockStore()(
+      mockStateWithCurrentKeyring,
+    );
+
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlow />,
-      store,
+      mockStoreWithCurrentKeyring,
       ONBOARDING_PIN_EXTENSION_ROUTE,
     );
 

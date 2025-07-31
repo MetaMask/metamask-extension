@@ -10,6 +10,9 @@ class SendTokenPage {
 
   private readonly assetPickerButton = '[data-testid="asset-picker-button"]';
 
+  private readonly multichainAssetPickerNetwork =
+    '[data-testid="multichain-asset-picker__network"]';
+
   private readonly backButton =
     '[data-testid="wallet-initiated-header-back-button"]';
 
@@ -75,6 +78,8 @@ class SendTokenPage {
 
   private readonly fiatFeeField = '[data-testid="native-currency"]';
 
+  private readonly sendFlowBackButton = '[aria-label="Back"]';
+
   private readonly tokenGasFeeDropdown =
     '[data-testid="selected-gas-fee-token-arrow"]';
 
@@ -113,6 +118,20 @@ class SendTokenPage {
 
   async clickAssetPickerButton() {
     await this.driver.clickElement(this.assetPickerButton);
+  }
+
+  async clickMultichainAssetPickerNetwork() {
+    await this.driver.clickElement(this.multichainAssetPickerNetwork);
+  }
+
+  async clickSendFlowBackButton() {
+    await this.driver.clickElement(this.sendFlowBackButton);
+    await this.driver.delay(2000); // Delay to ensure that the send page has cleared up
+  }
+
+  async clickFirstTokenListButton() {
+    const elements = await this.driver.findElements(this.tokenListButton);
+    await elements[0].click();
   }
 
   async clickAccountPickerButton() {

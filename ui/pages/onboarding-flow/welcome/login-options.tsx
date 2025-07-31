@@ -79,8 +79,6 @@ export default function LoginOptions({
   handleLogin: (loginType: LoginType) => void;
 }) {
   const t = useI18nContext();
-  // TODO: enable apple login once it's deployed securely.
-  const shouldDisableAppleLogin = true;
 
   return (
     <Modal
@@ -138,7 +136,6 @@ export default function LoginOptions({
             }
             marginBottom={2}
             onClick={() => handleLogin(LOGIN_TYPE.APPLE)}
-            disabled={shouldDisableAppleLogin}
           />
           <Box
             alignItems={AlignItems.center}
