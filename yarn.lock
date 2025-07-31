@@ -5386,16 +5386,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-api@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/account-api@npm:0.2.0"
-  dependencies:
-    "@metamask/keyring-api": "npm:^19.0.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-  checksum: 10/9c4d77facd8509423f0ccf0d953f4dd5a29594ea16b4b7e2e2403c19549d03fc60fb83115a397a0043903d373b3c09bf6f733e863aaa1252435377e3c1ca4716
-  languageName: node
-  linkType: hard
-
 "@metamask/account-api@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/account-api@npm:0.3.0"
@@ -5407,22 +5397,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/account-tree-controller@npm:0.6.0"
+"@metamask/account-tree-controller@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@metamask/account-tree-controller@npm:0.7.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
-    "@metamask/account-api": ^0.2.0
+    "@metamask/account-api": ^0.3.0
     "@metamask/accounts-controller": ^32.0.0
     "@metamask/keyring-controller": ^22.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/fd40bb5f86e44132dc3bb352cda82c97adfafbb5c42d568c9c66d900e3591129f96810032e79ffd8ee99e6348453efef4647531845683526bc71433ae141b93e
+  checksum: 10/512f3236fecbbf9bdae4251073299474c2ddeef0dee9320265dc41d08a5af9de2e8e247a2abd80c56a0d52abfec54ca786f4d58cf3be8128ccefa12ff76e713f
   languageName: node
   linkType: hard
 
@@ -5433,9 +5423,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^32.0.0":
-  version: 32.0.0
-  resolution: "@metamask/accounts-controller@npm:32.0.0"
+"@metamask/accounts-controller@npm:^32.0.1":
+  version: 32.0.1
+  resolution: "@metamask/accounts-controller@npm:32.0.1"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -5458,7 +5448,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/6c645f79ef355163bbbb2f1b131cdf1ae8dee60fd8d5961b77f0311ac1df4124c028438a255a44fe530a9e721484742cb2bc2e3baee7739eb503a6b7a13b8c3f
+  checksum: 10/2b5bb49124c07ff372bd269e805c405f04cc92d99bd5a71f1ea7d7a218fc13dd63650d7eafe3f0884d813aa513c033eb713dc0c8b61b61079e1c4c7a405687c6
   languageName: node
   linkType: hard
 
@@ -6717,11 +6707,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@metamask/multichain-account-service@npm:0.2.1"
+"@metamask/multichain-account-service@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/multichain-account-service@npm:0.3.0"
   dependencies:
-    "@metamask/account-api": "npm:^0.2.0"
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/keyring-api": "npm:^19.0.0"
     "@metamask/keyring-internal-api": "npm:^7.0.0"
@@ -6730,12 +6719,13 @@ __metadata:
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
   peerDependencies:
+    "@metamask/account-api": ^0.3.0
     "@metamask/accounts-controller": ^32.0.0
     "@metamask/keyring-controller": ^22.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/6432b62ae0306bfe7ef2699ff958d6c6894d316bce5ac568da65997f854ec0f203bcd46eba42cf71f9ec54994427806f6bfbe318bf100a0003735a1b55e99894
+  checksum: 10/621b52d53f1125a64b81dea9b70b45fafd55cbf7a4b2b41b2f581db9bcf692812da28038641cabecccd443a795a78509a6694b5171e2644c052c39f86cc32c2a
   languageName: node
   linkType: hard
 
@@ -7128,7 +7118,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^22.0.0":
+"@metamask/profile-sync-controller@npm:22.0.0":
   version: 22.0.0
   resolution: "@metamask/profile-sync-controller@npm:22.0.0"
   dependencies:
@@ -7147,6 +7137,28 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/77c33e45c22d50d2e170c910257fa131aa0d2f4ff3918e2e55cce6132ac18248e238bfac09ca03028276facc659ecfbcbc20334b8878511f05f0480b751f7839
+  languageName: node
+  linkType: hard
+
+"@metamask/profile-sync-controller@patch:@metamask/profile-sync-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-22.0.0-1f01869af8.patch":
+  version: 22.0.0
+  resolution: "@metamask/profile-sync-controller@patch:@metamask/profile-sync-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-22.0.0-1f01869af8.patch::version=22.0.0&hash=ccac89"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/snaps-sdk": "npm:^9.0.0"
+    "@metamask/snaps-utils": "npm:^11.0.0"
+    "@noble/ciphers": "npm:^0.5.2"
+    "@noble/hashes": "npm:^1.4.0"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    siwe: "npm:^2.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^32.0.0
+    "@metamask/keyring-controller": ^22.0.0
+    "@metamask/providers": ^22.0.0
+    "@metamask/snaps-controllers": ^14.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/5bfb711ec76f48041dd68fda97ca531a1db22ac50eaba7672e3391269b64aaa855952438055954c791a23db20c47631d54ff559e09d4f4354d2111e649d8d5d9
   languageName: node
   linkType: hard
 
@@ -7504,17 +7516,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:1.36.0":
-  version: 1.36.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.36.0"
-  checksum: 10/3bdc8d14be76e57c8b0a1244be7dfaa533c61827bb06921b8e8fbb3159e853808ccfcfa3fd718dadda370a445eebc3a93c25cb5ebcb1e59ec1339b7aa0498a24
-  languageName: node
-  linkType: hard
-
-"@metamask/solana-wallet-snap@patch:@metamask/solana-wallet-snap@npm%3A1.36.0#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.36.0-bc691d3aa4.patch":
-  version: 1.36.0
-  resolution: "@metamask/solana-wallet-snap@patch:@metamask/solana-wallet-snap@npm%3A1.36.0#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.36.0-bc691d3aa4.patch::version=1.36.0&hash=45324a"
-  checksum: 10/80339930cc3047e3d5ea71f0069537c4d52f61723ecb6b7613b2f1b98a64115040a368a78f6eb45f9d54ff6bfddb7825d244d6221ad7b7b6f48f0e1a4692c73a
+"@metamask/solana-wallet-snap@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@metamask/solana-wallet-snap@npm:2.1.3"
+  checksum: 10/0e4e1a3619e33f5a6da8b668571f9491e9111b7e30433f6fcc270c3b9ccc317fe763553578c05a45731c5144ac332e27e59184e65a18cf0aa5ddcf6cfc2b1414
   languageName: node
   linkType: hard
 
@@ -32142,9 +32147,9 @@ __metadata:
     "@material-ui/core": "npm:^4.12.4"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-api": "npm:^0.3.0"
-    "@metamask/account-tree-controller": "npm:^0.6.0"
+    "@metamask/account-tree-controller": "npm:^0.7.0"
     "@metamask/account-watcher": "npm:^4.1.3"
-    "@metamask/accounts-controller": "npm:^32.0.0"
+    "@metamask/accounts-controller": "npm:^32.0.1"
     "@metamask/address-book-controller": "npm:^6.1.0"
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
@@ -32205,7 +32210,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:1.1.2"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:^0.2.1"
+    "@metamask/multichain-account-service": "npm:^0.3.0"
     "@metamask/multichain-api-client": "npm:^0.6.4"
     "@metamask/multichain-api-middleware": "npm:1.0.0"
     "@metamask/multichain-network-controller": "npm:^0.11.0"
@@ -32223,7 +32228,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.6.0"
-    "@metamask/profile-sync-controller": "npm:^22.0.0"
+    "@metamask/profile-sync-controller": "patch:@metamask/profile-sync-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-22.0.0-1f01869af8.patch"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
@@ -32239,7 +32244,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.4.0"
     "@metamask/snaps-sdk": "npm:^9.3.0"
     "@metamask/snaps-utils": "npm:^11.2.0"
-    "@metamask/solana-wallet-snap": "patch:@metamask/solana-wallet-snap@npm%3A1.36.0#~/.yarn/patches/@metamask-solana-wallet-snap-npm-1.36.0-bc691d3aa4.patch"
+    "@metamask/solana-wallet-snap": "npm:^2.1.3"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.2.0"
     "@metamask/superstruct": "npm:^3.2.1"

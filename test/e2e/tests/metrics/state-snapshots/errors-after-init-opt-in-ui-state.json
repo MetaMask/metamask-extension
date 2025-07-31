@@ -386,6 +386,7 @@
   },
   "ramps": "object",
   "send": "object",
+  "smartAccounts": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }
 }
