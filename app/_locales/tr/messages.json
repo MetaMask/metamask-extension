@@ -5440,12 +5440,6 @@
   "slideMultiSrpTitle": {
     "message": "Birden fazla Gizli Kurtarma İfadesi ekleyin"
   },
-  "slideRemoteModeDescription": {
-    "message": "Soğuk cüzdanınızı kablosuz olarak kullanın"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Soğuk depolama, hızlı erişim"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Aynı adres, daha akıllı özellikler"
   },
@@ -6824,9 +6818,6 @@
   "troubleConnectingToWallet": {
     "message": "$1 ile bağlantı kurmada sorun yaşıyoruz, $2 kısmını inceleyip tekrar deneyin.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
   },
   "tryAgain": {
     "message": "Tekrar dene"
