@@ -403,20 +403,25 @@ async function setupProviderConnection(connectionStream) {
 
   await providerStream.initialize();
 
-  if (!global.ethereumProvider) {
+  if (global.ethereumProvider) {
+    _stream = providerStream;
+  } else {
     // we need to proxy all properties on the provider to the global object,
     // and swap the proxied object out if it changes later
-    _stream = providerStream;
-    const proxy = new Proxy({}, {
-      get: (_, prop) => {
-        if (prop in _stream) {
-          return _stream[prop].bind(_stream);
-        }
+    const proxy = new Proxy(
+      {},
+      {
+        get: (_, prop) => {
+          if (prop in _stream) {
+            return _stream[prop].bind(_stream);
+          } else {
+            return undefined;
+          }
+        },
       },
-    });
+    );
 
     global.ethereumProvider = proxy;
-  } else {
     _stream = providerStream;
   }
 }
