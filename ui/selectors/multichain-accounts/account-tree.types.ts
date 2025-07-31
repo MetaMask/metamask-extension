@@ -8,6 +8,11 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { MergedInternalAccount } from '../selectors.types';
 
+export type WalletMetadata = {
+  id: string;
+  name: string;
+};
+
 export type AccountTreeState = {
   wallets: {
     [walletId: AccountWalletId]: AccountWalletObject;
