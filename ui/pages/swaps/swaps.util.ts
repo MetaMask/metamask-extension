@@ -212,7 +212,6 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
 
 export async function fetchTopAssetsList(
   chainId: string,
-  useBridgeApi?: boolean,
 ): Promise<{ address: Hex }[]> {
   if (
     !Object.values(CHAIN_IDS).includes(
@@ -221,7 +220,7 @@ export async function fetchTopAssetsList(
   ) {
     return [];
   }
-  const topAssetsUrl = getBaseApi('topAssets', chainId, useBridgeApi);
+  const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
     (await fetchWithCache({
       url: topAssetsUrl,

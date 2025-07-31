@@ -321,7 +321,6 @@ const PrepareBridgePage = () => {
     selectedDestinationAccount !== null && 'id' in selectedDestinationAccount
       ? selectedDestinationAccount.id
       : undefined,
-    isUnifiedUIEnabled,
   );
 
   const { flippedRequestProperties } = useRequestProperties();
