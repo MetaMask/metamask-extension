@@ -19,7 +19,6 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
-  ONBOARDING_ERROR_ROUTE,
 } from '../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
@@ -72,7 +71,6 @@ describe('Onboarding Flow', () => {
     },
     appState: {
       externalServicesOnboardingToggleState: true,
-      onboardingErrorReport: null,
     },
   };
 
@@ -105,9 +103,6 @@ describe('Onboarding Flow', () => {
       },
       localeMessages: {
         currentLocale: 'en',
-      },
-      appState: {
-        onboardingErrorReport: null,
       },
     };
 
@@ -339,37 +334,5 @@ describe('Onboarding Flow', () => {
 
     const onboardingMetametrics = queryByTestId('experimental-area');
     expect(onboardingMetametrics).toBeInTheDocument();
-  });
-
-  it('should redirect to onboarding error page when the error thrown in login', () => {
-    const onboardingErrorState = {
-      metamask: {
-        internalAccounts: {
-          accounts: {},
-          selectedAccount: '',
-        },
-        metaMetricsId: '0x00000000',
-        keyrings: [],
-      },
-      localeMessages: {
-        currentLocale: 'en',
-      },
-      appState: {
-        onboardingErrorReport: {
-          error: new Error('login error'),
-          view: 'welcome',
-        },
-      },
-    };
-
-    const onboardingErrorStore = configureMockStore()(onboardingErrorState);
-
-    const { history } = renderWithProvider(
-      <OnboardingFlow />,
-      onboardingErrorStore,
-      ONBOARDING_WELCOME_ROUTE,
-    );
-
-    expect(history.location.pathname).toStrictEqual(ONBOARDING_ERROR_ROUTE);
   });
 });

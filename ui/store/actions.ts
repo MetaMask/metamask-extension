@@ -6,7 +6,6 @@
 import { ReactFragment } from 'react';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
@@ -61,6 +60,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -261,6 +261,10 @@ export function resetOAuthLoginState() {
 
     try {
       await submitRequestToBackground('resetOAuthLoginState');
+
+      dispatch({
+        type: actionConstants.RESET_SOCIAL_LOGIN_ONBOARDING,
+      });
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
@@ -3954,10 +3958,17 @@ export function resetOnboarding(): ThunkAction<
 > {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     try {
-      await dispatch(setSeedPhraseBackedUp(false));
+      const isSocialLoginFlow = getIsSocialLoginFlow(getState());
       dispatch(resetOnboardingAction());
+
+      if (isSocialLoginFlow) {
+        await dispatch(resetOAuthLoginState());
+      }
     } catch (err) {
       console.error(err);
     }
@@ -7094,13 +7105,4 @@ export async function applyTransactionContainersExisting(
     'applyTransactionContainersExisting',
     [transactionId, containerTypes],
   );
-}
-
-export function setOnboardingErrorReport(
-  errorData: { error: Error; view: string } | null,
-) {
-  return {
-    type: actionConstants.SET_ONBOARDING_ERROR_REPORT,
-    payload: errorData,
-  };
 }
