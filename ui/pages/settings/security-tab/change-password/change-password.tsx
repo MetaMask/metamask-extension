@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -25,7 +25,11 @@ import { isBeta, isFlask } from '../../../../helpers/utils/build-types';
 import Mascot from '../../../../components/ui/mascot';
 import Spinner from '../../../../components/ui/spinner';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { changePassword, verifyPassword } from '../../../../store/actions';
+import {
+  changePassword,
+  checkIsSeedlessPasswordOutdated,
+  verifyPassword,
+} from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import { setShowPasswordChangeToast } from '../../../../components/app/toast-master/utils';
@@ -150,6 +154,15 @@ const ChangePassword = () => {
       </span>
     </a>
   );
+
+  useEffect(() => {
+    (async () => {
+      // check if the seedless password is outdated as long as the user land on the change password page
+      if (isSocialLoginFlow) {
+        await dispatch(checkIsSeedlessPasswordOutdated());
+      }
+    })();
+  }, [dispatch, isSocialLoginFlow]);
 
   return (
     <Box padding={4} className="change-password">
