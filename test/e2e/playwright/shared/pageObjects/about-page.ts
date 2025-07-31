@@ -10,7 +10,7 @@ export class AboutPage {
   constructor(page: Page) {
     this.page = page;
     this.aboutPageTitle = this.page.locator('h4:has-text("About")');
-    this.metaMaskHeaderText = this.page.locator('div:has-text("MetaMask is designed and built around the world.")');
+    this.metaMaskHeaderText = this.page.locator('.info-tab__item').filter({ hasText: 'MetaMask is designed and built around the world.' });
     this.metaMaskVersionHeader = this.page.locator('.info-tab__version-header:has-text("MetaMask Version")');
     this.metaMaskVersionNumber = this.page.locator('.info-tab__version-number');
   }
