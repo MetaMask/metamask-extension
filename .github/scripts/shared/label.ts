@@ -33,6 +33,12 @@ export const needsTriageLabel: Label = {
   description: 'Issue needs to be triaged',
 };
 
+export const areaSentryLabel: Label = {
+  name: 'area-sentry',
+  color: '5319E7',
+  description: 'Issue from Sentry',
+};
+
 export const flakyTestsLabel: Label = {
   name: 'flaky tests',
   color: 'BE564E',
