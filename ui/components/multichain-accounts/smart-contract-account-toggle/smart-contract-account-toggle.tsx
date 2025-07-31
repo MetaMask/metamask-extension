@@ -63,13 +63,13 @@ export const SmartContractAccountToggle = ({
 
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
-  // Use pendingToggleState as primary source, fallback to actual account state
+  // Use toggleState as primary source, fallback to actual account state
   const toggleValue = toggleState ?? addressSupportSmartAccount;
 
   // Keep toggle disabled when user has pending intent OR when there are pending requests
   const isToggleDisabled = hasPendingRequests || hasUserInteracted;
 
-  // Check account state on mount and when no pending requests
+  // Check account state on mount and when transactions complete
   useEffect(() => {
     if (!hasPendingRequests) {
       const checkUpgradeStatus = async () => {
@@ -82,7 +82,41 @@ export const SmartContractAccountToggle = ({
       };
       checkUpgradeStatus();
     }
-  }, [hasPendingRequests, toggleState, isUpgraded, address, isSupported]);
+  }, [hasPendingRequests, isUpgraded, address, isSupported]);
+
+  // Separate effect for mismatch detection when toggleState changes
+  // Only runs when safe to check (no pending requests, user not actively clicking)
+  useEffect(() => {
+    if (!hasPendingRequests && toggleState !== null && !hasUserInteracted) {
+      const checkMismatch = async () => {
+        try {
+          const upgraded = await isUpgraded(address);
+
+          // If user intent doesn't match blockchain reality, clear the intent
+          if (toggleState !== upgraded) {
+            dispatch(
+              setToggleState({
+                address,
+                chainId: chainIdHex,
+                value: null,
+              }),
+            );
+          }
+        } catch (error) {
+          // If we can't check, assume no mismatch to avoid clearing valid user intent
+        }
+      };
+      checkMismatch();
+    }
+  }, [
+    toggleState,
+    hasPendingRequests,
+    hasUserInteracted,
+    isUpgraded,
+    address,
+    dispatch,
+    chainIdHex,
+  ]);
 
   const findAndRedirectToTransaction = useCallback(() => {
     const matchingTransactions = unconfirmedTransactions.filter(

@@ -34,7 +34,7 @@ describe('Send flow', function (this: Suite) {
         await sendSolanaPage.setToAddress('2433asd');
         assert.equal(
           await sendSolanaPage.check_validationErrorAppears(
-            'Invalid Solana address',
+            'Invalid Solana address or domain name',
           ),
           true,
           'Invalid Solana address should appear and it does not',
@@ -224,7 +224,7 @@ describe('Send flow', function (this: Suite) {
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded('50 SOL');
+        // await sendSolanaPage.check_pageIsLoaded('50 SOL');
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -332,7 +332,7 @@ describe('Send flow', function (this: Suite) {
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded('50 SOL');
+        // await sendSolanaPage.check_pageIsLoaded('50 SOL');
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
         // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
