@@ -919,11 +919,26 @@
         "define": true
       },
       "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
+      }
+    },
+    "tailwindcss>sucrase>@jridgewell/gen-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
     "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "globals": {
+        "define": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
       "globals": {
         "define": true
       }
@@ -3090,7 +3105,6 @@
         "os.cpus": true,
         "os.platform": true,
         "path.basename": true,
-        "path.isAbsolute": true,
         "path.resolve": true,
         "stream.PassThrough": true,
         "stream.Readable": true
@@ -5278,7 +5292,7 @@
       },
       "packages": {
         "tailwindcss>postcss-js>camelcase-css": true,
-        "postcss": true
+        "tailwindcss>postcss": true
       }
     },
     "stylelint>postcss-less": {
@@ -5304,8 +5318,8 @@
     },
     "tailwindcss>postcss-nested": {
       "packages": {
-        "postcss": true,
-        "stylelint>postcss-selector-parser": true
+        "stylelint>postcss-selector-parser": true,
+        "tailwindcss>postcss": true
       }
     },
     "stylelint>postcss-reporter": {
@@ -5486,6 +5500,34 @@
       "packages": {
         "stylelint>sugarss>postcss>picocolors": true,
         "stylelint>sugarss>postcss>source-map": true
+      }
+    },
+    "tailwindcss>postcss": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true
+      },
+      "globals": {
+        "Buffer": true,
+        "URL": true,
+        "atob": true,
+        "btoa": true,
+        "console": true,
+        "process.env.LANG": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "nanoid": true,
+        "postcss>picocolors": true,
+        "postcss>source-map-js": true
       }
     },
     "eslint-plugin-prettier>prettier-linter-helpers": {
@@ -7561,7 +7603,7 @@
     },
     "tailwindcss>sucrase": {
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "tailwindcss>sucrase>@jridgewell/gen-mapping": true,
         "tailwindcss>sucrase>lines-and-columns": true,
         "tailwindcss>sucrase>ts-interface-checker": true
       }
@@ -7693,10 +7735,10 @@
         "chokidar>normalize-path": true,
         "tailwindcss>object-hash": true,
         "postcss>picocolors": true,
-        "postcss": true,
         "tailwindcss>postcss-js": true,
         "tailwindcss>postcss-nested": true,
         "stylelint>postcss-selector-parser": true,
+        "tailwindcss>postcss": true,
         "tailwindcss>sucrase": true
       }
     },
