@@ -29,7 +29,6 @@ import {
   PreferencesControllerState,
 } from '../../controllers/preferences-controller';
 import { isRelaySupported as isRelaySupportedOriginal } from './transaction-relay';
-import { getSendBundleSupportedChains } from './transaction-send-bundle';
 import {
   AtomicCapabilityStatus,
   EIP5792Messenger,
@@ -37,6 +36,7 @@ import {
   getCapabilities,
   processSendCalls,
 } from './eip5792';
+import { getSendBundleSupportedChains } from './sentinel-api';
 
 const CHAIN_ID_MOCK = '0x123';
 const CHAIN_ID_2_MOCK = '0xabc';

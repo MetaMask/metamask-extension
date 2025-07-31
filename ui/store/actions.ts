@@ -7064,6 +7064,12 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
   ]);
 }
 
+export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
+  return await submitRequestToBackground<boolean>('isSendBundleSupported', [
+    chainId,
+  ]);
+}
+
 /**
  * Sets the preference for skipping the interstitial page when opening a deep link.
  *

@@ -8,7 +8,10 @@ import {
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
-import { isRelaySupported } from '../../../../store/actions';
+import {
+  isRelaySupported,
+  isSendBundleSupported,
+} from '../../../../store/actions';
 
 export function useIsGaslessSupported() {
   const { currentConfirmation: transactionMeta } =
@@ -40,13 +43,22 @@ export function useIsGaslessSupported() {
     return isRelaySupported(chainId);
   }, [chainId, isSmartTransaction]);
 
+  const { value: sendBundleSupportsChain } = useAsyncResult(async () => {
+    if (isSmartTransaction) {
+      return undefined;
+    }
+    return isSendBundleSupported(chainId);
+  }, [chainId, isSmartTransaction]);
+
   const atomicBatchChainSupport = atomicBatchSupportResult?.find(
     (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
   );
 
   // Currently requires upgraded account, can also support no `delegationAddress` in future.
   const is7702Supported = Boolean(
-    atomicBatchChainSupport?.isSupported && relaySupportsChain,
+    atomicBatchChainSupport?.isSupported &&
+      relaySupportsChain &&
+      sendBundleSupportsChain,
   );
 
   const isSupported = isSmartTransaction || is7702Supported;

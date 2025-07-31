@@ -2,7 +2,7 @@ import { AuthorizationList } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
-import { buildUrl, getNetworkDataByChainId } from './sentinel-api';
+import { buildUrl, getSentinelNetworkFlags } from './sentinel-api';
 
 const log = createProjectLogger('transaction-relay');
 
@@ -117,7 +117,7 @@ async function pollResult(url: string): Promise<RelayWaitResponse> {
 }
 
 async function getRelayUrl(chainId: Hex): Promise<string | undefined> {
-  const networkData = await getNetworkDataByChainId(chainId);
+  const networkData = await getSentinelNetworkFlags(chainId);
 
   if (!networkData?.relayTransactions) {
     log('Chain is not supported', chainId);

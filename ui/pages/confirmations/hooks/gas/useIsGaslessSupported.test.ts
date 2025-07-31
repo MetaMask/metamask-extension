@@ -4,7 +4,10 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
-import { isRelaySupported } from '../../../../store/actions';
+import {
+  isRelaySupported,
+  isSendBundleSupported,
+} from '../../../../store/actions';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 
 jest.mock('../../../../../shared/modules/selectors');
@@ -13,6 +16,7 @@ jest.mock('../../../../store/controller-actions/transaction-controller');
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   isRelaySupported: jest.fn(),
+  isSendBundleSupported: jest.fn(),
 }));
 
 const CHAIN_ID_MOCK = '0x5';
@@ -36,6 +40,7 @@ describe('useIsGaslessSupported', () => {
   const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
   const isAtomicBatchSupportedMock = jest.mocked(isAtomicBatchSupported);
   const isRelaySupportedMock = jest.mocked(isRelaySupported);
+  const isSendBundleSupportedMock = jest.mocked(isSendBundleSupported);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -43,6 +48,7 @@ describe('useIsGaslessSupported', () => {
     getIsSmartTransactionMock.mockReturnValue(false);
     isAtomicBatchSupportedMock.mockResolvedValue([]);
     isRelaySupportedMock.mockResolvedValue(false);
+    isSendBundleSupportedMock.mockResolvedValue(false);
 
     process.env.TRANSACTION_RELAY_API_URL = 'test.com';
   });
@@ -59,9 +65,10 @@ describe('useIsGaslessSupported', () => {
   });
 
   describe('if smart transaction disabled', () => {
-    it('returns true if chain supports EIP-7702 and account is supported and relay supported', async () => {
+    it('returns true if chain supports EIP-7702 and account is supported and relay supported and send bundle supported', async () => {
       getIsSmartTransactionMock.mockReturnValue(false);
       isRelaySupportedMock.mockResolvedValue(true);
+      isSendBundleSupportedMock.mockResolvedValue(true);
       isAtomicBatchSupportedMock.mockResolvedValue([
         {
           chainId: CHAIN_ID_MOCK,
