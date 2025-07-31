@@ -169,15 +169,11 @@ export const getBaseApi = function (type, chainId, useBridgeApi = false) {
     switch (type) {
       case 'topAssets':
         return `${bridgeBaseUrl}/topAssets`;
-      case 'tokens':
-        return `${bridgeBaseUrl}/tokens?includeBlockedTokens=true`;
       default:
-        // Fall back to swap API if bridge doesn't support this endpoint
         break;
     }
   }
 
-  // Use existing swap API logic
   const baseUrl = getBaseUrlForNewSwapsApi(type, _chainId);
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${_chainId}`);
