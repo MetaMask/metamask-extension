@@ -108,11 +108,13 @@ type FilterPredicate = (
  * @param tokenToExclude.address
  * @param tokenToExclude.chainId
  * @param accountId - the accountId to use for the token list
+ * @param useBridgeApi - whether to use Bridge API instead of Swap API for fetching data
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
   tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
   accountId?: string,
+  useBridgeApi?: boolean,
 ) => {
   const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>
     getTopAssetsFromFeatureFlags(state, chainId),
@@ -177,10 +179,10 @@ export const useTokensWithFiltering = (
         }));
       }
 
-      return await fetchTopAssetsList(chainId);
+      return await fetchTopAssetsList(chainId, useBridgeApi);
     }
     return [];
-  }, [chainId, topAssetsFromFeatureFlags]);
+  }, [chainId, topAssetsFromFeatureFlags, useBridgeApi]);
 
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(

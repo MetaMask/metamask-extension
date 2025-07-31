@@ -11,6 +11,7 @@ import {
   SWAPS_WRAPPED_TOKENS_ADDRESSES,
   TOKEN_API_BASE_URL,
 } from '../constants/swaps';
+import { BRIDGE_API_BASE_URL } from '../constants/bridge';
 import { SECOND } from '../constants/time';
 import { isValidHexAddress } from '../modules/hexstring-utils';
 import { isEqualCaseInsensitive } from '../modules/string-utils';
@@ -156,10 +157,27 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-export const getBaseApi = function (type, chainId) {
+export const getBaseApi = function (type, chainId, useBridgeApi = false) {
   const _chainId = TEST_CHAIN_IDS.includes(chainId)
     ? CHAIN_IDS.MAINNET
     : chainId;
+
+  if (useBridgeApi) {
+    const chainIdDecimal = parseInt(_chainId, 16);
+    const bridgeBaseUrl = `${BRIDGE_API_BASE_URL}/networks/${chainIdDecimal}`;
+
+    switch (type) {
+      case 'topAssets':
+        return `${bridgeBaseUrl}/topAssets`;
+      case 'tokens':
+        return `${bridgeBaseUrl}/tokens?includeBlockedTokens=true`;
+      default:
+        // Fall back to swap API if bridge doesn't support this endpoint
+        break;
+    }
+  }
+
+  // Use existing swap API logic
   const baseUrl = getBaseUrlForNewSwapsApi(type, _chainId);
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${_chainId}`);
