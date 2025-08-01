@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Keep this list synchronized with the environemnt variables used by the
+# Keep this list synchronized with the environment variables used by the
 # `run-build` step in `.github/workflows/run-build.yml`.
 export APPLE_BETA_CLIENT_ID=""
 export APPLE_FLASK_CLIENT_ID=""
