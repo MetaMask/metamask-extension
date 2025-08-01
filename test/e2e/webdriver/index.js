@@ -29,7 +29,7 @@ async function buildWebDriver({
     driver: seleniumDriver,
     browser,
     extensionUrl,
-    timeOut,
+    timeout: timeOut,
     disableServerMochaToBackground,
   });
 
