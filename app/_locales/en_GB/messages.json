@@ -2160,7 +2160,7 @@
     "message": " Enable it"
   },
   "enableSmartContractAccount": {
-    "message": "Enable smart contract account"
+    "message": "Enable smart account"
   },
   "enableSmartContractAccountDescription": {
     "message": "You can enable smart account features on supported networks."
