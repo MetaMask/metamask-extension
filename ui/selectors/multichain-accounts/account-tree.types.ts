@@ -1,17 +1,21 @@
+import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import type {
-  AccountGroupId,
-  AccountWalletId,
   AccountGroupMetadata,
   AccountWalletMetadata,
-  AccountWallet,
+  AccountWalletObject,
 } from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { MergedInternalAccount } from '../selectors.types';
 
+export type WalletMetadata = {
+  id: string;
+  name: string;
+};
+
 export type AccountTreeState = {
   wallets: {
-    [walletId: AccountWalletId]: AccountWallet;
+    [walletId: AccountWalletId]: AccountWalletObject;
   };
 };
 

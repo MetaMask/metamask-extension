@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Ang halaga ng token ay dapat isang integer"
   },
-  "followUsOnX": {
-    "message": "I-follow kami sa $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Tumukoy ng CID gateway"
   },
@@ -5444,12 +5440,6 @@
   "slideMultiSrpTitle": {
     "message": "Magdagdag ng maraming Lihim na Parirala sa Pagbawi"
   },
-  "slideRemoteModeDescription": {
-    "message": "Gamitin ang cold wallet mo nang wireless"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold storage, mabilis na access"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Parehong address, mas matalinong mga feature"
   },
@@ -6828,9 +6818,6 @@
   "troubleConnectingToWallet": {
     "message": "Nagkaproblema kami sa pagkonekta sa iyong $1, subukang suriin ang $2 at subukan ulit.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "Nagkaproblema ang MetaMask sa pagsisimula. Maaaring paulit-ulit ang error na ito, kaya subukang i-restart ang extension."
   },
   "tryAgain": {
     "message": "Subukan ulit"

@@ -24,7 +24,7 @@ export async function applyTransactionContainers({
 }): Promise<{
   updateTransaction: (transaction: TransactionMeta) => void;
 }> {
-  const { chainId, simulationData, txParamsOriginal } = transactionMeta;
+  const { txParamsOriginal } = transactionMeta;
   const finalMetadata = cloneDeep(transactionMeta);
 
   if (txParamsOriginal) {
@@ -33,10 +33,8 @@ export async function applyTransactionContainers({
 
   if (types.includes(TransactionContainerType.EnforcedSimulations)) {
     const { updateTransaction } = await enforceSimulations({
-      chainId,
       messenger,
-      simulationData: simulationData ?? { tokenBalanceChanges: [] },
-      txParams: finalMetadata.txParams,
+      transactionMeta: finalMetadata,
       useRealSignature: isApproved,
     });
 

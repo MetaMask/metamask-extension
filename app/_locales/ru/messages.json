@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Сумма токена должна быть целым числом"
   },
-  "followUsOnX": {
-    "message": "Подпишитесь на нас в $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Запрещенный шлюз IPFS. Укажите шлюз CID"
   },
@@ -5444,12 +5440,6 @@
   "slideMultiSrpTitle": {
     "message": "Добавьте несколько секретных фраз для восстановления"
   },
-  "slideRemoteModeDescription": {
-    "message": "Используйте свой холодный кошелек по беспроводной сети"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Холодное хранилище, быстрый доступ"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Один и тот же адрес, более умные функции"
   },
@@ -6828,9 +6818,6 @@
   "troubleConnectingToWallet": {
     "message": "Не удалось подключиться к вашему $1, попробуйте проверить $2 и повторите попытку.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "У MetaMask возникли проблемы с запуском. Эта ошибка может быть непостоянной, поэтому попробуйте перезапустить расширение."
   },
   "tryAgain": {
     "message": "Попробуйте еще раз"

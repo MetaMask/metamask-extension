@@ -46,10 +46,8 @@ import {
   removeAccount,
   setAccountDetailsAddress,
 } from '../../../store/actions';
-import {
-  getWalletIdAndNameByAccountAddress,
-  WalletMetadata,
-} from '../../../selectors/multichain-accounts/account-tree';
+import { getWalletIdAndNameByAccountAddress } from '../../../selectors/multichain-accounts/account-tree';
+import { WalletMetadata } from '../../../selectors/multichain-accounts/account-tree.types';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
 import {
@@ -181,7 +179,7 @@ export const BaseAccountDetails = ({
               : AvatarAccountVariant.Jazzicon
           }
           size={AvatarAccountSize.Xl}
-          style={{ margin: '0 auto', marginBottom: '32px' }}
+          style={{ margin: '0 auto', marginBottom: '8px' }}
         />
         <Box className="multichain-account-details__section">
           <AccountDetailsRow

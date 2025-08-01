@@ -6,7 +6,6 @@
 import { ReactFragment } from 'react';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
@@ -52,7 +51,7 @@ import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
   USER_STORAGE_FEATURE_NAMES,
-  UserProfileMetaMetrics,
+  UserProfileLineage,
 } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -61,6 +60,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -261,6 +261,10 @@ export function resetOAuthLoginState() {
 
     try {
       await submitRequestToBackground('resetOAuthLoginState');
+
+      dispatch({
+        type: actionConstants.RESET_SOCIAL_LOGIN_ONBOARDING,
+      });
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
@@ -862,6 +866,7 @@ export function importNewAccount(
 
 export function addNewAccount(
   keyringId?: string,
+  showLoading: boolean = true,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
@@ -882,7 +887,9 @@ export function addNewAccount(
     }
     const oldAccounts = hdKeyring.accounts;
 
-    dispatch(showLoadingIndication());
+    if (showLoading) {
+      dispatch(showLoadingIndication());
+    }
 
     let newAccount;
     try {
@@ -897,7 +904,9 @@ export function addNewAccount(
       dispatch(displayWarning(error));
       throw error;
     } finally {
-      dispatch(hideLoadingIndication());
+      if (showLoading) {
+        dispatch(hideLoadingIndication());
+      }
     }
 
     return newAccount;
@@ -1368,6 +1377,21 @@ export async function setEnableEnforcedSimulationsForTransaction(
     await submitRequestToBackground(
       'setEnableEnforcedSimulationsForTransaction',
       [transactionId, enable],
+    );
+  } catch (error) {
+    logErrorWithMessage(error);
+    throw error;
+  }
+}
+
+export async function setEnforcedSimulationsSlippageForTransaction(
+  transactionId: string,
+  value: number,
+): void {
+  try {
+    await submitRequestToBackground(
+      'setEnforcedSimulationsSlippageForTransaction',
+      [transactionId, value],
     );
   } catch (error) {
     logErrorWithMessage(error);
@@ -3934,10 +3958,17 @@ export function resetOnboarding(): ThunkAction<
 > {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     try {
-      await dispatch(setSeedPhraseBackedUp(false));
+      const isSocialLoginFlow = getIsSocialLoginFlow(getState());
       dispatch(resetOnboardingAction());
+
+      if (isSocialLoginFlow) {
+        await dispatch(resetOAuthLoginState());
+      }
     } catch (err) {
       console.error(err);
     }
@@ -6246,6 +6277,19 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
 }
 
 /**
+ * Capture an error in the background for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * this for handling errors.
+ */
+export async function captureTestBackgroundError(
+  message: string,
+): Promise<void> {
+  await submitRequestToBackground('captureTestError', [message]);
+}
+
+/**
  * Set status of popover warning for the first snap installation.
  *
  * @param shown - True if popover has been shown.
@@ -6401,18 +6445,18 @@ export function setIsBackupAndSyncFeatureEnabled(
 }
 
 /**
- * Fetches the user profile meta metrics from the profile-sync.
+ * Fetches the user profile lineage from the authentication API.
  *
- * @returns A thunk action that, when dispatched, attempts to fetch the user profile meta metrics.
+ * @returns A thunk action that, when dispatched, attempts to fetch the user profile lineage.
  */
-export async function getUserProfileMetaMetrics(): Promise<
-  UserProfileMetaMetrics | undefined
+export async function getUserProfileLineage(): Promise<
+  UserProfileLineage | undefined
 > {
   try {
-    const userProfileMetaMetrics = await submitRequestToBackground(
-      'getUserProfileMetaMetrics',
+    const userProfileLineage = await submitRequestToBackground(
+      'getUserProfileLineage',
     );
-    return userProfileMetaMetrics;
+    return userProfileLineage;
   } catch (error) {
     logErrorWithMessage(error);
     return undefined;
@@ -7042,16 +7086,6 @@ export async function requestSafeReload() {
   return await submitRequestToBackground('requestSafeReload');
 }
 
-export async function applyTransactionContainersExisting(
-  transactionId: string,
-  containerTypes: TransactionContainerType[],
-) {
-  return await submitRequestToBackground<void>(
-    'applyTransactionContainersExisting',
-    [transactionId, containerTypes],
-  );
-}
-
 /**
  * Opens the "Updating" page in a new tab and then triggers a safe extension reload.
  *
@@ -7061,4 +7095,14 @@ export async function applyTransactionContainersExisting(
  */
 export async function openUpdateTabAndReload() {
   return await submitRequestToBackground('openUpdateTabAndReload');
+}
+
+export async function applyTransactionContainersExisting(
+  transactionId: string,
+  containerTypes: TransactionContainerType[],
+) {
+  return await submitRequestToBackground<void>(
+    'applyTransactionContainersExisting',
+    [transactionId, containerTypes],
+  );
 }

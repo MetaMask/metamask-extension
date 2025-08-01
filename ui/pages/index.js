@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import { CompatRouter } from 'react-router-dom-v5-compat';
-import * as Sentry from '@sentry/browser';
+import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
   MetaMetricsProvider,
@@ -24,7 +24,7 @@ class Index extends PureComponent {
   }
 
   componentDidCatch(error) {
-    Sentry.captureException(error);
+    captureException(error);
   }
 
   render() {

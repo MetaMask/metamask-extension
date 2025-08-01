@@ -17,7 +17,7 @@ import {
 
 export const MOCK_ACCOUNT_EOA: InternalAccount = {
   id: '4974fc00-c0fb-4a18-8535-8407ec6d1952',
-  address: '0x123',
+  address: '0xa0b86991c431e50c0dd0b653aa1e8c7b7c66f5e4b',
   options: {},
   methods: ETH_EOA_METHODS,
   scopes: [EthScope.Eoa],
@@ -110,7 +110,7 @@ export const MOCK_ACCOUNT_INSTITUTIONAL: InternalAccount = {
 
 export const MOCK_ACCOUNT_ERC4337: InternalAccount = {
   id: '4d5921f2-2022-44ce-a84f-9f6a0f142a5c',
-  address: '0x123',
+  address: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
   options: {},
   methods: ETH_EOA_METHODS.concat(ETH_4337_METHODS),
   // Smart accounts might not be available on every EVM chains, but that's ok for mock purposes.

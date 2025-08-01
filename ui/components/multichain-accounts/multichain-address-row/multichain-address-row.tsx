@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AlignItems,
+  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
@@ -20,13 +21,17 @@ import {
 } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { MultichainNetwork } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../selectors/multichain';
 
 type MultichainAddressRowProps = {
   /**
-   * Network object containing nickname, chainId, and rpcPrefs with imageUrl
+   * Chain ID to identify the network
    */
-  network: MultichainNetwork;
+  chainId: string;
+  /**
+   * Network name to display
+   */
+  networkName: string;
   /**
    * Address string to display (will be truncated)
    */
@@ -38,13 +43,14 @@ type MultichainAddressRowProps = {
 };
 
 export const MultichainAddressRow = ({
-  network,
+  chainId,
+  networkName,
   address,
   className = '',
 }: MultichainAddressRowProps) => {
   const [copied, handleCopy] = useCopyToClipboard();
 
-  const networkImageSrc = network.network.rpcPrefs?.imageUrl;
+  const networkImageSrc = getImageForChainId(chainId);
   const truncatedAddress = shortenAddress(address);
 
   const handleCopyClick = () => {
@@ -67,7 +73,7 @@ export const MultichainAddressRow = ({
     >
       <AvatarNetwork
         size={AvatarNetworkSize.Md}
-        name={network.nickname}
+        name={networkName}
         src={networkImageSrc}
         borderRadius={BorderRadius.LG}
         data-testid="multichain-address-row-network-icon"
@@ -77,14 +83,19 @@ export const MultichainAddressRow = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexStart}
-        style={{ flex: 1 }}
+        // Parent Box with flex: 1 needs minWidth: 0 to allow it to shrink below its content size.
+        // Without that, the flex item would expand the entire row to fit the text content
+        // instead of being constrained by the grid cell.
+        style={{ flex: 1, minWidth: 0 }}
       >
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textDefault}
           data-testid="multichain-address-row-network-name"
+          ellipsis={true}
+          width={BlockSize.Full}
         >
-          {network.nickname}
+          {networkName}
         </Text>
         <Text
           variant={TextVariant.bodySm}
