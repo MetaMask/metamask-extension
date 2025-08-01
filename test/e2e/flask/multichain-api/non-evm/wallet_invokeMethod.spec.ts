@@ -1,11 +1,8 @@
 import { strict as assert } from 'assert';
 import { isObject } from 'lodash';
-import { largeDelayMs, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../helpers';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import {
-  DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-  replaceColon,
-} from '../testHelpers';
+import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
 import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-sign-in-confirmation';
@@ -45,7 +42,6 @@ describe('Multichain API - Non EVM', function () {
             await confirmation.check_pageIsLoaded();
             await confirmation.check_accountIsDisplayed('Solana 1');
             await confirmation.clickFooterConfirmButton();
-
           },
         );
       });

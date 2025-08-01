@@ -1,29 +1,24 @@
-import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../../webdriver/driver';
-import { RawLocator } from '../../../common';
 
 class SnapSignInConfirmation {
   protected driver: Driver;
 
   private cancelButton = {
-    testId:
-      'confirm-sign-in-cancel-snap-footer-button',
+    testId: 'confirm-sign-in-cancel-snap-footer-button',
     text: 'Cancel',
-  }
+  };
 
   private confirmButton = {
-    testId:
-      'confirm-sign-in-confirm-snap-footer-button',
+    testId: 'confirm-sign-in-confirm-snap-footer-button',
     text: 'Confirm',
-  }
+  };
 
   private header = {
-              text: 'Sign-in request',
-              tag: 'h2',
-            };
+    text: 'Sign-in request',
+    tag: 'h2',
+  };
 
-  private addressTestId = 'snap-ui-address'
-
+  private addressTestId = 'snap-ui-address';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -58,14 +53,11 @@ class SnapSignInConfirmation {
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountIsDisplayed(
-    expectedValue: string,
-  ): Promise<void> {
+  async check_accountIsDisplayed(expectedValue: string): Promise<void> {
     await this.driver.findElement({
-    testId: this.addressTestId,
+      testId: this.addressTestId,
       text: expectedValue,
     });
   }
-
 }
 export default SnapSignInConfirmation;
