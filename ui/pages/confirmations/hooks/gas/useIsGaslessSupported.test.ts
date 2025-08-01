@@ -53,8 +53,9 @@ describe('useIsGaslessSupported', () => {
     process.env.TRANSACTION_RELAY_API_URL = 'test.com';
   });
 
-  it('returns true if is smart transaction', async () => {
+  it('returns true if is smart transaction and send bundle supported', async () => {
     getIsSmartTransactionMock.mockReturnValue(true);
+    isSendBundleSupportedMock.mockResolvedValue(true);
 
     const result = await runHook();
 

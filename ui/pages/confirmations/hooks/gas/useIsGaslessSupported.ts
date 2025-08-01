@@ -44,11 +44,8 @@ export function useIsGaslessSupported() {
   }, [chainId, isSmartTransaction]);
 
   const { value: sendBundleSupportsChain } = useAsyncResult(async () => {
-    if (isSmartTransaction) {
-      return undefined;
-    }
     return isSendBundleSupported(chainId);
-  }, [chainId, isSmartTransaction]);
+  }, [chainId]);
 
   const atomicBatchChainSupport = atomicBatchSupportResult?.find(
     (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
@@ -56,12 +53,12 @@ export function useIsGaslessSupported() {
 
   // Currently requires upgraded account, can also support no `delegationAddress` in future.
   const is7702Supported = Boolean(
-    atomicBatchChainSupport?.isSupported &&
-      relaySupportsChain &&
-      sendBundleSupportsChain,
+    atomicBatchChainSupport?.isSupported && relaySupportsChain,
   );
 
-  const isSupported = isSmartTransaction || is7702Supported;
+  const isSupported = Boolean(
+    sendBundleSupportsChain && (isSmartTransaction || is7702Supported),
+  );
 
   return {
     isSupported,
