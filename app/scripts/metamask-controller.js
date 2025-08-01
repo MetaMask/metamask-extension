@@ -4290,8 +4290,8 @@ export default class MetamaskController extends EventEmitter {
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,
       ),
-      getUserProfileMetaMetrics:
-        authenticationController.getUserProfileMetaMetrics.bind(
+      getUserProfileLineage:
+        authenticationController.getUserProfileLineage.bind(
           authenticationController,
         ),
 

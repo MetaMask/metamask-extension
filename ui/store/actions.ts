@@ -51,7 +51,7 @@ import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
   USER_STORAGE_FEATURE_NAMES,
-  UserProfileMetaMetrics,
+  UserProfileLineage,
 } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -6445,18 +6445,18 @@ export function setIsBackupAndSyncFeatureEnabled(
 }
 
 /**
- * Fetches the user profile meta metrics from the profile-sync.
+ * Fetches the user profile lineage from the authentication API.
  *
- * @returns A thunk action that, when dispatched, attempts to fetch the user profile meta metrics.
+ * @returns A thunk action that, when dispatched, attempts to fetch the user profile lineage.
  */
-export async function getUserProfileMetaMetrics(): Promise<
-  UserProfileMetaMetrics | undefined
+export async function getUserProfileLineage(): Promise<
+  UserProfileLineage | undefined
 > {
   try {
-    const userProfileMetaMetrics = await submitRequestToBackground(
-      'getUserProfileMetaMetrics',
+    const userProfileLineage = await submitRequestToBackground(
+      'getUserProfileLineage',
     );
-    return userProfileMetaMetrics;
+    return userProfileLineage;
   } catch (error) {
     logErrorWithMessage(error);
     return undefined;
