@@ -1250,7 +1250,7 @@ class Driver {
         );
 
         if (handleTitle === title) {
-          return handle;
+          return;
         }
       }
       const delayTime = 1000;
