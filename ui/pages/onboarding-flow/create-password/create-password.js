@@ -50,7 +50,10 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import { resetOAuthLoginState } from '../../../store/actions';
+import {
+  forceUpdateMetamaskState,
+  resetOnboarding,
+} from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { getPasswordStrengthCategory } from '../../../helpers/utils/common.util';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
@@ -133,7 +136,7 @@ export default function CreatePassword({
       properties: {
         text: 'Learn More',
         location: 'create_password',
-        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+        url: ZENDESK_URLS.PASSWORD_ARTICLE,
       },
     });
   };
@@ -253,10 +256,11 @@ export default function CreatePassword({
     };
   }, [onboardingParentContext, bufferedTrace, bufferedEndTrace]);
 
-  const handleBackClick = (event) => {
+  const handleBackClick = async (event) => {
     event.preventDefault();
-    // reset the social login state
-    dispatch(resetOAuthLoginState());
+    // reset onboarding flow
+    await dispatch(resetOnboarding());
+    await forceUpdateMetamaskState(dispatch);
 
     firstTimeFlowType === FirstTimeFlowType.import
       ? history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE)
@@ -309,7 +313,7 @@ export default function CreatePassword({
     <a
       onClick={handleLearnMoreClick}
       key="create-password__link-text"
-      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
+      href={ZENDESK_URLS.PASSWORD_ARTICLE}
       target="_blank"
       rel="noopener noreferrer"
     >
