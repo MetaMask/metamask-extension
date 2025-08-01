@@ -38,7 +38,9 @@ describe('Platform Reconnect', function (this: Suite) {
 
         // make the `globalThis.ethereumProvider` work as expected
         const initialChainId = await driver.executeScript(() => {
+          // @ts-expect-error globalThis.cachedProvider is just for this test
           globalThis.cachedProvider = globalThis.ethereumProvider;
+          // @ts-expect-error globalThis.cachedProvider is just for this test
           return globalThis.cachedProvider.request({
             method: 'eth_chainId',
           });
@@ -117,6 +119,7 @@ describe('Platform Reconnect', function (this: Suite) {
         // original globalThis.ethereumProvider, and we want to ensure
         // those original references still work later.
         const latestChainId = await driver.executeScript(() => {
+          // @ts-expect-error globalThis.cachedProvider is just for this test
           return globalThis.cachedProvider.request({
             method: 'eth_chainId',
           });
