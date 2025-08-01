@@ -84,7 +84,7 @@ import {
 } from '../../../../shared/modules/conversion.utils';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { useTokenTracker } from '../../../hooks/useTokenBalances';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
