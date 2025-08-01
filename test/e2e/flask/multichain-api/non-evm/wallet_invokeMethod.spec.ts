@@ -7,6 +7,8 @@ import {
   replaceColon,
 } from '../testHelpers';
 import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
+import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
+import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-sign-in-confirmation';
 
 describe('Multichain API - Non EVM', function () {
   const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
@@ -39,24 +41,11 @@ describe('Multichain API - Non EVM', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            const expectedAccount = 'Solana 1';
+            const confirmation = new SnapSignInConfirmation(driver);
+            await confirmation.check_pageIsLoaded();
+            await confirmation.check_accountIsDisplayed('Solana 1');
+            await confirmation.clickFooterConfirmButton();
 
-            await driver.waitForSelector({
-              text: 'Sign-in request',
-              tag: 'h2',
-            });
-
-            await driver.waitForSelector({
-              tesId: 'snap-ui-address',
-              text: expectedAccount,
-            });
-
-            const confirmButton = await driver.waitForSelector({
-              testId: 'confirm-sign-in-confirm-snap-footer-button',
-              text: 'Confirm',
-            });
-
-            await confirmButton.click();
           },
         );
       });
@@ -99,27 +88,10 @@ describe('Multichain API - Non EVM', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            const expectedAccount = 'Solana 1';
-
-            await driver.waitForSelector({
-              text: 'Transaction request',
-              tag: 'h2',
-            });
-
-            await driver.waitForSelector({
-              tesId: 'snap-ui-address',
-              text: expectedAccount,
-            });
-
-            const confirmButton = await driver.waitForSelector({
-              testId:
-                'confirm-sign-and-send-transaction-confirm-snap-footer-button',
-              text: 'Confirm',
-            });
-
-            await driver.delay(largeDelayMs);
-
-            await confirmButton.click();
+            const confirmation = new SnapTransactionConfirmation(driver);
+            await confirmation.check_pageIsLoaded();
+            await confirmation.check_accountIsDisplayed('Solana 1');
+            await confirmation.clickFooterConfirmButton();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,

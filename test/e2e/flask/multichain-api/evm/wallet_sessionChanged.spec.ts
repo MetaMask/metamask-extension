@@ -100,20 +100,11 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
           parsedNotificationResult.params.sessionScopes;
 
         const currentScope = sessionChangedScope[UPDATED_SCOPE];
-        const scopedAccounts = currentScope.accounts;
 
         assert.deepEqual(
           currentScope,
           expectedScope,
           `scope ${UPDATED_SCOPE} should be present in 'wallet_sessionChanged' event data`,
-        );
-
-        assert.deepEqual(
-          scopedAccounts,
-          expectedScope.accounts,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          `${expectedScope.accounts} does not match accounts in scope ${currentScope}`,
         );
 
         assert.deepEqual(
