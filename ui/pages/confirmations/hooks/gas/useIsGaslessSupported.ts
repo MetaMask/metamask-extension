@@ -57,7 +57,7 @@ export function useIsGaslessSupported() {
   );
 
   const isSupported = Boolean(
-    sendBundleSupportsChain && (isSmartTransaction || is7702Supported),
+    (isSmartTransaction && sendBundleSupportsChain) || is7702Supported,
   );
 
   return {
