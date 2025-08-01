@@ -15,6 +15,7 @@ on:
 
 jobs:
   create-release-pr:
+    name: Create Release Pull Request using Github Tools
     uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@dde6d530bebae07d1e50180894ab2cac64170a2c
     with:
       platform: extension
