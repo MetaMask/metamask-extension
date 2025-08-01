@@ -70,6 +70,10 @@ async function main() {
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
           'wallet_swapAsset',
+          // TODO: EIP-5792 methods below are quarantined until we improve openrpc document examples for testing, task to unskip tracked here: https://github.com/MetaMask/MetaMask-planning/issues/5224
+          'wallet_getCapabilities',
+          'wallet_getCallsStatus',
+          'wallet_sendCalls',
         ],
         rules: [
           new JsonSchemaFakerRule({
@@ -88,6 +92,7 @@ async function main() {
               'personal_sign',
               'eth_signTypedData_v4',
               'eth_getEncryptionPublicKey',
+              'wallet_sendCalls',
             ],
           }),
         ],
