@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.23.1",
+  "version": "13.0.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -312,7 +312,7 @@
     "@metamask/message-signing-snap": "1.1.2",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-account-service": "^0.3.0",
-    "@metamask/multichain-api-client": "^0.6.4",
+    "@metamask/multichain-api-client": "^0.6.5",
     "@metamask/multichain-api-middleware": "1.0.0",
     "@metamask/multichain-network-controller": "^0.11.0",
     "@metamask/multichain-transactions-controller": "^0.9.0",
@@ -327,7 +327,7 @@
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/ppom-validator": "0.36.0",
     "@metamask/preinstalled-example-snap": "^0.7.1",
-    "@metamask/profile-sync-controller": "patch:@metamask/profile-sync-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-22.0.0-1f01869af8.patch",
+    "@metamask/profile-sync-controller": "^23.0.0",
     "@metamask/providers": "^22.1.0",
     "@metamask/rate-limit-controller": "^6.0.3",
     "@metamask/remote-feature-flag-controller": "^1.6.0",
