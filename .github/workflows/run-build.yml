@@ -29,6 +29,8 @@ jobs:
     name: ${{ inputs.build-name }}
     runs-on: ubuntu-latest
     env:
+      # Build parameter
+      ENABLE_MV3: ${{ inputs.enable-mv3 }}
       # Environment variables not used in production builds
       APPLE_CLIENT_ID_FLASK_UAT: ${{ secrets.APPLE_CLIENT_ID_FLASK_UAT }}
       APPLE_CLIENT_ID_UAT: ${{ secrets.APPLE_CLIENT_ID_UAT }}
@@ -38,7 +40,9 @@ jobs:
       SEGMENT_WRITE_KEY: ${{ secrets.SEGMENT_WRITE_KEY }}
       SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
       # Environment variables used in production builds
-      # Keep this list synchronized with the environment variables exported by `.github/scripts/bundle.sh`.
+      # Keep this list synchronized with:
+      # * The environment variables exported by `.github/scripts/bundle.sh`
+      # * The environment variables used by the `publish-release` step in `.github/workflows/publish-release.yml`.
       APPLE_BETA_CLIENT_ID: ${{ secrets.APPLE_BETA_CLIENT_ID }}
       APPLE_FLASK_CLIENT_ID: ${{ secrets.APPLE_FLASK_CLIENT_ID }}
       APPLE_PROD_CLIENT_ID: ${{ secrets.APPLE_PROD_CLIENT_ID }}
@@ -73,7 +77,6 @@ jobs:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       TZ: 'UTC' # Ensures the bundles are consistent across machine time zones
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
-      ENABLE_MV3: ${{ inputs.enable-mv3 }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
