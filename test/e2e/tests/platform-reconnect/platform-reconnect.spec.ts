@@ -7,8 +7,6 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import LoginPage from '../../page-objects/pages/login-page';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import { ACCOUNT_TYPE } from '../../constants';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 
 describe('Platform Reconnect', function (this: Suite) {
@@ -37,6 +35,14 @@ describe('Platform Reconnect', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
+
+        // make the `globalThis.ethereumProvider` work as expected
+        const initialChainId = await driver.executeScript(() => {
+          globalThis.cachedProvider = globalThis.ethereumProvider;
+          return globalThis.cachedProvider.request({
+            method: 'eth_chainId',
+          });
+        });
 
         // Step 2: Open chrome://serviceworker-internals/ in a new tab
         await driver.openNewPage('chrome://serviceworker-internals/');
@@ -104,6 +110,23 @@ describe('Platform Reconnect', function (this: Suite) {
 
         // Verify we're back on the homepage after unlock
         await homePage.check_pageIsLoaded();
+
+        // make sure the page's original `global.ethereumProvider` still works
+        // by fetching the chain ID again. The reason we test this is because
+        // there are parts of the application that use a _reference_ to the
+        // original globalThis.ethereumProvider, and we want to ensure
+        // those original references still work later.
+        const latestChainId = await driver.executeScript(() => {
+          return globalThis.cachedProvider.request({
+            method: 'eth_chainId',
+          });
+        });
+
+        assert.deepStrictEqual(
+          latestChainId,
+          initialChainId,
+          'Chain ID should be available after service worker reconnection',
+        );
       },
     );
   });
