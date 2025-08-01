@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       base-branch:
-        description: 'The base branch, tag, or SHA for git operations and the pull request (usually `main`)'
+        description: 'The base branch, tag, or SHA for git operations and the pull request. Usually `main`'
         required: true
       semver-version:
         description: 'A semantic version, eg: x.x.x'
@@ -12,6 +12,7 @@ on:
       previous-semver-version:
         description: 'Previous semantic version, eg: x.x.x'
         required: true
+
 jobs:
   create-release-pr:
     uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@dde6d530bebae07d1e50180894ab2cac64170a2c

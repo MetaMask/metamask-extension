@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       base-branch:
-        description: 'The base branch, tag, or SHA for git operations and the pull request (usually `main`)'
+        description: 'The base branch, tag, or SHA for git operations and the pull request. Usually `main`'
         required: true
       semver-version:
         description: 'A semantic version, eg: x.x.x'
@@ -14,6 +14,7 @@ on:
         required: true
 jobs:
   create-release-pr:
+    name: Create Release Pull Request using Github Tools
     uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@fc6fe1a3fb591f6afa61f0dbbe7698bd50fab9c7
     with:
       platform: extension
