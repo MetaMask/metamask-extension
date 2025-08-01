@@ -74,17 +74,11 @@ describe('Multichain API - Non EVM', function () {
             );
 
             const invokeMethod = 'signAndSendTransaction';
-            await driver.clickElementSafe(
-              `[data-testid="${replaceColon(
-                SOLANA_SCOPE,
-              )}-${invokeMethod}-option"]`,
-            );
 
-            await driver.delay(largeDelayMs);
-
-            await driver.clickElementSafe(
-              `[data-testid="invoke-method-${replaceColon(SOLANA_SCOPE)}-btn"]`,
-            );
+            await testDapp.invokeMethod({
+              scope: SOLANA_SCOPE,
+              method: invokeMethod,
+            });
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -97,14 +91,11 @@ describe('Multichain API - Non EVM', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
 
-            const resultWebElement = await driver.findElement(
-              `#invoke-method-${replaceColon(
-                SOLANA_SCOPE,
-              )}-${invokeMethod}-result-0`,
-            );
-            const parsedTransactionResult = JSON.parse(
-              await resultWebElement.getText(),
-            );
+            const transactionResult = await testDapp.getInvokeMethodResult({
+              scope: SOLANA_SCOPE,
+              method: invokeMethod,
+            });
+            const parsedTransactionResult = JSON.parse(transactionResult);
 
             assert.strictEqual(
               isObject(parsedTransactionResult),
