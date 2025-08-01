@@ -2553,7 +2553,7 @@
     "string.prototype.matchall>es-abstract>es-to-primitive": {
       "packages": {
         "string.prototype.matchall>es-abstract>is-callable": true,
-        "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
+        "string.prototype.matchall>es-abstract>es-to-primitive>is-date-object": true,
         "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": true
       }
     },
@@ -4019,7 +4019,7 @@
         "gulp>gulp-cli>matchdep>micromatch>snapdragon>define-property>is-descriptor>is-data-descriptor>kind-of": true
       }
     },
-    "@metamask/eth-token-tracker>deep-equal>is-date-object": {
+    "string.prototype.matchall>es-abstract>es-to-primitive>is-date-object": {
       "packages": {
         "koa>is-generator-function>has-tostringtag": true
       }
