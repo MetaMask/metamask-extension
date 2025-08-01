@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { AccountGroupId } from '@metamask/account-tree-controller';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -20,7 +21,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
-import { AccountGroupId } from '@metamask/account-tree-controller';
 
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;

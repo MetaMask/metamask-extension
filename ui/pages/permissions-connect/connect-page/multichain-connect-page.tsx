@@ -492,8 +492,7 @@ export const MultichainConnectPage: React.FC<MultichainConnectPageProps> = ({
                     accountId={accountGroupId}
                     balance={'0'}
                     key={accountGroupId}
-                    endAccessory={<div>test</div>}
-                    selected={false}
+                    selected
                   />
                 ))}
               </Box>
