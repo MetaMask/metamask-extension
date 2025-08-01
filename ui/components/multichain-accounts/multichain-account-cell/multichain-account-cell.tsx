@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -18,10 +19,11 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
+import { AccountGroupId } from '@metamask/account-tree-controller';
 
 export type MultichainAccountCellProps = {
-  accountId: string;
-  accountName: string;
+  accountId: AccountGroupId;
   onClick?: () => void;
   balance: string;
   endAccessory?: React.ReactNode;
@@ -30,12 +32,18 @@ export type MultichainAccountCellProps = {
 
 export const MultichainAccountCell = ({
   accountId,
-  accountName,
   onClick,
   balance,
   endAccessory,
   selected = false,
 }: MultichainAccountCellProps) => {
+  console.log('accountId', accountId);
+  const accountGroup = useSelector((state) =>
+    getMultichainAccountGroupById(state, accountId),
+  );
+
+  console.log('accountGroup', accountGroup);
+
   return (
     <Box
       backgroundColor={BackgroundColor.backgroundDefault}
@@ -81,7 +89,7 @@ export const MultichainAccountCell = ({
           marginLeft={3}
           ellipsis
         >
-          {accountName}
+          {accountGroup?.metadata.name}
         </Text>
         {selected && (
           <Icon

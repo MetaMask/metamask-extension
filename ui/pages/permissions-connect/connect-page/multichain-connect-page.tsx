@@ -8,25 +8,19 @@ import React, {
 import { useSelector } from 'react-redux';
 import {
   generateCaip25Caveat,
-  getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
-  getCaipAccountIdsFromCaip25CaveatValue,
-  isCaipAccountIdInPermittedAccountIds,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
   CaipChainId,
   KnownCaipNamespace,
-  parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
 
 import { isEqual } from 'lodash';
+import { AccountGroupObject } from '@metamask/account-tree-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getPermissions,
-  getUpdatedAndSortedAccountsWithCaipAccountId,
-} from '../../../selectors';
+import { getPermissions } from '../../../selectors';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 import {
   AvatarBase,
@@ -46,7 +40,6 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/site-cell';
 import {
   AlignItems,
   BackgroundColor,
@@ -55,17 +48,12 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../shared/constants/network';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { Tab, Tabs } from '../../../components/ui/tabs';
-import {
-  AccountListItem,
-  EditAccountsModal,
-} from '../../../components/multichain';
 import {
   getAvatarFallbackLetter,
   isIpAddress,
@@ -76,16 +64,20 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  EvmAndMultichainNetworkConfigurationsWithCaipChainId,
-  MergedInternalAccountWithCaipAccountId,
-} from '../../../selectors/selectors.types';
-import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
+import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
+import {
+  getMultichainAccountGroups,
+  getNonMultichainAccountGroups,
+} from '../../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
+import { useAccountGroupConnectionStatus } from '../../../hooks/useAccountGroupConnectionStatus';
+import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/site-cell';
+import { MultichainEditAccountsModal } from '../../../components/multichain/edit-accounts-modal/multichain-edit-accounts-modal';
+import { MultichainSiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/multichain-site-cell';
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
-  getDefaultAccounts,
 } from './utils';
 
 export type ConnectPageRequest = {
@@ -98,7 +90,7 @@ export type ConnectPageRequest = {
   };
 };
 
-export type ConnectPageProps = {
+export type MultichainConnectPageProps = {
   request: ConnectPageRequest;
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
@@ -113,7 +105,7 @@ export type ConnectPageProps = {
   };
 };
 
-export const ConnectPage: React.FC<ConnectPageProps> = ({
+export const MultichainConnectPage: React.FC<MultichainConnectPageProps> = ({
   request,
   permissionsRequestId,
   rejectPermissionsRequest,
@@ -122,6 +114,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const multichainAccounts = useSelector(getMultichainAccountGroups);
+  const nonMultichainAccounts = useSelector(getNonMultichainAccountGroups);
+
+  console.log('multichainAccounts', multichainAccounts);
+  console.log('nonMultichainAccounts', nonMultichainAccounts);
 
   const existingPermissions = useSelector((state) =>
     getPermissions(state, request.metadata?.origin),
@@ -135,9 +133,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     [existingPermissions],
   );
 
+  console.log('existingCaip25CaveatValue', existingCaip25CaveatValue);
+
   const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
     request.permissions,
   );
+
+  console.log('requestedCaip25CaveatValue', requestedCaip25CaveatValue);
 
   const requestedCaip25CaveatValueWithExistingPermissions =
     existingCaip25CaveatValue
@@ -147,16 +149,25 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         )
       : requestedCaip25CaveatValue;
 
-  const requestedCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
-    requestedCaip25CaveatValueWithExistingPermissions,
-  );
-
   const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
     requestedCaip25CaveatValueWithExistingPermissions,
   );
 
-  const { promptToCreateSolanaAccount, isEip1193Request } =
-    request.metadata ?? {};
+  console.log('requestedCaipChainIds', requestedCaipChainIds);
+
+  const {
+    connectedAccountGroups,
+    supportedAccountGroups,
+    existingConnectedCaipAccountIds,
+  } = useAccountGroupConnectionStatus(
+    requestedCaip25CaveatValueWithExistingPermissions,
+    requestedCaipChainIds,
+  );
+
+  console.log('connectedAccountGroups', connectedAccountGroups);
+  console.log('supportedAccountGroups', supportedAccountGroups);
+
+  // const { isEip1193Request } = request.metadata ?? {};
 
   const networkConfigurationsByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -194,8 +205,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const [userHasModifiedSelection, setUserHasModifiedSelection] =
     useState(false);
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
-  const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
-    useState(false);
 
   // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
@@ -206,49 +215,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       network.caipChainId === currentlySelectedNetworkChainId,
   );
 
-  let defaultSelectedNetworkList = selectedTestNetwork
+  const defaultSelectedNetworkList = selectedTestNetwork
     ? [...nonTestNetworkConfigurations, selectedTestNetwork].map(
         ({ caipChainId }) => caipChainId,
       )
     : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-  let supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
-    (caipChainId) => allNetworksList.includes(caipChainId as CaipChainId),
-  );
-
-  // Only EVM networks should be selected if this request comes from the EIP-1193 API
-  if (isEip1193Request) {
-    defaultSelectedNetworkList = defaultSelectedNetworkList.filter(
-      (caipChainId) => {
-        const { namespace } = parseCaipChainId(caipChainId);
-        return namespace === KnownCaipNamespace.Eip155;
-      },
-    );
-
-    const isRequestingSpecificEvmChains = supportedRequestedCaipChainIds.some(
-      (caipChainId) => {
-        const { namespace } = parseCaipChainId(caipChainId);
-        return namespace === KnownCaipNamespace.Eip155;
-      },
-    );
-
-    // If the request is for EVM and no specific chains are requested,
-    // we merge the default chains with existing permitted chains
-    if (!isRequestingSpecificEvmChains && existingCaip25CaveatValue) {
-      supportedRequestedCaipChainIds = Array.from(
-        new Set([
-          ...defaultSelectedNetworkList,
-          ...supportedRequestedCaipChainIds,
-        ]),
-      );
-    }
-  }
-
-  const defaultSelectedChainIds =
-    supportedRequestedCaipChainIds.length > 0
-      ? supportedRequestedCaipChainIds
-      : defaultSelectedNetworkList;
-
+  const defaultSelectedChainIds = defaultSelectedNetworkList;
   const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
     defaultSelectedChainIds as CaipChainId[],
   );
@@ -263,100 +236,99 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     [setUserHasModifiedSelection, setSelectedChainIds],
   );
 
-  const allAccounts = useSelector(
-    getUpdatedAndSortedAccountsWithCaipAccountId,
-  ) as MergedInternalAccountWithCaipAccountId[];
-
-  const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
-    requestedCaip25CaveatValueWithExistingPermissions,
+  const defaultAccountGroupIds = Array.from(connectedAccountGroups).map(
+    (group) => group.id,
   );
 
-  const requestedNamespacesWithoutWallet = requestedNamespaces.filter(
-    (namespace) => namespace !== KnownCaipNamespace.Wallet,
-  );
-
-  // all accounts that match the requested namespaces
-  const supportedAccountsForRequestedNamespaces = allAccounts.filter(
-    (account) => {
-      const {
-        chain: { namespace },
-      } = parseCaipAccountId(account.caipAccountId);
-      return requestedNamespacesWithoutWallet.includes(namespace);
-    },
-  );
-
-  // All requested accounts that are found in the wallet
-  const supportedRequestedAccounts =
-    supportedAccountsForRequestedNamespaces.filter((account) =>
-      isCaipAccountIdInPermittedAccountIds(
-        account.caipAccountId,
-        requestedCaipAccountIds,
-      ),
-    );
-
-  const defaultAccounts = getDefaultAccounts(
-    requestedNamespacesWithoutWallet,
-    supportedRequestedAccounts,
-    supportedAccountsForRequestedNamespaces,
-  );
-
-  const defaultCaipAccountAddresses = defaultAccounts.map(
-    ({ caipAccountId }) => caipAccountId,
+  const [selectedAccountGroupIds, setSelectedAccountGroupIds] = useState(
+    defaultAccountGroupIds,
   );
 
   const [selectedCaipAccountAddresses, setSelectedCaipAccountAddresses] =
-    useState(defaultCaipAccountAddresses);
+    useState<CaipAccountId[]>(existingConnectedCaipAccountIds);
 
-  const handleCaipAccountAddressesSelected = useCallback(
-    (caipAccountAddresses: CaipAccountId[], { isUserModified = true } = {}) => {
+  console.log('selectedCaipAccountAddresses', selectedCaipAccountAddresses);
+
+  const handleAccountGroupIdsSelected = useCallback(
+    (
+      accountGroupIds: AccountGroupObject['id'][],
+      { isUserModified = true } = {},
+    ) => {
+      console.log('handleAccountGroupIdsSelected', accountGroupIds);
       if (isUserModified) {
         setUserHasModifiedSelection(true);
       }
-      let updatedSelectedChains = [...selectedChainIds];
+      const updatedSelectedChains = [...selectedChainIds];
 
-      caipAccountAddresses.forEach((caipAccountAddress) => {
-        const {
-          chain: { namespace: accountNamespace },
-        } = parseCaipAccountId(caipAccountAddress);
+      // Pre-parse all chain namespaces and cache common strings
+      const chainNamespaces = new Map<CaipChainId, string>();
+      const eip155Scope = `${KnownCaipNamespace.Eip155}:0`;
 
-        const existsSelectedChainForNamespace = updatedSelectedChains.some(
-          (caipChainId) => {
-            try {
-              const { namespace: chainNamespace } =
-                parseCaipChainId(caipChainId);
-              return accountNamespace === chainNamespace;
-            } catch (err) {
-              return false;
-            }
-          },
-        );
-
-        if (!existsSelectedChainForNamespace) {
-          const chainIdsForNamespace = allNetworksList.filter((caipChainId) => {
-            try {
-              const { namespace: chainNamespace } =
-                parseCaipChainId(caipChainId);
-              return accountNamespace === chainNamespace;
-            } catch (err) {
-              return false;
-            }
-          });
-
-          updatedSelectedChains = Array.from(
-            new Set([...updatedSelectedChains, ...chainIdsForNamespace]),
-          );
+      updatedSelectedChains.forEach((chainId) => {
+        try {
+          const { namespace } = parseCaipChainId(chainId);
+          chainNamespaces.set(chainId, namespace);
+        } catch (err) {
+          // Skip invalid chain IDs
         }
       });
 
+      // Create lookup sets for selected account group IDs
+      const selectedGroupIds = new Set(accountGroupIds);
+      console.log('new group ids', selectedGroupIds);
+
+      // Filter to only selected account groups
+      const selectedAccountGroups = supportedAccountGroups.filter((group) =>
+        selectedGroupIds.has(group.id),
+      );
+
+      // Build account addresses more efficiently
+      const updatedSelectedCaipAccountAddresses = new Set<CaipAccountId>();
+
+      // Process each selected account group
+      selectedAccountGroups.forEach((accountGroup) => {
+        accountGroup.accounts.forEach((account) => {
+          // Convert scopes to Set for O(1) lookup
+          const accountScopesSet = new Set(account.scopes);
+
+          // Check each selected chain
+          updatedSelectedChains.forEach((chainId) => {
+            const namespace = chainNamespaces.get(chainId);
+            if (!namespace) {
+              return;
+            }
+
+            let shouldAdd = false;
+
+            if (namespace === KnownCaipNamespace.Eip155) {
+              shouldAdd = accountScopesSet.has(eip155Scope);
+            } else if (namespace === chainId) {
+              shouldAdd = accountScopesSet.has(chainId);
+            }
+
+            if (shouldAdd) {
+              updatedSelectedCaipAccountAddresses.add(
+                `${chainId}:${account.address}`,
+              );
+            }
+          });
+        });
+      });
+
       handleChainIdsSelected(updatedSelectedChains, { isUserModified });
-      setSelectedCaipAccountAddresses(caipAccountAddresses);
+      setSelectedAccountGroupIds(accountGroupIds);
+      setSelectedCaipAccountAddresses(
+        Array.from(updatedSelectedCaipAccountAddresses),
+      );
     },
     [
-      setUserHasModifiedSelection,
-      setSelectedCaipAccountAddresses,
       selectedChainIds,
+      selectedCaipAccountAddresses,
       handleChainIdsSelected,
-      allNetworksList,
+      supportedAccountGroups,
+      setUserHasModifiedSelection,
+      setSelectedAccountGroupIds,
+      setSelectedCaipAccountAddresses,
     ],
   );
 
@@ -365,31 +337,24 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   useEffect(() => {
     if (
       !userHasModifiedSelection &&
-      !isEqual(defaultCaipAccountAddresses, selectedCaipAccountAddresses)
+      !isEqual(defaultAccountGroupIds, selectedAccountGroupIds)
     ) {
-      handleCaipAccountAddressesSelected(defaultCaipAccountAddresses, {
+      handleAccountGroupIdsSelected(defaultAccountGroupIds, {
         isUserModified: false,
       });
     }
   }, [
     userHasModifiedSelection,
-    handleCaipAccountAddressesSelected,
-    selectedCaipAccountAddresses,
-    JSON.stringify(defaultCaipAccountAddresses),
+    handleAccountGroupIdsSelected,
+    selectedAccountGroupIds,
+    JSON.stringify(defaultAccountGroupIds),
   ]);
 
-  const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
-    return selectedCaipAccountAddresses.some((selectedCaipAccountId) => {
-      return selectedCaipAccountId === caipAccountId;
-    });
-  });
-
-  const solanaAccountExistsInWallet = useMemo(() => {
-    return allAccounts.some(({ caipAccountId }) => {
-      const { chain } = parseCaipAccountId(caipAccountId);
-      return chain.namespace === KnownCaipNamespace.Solana;
-    });
-  }, [allAccounts]);
+  // const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
+  //   return selectedAccountGroupIds.some((selectedAccountGroupId) => {
+  //     return selectedAccountGroupId === caipAccountId;
+  //   });
+  // });
 
   const handleOpenAccountsModal = useCallback(() => {
     setShowEditAccountsModal(true);
@@ -403,19 +368,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     });
   }, [trackEvent]);
 
-  const handleOpenCreateSolanaAccountModal = useCallback(() => {
-    setShowCreateSolanaAccountModal(true);
-  }, []);
-
-  const handleCloseCreateSolanaAccountModal = useCallback(() => {
-    setShowCreateSolanaAccountModal(false);
-  }, []);
-
   const handleCloseEditAccountsModal = useCallback(() => {
     setShowEditAccountsModal(false);
   }, []);
 
-  console.log('selectedCaipAccountAddresses', selectedCaipAccountAddresses);
   const handleCancelConnection = useCallback(() => {
     rejectPermissionsRequest(permissionsRequestId);
   }, [permissionsRequestId, rejectPermissionsRequest]);
@@ -436,7 +392,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
-    selectedCaipAccountAddresses,
+    selectedAccountGroupIds,
     selectedChainIds,
     approveConnection,
   ]);
@@ -531,33 +487,33 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   scrollbarColor: 'var(--color-icon-muted) transparent',
                 }}
               >
-                {selectedAccounts.map((account) => (
-                  <AccountListItem
-                    showConnectedStatus={false}
-                    account={account}
-                    key={account.caipAccountId}
+                {selectedAccountGroupIds.map((accountGroupId) => (
+                  <MultichainAccountCell
+                    accountId={accountGroupId}
+                    balance={'0'}
+                    key={accountGroupId}
+                    endAccessory={<div>test</div>}
                     selected={false}
                   />
                 ))}
-                {selectedAccounts.length === 0 &&
-                  !promptToCreateSolanaAccount && (
-                    <Box
-                      className="connect-page__accounts-empty"
-                      display={Display.Flex}
-                      justifyContent={JustifyContent.center}
-                      alignItems={AlignItems.center}
-                      borderRadius={BorderRadius.XL}
-                    >
-                      <ButtonLink
-                        onClick={handleOpenAccountsModal}
-                        data-testid="edit"
-                      >
-                        {t('selectAccountToConnect')}
-                      </ButtonLink>
-                    </Box>
-                  )}
               </Box>
-              {selectedAccounts.length > 0 && (
+              {selectedAccountGroupIds.length === 0 && (
+                <Box
+                  className="connect-page__accounts-empty"
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                  borderRadius={BorderRadius.XL}
+                >
+                  <ButtonLink
+                    onClick={handleOpenAccountsModal}
+                    data-testid="edit"
+                  >
+                    {t('selectAccountToConnect')}
+                  </ButtonLink>
+                </Box>
+              )}
+              {selectedAccountGroupIds.length > 0 && (
                 <Box
                   marginTop={4}
                   display={Display.Flex}
@@ -571,46 +527,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   </ButtonLink>
                 </Box>
               )}
-              {promptToCreateSolanaAccount && !solanaAccountExistsInWallet && (
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  justifyContent={JustifyContent.center}
-                  alignItems={AlignItems.center}
-                  marginTop={4}
-                  gap={2}
-                >
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    color={TextColor.textAlternative}
-                    textAlign={TextAlign.Center}
-                  >
-                    {selectedAccounts.length === 0
-                      ? t('solanaAccountRequired')
-                      : t('solanaAccountRequested')}
-                  </Text>
-                  <Button
-                    variant={ButtonVariant.Secondary}
-                    width={BlockSize.Full}
-                    size={ButtonSize.Lg}
-                    onClick={handleOpenCreateSolanaAccountModal}
-                    data-testid="create-solana-account"
-                  >
-                    {t('createSolanaAccount')}
-                  </Button>
-                </Box>
-              )}
-              {showCreateSolanaAccountModal && (
-                <CreateSolanaAccountModal
-                  onClose={handleCloseCreateSolanaAccountModal}
-                />
-              )}
               {showEditAccountsModal && (
-                <EditAccountsModal
-                  accounts={allAccounts}
-                  defaultSelectedAccountAddresses={selectedCaipAccountAddresses}
+                <MultichainEditAccountsModal
+                  accountsGroups={supportedAccountGroups}
+                  defaultSelectedAccountGroups={selectedAccountGroupIds}
                   onClose={handleCloseEditAccountsModal}
-                  onSubmit={handleCaipAccountAddressesSelected}
+                  onSubmit={handleAccountGroupIdsSelected}
                 />
               )}
             </Box>
@@ -620,20 +542,16 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             tabKey="permissions"
             width={BlockSize.Full}
             data-testid="permissions-tab"
-            disabled={
-              promptToCreateSolanaAccount &&
-              !solanaAccountExistsInWallet &&
-              selectedAccounts.length === 0
-            }
+            disabled={selectedAccountGroupIds.length === 0}
           >
             <Box marginTop={4}>
-              <SiteCell
+              <MultichainSiteCell
                 nonTestNetworks={nonTestNetworkConfigurations}
                 testNetworks={testNetworkConfigurations}
-                accounts={allAccounts}
-                onSelectAccountAddresses={handleCaipAccountAddressesSelected}
+                accountsGroups={supportedAccountGroups}
+                onSelectAccountGroupIds={handleAccountGroupIdsSelected}
                 onSelectChainIds={handleChainIdsSelected}
-                selectedAccountAddresses={selectedCaipAccountAddresses}
+                selectedAccountGroupIds={selectedAccountGroupIds}
                 selectedChainIds={selectedChainIds}
                 isConnectFlow
               />
@@ -664,7 +582,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               size={ButtonSize.Lg}
               onClick={onConfirm}
               disabled={
-                selectedCaipAccountAddresses.length === 0 ||
+                selectedAccountGroupIds.length === 0 ||
                 selectedChainIds.length === 0
               }
             >
