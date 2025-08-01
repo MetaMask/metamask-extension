@@ -51,11 +51,23 @@ describe('Test Snap Lifecycle Hooks', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        // Wait for the dialog to trigger. This avoids race conditions where the
+        // dialog may end up queued instead of opened.
+        await driver.wait(async () => {
+          try {
+            // This throws "No client connected to ServerMochaToBackground" if
+            // the dialog is not opened.
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            return true;
+          } catch {
+            return false;
+          }
+        });
 
-        const snapInstall = new SnapInstall(driver);
+        await unlockWallet(driver, { navigate: false });
 
         // Validate the "onStart" lifecycle hook message.
+        const snapInstall = new SnapInstall(driver);
         await snapInstall.check_messageResultSpan(
           snapInstall.lifeCycleHookMessageElement,
           'The client was started successfully, and the "onStart" handler was called.',
