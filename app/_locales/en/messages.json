@@ -190,6 +190,9 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin account"
   },
+  "addBitcoinTestnetAccountLabel": {
+    "message": "Bitcoin Testnet account"
+  },
   "addBlockExplorer": {
     "message": "Add a block explorer"
   },
@@ -3577,6 +3580,9 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
+  },
+  "networkNameBitcoinTestnet": {
+    "message": "Bitcoin Testnet"
   },
   "networkNameDefinition": {
     "message": "The name associated with this network."
