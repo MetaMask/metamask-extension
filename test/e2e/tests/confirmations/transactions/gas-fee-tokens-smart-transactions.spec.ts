@@ -36,6 +36,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           mockSmartTransactionBatchRequests(mockServer, {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
           });
+          mockSentinelNetworks(mockServer);
         },
         title: this.test?.fullTitle(),
       },
@@ -94,6 +95,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
             error: true,
           });
+          mockSentinelNetworks(mockServer);
         },
         title: this.test?.fullTitle(),
       },
@@ -188,4 +190,24 @@ async function mockSimulationResponse(mockServer: MockttpServer) {
       };
     }),
   ];
+}
+
+async function mockSentinelNetworks(mockServer: MockttpServer) {
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/networks`)
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: {
+          '1': {
+            network: 'ethereum-mainnet',
+            confirmations: true,
+            relayTransactions: true,
+            sendBundle: true,
+          },
+        },
+      };
+    });
 }

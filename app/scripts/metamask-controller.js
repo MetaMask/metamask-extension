@@ -433,6 +433,10 @@ import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
+import {
+  getSendBundleSupportedChains,
+  isSendBundleSupported,
+} from './lib/transaction/sentinel-api';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2175,6 +2179,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
           isRelaySupported,
+          getSendBundleSupportedChains,
         },
         this.controllerMessenger,
       ),
@@ -4419,6 +4424,7 @@ export default class MetamaskController extends EventEmitter {
       // Other
       endTrace,
       isRelaySupported,
+      isSendBundleSupported,
       openUpdateTabAndReload: () =>
         openUpdateTabAndReload(this.requestSafeReload.bind(this)),
       requestSafeReload: this.requestSafeReload.bind(this),

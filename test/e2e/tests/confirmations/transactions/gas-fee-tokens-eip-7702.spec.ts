@@ -219,6 +219,7 @@ async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
             network: 'ethereum-mainnet',
             confirmations: true,
             relayTransactions: true,
+            sendBundle: true,
           },
         },
       };
