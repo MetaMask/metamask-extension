@@ -586,6 +586,7 @@ const PrepareBridgePage = () => {
     <>
       <Column className="prepare-bridge-page" gap={8}>
         <BridgeInputGroup
+          action={isSwap ? 'swap' : 'bridge'}
           header={getFromInputHeader()}
           token={fromToken}
           onAmountChange={(e) => {
@@ -654,7 +655,7 @@ const PrepareBridgePage = () => {
             value: fromAmount || undefined,
           }}
           isTokenListLoading={isFromTokensLoading}
-          buttonProps={{ testId: 'bridge-source-button' }}
+          dataTestId="bridge-source"
           onBlockExplorerClick={(token) => {
             setBlockExplorerToken(token);
             setShowBlockExplorerToast(true);
@@ -778,6 +779,7 @@ const PrepareBridgePage = () => {
           </Box>
 
           <BridgeInputGroup
+            action={isSwap ? 'swap' : 'bridge'}
             header={getToInputHeader()}
             token={toToken}
             onAssetChange={(token) => {
@@ -839,7 +841,7 @@ const PrepareBridgePage = () => {
                 : 'amount-input',
             }}
             isTokenListLoading={isToTokensLoading}
-            buttonProps={{ testId: 'bridge-destination-button' }}
+            dataTestId="bridge-destination"
             onBlockExplorerClick={(token) => {
               setBlockExplorerToken(token);
               setShowBlockExplorerToast(true);
