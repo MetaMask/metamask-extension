@@ -39,7 +39,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 137,
-    chainName: 'Polygon Mainnet',
+    chainName: 'Polygon',
     shortName: 'Polygon',
     nativeTokenSupported: true,
   },
