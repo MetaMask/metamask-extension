@@ -3277,9 +3277,9 @@
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "string.prototype.matchall>es-abstract>is-regex": true,
         "string.prototype.matchall>es-abstract>is-shared-array-buffer": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "@ngraveio/bc-ur>assert>object-is": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true,
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true,
         "gulp>vinyl-fs>object.assign": true,
         "string.prototype.matchall>regexp.prototype.flags": true,
         "string.prototype.matchall>side-channel": true,
@@ -3299,7 +3299,7 @@
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
     "crypto-browserify>browserify-cipher>browserify-des>des.js": {
@@ -3362,7 +3362,7 @@
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-map": true,
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-set": true,
         "eslint-plugin-react>array-includes>is-string": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "process": true,
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator>stop-iteration-iterator": true
       }
@@ -3907,6 +3907,15 @@
         "define": true
       }
     },
+    "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>json-stable-stringify": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>jsonify": true,
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
+      }
+    },
     "@metamask/message-manager>jsonschema": {
       "packages": {
         "browserify>url": true
@@ -4269,7 +4278,7 @@
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>has-symbols": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
     "@metamask/object-multiplex>once": {
@@ -5190,7 +5199,7 @@
     },
     "crypto-browserify>pbkdf2>to-buffer": {
       "packages": {
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "koa>content-disposition>safe-buffer": true,
         "string.prototype.matchall>es-abstract>typed-array-buffer": true
       }

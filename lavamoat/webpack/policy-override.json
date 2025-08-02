@@ -1,0 +1,154 @@
+{
+  "resources": {
+    "@ethersproject/wallet>@ethersproject/random": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@lavamoat/lavadome-react": {
+      "globals": {
+        "Array": true,
+        "Clipboard": true,
+        "Document": true,
+        "DocumentFragment": true,
+        "DocumentFragment.prototype": true,
+        "Element": true,
+        "Event": true,
+        "EventTarget": true,
+        "Function": true,
+        "JSON": true,
+        "NavigateEvent": true,
+        "NavigationDestination": true,
+        "Node": true,
+        "Number": true,
+        "Object": true,
+        "String": true,
+        "Weakmap": true
+      }
+    },
+    "@metamask/keyring-controller>ulid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@popperjs/core": {
+      "globals": {
+        "devicePixelRatio": true,
+        "devicePixelRatio.Symbol(Symbol.toPrimitive)": true,
+        "devicePixelRatio.Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive)": true,
+        "devicePixelRatio.Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive)": true,
+        "devicePixelRatio.Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive)": true
+      }
+    },
+    "@sentry/utils": {
+      "globals": {
+        "crypto": true,
+        "performance.now": true,
+        "devicePixelRatio": true,
+        "navigator.userAgent": true,
+        "navigator.language": true,
+        "navigator.userAgentData": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
+      "globals": {
+        "navigator": true,
+        "navigator.userAgentData": true,
+        "navigator.userAgentData.userAgentData": true
+      }
+    },
+    "^ background; v popup": {},
+    "axios": {
+      "globals": {
+        "postMessage": true
+      }
+    },
+    "browserify>util": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "buffer": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "core-js-pure": {
+      "globals": {
+        "navigator": true,
+        "navigator.userAgent": true,
+        "navigator.userAgent.Symbol(Symbol.toPrimitive)": true,
+        "MessageChannel": true,
+        "location": true,
+        "MessageChannel.prototype": true,
+        "MessageChannel.prototype.port2": true,
+        "MessageChannel.prototype.port2.port1": true,
+        "MessageChannel.prototype.port2.postMessage": true,
+        "MessageChannel.prototype.port2.postMessage.length": true,
+        "MessageChannel.prototype.port2.postMessage.length.name": true
+      }
+    },
+    "ethers>@ethersproject/random": {
+      "globals": {
+        "crypto": true,
+        "crypto.getRandomValues": true
+      }
+    },
+    "lodash": {
+      "globals": {
+        "setTimeout": true,
+        "clearTimeout": true
+      }
+    },
+    "node-fetch": {
+      "globals": {
+        "fetch": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true
+      }
+    },
+    "react-dom": {
+      "globals": {
+        "HTMLIFrameElement": true
+      }
+    },
+    "react-dom>scheduler": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "react-responsive-carousel": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
+    "react-toggle-button": {
+      "globals": {
+        "requestAnimationFrame": true,
+        "cancelAnimationFrame": true
+      }
+    },
+    "string.prototype.matchall>get-intrinsic": {
+      "globals": {
+        "Atomics": true,
+        "SharedArrayBuffer": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>buffer": {
+      "globals": {
+        "SharedArrayBuffer": true,
+        "SharedArrayBuffer.Symbol(Symbol.hasInstance)": true,
+        "SharedArrayBuffer.Symbol(Symbol.hasInstance).name": true
+      }
+    },
+    "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": {
+      "globals": {
+        "DOMException": true,
+        "DOMException.prototype": true,
+        "fetch": true
+      }
+    }
+  }
+}
