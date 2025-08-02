@@ -20,7 +20,7 @@ const mockUseTokenFiatAmount = jest.fn();
 const mockUseIsOriginalTokenSymbol = jest.fn();
 const mockGetIsFiatPrimary = jest.fn();
 
-jest.mock('../../../../hooks/useTokenTracker', () => ({
+jest.mock('../../../../hooks/useTokenBalances', () => ({
   useTokenTracker: () => mockUseTokenTracker(),
 }));
 

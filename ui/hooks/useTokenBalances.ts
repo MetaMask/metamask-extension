@@ -26,7 +26,7 @@ export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
   return { tokenBalances };
 };
 
-// This hook is designed for backwards compatibility with `ui/hooks/useTokenTracker.js`
+// This hook is designed for backwards compatibility with `ui/hooks/useTokenBalances.js`
 // and the github.com/MetaMask/eth-token-tracker library. It replaces RPC calls with
 // reading state from `TokenBalancesController`. It should not be used in new code.
 // Instead, prefer to use `useTokenBalances` directly, or compose higher level hooks from it.

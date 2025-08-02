@@ -5885,19 +5885,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-block-tracker@npm:^11.0.3":
-  version: 11.0.4
-  resolution: "@metamask/eth-block-tracker@npm:11.0.4"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^4.1.5"
-    "@metamask/safe-event-emitter": "npm:^3.1.1"
-    "@metamask/utils": "npm:^11.0.1"
-    json-rpc-random-id: "npm:^1.0.1"
-    pify: "npm:^5.0.0"
-  checksum: 10/56b60255a3ae23a378570a49c30d0c13bd74094c0509a978cad20ef57079c80bae91fd35749acb9ac5feef2922eec45a6fef8c0ee6e754cbf3722f8e5d0d771e
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-block-tracker@npm:^12.0.0, @metamask/eth-block-tracker@npm:^12.0.1":
   version: 12.0.1
   resolution: "@metamask/eth-block-tracker@npm:12.0.1"
@@ -6074,24 +6061,6 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-api": ^19.1.0
   checksum: 10/a82c903573d1516111d8595b5d5cf4c33c5ab5c76f758e82536cf2c5c925378e8b490a278456ebd52d091fdabb9861c8537f5ab3e1f6df8fc1b24d7498c8b79c
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-token-tracker@npm:^10.0.2":
-  version: 10.0.2
-  resolution: "@metamask/eth-token-tracker@npm:10.0.2"
-  dependencies:
-    "@ethersproject/bignumber": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.2"
-    "@metamask/eth-block-tracker": "npm:^11.0.3"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    bn.js: "npm:^5.2.1"
-    deep-equal: "npm:^2.2.0"
-    human-standard-token-abi: "npm:^2.0.0"
-  peerDependencies:
-    "@babel/runtime": ^7.21.0
-  checksum: 10/b43de24564d111172b304f32ecb02a36347b4f9cde158ba48424663427a0119ce12084652cff063cce202b678526b7e51363d76f20e80b481edc239aab0dbe3b
   languageName: node
   linkType: hard
 
@@ -20992,7 +20961,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deep-equal@npm:^2.0.5, deep-equal@npm:^2.2.0":
+"deep-equal@npm:^2.0.5":
   version: 2.2.3
   resolution: "deep-equal@npm:2.2.3"
   dependencies:
@@ -32061,7 +32030,6 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^15.0.0"
-    "@metamask/eth-token-tracker": "npm:^10.0.2"
     "@metamask/eth-trezor-keyring": "npm:^9.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"

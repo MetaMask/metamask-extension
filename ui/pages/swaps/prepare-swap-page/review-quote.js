@@ -93,7 +93,7 @@ import {
   formatSwapsValueForDisplay,
   getSwap1559GasFeeEstimates,
 } from '../swaps.util';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { useTokenTracker } from '../../../hooks/useTokenBalances';
 import {
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,

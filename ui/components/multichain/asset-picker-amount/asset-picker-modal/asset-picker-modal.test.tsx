@@ -10,7 +10,7 @@ import {
 } from '@metamask/network-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
-import { useTokenTracker } from '../../../../hooks/useTokenTracker';
+import { useTokenTracker } from '../../../../hooks/useTokenBalances';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
@@ -74,7 +74,7 @@ jest.mock('../../../../hooks/useNftsCollections', () => ({
   useNftsCollections: jest.fn(),
 }));
 
-jest.mock('../../../../hooks/useTokenTracker', () => ({
+jest.mock('../../../../hooks/useTokenBalances', () => ({
   useTokenTracker: jest.fn(),
 }));
 

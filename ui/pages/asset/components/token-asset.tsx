@@ -15,7 +15,7 @@ import {
   roundToDecimalPlacesRemovingExtraZeroes,
 } from '../../../helpers/utils/util';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { useTokenTracker } from '../../../hooks/useTokenBalances';
 import {
   getSelectedInternalAccount,
   getTokenList,
