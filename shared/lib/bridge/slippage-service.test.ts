@@ -1,5 +1,6 @@
 import { SlippageService, SlippageValue, type SlippageContext } from './slippage-service';
 import type { BridgeToken } from '../../../ui/ducks/bridge/types';
+import { MultichainNetworks } from '../../constants/multichain/networks';
 
 describe('SlippageService', () => {
   // Mock tokens
@@ -34,7 +35,7 @@ describe('SlippageService', () => {
   };
 
   const mockSolanaToken: BridgeToken = {
-    chainId: '0x384' as const, // 900 in hex
+    chainId: MultichainNetworks.SOLANA,
     address: 'So11111111111111111111111111111111111111112',
     symbol: 'SOL',
     decimals: 9,
@@ -75,8 +76,8 @@ describe('SlippageService', () => {
     describe('Solana swaps', () => {
       it('returns 0.5% for Solana to Solana swaps', () => {
         const context: SlippageContext = {
-          fromChain: { chainId: '900' }, // Solana
-          toChain: { chainId: '900' },
+          fromChain: { chainId: MultichainNetworks.SOLANA },
+          toChain: { chainId: MultichainNetworks.SOLANA },
           fromToken: mockSolanaToken,
           toToken: mockSolanaToken,
           isSwap: true,
@@ -222,8 +223,8 @@ describe('SlippageService', () => {
 
     it('returns correct reason for Solana swap', () => {
       const context: SlippageContext = {
-        fromChain: { chainId: '900' },
-        toChain: { chainId: '900' },
+        fromChain: { chainId: MultichainNetworks.SOLANA },
+        toChain: { chainId: MultichainNetworks.SOLANA },
         fromToken: mockSolanaToken,
         toToken: mockSolanaToken,
         isSwap: true,
