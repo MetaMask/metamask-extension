@@ -26,6 +26,7 @@ export async function decodeTransactionDataWithFourByte(
   log('Generated inputs', inputs);
 
   const valueData = addHexPrefix(transactionData.slice(10));
+  // Note: getAbiCoder().decode does not check if all valueData was decoded.
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const values = Interface.getAbiCoder().decode(inputs, valueData) as any[];
@@ -33,6 +34,14 @@ export async function decodeTransactionDataWithFourByte(
   const params = inputs.map((input, index) =>
     decodeParam(input, index, values),
   );
+
+  // TODO: consider also encode(..) === valueData || encodePacked(..) === valueData
+  const isStrictMatch = Interface.getAbiCoder().encode(inputs, values) === valueData
+  if (!isStrictMatch) {
+    // Although 4bytes matched, something else didn't. Most likely decoder did
+    // not consume all valueData because parameter types are wrong.
+    return undefined;
+  }
 
   return { name, params };
 }
