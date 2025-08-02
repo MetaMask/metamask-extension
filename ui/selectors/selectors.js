@@ -3929,3 +3929,24 @@ export function getShowUpdateModal(state) {
 
   return showUpdateModal;
 }
+
+/**
+ * Get block explorer URL for a given chain ID
+ *
+ * @param {*} state - Redux state
+ * @param {string} chainId - Chain ID to get block explorer for
+ * @returns {string|undefined} Block explorer URL or undefined if not found
+ */
+export function getBlockExplorerUrlByChainId(state, chainId) {
+  const networkConfigurationsByChainId = getNetworkConfigurationsByChainId(state);
+  const networkConfig = networkConfigurationsByChainId[chainId];
+
+  if (!networkConfig) {
+    return undefined;
+  }
+
+  const index = networkConfig.defaultBlockExplorerUrlIndex;
+  return index === undefined
+    ? undefined
+    : networkConfig.blockExplorerUrls?.[index];
+}
