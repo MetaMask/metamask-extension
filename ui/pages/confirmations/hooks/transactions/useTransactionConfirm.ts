@@ -1,4 +1,8 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+  BatchTransactionParams,
+} from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
@@ -32,7 +36,12 @@ export function useTransactionConfirm() {
     }
 
     newTransactionMeta.batchTransactions = [
-      selectedGasFeeToken.transferTransaction,
+      {
+        ...selectedGasFeeToken.transferTransaction,
+        type: TransactionType.gasPayment,
+        // TODO: This type conversion is temporary will be removed once we consume latest controller
+        // https://github.com/MetaMask/core/pull/6178
+      } as BatchTransactionParams,
     ];
 
     newTransactionMeta.txParams.gas = selectedGasFeeToken.gas;
