@@ -80,9 +80,7 @@ const initialState: StateOverrides = {
   },
 };
 
-const arrangeMocks = (
-  stateOverrides: StateOverrides = initialState,
-) => {
+const arrangeMocks = (stateOverrides: StateOverrides = initialState) => {
   const mockStore = {
     metamask: {
       providerConfig: {
