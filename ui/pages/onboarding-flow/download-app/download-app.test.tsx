@@ -22,55 +22,89 @@ jest.mock('react-router-dom', () => ({
 const pushMock = jest.fn();
 const replaceMock = jest.fn();
 
-describe('Creation Successful Onboarding View', () => {
-  const arrangeMocks = (
-    stateOverrides = {
-      metamask: {
-        isBackupAndSyncEnabled: false,
-        participateInMetaMetrics: true,
-        isSignedIn: false,
-        useExternalServices: true,
-        internalAccounts: {
-          accounts: {
-            accountId: {
-              address: '0x0000000000000000000000000000000000000000',
-              metadata: {
-                keyring: {
-                  type: 'HD Key Tree',
-                  accounts: ['0x0000000000000000000000000000000000000000'],
-                },
-              },
+type StateOverrides = {
+  metamask: {
+    isBackupAndSyncEnabled?: boolean;
+    participateInMetaMetrics?: boolean;
+    isSignedIn?: boolean;
+    useExternalServices?: boolean;
+    internalAccounts?: {
+      accounts: {
+        accountId?: {
+          address: string;
+          metadata: {
+            keyring: {
+              type: string;
+              accounts: string[];
+            };
+          };
+        };
+      };
+      selectedAccount: string;
+    };
+    keyrings?: {
+      type: string;
+      accounts: string[];
+    }[];
+    firstTimeFlowType?: FirstTimeFlowType;
+    seedPhraseBackedUp?: boolean;
+  };
+  appState?: {
+    externalServicesOnboardingToggleState: boolean;
+  };
+};
+
+const initialState: StateOverrides = {
+  metamask: {
+    isBackupAndSyncEnabled: false,
+    participateInMetaMetrics: true,
+    isSignedIn: false,
+    useExternalServices: true,
+    internalAccounts: {
+      accounts: {
+        accountId: {
+          address: '0x0000000000000000000000000000000000000000',
+          metadata: {
+            keyring: {
+              type: 'HD Key Tree',
+              accounts: ['0x0000000000000000000000000000000000000000'],
             },
           },
-          selectedAccount: 'accountId',
         },
       },
-      appState: {
-        externalServicesOnboardingToggleState: true,
-      },
+      selectedAccount: 'accountId',
     },
-  ) => {
-    const mockStore = {
-      metamask: {
-        providerConfig: {
-          type: 'test',
-        },
-        ...stateOverrides.metamask,
-      },
-      appState: {
-        ...stateOverrides.appState,
-      },
-    };
-    const store = configureMockStore([thunk])(mockStore);
+  },
+  appState: {
+    externalServicesOnboardingToggleState: true,
+  },
+};
 
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: pushMock, replace: replaceMock });
-
-    return store;
+const arrangeMocks = (
+  stateOverrides: StateOverrides = initialState,
+) => {
+  const mockStore = {
+    metamask: {
+      providerConfig: {
+        type: 'test',
+      },
+      ...stateOverrides.metamask,
+    },
+    appState: {
+      ...stateOverrides.appState,
+    },
   };
+  const store = configureMockStore([thunk])(mockStore);
 
+  jest
+    .spyOn(reactRouterDom, 'useHistory')
+    .mockImplementation()
+    .mockReturnValue({ push: pushMock, replace: replaceMock });
+
+  return store;
+};
+
+describe('Download App Onboarding View', () => {
   describe('When the "Done" button is clicked', () => {
     it('should redirect to the onboarding pin extension route', async () => {
       const store = arrangeMocks();
