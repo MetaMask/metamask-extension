@@ -48,7 +48,10 @@ import {
 } from '../../../components/component-library';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainIsTestnet,
+} from '../../../selectors/multichain';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
@@ -213,14 +216,15 @@ const TokenButtons = ({
     ///: END:ONLY_INCLUDE_IF
   ]);
 
+  const isTestnet = useSelector(getMultichainIsTestnet);
+
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
       await setCorrectChain();
+      // Handle clicking from the asset details page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.TokenView,
-        {
-          ...token,
-        },
+        token,
         isSwap,
       );
     },
@@ -340,7 +344,7 @@ const TokenButtons = ({
         disabled={!isSwapsChain}
       />
 
-      {!isUnifiedUIEnabled && (
+      {!isUnifiedUIEnabled && !isTestnet && isBridgeChain && (
         <IconButton
           className="token-overview__button"
           data-testid="token-overview-bridge"

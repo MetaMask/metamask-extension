@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "代币金额必须是整数"
   },
-  "followUsOnX": {
-    "message": "在 $1上关注我们",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "禁用的 IPFS 网关：请指定一个 CID 网关"
   },
@@ -5071,7 +5067,8 @@
     "message": "已启用"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "该电子邮箱和您的 MetaMask 密码将帮助您找回账户及助记词。"
+    "message": "该电子邮箱和您的 MetaMask 密码将帮助您找回账户及助记词。",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 找回",
@@ -5442,12 +5439,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "添加多个助记词"
-  },
-  "slideRemoteModeDescription": {
-    "message": "无线使用您的冷钱包"
-  },
-  "slideRemoteModeTitle": {
-    "message": "冷存储，快速访问"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "地址相同，功能更加智能化"
@@ -6827,9 +6818,6 @@
   "troubleConnectingToWallet": {
     "message": "我们在连接您的 $1 时遇到问题，尝试检查 $2 并重试。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask无法启动。可能发生间歇性错误，因此请尝试重新启动扩展程序。"
   },
   "tryAgain": {
     "message": "重试"

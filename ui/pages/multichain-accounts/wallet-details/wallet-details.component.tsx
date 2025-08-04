@@ -1,10 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  AccountGroupId,
-  AccountWalletId,
-} from '@metamask/account-tree-controller';
+import { AccountWalletId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import {
   SolScope,
@@ -153,11 +150,10 @@ const WalletDetails = () => {
   const isFirstHdKeyring = hdKeyrings[0]?.metadata?.id === keyringId;
   const shouldShowBackupReminder = !seedPhraseBackedUp && isFirstHdKeyring;
 
-  const groupKeys = Object.keys(wallet.groups || {});
-  // For now it's just the default group, but in the future we will have multiple groups
-  const firstGroup =
-    groupKeys.length > 0 ? wallet.groups[groupKeys[0] as AccountGroupId] : null;
-  const accounts = firstGroup?.accounts || [];
+  // Now, wallets are composed of multiple groups, so we have to flatten everything.
+  const accounts = Object.values(wallet.groups).flatMap(
+    (group) => group.accounts,
+  );
 
   const handleAddAccount = () => {
     setIsModalOpen(true);

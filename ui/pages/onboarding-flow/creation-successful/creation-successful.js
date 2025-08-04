@@ -24,7 +24,6 @@ import {
   Text,
   IconName,
   IconSize,
-  ButtonBase,
   Icon,
   ButtonLink,
   ButtonLinkSize,
@@ -198,7 +197,8 @@ export default function CreationSuccessful() {
             className="creation-successful__settings-actions"
             gap={4}
           >
-            <ButtonBase
+            <Button
+              variant={ButtonVariant.Secondary}
               data-testid="manage-default-settings"
               borderRadius={BorderRadius.LG}
               width={BlockSize.Full}
@@ -222,7 +222,7 @@ export default function CreationSuccessful() {
                 color={IconColor.iconAlternative}
                 size={IconSize.Sm}
               />
-            </ButtonBase>
+            </Button>
           </Box>
         )}
       </Box>

@@ -25,6 +25,7 @@ import {
 } from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
+import { setShowPasswordChangeToast } from '../toast-master/utils';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -68,8 +69,10 @@ export default function PasswordOutdatedModal() {
               data-testid="password-changed"
               size={ButtonSize.Lg}
               block
-              onClick={() => {
-                dispatch(lockMetamask());
+              onClick={async () => {
+                // remove the password change toast from the app state
+                await dispatch(setShowPasswordChangeToast(null));
+                await dispatch(lockMetamask());
                 history.push(DEFAULT_ROUTE);
               }}
             >

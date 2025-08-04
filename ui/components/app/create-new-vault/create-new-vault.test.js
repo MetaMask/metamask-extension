@@ -37,7 +37,7 @@ describe('CreateNewVault', () => {
     );
     expect(
       screen.getByText(
-        'You can paste your entire secret recovery phrase into any field',
+        'You can paste your entire Secret Recovery Phrase into any field.',
       ),
     ).toBeInTheDocument();
   });

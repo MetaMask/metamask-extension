@@ -591,18 +591,21 @@ export async function mockSwapAggregatorMetadataArbitrum(mockServer: Mockttp) {
         statusCode: 200,
         json: {
           airswapLight: {
+            // Legitimate hex color value in test
             // eslint-disable-next-line @metamask/design-tokens/color-no-hex
             color: '#2B71FF',
             title: 'AirSwap',
             icon: "data:image/svg+xml,%3csvg width='75' height='31' viewBox='0 0 75 31' fill='none' xmlns='http://www.w3.org/2000/svg'%3e %3cpath fill-rule='evenodd' clip-rule='evenodd' d='M31.4038 12.231H30.1152V19.3099H31.4038V12.231Z' fill='%23FDFDFD'/%3e %3cpath fill-rule='evenodd' clip-rule='evenodd' d='M42.8265 15.1959C44.1549 15.5074 44.9217 15.9477 45.1053 16.8178C45.1368 16.9625 45.1513 17.1103 45.1485 17.2582C45.1485 18.5793 44.2197 19.4171 42.7077 19.4171C41.5541 19.4075 40.4409 18.9929 39.5649 18.2463L40.3317 17.3548C41.0229 17.9456 41.8437 18.3215 42.7401 18.3215C43.6365 18.3215 43.8849 17.9241 43.8849 17.3763C43.8849 16.8285 43.5933 16.5922 42.2541 16.2915C40.7205 15.937 39.8349 15.4322 39.8349 14.1218C39.8349 12.8114 40.7529 12.1239 42.1785 12.1239C43.1717 12.1129 44.1403 12.4303 44.9325 13.0262L44.2521 13.9607C43.6041 13.488 42.8697 13.1658 42.2109 13.1658C41.5521 13.1658 41.0985 13.5418 41.0985 14.0144C41.0985 14.487 41.4549 14.8736 42.8265 15.1959Z' fill='%23FDFDFD'/%3e %3c/svg%3e",
           },
           bancor: {
+            // Legitimate hex color value in test
             // eslint-disable-next-line @metamask/design-tokens/color-no-hex
             color: '#c9c9c9',
             title: 'Bancor',
             icon: "data:image/svg+xml,%3csvg width='117' height='29' viewBox='0 0 117 29' fill='none' xmlns='http://www.w3.org/2000/svg'%3e %3cpath fill-rule='evenodd' clip-rule='evenodd' d='M9.15211 0.0550469L16.2358 3.98013C16.5117 4.1333 16.5117 4.51305 16.2358 4.66622L9.15211 8.5913C9.02579 8.66151 8.86623 8.66151 8.73992 8.5913L1.65627 4.66622C1.38037 4.51305 1.38037 4.1333 1.65627 3.98013L8.73992 0.0550469C8.86956 -0.018349 9.02579 -0.018349 9.15211 0.0550469Z' fill='%230A2540'/%3e %3c/svg%3e",
           },
           curve: {
+            // Legitimate hex color value in test
             // eslint-disable-next-line @metamask/design-tokens/color-no-hex
             color: '#24292E',
             title: 'Curve',

@@ -3,12 +3,20 @@ import { isObject, hasProperty } from '@metamask/utils';
 import log from 'loglevel';
 import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../../shared/constants/state-corruption';
 import type { ErrorLike } from '../../../shared/constants/errors';
+import {
+  DISPLAY_GENERAL_STARTUP_ERROR,
+  RELOAD_WINDOW,
+} from '../../../shared/constants/start-up-errors';
 import { displayStateCorruptionError } from './state-corruption-html';
+import {
+  displayCriticalError,
+  CriticalErrorTranslationKey,
+} from './display-critical-error';
 
 type Message = {
   data: {
     method: string;
-    params?: Record<string, unknown> | unknown[];
+    params?: Record<string, unknown>;
   };
 };
 
@@ -35,7 +43,7 @@ export class CriticalStartupErrorHandler {
    *
    * @param message - The message received from the background script.
    */
-  #handler = (message: Message) => {
+  #handler = async (message: Message) => {
     if (!isObject(message) || !hasProperty(message, 'data')) {
       // Ignore messages that are not objects or do not have a 'data' property,
       // they're likely for some other purpose
@@ -50,7 +58,7 @@ export class CriticalStartupErrorHandler {
     const { method } = data;
     // Currently, we only handle RELOAD_WINDOW, and the state corruption error
     // message, but we will be adding more in the future.
-    if (method === 'RELOAD_WINDOW') {
+    if (method === RELOAD_WINDOW) {
       // This is a special case where we want to reload the page
       window.location.reload();
     } else if (method === METHOD_DISPLAY_STATE_CORRUPTION_ERROR) {
@@ -72,6 +80,25 @@ export class CriticalStartupErrorHandler {
         this.#port,
         error,
         hasBackup,
+        currentLocale,
+      );
+    } else if (method === DISPLAY_GENERAL_STARTUP_ERROR) {
+      if (!hasProperty(data, 'params') || !isObject(data.params)) {
+        log.error(
+          'Received general start up error message without valid params:',
+          message,
+        );
+        return;
+      }
+
+      const { error, currentLocale } = data.params as {
+        error: ErrorLike;
+        currentLocale?: string;
+      };
+      await displayCriticalError(
+        this.#container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error as ErrorLike,
         currentLocale,
       );
     }

@@ -1,6 +1,7 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
 import { cloneDeep, escapeRegExp } from 'lodash';
+import { captureException } from '../../../shared/lib/sentry';
 
 type VersionedData = {
   meta: { version: number };
@@ -89,9 +90,7 @@ export async function migrate(
     const newError = new Error(
       `Migration #${version}: ${getErrorMessage(error)}`,
     );
-    if (global.sentry) {
-      global.sentry.captureException(newError);
-    }
+    captureException(newError);
     // Even though we encountered an error, we need the migration to pass for
     // the migrator tests to work
     versionedData.data = originalVersionedData.data;

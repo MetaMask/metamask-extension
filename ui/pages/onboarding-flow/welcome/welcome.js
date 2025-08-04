@@ -13,7 +13,12 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
-import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
+import {
+  getCurrentKeyring,
+  getFirstTimeFlowType,
+  getIsParticipateInMetaMetricsSet,
+  getIsSocialLoginFlowInitialized,
+} from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
@@ -48,6 +53,12 @@ export default function OnboardingWelcome({
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isSocialLoginFlowInitialized = useSelector(
+    getIsSocialLoginFlowInitialized,
+  );
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
 
@@ -59,11 +70,14 @@ export default function OnboardingWelcome({
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
-        firstTimeFlowType === FirstTimeFlowType.socialImport
+        firstTimeFlowType === FirstTimeFlowType.socialImport ||
+        firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
-      } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
+        history.replace(
+          isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+        );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (getBrowserName() === PLATFORM_FIREFOX) {
           history.replace(ONBOARDING_COMPLETION_ROUTE);
@@ -73,13 +87,22 @@ export default function OnboardingWelcome({
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
+    } else if (isSocialLoginFlowInitialized) {
+      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+      } else {
+        history.replace(ONBOARDING_UNLOCK_ROUTE);
+      }
     }
   }, [
     currentKeyring,
     history,
     firstTimeFlowType,
     newAccountCreationInProgress,
+    isParticipateInMetaMetricsSet,
+    isSocialLoginFlowInitialized,
   ]);
+
   const trackEvent = useContext(MetaMetricsContext);
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     trackEvent;

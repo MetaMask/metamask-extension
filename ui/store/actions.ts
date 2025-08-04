@@ -6,7 +6,6 @@
 import { ReactFragment } from 'react';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
@@ -52,7 +51,7 @@ import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
   USER_STORAGE_FEATURE_NAMES,
-  UserProfileMetaMetrics,
+  UserProfileLineage,
 } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -61,6 +60,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -261,6 +261,10 @@ export function resetOAuthLoginState() {
 
     try {
       await submitRequestToBackground('resetOAuthLoginState');
+
+      dispatch({
+        type: actionConstants.RESET_SOCIAL_LOGIN_ONBOARDING,
+      });
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
@@ -284,8 +288,6 @@ export function createNewVaultAndSyncWithSocial(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       const primaryKeyring = await createNewVault(password);
       if (!primaryKeyring) {
@@ -298,6 +300,7 @@ export function createNewVaultAndSyncWithSocial(
         seedPhrase,
         primaryKeyring.metadata.id,
       );
+      dispatch(hideWarning());
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -306,8 +309,6 @@ export function createNewVaultAndSyncWithSocial(
       } else {
         throw error;
       }
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -322,8 +323,6 @@ export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       // restore the vault using the seed phrase
       const mnemonic = await submitRequestToBackground(
@@ -331,12 +330,11 @@ export function restoreSocialBackupAndGetSeedPhrase(
         [password],
       );
 
+      dispatch(hideWarning());
       await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
       return mnemonic;
     } catch (error) {
       log.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
-      dispatch(hideLoadingIndication());
       dispatch(displayWarning(error.message));
       throw error;
     }
@@ -352,6 +350,8 @@ export function syncSeedPhrases(): ThunkAction<
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('syncSeedPhrases');
+      dispatch(hideWarning());
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error('[syncSeedPhrases] error', error);
       dispatch(displayWarning(error.message));
@@ -395,6 +395,8 @@ export function changePassword(
         } catch (error) {
           // revert the keyring password change
           await keyringChangePassword(oldPassword);
+          const revertedKeyringEncryptionKey = await exportEncryptionKey();
+          await storeKeyringEncryptionKey(revertedKeyringEncryptionKey);
           throw error;
         }
       }
@@ -431,10 +433,14 @@ export function tryUnlockMetamask(
       callBackgroundMethod(
         'syncPasswordAndUnlockWallet',
         [password],
-        (error) => {
+        (error, isPasswordSynced) => {
           if (error) {
             reject(error);
             return;
+          }
+          // if password is not synced show connections removal warning to user.
+          if (!isPasswordSynced) {
+            dispatch(setShowConnectionsRemovedModal(true));
           }
 
           resolve();
@@ -447,6 +453,7 @@ export function tryUnlockMetamask(
       })
       .then(() => {
         dispatch(hideLoadingIndication());
+        dispatch(hideWarning());
       })
       .catch((err) => {
         dispatch(unlockFailed(getErrorMessage(err)));
@@ -457,22 +464,23 @@ export function tryUnlockMetamask(
 }
 
 export function checkIsSeedlessPasswordOutdated(
-  skipCache = false,
+  skipCache = true,
 ): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
+    let isPasswordOutdated = false;
     try {
-      const isPasswordOutdated = await submitRequestToBackground<boolean>(
+      isPasswordOutdated = await submitRequestToBackground<boolean>(
         'checkIsSeedlessPasswordOutdated',
         [skipCache],
       );
       if (isPasswordOutdated) {
         await forceUpdateMetamaskState(dispatch);
       }
-      return isPasswordOutdated;
     } catch (error) {
-      dispatch(displayWarning(error));
-      throw error;
+      log.warn('checkIsSeedlessPasswordOutdated error', error);
     }
+
+    return isPasswordOutdated;
   };
 }
 
@@ -557,6 +565,7 @@ export function importMnemonicToVault(mnemonic: string): ThunkAction<
     })
       .then(async (result) => {
         dispatch(hideLoadingIndication());
+        dispatch(hideWarning());
         dispatch(setShowNewSrpAddedToast(true));
         return result;
       })
@@ -605,7 +614,6 @@ export function createNewVaultAndGetSeedPhrase(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
     try {
       await createNewVault(password);
       const seedPhrase = await getSeedPhrase(password);
@@ -617,8 +625,6 @@ export function createNewVaultAndGetSeedPhrase(
       } else {
         throw error;
       }
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -629,8 +635,6 @@ export function unlockAndGetSeedPhrase(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       await submitPassword(password);
       const seedPhrase = await getSeedPhrase(password);
@@ -643,8 +647,6 @@ export function unlockAndGetSeedPhrase(
       } else {
         throw error;
       }
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -1382,6 +1384,21 @@ export async function setEnableEnforcedSimulationsForTransaction(
   }
 }
 
+export async function setEnforcedSimulationsSlippageForTransaction(
+  transactionId: string,
+  value: number,
+): void {
+  try {
+    await submitRequestToBackground(
+      'setEnforcedSimulationsSlippageForTransaction',
+      [transactionId, value],
+    );
+  } catch (error) {
+    logErrorWithMessage(error);
+    throw error;
+  }
+}
+
 // TODO: Not a thunk, but rather a wrapper around a background call
 export function updateTransactionGasFees(
   txId: string,
@@ -2059,6 +2076,15 @@ export function unlockSucceeded(message?: string) {
   };
 }
 
+export function setShowConnectionsRemovedModal(
+  showConnectionsRemovedModal: boolean,
+) {
+  return {
+    type: actionConstants.SET_SHOW_CONNECTIONS_REMOVED,
+    value: showConnectionsRemovedModal,
+  };
+}
+
 export function updateMetamaskState(
   patches: Patch[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -2192,14 +2218,6 @@ export function lockMetamask(): ThunkAction<
     dispatch(showLoadingIndication());
 
     return backgroundSetLocked()
-      .then(() => {
-        // check seedless password outdated when lock app
-        dispatch(checkIsSeedlessPasswordOutdated(true));
-        return Promise.resolve();
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      })
       .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
         dispatch(displayWarning(getErrorMessage(error)));
@@ -3940,10 +3958,17 @@ export function resetOnboarding(): ThunkAction<
 > {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     try {
-      await dispatch(setSeedPhraseBackedUp(false));
+      const isSocialLoginFlow = getIsSocialLoginFlow(getState());
       dispatch(resetOnboardingAction());
+
+      if (isSocialLoginFlow) {
+        await dispatch(resetOAuthLoginState());
+      }
     } catch (err) {
       console.error(err);
     }
@@ -6252,6 +6277,19 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
 }
 
 /**
+ * Capture an error in the background for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * this for handling errors.
+ */
+export async function captureTestBackgroundError(
+  message: string,
+): Promise<void> {
+  await submitRequestToBackground('captureTestError', [message]);
+}
+
+/**
  * Set status of popover warning for the first snap installation.
  *
  * @param shown - True if popover has been shown.
@@ -6407,18 +6445,18 @@ export function setIsBackupAndSyncFeatureEnabled(
 }
 
 /**
- * Fetches the user profile meta metrics from the profile-sync.
+ * Fetches the user profile lineage from the authentication API.
  *
- * @returns A thunk action that, when dispatched, attempts to fetch the user profile meta metrics.
+ * @returns A thunk action that, when dispatched, attempts to fetch the user profile lineage.
  */
-export async function getUserProfileMetaMetrics(): Promise<
-  UserProfileMetaMetrics | undefined
+export async function getUserProfileLineage(): Promise<
+  UserProfileLineage | undefined
 > {
   try {
-    const userProfileMetaMetrics = await submitRequestToBackground(
-      'getUserProfileMetaMetrics',
+    const userProfileLineage = await submitRequestToBackground(
+      'getUserProfileLineage',
     );
-    return userProfileMetaMetrics;
+    return userProfileLineage;
   } catch (error) {
     logErrorWithMessage(error);
     return undefined;
@@ -7046,6 +7084,17 @@ export function setSkipDeepLinkInterstitial(value: boolean) {
  */
 export async function requestSafeReload() {
   return await submitRequestToBackground('requestSafeReload');
+}
+
+/**
+ * Opens the "Updating" page in a new tab and then triggers a safe extension reload.
+ *
+ * Used when an update is available to reload the extension.
+ *
+ * If opening the tab fails, the error is logged, and the reload proceeds anyway.
+ */
+export async function openUpdateTabAndReload() {
+  return await submitRequestToBackground('openUpdateTabAndReload');
 }
 
 export async function applyTransactionContainersExisting(

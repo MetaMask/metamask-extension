@@ -92,6 +92,8 @@ export const TOP_ASSETS_API_MOCK_RESULT = [
   },
 ];
 
+// External API response data with third-party service branding colors - these hex values represent external service brand colors
+/* eslint-disable @metamask/design-tokens/color-no-hex */
 export const AGGREGATOR_METADATA_API_MOCK_RESULT = {
   airswapLight: {
     // eslint-disable-next-line @metamask/design-tokens/color-no-hex

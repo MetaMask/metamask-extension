@@ -155,14 +155,8 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
       await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
 
-      expect(store.getActions()).toStrictEqual(expectedActions);
       expect(getSeedPhraseStub.callCount).toStrictEqual(1);
       expect(createNewVaultAndKeychainStub.callCount).toStrictEqual(1);
       expect(
@@ -188,11 +182,6 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
       await store.dispatch(
         actions.restoreSocialBackupAndGetSeedPhrase('password'),
       );
@@ -200,7 +189,6 @@ describe('Actions', () => {
       expect(restoreSocialBackupAndGetSeedPhraseStub.callCount).toStrictEqual(
         1,
       );
-      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
     it('errors when fetchAndRestoreSeedPhrase throws', async () => {
@@ -212,11 +200,7 @@ describe('Actions', () => {
 
       setBackgroundConnection(background);
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-      ];
+      const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];
 
       await expect(
         store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
@@ -266,6 +250,93 @@ describe('Actions', () => {
         storeKeyringEncryptionKeyStub.calledOnceWith('encryption-key'),
       ).toStrictEqual(true);
     });
+
+    it('should revert the keyring password change if socialSyncChangePassword fails', async () => {
+      const store = mockStore({
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const oldPassword = 'old-password';
+      const newPassword = 'new-password';
+
+      const socialSyncChangePasswordStub = sinon
+        .stub()
+        .rejects(new Error('error'));
+      const keyringChangePasswordStub = sinon.stub().resolves();
+      const exportEncryptionKeyStub = sinon.stub().resolves('encryption-key');
+      const storeKeyringEncryptionKeyStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        socialSyncChangePassword: socialSyncChangePasswordStub,
+        keyringChangePassword: keyringChangePasswordStub,
+        exportEncryptionKey: exportEncryptionKeyStub,
+        storeKeyringEncryptionKey: storeKeyringEncryptionKeyStub,
+      });
+
+      await setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(actions.changePassword(newPassword, oldPassword)),
+      ).rejects.toThrow('error');
+      expect(keyringChangePasswordStub.callCount).toStrictEqual(2);
+      expect(exportEncryptionKeyStub.callCount).toStrictEqual(1);
+      expect(
+        storeKeyringEncryptionKeyStub.calledOnceWith('encryption-key'),
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('#checkIsSeedlessPasswordOutdated', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should return true if the password is outdated', async () => {
+      const store = mockStore();
+
+      const checkIsSeedlessPasswordOutdated =
+        background.checkIsSeedlessPasswordOutdated.resolves(true);
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.checkIsSeedlessPasswordOutdated(),
+      );
+      expect(result).toStrictEqual(true);
+      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+    });
+
+    it('should return false if the password is not outdated', async () => {
+      const store = mockStore();
+
+      const checkIsSeedlessPasswordOutdated =
+        background.checkIsSeedlessPasswordOutdated.resolves(false);
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.checkIsSeedlessPasswordOutdated(),
+      );
+      expect(result).toStrictEqual(false);
+      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+    });
+
+    it('should not throw an error if the checkIsSeedlessPasswordOutdated fails', async () => {
+      const store = mockStore();
+
+      const checkIsSeedlessPasswordOutdated =
+        background.checkIsSeedlessPasswordOutdated.rejects(new Error('error'));
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.checkIsSeedlessPasswordOutdated(),
+      );
+      expect(result).toStrictEqual(false);
+      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+    });
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -277,7 +348,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       const syncPasswordAndUnlockWallet =
-        background.syncPasswordAndUnlockWallet.resolves();
+        background.syncPasswordAndUnlockWallet.resolves(true);
 
       setBackgroundConnection(background);
 
@@ -286,6 +357,7 @@ describe('Actions', () => {
         { type: 'UNLOCK_IN_PROGRESS' },
         { type: 'UNLOCK_SUCCEEDED', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'HIDE_WARNING' },
       ];
 
       await store.dispatch(actions.tryUnlockMetamask());
@@ -2448,17 +2520,17 @@ describe('Actions', () => {
     });
   });
 
-  describe('#getUserProfileMetaMetrics', () => {
-    it('calls getUserProfileMetaMetrics in the background', async () => {
-      const getUserProfileMetaMetricsStub = sinon.stub().resolves();
+  describe('#getUserProfileLineage', () => {
+    it('calls getUserProfileLineage in the background', async () => {
+      const getUserProfileLineageStub = sinon.stub().resolves();
 
       background.getApi.returns({
-        getUserProfileMetaMetrics: getUserProfileMetaMetricsStub,
+        getUserProfileLineage: getUserProfileLineageStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await actions.getUserProfileMetaMetrics();
-      expect(getUserProfileMetaMetricsStub.calledOnceWith()).toBe(true);
+      await actions.getUserProfileLineage();
+      expect(getUserProfileLineageStub.calledOnceWith()).toBe(true);
     });
   });
 
@@ -3060,6 +3132,7 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'HIDE_WARNING' },
         { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
@@ -3144,7 +3217,7 @@ describe('Actions', () => {
       background.syncSeedPhrases.resolves();
       setBackgroundConnection(background);
 
-      const expectedActions = [];
+      const expectedActions = [{ type: 'HIDE_WARNING' }];
 
       await store.dispatch(actions.syncSeedPhrases());
 

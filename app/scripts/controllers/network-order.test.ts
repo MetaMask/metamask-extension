@@ -105,6 +105,31 @@ describe('NetworkOrderController - constructor', () => {
     });
   });
 
+  it('removes a network but fallbacks to Ethereum when NetworkCnotroller:networkRemoved event is emitted', () => {
+    const mocks = arrangeMockMessenger();
+    const controller = new NetworkOrderController({
+      messenger: mocks.messenger,
+      state: {
+        orderedNetworkList: [],
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.LINEA_MAINNET]: true, // Only has linea enabled
+          },
+        },
+      },
+    });
+
+    mocks.globalMessenger.publish('NetworkController:networkRemoved', {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+    } as unknown as NetworkConfiguration);
+
+    expect(controller.state.enabledNetworkMap).toStrictEqual({
+      [KnownCaipNamespace.Eip155]: {
+        [CHAIN_IDS.MAINNET]: true, // Mainnet was added added as a fallback as no networks were selected
+      },
+    });
+  });
+
   it('updates network order when NetworkController:stateChange event is emitted with new networks', () => {
     const mocks = arrangeMockMessenger();
     const controller = new NetworkOrderController({

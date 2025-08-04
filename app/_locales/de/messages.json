@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Token-Betrag muss eine ganze Zahl sein"
   },
-  "followUsOnX": {
-    "message": "Folgen Sie uns auf $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Verbotene IPFS-Gateway: Bitte geben Sie ein CID-Gateway an."
   },
@@ -5071,7 +5067,8 @@
     "message": "Aktiviert"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Mit dieser E-Mail und Ihrem MetaMask-Passwort können Sie Ihr Konto und Ihre Wiederherstellungsphrasen wiederherstellen."
+    "message": "Mit dieser E-Mail und Ihrem MetaMask-Passwort können Sie Ihr Konto und Ihre Wiederherstellungsphrasen wiederherstellen.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 WIEDERHERSTELLUNG",
@@ -5442,12 +5439,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "Mehrere geheime Wiederherstellungsphrasen hinzufügen"
-  },
-  "slideRemoteModeDescription": {
-    "message": "Verwenden Sie Ihr Cold Wallet kabellos"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold Storage, schneller Zugriff"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Dieselbe Adresse, intelligentere Funktionen"
@@ -6827,9 +6818,6 @@
   "troubleConnectingToWallet": {
     "message": "Wir hatten Probleme mit der Verbindung zu Ihrem $1, versuchen Sie, $2 zu überprüfen und versuchen es erneut.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "Beim Starten von MetaMask ist ein Problem aufgetreten. Dies könnte ein vorübergehendes Problem sein. Versuchen Sie daher, die Erweiterung neu zu starten."
   },
   "tryAgain": {
     "message": "Erneut versuchen"

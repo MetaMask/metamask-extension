@@ -20,11 +20,19 @@ import {
   MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
-import { getBlockExplorerLinkText } from '../../../selectors';
+import {
+  getBlockExplorerLinkText,
+  getIsCustomNetwork,
+} from '../../../selectors';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import {
+  TEST_NETWORK_IDS,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+} from '../../../../shared/constants/network';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 export type ViewExplorerMenuItemProps = {
   /**
@@ -95,7 +103,41 @@ export const ViewExplorerMenuItem = ({
   // TODO: Re-use CAIP-2 for metrics once event schemas support it
   const chainId = parseCaipChainId(multichainNetwork.chainId).reference;
   const blockExplorerUrl = getMultichainBlockExplorerUrl(multichainNetwork);
-  const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
+
+  // For EIP155 networks, determine subtitle based on network type
+  const { namespace } = parseCaipChainId(multichainNetwork.chainId);
+  const isCustomNetwork = useSelector(getIsCustomNetwork);
+  const currentChainId = useSelector(getCurrentChainId);
+  const isTestNetwork = (TEST_NETWORK_IDS as string[]).includes(currentChainId);
+
+  const isPopularNetwork = Boolean(
+    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[currentChainId],
+  );
+
+  let blockExplorerUrlSubTitle = null;
+  let actualAddressLink = addressLink;
+
+  if (namespace === 'eip155') {
+    // For test networks and custom networks, show actual block explorer URL
+    if (isTestNetwork || (!isPopularNetwork && isCustomNetwork)) {
+      blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
+      // network-specific explorer URL for navigation
+      if (blockExplorerUrl) {
+        const normalizedAddress = account.address;
+        const baseUrl = blockExplorerUrl.endsWith('/')
+          ? blockExplorerUrl
+          : `${blockExplorerUrl}/`;
+        actualAddressLink = `${baseUrl}address/${normalizedAddress}`;
+      }
+    } else {
+      // For popular networks, show etherscan.io
+      blockExplorerUrlSubTitle = 'etherscan.io';
+    }
+  } else {
+    // For non-EIP155 networks, always show actual block explorer URL
+    blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
+  }
+
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
   const routeToAddBlockExplorerUrl = () => {
@@ -110,7 +152,7 @@ export const ViewExplorerMenuItem = ({
         blockExplorerLinkText.firstPart === 'addBlockExplorer'
           ? routeToAddBlockExplorerUrl()
           : openBlockExplorer(
-              addressLink,
+              actualAddressLink,
               metricsLocation,
               trackEvent,
               closeMenu,

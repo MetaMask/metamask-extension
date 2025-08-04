@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
 import { isCaipChainId, CaipChainId } from '@metamask/utils';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
@@ -16,11 +17,11 @@ import {
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  SwapsEthToken,
   getCurrentKeyring,
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
   isNonEvmAccount,
+  getSwapsDefaultToken,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
@@ -50,6 +51,7 @@ import {
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
+  getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
@@ -71,7 +73,6 @@ type CoinButtonsProps = {
   isSigningEnabled: boolean;
   isBridgeChain: boolean;
   isBuyableChain: boolean;
-  defaultSwapsToken?: SwapsEthToken;
   classPrefix?: string;
   iconButtonClassName?: string;
 };
@@ -84,7 +85,6 @@ const CoinButtons = ({
   isSigningEnabled,
   isBridgeChain,
   isBuyableChain,
-  defaultSwapsToken,
   classPrefix = 'coin',
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
@@ -101,6 +101,15 @@ const CoinButtons = ({
   >;
   const currentChainId = useSelector(getCurrentChainId);
   const displayNewIconButtons = process.env.REMOVE_GNS;
+
+  const defaultSwapsToken = useSelector((state) =>
+    getSwapsDefaultToken(state, chainId.toString()),
+  );
+
+  // Pre-conditions
+  if (isSwapsChain && defaultSwapsToken === undefined) {
+    throw new Error('defaultSwapsToken is required');
+  }
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm();
@@ -124,6 +133,8 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+
+  const isTestnet = useSelector(getMultichainIsTestnet);
 
   const isNonEvmAccountWithoutExternalServices =
     !isExternalServicesEnabled && isNonEvmAccount(account);
@@ -286,17 +297,15 @@ const CoinButtons = ({
 
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
-      if (!defaultSwapsToken) {
-        return;
-      }
       await setCorrectChain();
+      // Handle clicking from the wallet overview page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
-        defaultSwapsToken,
+        getNativeAssetForChainId(chainId),
         isSwap,
       );
     },
-    [defaultSwapsToken, location, openBridgeExperience],
+    [location, openBridgeExperience],
   );
 
   const handleSwapOnClick = useCallback(async () => {
@@ -413,8 +422,8 @@ const CoinButtons = ({
         }
         round={!displayNewIconButtons}
       />
-      {/* the bridge button is redundant if unified ui is enabled */}
-      {isUnifiedUIEnabled ? null : (
+      {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
+      {isUnifiedUIEnabled || isTestnet || !isBridgeChain ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={

@@ -39,7 +39,6 @@ import {
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  SwapsEthToken,
   getEnabledNetworksByNamespace,
   isGlobalNetworkSelectorRemoved,
 } from '../../../selectors';
@@ -72,8 +71,6 @@ export type CoinOverviewProps = {
   className?: string;
   classPrefix?: string;
   chainId: CaipChainId | Hex;
-  // FIXME: This seems to be for Ethereum only
-  defaultSwapsToken?: SwapsEthToken;
   isBridgeChain: boolean;
   isBuyableChain: boolean;
   isSwapsChain: boolean;
@@ -197,18 +194,12 @@ export const CoinOverview = ({
   className,
   classPrefix = 'coin',
   chainId,
-  defaultSwapsToken,
   isBridgeChain,
   isBuyableChain,
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
-
-  // Pre-conditions
-  if (isSwapsChain && defaultSwapsToken === undefined) {
-    throw new Error('defaultSwapsToken is required');
-  }
 
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
@@ -237,7 +228,7 @@ export const CoinOverview = ({
 
   const handlePortfolioOnClick = useCallback(() => {
     const url = getPortfolioUrl(
-      '',
+      'explore/tokens',
       'ext_portfolio_button',
       metaMetricsId,
       isMetaMetricsEnabled,
@@ -355,7 +346,6 @@ export const CoinOverview = ({
             isSigningEnabled,
             isBridgeChain,
             isBuyableChain,
-            defaultSwapsToken,
             classPrefix,
           }}
         />

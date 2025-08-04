@@ -2392,10 +2392,6 @@
   "floatAmountToken": {
     "message": "Jumlah token harus berupa bilangan bulat"
   },
-  "followUsOnX": {
-    "message": "Ikuti kami di $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Gateway IPFS Terlarang: Tentukan gateway CID"
   },
@@ -5071,7 +5067,8 @@
     "message": "Diaktifkan"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Email ini dan kata sandi MetaMask Anda akan membantu Anda memulihkan akun dan frasa pemulihan."
+    "message": "Email ini dan kata sandi MetaMask Anda akan membantu Anda memulihkan akun dan frasa pemulihan.",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
     "message": "PEMULIHAN $1",
@@ -5442,12 +5439,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "Tambahkan beberapa Frasa Pemulihan Rahasia"
-  },
-  "slideRemoteModeDescription": {
-    "message": "Gunakan dompet cold secara nirkabel"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold storage, akses cepat"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Alamat sama, fitur lebih cerdas"
@@ -6827,9 +6818,6 @@
   "troubleConnectingToWallet": {
     "message": "Kami mengalami masalah saat mencoba terhubung ke $1 Anda, tinjau kembali $2 dan coba lagi.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
   },
   "tryAgain": {
     "message": "Coba lagi"

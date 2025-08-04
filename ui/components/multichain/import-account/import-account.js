@@ -43,6 +43,15 @@ export const ImportAccount = ({ onActionComplete }) => {
     const loadingMessage = getLoadingMessage(strategy);
 
     try {
+      if (isSocialLoginFlow) {
+        const isPasswordOutdated = await dispatch(
+          actions.checkIsSeedlessPasswordOutdated(true),
+        );
+        if (isPasswordOutdated) {
+          return false;
+        }
+      }
+
       const { selectedAddress } = await dispatch(
         actions.importNewAccount(strategy, importArgs, loadingMessage),
       );
@@ -134,7 +143,7 @@ export const ImportAccount = ({ onActionComplete }) => {
             {t('importAccountWithSocialMsgLearnMore', [
               <ButtonLink
                 size={Size.inherit}
-                href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
+                href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
                 target="_blank"
                 rel="noopener noreferrer"
                 key="importAccountWithSocialMsgLearnMore"
@@ -149,7 +158,7 @@ export const ImportAccount = ({ onActionComplete }) => {
           {t('importAccountMsg')}{' '}
           <ButtonLink
             size={Size.inherit}
-            href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
+            href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
             target="_blank"
             rel="noopener noreferrer"
           >
