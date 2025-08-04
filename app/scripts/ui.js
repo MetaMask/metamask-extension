@@ -414,9 +414,8 @@ async function setupProviderConnection(connectionStream) {
         get: (_, prop) => {
           if (prop in _stream) {
             return _stream[prop].bind(_stream);
-          } else {
-            return undefined;
           }
+          return undefined;
         },
       },
     );
