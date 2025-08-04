@@ -8,7 +8,7 @@ const {
   WINDOW_TITLES,
 } = require('../../helpers');
 
-describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset -- FLAKY CI?', function () {
+describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
   it('should not batch subsequent watchAsset token into first watchAsset confirmation with a switchChain in the middle', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -72,6 +72,11 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset -- FLAKY CI?', f
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        // Adding a delay to potentially fix flakiness
+        // Tracking for this issue on:
+        // https://github.com/MetaMask/metamask-extension/issues/34800
+        await driver.delay(2500);
+
         // Wait for token to show in list of tokens to watch
         await driver.waitUntil(
           async () => {
@@ -82,6 +87,9 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset -- FLAKY CI?', f
           },
           { timeout: 10000, interval: 100 },
         );
+
+        // Adding a delay to potentially fix flakiness
+        await driver.delay(2500);
 
         const multipleSuggestedtokens = await driver.findElements(
           '.confirm-add-suggested-token__token-list-item',
