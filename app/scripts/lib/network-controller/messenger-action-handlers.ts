@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import { Hex, hexToNumber, Json } from '@metamask/utils';
+import { Hex, Json, hexToNumber, isObject, isValidJson } from '@metamask/utils';
 import { JsonRpcError } from '@metamask/rpc-errors';
 import {
   MetaMetricsEventCategory,
@@ -52,9 +52,12 @@ export function onRpcEndpointUnavailable({
     chain_id_caip: `eip155:${hexToNumber(chainId)}`,
     rpc_endpoint_url: onlyKeepHost(endpointUrl),
   };
-  if (error instanceof JsonRpcError) {
-    properties.http_status_code = error.data.httpStatus;
-    properties.rpc_error_code = error.code;
+  if (
+    isObject(error) &&
+    'httpStatus' in error &&
+    isValidJson(error.httpStatus)
+  ) {
+    properties.http_status = error.httpStatus;
   }
   /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -112,9 +115,12 @@ export function onRpcEndpointDegraded({
     chain_id_caip: `eip155:${hexToNumber(chainId)}`,
     rpc_endpoint_url: onlyKeepHost(endpointUrl),
   };
-  if (error instanceof JsonRpcError) {
-    properties.http_status_code = error.data.httpStatus;
-    properties.rpc_error_code = error.code;
+  if (
+    isObject(error) &&
+    'httpStatus' in error &&
+    isValidJson(error.httpStatus)
+  ) {
+    properties.http_status = error.httpStatus;
   }
   /* eslint-enable @typescript-eslint/naming-convention */
 

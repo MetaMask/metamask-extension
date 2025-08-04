@@ -1,4 +1,4 @@
-import { JsonRpcError } from '@metamask/rpc-errors';
+import { HttpError } from '@metamask/controller-utils';
 import {
   onRpcEndpointDegraded,
   onRpcEndpointUnavailable,
@@ -30,33 +30,25 @@ describe('onRpcEndpointUnavailable', () => {
           chainId: '0xaa36a7',
           endpointUrl:
             'https://some-subdomain.infura.io/v3/the-infura-project-id',
-          error: new JsonRpcError(-34000, 'Some error', {
-            httpStatus: 420,
-          }),
+          error: new HttpError(420),
           infuraProjectId: 'the-infura-project-id',
           trackEvent,
           metaMetricsId:
             '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
         });
 
+        // The case of the Segment properties are intentional.
+        /* eslint-disable @typescript-eslint/naming-convention */
         expect(trackEvent).toHaveBeenCalledWith({
           category: 'Network',
           event: 'RPC Service Unavailable',
           properties: {
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id_caip: 'eip155:11155111',
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            http_status_code: 420,
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            http_status: 420,
             rpc_endpoint_url: 'some-subdomain.infura.io',
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            rpc_error_code: -34000,
           },
         });
+        /* eslint-enable @typescript-eslint/naming-convention */
       });
     });
 
@@ -76,18 +68,17 @@ describe('onRpcEndpointUnavailable', () => {
             '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
         });
 
+        // The case of the Segment properties are intentional.
+        /* eslint-disable @typescript-eslint/naming-convention */
         expect(trackEvent).toHaveBeenCalledWith({
           category: 'Network',
           event: 'RPC Service Unavailable',
           properties: {
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id_caip: 'eip155:11155111',
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             rpc_endpoint_url: 'some-subdomain.infura.io',
           },
         });
+        /* eslint-enable @typescript-eslint/naming-convention */
       });
     });
   });
@@ -138,33 +129,25 @@ describe('onRpcEndpointDegraded', () => {
           chainId: '0xaa36a7',
           endpointUrl:
             'https://some-subdomain.infura.io/v3/the-infura-project-id',
-          error: new JsonRpcError(-34000, 'Some error', {
-            httpStatus: 420,
-          }),
+          error: new HttpError(420),
           infuraProjectId: 'the-infura-project-id',
           trackEvent,
           metaMetricsId:
             '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
         });
 
+        // The case of the Segment properties are intentional.
+        /* eslint-disable @typescript-eslint/naming-convention */
         expect(trackEvent).toHaveBeenCalledWith({
           category: 'Network',
           event: 'RPC Service Degraded',
           properties: {
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id_caip: 'eip155:11155111',
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            http_status_code: 420,
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            http_status: 420,
             rpc_endpoint_url: 'some-subdomain.infura.io',
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            rpc_error_code: -34000,
           },
         });
+        /* eslint-enable @typescript-eslint/naming-convention */
       });
     });
 
@@ -184,18 +167,17 @@ describe('onRpcEndpointDegraded', () => {
             '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
         });
 
+        // The case of the Segment properties are intentional.
+        /* eslint-disable @typescript-eslint/naming-convention */
         expect(trackEvent).toHaveBeenCalledWith({
           category: 'Network',
           event: 'RPC Service Degraded',
           properties: {
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id_caip: 'eip155:11155111',
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             rpc_endpoint_url: 'some-subdomain.infura.io',
           },
         });
+        /* eslint-enable @typescript-eslint/naming-convention */
       });
     });
 
@@ -215,18 +197,17 @@ describe('onRpcEndpointDegraded', () => {
             '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
         });
 
+        // The case of the Segment properties are intentional.
+        /* eslint-disable @typescript-eslint/naming-convention */
         expect(trackEvent).toHaveBeenCalledWith({
           category: 'Network',
           event: 'RPC Service Degraded',
           properties: {
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id_caip: 'eip155:11155111',
-            // The case is intentional here.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             rpc_endpoint_url: 'some-subdomain.infura.io',
           },
         });
+        /* eslint-enable @typescript-eslint/naming-convention */
       });
     });
   });

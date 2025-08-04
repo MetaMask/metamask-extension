@@ -4,7 +4,7 @@ import { ENVIRONMENT } from '../../../../development/build/constants';
 import { QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME } from '../../../../shared/constants/network';
 import {
   getIsQuicknodeEndpointUrl,
-  shouldCreateRpcServiceEvents
+  shouldCreateRpcServiceEvents,
 } from './utils';
 
 jest.mock('@metamask/remote-feature-flag-controller', () => {
