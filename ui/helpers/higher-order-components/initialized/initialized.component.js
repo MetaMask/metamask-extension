@@ -15,4 +15,5 @@ export default function Initialized(props) {
 
 Initialized.propTypes = {
   completedOnboarding: PropTypes.bool,
+  path: PropTypes.string,
 };

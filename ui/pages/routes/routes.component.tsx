@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-tag-names */
 /* eslint-disable import/no-useless-path-segments */
 /* eslint-disable import/extensions */
 import classnames from 'classnames';
@@ -505,111 +506,146 @@ export default function Routes() {
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Switch>
-          <Route path={ONBOARDING_ROUTE} Component={OnboardingFlow} />
-          <Route path={LOCK_ROUTE} Component={Lock} />
-          <Initialized path={UNLOCK_ROUTE} Component={UnlockPage} />
-          <Route path={DEEP_LINK_ROUTE} Component={DeepLink} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Route path={LOCK_ROUTE} component={Lock} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Initialized path={UNLOCK_ROUTE} component={UnlockPage} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Route path={DEEP_LINK_ROUTE} component={DeepLink} />
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
-            Component={RestoreVaultPage}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={RestoreVaultPage}
           />
           <Authenticated
             path={SMART_ACCOUNT_UPDATE}
-            Component={SmartAccountUpdate}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={SmartAccountUpdate}
           />
           <Authenticated
             // `:keyringId` is optional here, if not provided, this will fallback
             // to the main seed phrase.
             path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
-            Component={RevealSeedConfirmation}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={RevealSeedConfirmation}
           />
-          <Authenticated path={IMPORT_SRP_ROUTE} Component={ImportSrpPage} />
-          <Authenticated path={SETTINGS_ROUTE} Component={Settings} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Authenticated path={SETTINGS_ROUTE} component={Settings} />
           <Authenticated
             path={NOTIFICATIONS_SETTINGS_ROUTE}
-            Component={NotificationsSettings}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={NotificationsSettings}
           />
           <Authenticated
             path={`${NOTIFICATIONS_ROUTE}/:uuid`}
-            Component={NotificationDetails}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={NotificationDetails}
           />
-          <Authenticated path={NOTIFICATIONS_ROUTE} Component={Notifications} />
-          <Authenticated path={SNAPS_ROUTE} Component={SnapList} />
-          <Authenticated path={SNAPS_VIEW_ROUTE} Component={SnapView} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Authenticated path={SNAPS_ROUTE} component={SnapList} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
           <Authenticated
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
-            Component={ConfirmTransaction}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={ConfirmTransaction}
           />
-          <Authenticated path={SEND_ROUTE} Component={SendPage} />
-          <Authenticated path={SWAPS_ROUTE} Component={Swaps} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Authenticated path={SEND_ROUTE} component={SendPage} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
-            Component={CrossChainSwapTxDetails}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={CrossChainSwapTxDetails}
           />
           <Authenticated
             path={CROSS_CHAIN_SWAP_ROUTE}
-            Component={CrossChainSwap}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={CrossChainSwap}
           />
           <Authenticated
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
-            Component={ConfirmAddSuggestedTokenPage}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={ConfirmAddSuggestedTokenPage}
           />
           <Authenticated
             path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
-            Component={ConfirmAddSuggestedNftPage}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={ConfirmAddSuggestedNftPage}
           />
           <Authenticated
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
-            Component={ConfirmationPage}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={ConfirmationPage}
           />
           <Authenticated
             path={NEW_ACCOUNT_ROUTE}
-            Component={CreateAccountPage}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={CreateAccountPage}
           />
           <Authenticated
             path={`${CONNECT_ROUTE}/:id`}
-            Component={PermissionsConnect}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={PermissionsConnect}
           />
           <Authenticated
             path={`${ASSET_ROUTE}/image/:asset/:id`}
-            Component={NftFullImage}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={NftFullImage}
           />
           <Authenticated
             path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
-            Component={Asset}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={Asset}
           />
           <Authenticated
             path={`${ASSET_ROUTE}/:chainId/:asset/`}
-            Component={Asset}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={Asset}
           />
-          <Authenticated path={`${ASSET_ROUTE}/:chainId`} Component={Asset} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
           <Authenticated
             path={`${DEFI_ROUTE}/:chainId/:protocolId`}
-            Component={DeFiPage}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={DeFiPage}
           />
           <Authenticated
             path={`${CONNECTIONS}/:origin`}
-            Component={Connections}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={Connections}
           />
-          <Authenticated path={PERMISSIONS} Component={PermissionsPage} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
-            Component={ReviewPermissions}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={ReviewPermissions}
           />
           <Authenticated
             path={WALLET_DETAILS_ROUTE}
-            Component={WalletDetails}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={WalletDetails}
           />
           <Authenticated
             path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
-            Component={MultichainAccountDetails}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={MultichainAccountDetails}
           />
           <Authenticated
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
-            Component={AddressQRCode}
+            // @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6
+            component={AddressQRCode}
           />
-
-          <Authenticated path={DEFAULT_ROUTE} Component={Home} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
     );
