@@ -9,8 +9,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   mockBitcoinFeatureFlag,
-  mockSpotPrices,
-  mockHistoricalPrices,
+  mockExchangeRates,
   mockInitialFullScan,
   mockRampsDynamicFeatureFlag,
 } from './mocks';
@@ -37,8 +36,8 @@ export async function withBtcAccountSnap(
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockBitcoinFeatureFlag(mockServer),
         await mockInitialFullScan(mockServer),
-        await mockSpotPrices(mockServer),
-        await mockHistoricalPrices(mockServer),
+        await mockExchangeRates(mockServer),
+
         // See: PROD_RAMP_API_BASE_URL
         await mockRampsDynamicFeatureFlag(mockServer, 'api'),
         // See: UAT_RAMP_API_BASE_URL

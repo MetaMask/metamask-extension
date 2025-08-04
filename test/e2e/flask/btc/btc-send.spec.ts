@@ -6,7 +6,8 @@ import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import { withBtcAccountSnap } from './common-btc';
 
-// Skip until we can properly run a test network instead of mocks (as we do with Anvil for Ethereum)
+// To be reactivated once we use a regtest network instead of mocked data
+// eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('BTC Account - Send', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   it('fields validation', async function () {
