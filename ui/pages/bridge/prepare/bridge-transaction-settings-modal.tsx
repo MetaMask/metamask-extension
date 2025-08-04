@@ -38,7 +38,7 @@ import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossCh
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Column, Row, Tooltip } from '../layout';
 
-const HARDCODED_SLIPPAGE_OPTIONS = [BRIDGE_DEFAULT_SLIPPAGE, 3];
+const HARDCODED_SLIPPAGE_OPTIONS = [BRIDGE_DEFAULT_SLIPPAGE, 2];
 
 export const BridgeTransactionSettingsModal = ({
   onClose,
