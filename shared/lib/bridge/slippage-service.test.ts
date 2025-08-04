@@ -1,6 +1,10 @@
-import { SlippageService, SlippageValue, type SlippageContext } from './slippage-service';
 import type { BridgeToken } from '../../../ui/ducks/bridge/types';
 import { MultichainNetworks } from '../../constants/multichain/networks';
+import {
+  SlippageService,
+  SlippageValue,
+  type SlippageContext,
+} from './slippage-service';
 
 describe('SlippageService', () => {
   // Mock tokens

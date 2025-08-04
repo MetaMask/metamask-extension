@@ -108,6 +108,6 @@ export const StablecoinsByChainId: Partial<Record<string, Set<string>>> = {};
 
 Object.entries(STABLECOIN_ADDRESSES).forEach(([chainId, stablecoins]) => {
   StablecoinsByChainId[chainId] = new Set(
-    Object.values(stablecoins).map(address => address.toLowerCase())
+    Object.values(stablecoins).map((address) => address.toLowerCase()),
   );
 });

@@ -15,13 +15,13 @@ export enum SlippageValue {
 /**
  * Context for calculating slippage
  */
-export interface SlippageContext {
+export type SlippageContext = {
   fromChain: { chainId: string } | null | undefined;
   toChain: { chainId: string } | null | undefined;
   fromToken: BridgeToken | null;
   toToken: BridgeToken | null;
   isSwap: boolean;
-}
+};
 
 /**
  * Service for calculating smart default slippage values based on transaction context
@@ -29,28 +29,41 @@ export interface SlippageContext {
 export class SlippageService {
   /**
    * Checks if a token address is a stablecoin on the given chain
+   *
+   * @param chainId
+   * @param tokenAddress
    */
   private static isStablecoin(
     chainId: string,
     tokenAddress: string | undefined,
   ): boolean {
-    if (!tokenAddress) return false;
+    if (!tokenAddress) {
+      return false;
+    }
 
     const stablecoins = StablecoinsByChainId[chainId];
-    if (!stablecoins) return false;
+    if (!stablecoins) {
+      return false;
+    }
 
     return stablecoins.has(tokenAddress.toLowerCase());
   }
 
   /**
    * Checks if both tokens in a pair are stablecoins
+   *
+   * @param chainId
+   * @param fromToken
+   * @param toToken
    */
   private static isStablecoinPair(
     chainId: string,
     fromToken: BridgeToken | null,
     toToken: BridgeToken | null,
   ): boolean {
-    if (!fromToken || !toToken) return false;
+    if (!fromToken || !toToken) {
+      return false;
+    }
 
     return (
       this.isStablecoin(chainId, fromToken.address) &&
@@ -66,6 +79,8 @@ export class SlippageService {
    * - Swap on Solana: Always 0.5%
    * - Swap on EVM stablecoin pairs: 0.5%
    * - Swap on EVM other pairs: 2%
+   *
+   * @param context
    */
   public static calculateSlippage(context: SlippageContext): number {
     const { fromChain, toChain, fromToken, toToken, isSwap } = context;
@@ -97,6 +112,8 @@ export class SlippageService {
   /**
    * Gets a human-readable description of why a certain slippage was chosen
    * Useful for debugging and logging
+   *
+   * @param context
    */
   public static getSlippageReason(context: SlippageContext): string {
     const { fromChain, toChain, fromToken, toToken, isSwap } = context;
