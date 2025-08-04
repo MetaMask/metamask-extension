@@ -7585,8 +7585,9 @@ export default class MetamaskController extends EventEmitter {
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        getCaip25PermissionFromLegacyPermissionsForOrigin:
-          getCaip25PermissionFromLegacyPermissions.bind(this, origin),
+        getCaip25PermissionFromLegacyPermissionsForOrigin: (
+          requestedPermissions,
+        ) => getCaip25PermissionFromLegacyPermissions(requestedPermissions),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
