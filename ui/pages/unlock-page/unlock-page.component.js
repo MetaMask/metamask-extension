@@ -95,6 +95,10 @@ class UnlockPage extends Component {
      * Sentry trace context ref for onboarding journey tracing
      */
     onboardingParentContext: PropTypes.object,
+    /**
+     * Reset Onboarding and OAuth login state
+     */
+    loginWithDifferentMethod: PropTypes.func,
   };
 
   state = {
@@ -361,12 +365,14 @@ class UnlockPage extends Component {
     );
   };
 
-  onForgotPasswordOrLoginWithDiffMethods = () => {
+  onForgotPasswordOrLoginWithDiffMethods = async () => {
     const { isSocialLoginFlow, history, isOnboardingCompleted } = this.props;
 
     // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
     // we can redirect to `onboarding_welcome` route to select a different login method
     if (!isOnboardingCompleted && isSocialLoginFlow) {
+      await this.props.loginWithDifferentMethod();
+      await this.props.forceUpdateMetamaskState();
       history.replace(ONBOARDING_WELCOME_ROUTE);
       return;
     }
@@ -508,7 +514,7 @@ class UnlockPage extends Component {
               data-testid="unlock-forgot-password-button"
               key="import-account"
               type="button"
-              onClick={() => this.onForgotPasswordOrLoginWithDiffMethods()}
+              onClick={this.onForgotPasswordOrLoginWithDiffMethods}
               marginBottom={6}
             >
               {isSocialLoginFlow && !isOnboardingCompleted

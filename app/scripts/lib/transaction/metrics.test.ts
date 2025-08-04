@@ -1758,5 +1758,27 @@ describe('Transaction metrics', () => {
         }),
       );
     });
+
+    it('sets account_type to `error`, if wallet is locked', async () => {
+      jest
+        .mocked(mockTransactionMetricsRequest.getAccountType)
+        .mockRejectedValueOnce(new Error('error'));
+
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMeta,
+      });
+
+      const { properties } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
+
+      expect(properties).toStrictEqual(
+        expect.objectContaining({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'error',
+        }),
+      );
+    });
   });
 });

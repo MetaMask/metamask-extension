@@ -29,6 +29,7 @@ import {
   NODE_MODULES_RE,
   __HMR_READY__,
   SNOW_MODULE_RE,
+  TREZOR_MODULE_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -378,12 +379,7 @@ const config = {
 
               // these trezor libraries are .js files with CJS exports, they
               // must be processed with the CJS loader
-              /^.*\/node_modules\/@trezor\/connect\/.*$/u,
-              /^.*\/node_modules\/@trezor\/connect-web\/.*$/u,
-              /^.*\/node_modules\/@trezor\/connect-common\/.*$/u,
-              /^.*\/node_modules\/@trezor\/utils\/.*$/u,
-              /^.*\/node_modules\/@trezor\/websocket-client\/.*$/u,
-              /^.*\/node_modules\/@trezor\/schema-utils\/.*$/u,
+              TREZOR_MODULE_RE,
             ],
             use: npmLoader,
           },

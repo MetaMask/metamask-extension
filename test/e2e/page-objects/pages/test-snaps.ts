@@ -93,6 +93,7 @@ export const buttonLocator = {
   signTypedDataButton: '#signTypedDataButton',
   submitClientStatusButton: '#sendClientStatusTest',
   trackErrorButton: '#trackError',
+  trackEventButton: '#trackEvent',
   startTraceButton: '#start-trace',
   endTraceButton: '#end-trace',
   clearStateButton: '#clearState',
