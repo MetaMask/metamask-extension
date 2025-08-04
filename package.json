@@ -261,7 +261,7 @@
     "@material-ui/core": "^4.12.4",
     "@metamask/abi-utils": "^3.0.0",
     "@metamask/account-api": "^0.7.0",
-    "@metamask/account-tree-controller": "npm:@metamask-previews/account-tree-controller@0.7.0-preview-af4e47c0",
+    "@metamask/account-tree-controller": "npm:@metamask-previews/account-tree-controller@0.7.0-preview-8136cf41",
     "@metamask/account-watcher": "^4.1.3",
     "@metamask/accounts-controller": "^32.0.1",
     "@metamask/address-book-controller": "^6.1.0",
