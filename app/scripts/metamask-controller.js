@@ -5966,19 +5966,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Get hardware type that will be sent for metrics logging.
-   *
-   * @param {string} address - Address to retrieve the keyring from
-   * @returns {HardwareKeyringType} Keyring hardware type
-   */
-  async getHardwareTypeForMetric(address) {
-    return await this.keyringController.withKeyring(
-      { address },
-      ({ keyring }) => HardwareKeyringType[keyring.type],
-    );
-  }
-
-  /**
    * Check if the device is unlocked
    *
    * @param deviceName
@@ -5991,6 +5978,19 @@ export default class MetamaskController extends EventEmitter {
       async (keyring) => {
         return keyring.isUnlocked();
       },
+    );
+  }
+
+  /**
+   * Get hardware type that will be sent for metrics logging.
+   *
+   * @param {string} address - Address to retrieve the keyring from
+   * @returns {HardwareKeyringType} Keyring hardware type
+   */
+  async getHardwareTypeForMetric(address) {
+    return await this.keyringController.withKeyring(
+      { address },
+      ({ keyring }) => HardwareKeyringType[keyring.type],
     );
   }
 
@@ -6020,9 +6020,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'hardware' | 'imported' | 'snap' | 'MetaMask'}
    */
   async getAccountType(address) {
-    const keyringType = await this.keyringController.getAccountKeyringType(
-      address,
-    );
+    const keyringType =
+      await this.keyringController.getAccountKeyringType(address);
     switch (keyringType) {
       case KeyringType.trezor:
       case KeyringType.oneKey:
