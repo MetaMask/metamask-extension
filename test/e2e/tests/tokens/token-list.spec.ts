@@ -27,9 +27,14 @@ describe('Token List', function () {
 
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
-    localNodeOptions: {
-      chainId: parseInt(chainId, 16),
-    },
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: parseInt(chainId, 16),
+        },
+      },
+    ],
   };
 
   it('should not show percentage increase for an ERC20 token without prices available', async function () {
