@@ -665,9 +665,16 @@ export default function Routes() {
 
   const isShowingDeepLinkRoute = location.pathname === DEEP_LINK_ROUTE;
 
-  let isLoadingShown =
+  const isLoadingShown =
     isLoading &&
     completedOnboarding &&
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    !pendingConfirmations.some(
+      (confirmation: Confirmation) =>
+        confirmation.type ===
+        SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+    ) &&
+    ///: END:ONLY_INCLUDE_IF
     // In the redesigned screens, we hide the general loading spinner and the
     // loading states are on a component by component basis.
     !isCorrectApprovalType &&
@@ -675,24 +682,6 @@ export default function Routes() {
     // We don't want to show the loading screen on the deep link route, as it
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  isLoadingShown =
-    isLoading &&
-    completedOnboarding &&
-    !pendingConfirmations.some(
-      (confirmation: Confirmation) =>
-        confirmation.type ===
-        SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-    ) &&
-    // In the redesigned screens, we hide the general loading spinner and the
-    // loading states are on a component by component basis.
-    !isCorrectApprovalType &&
-    !isCorrectTransactionType &&
-    // We don't want to show the loading spinner on the deep link route, as it
-    // is already a fullscreen interface.
-    !isShowingDeepLinkRoute;
-  ///: END:ONLY_INCLUDE_IF
 
   const accountListMenu = isMultichainAccountsState1Enabled ? (
     <MultichainAccountListMenu
