@@ -64,6 +64,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
+        await driver.delay(5000);
         // Watch Asset 2nd call
         await driver.clickElement({
           text: 'Add Token(s) to Wallet',
@@ -82,12 +83,13 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
             const tokens = await driver.findElements(
               '.confirm-add-suggested-token__token-list-item',
             );
+            console.log('tokens', tokens);
             return tokens.length === 2;
           },
           { timeout: 12500, interval: 100 },
         );
 
-        // Adding a delay to potentially fix flakiness
+        // timeout to potentially fix flakiness
         await driver.delay(2500);
         const multipleSuggestedtokens = await driver.findElements(
           '.confirm-add-suggested-token__token-list-item',
