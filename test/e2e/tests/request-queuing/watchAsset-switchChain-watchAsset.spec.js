@@ -72,10 +72,9 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // Adding a delay to potentially fix flakiness
+        // Increasing timeout to potentially fix flakiness
         // Tracking for this issue on:
         // https://github.com/MetaMask/metamask-extension/issues/34800
-        await driver.delay(2500);
 
         // Wait for token to show in list of tokens to watch
         await driver.waitUntil(
@@ -85,14 +84,13 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
             );
             return tokens.length === 2;
           },
-          { timeout: 10000, interval: 100 },
+          { timeout: 12500 },
         );
 
-        // Adding a delay to potentially fix flakiness
-        await driver.delay(2500);
-
+        // Increasing timeout to potentially fix flakiness
         const multipleSuggestedtokens = await driver.findElements(
           '.confirm-add-suggested-token__token-list-item',
+          { timeout: 12500 },
         );
         // Confirm only 2 tokens are present in suggested token list
         assert.equal(multipleSuggestedtokens.length, 2);
