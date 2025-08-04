@@ -696,12 +696,12 @@ export default function Routes() {
 
   const accountListMenu = isMultichainAccountsState1Enabled ? (
     <MultichainAccountListMenu
-      onClose={dispatch(toggleAccountMenu)}
+      onClose={() => dispatch(toggleAccountMenu())}
       privacyMode={privacyMode}
     />
   ) : (
     <AccountListMenu
-      onClose={dispatch(toggleAccountMenu)}
+      onClose={() => dispatch(toggleAccountMenu())}
       privacyMode={privacyMode}
     />
   );
