@@ -237,7 +237,6 @@
     "tar-fs@npm:^2.1.0": "^2.1.3",
     "lodash.memoize@npm:^4.1.2": "patch:lodash.memoize@npm%3A4.1.2#~/.yarn/patches/lodash.memoize-npm-4.1.2-0e6250041f.patch",
     "lodash": "patch:lodash@npm%3A4.17.21#~/.yarn/patches/lodash-npm-4.17.21-6382451519.patch",
-    "@metamask/account-tree-controller@^0.7.0": "npm:@metamask-previews/account-tree-controller@0.7.0-preview-75996e28",
     "@metamask/multichain-account-service@^0.3.0": "npm:@metamask-previews/multichain-account-service@0.3.0-preview-98faf75a"
   },
   "dependencies": {
@@ -262,7 +261,7 @@
     "@material-ui/core": "^4.12.4",
     "@metamask/abi-utils": "^3.0.0",
     "@metamask/account-api": "^0.7.0",
-    "@metamask/account-tree-controller": "file:../core/packages/account-tree-controller",
+    "@metamask/account-tree-controller": "npm:@metamask-previews/account-tree-controller@0.7.0-preview-75996e28",
     "@metamask/account-watcher": "^4.1.3",
     "@metamask/accounts-controller": "^32.0.1",
     "@metamask/address-book-controller": "^6.1.0",
