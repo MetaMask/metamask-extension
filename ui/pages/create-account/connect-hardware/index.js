@@ -310,17 +310,13 @@ class ConnectHardwareForm extends Component {
     }
 
     let description = '';
-    if (deviceName === HardwareDeviceNames.oneKey) {
-      if (path === ONEKEY_LEDGER_LIVE_PATH) {
-        description = '(Ledger)';
-      } else {
-        description = '';
-      }
-    } else {
-      description =
-        MEW_PATH === path
-          ? this.context.t('hardwareWalletLegacyDescription')
-          : '';
+    if (
+      deviceName === HardwareDeviceNames.oneKey &&
+      path === ONEKEY_LEDGER_LIVE_PATH
+    ) {
+      description = '(Ledger)';
+    } else if (path === MEW_PATH) {
+      description = this.context.t('hardwareWalletLegacyDescription');
     }
 
     return unlockHardwareWalletAccounts(
