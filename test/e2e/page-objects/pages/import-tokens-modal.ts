@@ -108,7 +108,9 @@ export class ImportTokensModal {
     await this.clickNextAndWaitForValidation();
     await this.clickImport();
 
-    await this.driver.assertElementNotPresent('[data-testid="import-tokens-modal-import-button"]');
+    await this.driver.assertElementNotPresent(
+      '[data-testid="import-tokens-modal-import-button"]',
+    );
     await this.driver.delay(500);
 
     if (symbol) {
