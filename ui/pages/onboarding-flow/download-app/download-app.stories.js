@@ -1,10 +1,10 @@
 import React from 'react';
-import OnboardingPinExtension from './download-app';
+import OnboardingDownloadApp from './download-app';
 
 export default {
-  title: 'Pages/OnboardingFlow/OnboardingPinExtension',
+  title: 'Pages/OnboardingFlow/OnboardingDownloadApp',
 };
 
-export const DefaultStory = () => <OnboardingPinExtension />;
+export const DefaultStory = () => <OnboardingDownloadApp />;
 
 DefaultStory.storyName = 'Default';

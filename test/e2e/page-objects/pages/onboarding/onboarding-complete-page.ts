@@ -11,6 +11,9 @@ class OnboardingCompletePage {
   private readonly onboardingCompleteDoneButton =
     '[data-testid="onboarding-complete-done"]';
 
+  private readonly downloadAppContinueButton =
+    '[data-testid="download-app-continue"]';
+
   private readonly pinExtensionDoneButton =
     '[data-testid="pin-extension-done"]';
 
@@ -36,6 +39,11 @@ class OnboardingCompletePage {
 
   private readonly manageDefaultSettingsButton =
     '[data-testid="manage-default-settings"]';
+
+  private readonly downloadAppTitle = {
+    text: 'Scan QR code and download the app',
+    tag: 'h2',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -83,11 +91,21 @@ class OnboardingCompletePage {
     );
   }
 
+  async displayDownloadAppPageAndContinue(): Promise<void> {
+    await this.driver.waitForSelector(this.downloadAppTitle);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.downloadAppContinueButton,
+    );
+  }
+
   async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
     console.log('Complete onboarding');
     if (!isSocialImportFlow) {
       await this.clickCreateWalletDoneButton();
     }
+
+    await this.displayDownloadAppPageAndContinue();
+
     await this.driver.waitForSelector(this.installCompleteMessage);
     await this.driver.waitForSelector(this.pinExtensionMessage);
     await this.driver.clickElementAndWaitToDisappear(

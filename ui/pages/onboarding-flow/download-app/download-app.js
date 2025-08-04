@@ -71,7 +71,7 @@ export default function OnboardingDownloadApp() {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           block
-          data-testid="download-app-done"
+          data-testid="download-app-continue"
           onClick={handleClick}
         >
           {t('continue')}
