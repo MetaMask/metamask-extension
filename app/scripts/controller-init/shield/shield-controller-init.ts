@@ -2,17 +2,14 @@ import {
   ShieldController,
   ShieldControllerMessenger,
 } from '@metamask/shield-controller';
-import { ControllerInitFunction } from '../types';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { ControllerInitFunction } from '../types';
 
 export const ShieldControllerInit: ControllerInitFunction<
   ShieldController,
   ShieldControllerMessenger
 > = (request) => {
-  const {
-    controllerMessenger,
-    persistedState,
-  } = request;
+  const { controllerMessenger, persistedState } = request;
 
   const controller = new ShieldController({
     messenger: controllerMessenger,
@@ -30,7 +27,8 @@ export const ShieldControllerInit: ControllerInitFunction<
 
 function createMockBackend() {
   const statuses = ['covered', 'malicious', 'unsupported'] as const;
-  const getRandomStatus = () => statuses[Math.floor(Math.random() * statuses.length)];
+  const getRandomStatus = () =>
+    statuses[Math.floor(Math.random() * statuses.length)];
 
   return {
     checkCoverage: (txMeta: TransactionMeta) => {
@@ -41,4 +39,3 @@ function createMockBackend() {
     },
   };
 }
-

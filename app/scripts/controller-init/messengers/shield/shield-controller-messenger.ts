@@ -1,8 +1,26 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
 import { ShieldControllerMessenger } from '@metamask/shield-controller';
 
-type MessengerActions = ShieldControllerMessenger extends RestrictedMessenger<any, infer Actions, any, any, any> ? Actions : never;
-type MessengerEvents = ShieldControllerMessenger extends RestrictedMessenger<any, any, infer Events, any, any> ? Events : never;
+type MessengerActions =
+  ShieldControllerMessenger extends RestrictedMessenger<
+    never,
+    infer Actions,
+    never,
+    never,
+    never
+  >
+    ? Actions
+    : never;
+type MessengerEvents =
+  ShieldControllerMessenger extends RestrictedMessenger<
+    never,
+    never,
+    infer Events,
+    never,
+    never
+  >
+    ? Events
+    : never;
 
 /**
  * Get a restricted messenger for the Shield controller. This is scoped to the
