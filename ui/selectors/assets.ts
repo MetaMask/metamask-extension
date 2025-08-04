@@ -2,6 +2,8 @@ import {
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
+  selectAllAssetsForSelectedAccountGroup,
+  TokensControllerState,
 } from '@metamask/assets-controllers';
 import { CaipAssetId } from '@metamask/keyring-api';
 import {
@@ -13,6 +15,8 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AccountTreeControllerState } from '@metamask/account-tree-controller';
+import { AccountsControllerState } from '@metamask/accounts-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
@@ -508,3 +512,11 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
     return balances[nativeAssetType];
   },
 );
+
+// TODO: Review if this is the best way to use a controller level selector
+export const getAllAssetsForSelectedAccountGroup = (state: {
+  metamask: TokensControllerState &
+    MultichainAssetsControllerState &
+    AccountTreeControllerState &
+    AccountsControllerState;
+}) => selectAllAssetsForSelectedAccountGroup(state.metamask);

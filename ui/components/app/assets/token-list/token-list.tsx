@@ -21,7 +21,10 @@ import {
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
 } from '../../../../selectors/multichain/networks';
-import { getTokenBalancesEvm } from '../../../../selectors/assets';
+import {
+  getAllAssetsForSelectedAccountGroup,
+  getTokenBalancesEvm,
+} from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -53,6 +56,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   pollAndUpdateEvmBalances({
     chainIds: chainIdsToPoll as Hex[],
   });
+
+  const accountGroupIdAssets = useSelector(getAllAssetsForSelectedAccountGroup);
+  console.log('accountGroupIdAssets', accountGroupIdAssets);
 
   const multichainAssets = useMultiChainAssets();
 
