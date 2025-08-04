@@ -74,6 +74,7 @@ export default class SelectHardware extends Component {
   state = {
     selectedDevice: null,
     trezorRequestDevicePending: false,
+    oneKeyRequestDevicePending: false,
   };
 
   connect = async () => {
@@ -103,7 +104,7 @@ export default class SelectHardware extends Component {
         this.state.selectedDevice === HardwareDeviceNames.oneKey &&
         isUSBSupported
       ) {
-        this.setState({ trezorRequestDevicePending: true });
+        this.setState({ oneKeyRequestDevicePending: true });
         try {
           const connectedDevice = await window.navigator.usb.requestDevice({
             filters: ONEKEY_WEBUSB_FILTER,
@@ -112,7 +113,7 @@ export default class SelectHardware extends Component {
             throw new Error('No device selected');
           }
         } finally {
-          this.setState({ trezorRequestDevicePending: false });
+          this.setState({ oneKeyRequestDevicePending: false });
         }
       }
 
@@ -230,6 +231,7 @@ export default class SelectHardware extends Component {
         disabled={
           !this.state.selectedDevice ||
           this.state.trezorRequestDevicePending ||
+          this.state.oneKeyRequestDevicePending ||
           (this.state.selectedDevice === HardwareDeviceNames.ledger &&
             isFirefox)
         }
