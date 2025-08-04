@@ -414,9 +414,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "You do not have enough $1 in your account to pay for network fees."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Gas prices are high and estimates are less accurate."
-  },
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
@@ -461,9 +458,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Unnecessary permission"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Network is busy"
   },
   "alertReasonNoGasPrice": {
     "message": "Fee estimate unavailable"

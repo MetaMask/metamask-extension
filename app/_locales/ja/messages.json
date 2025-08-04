@@ -408,9 +408,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "アカウントにネットワーク手数料を支払うのに十分な$1がありません。"
   },
-  "alertMessageNetworkBusy": {
-    "message": "ガス価格が高く、見積もりはあまり正確ではありません。"
-  },
   "alertMessageNoGasPrice": {
     "message": "手数料を手動で更新するまでこのトランザクションを進めることができません。"
   },
@@ -449,9 +446,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "不要なアクセス許可"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "ネットワークが混雑中"
   },
   "alertReasonNoGasPrice": {
     "message": "手数料の見積もりが利用できません"
