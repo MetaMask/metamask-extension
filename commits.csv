@@ -1,0 +1,203 @@
+Commit Message,Author,PR Link,Team,Change Type
+build(webpack): silence swc sourcemap messages on Windows (#34777),David Murdoch,https://github.com/MetaMask/metamask-extension/pull/34777,team-extension-platform,,Unknown
+release: Update 13.0.0 changelog (#34755),Danica Shen,https://github.com/MetaMask/metamask-extension/pull/34755,team-extension-platform,,Ops
+style: tell VSCode to end all files with a newline (#34673),Howard Braham,https://github.com/MetaMask/metamask-extension/pull/34673,team-extension-platform,,Unknown
+release: master sync 12.23.1 (#34729),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34729,team-extension-platform,,Ops
+feat: show additional startup errors to users (#34305),David Murdoch,https://github.com/MetaMask/metamask-extension/pull/34305,team-extension-platform,,Added
+ci: cache the anvil binary (#34703),Howard Braham,https://github.com/MetaMask/metamask-extension/pull/34703,team-extension-platform,,Changed
+fix: dapp scanning on connect cp-13.0.0 cherry-pick (#34685),Danica Shen,https://github.com/MetaMask/metamask-extension/pull/34685,team-extension-platform,,Ops
+release: Revert "release(runway): cherry-pick feat: 2.11 added sentry error UI cp-13.0.0 (#34614)" (#34701),Danica Shen,https://github.com/MetaMask/metamask-extension/pull/34701,team-extension-platform,,Added
+release: Master sync to main (#34669),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34669,team-extension-platform,,Ops
+build(webpack): support commonjs style `exports.something = value` syntax (#34378),David Murdoch,https://github.com/MetaMask/metamask-extension/pull/34378,team-extension-platform,,Unknown
+fix: extension update prompt in popup (#34372),Norbert Elter,https://github.com/MetaMask/metamask-extension/pull/34372,team-extension-platform,,Fixed
+chore: Update `form-data` to address advisory (#34480) (#34513),Danica Shen,https://github.com/MetaMask/metamask-extension/pull/34513,team-extension-platform,,Changed
+fix: make bg color on the loading screen in popup match bg of app (#34346),David Murdoch,https://github.com/MetaMask/metamask-extension/pull/34346,team-extension-platform,,Fixed
+chore: change the message in the script that initializes master sync (#34370),Danica Shen,https://github.com/MetaMask/metamask-extension/pull/34370,team-extension-platform,,Changed
+fix: update popup-init.html's background colors to match latest designs (#34347),David Murdoch,https://github.com/MetaMask/metamask-extension/pull/34347,team-extension-platform,,Changed
+release: update changelog (#34401),Danica Shen,https://github.com/MetaMask/metamask-extension/pull/34401,team-extension-platform,,Ops
+test: Fix test failure when WebDriver is inactive before shutdown (#34748),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34748,team-wallet-framework,,Changed
+chore: Revert "feat: 2.11 added sentry error UI cp-13.0.0" (#34699),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34699,team-wallet-framework,,Added
+fix: Fix silently dropped errors in UI (#34383),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34383,team-wallet-framework,,Fixed
+chore: Rename extension minimum version flag cp-12.23.1 (#34636),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34636,team-wallet-framework,,Changed
+fix: Fix silently dropped Sentry errors in background (#34379),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34379,team-wallet-framework,,Fixed
+fix: prevent "Request cannot be constructed from a URL that includes credentials" error (#34278),cryptodev-2s,https://github.com/MetaMask/metamask-extension/pull/34278,team-wallet-framework,,Fixed
+chore: Remove obsolete MMI policy (#34626),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34626,team-wallet-framework,,Changed
+fix: cp-12.22.3 Fix frequent writes from CronjobController (#34413),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34413,team-wallet-framework,,Fixed
+test: Fix bugs in token-util tests (#34635),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34635,team-wallet-framework,,Changed
+fix: Fix silently dropped errors in shared code (#34382),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34382,team-wallet-framework,,Fixed
+fix: cp-12.22.3 Stop persisting `permissionActivityLog` state (#34465),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34465,team-wallet-framework,,Fixed
+fix: Prevent redundant persist store updates (#34506),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34506,team-wallet-framework,,Fixed
+fix: cp-12.22.3 Stop polling multichain rates while idle (#34474),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34474,team-wallet-framework,,Fixed
+chore: Improve performance of address formatting/validation (#34152),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34152,team-wallet-framework,,Changed
+chore: Add buttons to test error capture (#34386),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34386,team-wallet-framework,,Changed
+chore: Update `form-data` to address advisory (#34480),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34480,team-wallet-framework,,Changed
+fix: cp-12.22.3 Fix frequent writes from CronjobController (#34413),Mark Stacey,https://github.com/MetaMask/metamask-extension/pull/34413,team-wallet-framework,,Fixed
+fix: adds fromChain to the usecrosschainswaps event tracker hook (#34686),hunty,https://github.com/MetaMask/metamask-extension/pull/34686,team-swaps-and-bridge,,Fixed
+fix: hides bridge button on testnet for unified ui (#34700),hunty,https://github.com/MetaMask/metamask-extension/pull/34700,team-swaps-and-bridge,,Changed
+fix: cp-13.0.0 update search logic for CAs (#34358),SteP-n-s,https://github.com/MetaMask/metamask-extension/pull/34358,team-swaps-and-bridge,,Fixed
+fix: reset prefilled dest token when reopening Swap page cp-13.0.0 (#34485),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/34485,team-swaps-and-bridge,,Fixed
+chore: adds util for calculating amt in bridge mapping (#34575),hunty,https://github.com/MetaMask/metamask-extension/pull/34575,team-swaps-and-bridge,,Changed
+fix: activitylist fromtoken sourced from bridge controller (#34521),hunty,https://github.com/MetaMask/metamask-extension/pull/34521,team-swaps-and-bridge,,Fixed
+fix: set swap src chain based on selected asset cp-13.0.0 (#34385),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/34385,team-swaps-and-bridge,,Fixed
+fix: unified swaps label (#34467),hunty,https://github.com/MetaMask/metamask-extension/pull/34467,team-swaps-and-bridge,,Fixed
+chore: bump bridge-controller to 36.1.0 and bridge-status-controller to 36.0.0  (#34341),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/34341,team-swaps-and-bridge,,Ops
+fix: changes default label of bridge originated txs to swap from send (#34476),hunty,https://github.com/MetaMask/metamask-extension/pull/34476,team-swaps-and-bridge,,Fixed
+fix: show tx alert when simulation error is ResultWithNegativeLamports (#34477),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/34477,team-swaps-and-bridge,,Fixed
+fix: temporarily skip bridge metrics e2e test (#34418),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/34418,team-swaps-and-bridge,,Changed
+fix: reset parsed search params after setting quote request inputs cp-13.0.0 (#34389),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/34389,team-swaps-and-bridge,,Fixed
+fix: header titles in unified asset picker cp-13.0.0 (#34365),hunty,https://github.com/MetaMask/metamask-extension/pull/34365,team-swaps-and-bridge,,Fixed
+feat: support swap deep links cp-13.0.0 (#34259),Micaela Estabillo,https://github.com/MetaMask/metamask-extension/pull/34259,team-swaps-and-bridge,,Added
+fix: account list order (multichain accounts state 1 temporary fix) (#34756),Gustavo Antunes,https://github.com/MetaMask/metamask-extension/pull/34756,team-accounts,,Fixed
+fix: add logic to revert state for smart contract account toggle if there is a blockchain state mismatch cp-13.0.0 (#34745),Hassan Malik,https://github.com/MetaMask/metamask-extension/pull/34745,team-accounts,,Fixed
+fix: patch profile-sync-controller to rename endpoint (#34735),Mathieu Artu,https://github.com/MetaMask/metamask-extension/pull/34735,team-accounts,,Fixed
+fix: patch profile-sync-controller to rename endpoint cp-13.0.0 (#34721),Mathieu Artu,https://github.com/MetaMask/metamask-extension/pull/34721,team-accounts,,Fixed
+fix: update smart contract account toggle components to remove flickering and inconsistent state cp-13.0.0 (#34664),Hassan Malik,https://github.com/MetaMask/metamask-extension/pull/34664,team-accounts,,Fixed
+chore: bump multichain-accounts deps (#34631),Charly Chevalier,https://github.com/MetaMask/metamask-extension/pull/34631,team-accounts,,Ops
+fix: reset `AccountTreeController` state after vault reset - cp-13.0.0 (#34697),Charly Chevalier,https://github.com/MetaMask/metamask-extension/pull/34697,team-accounts,,Fixed
+fix: Update spacing between the account avatar and its details rows (#34689),David Drazic,https://github.com/MetaMask/metamask-extension/pull/34689,team-accounts,,Changed
+fix: update address QR code navigation to prevent infinite loop of navigation cherry-pick cp-13.0.0 (#34679),Gustavo Antunes,https://github.com/MetaMask/metamask-extension/pull/34679,team-accounts,,Ops
+feat: Add multichain account cell component (#34482),David Drazic,https://github.com/MetaMask/metamask-extension/pull/34482,team-accounts,,Added
+chore: bump accounts dependencies (#34570),Charly Chevalier,https://github.com/MetaMask/metamask-extension/pull/34570,team-accounts,,Ops
+feat: add `multichain-accounts-service` initialization (#34178),Charly Chevalier,https://github.com/MetaMask/metamask-extension/pull/34178,team-accounts,,Added
+chore(accounts): bump `eth-snap-keyring` to support generic accounts (#34547),Daniel Rocha,https://github.com/MetaMask/metamask-extension/pull/34547,team-accounts,,Ops
+feat: add MultichainAddressRowsList component (#34405),Patryk Łucka,https://github.com/MetaMask/metamask-extension/pull/34405,team-accounts,,Added
+test: add wallet details e2e tests (#34276),Patryk Łucka,https://github.com/MetaMask/metamask-extension/pull/34276,team-accounts,,Changed
+fix: update explorer button text in address qr code page to reflect the network's explorer name (#34377),Hassan Malik,https://github.com/MetaMask/metamask-extension/pull/34377,team-accounts,,Fixed
+fix: remove loading spinner from create ethereum account flow (#34374),Hassan Malik,https://github.com/MetaMask/metamask-extension/pull/34374,team-accounts,,Fixed
+fix: update address qr code navigation to prevent infinite loop of navigation (#34381),Hassan Malik,https://github.com/MetaMask/metamask-extension/pull/34381,team-accounts,,Fixed
+fix: additional network permission request view shows all networks (#34651),ffmcgee,https://github.com/MetaMask/metamask-extension/pull/34651,team-wallet-api-platform,,Fixed
+fix: potential undefined dereference of sessionProperties during Solana accountChanged flow (#34643),jiexi,https://github.com/MetaMask/metamask-extension/pull/34643,team-wallet-api-platform,,Fixed
+test(e2e): Add E2E test for `snap_trackEvent` (#34764),Maarten Zuidhoorn,https://github.com/MetaMask/metamask-extension/pull/34764,team-snaps-platform,,Changed
+perf: More bundle size reductions (#34694),Frederik Bolding,https://github.com/MetaMask/metamask-extension/pull/34694,team-snaps-platform,,Unknown
+test(e2e): Add E2E test for `snap_startTrace` and `snap_endTrace` (#34666),Maarten Zuidhoorn,https://github.com/MetaMask/metamask-extension/pull/34666,team-snaps-platform,,Changed
+perf: Reduce contentscript size (#34688),Frederik Bolding,https://github.com/MetaMask/metamask-extension/pull/34688,team-snaps-platform,,Unknown
+chore: Update CODEOWNERS from `snaps-devs` to `core-platform` (#34659),Guillaume Roux,https://github.com/MetaMask/metamask-extension/pull/34659,team-snaps-platform,,Changed
+chore(e2e): Add E2E test for `snap_trackError` (#34075),Maarten Zuidhoorn,https://github.com/MetaMask/metamask-extension/pull/34075,team-snaps-platform,,Changed
+fix(snaps): Add localized name to `AccountSelector` (#34657),Guillaume Roux,https://github.com/MetaMask/metamask-extension/pull/34657,team-snaps-platform,,Fixed
+chore: Bump Snaps packages (#34504),Maarten Zuidhoorn,https://github.com/MetaMask/metamask-extension/pull/34504,team-snaps-platform,,Changed
+release(runway): cherry-pick chore: bump institutional snap to 1.3.2 cp-13.0.0 (#34763),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34763,team-runway-bot,,Ops
+release(runway): cherry-pick fix: add logic to revert state for smart contract account toggle if there is a blockchain state mismatch cp-13.0.0 (#34751),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34751,team-runway-bot,,Ops
+release(runway): cherry-pick fix: social login flow links cp-13.0.0 (#34740),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34740,team-runway-bot,,Ops
+release(runway): cherry-pick fix: update smart contract account toggle components to remove flickering and inconsistent state cp-13.0.0 (#34725),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34725,team-runway-bot,,Ops
+release(runway): cherry-pick fix: reset `AccountTreeController` state after vault reset - cp-13.0.0 (#34713),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34713,team-runway-bot,,Ops
+release(runway): cherry-pick fix: prevent asset reset to native on Send/Swap when navigating from token details cp-13.0.0 (#34691),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34691,team-runway-bot,,Ops
+release(runway): cherry-pick fix: cp-13.0.0 update search logic for CAs (#34678),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34678,team-runway-bot,,Ops
+release(runway): cherry-pick feat: update seedless controller cp-13.0.0 (#34675),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34675,team-runway-bot,,Added
+release(runway): cherry-pick feat: seedless-onboarding prod builds for release branch cp-13.0.0 (#34668),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34668,team-runway-bot,,Added
+release(runway): cherry-pick fix: enable multiple networks when added via dapp cp-13.0.0 (#34639),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34639,team-runway-bot,,Ops
+release(runway): cherry-pick fix: removed 'Use a different login method' for non-social-login flow cp-13.0.0 (#34622),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34622,team-runway-bot,,Ops
+release(runway): cherry-pick fix: Fix silently dropped errors in shared code cp-13.0.0 (#34628),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34628,team-runway-bot,,Ops
+release(runway): cherry-pick feat: 2.11 added sentry error UI cp-13.0.0 (#34614),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34614,team-runway-bot,,Added
+release(runway): cherry-pick fix: Throw Password Outdated error when user enters old password cp-13.0.0 (#34612),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34612,team-runway-bot,,Ops
+release(runway): cherry-pick fix: reset prefilled dest token when reopening Swap page cp-13.0.0 (#34608),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34608,team-runway-bot,,Ops
+release(runway): cherry-pick fix: creation page button login with social copy cp-13.0.0 (#34603),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34603,team-runway-bot,,Ops
+release(runway): cherry-pick fix: unlock page many attempts error time format and copywriting cp-13.0.0 (#34591),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34591,team-runway-bot,,Ops
+release(runway): cherry-pick fix: reset app warning upon SeedlessOnboarding actions success cp-13.0.0 (#34597),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34597,team-runway-bot,,Ops
+release(runway): cherry-pick fix: clicking back multiple times from metametrics page cp-13.0.0 (#34596),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34596,team-runway-bot,,Ops
+release(runway): cherry-pick fix: cp-13.0.0 ensure NetworkOrderController fallbacks to ethereum if all enabled networks removed. (#34568),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34568,team-runway-bot,,Ops
+release(runway): cherry-pick fix: cp-13.0.0 allows editing non-evm accounts name (#34581),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34581,team-runway-bot,,Ops
+release(runway): cherry-pick fix: cp-13.0.0 fix displayed price for native tokens on token details page (#34569),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34569,team-runway-bot,,Ops
+release(runway): cherry-pick fix: cp-13.0.0 improve perf for network checkbox (#34573),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34573,team-runway-bot,,Ops
+release(runway): cherry-pick fix: handle RecoveryError at unlock when password is outdated cp-13.0.0 (#34571),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34571,team-runway-bot,,Ops
+release(runway): cherry-pick fix: error text should not be dimmed when text field is disabled cp-13.0.0 (#34564),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34564,team-runway-bot,,Ops
+release(runway): cherry-pick fix: asynchrous background password-sync check cp-13.0.0 (#34542),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34542,team-runway-bot,,Ops
+release(runway): cherry-pick fix: fixed incorrect navigation upon clicking back/refresh actions from browser cp-13.0.0 (#34566),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34566,team-runway-bot,,Ops
+release(runway): cherry-pick feat: 2.12 Session Expiry modal cp-13.0.0 (#34535),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34535,team-runway-bot,,Added
+release(runway): cherry-pick fix: password change rollback cp-13.0.0 (#34537),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34537,team-runway-bot,,Ops
+release(runway): cherry-pick fix: add loader for onboarding unlock page cp-13.0.0 (#34539),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34539,team-runway-bot,,Ops
+release(runway): cherry-pick fix: integrate phishing controller actions into NFT messengers (#34525),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34525,team-runway-bot,,Ops
+release(runway): cherry-pick fix: security tab scroll capitalize social cp-13.0.0 (#34544),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34544,team-runway-bot,,Ops
+release(runway): cherry-pick fix: copy and style fixes for unlock page and creation page cp-13.0.0 (#34538),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34538,team-runway-bot,,Ops
+release(runway): cherry-pick feat: Onboarding Unlock page update cp-13.0.0 (#34517),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34517,team-runway-bot,,Added
+release(runway): cherry-pick fix: set swap src chain based on selected asset cp-13.0.0 (#34527),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34527,team-runway-bot,,Ops
+release(runway): cherry-pick fix: cp-13.0.0 ensure we enable any missing networks when performing swap/bridge. (#34432),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34432,team-runway-bot,,Ops
+release(runway): cherry-pick fix: updated reset wallet content for social account cp-13.0.0 (#34497),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34497,team-runway-bot,,Ops
+release(runway): cherry-pick fix: check if metametrics is done before redirecting to page on social cp-13.0.0 (#34458),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34458,team-runway-bot,,Ops
+release(runway): cherry-pick fix: reset parsed search params after setting quote request inputs (#34408),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34408,team-runway-bot,,Ops
+release(runway): cherry-pick fix: handle keyring remove when import srp seedless error cp-13.0.0 (#34433),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34433,team-runway-bot,,Ops
+release(runway): cherry-pick fix: optimize unlock performance cp-13.0.0 (#34446),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34446,team-runway-bot,,Ops
+release(runway): cherry-pick feat: enable SeedlessOnboarding feature cp-13.0.0 (#34431),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34431,team-runway-bot,,Added
+release(runway): cherry-pick fix: check password outdated before import private key cp-13.0.0 (#34434),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34434,team-runway-bot,,Ops
+release(runway): cherry-pick feat: support swap deep links cp-13.0.0 (#34380),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34380,team-runway-bot,,Added
+release(runway): cherry-pick fix: header titles in unified asset picker cp-13.0.0 (#34388),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34388,team-runway-bot,,Ops
+release(runway): cherry-pick fix: Apple login cp-13.0.0 (#34394),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34394,team-runway-bot,,Ops
+release(runway): cherry-pick fix: use button for quiz words instead of text-field cp-13.0.0 (#34392),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34392,team-runway-bot,,Ops
+release(runway): cherry-pick fix: handle recovery ratelimit error cp-13.0.0 (#34402),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34402,team-runway-bot,,Ops
+release(runway): cherry-pick fix:  cp-13.0.0 show solana connected state (#34407),runway-github[bot],https://github.com/MetaMask/metamask-extension/pull/34407,team-runway-bot,,Ops
+chore: bump institutional snap to 1.3.2 cp-13.0.0 (#34761),Shane T,https://github.com/MetaMask/metamask-extension/pull/34761,team-identity,,Ops
+fix: incorrect navigation upon refreshing the page during the social login onboarding (#34716),Lwin,https://github.com/MetaMask/metamask-extension/pull/34716,team-web3auth,,Changed
+feat: do passwordOutdatedCheck in change-password page render (#34757),Lwin,https://github.com/MetaMask/metamask-extension/pull/34757,team-web3auth,,Added
+fix: redirect user to change password after failing (#34722),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34722,team-web3auth,,Fixed
+fix: social login flow links cp-13.0.0 (#34718),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34718,team-web3auth,,Changed
+fix: polish welcome page copywriting and styles (#34621),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34621,team-web3auth,,Fixed
+fix: srp lock image update and remove follow x (#34619),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34619,team-web3auth,,Fixed
+feat: update seedless controller cp-13.0.0 (#34632),Nguyen Anh Tu,https://github.com/MetaMask/metamask-extension/pull/34632,team-web3auth,,Added
+feat: seedless-onboarding prod builds for release branch cp-13.0.0 (#34602),Lwin,https://github.com/MetaMask/metamask-extension/pull/34602,team-web3auth,,Added
+fix: removed 'Use a different login method' for non-social-login flow cp-13.0.0 (#34618),Lwin,https://github.com/MetaMask/metamask-extension/pull/34618,team-web3auth,,Changed
+feat: 2.11 added sentry error UI cp-13.0.0 (#34208),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34208,team-web3auth,,Added
+fix: Throw Password Outdated error when user enters old password cp-13.0.0 (#34599),Lwin,https://github.com/MetaMask/metamask-extension/pull/34599,team-web3auth,,Fixed
+fix: creation page button login with social copy cp-13.0.0 (#34598),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34598,team-web3auth,,Changed
+fix: reset app warning upon SeedlessOnboarding actions success cp-13.0.0 (#34595),Lwin,https://github.com/MetaMask/metamask-extension/pull/34595,team-web3auth,,Fixed
+fix: clicking back multiple times from metametrics page cp-13.0.0 (#34576),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34576,team-web3auth,,Fixed
+fix: unlock page many attempts error time format and copywriting cp-13.0.0 (#34577),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34577,team-web3auth,,Fixed
+fix: handle RecoveryError at unlock when password is outdated cp-13.0.0 (#34550),Lwin,https://github.com/MetaMask/metamask-extension/pull/34550,team-web3auth,,Fixed
+fix: error text should not be dimmed when text field is disabled cp-13.0.0 (#34545),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34545,team-web3auth,,Fixed
+fix: fixed incorrect navigation upon clicking back/refresh actions from browser cp-13.0.0 (#34541),Lwin,https://github.com/MetaMask/metamask-extension/pull/34541,team-web3auth,,Fixed
+fix: security tab scroll capitalize social cp-13.0.0 (#34514),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34514,team-web3auth,,Changed
+fix: asynchrous background password-sync check cp-13.0.0 (#34534),Lwin,https://github.com/MetaMask/metamask-extension/pull/34534,team-web3auth,,Fixed
+fix: add loader for onboarding unlock page cp-13.0.0 (#34518),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34518,team-web3auth,,Fixed
+fix: copy and style fixes for unlock page and creation page cp-13.0.0 (#34511),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34511,team-web3auth,,Fixed
+fix: password change rollback cp-13.0.0 (#34520),Lwin,https://github.com/MetaMask/metamask-extension/pull/34520,team-web3auth,,Fixed
+feat: 2.12 Session Expiry modal cp-13.0.0 (#34118),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34118,team-web3auth,,Added
+feat: Onboarding Unlock page update cp-13.0.0 (#34505),Lwin,https://github.com/MetaMask/metamask-extension/pull/34505,team-web3auth,,Added
+fix: updated reset wallet content for social account cp-13.0.0 (#34466),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34466,team-web3auth,,Changed
+fix: check if metametrics is done before redirecting to page on social cp-13.0.0 (#34438),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34438,team-web3auth,,Changed
+fix: optimize unlock performance cp-13.0.0 (#34436),Lwin,https://github.com/MetaMask/metamask-extension/pull/34436,team-web3auth,,Fixed
+fix: check password outdated before import private key cp-13.0.0 (#34400),Nguyen Anh Tu,https://github.com/MetaMask/metamask-extension/pull/34400,team-web3auth,,Fixed
+fix: handle keyring remove when import srp seedless error cp-13.0.0 (#34403),Nguyen Anh Tu,https://github.com/MetaMask/metamask-extension/pull/34403,team-web3auth,,Fixed
+feat: enable SeedlessOnboarding feature cp-13.0.0 (#34429),Lwin,https://github.com/MetaMask/metamask-extension/pull/34429,team-web3auth,,Added
+fix: handle recovery ratelimit error cp-13.0.0 (#34397),Lwin,https://github.com/MetaMask/metamask-extension/pull/34397,team-web3auth,,Fixed
+fix: Apple login cp-13.0.0 (#34391),Lwin,https://github.com/MetaMask/metamask-extension/pull/34391,team-web3auth,,Fixed
+fix: use button for quiz words instead of text-field cp-13.0.0 (#34280),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34280,team-web3auth,,Fixed
+chore: add CODEOWNERS for QA Team - E2E Framework (#34719),chloeYue,https://github.com/MetaMask/metamask-extension/pull/34719,team-qa,,Changed
+test: Fixed the test aggregated balance  (#34629),Harika,https://github.com/MetaMask/metamask-extension/pull/34629,team-qa,,Changed
+feat: enabled websocket for Solana e2e (#34250),javiergarciavera,https://github.com/MetaMask/metamask-extension/pull/34250,team-qa,,Added
+chore: Remove remote mode (#34041),Kevin Bluer,https://github.com/MetaMask/metamask-extension/pull/34041,team-vault,,Changed
+feat: solana websockets (#34620),Alejandro Garcia Anglada,https://github.com/MetaMask/metamask-extension/pull/34620,team-new-networks,,Added
+fix: cp-13.0.0 allows editing non-evm accounts name (#34552),António Regadas,https://github.com/MetaMask/metamask-extension/pull/34552,team-new-networks,,Fixed
+bump: multichain network controller (#34286),Dario Anongba Varela,https://github.com/MetaMask/metamask-extension/pull/34286,team-new-networks,,Ops
+fix: Reduce Solana snap activity while idle (#34473),Alejandro Garcia Anglada,https://github.com/MetaMask/metamask-extension/pull/34473,team-new-networks,,Fixed
+feat: enable notifications by default for users (#34693),Prithpal Sooriya,https://github.com/MetaMask/metamask-extension/pull/34693,team-assets,,Added
+fix: fix token autodetection (#34647),Salim TOUBAL,https://github.com/MetaMask/metamask-extension/pull/34647,team-assets,,Fixed
+fix: cp-13.0.0 improve perf for network checkbox (#34450),Salim TOUBAL,https://github.com/MetaMask/metamask-extension/pull/34450,team-assets,,Fixed
+fix: cp-13.0.0 ensure NetworkOrderController fallbacks to ethereum if all enabled networks removed. (#34460),Prithpal Sooriya,https://github.com/MetaMask/metamask-extension/pull/34460,team-assets,,Fixed
+fix: cp-13.0.0 fix displayed price for native tokens on token details page (#34565),Salim TOUBAL,https://github.com/MetaMask/metamask-extension/pull/34565,team-assets,,Fixed
+fix: cp-13.0.0 ensure we enable any missing networks when performing swap/bridge. (#34376),Prithpal Sooriya,https://github.com/MetaMask/metamask-extension/pull/34376,team-assets,,Fixed
+ci(gh-actions): unify version release workflows (#33555),Ale Som,https://github.com/MetaMask/metamask-extension/pull/33555,team-dev-ops,,Ops
+ci(gh-action): add gh action to keep stable branch sync (#33026),Ale Som,https://github.com/MetaMask/metamask-extension/pull/33026,team-dev-ops,,Changed
+ci: update e2e image org (#34572),jake-perkins,https://github.com/MetaMask/metamask-extension/pull/34572,team-dev-ops,,Changed
+fix: show correct subtitle and redirect on view explorer (#34723),Nidhi Kumari,https://github.com/MetaMask/metamask-extension/pull/34723,team-wallet-ux,,Fixed
+fix: Localize NetworkIndicator text (#34648),David Walsh,https://github.com/MetaMask/metamask-extension/pull/34648,team-wallet-ux,,Fixed
+fix: enable multiple networks when added via dapp cp-13.0.0 (#34507),Nidhi Kumari,https://github.com/MetaMask/metamask-extension/pull/34507,team-wallet-ux,,Fixed
+fix: show solana connected state (#34375),Nidhi Kumari,https://github.com/MetaMask/metamask-extension/pull/34375,team-wallet-ux,,Fixed
+chore: update sei new logo (#34634),Julink,https://github.com/MetaMask/metamask-extension/pull/34634,team-network-enablement,,Changed
+fix(33176): remove ledger transport initialization at login and vault creation (#34574),Sébastien Van Eyck,https://github.com/MetaMask/metamask-extension/pull/34574,team-hardware-wallets,,Fixed
+feat: trezor web connect library upgrade. (#33834),Xiaoming Wang,https://github.com/MetaMask/metamask-extension/pull/33834,team-hardware-wallets,,Added
+fix: usd values in simulation metrics (#34645),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/34645,team-confirmations,,Fixed
+fix: prevent asset reset to native on Send/Swap when navigating from token details cp-13.0.0 (#34625),Vinicius Stevam,https://github.com/MetaMask/metamask-extension/pull/34625,team-confirmations,,Fixed
+fix: hold insufficient balance alert until simulation is completed (#33932),Vinicius Stevam,https://github.com/MetaMask/metamask-extension/pull/33932,team-confirmations,,Changed
+fix: remove send gas validation (#34646),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/34646,team-confirmations,,Fixed
+feat: configure enforced simulations slippage (#33924),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/33924,team-confirmations,,Added
+fix: normalize signature request supporting `object`  type (#34054),Vinicius Stevam,https://github.com/MetaMask/metamask-extension/pull/34054,team-confirmations,,Fixed
+fix: Set max limit of block gas used for gas estimation to 10M (#34398),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/34398,team-confirmations,,Fixed
+fix: infinite loading on spending cap when selected chain differs from dapp cp-12.22.3 (#34355),Vinicius Stevam,https://github.com/MetaMask/metamask-extension/pull/34355,team-confirmations,,Fixed
+fix: dapp scanning on connect cp-13.0.0 (#34606),imblue,https://github.com/MetaMask/metamask-extension/pull/34606,team-product-safety,,Fixed
+fix: integrate phishing controller actions into NFT messengers cp-13.0.0 (#34216),AugmentedMode,https://github.com/MetaMask/metamask-extension/pull/34216,team-product-safety,,Fixed
+fix: use origin instead of mainFrameOrigin in trust signals middleware (#34459),AugmentedMode,https://github.com/MetaMask/metamask-extension/pull/34459,team-product-safety,,Fixed
+chore: fix hex color violations and enable color-no-hex rules (#34604),George Marshall,https://github.com/MetaMask/metamask-extension/pull/34604,team-design-system,,Changed
+chore: fix toggle spacing (#34536),George Marshall,https://github.com/MetaMask/metamask-extension/pull/34536,team-design-system,,Changed
+chore: update discover link to token explore page (#34580),George Marshall,https://github.com/MetaMask/metamask-extension/pull/34580,team-design-system,,Changed
+chore: adding tailwind docs (#34489),George Marshall,https://github.com/MetaMask/metamask-extension/pull/34489,team-design-system,,Changed
+chore: adding tailwind eslint plugin (#34211),George Marshall,https://github.com/MetaMask/metamask-extension/pull/34211,team-design-system,,Changed
+chore: upgrade @metamask/design-tokens to v8.1.0 (#34384),George Marshall,https://github.com/MetaMask/metamask-extension/pull/34384,team-design-system,,Changed
+feat: Add Ocap Kernel Panel as a devtools page (#34029),Dimitris Marlagkoutsos,https://github.com/MetaMask/metamask-extension/pull/34029,team-ocap-kernel,,Added
