@@ -127,7 +127,6 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MEGAETH_TESTNET]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MONAD_TESTNET]: true,
         },
-        skipDeepLinkInterstitial: false,
       },
       SelectedNetworkController: {
         domains: {},
