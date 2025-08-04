@@ -29,6 +29,7 @@ const knownBots = [
   'metamaskbot',
   'dependabot',
   'github-actions',
+  'sentry-io',
   'devin-ai-integration',
   'runway-github',
 ];
@@ -98,8 +99,9 @@ async function main(): Promise<void> {
     labelable.body,
   );
 
-  // If labelable's author is a bot we skip the template checks as bots don't use templates
-  if (knownBots.includes(labelable.author)) {
+  // If labelable's author is a bot we skip the rest of the script, including the template checks as bots don't use templates.
+  // Exception: For issues created the 'sentry-io' bot, we don't skip the rest of the script because there's a specific handling for those issues.
+  if (knownBots.includes(labelable.author) && labelable.author !== 'sentry-io') {
     console.log(
       `${
         labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'
