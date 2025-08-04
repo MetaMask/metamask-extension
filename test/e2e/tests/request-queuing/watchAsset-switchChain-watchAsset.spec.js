@@ -87,8 +87,8 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
           { timeout: 12500, interval: 100 },
         );
 
+        // Adding a delay to potentially fix flakiness
         await driver.delay(2500);
-        // Increasing timeout to potentially fix flakiness
         const multipleSuggestedtokens = await driver.findElements(
           '.confirm-add-suggested-token__token-list-item',
         );
