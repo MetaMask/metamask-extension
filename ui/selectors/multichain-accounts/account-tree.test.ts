@@ -1,5 +1,5 @@
 import mockState from '../../../test/data/mock-state.json';
-import { getAccountTree, getWalletsWithAccounts } from './account-tree';
+import { getAccountTree, getWalletIdAndNameByAccountAddress, getWalletsWithAccounts } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 
 describe('Multichain Accounts Selectors', () => {
@@ -260,6 +260,29 @@ describe('Multichain Accounts Selectors', () => {
           },
         },
       });
+    });
+  });
+
+  describe('getWalletIdAndNameByAccountAddress', () => {
+    it('returns the wallet ID and name for an account', () => {
+      const result = getWalletIdAndNameByAccountAddress(
+        mockState,
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      );
+
+      expect(result).toStrictEqual({
+        id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        name: 'Wallet 1',
+      });
+    });
+
+    it('returns null if the account is not found', () => {
+      const result = getWalletIdAndNameByAccountAddress(
+        mockState,
+        '0x1234567890abcdef1234567890abcdef12345678',
+      );
+
+      expect(result).toBeNull();
     });
   });
 });
