@@ -359,12 +359,10 @@
         "@ethersproject/providers>bech32": true
       }
     },
-    "@ethersproject/providers>@ethersproject/random": {
+    "ethers>@ethersproject/random": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "ethers>@ethersproject/random": {
+      },
       "packages": {
         "@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true
