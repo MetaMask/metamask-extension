@@ -108,23 +108,9 @@ export class ImportTokensModal {
     await this.clickNextAndWaitForValidation();
     await this.clickImport();
 
-    // Firefox-specific handling: wait for modal to close instead of "Token imported" message
-    if (process.env.SELENIUM_BROWSER === 'firefox') {
-      // Wait for the import modal to close, indicating successful import
-      await this.driver.assertElementNotPresent(
-        '[data-testid="import-tokens-modal-import-button"]',
-      );
-      // Additional delay to ensure UI updates
-      await this.driver.delay(500);
-    } else {
-      // Wait for the "Token imported" message to appear to prevent race conditions
-      await this.driver.waitForSelector({
-        text: 'Token imported',
-        tag: 'h6',
-      });
-    }
+    await this.driver.assertElementNotPresent('[data-testid="import-tokens-modal-import-button"]');
+    await this.driver.delay(500);
 
-    // If a symbol was provided, verify that the imported token has the expected symbol
     if (symbol) {
       await this.verifyImportedTokenSymbol(symbol);
     }

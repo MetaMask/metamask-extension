@@ -19,6 +19,14 @@ describe('Network Manager', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
+        localNodeOptions: [
+          {
+            type: 'anvil',
+            options: {
+              chainId: 1337,
+            },
+          },
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
@@ -38,6 +46,14 @@ describe('Network Manager', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true, '0xe708': true } })
           .build(),
         title: this.test?.fullTitle(),
+        localNodeOptions: [
+          {
+            type: 'anvil',
+            options: {
+              chainId: 1337,
+            },
+          },
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
@@ -57,6 +73,14 @@ describe('Network Manager', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
+        localNodeOptions: [
+          {
+            type: 'anvil',
+            options: {
+              chainId: 1337,
+            },
+          },
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
