@@ -79,7 +79,6 @@ type AppState = {
     oneKey: string;
     ledger: string;
     lattice: string;
-    onekey: string;
   };
   networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
@@ -192,7 +191,6 @@ const initialState: AppState = {
     oneKey: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
     lattice: `m/44'/60'/0'/0`,
-    onekey: `m/44'/60'/0'/0`,
   },
   networksTabSelectedRpcUrl: '',
   requestAccountTabs: {},
