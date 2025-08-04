@@ -84,7 +84,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
             );
             return tokens.length === 2;
           },
-          { timeout: 12500 },
+          { timeout: 12500, interval: 100 },
         );
 
         // Increasing timeout to potentially fix flakiness
