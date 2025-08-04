@@ -1,15 +1,17 @@
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import { StablecoinsByChainId } from '../../constants/stablecoins';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import type { BridgeToken } from '../../../ui/ducks/bridge/types';
 
 /**
  * Slippage values for different scenarios
  */
 export enum SlippageValue {
-  SOLANA_SWAP = 0.5,
-  EVM_STABLECOIN = 0.5,
-  EVM_DEFAULT = 2,
-  BRIDGE_DEFAULT = 0.5,
+  SolanaSwap = 0.5,
+  EvmStablecoin = 0.5,
+  EvmDefault = 2,
+  BridgeDefault = 0.5,
 }
 
 /**
@@ -83,30 +85,30 @@ export class SlippageService {
    * @param context
    */
   public static calculateSlippage(context: SlippageContext): number {
-    const { fromChain, toChain, fromToken, toToken, isSwap } = context;
+    const { fromChain, fromToken, toToken, isSwap } = context;
 
     // If no source chain, return bridge default
     if (!fromChain) {
-      return SlippageValue.BRIDGE_DEFAULT;
+      return SlippageValue.BridgeDefault;
     }
 
     // Bridge transactions always use 0.5%
     if (!isSwap) {
-      return SlippageValue.BRIDGE_DEFAULT;
+      return SlippageValue.BridgeDefault;
     }
 
     // Solana swaps always use 0.5%
     if (isSolanaChainId(fromChain.chainId)) {
-      return SlippageValue.SOLANA_SWAP;
+      return SlippageValue.SolanaSwap;
     }
 
     // EVM stablecoin pairs use 0.5%
     if (this.isStablecoinPair(fromChain.chainId, fromToken, toToken)) {
-      return SlippageValue.EVM_STABLECOIN;
+      return SlippageValue.EvmStablecoin;
     }
 
     // All other EVM swaps use 2%
-    return SlippageValue.EVM_DEFAULT;
+    return SlippageValue.EvmDefault;
   }
 
   /**
@@ -116,7 +118,7 @@ export class SlippageService {
    * @param context
    */
   public static getSlippageReason(context: SlippageContext): string {
-    const { fromChain, toChain, fromToken, toToken, isSwap } = context;
+    const { fromChain, fromToken, toToken, isSwap } = context;
 
     if (!fromChain) {
       return 'No source chain - using bridge default';

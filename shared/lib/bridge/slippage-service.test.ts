@@ -1,3 +1,5 @@
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import type { BridgeToken } from '../../../ui/ducks/bridge/types';
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import {
@@ -60,7 +62,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.BRIDGE_DEFAULT);
+        expect(result).toBe(SlippageValue.BridgeDefault);
       });
 
       it('returns 0.5% for bridge even with stablecoins', () => {
@@ -73,7 +75,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.BRIDGE_DEFAULT);
+        expect(result).toBe(SlippageValue.BridgeDefault);
       });
     });
 
@@ -88,7 +90,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.SOLANA_SWAP);
+        expect(result).toBe(SlippageValue.SolanaSwap);
       });
     });
 
@@ -103,7 +105,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.EVM_STABLECOIN);
+        expect(result).toBe(SlippageValue.EvmStablecoin);
       });
 
       it('returns 2% for non-stablecoin EVM swaps', () => {
@@ -116,7 +118,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.EVM_DEFAULT);
+        expect(result).toBe(SlippageValue.EvmDefault);
       });
 
       it('returns 2% for unknown token addresses', () => {
@@ -134,7 +136,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.EVM_DEFAULT);
+        expect(result).toBe(SlippageValue.EvmDefault);
       });
     });
 
@@ -149,7 +151,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.BRIDGE_DEFAULT);
+        expect(result).toBe(SlippageValue.BridgeDefault);
       });
 
       it('returns bridge default when fromChain is undefined', () => {
@@ -162,7 +164,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.BRIDGE_DEFAULT);
+        expect(result).toBe(SlippageValue.BridgeDefault);
       });
 
       it('handles case-insensitive stablecoin addresses', () => {
@@ -180,7 +182,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.EVM_STABLECOIN);
+        expect(result).toBe(SlippageValue.EvmStablecoin);
       });
 
       it('returns EVM default when only one token is stablecoin', () => {
@@ -193,7 +195,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.EVM_DEFAULT);
+        expect(result).toBe(SlippageValue.EvmDefault);
       });
 
       it('handles missing tokens gracefully', () => {
@@ -206,7 +208,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.EVM_DEFAULT);
+        expect(result).toBe(SlippageValue.EvmDefault);
       });
     });
   });
