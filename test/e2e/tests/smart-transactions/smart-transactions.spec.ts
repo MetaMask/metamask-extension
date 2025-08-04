@@ -9,6 +9,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/rede
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import {
   mockSmartTransactionRequests,
   mockGasIncludedTransactionRequests,
@@ -56,7 +57,10 @@ describe('Smart Transactions', function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
-        testSpecificMock: mockChooseGasFeeTokenRequests,
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockChooseGasFeeTokenRequests(mockServer);
+          await mockSentinelNetworks(mockServer);
+        },
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);
@@ -184,3 +188,23 @@ describe('Smart Transactions', function () {
     );
   });
 });
+
+async function mockSentinelNetworks(mockServer: MockttpServer) {
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/networks`)
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: {
+          '1': {
+            network: 'ethereum-mainnet',
+            confirmations: true,
+            relayTransactions: true,
+            sendBundle: true,
+          },
+        },
+      };
+    });
+}
