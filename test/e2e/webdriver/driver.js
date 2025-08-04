@@ -1226,10 +1226,8 @@ class Driver {
    */
   async switchToWindowWithTitle(title) {
     if (this.windowHandles) {
-      return await this.windowHandles.switchToWindowWithProperty(
-        'title',
-        title,
-      );
+      await this.windowHandles.switchToWindowWithProperty('title', title);
+      return;
     }
 
     let windowHandles = await this.driver.getAllWindowHandles();
