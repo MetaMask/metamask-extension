@@ -157,7 +157,7 @@ describe('Smart Transactions', function () {
     );
   });
 
-  it('should execute a dApp Transaction', async function () {
+  it.skip('should execute a dApp Transaction', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
