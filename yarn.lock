@@ -5675,6 +5675,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/chain-agnostic-permission@npm:@metamask-previews/chain-agnostic-permission@1.0.0-preview-a811c5b7":
+  version: 1.0.0-preview-a811c5b7
+  resolution: "@metamask-previews/chain-agnostic-permission@npm:1.0.0-preview-a811c5b7"
+  dependencies:
+    "@metamask/api-specs": "npm:^0.14.0"
+    "@metamask/controller-utils": "npm:^11.11.0"
+    "@metamask/network-controller": "npm:^24.0.1"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.4.2"
+    lodash: "npm:^4.17.21"
+  checksum: 10/b6809473176108fbd0be0871f7a8ccf585ace72682ebe52a7e3505548b3699d462c905841f93b71cff73a8c109000c1bdaa3f63c8918e49ffd5ddce6f589498a
+  languageName: node
+  linkType: hard
+
 "@metamask/chain-agnostic-permission@npm:^1.0.0":
   version: 1.0.0
   resolution: "@metamask/chain-agnostic-permission@npm:1.0.0"
@@ -6744,7 +6759,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:24.0.1, @metamask/network-controller@npm:^24.0.0":
+"@metamask/network-controller@npm:24.0.1, @metamask/network-controller@npm:^24.0.0, @metamask/network-controller@npm:^24.0.1":
   version: 24.0.1
   resolution: "@metamask/network-controller@npm:24.0.1"
   dependencies:
@@ -32038,7 +32053,7 @@ __metadata:
     "@metamask/bridge-status-controller": "npm:^37.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
-    "@metamask/chain-agnostic-permission": "npm:^1.0.0"
+    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@1.0.0-preview-a811c5b7"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.11.0"
     "@metamask/delegation-controller": "npm:^0.6.0"
