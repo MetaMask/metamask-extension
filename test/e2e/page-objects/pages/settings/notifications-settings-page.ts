@@ -32,10 +32,21 @@ class NotificationsSettingsPage {
   private readonly allowProductAnnouncementInput =
     '[data-testid="product-announcements-toggle-input"]';
 
+  private readonly notificationsPerAccountSection =
+    '[data-testid="notifications-settings-per-account"]';
+
+  private readonly notificationsPerTypesSection =
+    '[data-testid="notifications-settings-per-types"]';
+
+  private readonly notificationToggleOff =
+    '.toggle-button--off.notifications-settings-box__toggle';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -52,6 +63,35 @@ class NotificationsSettingsPage {
     console.log('Notifications Settings page is loaded');
   }
 
+  async disableNotifications(): Promise<void> {
+    console.log('Clicking on the disable notifications toggle');
+    await this.driver.clickElement(this.allowNotificationsToggle);
+    await this.driver.waitForSelector(this.notificationToggleOff);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_notificationSectionIsHidden(): Promise<void> {
+    console.log('Checking if notifications section is hidden');
+    const selectors = [
+      this.allowProductAnnouncementToggle,
+      this.notificationsPerAccountSection,
+      this.notificationsPerTypesSection,
+    ];
+    try {
+      for (const selector of selectors) {
+        await this.driver.assertElementNotPresent(selector);
+      }
+      console.log('All notification sections are hidden');
+    } catch (error) {
+      console.error(
+        'An error occurred while checking notification sections:',
+        error,
+      );
+      throw error;
+    }
+  }
+
   /**
    * Validates the state of any notification toggle.
    *
@@ -61,6 +101,8 @@ class NotificationsSettingsPage {
    * @param options.expectedState - The expected state of the toggle ('enabled' or 'disabled')
    * @throws {Error} If toggle state doesn't match expected state or if the toggle element cannot be found
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_notificationState({
     toggleType,
     address,
@@ -90,6 +132,8 @@ class NotificationsSettingsPage {
         selector = this.allowNotificationsAddressToggle(address, 'input');
         break;
       default:
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`Invalid toggle type: ${toggleType}`);
     }
 
@@ -98,19 +142,33 @@ class NotificationsSettingsPage {
     );
     const expectedValue = expectedState === 'enabled' ? 'true' : 'false';
 
+    const maxRetries = 5;
+    const retryInterval = 1000; // 1 second
+    let attempts = 0;
+
     try {
       await this.driver.waitForElementToStopMoving(selector);
-      await this.driver.wait(async () => {
+      while (attempts < maxRetries) {
         const toggle = await this.driver.findElement(selector);
-        return (await toggle.getAttribute('value')) === expectedValue;
-      });
-      console.log(
-        `Successfully verified ${toggleType} notifications ${description} to be ${expectedState}`,
-      );
-    } catch (error) {
+        if ((await toggle.getAttribute('value')) === expectedValue) {
+          console.log(
+            `Successfully verified ${toggleType} notifications ${description} to be ${expectedState}`,
+          );
+          return;
+        }
+        attempts += 1;
+        await new Promise((resolve) => setTimeout(resolve, retryInterval));
+      }
       throw new Error(
         `Expected ${toggleType} notifications ${description} state to be: ${expectedState}`,
       );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(
+          `Failed to verify ${toggleType} notifications ${description} state: ${error.message}`,
+        );
+      }
+      throw error;
     }
   }
 
@@ -150,6 +208,8 @@ class NotificationsSettingsPage {
         console.log(`Clicking notifications toggle for address ${address}`);
         break;
       default:
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`Invalid toggle type: ${toggleType}`);
     }
 
@@ -162,6 +222,20 @@ class NotificationsSettingsPage {
       console.error(`Error clicking ${toggleType} notifications toggle`, error);
       throw error;
     }
+  }
+
+  async assertMainNotificationSettingsTogglesEnabled(driver: Driver) {
+    const notificationsSettingsPage = new NotificationsSettingsPage(driver);
+    await notificationsSettingsPage.check_pageIsLoaded();
+    await notificationsSettingsPage.check_notificationState({
+      toggleType: 'general',
+      expectedState: 'enabled',
+    });
+    await notificationsSettingsPage.check_notificationState({
+      toggleType: 'product',
+      expectedState: 'enabled',
+    });
+    return notificationsSettingsPage;
   }
 }
 

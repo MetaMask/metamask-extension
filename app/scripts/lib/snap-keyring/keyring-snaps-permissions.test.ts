@@ -21,7 +21,7 @@ describe('keyringSnapPermissionsBuilder', () => {
       registerActionHandler: jest.fn(),
       registerInitialEventPayload: jest.fn(),
       publish: jest.fn(),
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
     state: {},
@@ -130,7 +130,7 @@ describe('keyringSnapPermissionsBuilder', () => {
   ])('"%s" cannot call any methods', (origin: unknown) => {
     const permissions = keyringSnapPermissionsBuilder(
       mockController,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       origin as any,
     );
@@ -154,7 +154,7 @@ describe('isProtocolAllowed', () => {
     [1, false],
     [0, false],
     [-1, false],
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ])('"%s" cannot call any methods', (origin: any, expected: boolean) => {
     expect(isProtocolAllowed(origin)).toBe(expected);

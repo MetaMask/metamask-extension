@@ -7,14 +7,14 @@ const {
 } = require('../../helpers');
 
 describe('Request Queuing SwitchChain -> SendTx', function () {
-  it('should clear subsequent sendTxs after switching chain', async function () {
+  it('switching network should reject pending confirmations from same origin', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
           {

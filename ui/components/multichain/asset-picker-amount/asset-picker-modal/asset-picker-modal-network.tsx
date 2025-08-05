@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { IconName } from '@metamask/snaps-sdk/jsx';
 import type { CaipChainId } from '@metamask/utils';
 import {
   Display,
@@ -15,6 +14,7 @@ import {
   TextVariant,
   IconColor,
   BackgroundColor,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
   ModalOverlay,
@@ -26,10 +26,9 @@ import {
   Checkbox,
   Text,
   AvatarNetworkSize,
+  IconName,
 } from '../../../component-library';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-///: END:ONLY_INCLUDE_IF
 import { NetworkListItem } from '../../network-list-item';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
@@ -37,10 +36,14 @@ import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../../selectors/multichain';
+import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { getShowTestNetworks } from '../../../../selectors/selectors';
 
 // TODO use MultichainNetworkConfiguration type
 type NetworkOption =
-  | NetworkConfiguration
+  | (NetworkConfiguration & {
+      nickname?: string;
+    })
   | AddNetworkFields
   | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
 
@@ -86,13 +89,12 @@ export const AssetPickerModalNetwork = ({
   selectedChainIds?: string[];
   onMultiselectSubmit?: (selectedChainIds: string[]) => void;
 }) => {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
-  ///: END:ONLY_INCLUDE_IF
 
   const { balanceByChainId } = useMultichainBalances();
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const showTestnets = useSelector(getShowTestNetworks);
   const currency = useSelector(getCurrentCurrency);
   // Use the networks prop if it is provided, otherwise use all available networks
   // Sort the networks by balance in descending order
@@ -104,6 +106,20 @@ export const AssetPickerModalNetwork = ({
     [],
   );
 
+  const [nonTestNetworks, testNetworks] = useMemo(
+    () =>
+      networksList.reduce(
+        ([nonTestNetworksList, testNetworksList], networkDetail) => {
+          const isTest = (TEST_CHAINS as string[]).includes(
+            networkDetail.chainId,
+          );
+          (isTest ? testNetworksList : nonTestNetworksList).push(networkDetail);
+          return [nonTestNetworksList, testNetworksList];
+        },
+        [[] as NetworkOption[], [] as NetworkOption[]],
+      ),
+    [networksList],
+  );
   // Tracks the selection/checked state of each network
   // Initialized with the selectedChainIds if provided
   const [checkedChainIds, setCheckedChainIds] = useState<
@@ -136,15 +152,15 @@ export const AssetPickerModalNetwork = ({
       );
   }, [networksList, selectedChainIds]);
 
-  const handleToggleNetwork = (chainId: string) => {
+  const handleToggleNetwork = useCallback((chainId: string) => {
     setCheckedChainIds((prev) => ({
       ...prev,
       [chainId]: !prev[chainId],
     }));
-  };
+  }, []);
 
   // Toggles all networks to be checked or unchecked
-  const handleToggleAllNetworks = () => {
+  const handleToggleAllNetworks = useCallback(() => {
     setCheckedChainIds(
       Object.keys(checkedChainIds)?.reduce(
         (agg, chainId) => ({
@@ -154,7 +170,7 @@ export const AssetPickerModalNetwork = ({
         {},
       ),
     );
-  };
+  }, [checkedChainIds]);
 
   return (
     <Modal
@@ -221,13 +237,23 @@ export const AssetPickerModalNetwork = ({
         <Box
           className="multichain-asset-picker__network-list"
           display={Display.Flex}
+          flexDirection={FlexDirection.Column}
         >
+          {testNetworks.length > 0 ? (
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+              padding={4}
+            >
+              {t('enabledNetworks')}
+            </Text>
+          ) : null}
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             width={BlockSize.Full}
           >
-            {networksList.map((networkConfig) => {
+            {nonTestNetworks.map((networkConfig) => {
               const { name, chainId } = networkConfig;
               return (
                 <NetworkListItem
@@ -261,6 +287,7 @@ export const AssetPickerModalNetwork = ({
                       />
                     ) : undefined
                   }
+                  chainId={chainId}
                   showEndAccessory={isMultiselectEnabled}
                   variant={TextVariant.bodyMdMedium}
                   endAccessory={
@@ -278,6 +305,79 @@ export const AssetPickerModalNetwork = ({
             })}
           </Box>
         </Box>
+        {showTestnets && testNetworks.length > 0 ? (
+          <Box
+            className="multichain-asset-picker__network-list"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+          >
+            <Box padding={4}>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+              >
+                {t('testNetworks')}
+              </Text>
+            </Box>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+            >
+              {testNetworks.map((networkConfig) => {
+                const { name, chainId } = networkConfig;
+                return (
+                  <NetworkListItem
+                    key={chainId}
+                    name={
+                      NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                        chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+                      ] ?? name
+                    }
+                    selected={
+                      // If multiselect is enabled, the checkbox indicates selection
+                      isMultiselectEnabled
+                        ? false
+                        : network?.chainId === chainId
+                    }
+                    onClick={() => {
+                      if (isMultiselectEnabled) {
+                        handleToggleNetwork(chainId);
+                        return;
+                      }
+                      onNetworkChange(networkConfig);
+                      onBack();
+                    }}
+                    iconSrc={getImageForChainId(chainId)}
+                    iconSize={AvatarNetworkSize.Sm}
+                    focus={false}
+                    disabled={shouldDisableNetwork?.(networkConfig)}
+                    startAccessory={
+                      isMultiselectEnabled ? (
+                        <Checkbox
+                          isChecked={checkedChainIds[chainId]}
+                          name={chainId}
+                        />
+                      ) : undefined
+                    }
+                    showEndAccessory={isMultiselectEnabled}
+                    variant={TextVariant.bodyMdMedium}
+                    endAccessory={
+                      isMultiselectEnabled ? (
+                        <Text variant={TextVariant.bodyMdMedium}>
+                          {formatCurrency(
+                            balanceByChainId[chainId]?.toString(),
+                            currency,
+                          )}
+                        </Text>
+                      ) : undefined
+                    }
+                  />
+                );
+              })}
+            </Box>
+          </Box>
+        ) : null}
       </ModalContent>
     </Modal>
   );

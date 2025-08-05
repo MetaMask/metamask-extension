@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "Limit gazu"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Limit gazu to maksymalna ilość jednostek gazu, którą jesteś skłonny użyć w transakcji."
-  },
   "gasLimitTooLow": {
     "message": "Limit gazu musi wynosić co najmniej 21000"
-  },
-  "gasPrice": {
-    "message": "Cena gazu (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Bardzo niska cena gazu"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena gazu to ilość kryptowaluty Ether, którą jesteś gotów zapłacić za każdą jednostkę gazu."
   },
   "gasUsed": {
     "message": "Użyty gaz"
@@ -635,9 +623,6 @@
   "terms": {
     "message": "Regulamin"
   },
-  "tips": {
-    "message": "Napiwki"
-  },
   "to": {
     "message": "Do"
   },
@@ -713,9 +698,6 @@
   "unlock": {
     "message": "Odblokuj"
   },
-  "unlockMessage": {
-    "message": "Zdecentralizowana sieć oczekuje"
-  },
   "urlErrorMsg": {
     "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."
   },
@@ -739,8 +721,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Twoja prywatna fraza seed"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Przyspieszenie z zerową ceną gazu"
   }
 }

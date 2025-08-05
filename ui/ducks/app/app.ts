@@ -2,13 +2,14 @@ import type {
   ContractExchangeRates,
   Token,
 } from '@metamask/assets-controllers';
-import { AnyAction, Action } from 'redux';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { Action, AnyAction } from 'redux';
 import {
-  WebHIDConnectedStatuses,
   HardwareTransportStates,
+  WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
+import { PasswordChangeToastType } from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
@@ -26,7 +27,8 @@ type AppState = {
     open: boolean;
     modalState: {
       name: string | null;
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       props: Record<string, any>;
     };
@@ -49,6 +51,7 @@ type AppState = {
   };
   showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
+  showSupportDataConsentModal: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
     result: 'success' | 'failure' | 'none';
@@ -67,19 +70,21 @@ type AppState = {
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buyView: Record<string, any>;
   defaultHdPaths: {
     trezor: string;
-    onekey: string;
+    oneKey: string;
     ledger: string;
     lattice: string;
   };
   networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
@@ -119,10 +124,12 @@ type AppState = {
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
+  isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   showNewSrpAddedToast: boolean;
-  ///: END:ONLY_INCLUDE_IF
+  showPasswordChangeToast: PasswordChangeToastType | null;
+  showConnectionsRemovedModal: boolean;
+  showCopyAddressToast: boolean;
 };
 
 export type AppSliceState = {
@@ -181,7 +188,7 @@ const initialState: AppState = {
   buyView: {},
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
-    onekey: `m/44'/60'/0'/0`,
+    oneKey: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
     lattice: `m/44'/60'/0'/0`,
   },
@@ -218,10 +225,13 @@ const initialState: AppState = {
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
+  isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   showNewSrpAddedToast: false,
-  ///: END:ONLY_INCLUDE_IF
+  showPasswordChangeToast: null,
+  showCopyAddressToast: false,
+  showSupportDataConsentModal: false,
+  showConnectionsRemovedModal: false,
 };
 
 export default function reduceApp(
@@ -522,7 +532,8 @@ export default function reduceApp(
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
       const { device, path } = action.payload;
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newDefaults = { ...appState.defaultHdPaths } as any;
       newDefaults[device] = path;
@@ -692,6 +703,9 @@ export default function reduceApp(
         ...appState,
         isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
         isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
+        isAccessedFromDappConnectedSitePopover: Boolean(
+          action.payload?.isAccessedFromDappConnectedSitePopover,
+        ),
         isNetworkMenuOpen: !appState.isNetworkMenuOpen,
       };
     case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
@@ -743,13 +757,35 @@ export default function reduceApp(
         },
       };
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
       return {
         ...appState,
         showNewSrpAddedToast: action.payload,
       };
-    ///: END:ONLY_INCLUDE_IF
+
+    case actionConstants.SET_SHOW_PASSWORD_CHANGE_TOAST:
+      return {
+        ...appState,
+        showPasswordChangeToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:
+      return {
+        ...appState,
+        showCopyAddressToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:
+      return {
+        ...appState,
+        showSupportDataConsentModal: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_CONNECTIONS_REMOVED:
+      return {
+        ...appState,
+        showConnectionsRemovedModal: action.value,
+      };
 
     default:
       return appState;
@@ -815,6 +851,12 @@ export function setOnBoardedInThisUISession(
   return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, payload };
 }
 
+export function setShowCopyAddressToast(
+  payload: boolean,
+): PayloadAction<boolean> {
+  return { type: actionConstants.SET_SHOW_COPY_ADDRESS_TOAST, payload };
+}
+
 export function setCustomTokenAmount(payload: string): PayloadAction<string> {
   return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
 }
@@ -860,6 +902,14 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
+}
+
+export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
+  return state.appState.showSupportDataConsentModal;
+}
+
+export function getShowCopyAddressToast(state: AppSliceState): boolean {
+  return state.appState.showCopyAddressToast;
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {

@@ -9,9 +9,7 @@ import {
 import { UserStorageControllerInit } from './user-storage-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/user-storage');
-jest.mock('../../../../shared/modules/mv3.utils', () => ({
-  isManifestV3: true,
-}));
+
 jest.mock('../../../../shared/modules/environment', () => ({
   isProduction: () => false,
 }));
@@ -51,6 +49,7 @@ describe('UserStorageControllerInit', () => {
     expect(UserStorageControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.UserStorageController,
+      trace: expect.any(Function),
       config: {
         accountSyncing: {
           maxNumberOfAccountsToAdd: 100,
@@ -58,9 +57,11 @@ describe('UserStorageControllerInit', () => {
           onAccountNameUpdated: expect.any(Function),
           onAccountSyncErroneousSituation: expect.any(Function),
         },
-      },
-      env: {
-        isAccountSyncingEnabled: true,
+        contactSyncing: {
+          onContactUpdated: expect.any(Function),
+          onContactDeleted: expect.any(Function),
+          onContactSyncErroneousSituation: expect.any(Function),
+        },
       },
     });
   });

@@ -52,14 +52,13 @@ exports[`DetectedTokenIgnoredPopover should match snapshot for ignore mode 1`] =
             class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-center"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block detected-token-ignored-popover__ignore-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block detected-token-ignored-popover__ignore-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
             >
               [cancel]
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block detected-token-ignored-popover__import-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block detected-token-ignored-popover__import-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
               data-testid="detected-token-ignored-popover-confirm-button"
-              data-theme="light"
             >
               [confirm]
             </button>
@@ -128,14 +127,13 @@ exports[`DetectedTokenIgnoredPopover should match snapshot for import mode 1`] =
             class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-center"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block detected-token-ignored-popover__ignore-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block detected-token-ignored-popover__ignore-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
             >
               [cancel]
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block detected-token-ignored-popover__import-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block detected-token-ignored-popover__import-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
               data-testid="detected-token-ignored-popover-confirm-button"
-              data-theme="light"
             >
               [confirm]
             </button>

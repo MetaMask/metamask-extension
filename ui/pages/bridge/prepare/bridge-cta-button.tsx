@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { type BigNumber } from 'bignumber.js';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -8,13 +9,12 @@ import {
 } from '../../../components/component-library';
 import {
   getFromAmount,
-  getFromChain,
-  getFromToken,
   getToToken,
   getBridgeQuotes,
   getValidationErrors,
   getWasTxDeclined,
-  getQuoteRefreshRate,
+  getIsQuoteExpired,
+  BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -26,74 +26,65 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { Row } from '../layout';
-import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
+  nativeAssetBalance,
+  srcTokenBalance,
 }: {
+  nativeAssetBalance?: BigNumber;
+  srcTokenBalance?: BigNumber;
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
 }) => {
   const t = useI18nContext();
 
-  const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
-
-  const fromChain = useSelector(getFromChain);
 
   const fromAmount = useSelector(getFromAmount);
 
-  const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesLastFetchedMs } =
-    useSelector(getBridgeQuotes);
-  const refreshRate = useSelector(getQuoteRefreshRate);
-  const isQuoteExpired = isQuoteExpiredUtil(
-    isQuoteGoingToRefresh,
-    refreshRate,
-    quotesLastFetchedMs,
-  );
+  const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
+  const isQuoteExpired = useSelector((state) =>
+    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  );
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     isNoQuotesAvailable,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientBalance: isInsufficientBalance_,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientGasBalance: isInsufficientGasBalance_,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientGasForQuote: isInsufficientGasForQuote_,
+    isTxAlertPresent,
   } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const balanceAmount = useLatestBalance(fromToken, fromChain?.chainId);
-  const nativeAssetBalance = useLatestBalance(
-    fromChain?.chainId
-      ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-          fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-        ]
-      : null,
-    fromChain?.chainId,
+  const isTxSubmittable = useIsTxSubmittable(
+    nativeAssetBalance,
+    srcTokenBalance,
   );
-
-  const isTxSubmittable = useIsTxSubmittable();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
   const tradeProperties = useTradeProperties();
 
-  const ticker = useSelector(getNativeCurrency);
-
-  const isInsufficientBalance = isInsufficientBalance_(balanceAmount);
+  const isInsufficientBalance = isInsufficientBalance_(srcTokenBalance);
 
   const isInsufficientGasBalance =
     isInsufficientGasBalance_(nativeAssetBalance);
@@ -102,65 +93,65 @@ export const BridgeCTAButton = ({
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
-      return t('youDeclinedTheTransaction');
+      return 'youDeclinedTheTransaction';
     }
 
-    if (isQuoteExpired) {
-      return t('bridgeQuoteExpired');
+    if (isQuoteExpired && !isLoading) {
+      return 'bridgeQuoteExpired';
     }
 
     if (isLoading && !isTxSubmittable && !activeQuote) {
-      return '';
+      return undefined;
     }
 
     if (isInsufficientGasBalance || isNoQuotesAvailable) {
-      return '';
+      return undefined;
     }
 
     if (isInsufficientBalance || isInsufficientGasForQuote) {
-      return t('alertReasonInsufficientBalance');
+      return 'alertReasonInsufficientBalance';
     }
 
     if (!fromAmount) {
       if (!toToken) {
         return needsDestinationAddress
-          ? t('bridgeSelectTokenAmountAndAccount')
-          : t('bridgeSelectTokenAndAmount');
+          ? 'bridgeSelectTokenAmountAndAccount'
+          : 'bridgeSelectTokenAndAmount';
       }
       return needsDestinationAddress
-        ? t('bridgeEnterAmountAndSelectAccount')
-        : t('bridgeEnterAmount');
+        ? 'bridgeEnterAmountAndSelectAccount'
+        : 'bridgeEnterAmount';
     }
 
     if (needsDestinationAddress) {
-      return t('bridgeSelectDestinationAccount');
+      return 'bridgeSelectDestinationAccount';
     }
 
-    if (isTxSubmittable) {
-      return t('submit');
+    if (isTxSubmittable || isTxAlertPresent) {
+      return 'submit';
     }
 
-    return t('swapSelectToken');
+    return 'swapSelectToken';
   }, [
     isLoading,
+    isTxAlertPresent,
     fromAmount,
     toToken,
-    ticker,
     isTxSubmittable,
-    balanceAmount,
     isInsufficientBalance,
-    isQuoteExpired,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     wasTxDeclined,
     isQuoteExpired,
     needsDestinationAddress,
+    activeQuote,
+    isNoQuotesAvailable,
   ]);
 
   // Label for the secondary button that re-starts quote fetching
   const secondaryButtonLabel = useMemo(() => {
     if (wasTxDeclined || isQuoteExpired) {
-      return t('bridgeFetchNewQuotes');
+      return 'bridgeFetchNewQuotes';
     }
     return undefined;
   }, [wasTxDeclined, isQuoteExpired]);
@@ -172,6 +163,8 @@ export const BridgeCTAButton = ({
       variant={TextVariant.bodyMd}
       data-testid="bridge-cta-button"
       style={{ boxShadow: 'none' }}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
         if (activeQuote && isTxSubmittable && !isSubmitting) {
           try {
@@ -199,12 +192,13 @@ export const BridgeCTAButton = ({
       loading={isSubmitting}
       disabled={
         !isTxSubmittable ||
+        isTxAlertPresent ||
         isQuoteExpired ||
         isSubmitting ||
         needsDestinationAddress
       }
     >
-      {label}
+      {label ? t(label) : ''}
     </ButtonPrimary>
   ) : (
     <Row
@@ -217,7 +211,7 @@ export const BridgeCTAButton = ({
         textAlign={TextAlign.Center}
         color={TextColor.textAlternativeSoft}
       >
-        {label}
+        {label ? t(label) : ''}
       </Text>
       {secondaryButtonLabel && (
         <ButtonLink
@@ -226,7 +220,7 @@ export const BridgeCTAButton = ({
           style={{ whiteSpace: 'nowrap' }}
           onClick={onFetchNewQuotes}
         >
-          {secondaryButtonLabel}
+          {t(secondaryButtonLabel)}
         </ButtonLink>
       )}
     </Row>

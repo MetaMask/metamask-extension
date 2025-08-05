@@ -1,23 +1,15 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import {
-  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
-} from '../../../helpers/constants/routes';
-import { setBackgroundConnection } from '../../../store/background-connection';
-import { renderWithProvider } from '../../../../test/jest';
-import initializedMockState from '../../../../test/data/mock-state.json';
+import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  ONBOARDING_PIN_EXTENSION_ROUTE,
+  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+} from '../../../helpers/constants/routes';
 import CreationSuccessful from './creation-successful';
 
 const mockHistoryPush = jest.fn();
-
-const completeOnboardingStub = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve());
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
@@ -25,100 +17,69 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-describe('Creation Successful Onboarding View', () => {
-  const mockStore = {
+describe('Wallet Ready Page', () => {
+  const mockState = {
     metamask: {
-      providerConfig: {
-        type: 'test',
+      internalAccounts: {
+        accounts: {
+          accountId: {
+            address: '0x0000000000000000000000000000000000000000',
+            metadata: {
+              keyring: {
+                type: 'HD Key Tree',
+                accounts: ['0x0000000000000000000000000000000000000000'],
+              },
+            },
+          },
+        },
+        selectedAccount: 'accountId',
       },
-      firstTimeFlowType: FirstTimeFlowType.import,
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0000000000000000000000000000000000000000'],
+        },
+      ],
+      firstTimeFlowType: FirstTimeFlowType.create,
+      seedPhraseBackedUp: true,
     },
   };
-  const store = configureMockStore([thunk])(mockStore);
-  setBackgroundConnection({ completeOnboarding: completeOnboardingStub });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+  it('should render the wallet ready content if the seed phrase is backed up', () => {
+    const mockStore = configureMockStore([thunk])(mockState);
+    const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
-  it('should remind the user to not loose the SRP and keep it safe (Import case)', () => {
-    const importFirstTimeFlowState = {
-      ...initializedMockState,
-      metamask: {
-        ...initializedMockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.import,
-      },
-    };
-    const customMockStore = configureMockStore([thunk])(
-      importFirstTimeFlowState,
-    );
-
-    const { getByText } = renderWithProvider(
-      <CreationSuccessful />,
-      customMockStore,
-    );
-
-    expect(getByText('Your wallet is ready')).toBeInTheDocument();
+    expect(getByText('Your wallet is ready!')).toBeInTheDocument();
     expect(
       getByText(
-        /Remember, if you lose your Secret Recovery Phrase, you lose access to your wallet/u,
+        /If you lose your Secret Recovery Phrase, you won’t be able to use your wallet./u,
       ),
     ).toBeInTheDocument();
   });
 
-  it('should show the Congratulations! message to the user (New wallet & backed up SRP)', () => {
-    const importFirstTimeFlowState = {
-      ...initializedMockState,
+  it('should render the remind you later content if the seed phrase is not backed up', () => {
+    const mockStore = configureMockStore([thunk])({
+      ...mockState,
       metamask: {
-        ...initializedMockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.create,
-        seedPhraseBackedUp: true,
-      },
-    };
-    const customMockStore = configureMockStore([thunk])(
-      importFirstTimeFlowState,
-    );
-
-    const { getByText } = renderWithProvider(
-      <CreationSuccessful />,
-      customMockStore,
-    );
-
-    expect(getByText('Congratulations!')).toBeInTheDocument();
-    expect(
-      getByText(/Your wallet is protected and ready to use/u),
-    ).toBeInTheDocument();
-  });
-
-  it('should show the Reminder set! message to the user (New wallet & did not backed up SRP)', () => {
-    const importFirstTimeFlowState = {
-      ...initializedMockState,
-      metamask: {
-        ...initializedMockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.create,
+        ...mockState.metamask,
         seedPhraseBackedUp: false,
       },
-    };
-    const customMockStore = configureMockStore([thunk])(
-      importFirstTimeFlowState,
-    );
+    });
+    const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
-    const { getByText } = renderWithProvider(
-      <CreationSuccessful />,
-      customMockStore,
-    );
+    expect(getByText('We’ll remind you later')).toBeInTheDocument();
 
-    expect(getByText('Reminder set!')).toBeInTheDocument();
     expect(
       getByText(
-        /If you get locked out of the app or get a new device, you will lose your funds./u,
+        /You can back up your wallets or see your Secret Recovery Phrase in Settings > Security & Password./u,
       ),
     ).toBeInTheDocument();
   });
 
-  it('should redirect to privacy-settings view when "Manage default privacy settings" button is clicked', () => {
-    const { getByText } = renderWithProvider(<CreationSuccessful />, store);
-    const privacySettingsButton = getByText('Manage default privacy settings');
+  it('should redirect to privacy-settings view when "Manage default settings" button is clicked', () => {
+    const mockStore = configureMockStore([thunk])(mockState);
+    const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
+    const privacySettingsButton = getByText('Manage default settings');
     fireEvent.click(privacySettingsButton);
     expect(mockHistoryPush).toHaveBeenCalledWith(
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
@@ -126,8 +87,12 @@ describe('Creation Successful Onboarding View', () => {
   });
 
   it('should route to pin extension route when "Done" button is clicked', async () => {
-    const { getByText } = renderWithProvider(<CreationSuccessful />, store);
-    const doneButton = getByText('Done');
+    const mockStore = configureMockStore([thunk])(mockState);
+    const { getByTestId } = renderWithProvider(
+      <CreationSuccessful />,
+      mockStore,
+    );
+    const doneButton = getByTestId('onboarding-complete-done');
     fireEvent.click(doneButton);
     await waitFor(() => {
       expect(mockHistoryPush).toHaveBeenCalledWith(

@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { CaipChainId, Hex } from '@metamask/utils';
+import {
+  parseCaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { TokenWithBalance } from '../components/app/assets/types';
 import {
@@ -12,25 +16,27 @@ import {
 import {
   getLastSelectedNonEvmAccount,
   getMultichainBalances,
-  getMultichainCoinRates,
 } from '../selectors/multichain';
 import { AssetType } from '../../shared/constants/transaction';
-import { getSelectedEvmInternalAccount } from '../selectors/selectors';
+import {
+  getInternalAccount,
+  getSelectedEvmInternalAccount,
+} from '../selectors/selectors';
 import { useMultichainSelector } from './useMultichainSelector';
 
 // TODO replace this with getMultichainAssets
-const useNonEvmAssetsWithBalances = (): (
-  | Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
-      chainId: `${string}:${string}`;
-      decimals: number;
-      address: `${string}:${string}`;
-      string: string;
-      balance: string;
-      tokenFiatAmount: number;
-      symbol: string;
-    }
-)[] => {
-  const nonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
+const useNonEvmAssetsWithBalances = (
+  accountId?: string,
+): (Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
+  chainId: `${string}:${string}`;
+  decimals: number;
+  address: string;
+  assetId: `${string}:${string}`;
+  string: string;
+  balance: string;
+  tokenFiatAmount: number;
+  symbol: string;
+})[] => {
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
   const assetMetadataById = useSelector(getAssetsMetadata);
@@ -39,18 +45,16 @@ const useNonEvmAssetsWithBalances = (): (
   const nonEvmBalancesByAccountId = useMultichainSelector(
     getMultichainBalances,
   );
-  // native exchange rates
-  const nativeRates = useSelector(getMultichainCoinRates);
   // asset exchange rates
   const assetRates = useSelector(getAssetsRates);
 
   const nonEvmTokensWithFiatBalances = useMemo(() => {
-    if (!nonEvmAccount?.id) {
+    if (!accountId) {
       return [];
     }
 
-    const assetIds = assetsByAccountId?.[nonEvmAccount.id];
-    const balancesByAssetId = nonEvmBalancesByAccountId?.[nonEvmAccount.id];
+    const assetIds = assetsByAccountId?.[accountId];
+    const balancesByAssetId = nonEvmBalancesByAccountId?.[accountId];
     if (!balancesByAssetId || !assetIds) {
       return [];
     }
@@ -58,27 +62,22 @@ const useNonEvmAssetsWithBalances = (): (
     return assetIds
       .filter((caipAssetId) => assetMetadataById[caipAssetId])
       .map((caipAssetId) => {
-        const [caipChainId, address] = caipAssetId.split('/');
-        const [type] = address.split(':');
+        const { chainId, assetReference, assetNamespace } =
+          parseCaipAssetType(caipAssetId);
         return {
-          chainId: caipChainId as `${string}:${string}`,
+          chainId,
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
-          address: caipAssetId,
+          assetId: caipAssetId,
+          address: assetReference,
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
           image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
-          type: type === 'token' ? AssetType.token : AssetType.native,
+          type: assetNamespace === 'token' ? AssetType.token : AssetType.native,
           tokenFiatAmount: new BigNumber(
             balancesByAssetId[caipAssetId]?.amount ?? '1',
           )
-            .times(
-              assetRates?.[caipAssetId]?.rate ??
-                nativeRates?.[
-                  assetMetadataById[caipAssetId]?.units[0]?.symbol.toLowerCase()
-                ]?.conversionRate ??
-                '1',
-            )
+            .times(assetRates?.[caipAssetId]?.rate ?? '1')
             .toNumber(),
         };
       })
@@ -87,24 +86,35 @@ const useNonEvmAssetsWithBalances = (): (
     assetMetadataById,
     assetRates,
     assetsByAccountId,
-    nativeRates,
-    nonEvmAccount?.id,
+    accountId,
     nonEvmBalancesByAccountId,
   ]);
 
   return nonEvmTokensWithFiatBalances;
 };
 
-// This hook is used to get the balances of all tokens and native tokens across all chains
-// This also returns the total fiat balances by chainId/caipChainId
-export const useMultichainBalances = () => {
+/**
+ * This hook is used to get the balances of all tokens and native tokens across all chains
+ * This also returns the total fiat balances by chainId/caipChainId
+ *
+ * @param accountId - the accountId to use for the token list, if not provided, the selected account will be used
+ */
+export const useMultichainBalances = (accountId?: string) => {
   // EVM data
   const selectedAccount = useSelector(getSelectedEvmInternalAccount);
+  const requestedAccount = useSelector((state) =>
+    getInternalAccount(state, accountId ?? ''),
+  );
+  const evmAccount = accountId ? requestedAccount : selectedAccount;
+
   const evmBalancesWithFiatByChainId = useSelector((state) =>
-    getTokenBalancesEvm(state, selectedAccount.address),
+    getTokenBalancesEvm(state, evmAccount?.address),
   );
   // Non-EVM data
-  const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances();
+  const nonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
+  const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances(
+    accountId ?? nonEvmAccount?.id,
+  );
 
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {

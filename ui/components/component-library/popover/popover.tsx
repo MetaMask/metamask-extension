@@ -22,6 +22,8 @@ import {
 } from './popover.types';
 
 export const Popover: PopoverComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       children,
@@ -107,9 +109,11 @@ export const Popover: PopoverComponent = React.forwardRef(
     };
 
     useEffect(() => {
-      document.addEventListener('keydown', handleEscKey);
+      document.addEventListener('keydown', handleEscKey, { capture: true });
       if (isOpen) {
-        document.addEventListener('click', handleClickOutside);
+        document.addEventListener('click', handleClickOutside, {
+          capture: true,
+        });
       } else {
         document.removeEventListener('click', handleClickOutside);
       }

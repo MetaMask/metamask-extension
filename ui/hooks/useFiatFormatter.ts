@@ -25,6 +25,8 @@ const TRUNCATED_START_CHARS_FOR_SHORTENED_FIAT = 12;
 
 type FiatFormatterOptions = {
   shorten?: boolean;
+  truncatedCharLimit?: number;
+  truncatedStartChars?: number;
 };
 
 type FiatFormatter = (
@@ -37,7 +39,7 @@ export const useFiatFormatter = (): FiatFormatter => {
   const fiatCurrency = useSelector(getCurrentCurrency);
 
   return (fiatAmount: number, options: FiatFormatterOptions = {}) => {
-    const { shorten } = options;
+    const { shorten, truncatedCharLimit, truncatedStartChars } = options;
 
     try {
       const formatter = new Intl.NumberFormat(locale, {
@@ -64,8 +66,10 @@ export const useFiatFormatter = (): FiatFormatter => {
 
       // Shorten the number part while preserving commas
       const shortenedNumberString = shortenString(numberString, {
-        truncatedCharLimit: TRUNCATED_CHAR_LIMIT_FOR_SHORTENED_FIAT,
-        truncatedStartChars: TRUNCATED_START_CHARS_FOR_SHORTENED_FIAT,
+        truncatedCharLimit:
+          truncatedCharLimit ?? TRUNCATED_CHAR_LIMIT_FOR_SHORTENED_FIAT,
+        truncatedStartChars:
+          truncatedStartChars ?? TRUNCATED_START_CHARS_FOR_SHORTENED_FIAT,
         truncatedEndChars: 0,
         skipCharacterInEnd: true,
       });

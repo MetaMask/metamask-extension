@@ -7,13 +7,15 @@ import {
   backupUserData,
   setAutoLockTimeLimit,
   setDismissSeedBackUpReminder,
-  setOverrideContentSecurityPolicyHeader,
+  setDismissSmartAccountSuggestionEnabled,
   setFeatureFlag,
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
   setSmartTransactionsPreferenceEnabled,
   showModal,
+  setManageInstitutionalWallets,
+  setSmartAccountOptIn,
 } from '../../../store/actions';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
 import {
@@ -30,13 +32,15 @@ export const mapStateToProps = (state) => {
   const {
     featureFlags: { sendHexData } = {},
     dismissSeedBackUpReminder,
-    overrideContentSecurityPolicyHeader,
+    manageInstitutionalWallets,
   } = metamask;
   const {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
+    dismissSmartAccountSuggestionEnabled,
+    smartAccountOptIn,
   } = getPreferences(state);
 
   return {
@@ -48,7 +52,9 @@ export const mapStateToProps = (state) => {
     smartTransactionsEnabled: getSmartTransactionsPreferenceEnabled(state),
     autoLockTimeLimit,
     dismissSeedBackUpReminder,
-    overrideContentSecurityPolicyHeader,
+    manageInstitutionalWallets,
+    dismissSmartAccountSuggestionEnabled,
+    smartAccountOptIn,
   };
 };
 
@@ -80,8 +86,14 @@ export const mapDispatchToProps = (dispatch) => {
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
     },
-    setOverrideContentSecurityPolicyHeader: (value) => {
-      return dispatch(setOverrideContentSecurityPolicyHeader(value));
+    setManageInstitutionalWallets: (value) => {
+      return dispatch(setManageInstitutionalWallets(value));
+    },
+    setDismissSmartAccountSuggestionEnabled: (value) => {
+      return dispatch(setDismissSmartAccountSuggestionEnabled(value));
+    },
+    setSmartAccountOptIn: (value) => {
+      return dispatch(setSmartAccountOptIn(value));
     },
   };
 };

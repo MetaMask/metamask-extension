@@ -1,21 +1,41 @@
 .onboarding-pin-extension {
-  .control-dots .dot {
-    background: var(--color-icon-muted);
-    box-shadow: none;
+  .carousel {
+    .control-dots {
+      bottom: -12px;
 
-    &.selected {
-      background: var(--color-icon-default);
+      .dot {
+        background: var(--color-icon-muted);
+        box-shadow: none;
+
+        &.selected {
+          background: var(--color-icon-default);
+        }
+      }
+    }
+
+    .slide .onboarding-pin-extension__image-container {
+      height: 200px;
+
+      img {
+        object-fit: contain;
+        width: auto;
+        height: 200px;
+      }
     }
   }
 
-  &__diagram {
-    margin: 24px auto;
-    max-width: 799px;
-    height: 320px;
+  &__arrow {
+    position: absolute;
+    z-index: 2;
+    top: calc(50% - 15px);
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    left: 0;
   }
 
-  &__buttons {
-    max-width: 50%;
-    margin: 40px auto 0 auto;
+  &__arrow--next {
+    right: 0;
+    left: unset;
   }
 }

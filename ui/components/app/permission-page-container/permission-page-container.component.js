@@ -4,10 +4,9 @@ import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
-import { Caip25EndowmentPermissionName } from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 
@@ -21,10 +20,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
 import {
-  getRequestedCaip25CaveatValue,
+  getCaip25CaveatValueFromPermissions,
   getCaip25PermissionsResponse,
 } from '../../../pages/permissions-connect/connect-page/utils';
+import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
+import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
 import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
@@ -149,7 +150,7 @@ export default class PermissionPageContainer extends Component {
       (selectedAccount) => selectedAccount.address,
     );
 
-    const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
+    const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
       _request.permissions,
     );
 
@@ -211,7 +212,10 @@ export default class PermissionPageContainer extends Component {
       : this.context.t('back');
 
     return (
-      <>
+      <TemplateAlertContextProvider
+        onSubmit={() => this.onSubmit()}
+        confirmationId={request?.metadata?.id}
+      >
         {this.state.isShowingSnapsPrivacyWarning && (
           <SnapPrivacyWarning
             onAccepted={() => confirmSnapsPrivacyWarning()}
@@ -235,21 +239,17 @@ export default class PermissionPageContainer extends Component {
           {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
             <PermissionsConnectFooter />
           )}
-          <PageContainerFooter
-            footerClassName="permission-page-container-footer"
-            cancelButtonType="default"
+          <PermissionPageContainerFooter
             onCancel={() => this.onLeftFooterClick()}
             cancelText={footerLeftActionText}
             onSubmit={() => this.onSubmit()}
-            submitText={this.context.t('confirm')}
-            buttonSizeLarge={false}
             disabled={containsEthPermissionsAndNonEvmAccount(
               selectedAccounts,
               requestedPermissions,
             )}
           />
         </Box>
-      </>
+      </TemplateAlertContextProvider>
     );
   }
 }

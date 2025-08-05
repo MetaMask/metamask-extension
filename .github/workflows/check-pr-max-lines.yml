@@ -1,0 +1,21 @@
+name: 'Check PR Max Lines'
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches-ignore:
+      # Do not count lines on PRs targeting master or releases
+      - master
+      - stable
+      - Version-v*
+      - release/*
+
+jobs:
+  check-pr-max-lines:
+    uses: metamask/github-tools/.github/workflows/pr-line-check.yml@main
+    with:
+      max_lines: 1000
+      ignore_patterns: '(\.lock|\.snap|lavamoat\/.*policy\.json)$'

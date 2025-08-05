@@ -1,8 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
   AvatarAccount,
@@ -22,11 +20,11 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import { getUseBlockie } from '../../../../selectors';
-// eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { DestinationAccount } from '../types';
 
 type DestinationSelectedAccountListItemProps = {
-  account: InternalAccount;
+  account: DestinationAccount;
   selected: boolean;
   onClick?: () => void;
 };
@@ -35,6 +33,8 @@ const DestinationSelectedAccountListItem: React.FC<
   DestinationSelectedAccountListItemProps
 > = ({ account, selected, onClick }) => {
   const useBlockie = useSelector(getUseBlockie);
+  const t = useI18nContext();
+  const isExternalAccount = 'isExternal' in account && account.isExternal;
 
   return (
     <Box
@@ -62,17 +62,29 @@ const DestinationSelectedAccountListItem: React.FC<
         marginInlineEnd={2}
       />
 
-      <Box display={Display.Flex} style={{ flexDirection: 'column' }}>
-        <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
-          {account.metadata.name}
-        </Text>
-
+      <Box
+        display={Display.Flex}
+        style={{ flexDirection: 'column', maxWidth: 'calc(100% - 60px)' }}
+      >
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
           data-testid="account-list-address"
+          marginBottom={1}
         >
-          {shortenAddress(normalizeSafeAddress(account.address))}
+          {t('destinationAccountPickerReceiveAt')}
+        </Text>
+
+        <Text variant={TextVariant.bodyMdMedium} marginBottom={1} ellipsis>
+          {(() => {
+            if (isExternalAccount) {
+              if (account.metadata.name.endsWith('.eth')) {
+                return account.metadata.name;
+              }
+              return t('externalAccount');
+            }
+            return account.metadata.name;
+          })()}
         </Text>
       </Box>
     </Box>

@@ -28,10 +28,11 @@ export const FIXTURES_PREFERENCES = {
   useTokenDetection: true,
   useCurrencyRateCheck: true,
   useMultiAccountBalanceChecker: true,
-  theme: 'light',
+  theme: 'dark',
   useExternalNameSources: true,
   useTransactionSimulations: true,
   enableMV3TimestampSave: true,
   useExternalServices: true,
-  isProfileSyncingEnabled: true,
+  isBackupAndSyncEnabled: true,
+  isAccountSyncingEnabled: true,
 };

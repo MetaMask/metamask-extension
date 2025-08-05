@@ -129,13 +129,13 @@ exports[`NameDetails renders proposed names 1`] = `
               class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                 for="address"
               >
                 Address
               </label>
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
               >
                 <input
                   autocomplete="off"
@@ -169,7 +169,7 @@ exports[`NameDetails renders proposed names 1`] = `
                     class="box mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible box--display-flex box--flex-direction-column"
                   >
                     <div
-                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
                     >
                       <input
                         autocomplete="off"
@@ -233,8 +233,7 @@ exports[`NameDetails renders proposed names 1`] = `
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-              data-theme="light"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -327,9 +326,9 @@ exports[`NameDetails renders when no address value is passed 1`] = `
               <div
                 class="name name__missing"
               >
-                <span
-                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/question.svg');"
+                <div
+                  class="identicon__image-border"
+                  style="height: 16px; width: 16px; border-radius: 8px;"
                 />
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
@@ -345,13 +344,13 @@ exports[`NameDetails renders when no address value is passed 1`] = `
               class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                 for="address"
               >
                 Address
               </label>
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
               >
                 <input
                   autocomplete="off"
@@ -385,7 +384,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                     class="box mm-form-text-field form-combo-field__value box--display-flex box--flex-direction-column"
                   >
                     <div
-                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
                     >
                       <input
                         autocomplete="off"
@@ -414,8 +413,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-              data-theme="light"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -508,10 +506,50 @@ exports[`NameDetails renders with no saved name 1`] = `
               <div
                 class="name name__missing"
               >
-                <span
-                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
+                <div
+                  class=""
+                >
+                  <div
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 196, 0);"
+                    >
+                      <svg
+                        height="16"
+                        width="16"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#C8144D"
+                          height="16"
+                          transform="translate(-0.8205726313476182 -2.375300755278998) rotate(408.5 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#FB1860"
+                          height="16"
+                          transform="translate(7.733089412585649 -1.3465466417019656) rotate(402.6 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#03505E"
+                          height="16"
+                          transform="translate(1.1000464230208766 -13.147318085284851) rotate(308.0 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
@@ -528,13 +566,13 @@ exports[`NameDetails renders with no saved name 1`] = `
               class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                 for="address"
               >
                 Address
               </label>
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
               >
                 <input
                   autocomplete="off"
@@ -568,7 +606,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                     class="box mm-form-text-field form-combo-field__value box--display-flex box--flex-direction-column"
                   >
                     <div
-                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
                     >
                       <input
                         autocomplete="off"
@@ -597,8 +635,7 @@ exports[`NameDetails renders with no saved name 1`] = `
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-              data-theme="light"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -692,53 +729,18 @@ exports[`NameDetails renders with recognized name 1`] = `
                 class="name name__recognized_unsaved"
               >
                 <div
-                  class=""
+                  class="identicon"
+                  style="height: 16px; width: 16px; border-radius: 8px;"
                 >
-                  <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
-                  >
-                    <div
-                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(3, 82, 94);"
-                    >
-                      <svg
-                        height="16"
-                        width="16"
-                        x="0"
-                        y="0"
-                      >
-                        <rect
-                          fill="#F5C000"
-                          height="16"
-                          transform="translate(1.6695934255664566 -1.8063309104606964) rotate(439.0 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#2369E1"
-                          height="16"
-                          transform="translate(2.5174423326839017 8.347530486970694) rotate(166.1 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#FB1864"
-                          height="16"
-                          transform="translate(-12.211473117536537 6.428761618147152) rotate(254.1 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                      </svg>
-                    </div>
-                  </div>
+                  <img
+                    src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png"
+                    style="width: 100%;"
+                  />
                 </div>
                 <p
                   class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
                 >
-                  iZUMi Bon...
+                  iZUMi Bond USD
                 </p>
               </div>
             </div>
@@ -751,13 +753,13 @@ exports[`NameDetails renders with recognized name 1`] = `
               class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                 for="address"
               >
                 Address
               </label>
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
               >
                 <input
                   autocomplete="off"
@@ -791,13 +793,13 @@ exports[`NameDetails renders with recognized name 1`] = `
                     class="box mm-form-text-field form-combo-field__value box--display-flex box--flex-direction-column"
                   >
                     <div
-                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
                     >
                       <input
                         autocomplete="off"
                         class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                         focused="true"
-                        placeholder="Choose a nickname..."
+                        placeholder="Suggested: iZUMi Bond USD"
                         type="text"
                         value=""
                       />
@@ -820,8 +822,7 @@ exports[`NameDetails renders with recognized name 1`] = `
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-              data-theme="light"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -974,13 +975,13 @@ exports[`NameDetails renders with saved name 1`] = `
               class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                 for="address"
               >
                 Address
               </label>
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
               >
                 <input
                   autocomplete="off"
@@ -1014,7 +1015,7 @@ exports[`NameDetails renders with saved name 1`] = `
                     class="box mm-form-text-field form-combo-field__value box--display-flex box--flex-direction-column"
                   >
                     <div
-                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
                     >
                       <input
                         autocomplete="off"
@@ -1043,8 +1044,7 @@ exports[`NameDetails renders with saved name 1`] = `
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-              data-theme="light"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"

@@ -1,24 +1,55 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from '../../components/component-library';
-import { TextVariant, TextColor } from '../../helpers/constants/design-system';
-import Button from '../../components/ui/button';
-import TextField from '../../components/ui/text-field';
+import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
+import log from 'loglevel';
+import {
+  Text,
+  FormTextField,
+  Box,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  TextFieldType,
+  FormTextFieldSize,
+} from '../../components/component-library';
+import {
+  TextVariant,
+  TextColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  JustifyContent,
+  AlignItems,
+  FlexDirection,
+  TextAlign,
+  BackgroundColor,
+  TextTransform,
+  FontWeight,
+} from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import { withMetaMetrics } from '../../contexts/metametrics';
 import { getCaretCoordinates } from './unlock-page.util';
+import ResetPasswordModal from './reset-password-modal';
+import FormattedCounter from './formatted-counter';
 
-export default class UnlockPage extends Component {
+class UnlockPage extends Component {
   static contextTypes = {
     trackEvent: PropTypes.func,
+    bufferedTrace: PropTypes.func,
+    bufferedEndTrace: PropTypes.func,
     t: PropTypes.func,
   };
 
@@ -28,9 +59,18 @@ export default class UnlockPage extends Component {
      */
     history: PropTypes.object.isRequired,
     /**
+     * Location router for redirect after action
+     */
+    location: PropTypes.object.isRequired,
+    /**
      * If isUnlocked is true will redirect to most recent route in history
      */
     isUnlocked: PropTypes.bool,
+    /**
+     * If isOnboardingCompleted is true, `Use a different login method` button
+     * will be shown instead of `Forgot password?`
+     */
+    isOnboardingCompleted: PropTypes.bool,
     /**
      * onClick handler for "Forgot password?" link
      */
@@ -40,27 +80,67 @@ export default class UnlockPage extends Component {
      */
     onSubmit: PropTypes.func,
     /**
+     * check password is outdated for social login flow
+     */
+    checkIsSeedlessPasswordOutdated: PropTypes.func,
+    /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
+    /**
+     * isSocialLoginFlow. True if the user is on a social login flow
+     */
+    isSocialLoginFlow: PropTypes.bool,
+    /**
+     * Sentry trace context ref for onboarding journey tracing
+     */
+    onboardingParentContext: PropTypes.object,
+    /**
+     * Reset Onboarding and OAuth login state
+     */
+    loginWithDifferentMethod: PropTypes.func,
   };
 
   state = {
     password: '',
     error: null,
+    showResetPasswordModal: false,
+    isLocked: false,
+    isSubmitting: false,
+    unlockDelayPeriod: 0,
   };
-
-  submitting = false;
 
   failed_attempts = 0;
 
   animationEventEmitter = new EventEmitter();
 
+  passwordLoginAttemptTraceCtx = null;
+
   UNSAFE_componentWillMount() {
-    const { isUnlocked, history } = this.props;
+    const { isUnlocked, history, location } = this.props;
 
     if (isUnlocked) {
-      history.push(DEFAULT_ROUTE);
+      // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
+      let redirectTo = DEFAULT_ROUTE;
+      if (location.state?.from?.pathname) {
+        const search = location.state.from.search || '';
+        redirectTo = location.state.from.pathname + search;
+      }
+      history.push(redirectTo);
+    }
+  }
+
+  async componentDidMount() {
+    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
+      name: TraceName.OnboardingPasswordLoginAttempt,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: this.props.onboardingParentContext?.current,
+    });
+
+    try {
+      await this.props.checkIsSeedlessPasswordOutdated();
+    } catch (error) {
+      log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
     }
   }
 
@@ -68,18 +148,43 @@ export default class UnlockPage extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    const { password } = this.state;
-    const { onSubmit, forceUpdateMetamaskState } = this.props;
+    const { password, isSubmitting } = this.state;
+    const { onSubmit } = this.props;
 
-    if (password === '' || this.submitting) {
+    if (password === '' || isSubmitting) {
       return;
     }
 
-    this.setState({ error: null });
-    this.submitting = true;
+    this.setState({ error: null, isSubmitting: true });
+
+    // Track wallet rehydration attempted for social login users
+    if (this.props.isSocialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.RehydrationPasswordAttempted,
+        properties: {
+          account_type: 'social',
+          biometrics: false,
+        },
+      });
+    }
 
     try {
       await onSubmit(password);
+
+      // Track wallet rehydration completed for social login users
+      if (this.props.isSocialLoginFlow) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.RehydrationCompleted,
+          properties: {
+            account_type: 'social',
+            biometrics: false,
+            failed_attempts: this.failed_attempts,
+          },
+        });
+      }
+
       this.context.trackEvent(
         {
           category: MetaMetricsEventCategory.Navigation,
@@ -92,170 +197,366 @@ export default class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-    } catch ({ message }) {
-      this.failed_attempts += 1;
-
-      if (message === 'Incorrect password') {
-        await forceUpdateMetamaskState();
-        this.context.trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.AppUnlockedFailed,
-          properties: {
-            reason: 'incorrect_password',
-            failed_attempts: this.failed_attempts,
-          },
+      if (this.passwordLoginAttemptTraceCtx) {
+        this.context.bufferedEndTrace?.({
+          name: TraceName.OnboardingPasswordLoginAttempt,
         });
+        this.passwordLoginAttemptTraceCtx = null;
       }
-
-      this.setState({ error: message });
-      this.submitting = false;
+      this.context.bufferedEndTrace?.({
+        name: TraceName.OnboardingExistingSocialLogin,
+      });
+      this.context.bufferedEndTrace?.({
+        name: TraceName.OnboardingJourneyOverall,
+      });
+    } catch (error) {
+      await this.handleLoginError(error);
+    } finally {
+      this.setState({ isSubmitting: false });
     }
   };
 
-  handleInputChange({ target }) {
-    this.setState({ password: target.value, error: null });
-    // tell mascot to look at page action
-    if (target.getBoundingClientRect) {
-      const element = target;
-      const boundingRect = element.getBoundingClientRect();
-      const coordinates = getCaretCoordinates(element, element.selectionEnd);
-      this.animationEventEmitter.emit('point', {
-        x: boundingRect.left + coordinates.left - element.scrollLeft,
-        y: boundingRect.top + coordinates.top - element.scrollTop,
+  handleLoginError = async (error) => {
+    const { t } = this.context;
+    const { message, data } = error;
+
+    // Sync failed_attempts with numberOfAttempts from error data
+    if (data?.numberOfAttempts !== undefined) {
+      this.failed_attempts = data.numberOfAttempts;
+    }
+
+    let finalErrorMessage = message;
+    let finalUnlockDelayPeriod = 0;
+    let errorReason;
+
+    // Track wallet rehydration failed for social login users
+    if (this.props.isSocialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.RehydrationPasswordFailed,
+        properties: {
+          account_type: 'social',
+          failed_attempts: this.failed_attempts,
+        },
       });
     }
-  }
 
-  renderSubmitButton() {
-    const style = {
-      backgroundColor: 'var(--color-primary-default)',
-      color: 'var(--color-primary-inverse)',
-      marginTop: '20px',
-      height: '60px',
-      fontWeight: '400',
-      boxShadow: 'none',
-      borderRadius: '100px',
-    };
+    // Check if we are in the onboarding flow
+    if (this.props.onboardingParentContext?.current) {
+      this.context.bufferedTrace?.({
+        name: TraceName.OnboardingPasswordLoginError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage: message },
+        parentContext: this.props.onboardingParentContext.current,
+      });
+      this.context.bufferedEndTrace?.({
+        name: TraceName.OnboardingPasswordLoginError,
+      });
+    }
 
-    return (
-      <Button
-        type="submit"
-        data-testid="unlock-submit"
-        style={style}
-        disabled={!this.state.password}
-        variant="contained"
-        size="large"
-        onClick={this.handleSubmit}
-      >
-        {this.context.t('unlock')}
-      </Button>
-    );
+    switch (message) {
+      case 'Incorrect password':
+      case SeedlessOnboardingControllerErrorMessage.IncorrectPassword:
+        finalErrorMessage = t('unlockPageIncorrectPassword');
+        errorReason = 'incorrect_password';
+        break;
+      case SeedlessOnboardingControllerErrorMessage.TooManyLoginAttempts:
+        this.setState({ isLocked: true });
+
+        finalErrorMessage = t('unlockPageTooManyFailedAttempts');
+        errorReason = 'too_many_login_attempts';
+        finalUnlockDelayPeriod = data.remainingTime;
+        break;
+      case SeedlessOnboardingControllerErrorMessage.OutdatedPassword:
+        finalErrorMessage = t('passwordChangedRecently');
+        errorReason = 'outdated_password';
+        break;
+      default:
+        finalErrorMessage = message;
+        break;
+    }
+
+    if (errorReason) {
+      await this.props.forceUpdateMetamaskState();
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.AppUnlockedFailed,
+        properties: {
+          reason: errorReason,
+          failed_attempts: this.failed_attempts,
+        },
+      });
+    }
+    this.setState({
+      error: finalErrorMessage,
+      unlockDelayPeriod: finalUnlockDelayPeriod,
+    });
+  };
+
+  handleInputChange(event) {
+    const { target } = event;
+    this.setState({ password: target.value, error: null });
+
+    const element = target;
+    const boundingRect = element.getBoundingClientRect();
+    const coordinates = getCaretCoordinates(element, element.selectionEnd ?? 0);
+    this.animationEventEmitter.emit('point', {
+      x: boundingRect.left + coordinates.left - element.scrollLeft,
+      y: boundingRect.top + coordinates.top - element.scrollTop,
+    });
   }
 
   renderMascot = () => {
     if (isFlask()) {
       return (
-        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+        <img src="./images/logo/metamask-fox.svg" width="115" height="115" />
       );
     }
     if (isBeta()) {
       return (
-        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+        <img src="./images/logo/metamask-fox.svg" width="115" height="115" />
       );
     }
     return (
       <Mascot
         animationEventEmitter={this.animationEventEmitter}
-        width="120"
-        height="120"
+        width="170"
+        height="170"
       />
     );
   };
 
+  renderHelpText = () => {
+    const { error, unlockDelayPeriod } = this.state;
+
+    if (!error) {
+      return null;
+    }
+
+    return (
+      <Box
+        className="unlock-page__help-text"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+      >
+        {error && (
+          <Text
+            data-testid="unlock-page-help-text"
+            variant={TextVariant.bodySm}
+            textAlign={TextAlign.Left}
+            color={TextColor.errorDefault}
+          >
+            {error}
+            {unlockDelayPeriod > 0 && (
+              <FormattedCounter
+                startFrom={unlockDelayPeriod}
+                onCountdownEnd={() =>
+                  this.setState({
+                    isLocked: false,
+                    error: null,
+                    unlockDelayPeriod: 0,
+                  })
+                }
+              />
+            )}
+          </Text>
+        )}
+      </Box>
+    );
+  };
+
+  onForgotPasswordOrLoginWithDiffMethods = async () => {
+    const { isSocialLoginFlow, history, isOnboardingCompleted } = this.props;
+
+    // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
+    // we can redirect to `onboarding_welcome` route to select a different login method
+    if (!isOnboardingCompleted && isSocialLoginFlow) {
+      await this.props.loginWithDifferentMethod();
+      await this.props.forceUpdateMetamaskState();
+      history.replace(ONBOARDING_WELCOME_ROUTE);
+      return;
+    }
+
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ForgotPasswordClicked,
+      properties: {
+        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      },
+    });
+
+    this.setState({ showResetPasswordModal: true });
+  };
+
+  onRestoreWallet = () => {
+    const { isSocialLoginFlow } = this.props;
+
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event: MetaMetricsEventName.ResetWallet,
+      properties: {
+        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      },
+    });
+    this.props.onRestore();
+  };
+
   render() {
-    const { password, error } = this.state;
+    const { password, error, isLocked, showResetPasswordModal } = this.state;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context;
-    const { onRestore } = this.props;
 
     const needHelpText = t('needHelpLinkText');
 
     return (
-      <div className="unlock-page__container">
-        <div className="unlock-page" data-testid="unlock-page">
-          <div className="unlock-page__mascot-container">
-            {this.renderMascot()}
-            {isBeta() ? (
-              <div className="unlock-page__mascot-container__beta">
-                {t('beta')}
-              </div>
-            ) : null}
-          </div>
-          <Text
-            data-testid="unlock-page-title"
-            as="h1"
-            variant={TextVariant.headingLg}
-            marginTop={1}
-            color={TextColor.textAlternative}
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        width={BlockSize.Full}
+        paddingBottom={12} // offset header to center content
+      >
+        {showResetPasswordModal && (
+          <ResetPasswordModal
+            onClose={() => this.setState({ showResetPasswordModal: false })}
+            onRestore={this.onRestoreWallet}
+          />
+        )}
+        <Box
+          as="form"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          padding={4}
+          width={BlockSize.Full}
+          className="unlock-page"
+          data-testid="unlock-page"
+          onSubmit={this.handleSubmit}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+            alignItems={AlignItems.center}
           >
-            {t('welcomeBack')}
-          </Text>
-          <div>{t('unlockMessage')}</div>
-          <form className="unlock-page__form" onSubmit={this.handleSubmit}>
-            <TextField
-              id="password"
-              data-testid="unlock-password"
-              label={t('password')}
-              type="password"
-              value={password}
-              onChange={(event) => this.handleInputChange(event)}
-              error={error}
-              autoFocus
-              autoComplete="current-password"
-              theme="material"
-              fullWidth
-            />
-          </form>
-          {this.renderSubmitButton()}
-          <div className="unlock-page__links">
-            <Button
-              type="link"
-              key="import-account"
-              className="unlock-page__link"
-              onClick={() => onRestore()}
+            <Box
+              className="unlock-page__mascot-container"
+              marginBottom={isBeta() || isFlask() ? 6 : 0}
             >
-              {t('forgotPassword')}
+              {this.renderMascot()}
+              {isBeta() ? (
+                <Text
+                  className="unlock-page__mascot-container__beta"
+                  backgroundColor={BackgroundColor.primaryDefault}
+                  color={TextColor.primaryInverse}
+                  padding={1}
+                  borderRadius={BorderRadius.LG}
+                  textTransform={TextTransform.Uppercase}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('beta')}
+                </Text>
+              ) : null}
+            </Box>
+            <Text
+              data-testid="unlock-page-title"
+              as="h1"
+              variant={TextVariant.displayMd}
+              marginBottom={12}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.textDefault}
+              textAlign={TextAlign.Center}
+            >
+              {t('welcomeBack')}
+            </Text>
+            <FormTextField
+              id="password"
+              placeholder={
+                this.props.isSocialLoginFlow
+                  ? t('enterYourPasswordSocialLoginFlow')
+                  : t('enterYourPassword')
+              }
+              size={FormTextFieldSize.Lg}
+              inputProps={{
+                'data-testid': 'unlock-password',
+                'aria-label': t('password'),
+              }}
+              textFieldProps={{
+                disabled: isLocked,
+              }}
+              onChange={(event) => this.handleInputChange(event)}
+              type={TextFieldType.Password}
+              value={password}
+              error={Boolean(error)}
+              helpText={this.renderHelpText()}
+              autoComplete
+              autoFocus
+              width={BlockSize.Full}
+              marginBottom={4}
+            />
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              block
+              type="submit"
+              data-testid="unlock-submit"
+              disabled={!password || isLocked}
+              marginBottom={6}
+            >
+              {this.context.t('unlock')}
             </Button>
-          </div>
-          <div className="unlock-page__support">
-            {t('needHelp', [
-              <a
-                href={SUPPORT_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="need-help-link"
-                onClick={() => {
-                  this.context.trackEvent(
-                    {
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.SupportLinkClicked,
-                      properties: {
-                        url: SUPPORT_LINK,
+
+            <Button
+              variant={ButtonVariant.Link}
+              data-testid="unlock-forgot-password-button"
+              key="import-account"
+              type="button"
+              onClick={this.onForgotPasswordOrLoginWithDiffMethods}
+              marginBottom={6}
+            >
+              {isSocialLoginFlow && !isOnboardingCompleted
+                ? t('useDifferentLoginMethod')
+                : t('forgotPassword')}
+            </Button>
+
+            <Text>
+              {t('needHelp', [
+                <Button
+                  variant={ButtonVariant.Link}
+                  href={SUPPORT_LINK}
+                  type="button"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key="need-help-link"
+                  onClick={() => {
+                    this.context.trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.SupportLinkClicked,
+                        properties: {
+                          url: SUPPORT_LINK,
+                        },
                       },
-                    },
-                    {
-                      contextPropsIntoEventProperties: [
-                        MetaMetricsContextProp.PageTitle,
-                      ],
-                    },
-                  );
-                }}
-              >
-                {needHelpText}
-              </a>,
-            ])}
-          </div>
-        </div>
-      </div>
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                >
+                  {needHelpText}
+                </Button>,
+              ])}
+            </Text>
+          </Box>
+        </Box>
+      </Box>
     );
   }
 }
+
+export default withMetaMetrics(UnlockPage);

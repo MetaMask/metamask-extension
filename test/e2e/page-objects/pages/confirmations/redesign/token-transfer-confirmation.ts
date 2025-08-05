@@ -66,14 +66,20 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
 
   // Check Methods
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_interactingWithParagraph() {
     await this.driver.waitForSelector(this.interactingWithParagraph);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkFeeParagraph() {
     await this.driver.waitForSelector(this.networkFeeParagraph);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_networkParagraph() {
     await this.driver.waitForSelector(this.networkParagraph);
   }
@@ -86,9 +92,11 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
    * @param expectedNetworkFee - The expected gas/network fee value to be displayed on the page.
    * @returns A promise that resolves when all specified elements are verified to be present and contain the expected values, indicating the page has fully loaded.
    * @example
-   * await tokenTransferTransactionConfirmation.check_pageIsLoaded('10', 'ETH', '0.01');
+   * await tokenTransferTransactionConfirmation.check_tokenTransferPageIsLoaded('10', 'ETH', '0.01');
    */
-  async check_pageIsLoaded(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_tokenTransferPageIsLoaded(
     transferAmount: string,
     symbol: string,
     expectedNetworkFee: string,
@@ -102,7 +110,7 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
         }),
         this.driver.waitForSelector({
           css: this.networkFee,
-          text: `${expectedNetworkFee} ETH`,
+          text: `${expectedNetworkFee}`,
         }),
       ]);
       console.log(

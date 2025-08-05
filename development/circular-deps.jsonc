@@ -8,11 +8,6 @@
 
 [
   [
-    "app/scripts/lib/snap-keyring/index.ts",
-    "app/scripts/lib/snap-keyring/snap-keyring.ts",
-    "app/scripts/metamask-controller.js"
-  ],
-  [
     "shared/modules/selectors/account.ts",
     "shared/modules/selectors/index.ts",
     "ui/pages/confirmations/confirmation/ResultTemplate.ts",
@@ -64,34 +59,6 @@
     "ui/components/app/metamask-template-renderer/safe-component-list.js",
     "ui/components/app/metamask-translation/index.js",
     "ui/components/app/metamask-translation/metamask-translation.js"
-  ],
-  [
-    "ui/components/app/metamask-template-renderer/metamask-template-renderer.js",
-    "ui/components/app/metamask-template-renderer/safe-component-list.js",
-    "ui/components/app/snaps/snap-ui-renderer/index.js",
-    "ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.js",
-    "ui/components/multichain/create-named-snap-account/create-named-snap-account.tsx",
-    "ui/components/multichain/create-named-snap-account/index.js",
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/index.ts",
-    "ui/pages/notifications/notification-components/snap/snap.tsx"
-  ],
-  [
-    "ui/components/app/metamask-template-renderer/metamask-template-renderer.js",
-    "ui/components/app/metamask-template-renderer/safe-component-list.js",
-    "ui/components/app/snaps/snap-ui-renderer/index.js",
-    "ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.js",
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/index.ts",
-    "ui/pages/notifications/notification-components/snap/snap.tsx"
   ],
   [
     "ui/components/app/permission-page-container/index.js",
@@ -238,14 +205,6 @@
     "ui/components/multichain/index.js"
   ],
   [
-    "ui/components/multichain/app-header/app-header-unlocked-content.tsx",
-    "ui/components/multichain/app-header/app-header.js",
-    "ui/components/multichain/app-header/index.js",
-    "ui/components/multichain/global-menu/global-menu.js",
-    "ui/components/multichain/global-menu/index.js",
-    "ui/components/multichain/index.js"
-  ],
-  [
     "ui/components/multichain/asset-picker-amount/asset-picker-amount.tsx",
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/AssetList.tsx",
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx",
@@ -262,96 +221,6 @@
     "ui/components/multichain/edit-networks-modal/edit-networks-modal.js",
     "ui/components/multichain/edit-networks-modal/index.js",
     "ui/components/multichain/index.js"
-  ],
-  [
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/erc1155-sent-received/erc1155-sent-received.tsx",
-    "ui/pages/notifications/notification-components/index.ts"
-  ],
-  [
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/erc20-sent-received/erc20-sent-received.tsx",
-    "ui/pages/notifications/notification-components/index.ts"
-  ],
-  [
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/erc721-sent-received/erc721-sent-received.tsx",
-    "ui/pages/notifications/notification-components/index.ts"
-  ],
-  [
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/eth-sent-received/eth-sent-received.tsx",
-    "ui/pages/notifications/notification-components/index.ts"
-  ],
-  [
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/feature-announcement/feature-announcement.tsx",
-    "ui/pages/notifications/notification-components/index.ts"
-  ],
-  [
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/index.ts",
-    "ui/pages/notifications/notification-components/lido-stake-ready-to-be-withdrawn/lido-stake-ready-to-be-withdrawn.tsx"
-  ],
-  [
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/index.ts",
-    "ui/pages/notifications/notification-components/lido-withdrawal-requested/lido-withdrawal-requested.tsx"
-  ],
-  [
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/index.ts",
-    "ui/pages/notifications/notification-components/snap/snap.tsx"
-  ],
-  [
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/index.ts",
-    "ui/pages/notifications/notification-components/stake/stake.tsx"
-  ],
-  [
-    "ui/components/multichain/index.js",
-    "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
-    "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
-    "ui/components/multichain/notification-detail-button/index.ts",
-    "ui/components/multichain/notification-detail-button/notification-detail-button.tsx",
-    "ui/pages/notifications/notification-components/index.ts",
-    "ui/pages/notifications/notification-components/swap-completed/swap-completed.tsx"
   ],
   ["ui/ducks/alerts/unconnected-account.js", "ui/store/actions.ts"],
   [

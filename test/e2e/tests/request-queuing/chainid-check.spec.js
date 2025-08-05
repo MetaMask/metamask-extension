@@ -1,4 +1,7 @@
 const { strict: assert } = require('assert');
+const {
+  switchToNetworkFromSendFlow,
+} = require('../../page-objects/flows/network.flow');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -7,7 +10,6 @@ const {
   DAPP_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -19,7 +21,7 @@ describe('Request Queueing chainId proxy sync', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         localNodeOptions: [
@@ -62,14 +64,7 @@ describe('Request Queueing chainId proxy sync', function () {
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Ethereum Mainnet',
-          css: 'p',
-        });
-
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const chainIdBeforeConnectAfterManualSwitch =
@@ -81,14 +76,11 @@ describe('Request Queueing chainId proxy sync', function () {
         assert.equal(chainIdBeforeConnectAfterManualSwitch, '0x1');
 
         // Connect to dapp
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
-        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
@@ -112,13 +104,11 @@ describe('Request Queueing chainId proxy sync', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
-        await switchToNotificationWindow(driver);
-        await driver.findClickableElements({
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'button',
         });
-
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -134,13 +124,7 @@ describe('Request Queueing chainId proxy sync', function () {
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

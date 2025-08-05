@@ -1,13 +1,9 @@
 import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
-import {
-  withFixtures,
-  openDapp,
-  WINDOW_TITLES,
-  unlockWallet,
-} from '../../helpers';
+import { openDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -17,7 +13,7 @@ import TokenTransferTransactionConfirmation from '../../page-objects/pages/confi
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
-describe('Transfer custom tokens @no-mmi', function () {
+describe('Transfer custom tokens', function () {
   const smartContract = SMART_CONTRACTS.HST;
   const symbol = 'TST';
   const valueWithSymbol = (value: string) => `${value} ${symbol}`;
@@ -30,12 +26,13 @@ describe('Transfer custom tokens @no-mmi', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
+          localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
         },
         async ({ driver }) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
           const assetListPage = new AssetListPage(driver);
@@ -57,7 +54,7 @@ describe('Transfer custom tokens @no-mmi', function () {
 
           // check transaction details
           const expectedNetworkFee = '0.0001';
-          await tokenTransferRedesignedConfirmPage.check_pageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
             '1',
             symbol,
             expectedNetworkFee,
@@ -71,7 +68,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
-          await activityListPage.check_txAction(`Send ${symbol}`);
+          await activityListPage.check_txAction(`Sent ${symbol}`);
           await activityListPage.check_txAmountInActivity(
             valueWithSymbol('-1'),
           );
@@ -87,15 +84,15 @@ describe('Transfer custom tokens @no-mmi', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()
             .build(),
+          localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
         },
-        async ({ driver, contractRegistry }) => {
-          const contractAddress = await contractRegistry.getContractAddress(
-            smartContract,
-          );
-          await unlockWallet(driver);
+        async ({ driver, contractRegistry, localNodes }) => {
+          const contractAddress =
+            await contractRegistry.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
@@ -113,7 +110,7 @@ describe('Transfer custom tokens @no-mmi', function () {
 
           // check transaction details
           const expectedNetworkFee = '0.0001';
-          await tokenTransferRedesignedConfirmPage.check_pageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
             '1.5',
             symbol,
             expectedNetworkFee,
@@ -132,7 +129,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           );
 
           await homePage.goToActivityList();
-          await activityListPage.check_txAction(`Send ${symbol}`);
+          await activityListPage.check_txAction(`Sent ${symbol}`);
           await activityListPage.check_txAmountInActivity(
             valueWithSymbol('-1.5'),
           );
@@ -159,11 +156,10 @@ describe('Transfer custom tokens @no-mmi', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
         },
-        async ({ driver, contractRegistry }) => {
-          const contractAddress = await contractRegistry.getContractAddress(
-            smartContract,
-          );
-          await unlockWallet(driver);
+        async ({ driver, contractRegistry, localNodes }) => {
+          const contractAddress =
+            await contractRegistry.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
@@ -181,7 +177,7 @@ describe('Transfer custom tokens @no-mmi', function () {
 
           // check transaction details and confirm
           const expectedNetworkFee = '0.001';
-          await tokenTransferRedesignedConfirmPage.check_pageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
             '1.5',
             symbol,
             expectedNetworkFee,
@@ -194,7 +190,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           );
 
           await homePage.goToActivityList();
-          await activityListPage.check_txAction(`Send ${symbol}`);
+          await activityListPage.check_txAction(`Sent ${symbol}`);
           await activityListPage.check_txAmountInActivity(
             valueWithSymbol('-1.5'),
           );

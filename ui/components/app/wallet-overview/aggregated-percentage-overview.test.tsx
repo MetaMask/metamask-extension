@@ -8,10 +8,15 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getPreferences,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
+import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
+import {
+  AggregatedPercentageOverview,
+  AggregatedMultichainPercentageOverview,
+} from './aggregated-percentage-overview';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
@@ -30,6 +35,7 @@ jest.mock('../../../selectors', () => ({
   getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokensMarketData: jest.fn(),
+  getSelectedInternalAccount: jest.fn(),
 }));
 
 jest.mock('../../../../shared/modules/selectors/networks', () => ({
@@ -38,6 +44,10 @@ jest.mock('../../../../shared/modules/selectors/networks', () => ({
 
 jest.mock('../../../hooks/useAccountTotalFiatBalance', () => ({
   useAccountTotalFiatBalance: jest.fn(),
+}));
+
+jest.mock('../../../selectors/assets', () => ({
+  getHistoricalMultichainAggregatedBalance: jest.fn(),
 }));
 
 const mockGetIntlLocale = jest.mocked(getIntlLocale);
@@ -49,6 +59,10 @@ const mockGetShouldHideZeroBalanceTokens = jest.mocked(
 );
 const mockGetTokensMarketData = getTokensMarketData as jest.Mock;
 const mockGetCurrentChainId = jest.mocked(getCurrentChainId);
+const mockGetHistoricalMultichainAggregatedBalance = jest.mocked(
+  getHistoricalMultichainAggregatedBalance,
+);
+const mockGetSelectedInternalAccount = jest.mocked(getSelectedInternalAccount);
 
 const selectedAccountMock = {
   id: 'd51c0116-de36-4e77-b35b-408d4ea82d01',
@@ -177,6 +191,33 @@ describe('AggregatedPercentageOverview', () => {
     mockGetTokensMarketData.mockReturnValue(marketDataMock);
     mockGetCurrentChainId.mockReturnValue('0x1');
     jest.clearAllMocks();
+    mockGetSelectedInternalAccount.mockReturnValue({
+      id: 'd51c0116-de36-4e77-b35b-408d4ea82d01',
+      address: '0xa259af9db8172f62ef0373d7dfa893a3e245ace9',
+      options: {},
+      methods: [],
+      type: 'eip155:eoa',
+      metadata: {
+        name: '',
+        importTime: 0,
+        keyring: {
+          type: '',
+        },
+        nameLastUpdatedAt: undefined,
+        snap: undefined,
+        lastSelected: undefined,
+      },
+      scopes: [],
+    });
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
   });
 
   describe('render', () => {
@@ -601,5 +642,196 @@ describe('AggregatedPercentageOverview', () => {
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
     expect(numberElement).toBeInTheDocument();
+  });
+});
+
+describe('AggregatedMultichainPercentageOverview', () => {
+  beforeEach(() => {
+    mockGetIntlLocale.mockReturnValue('en-US');
+    mockGetCurrentCurrency.mockReturnValue('USD');
+    mockGetSelectedInternalAccount.mockReturnValue({
+      id: 'd51c0116-de36-4e77-b35b-408d4ea82d01',
+      address: '0xa259af9db8172f62ef0373d7dfa893a3e245ace9',
+      options: {},
+      methods: [],
+      type: 'eip155:eoa',
+      metadata: {
+        name: '',
+        importTime: 0,
+        keyring: {
+          type: '',
+        },
+        nameLastUpdatedAt: undefined,
+        snap: undefined,
+        lastSelected: undefined,
+      },
+      scopes: [],
+    });
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+  });
+
+  describe('render', () => {
+    it('renders correctly with zero values', () => {
+      const { container } = render(<AggregatedMultichainPercentageOverview />);
+      expect(container).toMatchSnapshot();
+    });
+
+    it('renders correctly with positive values', () => {
+      mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+        PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+        P1D: { balance: 1000, percentChange: 5.12, amountChange: 51.23 },
+        P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+      });
+
+      const { container } = render(<AggregatedMultichainPercentageOverview />);
+      expect(container).toMatchSnapshot();
+    });
+
+    it('renders correctly with negative values', () => {
+      mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+        PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+        P1D: { balance: 1000, percentChange: -4.87, amountChange: -51.23 },
+        P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+      });
+
+      const { container } = render(<AggregatedMultichainPercentageOverview />);
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('should display zero percentage and amount when balance is zero', () => {
+    render(<AggregatedMultichainPercentageOverview />);
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveTextContent('(+0.00%)');
+    expect(numberElement).toHaveTextContent('+$0.00');
+  });
+
+  it('should display positive percentage and amount change', () => {
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 1000, percentChange: 5.12, amountChange: 51.23 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+
+    render(<AggregatedMultichainPercentageOverview />);
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveTextContent('(+5.12%)');
+    expect(numberElement).toHaveTextContent('+$51.23');
+  });
+
+  it('should display negative percentage and amount change', () => {
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 1000, percentChange: -4.87, amountChange: -51.23 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+
+    render(<AggregatedMultichainPercentageOverview />);
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveTextContent('(-4.87%)');
+    expect(numberElement).toHaveTextContent('-$51.23');
+  });
+
+  it('should hide values when privacy mode is enabled', () => {
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 1000, percentChange: 5.12, amountChange: 51.23 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+
+    render(<AggregatedMultichainPercentageOverview privacyMode={true} />);
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveTextContent('••••••••••');
+    expect(numberElement).toHaveTextContent('••••••••••');
+  });
+
+  it('should use correct color for positive values', () => {
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 1000, percentChange: 5.12, amountChange: 51.23 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+
+    render(<AggregatedMultichainPercentageOverview />);
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveClass('mm-box--color-success-default');
+    expect(numberElement).toHaveClass('mm-box--color-success-default');
+  });
+
+  it('should use correct color for negative values', () => {
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 1000, percentChange: -4.87, amountChange: -51.23 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+
+    render(<AggregatedMultichainPercentageOverview />);
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveClass('mm-box--color-error-default');
+    expect(numberElement).toHaveClass('mm-box--color-error-default');
+  });
+
+  it('should use correct color for zero values', () => {
+    render(<AggregatedMultichainPercentageOverview />);
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveClass('mm-box--color-text-alternative');
+    expect(numberElement).toHaveClass('mm-box--color-text-alternative');
   });
 });

@@ -7,6 +7,8 @@ export const unapprovedTypedSignMsgV1 = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: '3a938cfc-301d-4af0-96c4-b51fe1a5d6ad',
   },
@@ -64,6 +66,8 @@ export const unapprovedTypedSignMsgV3 = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'efefe1db-6c6e-4a2c-aa0d-6183ad3ec810',
   },
@@ -150,6 +154,8 @@ export const orderSignatureMsg = {
   id: 'e5249ae0-4b6b-11ef-831f-65b48eb489ec',
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'loading',
     reason: 'validation_in_progress',
     securityAlertId: 'dadfc03d-43f9-4515-9aa2-cb00715c3e07',
@@ -172,6 +178,8 @@ export const permitSignatureMsg = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },
@@ -202,6 +210,8 @@ export const seaportSignatureMsg = {
   },
   networkClientId: 'mainnet',
   securityAlertResponse: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'loading',
     reason: 'validation_in_progress',
     securityAlertId: 'def3b0ef-c96b-4c87-b1b1-c69cc02a0f78',
@@ -262,6 +272,8 @@ export const permitSignatureMsgWithNoDeadline = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },
@@ -282,6 +294,8 @@ export const permitBatchSignatureMsg = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },
@@ -298,11 +312,66 @@ export const permitBatchSignatureMsg = {
   },
 } as SignatureRequestType;
 
+export const signatureMsgPermitRevokeDAI = {
+  id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
+  chainId: CHAIN_IDS.GOERLI,
+  securityAlertResponse: {
+    reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: 'validation_in_progress',
+    securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
+  },
+  status: 'unapproved',
+  time: 1716826404122,
+  type: TransactionType.signTypedData,
+  msgParams: {
+    data: JSON.stringify({
+      domain: {
+        name: 'Dai Stablecoin',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      },
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Permit: [
+          { name: 'holder', type: 'address' },
+          { name: 'spender', type: 'address' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'expiry', type: 'uint256' },
+          { name: 'allowed', type: 'bool' },
+        ],
+      },
+      primaryType: 'Permit',
+      message: {
+        spender: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4',
+        tokenId: '3606393',
+        nonce: 0,
+        expiry: 0,
+        allowed: false,
+      },
+    }),
+    from: '0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad',
+    version: 'V4',
+    requestId: 15,
+    signatureMethod: 'eth_signTypedData_v4',
+    origin: 'https://metamask.github.io',
+  },
+} as SignatureRequestType;
+
 export const permitSingleSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },

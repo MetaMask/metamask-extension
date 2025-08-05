@@ -1,6 +1,9 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/token-approve';
+import {
+  buildPermit2ApproveTransactionData,
+  genUnapprovedApproveConfirmation,
+} from '../../../../../../../../test/data/confirmations/token-approve';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
 import {
@@ -27,6 +30,12 @@ describe('isSpendingCapUnlimited', () => {
 
   it('returns false if spending cap is less than threshold', () => {
     expect(isSpendingCapUnlimited(TOKEN_VALUE_UNLIMITED_THRESHOLD - 1)).toBe(
+      false,
+    );
+  });
+
+  it('returns false if spending cap is less than threshold after applying decimals', () => {
+    expect(isSpendingCapUnlimited(TOKEN_VALUE_UNLIMITED_THRESHOLD, 1)).toBe(
       false,
     );
   });
@@ -109,6 +118,38 @@ describe('useApproveTokenSimulation', () => {
         "pending": undefined,
         "spendingCap": "0.000000000000000001",
         "value": "1",
+      }
+    `);
+  });
+
+  it('returns token amount for permit2 approval', async () => {
+    const useIsNFTMock = jest.fn().mockImplementation(() => ({ isNFT: true }));
+
+    (useIsNFT as jest.Mock).mockImplementation(useIsNFTMock);
+
+    const transactionMeta = {
+      txParams: {
+        data: buildPermit2ApproveTransactionData(
+          '0x1234567890123456789012345678901234567890',
+          '0x1234567890123456789012345678901234567891',
+          123456,
+          789,
+        ),
+      },
+    } as TransactionMeta;
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useApproveTokenSimulation(transactionMeta, '5'),
+      getMockConfirmStateForTransaction(transactionMeta),
+    );
+
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "formattedSpendingCap": "1.235",
+        "isUnlimitedSpendingCap": false,
+        "pending": undefined,
+        "spendingCap": "1.23456",
+        "value": "123456",
       }
     `);
   });

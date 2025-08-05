@@ -30,11 +30,14 @@ const getTextElementDefault = (variant: TextVariant) => {
 };
 
 export const Text: TextComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'p'>(
     {
       variant = TextVariant.bodyMd,
       fontWeight,
       fontStyle,
+      fontFamily,
       textTransform,
       textAlign,
       textDirection,
@@ -42,7 +45,6 @@ export const Text: TextComponent = React.forwardRef(
       ellipsis,
       className = '',
       children,
-      isBrandEvolution, // Enables Brand Evolution Typography do not use unless you are working on the brand evolution
       ...props
     }: TextProps<C>,
     ref?: PolymorphicRef<C>,
@@ -57,11 +59,13 @@ export const Text: TextComponent = React.forwardRef(
       {
         [`mm-text--font-weight-${fontWeight}`]: Boolean(fontWeight),
         [`mm-text--font-style-${fontStyle}`]: Boolean(fontStyle),
+        [`mm-text--font-family-${fontFamily}`]: Boolean(fontFamily),
         [`mm-text--ellipsis`]: Boolean(ellipsis),
         [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),
         [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
-        [`mm-text--${variant}-brand-evo`]: Boolean(isBrandEvolution),
       },
     );
 

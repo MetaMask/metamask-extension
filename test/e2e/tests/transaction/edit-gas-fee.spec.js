@@ -1,11 +1,22 @@
 const { strict: assert } = require('assert');
 const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
+const {
   createInternalTransaction,
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../../helpers');
+const { withFixtures, WINDOW_TITLES } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+
+const PREFERENCES_STATE_MOCK = {
+  preferences: {
+    showFiatInTestnets: true,
+  },
+  // Enables advanced details due to migration 123
+  useNonceField: true,
+};
 
 describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
@@ -16,7 +27,7 @@ describe('Editing Confirm Transaction', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createInternalTransaction(driver);
 
@@ -86,18 +97,13 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            preferences: {
-              showFiatInTestnets: true,
-            },
-          })
+          .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
-
+        await loginWithBalanceValidation(driver);
         await createInternalTransaction(driver);
 
         await driver.findElement({
@@ -132,7 +138,7 @@ describe('Editing Confirm Transaction', function () {
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
           css: '[data-testid="first-gas-field"]',
-          text: '0.0002 ETH',
+          text: '0.0002',
         });
 
         await driver.waitForSelector({
@@ -167,11 +173,7 @@ describe('Editing Confirm Transaction', function () {
       {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              showFiatInTestnets: true,
-            },
-          })
+          .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
@@ -179,7 +181,7 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         // login to extension
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createDappTransaction(driver, {
           maxFeePerGas: '0x2000000000',

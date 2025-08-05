@@ -1,6 +1,3 @@
-# This suite originally ran on 7 individual VMs that each took about 1m30s to execute
-# It's now combined onto a single VM that takes about 1m20s
-# The `if: always()` statements make all independent tests run, even if one fails.
 name: Repository health checks
 
 on:
@@ -10,61 +7,56 @@ jobs:
   repository-health-checks:
     name: Repository health checks
     runs-on: ubuntu-latest
+    env:
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
-      # test-lint-shellcheck
       - name: ShellCheck Lint
-        if: always()
+        if: ${{ !cancelled() }}
         run: ./development/shellcheck.sh
 
-      # test-lint-changelog
       - name: Validate changelog
-        # For a `pull_request` event, the branch is `github.head_ref``.
-        # For a `push` event, the branch is `github.ref_name`.
-        if: ${{ !startsWith(github.head_ref || github.ref_name, 'Version-v') }}
+        if: ${{ !startsWith(env.BRANCH, 'Version-v') && !startsWith(env.BRANCH, 'release/') }}
         run: yarn lint:changelog
 
       - name: Validate release candidate changelog
-        # For a `pull_request` event, the branch is `github.head_ref``.
-        # For a `push` event, the branch is `github.ref_name`.
-        if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
-        run: .circleci/scripts/validate-changelog-in-rc.sh
+        if: ${{ startsWith(env.BRANCH, 'Version-v') || startsWith(env.BRANCH, 'release/') }}
+        run: .github/scripts/validate-changelog-in-rc.sh
 
-      # test-lint-lockfile
       - name: Lint lockfile
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn lint:lockfile
 
       - name: Check yarn resolutions
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn --check-resolutions
 
-      # test-deps-audit
       - name: Run audit
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn audit
 
-      # test-yarn-dedupe
       - name: Detect yarn lock deduplications
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn dedupe --check
 
-      # test-deps-depcheck
       - name: Run depcheck
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn depcheck
 
-      # validate-lavamoat-allow-scripts
       - name: Validate allow-scripts config
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn allow-scripts auto
 
       - name: Check working tree
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           if ! git diff --exit-code; then
               echo "::error::Working tree dirty."

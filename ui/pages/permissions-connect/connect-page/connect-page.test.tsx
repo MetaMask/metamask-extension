@@ -3,16 +3,23 @@ import { fireEvent } from '@testing-library/react';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { overrideAccountsFromMockState } from '../../../../test/jest/mocks';
-import {
-  MOCK_ACCOUNT_BIP122_P2WPKH,
-  MOCK_ACCOUNT_EOA,
-} from '../../../../test/data/mock-accounts';
 import { ConnectPage, ConnectPageProps } from './connect-page';
+
+// Mock the CreateSolanaAccountModal component to avoid errors
+jest.mock(
+  '../../../components/multichain/create-solana-account-modal/create-solana-account-modal',
+  () => ({
+    CreateSolanaAccountModal: ({ onClose }: { onClose: () => void }) => (
+      <div data-testid="create-solana-account-modal">
+        <button onClick={onClose}>Close</button>
+      </div>
+    ),
+  }),
+);
 
 const mockTestDappUrl = 'https://test.dapp';
 
@@ -33,8 +40,25 @@ const render = (
   const {
     props = {
       request: {
-        id: '1',
-        origin: mockTestDappUrl,
+        permissions: {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1': {
+                      accounts: [],
+                    },
+                  },
+                  sessionProperties: {},
+                  isMultichainOrigin: false,
+                },
+              },
+            ],
+          },
+        },
       },
       permissionsRequestId: '1',
       rejectPermissionsRequest: jest.fn(),
@@ -52,6 +76,8 @@ const render = (
       ...state,
       permissionHistory: {
         mockTestDappUrl: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1709225290848,
@@ -90,10 +116,7 @@ describe('ConnectPage', () => {
   it('should render fallback icon correctly', () => {
     const { container } = render({
       props: {
-        request: {
-          id: '1',
-          origin: mockTestDappUrl,
-        },
+        request: {},
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
@@ -112,10 +135,7 @@ describe('ConnectPage', () => {
   it('should render fallback icon correctly for IP address as an origin', () => {
     const { container } = render({
       props: {
-        request: {
-          id: '1',
-          origin: 'http://127.0.0.1/test-dapp',
-        },
+        request: {},
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
@@ -139,12 +159,7 @@ describe('ConnectPage', () => {
 
   it('should render subtitle correctly', () => {
     const { getByText } = render();
-    expect(getByText('Connect this website with MetaMask.')).toBeDefined();
-  });
-
-  it('should render learn more link correctly', () => {
-    const { getByText } = render();
-    expect(getByText('Learn more')).toBeDefined();
+    expect(getByText('Connect this website with MetaMask')).toBeDefined();
   });
 
   it('should render accounts tab correctly', () => {
@@ -230,8 +245,6 @@ describe('ConnectPage', () => {
     const { container } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -247,6 +260,7 @@ describe('ConnectPage', () => {
                       },
                     },
                     isMultichainOrigin: false,
+                    sessionProperties: {},
                   },
                 },
               ],
@@ -260,27 +274,181 @@ describe('ConnectPage', () => {
         targetSubjectMetadata: mockTargetSubjectMetadata,
       },
     });
+
+    const elementsWithAria = container.querySelectorAll('[aria-describedby]');
+    elementsWithAria.forEach((el) =>
+      el.setAttribute('aria-describedby', 'static-tooltip-id'),
+    );
+
     expect(container).toMatchSnapshot();
   });
 
-  it('should render a disabled confirm if current account is a non-EVM account', () => {
-    // NOTE: We select the non-EVM account by default here!
-    const mockSelectedAccountId = MOCK_ACCOUNT_BIP122_P2WPKH.id;
-    const mockAccounts = [MOCK_ACCOUNT_EOA, MOCK_ACCOUNT_BIP122_P2WPKH];
-    const mockAccountsState = overrideAccountsFromMockState(
-      mockState,
-      mockAccounts,
-      mockSelectedAccountId,
-    );
-
+  it('should render Solana account requested message when promptToCreateSolanaAccount is true', () => {
     const { getByText } = render({
-      state: mockAccountsState.metamask,
+      props: {
+        request: {
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [],
+                      },
+                    },
+                    sessionProperties: {},
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+          metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
+            promptToCreateSolanaAccount: true,
+          },
+        },
+        permissionsRequestId: '1',
+        rejectPermissionsRequest: jest.fn(),
+        approveConnection: jest.fn(),
+        activeTabOrigin: mockTestDappUrl,
+        targetSubjectMetadata: mockTargetSubjectMetadata,
+      },
     });
-    const confirmButton = getByText('Connect');
-    const cancelButton = getByText('Cancel');
-    // The currently selected account is a Bitcoin account, the "connecting account list" would be
-    // empty by default and thus, we cannot confirm without explicitly select an EVM account.
-    expect(confirmButton).toBeDisabled();
-    expect(cancelButton).toBeDefined();
+
+    expect(
+      getByText('This site is requesting a Solana account.'),
+    ).toBeDefined();
+    expect(getByText('Create Solana account')).toBeDefined();
+  });
+
+  it('should not render Solana account message when promptToCreateSolanaAccount is false', () => {
+    const { queryByText } = render({
+      props: {
+        request: {
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [],
+                      },
+                    },
+                    sessionProperties: {},
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+          metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
+            promptToCreateSolanaAccount: false,
+          },
+        },
+        permissionsRequestId: '1',
+        rejectPermissionsRequest: jest.fn(),
+        approveConnection: jest.fn(),
+        activeTabOrigin: mockTestDappUrl,
+        targetSubjectMetadata: mockTargetSubjectMetadata,
+      },
+    });
+
+    expect(
+      queryByText('A Solana account is required to connect to this site.'),
+    ).toBeNull();
+    expect(queryByText('Create Solana account')).toBeNull();
+  });
+
+  it('should open CreateSolanaAccountModal when create Solana account button is clicked', () => {
+    const { getByText, getByTestId } = render({
+      props: {
+        request: {
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [],
+                      },
+                    },
+                    sessionProperties: {},
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+          metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
+            promptToCreateSolanaAccount: true,
+          },
+        },
+        permissionsRequestId: '1',
+        rejectPermissionsRequest: jest.fn(),
+        approveConnection: jest.fn(),
+        activeTabOrigin: mockTestDappUrl,
+        targetSubjectMetadata: mockTargetSubjectMetadata,
+      },
+    });
+
+    const createSolanaAccountButton = getByText('Create Solana account');
+    fireEvent.click(createSolanaAccountButton);
+
+    expect(getByTestId('create-solana-account-modal')).toBeDefined();
+  });
+
+  it('should not show select account message when promptToCreateSolanaAccount is true', () => {
+    const { queryByText } = render({
+      props: {
+        request: {
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [],
+                      },
+                    },
+                    sessionProperties: {},
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+          metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
+            promptToCreateSolanaAccount: true,
+          },
+        },
+        permissionsRequestId: '1',
+        rejectPermissionsRequest: jest.fn(),
+        approveConnection: jest.fn(),
+        activeTabOrigin: mockTestDappUrl,
+        targetSubjectMetadata: mockTargetSubjectMetadata,
+      },
+    });
+
+    expect(queryByText('Select an account to connect')).toBeNull();
   });
 });

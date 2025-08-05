@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isStrictHexString } from '@metamask/utils';
 import {
   getBridgeQuotes,
   getFromToken,
@@ -29,7 +28,6 @@ export const useBridgeExchangeRates = () => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
   const dispatch = useDispatch();
-
   const currency = useSelector(getCurrentCurrency);
 
   // Only use token address from quote as a fallback if there is no token address in the store
@@ -49,9 +47,28 @@ export const useBridgeExchangeRates = () => {
 
   const marketData = useSelector(getMarketData);
 
+  const fromAbortController = useRef<AbortController | null>(
+    new AbortController(),
+  );
+  const toAbortController = useRef<AbortController | null>(
+    new AbortController(),
+  );
+
+  // Cleanup abort controller on unmount
+  useEffect(() => {
+    return () => {
+      fromAbortController.current?.abort();
+      fromAbortController.current = null;
+      toAbortController.current?.abort();
+      toAbortController.current = null;
+    };
+  }, []);
+
   // Fetch exchange rates for selected src token if not found in marketData
   useEffect(() => {
-    if (fromChainId && fromTokenAddress && isStrictHexString(fromChainId)) {
+    fromAbortController.current?.abort();
+    fromAbortController.current = new AbortController();
+    if (fromChainId && fromTokenAddress) {
       const exchangeRate = exchangeRateFromMarketData(
         fromChainId,
         fromTokenAddress,
@@ -64,14 +81,17 @@ export const useBridgeExchangeRates = () => {
             chainId: fromChainId,
             tokenAddress: fromTokenAddress,
             currency,
+            signal: fromAbortController.current.signal,
           }),
         );
       }
     }
-  }, [fromChainId, fromTokenAddress]);
+  }, [currency, dispatch, fromChainId, fromTokenAddress, marketData]);
 
   // Fetch exchange rates for selected dest token if not found in marketData
   useEffect(() => {
+    toAbortController.current?.abort();
+    toAbortController.current = new AbortController();
     if (toChainId && toTokenAddress) {
       const exchangeRate = exchangeRateFromMarketData(
         toChainId,
@@ -85,6 +105,7 @@ export const useBridgeExchangeRates = () => {
             chainId: toChainId,
             tokenAddress: toTokenAddress,
             currency,
+            signal: toAbortController.current.signal,
           }),
         );
         // If the selected currency is not USD, fetch the USD exchange rate for metrics
@@ -94,10 +115,18 @@ export const useBridgeExchangeRates = () => {
               chainId: toChainId,
               tokenAddress: toTokenAddress,
               currency: 'usd',
+              signal: toAbortController.current.signal,
             }),
           );
         }
       }
     }
-  }, [toChainId, toTokenAddress]);
+  }, [
+    currency,
+    dispatch,
+    isMetaMetricsEnabled,
+    marketData,
+    toChainId,
+    toTokenAddress,
+  ]);
 };

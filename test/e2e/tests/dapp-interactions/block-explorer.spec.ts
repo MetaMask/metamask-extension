@@ -44,7 +44,7 @@ describe('Block Explorer', function () {
 
         // Verify block explorer
         await driver.waitForUrl({
-          url: `https://etherscan.io/address/${DEFAULT_FIXTURE_ACCOUNT}`,
+          url: `https://etherscan.io/address/${DEFAULT_FIXTURE_ACCOUNT}#asset-multichain`,
         });
         await new MockedPage(driver).check_displayedMessage(
           'Empty page by MetaMask',
@@ -54,6 +54,7 @@ describe('Block Explorer', function () {
   });
 
   it('links to the token tracker in the explorer, ', async function () {
+    const smartContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
         dapp: true,
@@ -69,10 +70,12 @@ describe('Block Explorer', function () {
           })
           .withTokensControllerERC20()
           .build(),
-        smartContract: SMART_CONTRACTS.HST,
+        smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }) => {
+      async ({ driver, localNodes, contractRegistry }) => {
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         // View TST token in block explorer
@@ -89,7 +92,7 @@ describe('Block Explorer', function () {
 
         // Verify block explorer
         await driver.waitForUrl({
-          url: `https://etherscan.io/token/0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947`,
+          url: `https://etherscan.io/token/${contractAddress.toLowerCase()}`,
         });
         await new MockedPage(driver).check_displayedMessage(
           'Empty page by MetaMask',

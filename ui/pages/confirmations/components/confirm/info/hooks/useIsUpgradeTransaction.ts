@@ -3,13 +3,18 @@ import { Hex } from '@metamask/utils';
 import { useConfirmContext } from '../../../../context/confirm';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
 
-export function useIsUpgradeTransaction(): boolean {
+export function useIsUpgradeTransaction() {
   const authorizationAddress = useTransactionAuthorizationAddress();
-
-  return (
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { txParams } = currentConfirmation ?? { txParams: {} };
+  const { data } = txParams ?? {};
+  const isUpgrade =
     Boolean(authorizationAddress) &&
-    authorizationAddress !== EIP_7702_REVOKE_ADDRESS
-  );
+    authorizationAddress !== EIP_7702_REVOKE_ADDRESS;
+  return {
+    isUpgrade,
+    isUpgradeOnly: isUpgrade && (!data || data === '0x'),
+  };
 }
 
 export function useIsDowngradeTransaction(): boolean {

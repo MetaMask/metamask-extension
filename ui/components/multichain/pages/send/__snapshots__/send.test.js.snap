@@ -3,7 +3,8 @@
 exports[`SendPage render and initialization should render correctly even when a draftTransaction does not exist 1`] = `
 <div>
   <div
-    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container multichain-send-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -41,78 +42,91 @@ exports[`SendPage render and initialization should render correctly even when a 
         <div
           class="mm-box mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
         >
-          <label
-            class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--padding-bottom-2 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
           >
-            From
-          </label>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-base--ellipsis multichain-account-picker multichain-send-page__account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-flex-start mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
-            data-testid="send-page-account-picker"
-          >
-            <span
-              class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--width-full mm-box--color-text-default"
+            <label
+              class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--padding-bottom-2 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
             >
-              <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+              From
+            </label>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          >
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-base--ellipsis multichain-account-picker multichain-send-page__account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-3 mm-box--display-inline-flex mm-box--gap-1 mm-box--justify-content-flex-start mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              data-testid="send-page-account-picker"
+              style="height: auto;"
+            >
+              <span
+                class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--width-full mm-box--color-text-default"
               >
                 <div
-                  class="mm-avatar-account__jazzicon"
+                  class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
                   >
-                    <svg
-                      height="32"
-                      width="32"
-                      x="0"
-                      y="0"
+                    <div
+                      class="mm-avatar-account__jazzicon"
                     >
-                      <rect
-                        fill="#2362E1"
-                        height="32"
-                        transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#F94301"
-                        height="32"
-                        transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#FA7900"
-                        height="32"
-                        transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                    </svg>
+                      <div
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                      >
+                        <svg
+                          height="32"
+                          width="32"
+                          x="0"
+                          y="0"
+                        >
+                          <rect
+                            fill="#2362E1"
+                            height="32"
+                            transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F94301"
+                            height="32"
+                            transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#FA7900"
+                            height="32"
+                            transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
+                  <span
+                    class="mm-box mm-text multichain-account-picker__label multichain-send-page__account-picker__label mm-text--body-md-medium mm-text--ellipsis mm-box--padding-inline-start-1 mm-box--color-text-default"
+                    style="flex-grow: 1; text-align: start;"
+                  >
+                    Test Account
+                    <p
+                      class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-text--text-align-start mm-box--display-flex mm-box--color-text-alternative"
+                    >
+                      0x0
+                    </p>
+                  </span>
                 </div>
-              </div>
-              <span
-                class="mm-box mm-text multichain-account-picker__label multichain-send-page__account-picker__label mm-text--body-md mm-text--ellipsis mm-box--padding-inline-start-1 mm-box--color-text-default"
-                style="flex-grow: 1; text-align: start;"
-              >
-                Test Account
-                <p
-                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-text--text-align-start mm-box--display-flex mm-box--color-text-alternative"
-                >
-                  0x0
-                </p>
               </span>
-            </span>
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-down.svg');"
-            />
-          </button>
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-icon-default"
+                style="mask-image: url('./images/icons/arrow-down.svg');"
+              />
+            </button>
+          </div>
         </div>
         <div
           class="mm-box mm-box--margin-top-6"
@@ -190,12 +204,14 @@ exports[`SendPage render and initialization should render correctly even when a 
                 >
                   <div
                     class="mm-box multichain-account-list-item multichain-account-list-item--selected multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-primary-muted"
+                    data-testid="account-item"
                   >
                     <div
                       class="mm-box multichain-account-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
+                      data-testid="account-list-item-selected-indicator"
                     />
                     <div
-                      class="mm-box mm-box--display-flex mm-box--sm:display-none"
+                      class="mm-box mm-box--margin-right-3 mm-box--display-flex mm-box--sm:display-none"
                       data-testid="account-list-item-badge"
                     >
                       <button
@@ -204,7 +220,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                       >
                         <div>
                           <div
-                            aria-describedby="tippy-tooltip-2"
+                            aria-describedby="tippy-tooltip-3"
                             class=""
                             data-original-title="Not connected"
                             data-tooltipped=""
@@ -372,37 +388,63 @@ exports[`SendPage render and initialization should render correctly even when a 
                           </p>
                         </div>
                         <div
-                          class="mm-box multichain-account-list-item__avatar-currency mm-box--display-flex mm-box--gap-1 mm-box--justify-content-center mm-box--align-items-center"
+                          class="mm-box network-indicator"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+                            class="mm-box"
+                            data-testid="account-network-indicator"
                           >
-                            E
-                          </div>
-                          <div
-                            class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
-                          >
-                            <div
-                              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                              data-testid="second-currency-display"
-                              title="0 ETH"
-                            >
-                              <span
-                                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                                data-testid="account-value-and-suffix"
+                            <div>
+                              <div
+                                aria-describedby="tippy-tooltip-4"
+                                class=""
+                                data-original-title="This can be changed in "Settings > Alerts""
+                                data-tooltipped=""
+                                style="display: inline;"
+                                tabindex="0"
                               >
-                                0
-                              </span>
-                              <span
-                                class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                              >
-                                ETH
-                              </span>
+                                <div
+                                  class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                                  data-testid="avatar-group"
+                                >
+                                  <div
+                                    class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  >
+                                    <div
+                                      class="mm-box mm-box--rounded-full"
+                                      style="margin-left: 0px;"
+                                    >
+                                      <div
+                                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                                      >
+                                        G
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="mm-box mm-box--rounded-full"
+                                      style="margin-left: -8px;"
+                                    >
+                                      <div
+                                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                                      >
+                                        <img
+                                          alt="Custom Mainnet RPC logo"
+                                          class="mm-avatar-network__network-image"
+                                          src="./images/eth_logo.svg"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+                    />
                   </div>
                 </div>
               </div>
@@ -414,7 +456,7 @@ exports[`SendPage render and initialization should render correctly even when a 
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block multichain-send-page__nav-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block multichain-send-page__nav-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
         >
           Cancel
         </button>
@@ -424,8 +466,7 @@ exports[`SendPage render and initialization should render correctly even when a 
           title=""
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-            data-theme="light"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           >
             Continue
           </button>

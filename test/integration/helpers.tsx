@@ -1,6 +1,8 @@
 import nock from 'nock';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const createMockImplementation = <T,>(requests: Record<string, T>) => {
   return (method: string): Promise<T | undefined> => {
     if (method in requests) {
@@ -16,14 +18,24 @@ export function mock4byte(hexSignature: string, textSignature?: string) {
   })
     .persist()
     .get('/api/v1/signatures/')
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     .query({ hex_signature: hexSignature })
     .reply(200, {
       results: [
         {
           id: 235447,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           created_at: '2021-09-14T02:07:09.805000Z',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           text_signature: textSignature ?? 'mintNFTs(uint256)',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hex_signature: hexSignature,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           bytes_signature: ';K\u0013 ',
         },
       ],
@@ -80,6 +92,24 @@ export const waitForElementByText = async (text: string) => {
   });
 };
 
+/**
+ * Waits for an element with the specified text to not be present in the document.
+ *
+ * @param text - The text content of the element to wait for.
+ * @returns A promise that resolves when the element is not found in the document.
+ */
+export const waitForElementByTextToNotBePresent = async (text: string) => {
+  await waitFor(() => {
+    expect(screen.queryByText(text)).not.toBeInTheDocument();
+  });
+};
+
+/**
+ * Clicks on an element identified by the given text.
+ *
+ * @param text - The text content of the element to be clicked.
+ * @returns A promise that resolves when the click action is completed.
+ */
 export const clickElementByText = async (text: string) => {
   await act(async () => {
     fireEvent.click(await screen.findByText(text));

@@ -3,12 +3,14 @@ import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow'
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { mockWasmSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Test Snap WASM', function () {
   it('can use webassembly inside a snap', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockWasmSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

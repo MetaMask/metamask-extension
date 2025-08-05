@@ -251,20 +251,8 @@
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ukomo wa gesi ni kiwango cha juu kabisa cha cha vizio vya gesi ambavyo upo tayari kutumia."
-  },
   "gasLimitTooLow": {
     "message": "Kikomo cha gesi kinapaswa kua angalau 21000"
-  },
-  "gasPrice": {
-    "message": "Pata Bei (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Bei ya Gesi Ipo Chini Kupita Kiasi"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Bei ya gesi hubainisha kiwango cha Ether ambacho upo radhi kulipia kila kizio cha gesi."
   },
   "gasUsed": {
     "message": "Gesi iliyotumika"
@@ -626,9 +614,6 @@
   "terms": {
     "message": "Masharti ya Matumizi"
   },
-  "tips": {
-    "message": "Michango"
-  },
   "to": {
     "message": "Kwenda"
   },
@@ -707,9 +692,6 @@
   "unlock": {
     "message": "Fungua"
   },
-  "unlockMessage": {
-    "message": "Wavuti uliotenganishwa unasubiri"
-  },
   "urlErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."
   },
@@ -733,8 +715,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Kirai chako kianzio cha binafsi"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Bei ya gesi sifuri kwenye kuongeza kasi"
   }
 }

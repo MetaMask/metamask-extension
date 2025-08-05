@@ -5,7 +5,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
+import {
+  SMART_ACCOUNT_LEARN_MORE_URL,
+  SMART_TRANSACTIONS_LEARN_MORE_URL,
+} from '../../../../shared/constants/smartTransactions';
 import {
   Box,
   ButtonLink,
@@ -29,10 +32,6 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -60,8 +59,12 @@ export default class AdvancedTab extends PureComponent {
     backupUserData: PropTypes.func.isRequired,
     showExtensionInFullSizeView: PropTypes.bool,
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
-    overrideContentSecurityPolicyHeader: PropTypes.bool,
-    setOverrideContentSecurityPolicyHeader: PropTypes.func.isRequired,
+    manageInstitutionalWallets: PropTypes.bool,
+    setManageInstitutionalWallets: PropTypes.func.isRequired,
+    dismissSmartAccountSuggestionEnabled: PropTypes.bool.isRequired,
+    setDismissSmartAccountSuggestionEnabled: PropTypes.func.isRequired,
+    smartAccountOptIn: PropTypes.bool.isRequired,
+    setSmartAccountOptIn: PropTypes.func.isRequired,
   };
 
   state = {
@@ -209,6 +212,100 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderToggleSmartAccountOptIn() {
+    const { t } = this.context;
+    const { smartAccountOptIn, setSmartAccountOptIn } = this.props;
+
+    const learMoreLink = (
+      <ButtonLink
+        size={ButtonLinkSize.Inherit}
+        textProps={{
+          variant: TextVariant.bodyMd,
+          alignItems: AlignItems.flexStart,
+        }}
+        as="a"
+        href={SMART_ACCOUNT_LEARN_MORE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('learnMoreUpperCase')}
+      </ButtonLink>
+    );
+
+    return (
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-smart-account-optin"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={[null, 4]}
+      >
+        <div className="settings-page__content-item">
+          <span> {t('useSmartAccountTitle')}</span>
+          <div className="settings-page__content-description">
+            {`${t('useSmartAccountDescription')} `}
+            {learMoreLink}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={smartAccountOptIn}
+            onToggle={(oldValue) => {
+              const newValue = !oldValue;
+              setSmartAccountOptIn(newValue);
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="settings-page-smart-account-optin"
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderToggleDismissSmartAccountSuggestion() {
+    const { t } = this.context;
+    const {
+      dismissSmartAccountSuggestionEnabled,
+      setDismissSmartAccountSuggestionEnabled,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[3]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-dismiss-smart-account-suggestion-enabled"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={[null, 4]}
+      >
+        <div className="settings-page__content-item">
+          <span> {t('dismissSmartAccountSuggestionEnabledTitle')}</span>
+          <div className="settings-page__content-description">
+            {t('dismissSmartAccountSuggestionEnabledDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={dismissSmartAccountSuggestionEnabled}
+            onToggle={(oldValue) => {
+              const newValue = !oldValue;
+              setDismissSmartAccountSuggestionEnabled(newValue);
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="settings-page-dismiss-smart-account-suggestion-enabled-toggle"
+          />
+        </div>
+      </Box>
+    );
+  }
+
   renderToggleStxOptIn() {
     const { t } = this.context;
     const { smartTransactionsEnabled, setSmartTransactionsEnabled } =
@@ -232,13 +329,13 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-enable-smart-transactions"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span>{t('smartTransactions')}</span>
@@ -269,12 +366,12 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
         data-testid="advanced-setting-hex-data"
       >
         <div className="settings-page__content-item">
@@ -303,12 +400,12 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
         data-testid="advanced-setting-show-testnet-conversion"
       >
         <div className="settings-page__content-item">
@@ -345,7 +442,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span>{t('showTestnetNetworks')}</span>
@@ -379,7 +476,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span>{t('showExtensionInFullSizeView')}</span>
@@ -462,7 +559,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span>{t('dismissReminderField')}</span>
@@ -553,34 +650,32 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderOverrideContentSecurityPolicyHeader() {
+  renderManageInstitutionalWallets() {
     const { t } = this.context;
-    const {
-      overrideContentSecurityPolicyHeader,
-      setOverrideContentSecurityPolicyHeader,
-    } = this.props;
+    const { manageInstitutionalWallets, setManageInstitutionalWallets } =
+      this.props;
 
     return (
       <Box
-        ref={this.settingsRefs[11]}
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
-        data-testid="advanced-setting-override-content-security-policy-header"
+        data-testid="advanced-setting-dismiss-reminder"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
-          <span>{t('overrideContentSecurityPolicyHeader')}</span>
+          <span>{t('manageInstitutionalWallets')}</span>
           <div className="settings-page__content-description">
-            {t('overrideContentSecurityPolicyHeaderDescription')}
+            {t('manageInstitutionalWalletsDescription')}
           </div>
         </div>
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={overrideContentSecurityPolicyHeader}
-            onToggle={(value) => setOverrideContentSecurityPolicyHeader(!value)}
+            value={manageInstitutionalWallets}
+            onToggle={(value) => setManageInstitutionalWallets(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -599,17 +694,17 @@ export default class AdvancedTab extends PureComponent {
         ) : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
+        {this.renderToggleSmartAccountOptIn()}
+        {this.renderToggleDismissSmartAccountSuggestion()}
         {this.renderToggleStxOptIn()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}
+        {this.renderManageInstitutionalWallets()}
         {this.renderToggleExtensionInFullSizeView()}
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}
-        {getPlatform() === PLATFORM_FIREFOX
-          ? this.renderOverrideContentSecurityPolicyHeader()
-          : null}
       </div>
     );
   }

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import { getShouldShowFiat } from '../selectors';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
@@ -11,7 +12,7 @@ import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils
 /**
  * Get an Eth amount converted to fiat and formatted for display
  *
- * @param {string} [ethAmount] - The eth amount to convert
+ * @param {string | BigNumber} [ethAmount] - The eth amount to convert
  * @param {object} [overrides] - A configuration object that allows the called to explicitly
  *                              ensure fiat is shown even if the property is not set in state.
  * @param {boolean} [overrides.showFiat] - If truthy, ensures the fiat value is shown even if the showFiat value from state is falsey
@@ -39,6 +40,20 @@ export function useEthFiatAmount(
     ethAmount === undefined
   ) {
     return undefined;
+  }
+
+  const fiatAmount = new BigNumber(ethAmount.toString()).times(conversionRate);
+  if (
+    ethAmount &&
+    fiatAmount.lt(new BigNumber(0.01)) &&
+    fiatAmount.greaterThan(new BigNumber(0))
+  ) {
+    return hideCurrencySymbol
+      ? `< ${formatCurrency(0.01, currentCurrency)}`
+      : `< ${formatCurrency(
+          0.01,
+          currentCurrency,
+        )} ${currentCurrency.toUpperCase()}`;
   }
 
   return hideCurrencySymbol

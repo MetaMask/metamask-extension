@@ -1,0 +1,130 @@
+name: Run E2E
+
+on:
+  workflow_call:
+    inputs:
+      test-suite-name:
+        required: true
+        type: string
+        description: The name of the E2E test suite
+      build-artifact:
+        type: string
+        default: ''
+        description: The build artifact to download
+      build-command:
+        type: string
+        default: ''
+        description: The build command to run
+      test-command:
+        required: true
+        type: string
+        description: The test command to run
+      test-timeout-minutes:
+        type: number
+        default: 30
+        description: The timeout in minutes for the test command
+      matrix-index:
+        type: number
+        default: 0
+        description: The index of the job in the matrix
+      matrix-total:
+        type: number
+        default: 1
+        description: The total number of jobs in the matrix
+      test-artifacts-path:
+        type: string
+        default: |
+          ./test-artifacts
+          ./test/test-results/e2e
+        description: The path to the test artifacts
+
+jobs:
+  run-e2e:
+    name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v1.0.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+      # For a `push` event, the head commit hash is `github.sha`.
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      MATRIX_INDEX: ${{ inputs.matrix-index }}
+      MATRIX_TOTAL: ${{ inputs.matrix-total }}
+      JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
+      RUN_ID: ${{ github.run_id }}
+      PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+      TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Restore .metamask folder
+        id: restore-metamask
+        uses: actions/cache/restore@v4
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
+        run: yarn mm-foundryup
+
+      - name: Download build artifact
+        if: ${{ inputs.build-artifact != '' }}
+        id: download-build-artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.build-artifact }}
+
+      # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
+      - run: ${{ inputs.build-command }}
+        if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Download changed-files artifact
+        if: ${{ env.BRANCH != 'main' }}
+        id: download-changed-files
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
+      # if the changed-files artifact does not exist, we get the diff
+      - run: yarn tsx .github/scripts/git-diff-default-branch.ts
+        if: ${{ steps.download-changed-files.outcome == 'failure' }}
+
+      - name: Download test-runs-for-splitting
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: test-runs-for-splitting
+          path: test/test-results/
+
+      - name: Run E2E tests
+        timeout-minutes: ${{ inputs.test-timeout-minutes }}
+        run: ${{ inputs.test-command }} --retries 1
+        env:
+          # The properties are picked up by mocha-junit-reporter and added to the XML test results
+          PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
+
+      - name: Upload test artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.JOB_NAME }}
+          path: ${{ inputs.test-artifacts-path }}

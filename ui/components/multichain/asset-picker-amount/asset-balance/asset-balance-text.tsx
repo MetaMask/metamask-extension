@@ -26,6 +26,8 @@ export type AssetBalanceTextProps = {
   error?: string;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetBalanceText({
   asset,
   balanceColor,
@@ -139,6 +141,8 @@ export function AssetBalanceText({
     return (
       <UserPreferencedCurrencyDisplay
         {...commonProps}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         displayValue={`${showFixedBalanceString || ''}${errorText}`}
       />
     );

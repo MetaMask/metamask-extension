@@ -1,8 +1,16 @@
-import { type Hex, type CaipChainId, isCaipChainId } from '@metamask/utils';
-import { useMemo } from 'react';
+import { type Hex, type CaipChainId } from '@metamask/utils';
+import { useCallback, useMemo } from 'react';
+import {
+  isSolanaChainId,
+  calcLatestSrcBalance,
+  formatChainIdToCaip,
+  formatChainIdToHex,
+  ChainId,
+  isNativeAddress,
+} from '@metamask/bridge-controller';
+import { useLocation } from 'react-router-dom';
 import { getSelectedInternalAccount } from '../../selectors';
-import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
-import { useAsyncResult } from '../useAsyncResult';
+import { useAsyncResult } from '../useAsync';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { useMultichainSelector } from '../useMultichainSelector';
@@ -10,13 +18,14 @@ import {
   getMultichainBalances,
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
+import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
  *
  * @param token - The token object for which the balance is to be fetched. Can be null.
- * @param chainId - The chain ID to be used for fetching the balance. Optional.
  * @returns An object containing the balanceAmount as a string.
  */
 const useLatestBalance = (
@@ -25,9 +34,18 @@ const useLatestBalance = (
     decimals: number;
     symbol: string;
     string?: string;
+    chainId: Hex | CaipChainId | ChainId;
+    assetId?: string;
   } | null,
-  chainId?: Hex | CaipChainId,
 ) => {
+  const { search } = useLocation();
+
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
+  const tokenAddressFromUrl = useMemo(
+    () => searchParams.get(BridgeQueryParams.FROM),
+    [searchParams],
+  );
+
   const { address: selectedAddress, id } = useMultichainSelector(
     getSelectedInternalAccount,
   );
@@ -37,59 +55,92 @@ const useLatestBalance = (
     getMultichainBalances,
   );
 
-  const nonEvmBalances = nonEvmBalancesByAccountId?.[id];
+  const nonEvmBalances = useMemo(
+    () => nonEvmBalancesByAccountId?.[id],
+    [nonEvmBalancesByAccountId, id],
+  );
 
-  const value = useAsyncResult<Numeric | undefined>(async () => {
-    if (
-      token?.address &&
-      // TODO check whether chainId is EVM when MultichainNetworkController is integrated
-      !isCaipChainId(chainId) &&
-      chainId &&
-      currentChainId === chainId
-    ) {
-      return await calcLatestSrcBalance(
-        global.ethereumProvider,
-        selectedAddress,
-        token.address,
-        chainId,
-      );
+  // Don't fetch the balance the src token balance until the tokenAddressFromUrl is unset
+  const shouldUpdateBalance = useCallback(
+    () => token?.chainId && !tokenAddressFromUrl,
+    [tokenAddressFromUrl, token],
+  );
+
+  const value = useAsyncResult<string | undefined>(async () => {
+    if (!shouldUpdateBalance() || !token) {
+      return undefined;
     }
 
-    // No need to fetch the balance for non-EVM tokens, use the balance provided by the
-    // multichain balances controller
-    if (
-      isCaipChainId(chainId) &&
-      chainId === MultichainNetworks.SOLANA &&
-      token?.decimals
-    ) {
-      return Numeric.from(
-        nonEvmBalances?.[token.address]?.amount ?? token?.string,
-        10,
-      ).shiftedBy(-1 * token.decimals);
+    const { chainId, address } = token;
+    // No need to fetch the balance for non-EVM tokens
+    if (isSolanaChainId(chainId)) {
+      return undefined;
+    }
+
+    const caipCurrentChainId = formatChainIdToCaip(currentChainId);
+    if (caipCurrentChainId === formatChainIdToCaip(chainId)) {
+      trace({
+        name: TraceName.BridgeBalancesUpdated,
+        data: {
+          srcChainId: caipCurrentChainId,
+          isNative: isNativeAddress(address),
+        },
+        startTime: Date.now(),
+      });
+      const evmBalance = (
+        await calcLatestSrcBalance(
+          global.ethereumProvider,
+          selectedAddress,
+          address,
+          formatChainIdToHex(chainId),
+        )
+      )?.toString();
+      endTrace({
+        name: TraceName.BridgeBalancesUpdated,
+      });
+      return evmBalance;
     }
 
     return undefined;
-  }, [
-    chainId,
-    currentChainId,
-    token,
-    selectedAddress,
-    global.ethereumProvider,
-    nonEvmBalances,
-  ]);
+  }, [currentChainId, token, selectedAddress, shouldUpdateBalance]);
 
-  if (token && !token.decimals) {
+  const nonEvmBalance = useMemo(() => {
+    if (!shouldUpdateBalance() || !token) {
+      return undefined;
+    }
+
+    const { chainId, decimals, address } = token;
+
+    // Use the balance provided by the multichain balances controller
+    if (isSolanaChainId(chainId) && decimals) {
+      const caipAssetType = isNativeAddress(address)
+        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+        : (token.assetId ?? token.address);
+      return Numeric.from(
+        nonEvmBalances?.[caipAssetType]?.amount ?? token?.string,
+        10,
+      )
+        .shiftedBy(-1 * token.decimals)
+        .toString();
+    }
+    return undefined;
+  }, [shouldUpdateBalance, token, nonEvmBalances]);
+
+  if (token && typeof token.decimals !== 'number') {
     throw new Error(
       `Failed to calculate latest balance - ${token.symbol} token is missing "decimals" value`,
     );
   }
 
+  const balance = useMemo(() => {
+    return token?.chainId && isSolanaChainId(token.chainId)
+      ? nonEvmBalance
+      : value?.value;
+  }, [nonEvmBalance, value?.value, token?.chainId]);
+
   return useMemo(
-    () =>
-      value?.value
-        ? calcTokenAmount(value.value.toString(), token?.decimals)
-        : undefined,
-    [value.value, token?.decimals],
+    () => (balance ? calcTokenAmount(balance, token?.decimals) : undefined),
+    [balance, token?.decimals],
   );
 };
 

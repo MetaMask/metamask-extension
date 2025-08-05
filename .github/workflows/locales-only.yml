@@ -16,15 +16,17 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Get changed files with git diff
         run: yarn tsx .github/scripts/git-diff-default-branch.ts
 
       - name: Validate locales only
-        run: yarn tsx .circleci/scripts/validate-locales-only.ts
+        run: yarn tsx .github/scripts/validate-locales-only.ts
 
       - name: Run lint
         run: yarn lint && yarn verify-locales --quiet

@@ -59,7 +59,10 @@ import {
   getLatestAddedTokenTo,
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/modules/selectors/networks';
 import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
@@ -210,6 +213,7 @@ export default function PrepareSwapPage({
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
   const { defaultToToken } = useSwapDefaultToToken();
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const transactionSettingsOpened = useSelector(
     getTransactionSettingsOpened,
@@ -475,8 +479,8 @@ export default function PrepareSwapPage({
         );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
-      t('etherscan')
+    ? (CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
+      t('etherscan'))
     : t('etherscan');
 
   const { address: toAddress } = toToken || {};
@@ -487,13 +491,14 @@ export default function PrepareSwapPage({
           ignoreTokens({
             tokensToIgnore: toAddress,
             dontShowLoadingIndicator: true,
+            networkClientId,
           }),
         );
       }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch, latestAddedTokenTo, toAddress],
+    [dispatch, latestAddedTokenTo, toAddress, networkClientId],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
@@ -1219,6 +1224,8 @@ export default function PrepareSwapPage({
             onModalClose={() => {
               dispatch(setTransactionSettingsOpened(false));
             }}
+            sourceTokenSymbol={fromToken?.symbol}
+            destinationTokenSymbol={toToken?.symbol}
           />
         )}
         {showQuotesLoadingAnimation && (

@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -14,6 +12,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
   ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
   ///: END:ONLY_INCLUDE_IF
+  ONBOARDING_METAMETRICS,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -21,38 +21,75 @@ import {
   getIsUnlocked,
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+///: END:ONLY_INCLUDE_IF
+import {
+  getFirstTimeFlowType,
+  getIsParticipateInMetaMetricsSet,
+  getIsSocialLoginFlow,
+  getIsSocialLoginFlowInitialized,
+} from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
+  const isSocialLoginFlowInitialized = useSelector(
+    getIsSocialLoginFlowInitialized,
+  );
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isUnlocked = useSelector(getIsUnlocked);
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
 
   if (completedOnboarding) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  if (seedPhraseBackedUp !== null) {
-    return <Redirect to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
+  if (seedPhraseBackedUp !== null || (isUnlocked && isSocialLoginFlow)) {
+    return (
+      <Redirect
+        to={{
+          pathname: isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+        }}
+      />
+    );
   }
-  ///: END:ONLY_INCLUDE_IF
 
   if (isUnlocked) {
     return <Redirect to={{ pathname: LOCK_ROUTE }} />;
   }
 
   // TODO(ritave): Remove allow-list and only leave experimental_area exception
-  if (!isInitialized) {
+  if (!isInitialized && !isSocialLoginFlowInitialized) {
     let redirect;
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     redirect = <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
-    redirect = <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />;
+    redirect =
+      getBrowserName() === PLATFORM_FIREFOX ? (
+        <Redirect to={{ pathname: ONBOARDING_METAMETRICS }} />
+      ) : (
+        <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />
+      );
     ///: END:ONLY_INCLUDE_IF
     return redirect;
+  }
+  if (
+    !isInitialized &&
+    isSocialLoginFlowInitialized &&
+    firstTimeFlowType === FirstTimeFlowType.socialCreate
+  ) {
+    return <Redirect to={{ pathname: ONBOARDING_CREATE_PASSWORD_ROUTE }} />;
   }
 
   return <Redirect to={{ pathname: ONBOARDING_UNLOCK_ROUTE }} />;

@@ -1,10 +1,11 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { mockBip44Snap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 const publicKeyBip44 =
   '"0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e08d1"';
@@ -20,19 +21,19 @@ describe('Test Snap bip-44', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
+        testSpecificMock: mockBip44Snap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        // We explicitly choose to await balances to prevent flakiness due to long login times.
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to `test-snaps` page, and install the Snap.
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectBip44Button',
-          true,
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectBip44Button', {
+          withWarning: true,
+        });
 
         // check the installation status
         await testSnaps.check_installationComplete(

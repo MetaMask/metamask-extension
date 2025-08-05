@@ -27,6 +27,11 @@ describe('Account-watcher snap', function (this: Suite) {
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -43,7 +48,7 @@ describe('Account-watcher snap', function (this: Suite) {
       );
     });
 
-    it("disables 'Send' 'Swap' and 'Bridge' buttons for watch accounts", async function () {
+    it("disables 'Send' and 'Bridge' buttons for watch accounts", async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -51,6 +56,11 @@ describe('Account-watcher snap', function (this: Suite) {
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -66,16 +76,8 @@ describe('Account-watcher snap', function (this: Suite) {
           // 'Send' button should be disabled
           assert.equal(await homePage.check_ifSendButtonIsClickable(), false);
 
-          // 'Swap' button should be disabled
-          assert.equal(await homePage.check_ifSwapButtonIsClickable(), false);
-
           // 'Bridge' button should be disabled
           assert.equal(await homePage.check_ifBridgeButtonIsClickable(), false);
-
-          // check tooltips for disabled buttons
-          await homePage.check_disabledButtonTooltip(
-            'Not supported with this account.',
-          );
         },
       );
     });
@@ -117,6 +119,11 @@ describe('Account-watcher snap', function (this: Suite) {
                 watchEthereumAccountEnabled: true,
               })
               .withNetworkControllerOnMainnet()
+              .withEnabledNetworks({
+                eip155: {
+                  '0x1': true,
+                },
+              })
               .build(),
             title: this.test?.fullTitle(),
           },
@@ -150,6 +157,11 @@ describe('Account-watcher snap', function (this: Suite) {
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -180,6 +192,11 @@ describe('Account-watcher snap', function (this: Suite) {
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -191,7 +208,7 @@ describe('Account-watcher snap', function (this: Suite) {
           // open account details modal in header navbar
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
-          await headerNavbar.openAccountDetailsModal();
+          await headerNavbar.openAccountDetailsModalDetailsTab();
 
           // check 'Show private key' button should not be displayed
           const accountDetailsModal = new AccountDetailsModal(driver);
@@ -209,6 +226,11 @@ describe('Account-watcher snap', function (this: Suite) {
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
             .build(),
           title: this.test?.fullTitle(),
         },

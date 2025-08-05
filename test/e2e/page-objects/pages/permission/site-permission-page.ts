@@ -58,6 +58,8 @@ class SitePermissionPage {
    *
    * @param site - Site to check
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(site: string): Promise<void> {
     try {
       await this.driver.waitForSelector(this.connectedAccountsInfo);
@@ -87,15 +89,34 @@ class SitePermissionPage {
   }
 
   /**
+   * Open the account edit permissions modal
+   */
+  async openAccountPermissionsModal(): Promise<void> {
+    const editButtons = await this.driver.findElements(this.editButton);
+    await editButtons[0].click();
+    await this.driver.waitForSelector(this.editAccountsModalTitle);
+  }
+
+  /**
+   * Open the network edit permissions modal
+   */
+  async openNetworkPermissionsModal(): Promise<void> {
+    const editButtons = await this.driver.findElements(this.editButton);
+    await editButtons[1].click();
+    await this.driver.waitForSelector(this.editNetworksModalTitle);
+  }
+
+  /**
    * Edit permissions for accounts on site permission page
    *
    * @param accountLabels - Account labels to edit
    */
   async editPermissionsForAccount(accountLabels: string[]): Promise<void> {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.log(`Edit permissions for accounts: ${accountLabels}`);
-    const editButtons = await this.driver.findElements(this.editButton);
-    await editButtons[0].click();
-    await this.driver.waitForSelector(this.editAccountsModalTitle);
+    await this.openAccountPermissionsModal();
+
     for (const accountLabel of accountLabels) {
       await this.driver.clickElement({ text: accountLabel, tag: 'button' });
     }
@@ -110,10 +131,11 @@ class SitePermissionPage {
    * @param networkNames - Network names to edit
    */
   async editPermissionsForNetwork(networkNames: string[]): Promise<void> {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.log(`Edit permissions for networks: ${networkNames}`);
-    const editButtons = await this.driver.findElements(this.editButton);
-    await editButtons[1].click();
-    await this.driver.waitForSelector(this.editNetworksModalTitle);
+    await this.openNetworkPermissionsModal();
+
     for (const networkName of networkNames) {
       await this.driver.clickElement({ text: networkName, tag: 'p' });
     }
@@ -127,6 +149,8 @@ class SitePermissionPage {
    *
    * @param number - Expected number of connected accounts
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_connectedAccountsNumber(number: number): Promise<void> {
     console.log(`Check that the number of connected accounts is: ${number}`);
     await this.driver.waitForSelector({
@@ -140,6 +164,8 @@ class SitePermissionPage {
    *
    * @param number - Expected number of connected networks
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_connectedNetworksNumber(number: number): Promise<void> {
     console.log(`Check that the number of connected networks is: ${number}`);
     await this.driver.waitForSelector({

@@ -9,29 +9,29 @@ import browser from 'webextension-polyfill';
  */
 export type ManifestFlags = {
   /**
-   * CircleCI metadata for the current run
+   * CI metadata for the current run
    */
-  circleci?: {
+  ci?: {
     /**
-     * Whether CircleCI manifest flags are enabled.
+     * Whether CI manifest flags are enabled.
      */
     enabled: boolean;
     /**
-     * The name of the branch that triggered the current run on CircleCI
+     * The name of the branch that triggered the current run on CI
      */
     branch?: string;
     /**
-     * The current CircleCI build number
+     * The current CI commit hash
      */
-    buildNum?: number;
+    commitHash?: string;
     /**
-     * The name of the CircleCI job currently running
+     * The name of the CI job currently running
      */
     job?: string;
     /**
-     * For jobs with CircleCI parallelism enabled, this is the index of the current machine.
+     * For jobs with CI parallelism enabled, this is the index of the current machine.
      */
-    nodeIndex?: number;
+    matrixIndex?: number;
     /**
      * The number of the pull request that triggered the current run
      */
@@ -67,6 +67,19 @@ export type ManifestFlags = {
   remoteFeatureFlags?: {
     [key: string]: Json;
   };
+  /**
+   * Testing flags to control testing behavior
+   */
+  testing?: {
+    /**
+     * Whether to force the ExtensionStore class to be used during testing
+     */
+    forceExtensionStore?: boolean;
+    /**
+     * The public key used to verify deep links
+     */
+    deepLinkPublicKey?: string;
+  };
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- you can't extend a type, we want this to be an interface
@@ -90,6 +103,8 @@ export function getManifestFlags(): ManifestFlags {
   }
 
   return (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (browser.runtime.getManifest() as WebExtensionManifestWithFlags)._flags ||
     {}
   );

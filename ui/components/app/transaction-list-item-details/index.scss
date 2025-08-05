@@ -49,8 +49,6 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    height: 42px;
-    justify-content: space-between;
 
     .btn-link {
       font-size: 12px;
@@ -66,8 +64,7 @@
   &__operations {
     margin: 0 16px 16px 16px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-end;
   }
 
   &__header {

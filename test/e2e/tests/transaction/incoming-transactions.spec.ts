@@ -1,10 +1,11 @@
 import { Mockttp } from 'mockttp';
+import { TransactionType } from '@metamask/transaction-controller';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
@@ -56,6 +57,8 @@ const RESPONSE_OUTGOING_MOCK = {
   ...RESPONSE_STANDARD_MOCK,
   from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
   to: '0x2',
+  methodId: '0x12345678',
+  value: '4560000000000000000',
 };
 
 async function mockAccountsApi(
@@ -89,19 +92,29 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
+          .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
+        await loginWithoutBalanceValidation(driver);
+        const homepage = new HomePage(driver);
+        await homepage.goToActivityList();
+
+        const activityList = new ActivityListPage(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity(2);
 
-        await activityList.check_txAction('Receive', 1);
+        await activityList.check_txAction('Received', 1);
         await activityList.check_txAmountInActivity('1.23 ETH', 1);
 
-        await activityList.check_txAction('Receive', 2);
+        await activityList.check_txAction('Received', 2);
         await activityList.check_txAmountInActivity('2.34 ETH', 2);
       },
     );
@@ -111,7 +124,12 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -129,11 +147,16 @@ describe('Incoming Transactions', function () {
     );
   });
 
-  it('ignores outgoing transactions', async function () {
+  it('adds outgoing transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -143,7 +166,10 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+        await activityList.check_confirmedTxNumberDisplayedInActivity(2);
+
+        await activityList.check_txAction('Contract interaction', 2);
+        await activityList.check_txAmountInActivity('-4.56 ETH', 2);
       },
     );
   });
@@ -152,7 +178,12 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(false)
+          .withUseBasicFunctionalityDisabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
@@ -169,13 +200,19 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
           .withTransactions([
             {
               hash: RESPONSE_STANDARD_MOCK.hash,
               txParams: { from: RESPONSE_STANDARD_MOCK.from },
+              type: TransactionType.incoming,
             },
           ])
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
@@ -190,7 +227,7 @@ describe('Incoming Transactions', function () {
 
 async function changeNetworkAndGoToActivity(driver: Driver) {
   await loginWithoutBalanceValidation(driver);
-  await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+  await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
   const homepage = new HomePage(driver);
   await homepage.goToActivityList();

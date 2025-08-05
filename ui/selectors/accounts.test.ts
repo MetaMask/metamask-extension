@@ -5,17 +5,14 @@ import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_ERC4337,
   MOCK_ACCOUNT_BIP122_P2WPKH,
-  MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
 import mockState from '../../test/data/mock-state.json';
 import {
   AccountsState,
   isSelectedInternalAccountEth,
-  isSelectedInternalAccountBtc,
-  hasCreatedBtcMainnetAccount,
-  hasCreatedBtcTestnetAccount,
   getSelectedInternalAccount,
   getInternalAccounts,
+  getInternalAccountsObject,
 } from './accounts';
 
 const MOCK_STATE: AccountsState = {
@@ -56,7 +53,9 @@ describe('Accounts Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -145,96 +144,11 @@ describe('Accounts Selectors', () => {
     });
   });
 
-  describe('isSelectedInternalAccountBtc', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([
-      { type: MOCK_ACCOUNT_EOA.type, id: MOCK_ACCOUNT_EOA.id, isBtc: false },
-      {
-        type: MOCK_ACCOUNT_ERC4337.type,
-        id: MOCK_ACCOUNT_ERC4337.id,
-        isBtc: false,
-      },
-      {
-        type: MOCK_ACCOUNT_BIP122_P2WPKH.type,
-        id: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-        isBtc: true,
-      },
-    ])(
-      'returns $isBtc if the account is: $type',
-      ({ id, isBtc }: { id: string; isBtc: boolean }) => {
-        const state = MOCK_STATE;
-
-        state.metamask.internalAccounts.selectedAccount = id;
-        expect(isSelectedInternalAccountBtc(state)).toBe(isBtc);
-      },
-    );
-
-    it('returns false if none account is selected', () => {
-      const state = MOCK_STATE;
-
-      state.metamask.internalAccounts.selectedAccount = '';
-      expect(isSelectedInternalAccountBtc(MOCK_STATE)).toBe(false);
-    });
-  });
-
-  describe('hasCreatedBtcMainnetAccount', () => {
-    it('returns true if the BTC mainnet account has been created', () => {
-      const state = MOCK_STATE;
-
-      expect(hasCreatedBtcMainnetAccount(state)).toBe(true);
-    });
-
-    it('returns false if the BTC mainnet account has not been created yet', () => {
-      const state: AccountsState = {
-        metamask: {
-          // No-op for this test, but might be required in the future:
-          ...MOCK_STATE.metamask,
-          internalAccounts: {
-            selectedAccount: MOCK_ACCOUNT_EOA.id,
-            accounts: { mock_account_eoa: MOCK_ACCOUNT_EOA },
-          },
-        },
-      };
-
-      expect(isSelectedInternalAccountBtc(state)).toBe(false);
-    });
-  });
-
-  describe('hasCreatedBtcTestnetAccount', () => {
-    it('returns true if the BTC testnet account has been created', () => {
-      const state: AccountsState = {
-        metamask: {
-          // No-op for this test, but might be required in the future:
-          ...MOCK_STATE.metamask,
-          internalAccounts: {
-            selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-            accounts: {
-              mock_account_bip122_pwpkh: MOCK_ACCOUNT_BIP122_P2WPKH,
-              mock_account_bip122_p2wpkh_testnet:
-                MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
-            },
-          },
-        },
-      };
-
-      expect(hasCreatedBtcTestnetAccount(state)).toBe(true);
-    });
-
-    it('returns false if the BTC testnet account has not been created yet', () => {
-      const state: AccountsState = {
-        metamask: {
-          // No-op for this test, but might be required in the future:
-          ...MOCK_STATE.metamask,
-          internalAccounts: {
-            selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-            accounts: {
-              mock_account_bip122_p2wpkh: MOCK_ACCOUNT_BIP122_P2WPKH,
-            },
-          },
-        },
-      };
-
-      expect(isSelectedInternalAccountBtc(state)).toBe(false);
+  describe('getInternalAccountsObject', () => {
+    it('returns the internal accounts object', () => {
+      expect(
+        getInternalAccountsObject(mockState as AccountsState),
+      ).toStrictEqual(mockState.metamask.internalAccounts.accounts);
     });
   });
 });

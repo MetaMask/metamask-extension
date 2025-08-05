@@ -1,0 +1,23 @@
+{
+  "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": {
+    "id": "usd-coin",
+    "price": 0.999793,
+    "marketCap": 61542953704,
+    "allTimeHigh": 1.17,
+    "allTimeLow": 0.877647,
+    "totalVolume": 9348231451,
+    "high1d": 0.999817,
+    "low1d": 0.999679,
+    "circulatingSupply": 61556030405.52778,
+    "dilutedMarketCap": 61550339528,
+    "marketCapPercentChange1d": -0.09557,
+    "priceChange1d": 0.00005363,
+    "pricePercentChange1h": 0.000029061306970489807,
+    "pricePercentChange1d": 0.00536420028047396,
+    "pricePercentChange7d": -0.001434739608255301,
+    "pricePercentChange14d": -0.02055901758173432,
+    "pricePercentChange30d": -0.017196961352851058,
+    "pricePercentChange200d": 0.040737368524822216,
+    "pricePercentChange1y": -0.008133540526302847
+  }
+}

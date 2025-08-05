@@ -3,7 +3,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 describe('Request Queueing', function () {
   it('should keep subscription on dapp network when switching different mm network', async function () {
@@ -13,7 +13,7 @@ describe('Request Queueing', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
           {
@@ -67,7 +67,7 @@ describe('Request Queueing', function () {
         );
 
         // Switch networks
-        await switchToNetworkFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         // Navigate back to the test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

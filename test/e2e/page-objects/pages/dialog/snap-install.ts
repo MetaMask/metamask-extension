@@ -4,8 +4,28 @@ import { veryLargeDelayMs } from '../../../helpers';
 class SnapInstall {
   private driver: Driver;
 
+  private readonly addToMetaMaskHeader = {
+    tag: 'h3',
+    text: 'Add to MetaMask',
+  };
+
+  private readonly confirmButton = {
+    tag: 'button',
+    text: 'Confirm',
+  };
+
+  private readonly connectButton = {
+    tag: 'button',
+    text: 'Connect',
+  };
+
   private readonly nextPageButton =
     '[data-testid="page-container-footer-next"]';
+
+  private readonly okButton = {
+    tag: 'button',
+    text: 'OK',
+  };
 
   private readonly pageFooter = '.page-container__footer';
 
@@ -18,24 +38,27 @@ class SnapInstall {
 
   private readonly approveButton = '[data-testid="confirmation-submit-button"]';
 
-  private readonly connectButton = '[data-testid="confirm-btn"]';
-
   public readonly lifeCycleHookMessageElement = '.snap-ui-renderer__panel';
-
-  private readonly insightTitle = {
-    text: 'Insights Example Snap',
-    tag: 'span',
-  };
-
-  private readonly transactionType = {
-    css: 'p',
-    text: 'ERC-20',
-  };
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_messageResultSpan(
+    spanSelectorId: string,
+    expectedMessage: string,
+  ) {
+    console.log('Checking message result');
+    await this.driver.waitForSelector({
+      css: spanSelectorId,
+      text: expectedMessage,
+    });
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -52,58 +75,23 @@ class SnapInstall {
     console.log('Snap install dialog is loaded');
   }
 
+  async clickApproveButton() {
+    console.log('Clicking the approve button');
+    await this.driver.clickElement(this.approveButton);
+  }
+
   async clickCheckboxPermission() {
     console.log('Clicking permission checkbox');
     await this.driver.clickElement(this.permissionConnect);
-  }
-
-  async clickNextButton() {
-    console.log('Clicking Confirm/Ok button');
-    await this.driver.clickElement(this.nextPageButton);
-  }
-
-  async waitForNextButton() {
-    console.log('Waiting for Confirm/Ok button to load');
-    await this.driver.waitForSelector(this.nextPageButton);
   }
 
   async clickConfirmButton() {
     console.log(
       'Clicking on the scroll button and then clicking the confirm button',
     );
-    await this.driver.waitUntil(
-      async () => {
-        await this.driver.clickElementSafe(this.snapInstallScrollArea);
-        const isEnabled = await this.driver.findClickableElement(
-          this.nextPageButton,
-        );
-        return isEnabled;
-      },
-      { timeout: veryLargeDelayMs, interval: 100 },
-    );
-    await this.driver.clickElement(this.nextPageButton);
-  }
-
-  async updateScrollAndClickConfirmButton() {
-    console.log(
-      'Clicking on the scroll button and then  clicking the confirm button',
-    );
-    await this.driver.waitUntil(
-      async () => {
-        await this.driver.clickElementSafe(this.snapUpdateScrollArea);
-        const isEnabled = await this.driver.findClickableElement(
-          this.nextPageButton,
-        );
-        return isEnabled;
-      },
-      { timeout: veryLargeDelayMs, interval: 100 },
-    );
-    await this.driver.clickElement(this.nextPageButton);
-  }
-
-  async clickApproveButton() {
-    console.log('Clicking the approve button');
-    await this.driver.clickElement(this.approveButton);
+    await this.driver.waitForSelector(this.addToMetaMaskHeader);
+    await this.driver.clickElementSafe(this.snapInstallScrollArea);
+    await this.driver.clickElement(this.confirmButton);
   }
 
   async clickConnectButton() {
@@ -111,25 +99,38 @@ class SnapInstall {
     await this.driver.clickElement(this.connectButton);
   }
 
-  async check_transactionInsightsTitle() {
-    console.log('Checking transaction insights title');
-    await this.driver.waitForSelector(this.insightTitle);
+  async clickOkButton() {
+    console.log('Clicking Confirm/Ok button and wait for dialog to close');
+    await this.driver.clickElementAndWaitForWindowToClose(this.okButton);
   }
 
-  async check_transactionInsightsType() {
-    console.log('Checking transaction insights type');
-    await this.driver.waitForSelector(this.transactionType);
+  async clickOkButtonAndContinueOnDialog() {
+    console.log(
+      'Clicking Confirm/Ok button without waiting for the dialog to close',
+    );
+    await this.driver.clickElement(this.okButton);
   }
 
-  async check_messageResultSpan(
-    spanSelectorId: string,
-    expectedMessage: string,
-  ) {
-    console.log('Checking message result');
-    await this.driver.waitForSelector({
-      css: spanSelectorId,
-      text: expectedMessage,
-    });
+  async clickFooterConfirmButton() {
+    console.log('Clicking Confirm button');
+    await this.driver.clickElement(this.nextPageButton);
+  }
+
+  async updateScrollAndClickConfirmButton() {
+    console.log(
+      'Clicking on the scroll button and then clicking the confirm button',
+    );
+    await this.driver.waitUntil(
+      async () => {
+        await this.driver.clickElementSafe(this.snapUpdateScrollArea);
+        const element = await this.driver.findClickableElement(
+          this.nextPageButton,
+        );
+        return Boolean(element);
+      },
+      { timeout: veryLargeDelayMs, interval: 100 },
+    );
+    await this.driver.clickElement(this.nextPageButton);
   }
 }
 

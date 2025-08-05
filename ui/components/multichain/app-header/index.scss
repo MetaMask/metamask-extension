@@ -6,21 +6,14 @@
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
+  // prevent overflow-x
+  max-width: 100%;
   flex-flow: column nowrap;
-  z-index: 55;
+  z-index: design-system.$header-z-index;
   min-height: 68px;
 
   &__contents {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
     height: 68px;
-
-    @include design-system.screen-sm-max {
-      height: $height-screen-sm-max;
-
-      /* Ensures network picker column and icons column are always the same size */
-      grid-template-columns: 64px 2fr 64px;
-    }
 
     @include design-system.screen-sm-min {
       width: $width-screen-sm-min;
@@ -41,6 +34,10 @@
     &__container {
       width: fit-content;
     }
+
+    border-bottom: 1px solid var(--color-border-muted);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 
   &__address-copy-button {
@@ -70,11 +67,21 @@
     @include design-system.screen-lg-min {
       width: $width-screen-lg-min;
     }
-  }
-}
 
-.multichain-app-header-shadow {
-  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+    // always display horizontal logo on locked screen
+    .app-header__metafox-logo {
+      &--icon {
+        display: none;
+      }
+
+      &--horizontal {
+        @include design-system.screen-sm-max {
+          display: block;
+          width: 60px;
+        }
+      }
+    }
+  }
 }
 
 .multichain-app-header-logo {

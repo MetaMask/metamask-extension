@@ -6,6 +6,8 @@ import { Box } from '../box';
 import { ContainerProps, ContainerComponent } from './container.types';
 
 export const Container: ContainerComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     { children, className = '', maxWidth, ...props }: ContainerProps<C>,
     ref?: PolymorphicRef<C>,

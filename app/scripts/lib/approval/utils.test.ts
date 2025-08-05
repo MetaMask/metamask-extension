@@ -12,6 +12,11 @@ import { rejectAllApprovals, rejectOriginApprovals } from './utils';
 const ID_MOCK = '123';
 const ID_MOCK_2 = '456';
 const INTERFACE_ID_MOCK = '789';
+const REJECT_ALL_APPROVALS_DATA = {
+  data: {
+    cause: 'rejectAllApprovals',
+  },
+};
 
 function createApprovalControllerMock(
   pendingApprovals: Partial<ApprovalRequest<Record<string, Json>>>[],
@@ -40,11 +45,11 @@ describe('Approval Utils', () => {
       expect(approvalController.reject).toHaveBeenCalledTimes(2);
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK,
-        providerErrors.userRejectedRequest(),
+        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK_2,
-        providerErrors.userRejectedRequest(),
+        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
     });
 
@@ -122,7 +127,7 @@ describe('Approval Utils', () => {
       expect(approvalController.reject).toHaveBeenCalledTimes(1);
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK,
-        providerErrors.userRejectedRequest(),
+        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
     });
   });

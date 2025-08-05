@@ -1,9 +1,7 @@
 import { strict as assert } from 'assert';
+import { DAPP_URL } from '../../constants';
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 class TestDapp {
   private readonly driver: Driver;
@@ -36,17 +34,36 @@ class TestDapp {
   private readonly connectAccountButton = '#connectButton';
 
   private readonly connectMetaMaskMessage = {
-    text: 'Connect this website with MetaMask.',
+    text: 'Connect this website with MetaMask',
     tag: 'p',
   };
 
   private readonly connectedAccount = '#accounts';
 
+  private readonly connectedNetwork = (networkId: string) => ({
+    css: '#chainId',
+    text: networkId,
+  });
+
   private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
+
+  private readonly decryptButton = '#decryptButton';
+
+  private readonly decryptedMessage = '#cleartextDisplay';
 
   private readonly depositPiggyBankContractButton = '#depositButton';
 
+  private readonly eip5792SendCallsError = '#eip5792SendCallsError';
+
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
+
+  private readonly encryptButton = '#encryptButton';
+
+  private readonly encryptedMessage = '#ciphertextDisplay';
+
+  private readonly encryptMessageInput = '#encryptMessageInput';
+
+  private readonly erc1155DeployButton = '#deployERC1155Button';
 
   private readonly erc1155MintButton = '#batchMintButton';
 
@@ -62,25 +79,58 @@ class TestDapp {
 
   private readonly erc1155WatchButton = '#watchAssetButton';
 
+  private readonly erc20CreateTokenButton = '#createToken';
+
   private readonly erc20TokenAddresses = '#erc20TokenAddresses';
 
   private readonly erc20TokenTransferButton = '#transferTokens';
 
   private readonly erc20WatchAssetButton = '#watchAssets';
 
+  private readonly erc20IncreaseTokensAllowanceButton =
+    '#increaseTokenAllowance';
+
+  private readonly erc721TokenAddresses = '#erc721TokenAddresses';
+
+  private readonly erc721DeployButton = '#deployNFTsButton';
+
   private readonly erc721MintButton = '#mintButton';
 
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
 
+  private readonly erc721ApproveButton = '#approveButton';
+
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
 
   private readonly erc721TransferFromButton = '#transferFromButton';
+
+  private readonly ethSubscribeResponse =
+    '[data-testid="eth-subscribe-response"]';
+
+  private readonly getAccountsButton = '#getAccounts';
+
+  private readonly getAccountsResult = '#getAccountsResult';
+
+  private readonly getEncryptionKeyButton = '#getEncryptionKeyButton';
+
+  private readonly getEncryptionKeyResult = '#encryptionKeyDisplay';
+
+  private readonly getPermissionsButton = '#getPermissions';
+
+  private readonly getPermissionsResult = '#permissionsResult';
 
   private readonly localhostNetworkMessage = { css: '#chainId', text: '0x539' };
 
   private readonly mmlogo = '#mm-logo';
 
   private maliciousERC20TransferButton = '#maliciousERC20TransferButton';
+
+  private readonly ethSignButton = '#ethSign';
+
+  private readonly ethSignErrorMessage = {
+    css: '#ethSign',
+    text: 'Error: The method "eth_sign" does not exist / is not available.',
+  };
 
   private readonly personalSignButton = '#personalSign';
 
@@ -91,9 +141,13 @@ class TestDapp {
   private personalSignSigUtilResultSelector =
     '#personalSignVerifySigUtilResult';
 
+  private readonly provider = '#provider';
+
   private readonly revokePermissionButton = '#revokeAccountsPermission';
 
   private readonly sign721PermitButton = '#sign721Permit';
+
+  private readonly sendCallsButton = '#eip5792SendCallsButton';
 
   private sign721PermitResult = '#sign721PermitResult';
 
@@ -187,11 +241,35 @@ class TestDapp {
   }
 
   /**
+   * Sends a JSON-RPC request to the connected wallet using window.ethereum.
+   *
+   * @param method - The RPC method name.
+   * @param params - The parameters for the RPC method.
+   * @returns The result of the RPC call.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async request<T>(method: string, params?: unknown[] | object): Promise<T> {
+    console.log(`Sending request: ${method}`, params);
+    return await this.driver.executeScript(
+      'return window.ethereum.request(arguments[0])',
+      [
+        {
+          method,
+          params,
+        },
+      ],
+    );
+  }
+
+  /**
    * Verifies the accounts connected to the test dapp.
    *
    * @param connectedAccounts - Account addresses to check if connected to test dapp, separated by a comma.
    * @param shouldBeConnected - Whether the accounts should be connected to test dapp. Defaults to true.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_connectedAccounts(
     connectedAccounts: string,
     shouldBeConnected: boolean = true,
@@ -212,10 +290,62 @@ class TestDapp {
   }
 
   /**
+   * Verify the decrypted message on test dapp.
+   *
+   * @param message - The decrypted message to verify.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_decryptedMessage(message: string) {
+    console.log('Verify decrypted message on test dapp');
+    await this.driver.waitForSelector({
+      css: this.decryptedMessage,
+      text: message,
+    });
+  }
+
+  /**
+   * Verify the EIP-5792 send calls error message on the test dapp.
+   *
+   * @param expectedMessage - The expected error message to verify.
+   */
+  async checkEip5792SendCallsError(expectedMessage: string) {
+    await this.driver.waitForSelector({
+      css: this.eip5792SendCallsError,
+      text: expectedMessage,
+    });
+  }
+
+  /**
+   * Verifies the eth_subscribe response.
+   *
+   * @param shouldBePresent - Whether the eth_subscribe response should be present, defaults to true.
+   * @param guardTime - Time to wait to check if the eth_subscribe response is present, defaults to 1000ms.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_ethSubscribeResponse(
+    shouldBePresent: boolean = true,
+    guardTime: number = 1000,
+  ) {
+    if (shouldBePresent) {
+      console.log('Verify eth_subscribe response is displayed');
+      await this.driver.waitForSelector(this.ethSubscribeResponse);
+    } else {
+      console.log('Verify eth_subscribe response is not displayed');
+      await this.driver.assertElementNotPresent(this.ethSubscribeResponse, {
+        waitAtLeastGuard: guardTime,
+      });
+    }
+  }
+
+  /**
    * Verify the failed personal sign signature.
    *
    * @param expectedFailedMessage - The expected failed message.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_failedPersonalSign(expectedFailedMessage: string) {
     console.log('Verify failed personal sign signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -230,6 +360,8 @@ class TestDapp {
    *
    * @param expectedFailedMessage - The expected failed message.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_failedSignPermit(expectedFailedMessage: string) {
     console.log('Verify failed signPermit signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -244,6 +376,8 @@ class TestDapp {
    *
    * @param expectedFailedMessage - The expected failed message.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_failedSignTypedData(expectedFailedMessage: string) {
     console.log('Verify failed signTypedData signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -258,6 +392,8 @@ class TestDapp {
    *
    * @param expectedFailedMessage - The expected failed message.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_failedSignTypedDataV3(expectedFailedMessage: string) {
     console.log('Verify failed signTypedDataV3 signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -272,6 +408,8 @@ class TestDapp {
    *
    * @param expectedFailedMessage - The expected failed message.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_failedSignTypedDataV4(expectedFailedMessage: string) {
     console.log('Verify failed signTypedDataV4 signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -281,6 +419,62 @@ class TestDapp {
     });
   }
 
+  /**
+   * Verify get connected accounts result.
+   *
+   * @param expectedResult - The expected account address.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_getAccountsResult(expectedResult: string) {
+    console.log(
+      'Verify get connected accounts result contains:',
+      expectedResult,
+    );
+    await this.driver.clickElement(this.getAccountsButton);
+    await this.driver.waitForSelector({
+      css: this.getAccountsResult,
+      text: expectedResult,
+    });
+  }
+
+  /**
+   * Verify the get encryption key result.
+   *
+   * @param encryptionKey - The encryption key to display.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_getEncryptionKeyResult(encryptionKey: string) {
+    console.log(
+      'Verify get encryption key result on test dapp: ',
+      encryptionKey,
+    );
+    await this.driver.waitForSelector({
+      css: this.getEncryptionKeyResult,
+      text: encryptionKey,
+    });
+  }
+
+  /**
+   * Verify get permissions result.
+   *
+   * @param expectedPermission - The expected displayed permission.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_getPermissionsResult(expectedPermission: string) {
+    console.log('Verify get permissions result contains:', expectedPermission);
+    await this.driver.waitForElementToStopMoving(this.getPermissionsButton);
+    await this.driver.clickElement(this.getPermissionsButton);
+    await this.driver.waitForSelector({
+      css: this.getPermissionsResult,
+      text: expectedPermission,
+    });
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.mmlogo);
@@ -292,10 +486,30 @@ class TestDapp {
   }
 
   /**
+   * Verify the number of providers displayed in the test dapp.
+   *
+   * @param expectedNumber - The expected number of providers to be displayed. Defaults to 1.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_providerNumber(expectedNumber: number = 1): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} providers to be displayed in test dapp`,
+    );
+    await this.driver.wait(async () => {
+      const providers = await this.driver.findElements(this.provider);
+      return providers.length === expectedNumber;
+    }, 10000);
+    console.log(`${expectedNumber} providers found in test dapp`);
+  }
+
+  /**
    * Verify the successful personal sign signature.
    *
    * @param publicKey - The public key to verify the signature with.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successPersonalSign(publicKey: string) {
     console.log('Verify successful personal sign signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -306,6 +520,8 @@ class TestDapp {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successSign721Permit(publicKey: string) {
     console.log('Verify successful signPermit signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -321,6 +537,8 @@ class TestDapp {
    *
    * @param publicKey - The public key to verify the signature with.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successSignPermit(publicKey: string) {
     console.log('Verify successful signPermit signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -336,6 +554,8 @@ class TestDapp {
    *
    * @param publicKey - The public key to verify the signature with.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successSignTypedData(publicKey: string) {
     console.log('Verify successful signTypedData signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -351,6 +571,8 @@ class TestDapp {
    *
    * @param publicKey - The public key to verify the signature with.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successSignTypedDataV3(publicKey: string) {
     console.log('Verify successful signTypedDataV3 signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -366,6 +588,8 @@ class TestDapp {
    *
    * @param publicKey - The public key to verify the signature with.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successSignTypedDataV4(publicKey: string) {
     console.log('Verify successful signTypedDataV4 signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -376,6 +600,8 @@ class TestDapp {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successSiwe(result: string) {
     console.log('Verify successful SIWE signature');
     await this.driver.waitForSelector({
@@ -385,10 +611,27 @@ class TestDapp {
   }
 
   /**
+   * Checks the value of a token address once created.
+   *
+   * @param value - The address to be checked
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_TokenAddressesValue(value: string) {
+    console.log('Verify token address');
+    await this.driver.waitForSelector({
+      css: this.erc20TokenAddresses,
+      text: value,
+    });
+  }
+
+  /**
    * Checks the count of token addresses.
    *
    * @param expectedCount - The expected count of token addresses.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_TokenAddressesCount(expectedCount: number) {
     console.log(`checking token addresses count: ${expectedCount}`);
     await this.driver.wait(async () => {
@@ -402,13 +645,28 @@ class TestDapp {
     }, 10000);
   }
 
-  async verify_successSignTypedDataResult(result: string) {
+  /**
+   * Checks the value of a ERC-721 token address once created.
+   *
+   * @param value - The address to be checked
+   */
+  async checkERC721TokenAddressesValue(value: string) {
+    console.log('Verify ERC-721 token address');
+    await this.driver.waitForSelector({
+      css: this.erc721TokenAddresses,
+      text: value,
+    });
+  }
+
+  async verifySuccessSignTypedDataResult(result: string) {
     await this.driver.waitForSelector({
       css: this.signTypedDataResult,
       text: result.toLowerCase(),
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async verify_successSignTypedDataV3Result(result: string) {
     await this.driver.waitForSelector({
       css: this.signTypedDataV3Result,
@@ -416,6 +674,8 @@ class TestDapp {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async verify_successSignTypedDataV4Result(result: string) {
     await this.driver.waitForSelector({
       css: this.signTypedDataV4Result,
@@ -490,6 +750,12 @@ class TestDapp {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_ethSignErrorMessage(): Promise<void> {
+    await this.driver.waitForSelector(this.ethSignErrorMessage);
+  }
+
   async assertEip747ContractAddressInputValue(expectedValue: string) {
     const formFieldEl = await this.driver.findElement(
       this.eip747ContractAddressInput,
@@ -517,8 +783,16 @@ class TestDapp {
     await this.driver.clickElement(this.approveTokensButton);
   }
 
+  async clickDecryptButton() {
+    await this.driver.clickElement(this.decryptButton);
+  }
+
   async clickApproveTokensWithoutGas() {
     await this.driver.clickElement(this.approveTokensButtonWithoutGas);
+  }
+
+  async clickERC1155DeployButton() {
+    await this.driver.clickElement(this.erc1155DeployButton);
   }
 
   async clickERC1155MintButton() {
@@ -537,12 +811,27 @@ class TestDapp {
     await this.driver.clickElement(this.erc1155WatchButton);
   }
 
+  async clickERC20CreateTokenButton() {
+    await this.driver.clickElement(this.erc20CreateTokenButton);
+  }
+
+  async clickERC20IncreaseAllowanceButton() {
+    await this.driver.clickElement(this.erc20IncreaseTokensAllowanceButton);
+  }
+
   async clickERC20TokenTransferButton() {
+    await this.driver.waitForSelector(this.erc20TokenTransferButton, {
+      state: 'enabled',
+    });
     await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
   async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
+  }
+
+  async clickERC721DeployButton() {
+    await this.driver.clickElement(this.erc721DeployButton);
   }
 
   async clickERC721MintButton() {
@@ -557,6 +846,10 @@ class TestDapp {
     await this.driver.clickElement(this.erc721RevokeSetApprovalForAllButton);
   }
 
+  async clickERC721ApproveButton() {
+    await this.driver.clickElement(this.erc721ApproveButton);
+  }
+
   async clickERC721SetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721SetApprovalForAllButton);
   }
@@ -565,12 +858,24 @@ class TestDapp {
     await this.driver.clickElement(this.erc721TransferFromButton);
   }
 
+  async clickGetEncryptionKeyButton() {
+    await this.driver.clickElement(this.getEncryptionKeyButton);
+  }
+
   async clickPermit() {
     await this.driver.clickElement(this.signPermitButton);
   }
 
+  async clickEthSignButton() {
+    await this.driver.clickElement(this.ethSignButton);
+  }
+
   async clickPersonalSign() {
     await this.driver.clickElement(this.personalSignButton);
+  }
+
+  async clickSendCalls() {
+    await this.driver.clickElement(this.sendCallsButton);
   }
 
   async clickSignTypedData() {
@@ -687,6 +992,21 @@ class TestDapp {
     await this.check_connectedAccounts(publicAddress, false);
   }
 
+  /**
+   * Encrypt a message on test dapp.
+   *
+   * @param message - The message to encrypt.
+   */
+  async encryptMessage(message: string) {
+    console.log(`Encrypt message ${message} in test dapp`);
+    await this.driver.fill(this.encryptMessageInput, message);
+    await this.driver.clickElement(this.encryptButton);
+    await this.driver.waitForSelector({
+      css: this.encryptedMessage,
+      text: '0x',
+    });
+  }
+
   async fillERC1155TokenAmount(amount: string) {
     await this.driver.pasteIntoField(this.erc1155TokenAmountInput, amount);
   }
@@ -770,22 +1090,6 @@ class TestDapp {
     );
   }
 
-  /**
-   * Sign a message with the signTypedDataV3 method.
-   */
-  async signTypedDataV3() {
-    console.log('Sign message with signTypedDataV3');
-    await this.clickSignTypedDatav3();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessage,
-    );
-    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
-  }
-
   async signTypedDataV3Redesign() {
     await this.clickSignTypedDatav3();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -822,13 +1126,16 @@ class TestDapp {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async request(method: string, params: any[]) {
-    await this.openTestDappPage({
-      url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
-        params,
-      )}`,
-    });
+  /**
+   * Check if the test dapp is connected to the specified network.
+   *
+   * @param networkId - The network id to check if the test dapp is connected to.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_networkIsConnected(networkId: string) {
+    console.log(`Check testdapp is connected to network ${networkId}`);
+    await this.driver.waitForSelector(this.connectedNetwork(networkId));
   }
 }
 

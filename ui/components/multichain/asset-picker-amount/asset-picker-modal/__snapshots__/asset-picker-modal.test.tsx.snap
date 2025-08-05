@@ -1,0 +1,701 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AssetPickerModal token filtering should fetch metadata for unlisted tokens 1`] = `
+[
+  "0x1f9840a85d5af5bf1d1762f925bdaddc4201f123",
+  true,
+  {
+    "current": null,
+  },
+  "0xa",
+]
+`;
+
+exports[`AssetPickerModal token filtering should fetch metadata for unlisted tokens 2`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f123",
+        "chainId": "0x1",
+        "decimals": 18,
+        "image": "https://example.com/image.png",
+        "symbol": "UNI",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should filter tokens by address 1`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should filter tokens by address 2`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should filter tokens by chain when multichain network is selected 1`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": true,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "name": "Solana",
+    },
+    "tokenList": [
+      {
+        "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "balance": "0x2faf080",
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "",
+        "balance": "1000",
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "decimals": 18,
+        "image": {},
+        "string": undefined,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should filter tokens by symbol 1`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should handle case-insensitive search 1`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should handle case-insensitive search 2`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should only show tokens with balances in send mode 1`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": false,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f985",
+        "balance": "0x989680",
+        "chainId": "0xa",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "",
+        "balance": "1000",
+        "chainId": "0xa",
+        "decimals": 18,
+        "image": {},
+        "string": undefined,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should only show tokens with balances in send mode 2`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": false,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f985",
+        "balance": "0x989680",
+        "chainId": "0xa",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "",
+        "balance": "1000",
+        "chainId": "0xa",
+        "decimals": 18,
+        "image": {},
+        "string": undefined,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should render all tokens from multiple chains 1`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "",
+        "balance": "1.5",
+        "chainId": "0x1",
+        "decimals": 18,
+        "image": "./images/eth_logo.svg",
+        "isNative": true,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f985",
+        "balance": "0x989680",
+        "chainId": "0xa",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "balance": "0x2faf080",
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "",
+        "balance": "1000",
+        "chainId": "0xa",
+        "decimals": 18,
+        "image": {},
+        "string": undefined,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should render all tokens from single chain 1`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": true,
+      "isTitleNetworkName": false,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0x1",
+      "name": "Ethereum Mainnet",
+    },
+    "tokenList": [
+      {
+        "address": "",
+        "balance": "1.5",
+        "chainId": "0x1",
+        "decimals": 18,
+        "image": "./images/eth_logo.svg",
+        "isNative": true,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should respect MAX_UNOWNED_TOKENS_RENDERED limit 1`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "",
+        "balance": "1.5",
+        "chainId": "0x1",
+        "decimals": 18,
+        "image": "./images/eth_logo.svg",
+        "isNative": true,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f985",
+        "balance": "0x989680",
+        "chainId": "0xa",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "balance": "0x2faf080",
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "",
+        "balance": "1000",
+        "chainId": "0xa",
+        "decimals": 18,
+        "image": {},
+        "string": undefined,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should show all tokens when search query is cleared 1`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should show all tokens when search query is cleared 2`] = `
+[
+  {
+    "asset": undefined,
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "",
+        "balance": "1.5",
+        "chainId": "0x1",
+        "decimals": 18,
+        "image": "./images/eth_logo.svg",
+        "isNative": true,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f985",
+        "balance": "0x989680",
+        "chainId": "0xa",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "balance": "0x2faf080",
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "",
+        "balance": "1000",
+        "chainId": "0xa",
+        "decimals": 18,
+        "image": {},
+        "string": undefined,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should show selected token first when selected network is active 1`] = `
+[
+  {
+    "asset": {
+      "address": "NEWTOKEN",
+      "chainId": "0xa",
+      "image": "image.png",
+      "symbol": "USDT",
+      "type": "TOKEN",
+    },
+    "assetItemProps": {
+      "isTitleHidden": false,
+      "isTitleNetworkName": true,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "0xa",
+      "name": "Optimism",
+    },
+    "tokenList": [
+      {
+        "address": "",
+        "balance": "1.5",
+        "chainId": "0x1",
+        "decimals": 18,
+        "image": "./images/eth_logo.svg",
+        "isNative": true,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+        "balance": "0x56bc75e2d63100000",
+        "chainId": "0x1",
+        "decimals": 18,
+        "isNative": false,
+        "symbol": "UNI",
+        "type": "TOKEN",
+      },
+      {
+        "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f985",
+        "balance": "0x989680",
+        "chainId": "0xa",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "balance": "0x2faf080",
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+      {
+        "address": "",
+        "balance": "1000",
+        "chainId": "0xa",
+        "decimals": 18,
+        "image": {},
+        "string": undefined,
+        "symbol": "ETH",
+        "type": "NATIVE",
+      },
+    ],
+  },
+]
+`;
+
+exports[`AssetPickerModal token filtering should show selected token first when selected network is not active 1`] = `
+[
+  {
+    "asset": {
+      "address": "NEWTOKEN",
+      "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "image": "image.png",
+      "symbol": "USDT",
+      "type": "TOKEN",
+    },
+    "assetItemProps": {
+      "isTitleHidden": true,
+      "isTitleNetworkName": false,
+    },
+    "handleAssetChange": [Function],
+    "isTokenDisabled": [Function],
+    "isTokenListLoading": false,
+    "network": {
+      "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "name": "Solana",
+    },
+    "tokenList": [
+      {
+        "address": "NEWTOKEN",
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "image": "image.png",
+        "symbol": "USDT",
+        "type": "TOKEN",
+      },
+      {
+        "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "balance": "50",
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "decimals": 6,
+        "isNative": false,
+        "symbol": "USDC",
+        "type": "TOKEN",
+      },
+    ],
+  },
+]
+`;

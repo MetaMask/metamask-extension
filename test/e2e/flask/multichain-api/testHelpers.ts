@@ -1,15 +1,18 @@
 import * as path from 'path';
-import { By } from 'selenium-webdriver';
-import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
+import { Browser } from 'selenium-webdriver';
 import {
-  convertETHToHexGwei,
-  multipleGanacheOptions,
-  PRIVATE_KEY,
-  regularDelayMs,
-  WINDOW_TITLES,
-} from '../../helpers';
+  KnownRpcMethods,
+  KnownNotifications,
+} from '@metamask/chain-agnostic-permission';
+import { JsonRpcRequest } from '@metamask/utils';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import {
+  CONTENT_SCRIPT,
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  METAMASK_INPAGE,
+} from '../../../../app/scripts/constants/stream';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -30,27 +33,25 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
   ],
   localNodeOptions: [
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
-        secretKey: PRIVATE_KEY,
-        balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-        accounts: multipleGanacheOptions.accounts,
+        hardfork: 'muirGlacier',
       },
     },
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
         port: 8546,
         chainId: 1338,
-        accounts: multipleGanacheOptions.accounts,
+        hardfork: 'muirGlacier',
       },
     },
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
         port: 7777,
         chainId: 1000,
-        accounts: multipleGanacheOptions.accounts,
+        hardfork: 'muirGlacier',
       },
     },
   ],
@@ -72,99 +73,91 @@ export const getExpectedSessionScope = (scope: string, accounts: string[]) => ({
 export const addAccountInWalletAndAuthorize = async (
   driver: Driver,
 ): Promise<void> => {
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[0].click();
-  await driver.clickElement({ text: 'New account', tag: 'button' });
-  await driver.clickElement({ text: 'Add account', tag: 'button' });
-  await driver.delay(regularDelayMs);
+  console.log('Adding account in wallet and authorizing');
+  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
+  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.openEditAccountsModal();
 
-  /**
-   * this needs to be called again, as previous element is stale and will not be found in current frame
-   */
-  const freshEditButtons = await driver.findElements('[data-testid="edit"]');
-  await freshEditButtons[0].click();
-  await driver.delay(regularDelayMs);
+  const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
+  await editConnectedAccountsModal.check_pageIsLoaded();
+  await editConnectedAccountsModal.addNewEthereumAccount();
 
-  const checkboxes = await driver.findElements('input[type="checkbox" i]');
-  await checkboxes[0].click(); // select all checkbox
-  await driver.delay(regularDelayMs);
-
-  await driver.clickElement({ text: 'Update', tag: 'button' });
+  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.confirmConnect();
 };
 
 /**
- * Update Multichain network edit form so that only matching networks are selected.
- *
- * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
- * @param selectedNetworkNames
- */
-export const updateNetworkCheckboxes = async (
-  driver: Driver,
-  selectedNetworkNames: string[],
-): Promise<void> => {
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[1].click();
-  await driver.delay(regularDelayMs);
-
-  const networkListItems = await driver.findElements(
-    '.multichain-network-list-item',
-  );
-
-  for (const item of networkListItems) {
-    const networkName = await item.getText();
-    const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
-    const isChecked = await checkbox.isSelected();
-
-    const isSelectedNetwork = selectedNetworkNames.some((selectedNetworkName) =>
-      networkName.includes(selectedNetworkName),
-    );
-
-    const shouldNotBeChecked = isChecked && !isSelectedNetwork;
-    const shouldBeChecked = !isChecked && isSelectedNetwork;
-
-    if (shouldNotBeChecked || shouldBeChecked) {
-      await checkbox.click();
-      await driver.delay(regularDelayMs);
-    }
-  }
-  await driver.clickElement({ text: 'Update', tag: 'button' });
-};
-
-/**
- * Password locks user's metamask extension.
- *
- * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
- */
-export const passwordLockMetamaskExtension = async (
-  driver: Driver,
-): Promise<void> => {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElementSafe('[data-testid="account-options-menu-button"]');
-  await driver.clickElementSafe('[data-testid="global-menu-lock"]');
-};
-
-/**
- * Sometimes we need to escape colon character when using {@link Driver.findElement}, otherwise selenium will treat this as an invalid selector.
+ * We need to replace colon character by dash when using {@link Driver.findElement}, otherwise selenium will treat this as an invalid selector.
  *
  * @param selector - string to manipulate.
- * @returns string with escaped colon char.
+ * @returns string with replaced colon char.
  */
-export const escapeColon = (selector: string): string =>
-  selector.replace(':', '\\:');
+export const replaceColon = (selector: string): string =>
+  selector.replace(':', '-');
 
-/**
- * Wraps a describe call in a skip call if the SELENIUM_BROWSER environment variable is not the specified browser.
- *
- * @param browser - The browser environment of the current test, against which to conditionally run or skip the test.
- * @param description - The description of the test suite.
- * @param callback - The callback function to execute the test suite.
- */
-export const describeBrowserOnly = (
-  browser: string,
-  description: string,
-  callback: () => void,
-) => {
-  return process.env.SELENIUM_BROWSER === browser
-    ? describe(description, callback)
-    : describe.skip(description, callback);
+export const sendMultichainApiRequest = ({
+  driver,
+  extensionId,
+  request,
+}: {
+  driver: Driver;
+  extensionId: string;
+  request: Omit<JsonRpcRequest, 'id'>;
+}) => {
+  const id = Math.ceil(Math.random() * 1000);
+  const requestWithNewId = {
+    ...request,
+    id,
+  };
+  let script;
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    script = `
+    const data = ${JSON.stringify(requestWithNewId)};
+    const result = new Promise((resolve) => {
+      window.addEventListener('message', (messageEvent) => {
+        const { target, data } = messageEvent.data;
+        if (
+          target !== '${METAMASK_INPAGE}' ||
+          data?.name !== '${METAMASK_CAIP_MULTICHAIN_PROVIDER}' ||
+          data?.data.id !== ${id}
+        ) {
+          return;
+        }
+
+        resolve(data.data);
+      });
+    })
+    window.postMessage(
+      {
+        target: '${CONTENT_SCRIPT}',
+        data: {
+          name: '${METAMASK_CAIP_MULTICHAIN_PROVIDER}',
+          data
+        },
+      },
+      location.origin,
+    );
+
+    return result;`;
+  } else {
+    script = `
+    const port = chrome.runtime.connect('${extensionId}');
+    const data = ${JSON.stringify(requestWithNewId)};
+    const result = new Promise((resolve) => {
+      port.onMessage.addListener((msg) => {
+        if (msg.type !== 'caip-348') {
+          return;
+        }
+        if (msg.data?.id !== ${id}) {
+          return;
+        }
+
+        resolve(msg.data);
+      })
+    })
+    port.postMessage({ type: 'caip-348', data });
+    return result;`;
+  }
+
+  return driver.executeScript(script);
 };

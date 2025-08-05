@@ -18,6 +18,7 @@ export const NetworkListItemMenu = ({
   onClose,
   onEditClick,
   onDeleteClick,
+  onDiscoverClick,
   isOpen,
 }) => {
   const t = useI18nContext();
@@ -38,6 +39,18 @@ export const NetworkListItemMenu = ({
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <Box>
+          {onDiscoverClick ? (
+            <MenuItem
+              iconName={IconName.Eye}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDiscoverClick();
+              }}
+              data-testid="network-list-item-options-discover"
+            >
+              <Text>{t('discover')}</Text>
+            </MenuItem>
+          ) : null}
           {onEditClick ? (
             <MenuItem
               iconName={IconName.Edit}
@@ -86,6 +99,10 @@ NetworkListItemMenu.propTypes = {
    * Function that executes when the Delete menu item is closed
    */
   onDeleteClick: PropTypes.func,
+  /**
+   * Function that executes when the Discover menu item is clicked
+   */
+  onDiscoverClick: PropTypes.func,
   /**
    * Represents if the menu is open or not
    *

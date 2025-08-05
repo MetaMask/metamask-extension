@@ -70,6 +70,8 @@ describe('Transaction Controller Init', () => {
    * @param dependencyProperties - Any properties required on the controller dependencies.
    * @returns The extracted option.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   function testConstructorOption<T extends keyof TransactionControllerOptions>(
     option: T,
     dependencyProperties: Record<string, unknown> = {},
@@ -115,15 +117,13 @@ describe('Transaction Controller Init', () => {
   });
 
   describe('determines incoming transactions is enabled', () => {
-    it('when enabled in preferences and onboarding complete', () => {
+    it('when useExternalServices is enabled in preferences and onboarding complete', () => {
       const incomingTransactionsIsEnabled = testConstructorOption(
         'incomingTransactions',
         {
           state: {
             completedOnboarding: true,
-            incomingTransactionsPreferences: {
-              [CHAIN_ID_MOCK]: true,
-            },
+            useExternalServices: true,
           },
         },
       )?.isEnabled;
@@ -137,9 +137,7 @@ describe('Transaction Controller Init', () => {
         {
           state: {
             completedOnboarding: false,
-            incomingTransactionsPreferences: {
-              [CHAIN_ID_MOCK]: true,
-            },
+            useExternalServices: true,
           },
         },
       )?.isEnabled;
@@ -153,9 +151,7 @@ describe('Transaction Controller Init', () => {
         {
           state: {
             completedOnboarding: true,
-            incomingTransactionsPreferences: {
-              [CHAIN_ID_MOCK]: false,
-            },
+            useExternalServices: false,
           },
         },
       )?.isEnabled;

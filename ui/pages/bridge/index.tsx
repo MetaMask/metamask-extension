@@ -1,24 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
+import {
+  BridgeAppState,
+  UnifiedSwapBridgeEventName,
+} from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
   DEFAULT_ROUTE,
-  SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import { resetBackgroundSwapsState } from '../../store/actions';
-import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
 import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
-import { getIsBridgeEnabled } from '../../selectors';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -27,11 +29,16 @@ import {
   Page,
 } from '../../components/multichain/pages/page';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
-import { resetBridgeState } from '../../ducks/bridge/actions';
+import {
+  resetBridgeState,
+  trackUnifiedSwapBridgeEvent,
+} from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
+import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
+import { getIsUnifiedUIEnabled } from '../../ducks/bridge/selectors';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -48,18 +55,29 @@ const CrossChainSwap = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const isBridgeEnabled = useSelector(getIsBridgeEnabled);
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   const resetControllerAndInputStates = async () => {
     await dispatch(resetBridgeState());
   };
 
-  useEffect(() => {
-    // Reset controller and inputs before unloading the page
-    window.addEventListener('beforeunload', resetControllerAndInputStates);
+  const isSwap = useIsMultichainSwap();
+  const chainId = useSelector(getMultichainCurrentChainId);
+  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
+    getIsUnifiedUIEnabled(state, chainId),
+  );
 
+  useEffect(() => {
+    dispatch(
+      trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
+    );
+    // Reset controller and inputs before unloading the page
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    window.addEventListener('beforeunload', resetControllerAndInputStates);
     return () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       window.removeEventListener('beforeunload', resetControllerAndInputStates);
       resetControllerAndInputStates();
     };
@@ -71,17 +89,17 @@ const CrossChainSwap = () => {
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
   useQuoteFetchEvents();
-
-  const isSwap = useIsMultichainSwap();
+  // Sets tx alerts for the active quote
+  useTxAlerts();
 
   const redirectToDefaultRoute = async () => {
+    await resetControllerAndInputStates();
     history.push({
       pathname: DEFAULT_ROUTE,
       state: { stayOnHomePage: true },
     });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
-    await resetControllerAndInputStates();
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -95,6 +113,8 @@ const CrossChainSwap = () => {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={redirectToDefaultRoute}
           />
         }
@@ -109,28 +129,19 @@ const CrossChainSwap = () => {
           />
         }
       >
-        {isSwap ? t('swap') : t('bridge')}
+        {isSwap || isUnifiedUIEnabled ? t('swap') : t('bridge')}
       </Header>
       <Content padding={0}>
         <Switch>
-          <FeatureToggledRoute
-            redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-            flag={isBridgeEnabled}
-            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
-            render={() => {
-              return (
-                <>
-                  <BridgeTransactionSettingsModal
-                    isOpen={isSettingsModalOpen}
-                    onClose={() => {
-                      setIsSettingsModalOpen(false);
-                    }}
-                  />
-                  <PrepareBridgePage />
-                </>
-              );
-            }}
-          />
+          <Route path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}>
+            <BridgeTransactionSettingsModal
+              isOpen={isSettingsModalOpen}
+              onClose={() => {
+                setIsSettingsModalOpen(false);
+              }}
+            />
+            <PrepareBridgePage />
+          </Route>
           <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
             <Content>
               <AwaitingSignatures />

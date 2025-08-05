@@ -10,6 +10,8 @@ export default class SignTypedData extends Confirmation {
     this.driver = driver;
   }
 
+  private signatureHeadingTitle = { text: 'Signature request' };
+
   private origin = { text: DAPP_HOST_ADDRESS };
 
   private signTypedDataMessage = { text: 'Hi, Alice!' };
@@ -88,5 +90,22 @@ export default class SignTypedData extends Confirmation {
   async verifyToAddressNum2() {
     const toAddressNum2 = await this.driver.findElement(this.toAddressNum2);
     assert.ok(toAddressNum2, 'To Address num2 element is missing or incorrect');
+  }
+
+  async verifyConfirmationHeadingTitle() {
+    console.log('Verify confirmation heading title is Signature request');
+    await this.driver.waitForSelector(this.signatureHeadingTitle);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_networkIsDisplayed(network: string): Promise<void> {
+    console.log(
+      `Check network ${network} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector({
+      text: network,
+      tag: 'p',
+    });
   }
 }

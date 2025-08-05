@@ -1,26 +1,48 @@
+// @ts-check
 import { createSelector } from 'reselect';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
+import {
+  NotificationServicesControllerState,
+  INotification as Notification,
+  TRIGGER_TYPES,
+  defaultState,
+} from '@metamask/notification-services-controller/notification-services';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import {
+  getRemoteFeatureFlags,
+  type RemoteFeatureFlagsState,
+} from '../remote-feature-flags';
 
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
-
-type Notification = NotificationServicesController.Types.INotification;
-
-type AppState = {
-  metamask: NotificationServicesController.NotificationServicesControllerState;
+export type NotificationAppState = RemoteFeatureFlagsState & {
+  metamask: Partial<NotificationServicesControllerState>;
 };
 
-const getMetamask = (state: AppState) => state.metamask;
+const getMetamask = (state: NotificationAppState) => ({
+  ...defaultState,
+  ...state.metamask,
+});
+
+/**
+ * Get the state of the `defiPositionsEnabled` remote feature flag.
+ *
+ * @param state
+ * @returns The state of the `defiPositionsEnabled` remote feature flag.
+ */
+export function getIsNotificationEnabledByDefaultFeatureFlag(
+  state: NotificationAppState,
+) {
+  const { assetsEnableNotificationsByDefault } = getRemoteFeatureFlags(state);
+  return Boolean(assetsEnableNotificationsByDefault);
+}
 
 /**
  * Selector to get the list of MetaMask notifications.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {Notification[]} An array of notifications.
  */
 export const getMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask) => metamask.metamaskNotificationsList,
+  (metamask): Notification[] => metamask.metamaskNotificationsList,
 );
 
 /**
@@ -43,23 +65,23 @@ export const getMetamaskNotificationById = (id: string) => {
 /**
  * Selector to get the list of read MetaMask notifications.
  *
- * @param {AppState} state - The current state of the Redux store.
- * @returns {Notification[]} An array of notifications that have been read.
+ * @param {NotificationAppState} state - The current state of the Redux store.
+ * @returns {string[]} An array of notifications that have been read.
  */
 export const getMetamaskNotificationsReadList = createSelector(
   [getMetamask],
-  (metamask) => metamask.metamaskNotificationsReadList,
+  (metamask): string[] => metamask.metamaskNotificationsReadList,
 );
 
 /**
  * Selector to get the count of unread MetaMask notifications.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {number} The count of notifications that have not been read.
  */
 export const getMetamaskNotificationsUnreadCount = createSelector(
   [getMetamaskNotifications],
-  (notifications: Notification[]) => {
+  (notifications: Notification[]): number => {
     return notifications
       ? notifications.filter((notification) => !notification.isRead).length
       : 0;
@@ -69,12 +91,12 @@ export const getMetamaskNotificationsUnreadCount = createSelector(
 /**
  * Selector to get the count of unread feature announcement notifications.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {number} The count of unread feature announcement notifications.
  */
 export const getFeatureAnnouncementsUnreadCount = createSelector(
   [getMetamaskNotifications],
-  (notifications: Notification[]) => {
+  (notifications: Notification[]): number => {
     return notifications
       ? notifications.filter(
           (notification) =>
@@ -88,7 +110,7 @@ export const getFeatureAnnouncementsUnreadCount = createSelector(
 /**
  * Selector to get the count of read feature announcement notifications.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {number} The count of read feature announcement notifications.
  */
 export const getFeatureAnnouncementsReadCount = createSelector(
@@ -107,12 +129,12 @@ export const getFeatureAnnouncementsReadCount = createSelector(
 /**
  * Selector to get the count of unread snap notifications.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {number} The count of unread snap notifications.
  */
 export const getSnapNotificationsUnreadCount = createSelector(
   [getMetamaskNotifications],
-  (notifications: Notification[]) => {
+  (notifications: Notification[]): number => {
     return notifications
       ? notifications.filter(
           (notification) =>
@@ -125,7 +147,7 @@ export const getSnapNotificationsUnreadCount = createSelector(
 /**
  * Selector to get the count of read snap notifications.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {number} The count of read snap notifications.
  */
 export const getSnapNotificationsReadCount = createSelector(
@@ -143,12 +165,12 @@ export const getSnapNotificationsReadCount = createSelector(
 /**
  * Selector to get the count of unread non-feature announcement notifications.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {number} The count of unread non-feature announcement notifications.
  */
 export const getOnChainMetamaskNotificationsUnreadCount = createSelector(
   [getMetamaskNotifications],
-  (notifications: Notification[]) => {
+  (notifications: Notification[]): number => {
     return notifications
       ? notifications.filter(
           (notification) =>
@@ -163,12 +185,12 @@ export const getOnChainMetamaskNotificationsUnreadCount = createSelector(
 /**
  * Selector to get the count of read non-feature announcement notifications.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {number} The count of read non-feature announcement notifications.
  */
 export const getOnChainMetamaskNotificationsReadCount = createSelector(
   [getMetamaskNotifications],
-  (notifications: Notification[]) => {
+  (notifications: Notification[]): number => {
     return notifications
       ? notifications.filter(
           (notification) =>
@@ -183,7 +205,7 @@ export const getOnChainMetamaskNotificationsReadCount = createSelector(
 /**
  * Selector to determine if the MetaMask notifications feature has been seen by the user.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {boolean} Returns true if the MetaMask notifications feature has been seen, false otherwise.
  */
 export const selectIsMetamaskNotificationsFeatureSeen = createSelector(
@@ -194,23 +216,23 @@ export const selectIsMetamaskNotificationsFeatureSeen = createSelector(
 /**
  * Selector to determine if MetaMask notifications are enabled.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {boolean} Returns true if MetaMask notifications are enabled, false otherwise.
  */
 export const selectIsMetamaskNotificationsEnabled = createSelector(
   [getMetamask],
-  (metamask) => metamask.isNotificationServicesEnabled,
+  (metamask): boolean => metamask.isNotificationServicesEnabled,
 );
 
 /**
  * Selector to determine if feature announcements are enabled.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {boolean} Returns true if feature announcements are enabled, false otherwise.
  */
 export const selectIsFeatureAnnouncementsEnabled = createSelector(
   [getMetamask],
-  (metamask) => metamask.isFeatureAnnouncementsEnabled,
+  (metamask): boolean => metamask.isFeatureAnnouncementsEnabled,
 );
 
 /**
@@ -224,7 +246,7 @@ export const selectIsFeatureAnnouncementsEnabled = createSelector(
  */
 export const getIsUpdatingMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask) => metamask.isUpdatingMetamaskNotifications,
+  (metamask): boolean => metamask.isUpdatingMetamaskNotifications,
 );
 
 /**
@@ -233,12 +255,12 @@ export const getIsUpdatingMetamaskNotifications = createSelector(
  * This selector accesses the `isFetchingMetamaskNotifications` property from the `metamask` state to check if the notifications are currently being fetched.
  * It leverages the `createSelector` function for memoization, which helps in optimizing the performance by caching the result until the input selectors' outputs change.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {boolean} Returns true if MetaMask notifications are being fetched, false otherwise.
  */
 export const isFetchingMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask) => metamask.isFetchingMetamaskNotifications,
+  (metamask): boolean => metamask.isFetchingMetamaskNotifications,
 );
 
 /**
@@ -247,12 +269,12 @@ export const isFetchingMetamaskNotifications = createSelector(
  * This selector checks the `isUpdatingMetamaskNotificationsAccount` property of the `metamask` state to see if the account associated with MetaMask notifications is in the process of being updated.
  * It uses the `createSelector` function from 'reselect' for memoization, improving performance by avoiding unnecessary recalculations.
  *
- * @param {AppState} state - The current state of the Redux store.
- * @returns {boolean} Returns true if the MetaMask notifications account is being updated, false otherwise.
+ * @param {NotificationAppState} state - The current state of the Redux store.
+ * @returns {string[]} Returns list of accounts that are currently being updated.
  */
 export const getIsUpdatingMetamaskNotificationsAccount = createSelector(
   [getMetamask],
-  (metamask) => {
+  (metamask): string[] => {
     return metamask.isUpdatingMetamaskNotificationsAccount;
   },
 );
@@ -263,10 +285,15 @@ export const getIsUpdatingMetamaskNotificationsAccount = createSelector(
  * This selector accesses the `isCheckingAccountsPresence` property from the `metamask` state to check if the system is currently verifying the presence of accounts.
  * It leverages the `createSelector` function for memoization, which helps in optimizing performance by caching the result until the input selectors' outputs change.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {NotificationAppState} state - The current state of the Redux store.
  * @returns {boolean} Returns true if the account presence check is ongoing, false otherwise.
  */
 export const getIsCheckingAccountsPresence = createSelector(
   [getMetamask],
-  (metamask) => metamask.isCheckingAccountsPresence,
+  (metamask): boolean => metamask.isCheckingAccountsPresence,
+);
+
+export const getValidNotificationAccounts = createSelector(
+  [getMetamask],
+  (metamask): string[] => metamask.subscriptionAccountsSeen,
 );

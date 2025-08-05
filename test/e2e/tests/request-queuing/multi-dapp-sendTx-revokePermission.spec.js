@@ -1,3 +1,7 @@
+const {
+  switchToNetworkFromSendFlow,
+} = require('../../page-objects/flows/network.flow');
+
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -16,7 +20,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
@@ -55,13 +59,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         // Wait for the first dapp's connect confirmation to disappear
         await driver.waitUntilXWindowHandles(2);

@@ -33,7 +33,7 @@ export const SelectSrp = ({
 
   return (
     <Box data-testid="select-srp-container">
-      <Label>{t('selectSecretRecoveryPhrase')}</Label>
+      <Label marginBottom={2}>{t('selectSecretRecoveryPhrase')}</Label>
       <Card
         onClick={onClick}
         paddingTop={1}
@@ -58,7 +58,7 @@ export const SelectSrp = ({
           <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
         </Box>
       </Card>
-      <Text variant={TextVariant.bodySm} marginTop={4}>
+      <Text variant={TextVariant.bodySm} marginTop={1}>
         {t('srpListSelectionDescription')}
       </Text>
     </Box>

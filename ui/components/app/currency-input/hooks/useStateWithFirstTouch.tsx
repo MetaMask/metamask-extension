@@ -3,6 +3,8 @@ import { useState } from 'react';
 // symbol to cover edge case where initial value is literally 'INITIAL_VALUE'
 const INITIAL_VALUE = Symbol('INITIAL_VALUE');
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function useStateWithFirstTouch<T>(
   initialValue: T,
 ): [value: T, setValue: (value: T) => void, isChanged: boolean] {

@@ -48,6 +48,8 @@ class ErrorPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.errorPageTitle);
@@ -63,13 +65,15 @@ class ErrorPage {
     await headerNavbar.openSettingsPage();
     const settingsPage = new SettingsPage(this.driver);
     await settingsPage.check_pageIsLoaded();
-    await settingsPage.goToDevelopOptionSettings();
+    await settingsPage.goToDeveloperOptions();
 
     const developOptionsPage = new DevelopOptionsPage(this.driver);
     await developOptionsPage.check_pageIsLoaded();
     await developOptionsPage.clickGenerateCrashButton();
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async validate_errorMessage(): Promise<void> {
     await this.driver.waitForSelector({
       text: `Message: Unable to find value of key "developerOptions" for locale "en"`,

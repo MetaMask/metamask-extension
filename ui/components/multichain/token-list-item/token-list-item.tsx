@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { type Hex, isStrictHexString } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import {
   BackgroundColor,
   BlockSize,
@@ -49,13 +49,8 @@ import {
   CURRENCY_SYMBOLS,
   NON_EVM_CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
-import {
-  SafeChain,
-  useSafeChains,
-} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { PercentageChange } from './price/percentage-change/percentage-change';
@@ -80,6 +75,7 @@ type TokenListItemProps = {
   showPercentage?: boolean;
   isPrimaryTokenSymbolHidden?: boolean;
   privacyMode?: boolean;
+  nativeCurrencySymbol?: string;
 };
 
 export const TokenListItemComponent = ({
@@ -101,21 +97,12 @@ export const TokenListItemComponent = ({
   address = null,
   showPercentage = false,
   privacyMode = false,
+  nativeCurrencySymbol,
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
-  const { safeChains } = useSafeChains();
   const currencyRates = useSelector(getCurrencyRates);
-
-  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
-    const decimalChainId =
-      isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
-    if (typeof decimalChainId === 'number') {
-      return chain.chainId === decimalChainId.toString();
-    }
-    return undefined;
-  });
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:
@@ -167,6 +154,8 @@ export const TokenListItemComponent = ({
 
   return (
     <Box
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       className={classnames('multichain-token-list-item', className || {})}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -207,7 +196,11 @@ export const TokenListItemComponent = ({
               properties: {
                 location: 'Home',
                 // FIXME: This might not be a number for non-EVM accounts
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 chain_id: chainId,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 token_symbol: tokenSymbol,
               },
             });
@@ -219,6 +212,8 @@ export const TokenListItemComponent = ({
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
               name={allNetworks?.[chainId as Hex]?.name}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               src={tokenChainImage || undefined}
               backgroundColor={BackgroundColor.backgroundDefault}
               borderWidth={2}
@@ -373,7 +368,9 @@ export const TokenListItemComponent = ({
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
                 tokenSymbol,
-                safeChainDetails?.nativeCurrency?.symbol ||
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                nativeCurrencySymbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}
             </ModalBody>

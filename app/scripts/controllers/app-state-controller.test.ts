@@ -45,6 +45,8 @@ const extensionMock = {
   },
 } as unknown as jest.Mocked<Browser>;
 
+const TRANSACTION_ID_MOCK = '123-456';
+
 describe('AppStateController', () => {
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', async () => {
@@ -401,46 +403,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('institutional', () => {
-    it('set the interactive replacement token with a url and the old refresh token', async () => {
-      await withController(({ controller }) => {
-        const mockParams = {
-          url: 'https://example.com',
-          oldRefreshToken: 'old',
-        };
-
-        controller.showInteractiveReplacementTokenBanner(mockParams);
-
-        expect(controller.state.interactiveReplacementToken).toStrictEqual(
-          mockParams,
-        );
-      });
-    });
-
-    it('set the setCustodianDeepLink with the fromAddress and custodyId', async () => {
-      await withController(({ controller }) => {
-        const mockParams = {
-          fromAddress: '0x',
-          custodyId: 'custodyId',
-        };
-
-        controller.setCustodianDeepLink(mockParams);
-
-        expect(controller.state.custodianDeepLink).toStrictEqual(mockParams);
-      });
-    });
-
-    it('set the setNoteToTraderMessage with a message', async () => {
-      await withController(({ controller }) => {
-        const mockParams = 'some message';
-
-        controller.setNoteToTraderMessage(mockParams);
-
-        expect(controller.state.noteToTraderMessage).toStrictEqual(mockParams);
-      });
-    });
-  });
-
   describe('setSurveyLinkLastClickedOrClosed', () => {
     it('set the surveyLinkLastClickedOrClosed time', async () => {
       await withController(({ controller }) => {
@@ -512,6 +474,61 @@ describe('AppStateController', () => {
         expect(controller.state.newPrivacyPolicyToastShownDate).toStrictEqual(
           mockParams,
         );
+      });
+    });
+  });
+
+  describe('isUpdateAvailable', () => {
+    it('defaults to false', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.isUpdateAvailable).toStrictEqual(false);
+      });
+    });
+  });
+
+  describe('setIsUpdateAvailable', () => {
+    it('sets isUpdateAvailable', async () => {
+      await withController(({ controller }) => {
+        controller.setIsUpdateAvailable(true);
+        expect(controller.state.isUpdateAvailable).toStrictEqual(true);
+      });
+    });
+  });
+
+  describe('updateModalLastDismissedAt', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.updateModalLastDismissedAt).toStrictEqual(null);
+      });
+    });
+  });
+
+  describe('setUpdateModalLastDismissedAt', () => {
+    it('sets updateModalLastDismissedAt', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setUpdateModalLastDismissedAt(mockParams);
+        expect(controller.state.updateModalLastDismissedAt).toStrictEqual(
+          mockParams,
+        );
+      });
+    });
+  });
+
+  describe('lastUpdatedAt', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.lastUpdatedAt).toStrictEqual(null);
+      });
+    });
+  });
+
+  describe('setLastUpdatedAt', () => {
+    it('sets lastUpdatedAt', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setLastUpdatedAt(mockParams);
+        expect(controller.state.lastUpdatedAt).toStrictEqual(mockParams);
       });
     });
   });
@@ -595,6 +612,72 @@ describe('AppStateController', () => {
       });
     });
   });
+
+  describe('setEnableEnforcedSimulations', () => {
+    it('updates the enableEnforcedSimulations state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnableEnforcedSimulations(false);
+        expect(controller.state.enableEnforcedSimulations).toBe(false);
+
+        controller.setEnableEnforcedSimulations(true);
+        expect(controller.state.enableEnforcedSimulations).toBe(true);
+      });
+    });
+  });
+
+  describe('setEnableEnforcedSimulationsForTransaction', () => {
+    it('updates the enableEnforcedSimulationsForTransactions state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnableEnforcedSimulationsForTransaction(
+          TRANSACTION_ID_MOCK,
+          true,
+        );
+
+        expect(
+          controller.state.enableEnforcedSimulationsForTransactions,
+        ).toStrictEqual({
+          [TRANSACTION_ID_MOCK]: true,
+        });
+
+        controller.setEnableEnforcedSimulationsForTransaction(
+          TRANSACTION_ID_MOCK,
+          false,
+        );
+
+        expect(
+          controller.state.enableEnforcedSimulationsForTransactions,
+        ).toStrictEqual({
+          [TRANSACTION_ID_MOCK]: false,
+        });
+      });
+    });
+  });
+
+  describe('setEnforcedSimulationsSlippage', () => {
+    it('updates the enforcedSimulationsSlippage state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnforcedSimulationsSlippage(23);
+        expect(controller.state.enforcedSimulationsSlippage).toBe(23);
+      });
+    });
+  });
+
+  describe('setEnforcedSimulationsSlippageForTransaction', () => {
+    it('updates the enforcedSimulationsSlippageForTransactions state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnforcedSimulationsSlippageForTransaction(
+          TRANSACTION_ID_MOCK,
+          25,
+        );
+
+        expect(
+          controller.state.enforcedSimulationsSlippageForTransactions,
+        ).toStrictEqual({
+          [TRANSACTION_ID_MOCK]: 25,
+        });
+      });
+    });
+  });
 });
 
 type WithControllerOptions = {
@@ -660,6 +743,8 @@ async function withController<ReturnValue>(
   );
   controllerMessenger.registerActionHandler(
     'ApprovalController:addRequest',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     addRequestMock || jest.fn().mockResolvedValue(undefined),
   );
 

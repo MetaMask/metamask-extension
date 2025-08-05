@@ -26,7 +26,7 @@ describe('useSimulationMetrics', () => {
   const useStateMock = jest.mocked(useState);
   const useEffectMock = jest.mocked(useEffect);
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let updateTransactionEventFragmentMock: jest.MockedFunction<any>;
 
@@ -39,12 +39,12 @@ describe('useSimulationMetrics', () => {
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
 
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useStateMock.mockImplementation(((initialValue: any) => [
       initialValue,
       jest.fn(),
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ]) as any);
 
@@ -64,6 +64,8 @@ describe('useSimulationMetrics', () => {
       expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         expect.objectContaining({
           properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             sending_value: MOCK_FIAT_VALUE,
           }),
         }),

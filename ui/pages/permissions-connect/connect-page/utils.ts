@@ -1,11 +1,13 @@
-import { Hex } from '@metamask/utils';
+import { CaipNamespace, Hex, parseCaipAccountId } from '@metamask/utils';
 import {
   Caip25CaveatType,
   Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   setEthAccounts,
   setPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
+import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
+import { sortSelectedInternalAccounts } from '../../../helpers/utils/util';
 
 export type PermissionsRequest = Record<
   string,
@@ -18,7 +20,7 @@ export type PermissionsRequest = Record<
  * @param permissions - The {@link PermissionsRequest} with the target name of the {@link Caip25EndowmentPermissionName}.
  * @returns The {@link Caip25CaveatValue}.
  */
-export function getRequestedCaip25CaveatValue(
+export function getCaip25CaveatValueFromPermissions(
   permissions?: PermissionsRequest,
 ): Caip25CaveatValue {
   return (
@@ -27,6 +29,7 @@ export function getRequestedCaip25CaveatValue(
     )?.value ?? {
       optionalScopes: {},
       requiredScopes: {},
+      sessionProperties: {},
       isMultichainOrigin: false,
     }
   );
@@ -68,4 +71,59 @@ export function getCaip25PermissionsResponse(
       ],
     },
   };
+}
+
+/**
+ * Gets the default accounts for the requested namespaces.
+ * We need at least one default per requested namespace
+ * if there are more explicitly requested accounts, use those instead
+ * for that namespace
+ *
+ * @param requestedNamespaces - The namespaces requested.
+ * @param supportedRequestedAccounts - The supported requested accounts.
+ * @param allAccounts - All available accounts.
+ */
+export function getDefaultAccounts(
+  requestedNamespaces: CaipNamespace[],
+  supportedRequestedAccounts: MergedInternalAccountWithCaipAccountId[],
+  allAccounts: MergedInternalAccountWithCaipAccountId[],
+): MergedInternalAccountWithCaipAccountId[] {
+  const defaultAccounts: MergedInternalAccountWithCaipAccountId[] = [];
+  const satisfiedNamespaces = new Set<CaipNamespace>();
+
+  supportedRequestedAccounts.forEach((account) => {
+    const {
+      chain: { namespace },
+    } = parseCaipAccountId(account.caipAccountId);
+    if (requestedNamespaces.includes(namespace)) {
+      defaultAccounts.push(account);
+      satisfiedNamespaces.add(namespace);
+    }
+  });
+
+  const unsatisfiedNamespaces = requestedNamespaces.filter(
+    (namespace) => !satisfiedNamespaces.has(namespace),
+  );
+
+  if (unsatisfiedNamespaces.length > 0) {
+    const allAccountsSortedByLastSelected =
+      sortSelectedInternalAccounts(allAccounts);
+
+    for (const namespace of unsatisfiedNamespaces) {
+      const defaultAccountForNamespace = allAccountsSortedByLastSelected.find(
+        (account) => {
+          const {
+            chain: { namespace: accountNamespace },
+          } = parseCaipAccountId(account.caipAccountId);
+          return accountNamespace === namespace;
+        },
+      );
+
+      if (defaultAccountForNamespace) {
+        defaultAccounts.push(defaultAccountForNamespace);
+      }
+    }
+  }
+
+  return defaultAccounts;
 }

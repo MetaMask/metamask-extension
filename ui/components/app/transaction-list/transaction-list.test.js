@@ -1,5 +1,9 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { CompatRouter } from 'react-router-dom-v5-compat';
+import { TransactionType } from '@metamask/transaction-controller';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -18,12 +22,56 @@ import {
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
-import TransactionList from './transaction-list.component';
+import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  startIncomingTransactionPolling,
+  stopIncomingTransactionPolling,
+} from '../../../store/controller-actions/transaction-controller';
+import TransactionList, {
+  filterTransactionsByToken,
+} from './transaction-list.component';
+
+jest.mock('../../../store/controller-actions/transaction-controller');
+// Mock FEATURED_NETWORK_CHAIN_IDS to include Goerli
+jest.mock('../../../../shared/constants/network', () => ({
+  ...jest.requireActual('../../../../shared/constants/network'),
+  FEATURED_NETWORK_CHAIN_IDS: [
+    '0x1',
+    '0x5',
+    '0x89',
+    '0xa',
+    '0xa4b1',
+    '0xa86a',
+    '0x38',
+    '0x144',
+    '0x324',
+  ],
+}));
+
+const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: '0xefga64466f257793eaa52fcfff5066894b76a149',
+  id: 'id-account',
+});
 
 const defaultState = {
   metamask: {
     ...mockState.metamask,
-    transactions: [],
+    enabledNetworkMap: {
+      eip155: {
+        [CHAIN_IDS.GOERLI]: true,
+      },
+    },
+    transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
+    internalAccounts: {
+      accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
+      selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
+    },
+    multichainNetworkConfigurationsByChainId:
+      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+    selectedMultichainNetworkChainId: 'eip155:5',
+    isEvmSelected: true,
   },
 };
 
@@ -40,7 +88,26 @@ const btcState = {
             type: 'send',
             account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
             from: [],
-            to: [],
+            to: [
+              {
+                address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+                asset: {
+                  fungible: true,
+                  type: '',
+                  unit: 'BTC',
+                  amount: '1.1',
+                },
+              },
+              {
+                address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+                asset: {
+                  fungible: true,
+                  type: '',
+                  unit: 'BTC',
+                  amount: '0.1',
+                },
+              },
+            ],
             fees: [],
             events: [],
           },
@@ -77,77 +144,23 @@ const solanaSwapState = {
             type: 'swap',
             from: [
               {
-                address: '8kR2HTHzPtTJuzpFZ8jtGCQ9TpahPaWbZfTNRs2GJdxq',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000073111',
-                },
-              },
-              {
                 address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
                 asset: {
                   fungible: true,
-                  type: '',
+                  type: 'solCaip19',
                   unit: 'SOL',
                   amount: '0.01',
-                },
-              },
-              {
-                address: 'HUCjBnmd4FoUjCCMYQ9xFz1ce1r8vWAd8uMhUQakE2FR',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'BONK',
-                  amount: '2583.728601',
-                },
-              },
-              {
-                address: '3msVd34R5KxonDzyNSV5nT19UtUeJ2RF1NaQhvVPNLxL',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000073111',
                 },
               },
             ],
             to: [
               {
-                address: 'CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000000723',
-                },
-              },
-              {
-                address: 'HUCjBnmd4FoUjCCMYQ9xFz1ce1r8vWAd8uMhUQakE2FR',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.00007238',
-                },
-              },
-              {
                 address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
                 asset: {
                   fungible: true,
-                  type: '',
+                  type: 'bonkCaip19',
                   unit: 'BONK',
-                  amount: '2583.72',
-                },
-              },
-              {
-                address: '3msVd34R5KxonDzyNSV5nT19UtUeJ2RF1NaQhvVPNLxL',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.01',
+                  amount: '0.00000001', // Test extremely small amounts
                 },
               },
             ],
@@ -197,16 +210,70 @@ const mockTrackEvent = jest.fn();
 const render = (state = defaultState) => {
   const store = configureStore(state);
   return renderWithProvider(
-    <MetaMetricsContext.Provider value={mockTrackEvent}>
-      <TransactionList />
-    </MetaMetricsContext.Provider>,
+    <MemoryRouter>
+      <CompatRouter>
+        <MetaMetricsContext.Provider value={mockTrackEvent}>
+          <TransactionList />
+        </MetaMetricsContext.Provider>
+      </CompatRouter>
+    </MemoryRouter>,
     store,
   );
 };
 
 describe('TransactionList', () => {
+  const startIncomingTransactionPollingMock = jest.mocked(
+    startIncomingTransactionPolling,
+  );
+
+  const stopIncomingTransactionPollingMock = jest.mocked(
+    stopIncomingTransactionPolling,
+  );
+
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders TransactionList component correctly', () => {
+    const { container } = render();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders TransactionList component with props hideNetworkFilter correctly', () => {
+    const store = configureStore(defaultState);
+    const { container } = renderWithProvider(
+      <MemoryRouter>
+        <CompatRouter>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <TransactionList hideNetworkFilter />
+          </MetaMetricsContext.Provider>
+        </CompatRouter>
+      </MemoryRouter>,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders TransactionList component with props hideTokenTransactions correctly', () => {
+    const defaultState2 = {
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.swap]],
+      },
+    };
+    const store = configureStore(defaultState2);
+    const { container } = renderWithProvider(
+      <MemoryRouter>
+        <CompatRouter>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <TransactionList hideTokenTransactions />
+          </MetaMetricsContext.Provider>
+        </CompatRouter>
+      </MemoryRouter>,
+      store,
+    );
+    expect(container).toMatchSnapshot();
   });
 
   it('renders TransactionList component and does not show You have no transactions text', () => {
@@ -219,9 +286,10 @@ describe('TransactionList', () => {
 
     // The activity list item has a status of "Confirmed" and a type of "Send"
     expect(getByText('Confirmed')).toBeInTheDocument();
-    expect(getByText('Send')).toBeInTheDocument();
+    expect(getByText('Sent')).toBeInTheDocument();
+    expect(getByText('-1.2 BTC')).toBeInTheDocument();
 
-    // A BTC activity list iteem exists
+    // A BTC activity list item exists
     expect(getByTestId('activity-list-item')).toBeInTheDocument();
 
     const viewOnExplorerBtn = getByRole('button', {
@@ -252,9 +320,13 @@ describe('TransactionList', () => {
     const store = configureStore(defaultState);
 
     const { queryByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <TransactionList tokenChainId="0x89" />
-      </MetaMetricsContext.Provider>,
+      <MemoryRouter>
+        <CompatRouter>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <TransactionList tokenChainId="0x89" />
+          </MetaMetricsContext.Provider>
+        </CompatRouter>
+      </MemoryRouter>,
       store,
     );
     expect(
@@ -303,9 +375,13 @@ describe('TransactionList', () => {
     const store = configureStore(defaultState2);
 
     const { queryByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <TransactionList tokenChainId="0xe708" />
-      </MetaMetricsContext.Provider>,
+      <MemoryRouter>
+        <CompatRouter>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <TransactionList tokenChainId="0xe708" />
+          </MetaMetricsContext.Provider>
+        </CompatRouter>
+      </MemoryRouter>,
       store,
     );
     expect(
@@ -329,5 +405,114 @@ describe('TransactionList', () => {
       name: 'View on block explorer',
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
+  });
+
+  it('starts incoming transaction polling on mount', () => {
+    render();
+    expect(startIncomingTransactionPollingMock).toHaveBeenCalled();
+  });
+
+  it('stops incoming transaction polling on mount', () => {
+    render();
+    expect(stopIncomingTransactionPollingMock).toHaveBeenCalled();
+  });
+
+  it('stops incoming transaction polling on unmount', () => {
+    const { unmount } = render();
+
+    const count = stopIncomingTransactionPollingMock.mock.calls.length;
+
+    unmount();
+
+    expect(stopIncomingTransactionPollingMock).toHaveBeenCalledTimes(count + 1);
+  });
+
+  describe('keepOnlyNonEvmTransactionsForToken', () => {
+    const transactionWithSolAndToken = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+      ],
+      to: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          },
+        },
+      ],
+    };
+    const transactionWithOnlySol = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+      ],
+      to: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+      ],
+    };
+    const transactionWithOnlyToken = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          },
+        },
+      ],
+      to: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          },
+        },
+      ],
+    };
+
+    const nonEvmTransactions = {
+      transactions: [
+        transactionWithSolAndToken,
+        transactionWithOnlySol,
+        transactionWithOnlyToken,
+      ],
+    };
+
+    it('filters out transactions that do not involve the token address', () => {
+      const tokenAddress =
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+
+      const result = filterTransactionsByToken(
+        nonEvmTransactions,
+        tokenAddress,
+      );
+
+      expect(result).toStrictEqual({
+        transactions: [transactionWithSolAndToken, transactionWithOnlyToken],
+      });
+    });
+
+    it('returns the original object if no token address is provided', () => {
+      const tokenAddress = undefined;
+
+      const result = filterTransactionsByToken(
+        nonEvmTransactions,
+        tokenAddress,
+      );
+
+      expect(result).toStrictEqual(nonEvmTransactions);
+    });
   });
 });

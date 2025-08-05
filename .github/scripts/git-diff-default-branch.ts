@@ -1,19 +1,14 @@
-import { exec as execCallback } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
-import { context } from '@actions/github';
+import { context, getOctokit } from '@actions/github';
 import * as core from '@actions/core';
-
-const exec = promisify(execCallback);
 
 // Get PR number from GitHub Actions environment variables
 const PR_NUMBER = context.payload.pull_request?.number;
 
-const GITHUB_DEFAULT_BRANCH = 'main';
-const SOURCE_BRANCH = PR_NUMBER ? `refs/pull/${PR_NUMBER}/head` : '';
-
 const CHANGED_FILES_DIR = 'changed-files';
+
+const octokit = getOctokit(process.env.GITHUB_TOKEN || '');
 
 type PRInfo = {
   base: {
@@ -35,86 +30,36 @@ async function getPrInfo(): Promise<PRInfo | null> {
 
   const { owner, repo } = context.repo;
 
-  const response = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/pulls/${PR_NUMBER}`,
-    {
-      headers: {
-        Authorization: `token ${process.env.GITHUB_TOKEN}`,
-        Accept: 'application/vnd.github.v3+json',
-      },
-    },
-  );
-
-  return await response.json();
+  return (
+    await octokit.request(`GET /repos/${owner}/${repo}/pulls/${PR_NUMBER}`)
+  ).data;
 }
 
 /**
- * Fetches the git repository with a specified depth.
+ * Get the list of files changed in the pull request using GraphQL
  *
- * @param depth - The depth to use for the fetch command.
- * @returns True if the fetch is successful, otherwise false.
+ * @returns List of files changed in the PR
  */
-async function fetchWithDepth(depth: number): Promise<boolean> {
-  try {
-    await exec(`git fetch --depth ${depth} origin "${GITHUB_DEFAULT_BRANCH}"`);
-    if (SOURCE_BRANCH) {
-      await exec(
-        `git fetch --depth ${depth} origin "${SOURCE_BRANCH}:${SOURCE_BRANCH}"`,
-      );
-    }
-    return true;
-  } catch (error) {
-    core.warning(`Failed to fetch with depth ${depth}:`, error);
-    return false;
-  }
-}
+async function getPrFilesChanged() {
+  const { owner, repo } = context.repo;
 
-/**
- * Attempts to fetch the necessary commits until the merge base is found.
- * It tries different fetch depths and performs a full fetch if needed.
- *
- * @throws If an unexpected error occurs during the execution of git commands.
- */
-async function fetchUntilMergeBaseFound() {
-  const depths = [1, 10, 100];
-  for (const depth of depths) {
-    core.info(`Attempting git diff with depth ${depth}...`);
-    await fetchWithDepth(depth);
+  const response = await octokit.graphql({
+    query: `
+        {
+          repository(owner: "${owner}", name: "${repo}") {
+            pullRequest(number: ${PR_NUMBER}) {
+              files(first: 100) {
+                nodes {
+                  changeType
+                  path,
+                }
+              }
+            }
+          }
+        }`,
+  });
 
-    try {
-      await exec(`git merge-base origin/${GITHUB_DEFAULT_BRANCH} HEAD`);
-      return;
-    } catch (error: unknown) {
-      if (error instanceof Error && 'code' in error) {
-        core.warning(
-          `Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`,
-        );
-      } else {
-        throw error;
-      }
-    }
-  }
-  await exec(`git fetch --unshallow origin "${GITHUB_DEFAULT_BRANCH}"`);
-}
-
-/**
- * Performs a git diff command to get the list of files changed between the current branch and the origin.
- * It first ensures that the necessary commits are fetched until the merge base is found.
- *
- * @returns The output of the git diff command, listing the file paths with status (A, M, D).
- * @throws If unable to get the diff after fetching the merge base or if an unexpected error occurs.
- */
-async function gitDiff(): Promise<string> {
-  await fetchUntilMergeBaseFound();
-  const { stdout: diffResult } = await exec(
-    `git diff --name-status "origin/${GITHUB_DEFAULT_BRANCH}...${
-      SOURCE_BRANCH || 'HEAD'
-    }"`,
-  );
-  if (!diffResult) {
-    throw new Error('Unable to get diff after full checkout.');
-  }
-  return diffResult;
+  return response.repository.pullRequest.files.nodes;
 }
 
 function writePrBodyAndInfoToFile(prInfo: PRInfo) {
@@ -122,9 +67,16 @@ function writePrBodyAndInfoToFile(prInfo: PRInfo) {
   const labels = prInfo.labels.map((label) => label.name).join(', ');
   const updatedPrBody = `PR labels: {${labels}}\nPR base: {${
     prInfo.base.ref
-  }}\n${prInfo.body.trim()}`;
+  }}\n${prInfo.body?.trim()}`;
   fs.writeFileSync(prBodyPath, updatedPrBody);
   core.info(`PR body and info saved to ${prBodyPath}`);
+}
+
+function writeEmptyGitDiff() {
+  core.info('Not a PR, skipping git diff');
+  const outputPath = path.resolve(CHANGED_FILES_DIR, 'changed-files.json');
+  fs.writeFileSync(outputPath, '[]');
+  core.info(`Empty git diff results saved to ${outputPath}`);
 }
 
 /**
@@ -139,7 +91,7 @@ async function storeGitDiffOutputAndPrBody() {
 
     core.info(`Determining whether to run git diff...`);
     if (!PR_NUMBER) {
-      core.info('Not a PR, skipping git diff');
+      writeEmptyGitDiff();
       return;
     }
 
@@ -147,18 +99,18 @@ async function storeGitDiffOutputAndPrBody() {
 
     const baseRef = prInfo?.base.ref;
     if (!baseRef) {
-      core.info('Not a PR, skipping git diff');
+      writeEmptyGitDiff();
       return;
     }
     // We perform git diff even if the PR base is not main or skip-e2e-quality-gate label is applied
     // because we rely on the git diff results for other jobs
     core.info('Attempting to get git diff...');
-    const diffOutput = await gitDiff();
+    const diffOutput = JSON.stringify(await getPrFilesChanged());
     core.info(diffOutput);
 
     // Store the output of git diff
-    const outputPath = path.resolve(CHANGED_FILES_DIR, 'changed-files.txt');
-    fs.writeFileSync(outputPath, diffOutput.trim());
+    const outputPath = path.resolve(CHANGED_FILES_DIR, 'changed-files.json');
+    fs.writeFileSync(outputPath, diffOutput);
     core.info(`Git diff results saved to ${outputPath}`);
 
     writePrBodyAndInfoToFile(prInfo);
