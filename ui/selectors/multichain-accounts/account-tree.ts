@@ -283,7 +283,7 @@ const getInternalAccountFromGroup = (
 
   for (const account of group.accounts) {
     const internalAccount = internalAccounts[account];
-    if (internalAccount.scopes.includes(caipChainId)) {
+    if (internalAccount?.scopes.includes(caipChainId)) {
       return internalAccount;
     }
   }
