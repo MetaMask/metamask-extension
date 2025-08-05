@@ -73,16 +73,16 @@ export const BridgeTransactionSettingsModal = ({
         setCustomSlippage(undefined);
       } else {
         setIsAutoSelected(false);
-        if (slippage && HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
-          setLocalSlippage(slippage);
-          setCustomSlippage(undefined);
-        } else if (slippage) {
-          setLocalSlippage(undefined);
-          setCustomSlippage(slippage.toString());
-        } else {
+        if (slippage === undefined) {
           // Default to first option if no slippage set and not showing AUTO
           setLocalSlippage(BRIDGE_DEFAULT_SLIPPAGE);
           setCustomSlippage(undefined);
+        } else if (HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
+          setLocalSlippage(slippage);
+          setCustomSlippage(undefined);
+        } else {
+          setLocalSlippage(undefined);
+          setCustomSlippage(slippage.toString());
         }
       }
     }

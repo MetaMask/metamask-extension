@@ -80,7 +80,7 @@ describe('SlippageService', () => {
     });
 
     describe('Solana swaps', () => {
-      it('returns 0.5% for Solana to Solana swaps', () => {
+      it('returns undefined (AUTO mode) for Solana to Solana swaps', () => {
         const context: SlippageContext = {
           fromChain: { chainId: MultichainNetworks.SOLANA },
           toChain: { chainId: MultichainNetworks.SOLANA },
@@ -90,7 +90,7 @@ describe('SlippageService', () => {
         };
 
         const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.SolanaSwap);
+        expect(result).toBe(undefined);
       });
     });
 
@@ -167,6 +167,19 @@ describe('SlippageService', () => {
         expect(result).toBe(SlippageValue.BridgeDefault);
       });
 
+      it('returns EVM default when toChain is missing for swap', () => {
+        const context: SlippageContext = {
+          fromChain: { chainId: '0x1' },
+          toChain: null,
+          fromToken: mockWETH,
+          toToken: mockWETH,
+          isSwap: true,
+        };
+
+        const result = SlippageService.calculateSlippage(context);
+        expect(result).toBe(SlippageValue.EvmDefault);
+      });
+
       it('handles case-insensitive stablecoin addresses', () => {
         const uppercaseUSDC: BridgeToken = {
           ...mockUSDC,
@@ -227,6 +240,19 @@ describe('SlippageService', () => {
       expect(reason).toBe('Cross-chain bridge transaction');
     });
 
+    it('returns correct reason for incomplete swap', () => {
+      const context: SlippageContext = {
+        fromChain: { chainId: '0x1' },
+        toChain: null,
+        fromToken: mockWETH,
+        toToken: mockWETH,
+        isSwap: true,
+      };
+
+      const reason = SlippageService.getSlippageReason(context);
+      expect(reason).toBe('Incomplete swap setup - using EVM default');
+    });
+
     it('returns correct reason for Solana swap', () => {
       const context: SlippageContext = {
         fromChain: { chainId: MultichainNetworks.SOLANA },
@@ -237,7 +263,7 @@ describe('SlippageService', () => {
       };
 
       const reason = SlippageService.getSlippageReason(context);
-      expect(reason).toBe('Solana swap');
+      expect(reason).toBe('Solana swap (AUTO mode)');
     });
 
     it('returns correct reason for stablecoin pair', () => {

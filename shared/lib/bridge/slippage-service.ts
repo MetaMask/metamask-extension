@@ -8,7 +8,6 @@ import type { BridgeToken } from '../../../ui/ducks/bridge/types';
  * Slippage values for different scenarios
  */
 export enum SlippageValue {
-  SolanaSwap = 0.5,
   EvmStablecoin = 0.5,
   EvmDefault = 2,
   BridgeDefault = 0.5,
@@ -78,17 +77,17 @@ export class SlippageService {
    *
    * Rules:
    * - Bridge (cross-chain): Always 0.5%
-   * - Swap on Solana: Always 0.5%
+   * - Swap on Solana: Always undefined (AUTO mode)
    * - Swap on EVM stablecoin pairs: 0.5%
    * - Swap on EVM other pairs: 2%
    *
    * @param context
    */
-  public static calculateSlippage(context: SlippageContext): number {
-    const { fromChain, fromToken, toToken, isSwap } = context;
+  public static calculateSlippage(context: SlippageContext): number | undefined {
+    const { fromChain, toChain, fromToken, toToken, isSwap } = context;
 
-    // If no source chain, return bridge default
-    if (!fromChain) {
+    // If no source chain, we can't determine the type
+    if (!fromChain?.chainId) {
       return SlippageValue.BridgeDefault;
     }
 
@@ -97,9 +96,15 @@ export class SlippageService {
       return SlippageValue.BridgeDefault;
     }
 
-    // Solana swaps always use 0.5%
-    if (isSolanaChainId(fromChain.chainId)) {
-      return SlippageValue.SolanaSwap;
+    // For swaps, we need both chains to be set
+    if (!toChain?.chainId) {
+      return SlippageValue.EvmDefault;
+    }
+
+    // Solana swaps always use undefined (AUTO mode)
+    // Must check that BOTH chains are Solana
+    if (isSolanaChainId(fromChain.chainId) && isSolanaChainId(toChain.chainId)) {
+      return undefined;
     }
 
     // EVM stablecoin pairs use 0.5%
@@ -118,9 +123,9 @@ export class SlippageService {
    * @param context
    */
   public static getSlippageReason(context: SlippageContext): string {
-    const { fromChain, fromToken, toToken, isSwap } = context;
+    const { fromChain, toChain, fromToken, toToken, isSwap } = context;
 
-    if (!fromChain) {
+    if (!fromChain?.chainId) {
       return 'No source chain - using bridge default';
     }
 
@@ -128,8 +133,12 @@ export class SlippageService {
       return 'Cross-chain bridge transaction';
     }
 
-    if (isSolanaChainId(fromChain.chainId)) {
-      return 'Solana swap';
+    if (!toChain?.chainId) {
+      return 'Incomplete swap setup - using EVM default';
+    }
+
+    if (isSolanaChainId(fromChain.chainId) && isSolanaChainId(toChain.chainId)) {
+      return 'Solana swap (AUTO mode)';
     }
 
     if (this.isStablecoinPair(fromChain.chainId, fromToken, toToken)) {

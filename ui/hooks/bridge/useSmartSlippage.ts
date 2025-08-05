@@ -31,6 +31,7 @@ type UseSmartSlippageResult = {
  * - Respects user manual changes (won't override them)
  * - Updates automatically when tokens change (if using defaults)
  * - Provides a way to reset to smart defaults
+ * - Supports Solana AUTO mode (undefined)
  *
  * @param options0
  * @param options0.fromChain
@@ -55,26 +56,18 @@ export function useSmartSlippage({
 
   // Track if user has manually set slippage
   const isUserOverrideRef = useRef(false);
-  const lastCalculatedSlippageRef = useRef<number | undefined>(undefined);
-
-  // Track previous context to detect changes
-  const prevContextRef = useRef<SlippageContext>({
-    fromChain: fromChain ?? null,
-    toChain: toChain ?? null,
-    fromToken,
-    toToken,
-    isSwap,
-  });
+  const lastSetSlippageRef = useRef<number | undefined>(undefined);
 
   // Calculate the appropriate slippage for current context
   const calculateCurrentSlippage = useCallback(() => {
-    if (!enabled || !fromChain) {
+    // Need at least fromChain to make any determination
+    if (!enabled || !fromChain?.chainId) {
       return undefined;
     }
 
     const context: SlippageContext = {
-      fromChain: fromChain ?? null,
-      toChain: toChain ?? null,
+      fromChain,
+      toChain,
       fromToken,
       toToken,
       isSwap,
@@ -85,39 +78,11 @@ export function useSmartSlippage({
     // Log the reason in development
     if (process.env.NODE_ENV === 'development') {
       const reason = SlippageService.getSlippageReason(context);
-      console.log(`Slippage calculated: ${slippage}% - ${reason}`);
+      console.log(`[useSmartSlippage] Slippage calculated: ${slippage ?? 'AUTO'}% - ${reason}`);
     }
 
     return slippage;
   }, [fromChain, toChain, fromToken, toToken, isSwap, enabled]);
-
-  // Check if context has changed significantly
-  const hasContextChanged = useCallback(() => {
-    const prev = prevContextRef.current;
-
-    // Check if chains changed
-    if (prev.fromChain?.chainId !== fromChain?.chainId) {
-      return true;
-    }
-    if (prev.toChain?.chainId !== toChain?.chainId) {
-      return true;
-    }
-
-    // Check if swap/bridge mode changed
-    if (prev.isSwap !== isSwap) {
-      return true;
-    }
-
-    // Check if tokens changed (comparing addresses)
-    if (prev.fromToken?.address !== fromToken?.address) {
-      return true;
-    }
-    if (prev.toToken?.address !== toToken?.address) {
-      return true;
-    }
-
-    return false;
-  }, [fromChain, toChain, fromToken, toToken, isSwap]);
 
   // Initialize or update slippage when context changes
   useEffect(() => {
@@ -126,32 +91,12 @@ export function useSmartSlippage({
     }
 
     const newSlippage = calculateCurrentSlippage();
-    if (newSlippage === undefined) {
-      return;
-    }
 
-    // First initialization - always set
-    if (lastCalculatedSlippageRef.current === undefined) {
+    // If user hasn't overridden, update to the new calculated value
+    if (!isUserOverrideRef.current) {
       dispatch(setSlippage(newSlippage));
-      lastCalculatedSlippageRef.current = newSlippage;
-      isUserOverrideRef.current = false;
-      return;
+      lastSetSlippageRef.current = newSlippage;
     }
-
-    // Context changed - only update if not user override
-    if (hasContextChanged() && !isUserOverrideRef.current) {
-      dispatch(setSlippage(newSlippage));
-      lastCalculatedSlippageRef.current = newSlippage;
-    }
-
-    // Update context reference
-    prevContextRef.current = {
-      fromChain: fromChain ?? null,
-      toChain: toChain ?? null,
-      fromToken,
-      toToken,
-      isSwap,
-    };
   }, [
     fromChain,
     toChain,
@@ -160,35 +105,27 @@ export function useSmartSlippage({
     isSwap,
     enabled,
     calculateCurrentSlippage,
-    hasContextChanged,
     dispatch,
   ]);
 
   // Detect user manual changes
   useEffect(() => {
-    if (!enabled) {
-      return;
-    }
-
-    // If current slippage differs from our last calculated value,
-    // and we have a calculated value, user must have changed it
+    // If current slippage differs from what we last set programmatically,
+    // the user must have changed it manually
     if (
-      currentSlippage !== undefined &&
-      lastCalculatedSlippageRef.current !== undefined &&
-      currentSlippage !== lastCalculatedSlippageRef.current
+      currentSlippage !== lastSetSlippageRef.current &&
+      lastSetSlippageRef.current !== undefined
     ) {
       isUserOverrideRef.current = true;
     }
-  }, [currentSlippage, enabled]);
+  }, [currentSlippage]);
 
   // Function to reset to smart defaults
   const resetToDefault = useCallback(() => {
     const newSlippage = calculateCurrentSlippage();
-    if (newSlippage !== undefined) {
-      dispatch(setSlippage(newSlippage));
-      lastCalculatedSlippageRef.current = newSlippage;
-      isUserOverrideRef.current = false;
-    }
+    dispatch(setSlippage(newSlippage));
+    lastSetSlippageRef.current = newSlippage;
+    isUserOverrideRef.current = false;
   }, [calculateCurrentSlippage, dispatch]);
 
   return {
