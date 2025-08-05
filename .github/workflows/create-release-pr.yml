@@ -9,8 +9,8 @@ on:
       semver-version:
         description: 'A semantic version, eg: x.x.x'
         required: true
-      previous-semver-version:
-        description: 'Previous semantic version, eg: x.x.x'
+      previous-version-ref:
+        description: 'Previous release version reference (tag or commit hash). eg: v7.7.0'
         required: true
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       platform: extension
       base-branch: ${{ inputs.base-branch }}
       semver-version: ${{ inputs.semver-version }}
-      previous-version-tag: Version-v${{ inputs.previous-semver-version }}
+      previous-version-tag: ${{ inputs.previous-version-ref }}
       github-tools-version: dde6d530bebae07d1e50180894ab2cac64170a2c
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
