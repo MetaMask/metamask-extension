@@ -1009,9 +1009,7 @@ async function buildEventFragmentProperties({
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',
     gas_estimation_failed: Boolean(simulationFails),
-    account_type: await transactionMetricsRequest.getAccountType(
-      transactionMetricsRequest.getSelectedAddress(),
-    ),
+    account_type: accountType,
     device_model: await transactionMetricsRequest.getDeviceModel(
       transactionMetricsRequest.getSelectedAddress(),
     ),
