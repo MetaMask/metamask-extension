@@ -14,18 +14,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import {
-  debounce,
-  throttle,
-  memoize,
-  wrap,
-  pick,
-  cloneDeep,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  isEqual,
-  ///: END:ONLY_INCLUDE_IF,
-  uniq
-} from 'lodash';
+import { debounce, pick, uniq, isEqual } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -107,6 +96,7 @@ import {
 } from '@metamask/remote-feature-flag-controller';
 
 import { SignatureController } from '@metamask/signature-controller';
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import {
   NameController,
@@ -266,14 +256,6 @@ import {
 } from '../../shared/lib/trace';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import {
-  BridgeUserAction,
-  BridgeBackgroundAction,
-} from '../../shared/types/bridge';
-import { getMnemonicUtil } from './lib/mnemonic';
-import {
-  createTransactionEventFragmentWithTxId,
-} from './lib/transaction/metrics';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -451,10 +433,6 @@ import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
-import {
-  getSendBundleSupportedChains,
-  isSendBundleSupported,
-} from './lib/transaction/sentinel-api';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2199,7 +2177,6 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
           isRelaySupported,
-          getSendBundleSupportedChains,
         },
         this.controllerMessenger,
       ),
@@ -4393,7 +4370,7 @@ export default class MetamaskController extends EventEmitter {
           notificationServicesController,
         ),
 
-      // Testing
+      // E2E testing
       throwTestError: this.throwTestError.bind(this),
       captureTestError: this.captureTestError.bind(this),
 
@@ -4444,7 +4421,6 @@ export default class MetamaskController extends EventEmitter {
       // Other
       endTrace,
       isRelaySupported,
-      isSendBundleSupported,
       openUpdateTabAndReload: () =>
         openUpdateTabAndReload(this.requestSafeReload.bind(this)),
       requestSafeReload: this.requestSafeReload.bind(this),
@@ -4763,10 +4739,9 @@ export default class MetamaskController extends EventEmitter {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         op: TraceOperation.OnboardingSecurityOp,
       });
-      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       const seedPhrase =
-        this.mnemonicUtil.convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
+        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
       await this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase(
         password,
@@ -5109,7 +5084,7 @@ export default class MetamaskController extends EventEmitter {
     const seedPhraseAsBuffer = Buffer.from(mnemonic, 'utf8');
 
     const seedPhraseAsUint8Array =
-      this.mnemonicUtil.convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
+      this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
     if (syncWithSocial) {
       let addNewSeedPhraseBackupSuccess = false;
@@ -5186,8 +5161,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Imports a new mnemonic to the vault.
    *
-   * @param {number[]} mnemonic
-   * @param {string} mnemonic - The mnemonic to import.
+   * @param {number[]} mnemonic - The mnemonic to import.
    * @param {object} options - The options for the import.
    * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
    * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
@@ -5428,6 +5402,8 @@ export default class MetamaskController extends EventEmitter {
     try {
       const { completedOnboarding } = this.onboardingController.state;
 
+      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
+
       // clear permissions
       this.permissionController.clearState();
 
@@ -5450,10 +5426,12 @@ export default class MetamaskController extends EventEmitter {
         this.tokenDetectionController.enable();
       }
 
+      // create new vault
+      const seedPhraseAsUint8Array =
+        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
       const utf8ArraySeedPhrase = Uint8Array.from(encodedSeedPhrase);
       const seed =
         this.mnemonicUtil.convertMnemonicToWordlistIndices(utf8ArraySeedPhrase);
-      // create new vault
       await this.keyringController.createNewVaultAndRestore(password, seed);
 
       // We re-created the vault, meaning we only have 1 new HD keyring
@@ -5714,34 +5692,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
   ///: END:ONLY_INCLUDE_IF
-
-  /**
-   * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
-   *
-   * @param {Buffer} mnemonic - The BIP-39 mnemonic.
-   * @returns {Buffer} The Unicode code points for the seed phrase formed from the words in the wordlist.
-   */
-  _convertMnemonicToWordlistIndices(mnemonic) {
-    const indices = mnemonic
-      .toString()
-      .split(' ')
-      .map((word) => wordlist.indexOf(word));
-    return new Uint8Array(new Uint16Array(indices).buffer);
-  }
-
-  /**
-   * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to a buffer of Unicode code points.
-   *
-   * @param {Uint8Array} wordlistIndices - Indices to specific words in the BIP-39 English wordlist.
-   * @returns {Buffer} The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
-   */
-  _convertEnglishWordlistIndicesToCodepoints(wordlistIndices) {
-    return Buffer.from(
-      Array.from(new Uint16Array(wordlistIndices.buffer))
-        .map((i) => wordlist[i])
-        .join(' '),
-    );
-  }
 
   /**
    * Get an account balance from the AccountTrackerController or request it directly from the network.
@@ -6213,7 +6163,7 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async getSeedPhrase(password, _keyringId) {
-    const srp = await this.keyringController.exportSeedPhrase(password, _keyringId,);
+    const srp = await this.keyringController.exportSeedPhrase(password, _keyringId);
     return this.mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(srp);
   }
 
@@ -8516,7 +8466,7 @@ export default class MetamaskController extends EventEmitter {
    * Throw an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+   * @deprecated This is only mean to facilitiate E2E testing. We should not
    * use this for handling errors.
    */
   throwTestError(message) {
@@ -8531,7 +8481,7 @@ export default class MetamaskController extends EventEmitter {
    * Capture an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
+   * @deprecated This is only mean to facilitiate E2E testing. We should not
    * use this for handling errors.
    */
   captureTestError(message) {
