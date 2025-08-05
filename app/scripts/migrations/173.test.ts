@@ -24,24 +24,25 @@ describe(`migration #${version}`, () => {
 
   describe(`migration #${version}`, () => {
     it('removes AppStateControllerState `switchedNetworkNeverShowMessage` and `switchedNetworkDetails` properties', async () => {
+      const remainingState = {
+        lastUpdatedAt: 1717334400,
+        isUpdateAvailable: true,
+      }
+
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
           AppStateController: {
-            lastUpdatedAt: 1717334400,
             switchedNetworkNeverShowMessage: false,
             switchedNetworkDetails: {},
-            isUpdateAvailable: true,
+            ...remainingState,
           },
         },
       };
 
       const newStorage = await migrate(oldStorage);
 
-      expect(newStorage.data.AppStateController).toStrictEqual({
-        lastUpdatedAt: 1717334400,
-        isUpdateAvailable: true,
-      });
+      expect(newStorage.data.AppStateController).toStrictEqual(remainingState);
     });
   });
 });
