@@ -39,9 +39,7 @@ export function useTransactionConfirm() {
       {
         ...selectedGasFeeToken.transferTransaction,
         type: TransactionType.gasPayment,
-        // TODO: This type conversion is temporary will be removed once we consume latest controller
-        // https://github.com/MetaMask/core/pull/6178
-      } as BatchTransactionParams,
+      },
     ];
 
     newTransactionMeta.txParams.gas = selectedGasFeeToken.gas;
