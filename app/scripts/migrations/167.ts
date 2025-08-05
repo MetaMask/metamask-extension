@@ -49,14 +49,17 @@ function transformState(
     return state;
   }
 
-  if (hasProperty(userStorageControllerState, 'isBackupAndSyncEnabled')) {
-    // Set isBackupAndSyncEnabled to true for all users.
-    userStorageControllerState.isBackupAndSyncEnabled = true;
-  }
+  // If we are using `yarn start:with-state` do not enable syncing
+  if (!process.env.WITH_STATE) {
+    if (hasProperty(userStorageControllerState, 'isBackupAndSyncEnabled')) {
+      // Set isBackupAndSyncEnabled to true for all users.
+      userStorageControllerState.isBackupAndSyncEnabled = true;
+    }
 
-  if (hasProperty(userStorageControllerState, 'isAccountSyncingEnabled')) {
-    // Set isAccountSyncingEnabled to true for all users.
-    userStorageControllerState.isAccountSyncingEnabled = true;
+    if (hasProperty(userStorageControllerState, 'isAccountSyncingEnabled')) {
+      // Set isAccountSyncingEnabled to true for all users.
+      userStorageControllerState.isAccountSyncingEnabled = true;
+    }
   }
 
   return state;
