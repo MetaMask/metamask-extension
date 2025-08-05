@@ -1,11 +1,13 @@
 import {
   NestedTransactionMetadata,
+  SimulationErrorCode,
   SimulationTokenBalanceChange,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import { parseApprovalTransactionData } from '../../../../../../shared/modules/transaction.utils';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -16,6 +18,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
 import { useBatchApproveBalanceChanges } from '../../../components/confirm/info/hooks/useBatchApproveBalanceChanges';
 import { useConfirmContext } from '../../../context/confirm';
+import { getUseTransactionSimulations } from '../../../../../selectors';
 
 type ApprovalInfo = {
   tokenAddress: Hex;
@@ -230,9 +233,17 @@ export function useMultipleApprovalsAlerts(): Alert[] {
   const { value: approveBalanceChanges } =
     useBatchApproveBalanceChanges() ?? {};
 
+  const isSimulationEnabled = useSelector(getUseTransactionSimulations);
+
   const nestedTransactions = currentConfirmation?.nestedTransactions;
-  const simulationDataArray =
-    currentConfirmation?.simulationData?.tokenBalanceChanges;
+  const simulationData = currentConfirmation?.simulationData;
+  const simulationDataArray = simulationData?.tokenBalanceChanges;
+  const isSimulationSupported =
+    isSimulationEnabled &&
+    ![
+      SimulationErrorCode.ChainNotSupported,
+      SimulationErrorCode.Disabled,
+    ].includes(simulationData?.error?.code as SimulationErrorCode);
 
   const tokenAddresses = useMemo(() => {
     if (!nestedTransactions?.length) {
@@ -278,7 +289,7 @@ export function useMultipleApprovalsAlerts(): Alert[] {
     return findUnusedApprovals(approvals, tokenOutflows);
   }, [approvals, tokenOutflows]);
 
-  const shouldShowAlert = unusedApprovals.length > 0;
+  const shouldShowAlert = unusedApprovals.length > 0 && isSimulationSupported;
 
   return useMemo(() => {
     if (!shouldShowAlert) {
