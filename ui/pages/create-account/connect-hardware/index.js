@@ -74,16 +74,16 @@ export const TREZOR_HD_PATHS = [
 ];
 
 const ONEKEY_STANDARD_BIP44_PATH = `m/44'/60'/0'/0/x`;
-const ONEKEY_LEDGER_LIVE_PATH = `m/44'/60'/x'/0/0`;
+// const ONEKEY_LEDGER_LIVE_PATH = `m/44'/60'/x'/0/0`;
 export const ONEKEY_HD_PATHS = [
   {
     name: `Standard (${ONEKEY_STANDARD_BIP44_PATH})`,
     value: ONEKEY_STANDARD_BIP44_PATH,
   },
-  {
-    name: `Ledger Live (${ONEKEY_LEDGER_LIVE_PATH})`,
-    value: ONEKEY_LEDGER_LIVE_PATH,
-  },
+  // {
+  //   name: `Ledger Live (${ONEKEY_LEDGER_LIVE_PATH})`,
+  //   value: ONEKEY_LEDGER_LIVE_PATH,
+  // },
 ];
 
 const HD_PATHS = {
@@ -159,11 +159,12 @@ class ConnectHardwareForm extends Component {
     }
   }
 
-  connectToHardwareWallet = (device) => {
+  connectToHardwareWallet = async (device) => {
     this.setState({ device });
     if (this.state.accounts.length) {
       return;
     }
+    await this.connectHardwareBeforeCheck(device);
 
     // Default values
     this.getPage(device, 0, this.props.defaultHdPaths[device], true);
@@ -201,6 +202,10 @@ class ConnectHardwareForm extends Component {
       this.props.hideAlert();
     }, SECOND * 5);
   }
+
+  connectHardwareBeforeCheck = async (device) => {
+    this.props.connectHardwareBeforeCheck(device);
+  };
 
   getPage = (device, page, hdPath, loadHid) => {
     this.props
@@ -310,12 +315,7 @@ class ConnectHardwareForm extends Component {
     }
 
     let description = '';
-    if (
-      deviceName === HardwareDeviceNames.oneKey &&
-      path === ONEKEY_LEDGER_LIVE_PATH
-    ) {
-      description = '(Ledger)';
-    } else if (path === MEW_PATH) {
+    if (path === MEW_PATH) {
       description = this.context.t('hardwareWalletLegacyDescription');
     }
 
@@ -472,6 +472,7 @@ class ConnectHardwareForm extends Component {
 
 ConnectHardwareForm.propTypes = {
   connectHardware: PropTypes.func,
+  connectHardwareBeforeCheck: PropTypes.func,
   checkHardwareStatus: PropTypes.func,
   forgetDevice: PropTypes.func,
   showAlert: PropTypes.func,
@@ -509,6 +510,9 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(
         actions.connectHardware(deviceName, page, hdPath, loadHid, t),
       );
+    },
+    connectHardwareBeforeCheck: (deviceName) => {
+      return dispatch(actions.connectHardwareBeforeCheck(deviceName));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));

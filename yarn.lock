@@ -23847,9 +23847,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-onekey-bridge-keyring@npm:^0.2.10":
-  version: 0.2.10
-  resolution: "eth-onekey-bridge-keyring@npm:0.2.10"
+"eth-onekey-bridge-keyring@npm:^0.2.11":
+  version: 0.2.11
+  resolution: "eth-onekey-bridge-keyring@npm:0.2.11"
   dependencies:
     "@ethereumjs/rlp": "npm:^4.0.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -23861,7 +23861,7 @@ __metadata:
     "@onekeyfe/hd-web-sdk": "npm:^1.1.1"
     bytebuffer: "npm:^5.0.1"
     hdkey: "npm:^2.1.0"
-  checksum: 10/63776c08f6dfbc93bec16b827b6a5d1784a5d6a2c66fc39b5d2d5001dbb9a6df9c464eb7b9da5e98c0a3c5c7be17cf5b0ce98b7a9887c58963d382e0ee22de60
+  checksum: 10/f808091aad9b54f051acd4edba76c7612d4bb7ccae42d89227c8146422aa3a948577d32309bc111c0c6c6ad4e53824850296a52b2ed01b0143c166d33cfb93e5
   languageName: node
   linkType: hard
 
@@ -32432,7 +32432,7 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     eth-lattice-keyring: "patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch"
     eth-method-registry: "npm:^4.0.0"
-    eth-onekey-bridge-keyring: "npm:^0.2.10"
+    eth-onekey-bridge-keyring: "npm:^0.2.11"
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:^5.7.0"
     extension-port-stream: "npm:^3.0.0"
