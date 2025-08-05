@@ -1297,7 +1297,7 @@ function renderHtmlFile({
       : `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
-  const eta = new Eta();
+  const eta = new Eta({ views: './app/' });
   const htmlOutput = eta
     .renderString(htmlTemplate, { isTest, shouldIncludeSnow })
     // these replacements are added to support the webpack build's automatic
