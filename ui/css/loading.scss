@@ -16,23 +16,24 @@
 
 .loading-timeout-message {
   align-self: center;
-  animation: showTimeoutMessage 20s ease-in-out forwards;
   color: var(--color-text-alternative);
   margin-top: 4rem;
   max-width: design-system.$screen-sm-max;
-  opacity: 0;
   text-align: center;
 
   &::before {
     direction: "__MSG_@@bidi_dir__";
-    content: "__MSG_CSS_loadingTakingTooLongMessageText__";
+    content: "";
     display: block;
+    white-space: pre-line;
+    animation: showTimeoutContent 5s step-end forwards;
   }
+}
 
-  &::after {
-    direction: "__MSG_@@bidi_dir__";
-    content: "__MSG_CSS_loadingTakingTooLongActionText__";
-    display: block;
+@keyframes showTimeoutContent {
+  to {
+    // `\A` is a newline character.
+    content: "__MSG_CSS_loadingTakingTooLongMessageText__\A__MSG_CSS_loadingTakingTooLongActionText__";
   }
 }
 
@@ -44,19 +45,5 @@
     // loading screen. So we set the color here to ensure it is correct in dark
     // mode.
     color: var(--brand-colors-grey-grey300);
-  }
-}
-
-@keyframes showTimeoutMessage {
-  0% {
-    opacity: 0;
-  }
-
-  99.999% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
   }
 }
