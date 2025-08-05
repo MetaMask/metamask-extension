@@ -147,16 +147,6 @@ export default function init() {
           sdk = undefined;
 
           sendResponse();
-
-          break;
-
-        case OneKeyAction.getDeviceFeatures:
-          sdk?.getFeatures().then((result) => {
-            if (!result?.success) {
-              handleBlockErrorEvent(result);
-            }
-            sendResponse(result);
-          });
           break;
 
         case OneKeyAction.getPublicKey:
@@ -191,15 +181,6 @@ export default function init() {
 
               sendResponse(response);
             });
-          break;
-
-        case OneKeyAction.batchGetPublicKey:
-          sdk?.evmGetPublicKey('', '', msg.params).then((result) => {
-            if (!result?.success) {
-              handleBlockErrorEvent(result);
-            }
-            sendResponse(result);
-          });
           break;
 
         case OneKeyAction.getPassphraseState:

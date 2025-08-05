@@ -43,6 +43,8 @@ export enum OffscreenCommunicationEvents {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   onekeyDeviceConnectError = 'onekey-device-connect-error',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   metamaskBackgroundReady = 'metamask-background-ready',
 }
 
@@ -110,12 +112,6 @@ export enum OneKeyAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getPublicKey = 'onekey-get-public-key',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  getDeviceFeatures = 'onekey-get-device-features',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  batchGetPublicKey = 'onekey-batch-get-public-key',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getPassphraseState = 'onekey-get-passphrase-state',
