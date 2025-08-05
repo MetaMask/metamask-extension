@@ -994,7 +994,7 @@
         "browserify>JSONStream": true,
         "@lavamoat/lavapack>combine-source-map": true,
         "eslint>espree": true,
-        "@lavamoat/webpack>json-stable-stringify": true,
+        "@lavamoat/lavapack>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true,
         "@lavamoat/lavapack>readable-stream": true,
         "through2": true,
@@ -1746,7 +1746,7 @@
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
-    "browserify>util>which-typed-array>call-bound": {
+    "@lavamoat/webpack>json-stable-stringify>call-bound": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>get-intrinsic": true
@@ -4236,7 +4236,7 @@
         "Buffer.isBuffer": true
       }
     },
-    "@lavamoat/webpack>json-stable-stringify": {
+    "@lavamoat/lavapack>json-stable-stringify": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
@@ -4244,10 +4244,18 @@
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
-    "gulp>vinyl-fs>glob-stream>unique-stream>json-stable-stringify": {
+    "@lavamoat/webpack>json-stable-stringify": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>jsonify": true,
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
+      }
+    },
+    "lavamoat>lavamoat-core>json-stable-stringify": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "@lavamoat/webpack>json-stable-stringify>jsonify": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
@@ -4418,7 +4426,7 @@
         "define": true
       },
       "packages": {
-        "@lavamoat/webpack>json-stable-stringify": true,
+        "lavamoat>lavamoat-core>json-stable-stringify": true,
         "lavamoat>lavamoat-tofu": true,
         "lavamoat>lavamoat-core>merge-deep": true
       }
@@ -7057,7 +7065,7 @@
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
@@ -7065,7 +7073,7 @@
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
@@ -8227,7 +8235,7 @@
     },
     "gulp>vinyl-fs>glob-stream>unique-stream": {
       "packages": {
-        "gulp>vinyl-fs>glob-stream>unique-stream>json-stable-stringify": true,
+        "@lavamoat/webpack>json-stable-stringify": true,
         "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter": true
       }
     },

@@ -3005,7 +3005,7 @@
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
-    "browserify>util>which-typed-array>call-bound": {
+    "@lavamoat/webpack>json-stable-stringify>call-bound": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>get-intrinsic": true
@@ -3892,15 +3892,6 @@
     "@ngraveio/bc-ur>jsbi": {
       "globals": {
         "define": true
-      }
-    },
-    "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>json-stable-stringify": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "browserify>util>which-typed-array>call-bound": true,
-        "@lavamoat/webpack>json-stable-stringify>isarray": true,
-        "@lavamoat/webpack>json-stable-stringify>jsonify": true,
-        "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -4975,7 +4966,7 @@
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
@@ -4983,7 +4974,7 @@
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
@@ -5132,7 +5123,7 @@
     },
     "string.prototype.matchall>es-abstract>typed-array-buffer": {
       "packages": {
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "browserify>util>is-typed-array": true
       }
@@ -5375,7 +5366,7 @@
       "packages": {
         "string.prototype.matchall>es-abstract>available-typed-arrays": true,
         "string.prototype.matchall>call-bind": true,
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "browserify>util>which-typed-array>for-each": true,
         "string.prototype.matchall>get-intrinsic>get-proto": true,
         "string.prototype.matchall>es-abstract>gopd": true,
