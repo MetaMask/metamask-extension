@@ -1,9 +1,12 @@
 const { strict: assert } = require('assert');
+const { loginWithBalanceValidation } =
+  require('../../page-objects/flows/login.flow');
+
 const {
   createInternalTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const { withFixtures, unlockWallet } = require('../../helpers');
+const { withFixtures } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 const PREFERENCES_STATE_MOCK = {
@@ -26,7 +29,7 @@ describe('Editing Confirm Transaction', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createInternalTransaction(driver);
 
@@ -110,7 +113,7 @@ describe('Editing Confirm Transaction', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createInternalTransaction(driver);
 
