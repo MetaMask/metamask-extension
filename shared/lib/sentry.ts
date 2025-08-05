@@ -1,4 +1,12 @@
+import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import type * as Sentry from '@sentry/browser';
+
+const projectLogger = createProjectLogger('sentry');
+
+export const sentryLogger = createModuleLogger(
+  projectLogger,
+  globalThis.document ? 'ui' : 'background',
+);
 
 /**
  * Captures an exception event and sends it to Sentry.

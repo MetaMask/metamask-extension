@@ -1,7 +1,10 @@
 <!doctype html>
 <html dir="ltr">
   <head>
-    <%~ include("partial-head.html", {title: it.isTest ? "MetaMask Dialog" : null}) %>
+    <%~ include("partial-head.html", {
+      title: it.isTest ? "MetaMask Dialog" : null,
+      viewport: "width=device-width, initial-scale=1.0"
+    }) %>
   </head>
   <body class="notification">
     <%~ include("partial-body.html") %>

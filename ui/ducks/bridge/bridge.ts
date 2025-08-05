@@ -3,22 +3,11 @@ import {
   SortOrder,
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
-  isSolanaChainId,
-  formatChainIdToHex,
-  isNativeAddress,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
-import { getTokenExchangeRate } from './utils';
-import type {
-  BridgeState,
-  BridgeToken,
-  ChainIdPayload,
-  TokenPayload,
-} from './types';
+import { getTokenExchangeRate, toBridgeToken } from './utils';
+import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
 
 const initialState: BridgeState = {
   toChainId: null,
@@ -55,48 +44,6 @@ export const setTxAlerts = createAsyncThunk(
   fetchTxAlerts,
 );
 
-const getTokenImage = (payload: TokenPayload['payload']) => {
-  if (!payload) {
-    return '';
-  }
-  const { image, iconUrl, icon, chainId, address, assetId } = payload;
-  const caipChainId = formatChainIdToCaip(chainId);
-  // If the token is native, return the SVG image asset
-  if (isNativeAddress(address)) {
-    if (isSolanaChainId(chainId)) {
-      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
-    }
-    return CHAIN_ID_TOKEN_IMAGE_MAP[
-      formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-    ];
-  }
-  // If the token is not native, return the image from the payload
-  const imageFromPayload = image ?? iconUrl ?? icon;
-  if (imageFromPayload) {
-    return imageFromPayload;
-  }
-  // If there's no image from the payload, build the asset image URL and return it
-  const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
-  return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
-};
-
-export const toBridgeToken = (
-  payload: TokenPayload['payload'],
-): BridgeToken | null => {
-  if (!payload) {
-    return null;
-  }
-  const caipChainId = formatChainIdToCaip(payload.chainId);
-  return {
-    ...payload,
-    balance: payload.balance ?? '0',
-    string: payload.string ?? '0',
-    chainId: payload.chainId,
-    image: getTokenImage(payload),
-    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
-  };
-};
-
 const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
@@ -127,6 +74,16 @@ const bridgeSlice = createSlice({
               getNativeAssetForChainId(toToken.chainId)?.address,
           }
         : toToken;
+      // Update toChainId if it's different from the toToken chainId
+      if (
+        toToken?.chainId &&
+        (state.toChainId
+          ? formatChainIdToCaip(toToken.chainId) !==
+            formatChainIdToCaip(state.toChainId)
+          : true)
+      ) {
+        state.toChainId = formatChainIdToCaip(toToken.chainId);
+      }
     },
     setFromTokenInputValue: (
       state,

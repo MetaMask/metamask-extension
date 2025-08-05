@@ -13,6 +13,11 @@ import {
 import { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { DeepPartial } from 'redux';
+import {
+  AccountWalletCategory,
+  toAccountWalletId,
+  toDefaultAccountGroupId,
+} from '@metamask/account-api';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
@@ -171,7 +176,11 @@ describe('MultichainAccountListMenu', () => {
     });
 
     const mockPrimaryHdKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
-    const mockWalletId1 = `entropy:${mockPrimaryHdKeyringId}`;
+    const mockWalletId1 = toAccountWalletId(
+      AccountWalletCategory.Entropy,
+      mockPrimaryHdKeyringId,
+    );
+    const mockGroupId1 = toDefaultAccountGroupId(mockWalletId1);
     const mockState = {
       ...mockDefaultState,
       metamask: {
@@ -197,12 +206,13 @@ describe('MultichainAccountListMenu', () => {
           },
         ],
         accountTree: {
+          selectedAccountGroup: mockGroupId1,
           wallets: {
             [mockWalletId1]: {
               id: mockWalletId1,
               groups: {
-                [`${mockWalletId1}:default`]: {
-                  id: `${mockWalletId1}:default`,
+                [mockGroupId1]: {
+                  id: mockGroupId1,
                   accounts: [mockAccount.id, mockBtcAccount.id],
                   metadata: {
                     name: 'Default',
@@ -211,6 +221,11 @@ describe('MultichainAccountListMenu', () => {
               },
               metadata: {
                 name: 'Wallet 1',
+                type: AccountWalletCategory.Entropy,
+                entropy: {
+                  id: mockPrimaryHdKeyringId,
+                  index: 0,
+                },
               },
             },
           },
