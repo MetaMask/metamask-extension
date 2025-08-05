@@ -12,15 +12,8 @@ import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.fl
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
 
-async function mockSwapSetup(mockServer: Mockttp) {
+async function mockSetup(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-      .withQuery({ fsyms: 'ETH,POL', tsyms: 'usd' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: { ETH: { USD: 2966.53 }, POL: { USD: 0.2322 } },
-      })),
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/137/tokens')
       .thenCallback(() => ({
@@ -120,51 +113,6 @@ async function mockSwapSetup(mockServer: Mockttp) {
           balances: [],
         },
       })),
-    await mockServer
-      .forGet(
-        'https://static.cx.metamask.io/api/v1/tokenIcons/137/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        headers: { 'content-type': 'image/png' },
-        body: Buffer.from(''),
-      })),
-    await mockServer
-      .forGet(
-        'https://static.cx.metamask.io/api/v1/tokenIcons/137/0x0000000000000000000000000000000000000000.png',
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        headers: { 'content-type': 'image/png' },
-        body: Buffer.from(''),
-      })),
-    await mockServer
-      .forGet(
-        'https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        headers: { 'content-type': 'image/png' },
-        body: Buffer.from(''),
-      })),
-    await mockServer
-      .forGet()
-      .matching(
-        (req) =>
-          req.url?.includes('static.cx.metamask.io/api/v1/tokenIcons/') &&
-          req.url?.endsWith('.png'),
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        headers: { 'content-type': 'image/png' },
-        body: Buffer.from(''),
-      })),
-    await mockServer
-      .forPost('https://sentry.io/api/273496/envelope/')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {},
-      })),
   ];
 }
 function buildFixtures(title: string, chainId: number = 1337) {
@@ -196,7 +144,7 @@ function buildFixtures(title: string, chainId: number = 1337) {
     ],
     smartContract: SMART_CONTRACTS.HST,
     title,
-    testSpecificMock: mockSwapSetup,
+    testSpecificMock: mockSetup,
   };
 }
 
