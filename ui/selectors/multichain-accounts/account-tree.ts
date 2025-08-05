@@ -1,5 +1,8 @@
 import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AccountId } from '@metamask/accounts-controller';
+import { CaipChainId } from '@metamask/utils';
+import { AccountGroupObject } from '@metamask/account-tree-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
@@ -8,7 +11,10 @@ import {
   getHiddenAccountsList,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
-import { getSelectedInternalAccount } from '../accounts';
+import {
+  getInternalAccountsObject,
+  getSelectedInternalAccount,
+} from '../accounts';
 import {
   AccountTreeState,
   ConsolidatedWallets,
@@ -238,3 +244,86 @@ export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
     return null;
   },
 );
+
+const getGroupByGroupId = (
+  wallets: AccountTreeState['wallets'],
+  groupId: AccountGroupId,
+) => {
+  for (const wallet of Object.values(wallets)) {
+    if (wallet.groups[groupId]) {
+      return wallet.groups[groupId];
+    }
+  }
+  return null;
+};
+
+const getInternalAccountFromGroup = (
+  group: AccountGroupObject | null,
+  caipChainId: CaipChainId,
+  internalAccounts: Record<AccountId, InternalAccount>,
+) => {
+  if (!group) {
+    return null;
+  }
+
+  for (const account of group.accounts) {
+    const internalAccount = internalAccounts[account];
+    if (internalAccount.scopes.includes(caipChainId)) {
+      return internalAccount;
+    }
+  }
+
+  return null;
+};
+
+export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (
+    _accountTree,
+    _internalAccounts,
+    groupId: AccountGroupId,
+    caipChainId: CaipChainId,
+  ) => ({ groupId, caipChainId }),
+  (
+    accountTree: AccountTreeState,
+    internalAccounts: Record<AccountId, InternalAccount>,
+    {
+      groupId,
+      caipChainId,
+    }: { groupId: AccountGroupId; caipChainId: CaipChainId },
+  ) => {
+    const { wallets } = accountTree;
+    const group = getGroupByGroupId(wallets, groupId);
+
+    return getInternalAccountFromGroup(group, caipChainId, internalAccounts);
+  },
+);
+
+export const getSelectedAccountGroup = createDeepEqualSelector(
+  getAccountTree,
+  (accountTree: AccountTreeState) => accountTree.selectedAccountGroup,
+);
+
+export const getInternalAccountBySelectedAccountGroupAndCaip =
+  createDeepEqualSelector(
+    getAccountTree,
+    getInternalAccountsObject,
+    getSelectedAccountGroup,
+    (_, caipChainId: CaipChainId) => caipChainId,
+    (
+      accountTree: AccountTreeState,
+      internalAccounts: Record<AccountId, InternalAccount>,
+      selectedAccountGroup: AccountGroupId | null,
+      caipChainId: CaipChainId,
+    ) => {
+      if (!selectedAccountGroup) {
+        return null;
+      }
+
+      const { wallets } = accountTree;
+      const group = getGroupByGroupId(wallets, selectedAccountGroup);
+
+      return getInternalAccountFromGroup(group, caipChainId, internalAccounts);
+    },
+  );
