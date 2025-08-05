@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const { loginWithBalanceValidation } =
-  require('../../page-objects/flows/login.flow');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 
 const {
   createInternalTransaction,
