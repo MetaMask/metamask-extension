@@ -1,6 +1,6 @@
 import { isSolanaChainId } from '@metamask/bridge-controller';
-import { STABLECOINS_BY_CHAIN_ID } from './stablecoins';
 import type { BridgeToken } from '../../../ducks/bridge/types';
+import { STABLECOINS_BY_CHAIN_ID } from './stablecoins';
 
 /**
  * Slippage values for different scenarios
