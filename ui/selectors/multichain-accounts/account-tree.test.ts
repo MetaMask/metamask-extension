@@ -4,6 +4,7 @@ import {
   getAccountTree,
   getInternalAccountByGroupAndCaip,
   getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
   getWalletIdAndNameByAccountAddress,
   getWalletsWithAccounts,
 } from './account-tree';
@@ -340,6 +341,18 @@ describe('Multichain Accounts Selectors', () => {
       );
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('getSelectedAccountGroup', () => {
+    it('returns the selected account group', () => {
+      const result = getSelectedAccountGroup(
+        mockState as MultichainAccountsState,
+      );
+
+      expect(result).toStrictEqual(
+        mockState.metamask.accountTree.selectedAccountGroup,
+      );
     });
   });
 });
