@@ -31,6 +31,25 @@ class AddTokensModal {
   }
 
   /**
+   * Waits for the specified number of suggested tokens to appear.
+   *
+   * @param expectedTokenCount - The expected count of suggested tokens to wait for.
+   * @param timeout - Optional timeout in milliseconds (default: 10000).
+   */
+  async waitForSuggestedTokensCount(
+    expectedTokenCount: number,
+    timeout: number = 10000,
+  ): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        const tokens = await this.driver.findElements(this.tokenListItem);
+        return tokens.length === expectedTokenCount;
+      },
+      { timeout, interval: 100 },
+    );
+  }
+
+  /**
    * Checks the count of suggested tokens.
    *
    * @param expectedTokenCount - The expected count of suggested tokens.
