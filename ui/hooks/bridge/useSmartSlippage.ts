@@ -1,11 +1,10 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   SlippageService,
   type SlippageContext,
-} from '../../../shared/lib/bridge/slippage-service';
+} from '../../pages/bridge/utils/slippage-service';
 import { setSlippage } from '../../ducks/bridge/actions';
-import { getSlippage, BridgeAppState } from '../../ducks/bridge/selectors';
 import type { BridgeToken } from '../../ducks/bridge/types';
 
 type UseSmartSlippageParams = {
@@ -17,9 +16,8 @@ type UseSmartSlippageParams = {
   enabled?: boolean;
 };
 
-type UseSmartSlippageResult = {
-  slippage: number | undefined;
-};
+// This hook doesn't return anything as it only dispatches slippage updates
+// The slippage value can be accessed via getSlippage selector
 
 /**
  * Custom hook that manages smart slippage defaults
@@ -44,11 +42,8 @@ export function useSmartSlippage({
   toToken,
   isSwap,
   enabled = true,
-}: UseSmartSlippageParams): UseSmartSlippageResult {
+}: UseSmartSlippageParams): void {
   const dispatch = useDispatch();
-  const currentSlippage = useSelector((state: BridgeAppState) =>
-    getSlippage(state),
-  );
 
   // Calculate the appropriate slippage for current context
   const calculateCurrentSlippage = useCallback(() => {
@@ -96,8 +91,4 @@ export function useSmartSlippage({
     calculateCurrentSlippage,
     dispatch,
   ]);
-
-  return {
-    slippage: currentSlippage,
-  };
 }

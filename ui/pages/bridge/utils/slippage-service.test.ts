@@ -1,7 +1,5 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import type { BridgeToken } from '../../../ui/ducks/bridge/types';
-import { MultichainNetworks } from '../../constants/multichain/networks';
+import type { BridgeToken } from '../../../ducks/bridge/types';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   SlippageService,
   SlippageValue,

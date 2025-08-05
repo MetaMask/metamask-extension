@@ -1,8 +1,6 @@
 import { isSolanaChainId } from '@metamask/bridge-controller';
-import { StablecoinsByChainId } from '../../constants/stablecoins';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import type { BridgeToken } from '../../../ui/ducks/bridge/types';
+import { STABLECOINS_BY_CHAIN_ID } from './stablecoins';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 
 /**
  * Slippage values for different scenarios
@@ -42,7 +40,7 @@ export class SlippageService {
       return false;
     }
 
-    const stablecoins = StablecoinsByChainId[chainId];
+    const stablecoins = STABLECOINS_BY_CHAIN_ID[chainId];
     if (!stablecoins) {
       return false;
     }
