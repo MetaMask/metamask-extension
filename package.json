@@ -389,7 +389,7 @@
     "eth-ens-namehash": "^2.0.8",
     "eth-lattice-keyring": "patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch",
     "eth-method-registry": "^4.0.0",
-    "eth-onekey-bridge-keyring": "^0.2.10",
+    "eth-onekey-bridge-keyring": "^0.2.11",
     "ethereumjs-util": "^7.0.10",
     "extension-port-stream": "^3.0.0",
     "fast-json-patch": "^3.1.1",

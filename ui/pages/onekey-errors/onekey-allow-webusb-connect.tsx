@@ -18,6 +18,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function OneKeyAllowWebUSBConnect() {
   const t = useI18nContext();
 
