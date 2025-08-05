@@ -189,11 +189,6 @@ export function* toFrames<Payload extends Json>(
   payload: Payload,
   chunkSize: number = CHUNK_SIZE,
 ): Generator<TransportChunkFrame | Payload, void> {
-  if (chunkSize <= 0) {
-    yield payload;
-    return;
-  }
-
   const json = JSON.stringify(payload);
   const len = json.length;
   const total = Math.ceil(len / chunkSize);
@@ -371,19 +366,46 @@ export class PortStream extends Duplex {
     }
 
     try {
-      const { chunkSize } = this;
-      // chunk it
-      for (const frame of toFrames(chunk, chunkSize)) {
-        this.postMessage(frame);
-      }
-      this.log(chunk, true);
-      callback();
+      // try to send the chunk as is first, it is probably fine!
+      this.postMessage(chunk);
     } catch (err) {
-      if (this.debug) {
-        console.debug(TAG, STYLE_SYS, '⚠ write error', err);
+      if (err instanceof Error) {
+        const { chunkSize } = this;
+        if (
+          // checking is enabled
+          chunkSize > 0 &&
+          // and the error is about message size being too large
+          // note: this message doesn't currently happen on firefox, as it doesn't
+          // have a maximum message size
+          err.message === 'Message length exceeded maximum allowed length'
+        ) {
+          try {
+            // we can't just send it in one go; we need to chunk it
+            for (const frame of toFrames(chunk, chunkSize)) {
+              this.postMessage(frame);
+            }
+            this.log(chunk, true);
+            callback();
+          } catch (err) {
+            if (this.debug) {
+              console.debug(TAG, STYLE_SYS, '⚠ write error', err);
+            }
+            console.error(err);
+            callback(
+              new AggregateError(
+                [err],
+                'PortStream chunked postMessage failed',
+              ),
+            );
+          }
+        } else {
+          callback(new AggregateError([err], 'PortStream postMessage failed'));
+        }
+      } else {
+        // error is unknown.
+        console.error(String(err));
+        callback(new Error('PortStream postMessage failed'));
       }
-      console.error(err);
-      callback(new AggregateError([err], 'PortStream write failed'));
     }
   }
 
