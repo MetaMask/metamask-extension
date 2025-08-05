@@ -1,7 +1,6 @@
 import {
   TransactionMeta,
   TransactionType,
-  BatchTransactionParams,
 } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
