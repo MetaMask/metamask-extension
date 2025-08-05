@@ -115,7 +115,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
       .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
         console.error(
-          `Failed to handle snap request for event "${event}" with name "${name}": `,
+          `Failed to handle snap request for event "${event}" with name "${name}":`,
           error,
         );
       });
