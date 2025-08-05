@@ -17,6 +17,7 @@ export type AccountTreeState = {
   wallets: {
     [walletId: AccountWalletId]: AccountWalletObject;
   };
+  selectedAccountGroup: AccountGroupId;
 };
 
 export type InternalAccountsState = {
