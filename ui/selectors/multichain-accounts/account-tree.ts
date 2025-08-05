@@ -245,6 +245,13 @@ export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
   },
 );
 
+/**
+ * Get a group by its ID from the account tree.
+ *
+ * @param wallets - The wallets object from the account tree.
+ * @param groupId - The ID of the group to get.
+ * @returns The group object, or null if not found.
+ */
 const getGroupByGroupId = (
   wallets: AccountTreeState['wallets'],
   groupId: AccountGroupId,
@@ -257,6 +264,14 @@ const getGroupByGroupId = (
   return null;
 };
 
+/**
+ * Get an internal account from a group by its CAIP chain ID.
+ *
+ * @param group - The group object to search in.
+ * @param caipChainId - The CAIP chain ID to search for.
+ * @param internalAccounts - The internal accounts object.
+ * @returns The internal account object, or null if not found.
+ */
 const getInternalAccountFromGroup = (
   group: AccountGroupObject | null,
   caipChainId: CaipChainId,
@@ -276,6 +291,15 @@ const getInternalAccountFromGroup = (
   return null;
 };
 
+/**
+ * Get an internal account from the account tree by its group ID and CAIP chain ID.
+ *
+ * @param accountTree - The account tree state.
+ * @param internalAccounts - The internal accounts object.
+ * @param groupId - The ID of the group to search in.
+ * @param caipChainId - The CAIP chain ID to search for.
+ * @returns The internal account object, or null if not found.
+ */
 export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
   getAccountTree,
   getInternalAccountsObject,
@@ -300,11 +324,26 @@ export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
   },
 );
 
+/**
+ * Get the selected account group from the account tree.
+ *
+ * @param accountTree - The account tree state.
+ * @returns The selected account group, or null if not found.
+ */
 export const getSelectedAccountGroup = createDeepEqualSelector(
   getAccountTree,
   (accountTree: AccountTreeState) => accountTree.selectedAccountGroup,
 );
 
+/**
+ * Get an internal account from the account tree by its selected account group and CAIP chain ID.
+ *
+ * @param accountTree - The account tree state.
+ * @param internalAccounts - The internal accounts object.
+ * @param selectedAccountGroup - The ID of the selected account group.
+ * @param caipChainId - The CAIP chain ID to search for.
+ * @returns The internal account object, or null if not found.
+ */
 export const getInternalAccountBySelectedAccountGroupAndCaip =
   createDeepEqualSelector(
     getAccountTree,
