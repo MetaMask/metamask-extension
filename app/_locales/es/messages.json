@@ -5440,12 +5440,6 @@
   "slideMultiSrpTitle": {
     "message": "Agregar varias frases secretas de recuperación"
   },
-  "slideRemoteModeDescription": {
-    "message": "Use su monedero frío de forma inalámbrica"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Almacenamiento en frío, acceso rápido"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "La misma dirección, funciones más inteligentes"
   },
@@ -6824,9 +6818,6 @@
   "troubleConnectingToWallet": {
     "message": "Tuvimos problemas al conectar su $1. Pruebe revisar $2 e inténtelo de nuevo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask tuvo problemas para iniciar. Este error podría ser intermitente, así que intente reiniciar la extensión."
   },
   "tryAgain": {
     "message": "Vuelva a intentarlo"

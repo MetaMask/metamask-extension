@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import { REDEEM_DELEGATIONS_SELECTOR } from '../../../../shared/lib/delegation/delegation';
 import TransactionListItem from '.';
 
 /**
@@ -113,7 +112,6 @@ export const TokenMethodApprove = Template.bind({});
 export const TokenMethodSafeTransferFrom = Template.bind({});
 export const TokenMethodTransfer = Template.bind({});
 export const TokenMethodTransferFrom = Template.bind({});
-export const RemoteModeTransaction = Template.bind({});
 
 ContractInteraction.storyName = 'contractInteraction';
 ContractInteraction.args = {
@@ -336,59 +334,4 @@ TokenMethodTransferFrom.args = {
   'transactionGroup.primaryTransaction': {
     ...MOCK_TRANSACTION_BY_TYPE[TransactionType.tokenMethodTransferFrom],
   },
-};
-
-RemoteModeTransaction.storyName = 'remoteModeTransaction';
-RemoteModeTransaction.args = {
-  'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend], // Base properties from simpleSend
-    type: TransactionType.simpleSend, // Explicitly set type
-    txParams: {
-      // Final txParams
-      ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams, // Spread default simpleSend params first
-      from: '0x1111111111111111111111111111111111111111', // Valid 'from' address (e.g., Gator address)
-      to: '0x3333333333333333333333333333333333333333', // Explicitly set valid 'to' address
-      // 'data' will be overridden by the specific argType below
-    },
-    txParamsOriginal: {
-      ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams, // Spread default simpleSend params first
-      from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4', // Valid original 'from' address (simulating selectedAccount.address)
-      to: '0x3333333333333333333333333333333333333333', // Consistent valid 'to' address
-    },
-  },
-  'transactionGroup.primaryTransaction.txParams.data': `${REDEEM_DELEGATIONS_SELECTOR}0000000000000000000000000000000000000000000000000000000000000000`,
-  'transactionGroup.primaryTransaction.status': TransactionStatus.pending,
-  'transactionGroup.hasCancelled': false,
-  'transactionGroup.hasRetried': false,
-  isEarliestNonce: true,
-};
-
-// New story for Remote Mode Gas Transaction
-export const RemoteModeGasTransaction = Template.bind({});
-
-RemoteModeGasTransaction.storyName = 'remoteModeGasTransaction';
-RemoteModeGasTransaction.args = {
-  'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend], // Base properties from simpleSend
-    type: TransactionType.simpleSend, // Explicitly set type
-    // txParamsOriginal.from is NOT the selected account
-    // txParams.from IS the selected account
-    // This simulates a scenario where the selected account is paying for gas for a tx originally from another account.
-    txParams: {
-      ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams,
-      from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4', // Simulates selectedInternalAccount.address
-      to: '0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
-      // Ensure no 'data' field that would trigger 'isRedeemDelegationsCall'
-      // data: undefined (or will be inherited as undefined from MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams)
-    },
-    txParamsOriginal: {
-      ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams,
-      from: '0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', // Original sender, different from selected account
-      to: '0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
-      // data: undefined
-    },
-  },
-  // No need to override 'transactionGroup.primaryTransaction.txParams.data' for this story,
-  // as we don't want it to be a redeem delegations call.
-  // Default args from export default will apply for status, hasCancelled, hasRetried, isEarliestNonce
 };

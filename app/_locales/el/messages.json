@@ -5440,12 +5440,6 @@
   "slideMultiSrpTitle": {
     "message": "Προσθήκη πολλαπλών Φράσεων Μυστικής Ανάκτησης"
   },
-  "slideRemoteModeDescription": {
-    "message": "Χρησιμοποιήστε το ψυχρό πορτοφόλι σας ασύρματα"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Ψυχρή αποθήκευση, γρήγορη πρόσβαση"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Ίδια διεύθυνση, πιο έξυπνες λειτουργίες"
   },
@@ -6824,9 +6818,6 @@
   "troubleConnectingToWallet": {
     "message": "Είχαμε πρόβλημα σύνδεσης στο $1, δοκιμάστε να ελέγξετε το $2 και προσπαθήστε ξανά.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "Το MetaMask αντιμετώπισε πρόβλημα κατά την εκκίνηση. Αυτό το σφάλμα μπορεί να είναι τυχαίο, γι' αυτό προσπαθήστε να επανεκκινήσετε την επέκταση."
   },
   "tryAgain": {
     "message": "Προσπαθήστε ξανά"

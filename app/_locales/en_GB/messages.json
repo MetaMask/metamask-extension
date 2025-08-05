@@ -2253,6 +2253,10 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
+  "errorDetails": {
+    "message": "Error details",
+    "description": "Label for the error details field in the error screen."
+  },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
   },
@@ -5543,12 +5547,6 @@
   "slideMultiSrpTitle": {
     "message": "Add multiple Secret Recovery Phrases"
   },
-  "slideRemoteModeDescription": {
-    "message": "Use your cold wallet wirelessly"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold storage, fast access"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Same address, smarter features"
   },
@@ -6934,8 +6932,11 @@
     "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleStarting": {
-    "message": "MetaMask had trouble starting. This error could be intermittent, so try restarting the extension."
+  "troubleStartingMessage": {
+    "message": "This error could be intermittent, so try restarting the extension."
+  },
+  "troubleStartingTitle": {
+    "message": "MetaMask had trouble starting."
   },
   "tryAgain": {
     "message": "Try again"
