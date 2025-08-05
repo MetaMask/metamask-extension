@@ -2036,6 +2036,16 @@ export default class MetamaskController extends EventEmitter {
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
 
+    // TODO implement
+    this.getSecurityAlertsConfig = () => {
+      return (_url) => {
+        return {
+          newUrl: undefined,
+          authorization: undefined,
+        };
+      };
+    };
+
     this.notificationServicesController.init();
     this.snapController.init();
     this.cronjobController.init();
@@ -6728,6 +6738,7 @@ export default class MetamaskController extends EventEmitter {
       securityAlertsEnabled:
         this.preferencesController.state?.securityAlertsEnabled,
       updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
+      getSecurityAlertsConfig: this.getSecurityAlertsConfig(),
       ...otherParams,
     };
   }
@@ -7535,6 +7546,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
+        this.getSecurityAlertsConfig.bind(this),
       ),
     );
 

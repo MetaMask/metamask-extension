@@ -22,6 +22,7 @@ import {
 import {
   SecurityAlertResponse,
   UpdateSecurityAlertResponse,
+  GetSecurityAlertsConfig,
 } from '../ppom/types';
 import {
   LOADING_SECURITY_ALERT_RESPONSE,
@@ -52,6 +53,7 @@ type FinalAddTransactionRequest = BaseAddTransactionRequest & {
 
 export type AddTransactionRequest = FinalAddTransactionRequest & {
   waitForSubmit: boolean;
+  getSecurityAlertsConfig?: GetSecurityAlertsConfig;
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
@@ -235,6 +237,7 @@ async function validateSecurity(request: AddTransactionRequest) {
     transactionParams,
     updateSecurityAlertResponse,
     internalAccounts,
+    getSecurityAlertsConfig,
   } = request;
 
   const { type } = transactionOptions;
@@ -285,6 +288,7 @@ async function validateSecurity(request: AddTransactionRequest) {
       securityAlertId,
       chainId,
       updateSecurityAlertResponse,
+      getSecurityAlertsConfig,
     });
 
     const securityAlertResponseLoading: SecurityAlertResponse = {
