@@ -151,6 +151,11 @@ class HomePage {
     await this.driver.clickElement(this.defiTab);
   }
 
+  async goToSwapTab(): Promise<void> {
+    console.log(`Go to swap tab on homepage`);
+    await this.driver.clickElement(this.swapButton);
+  }
+
   async goToTokensTab(): Promise<void> {
     console.log(`Go to tokens tab on homepage`);
     await this.driver.clickElement(this.tokensTab);

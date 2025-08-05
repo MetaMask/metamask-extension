@@ -54,6 +54,9 @@ class AssetListPage {
 
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
+  private readonly popularNetworks =
+    '[data-testid="network-filter-all__button"]';
+
   private readonly priceChart = '[data-testid="asset-price-chart"]';
 
   private readonly sortByAlphabetically =
@@ -69,6 +72,12 @@ class AssetListPage {
     '[data-testid="multichain-token-list-item-secondary-value"]';
 
   private readonly sendButton = '[data-testid="eth-overview-send"]';
+
+  private readonly coinSendButton = '[data-testid="coin-overview-send"]';
+
+  private readonly swapButton = '[data-testid="eth-overview-swap"]';
+
+  private readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
   private readonly tokenAddressInput =
     '[data-testid="import-tokens-modal-custom-address"]';
@@ -178,6 +187,16 @@ class AssetListPage {
   async clickSendButton(): Promise<void> {
     console.log(`Clicking on the send button`);
     await this.driver.clickElement(this.sendButton);
+  }
+
+  async clickCoinSendButton(): Promise<void> {
+    console.log(`Clicking on the send button`);
+    await this.driver.clickElement(this.coinSendButton);
+  }
+
+  async clickSwapButton(): Promise<void> {
+    console.log(`Clicking on the swap button`);
+    await this.driver.clickElement(this.swapButton);
   }
 
   /**
@@ -333,6 +352,21 @@ class AssetListPage {
     );
   }
 
+  async openNetworksFilterAndClickPopularNetworks(): Promise<void> {
+    console.log(`Opening the network filter and click popular networks`);
+    await this.driver.clickElement(this.networksToggle);
+    await this.driver.waitUntil(
+      async () => {
+        return Boolean(await this.driver.findElement(this.allNetworksOption));
+      },
+      {
+        timeout: 5000,
+        interval: 100,
+      },
+    );
+    await this.driver.clickElement(this.popularNetworks);
+  }
+
   /**
    * Opens the token details modal by finding and clicking the token in the token list
    *
@@ -362,6 +396,20 @@ class AssetListPage {
       },
       { timeout: 5000, interval: 100 },
     );
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_buySellButtonIsPresent(): Promise<void> {
+    console.log(`Verify the buy/sell button is displayed`);
+    await this.driver.waitForSelector(this.buySellButton);
+  }
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async check_multichainTokenListButtonIsPresent(): Promise<void> {
+    console.log(`Verify the multichain-token-list-button is displayed`);
+    await this.driver.waitForSelector(this.tokenListItem);
   }
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
