@@ -45,11 +45,6 @@ export function useSmartSlippage({
 
   // Calculate the appropriate slippage for current context
   const calculateCurrentSlippage = useCallback(() => {
-    // Need at least fromChain to make any determination
-    if (!fromChain?.chainId) {
-      return undefined;
-    }
-
     const context: SlippageContext = {
       fromChain,
       toChain,
