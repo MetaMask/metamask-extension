@@ -351,6 +351,32 @@ function indicesToUtf8Array(
 }
 
 /**
+ * Helper function to generate and save binary files for the trie data.
+ * This can be used to regenerate the binary files if needed.
+ * Uncomment the fs require and calls when running in a Node.js environment.
+ */
+function generateBinaryFiles(): void {
+  const { trieNodes, wordEndNodes } = buildTrie(wordlist);
+
+  // Debug information
+  console.debug(
+    `Trie nodes: ${trieNodes.length}, Word end nodes: ${wordEndNodes.length}`,
+  );
+  console.debug(
+    `Trie nodes size: ${trieNodes.byteLength} bytes, Word end nodes size: ${wordEndNodes.byteLength} bytes`,
+  );
+  console.debug(
+    `Total size: ${trieNodes.byteLength + wordEndNodes.byteLength} bytes`,
+  );
+
+  // Uncomment these lines when running in Node.js to generate the files
+  const fs = require("fs");
+  fs.writeFileSync('app/scripts/lib/trieNodes.bin', Buffer.from(trieNodes.buffer));
+  fs.writeFileSync('app/scripts/lib/wordEndNodes.bin', Buffer.from(wordEndNodes.buffer));
+  console.debug('Trie nodes and word end nodes written to files.');
+}
+
+/**
  * Mnemonic utility class for BIP-39 conversions without strings in memory.
  */
 class MnemonicUtil {
@@ -358,10 +384,33 @@ class MnemonicUtil {
 
   private readonly wordEndNodes: Uint16Array;
 
-  constructor() {
-    const { trieNodes, wordEndNodes } = buildTrie(wordlist);
+  private constructor(trieNodes: Uint32Array, wordEndNodes: Uint16Array) {
     this.trieNodes = trieNodes;
     this.wordEndNodes = wordEndNodes;
+  }
+
+  static async create(): Promise<MnemonicUtil> {
+    const [trieNodesResponse, wordEndNodesResponse] = await Promise.all([
+      fetch(new URL('app/scripts/lib/trieNodes.bin', import.meta.url)),
+      fetch(new URL('app/scripts/lib/wordEndNodes.bin', import.meta.url)),
+    ]);
+
+    if (!trieNodesResponse.ok) {
+      throw new Error(`Failed to fetch trieNodes.bin: ${trieNodesResponse.statusText}`);
+    }
+    if (!wordEndNodesResponse.ok) {
+      throw new Error(`Failed to fetch wordEndNodes.bin: ${wordEndNodesResponse.statusText}`);
+    }
+
+    const [trieNodesBuffer, wordEndNodesBuffer] = await Promise.all([
+      trieNodesResponse.arrayBuffer(),
+      wordEndNodesResponse.arrayBuffer(),
+    ]);
+
+    const trieNodes = new Uint32Array(trieNodesBuffer);
+    const wordEndNodes = new Uint16Array(wordEndNodesBuffer);
+
+    return new MnemonicUtil(trieNodes, wordEndNodes);
   }
 
   /**
@@ -410,9 +459,12 @@ class MnemonicUtil {
 }
 
 let singletonMnemonicUtil: MnemonicUtil | undefined;
-export const getMnemonicUtil = () => {
+export const getMnemonicUtil = async () => {
   if (!singletonMnemonicUtil) {
-    singletonMnemonicUtil = new MnemonicUtil();
+    singletonMnemonicUtil = await MnemonicUtil.create();
   }
   return singletonMnemonicUtil;
 };
+
+
+getMnemonicUtil();
