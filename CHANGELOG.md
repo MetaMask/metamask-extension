@@ -10,40 +10,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [13.1.0]
 
 ### Uncategorized
-
-- release: dedupe, update LavaMoat policies, update attributions
-- updated changelog and generated feature test plan
-- bump semvar version to 13.1.0
-- Merge origin/main into master-sync
-- Merge origin/main into master-sync
-- bump semvar version to 13.1.0
 - build(webpack): silence swc sourcemap messages on Windows ([#34777](https://github.com/MetaMask/metamask-extension/pull/34777))
-- test: Fix test failure when WebDriver is inactive before shutdown ([#34748](https://github.com/MetaMask/metamask-extension/pull/34748))
-- test(e2e): Add E2E test for `snap_trackEvent` ([#34764](https://github.com/MetaMask/metamask-extension/pull/34764))
 - chore: bump institutional snap to 1.3.2 cp-13.0.0 ([#34761](https://github.com/MetaMask/metamask-extension/pull/34761))
 - perf: More bundle size reductions ([#34694](https://github.com/MetaMask/metamask-extension/pull/34694))
 - chore: add CODEOWNERS for QA Team - E2E Framework ([#34719](https://github.com/MetaMask/metamask-extension/pull/34719))
-- test: Fixed the test aggregated balance ([#34629](https://github.com/MetaMask/metamask-extension/pull/34629))
 - chore: Remove remote mode ([#34041](https://github.com/MetaMask/metamask-extension/pull/34041))
 - style: tell VSCode to end all files with a newline ([#34673](https://github.com/MetaMask/metamask-extension/pull/34673))
 - ci(gh-actions): unify version release workflows ([#33555](https://github.com/MetaMask/metamask-extension/pull/33555))
-- release: master sync 12.23.1 ([#34729](https://github.com/MetaMask/metamask-extension/pull/34729))
-- Merge origin/main into master-sync
 - chore: bump multichain-accounts deps ([#34631](https://github.com/MetaMask/metamask-extension/pull/34631))
 - chore: update sei new logo ([#34634](https://github.com/MetaMask/metamask-extension/pull/34634))
 - fix(33176): remove ledger transport initialization at login and vault creation ([#34574](https://github.com/MetaMask/metamask-extension/pull/34574))
 - ci: cache the anvil binary ([#34703](https://github.com/MetaMask/metamask-extension/pull/34703))
 - chore: Revert "feat: 2.11 added sentry error UI cp-13.0.0" ([#34699](https://github.com/MetaMask/metamask-extension/pull/34699))
-- test(e2e): Add E2E test for `snap_startTrace` and `snap_endTrace` ([#34666](https://github.com/MetaMask/metamask-extension/pull/34666))
 - perf: Reduce contentscript size ([#34688](https://github.com/MetaMask/metamask-extension/pull/34688))
 - chore: Rename extension minimum version flag cp-12.23.1 ([#34636](https://github.com/MetaMask/metamask-extension/pull/34636))
-- release: Master sync to main ([#34669](https://github.com/MetaMask/metamask-extension/pull/34669))
-- Merge origin/main into master-sync
 - chore: Remove obsolete MMI policy ([#34626](https://github.com/MetaMask/metamask-extension/pull/34626))
-- test: Fix bugs in token-util tests ([#34635](https://github.com/MetaMask/metamask-extension/pull/34635))
-- ci(gh-action): add gh action to keep stable branch sync ([#33026](https://github.com/MetaMask/metamask-extension/pull/33026))
 - chore: Update CODEOWNERS from `snaps-devs` to `core-platform` ([#34659](https://github.com/MetaMask/metamask-extension/pull/34659))
-- chore(e2e): Add E2E test for `snap_trackError` ([#34075](https://github.com/MetaMask/metamask-extension/pull/34075))
 - fix(snaps): Add localized name to `AccountSelector` ([#34657](https://github.com/MetaMask/metamask-extension/pull/34657))
 - chore: fix hex color violations and enable color-no-hex rules ([#34604](https://github.com/MetaMask/metamask-extension/pull/34604))
 - chore: fix toggle spacing ([#34536](https://github.com/MetaMask/metamask-extension/pull/34536))
@@ -61,9 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - chore: Improve performance of address formatting/validation ([#34152](https://github.com/MetaMask/metamask-extension/pull/34152))
 - chore: Add buttons to test error capture ([#34386](https://github.com/MetaMask/metamask-extension/pull/34386))
 - chore: Update `form-data` to address advisory ([#34480](https://github.com/MetaMask/metamask-extension/pull/34480))
-- test: add wallet details e2e tests ([#34276](https://github.com/MetaMask/metamask-extension/pull/34276))
 - chore: upgrade @metamask/design-tokens to v8.1.0 ([#34384](https://github.com/MetaMask/metamask-extension/pull/34384))
-- chore: change the message in the script that initializes master sync ([#34370](https://github.com/MetaMask/metamask-extension/pull/34370))
 
 ### Added
 
@@ -160,7 +140,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: handle keyring remove when import srp seedless error cp-13.0.0 ([#34403](https://github.com/MetaMask/metamask-extension/pull/34403))
 - fix: cp-13.0.0 ensure we enable any missing networks when performing swap/bridge. ([#34376](https://github.com/MetaMask/metamask-extension/pull/34376))
 - fix: update explorer button text in address qr code page to reflect the network's explorer name ([#34377](https://github.com/MetaMask/metamask-extension/pull/34377))
-- fix: temporarily skip bridge metrics e2e test ([#34418](https://github.com/MetaMask/metamask-extension/pull/34418))
 - fix: update popup-init.html's background colors to match latest designs ([#34347](https://github.com/MetaMask/metamask-extension/pull/34347))
 - fix: remove loading spinner from create ethereum account flow ([#34374](https://github.com/MetaMask/metamask-extension/pull/34374))
 - fix: update address qr code navigation to prevent infinite loop of navigation ([#34381](https://github.com/MetaMask/metamask-extension/pull/34381))
