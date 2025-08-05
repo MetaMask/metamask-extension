@@ -80,30 +80,30 @@ function isStablecoinPair(
 export function calculateSlippage(
   context: SlippageContext,
 ): number | undefined {
-    const { fromChain, toChain, fromToken, toToken, isSwap } = context;
+  const { fromChain, toChain, fromToken, toToken, isSwap } = context;
 
-    // If no source chain, we can't determine the type
-    if (!fromChain?.chainId || !toChain?.chainId) {
-      return SlippageValue.BridgeDefault;
-    }
+  // If no source chain, we can't determine the type
+  if (!fromChain?.chainId || !toChain?.chainId) {
+    return SlippageValue.BridgeDefault;
+  }
 
-    // 1. Cross-chain (bridge) → 0.5%
-    if (!isSwap || fromChain.chainId !== toChain.chainId) {
-      return SlippageValue.BridgeDefault;
-    }
+  // 1. Cross-chain (bridge) → 0.5%
+  if (!isSwap || fromChain.chainId !== toChain.chainId) {
+    return SlippageValue.BridgeDefault;
+  }
 
-    // 2. Solana swap → undefined (AUTO mode)
-    if (isSolanaChainId(fromChain.chainId)) {
-      return undefined;
-    }
+  // 2. Solana swap → undefined (AUTO mode)
+  if (isSolanaChainId(fromChain.chainId)) {
+    return undefined;
+  }
 
-    // 3. EVM swap → check for stablecoin pair
-    if (isStablecoinPair(fromChain.chainId, fromToken, toToken)) {
-      return SlippageValue.EvmStablecoin; // 0.5%
-    }
+  // 3. EVM swap → check for stablecoin pair
+  if (isStablecoinPair(fromChain.chainId, fromToken, toToken)) {
+    return SlippageValue.EvmStablecoin; // 0.5%
+  }
 
-    // Default EVM swap → 2%
-    return SlippageValue.EvmDefault;
+  // Default EVM swap → 2%
+  return SlippageValue.EvmDefault;
 }
 
 /**
@@ -113,23 +113,23 @@ export function calculateSlippage(
  * @param context
  */
 export function getSlippageReason(context: SlippageContext): string {
-    const { fromChain, toChain, fromToken, toToken, isSwap } = context;
+  const { fromChain, toChain, fromToken, toToken, isSwap } = context;
 
-    if (!fromChain?.chainId || !toChain?.chainId) {
-      return 'Incomplete chain setup - using bridge default';
-    }
+  if (!fromChain?.chainId || !toChain?.chainId) {
+    return 'Incomplete chain setup - using bridge default';
+  }
 
-    if (!isSwap || fromChain.chainId !== toChain.chainId) {
-      return 'Cross-chain transaction';
-    }
+  if (!isSwap || fromChain.chainId !== toChain.chainId) {
+    return 'Cross-chain transaction';
+  }
 
-    if (isSolanaChainId(fromChain.chainId)) {
-      return 'Solana swap (AUTO mode)';
-    }
+  if (isSolanaChainId(fromChain.chainId)) {
+    return 'Solana swap (AUTO mode)';
+  }
 
-    if (isStablecoinPair(fromChain.chainId, fromToken, toToken)) {
-      return 'EVM stablecoin pair';
-    }
+  if (isStablecoinPair(fromChain.chainId, fromToken, toToken)) {
+    return 'EVM stablecoin pair';
+  }
 
-    return 'EVM token swap';
+  return 'EVM token swap';
 }

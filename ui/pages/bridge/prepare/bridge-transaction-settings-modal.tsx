@@ -73,8 +73,9 @@ export const BridgeTransactionSettingsModal = ({
         setCustomSlippage(undefined);
       } else {
         setIsAutoSelected(false);
-        if (slippage === undefined) {
-          // Default to first option if no slippage set and not showing AUTO
+        if (!slippage || slippage === 0) {
+          // Default to first option if no slippage set, null, or 0
+          // This handles undefined, null, 0, and other falsy values
           setLocalSlippage(BRIDGE_DEFAULT_SLIPPAGE);
           setCustomSlippage(undefined);
         } else if (HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
