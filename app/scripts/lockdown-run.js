@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable -- deliberate */
 throw Error('lockdown-run.js should no longer be used under webpack');
 
 // Freezes all intrinsics
