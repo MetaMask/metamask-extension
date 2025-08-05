@@ -718,7 +718,7 @@ export default class MetamaskController extends EventEmitter {
             };
       },
       getRpcServiceOptions: (rpcEndpointUrl) => {
-        const maxRetries = 2;
+        const maxRetries = 4;
         const commonOptions = {
           fetch: globalThis.fetch.bind(globalThis),
           btoa: globalThis.btoa.bind(globalThis),
@@ -743,7 +743,8 @@ export default class MetamaskController extends EventEmitter {
           ...commonOptions,
           policyOptions: {
             maxRetries,
-            maxConsecutiveFailures: maxRetries + 1,
+            // Ensure that the circuit does not break too quickly.
+            maxConsecutiveFailures: (maxRetries + 1) * 7,
           },
         };
       },
