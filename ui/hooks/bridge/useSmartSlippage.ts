@@ -14,7 +14,6 @@ type UseSmartSlippageParams = {
   fromToken: BridgeToken | null;
   toToken: BridgeToken | null;
   isSwap: boolean;
-  enabled?: boolean;
 };
 
 // This hook doesn't return anything as it only dispatches slippage updates
@@ -34,7 +33,6 @@ type UseSmartSlippageParams = {
  * @param options0.fromToken
  * @param options0.toToken
  * @param options0.isSwap
- * @param options0.enabled
  */
 export function useSmartSlippage({
   fromChain,
@@ -42,14 +40,13 @@ export function useSmartSlippage({
   fromToken,
   toToken,
   isSwap,
-  enabled = true,
 }: UseSmartSlippageParams): void {
   const dispatch = useDispatch();
 
   // Calculate the appropriate slippage for current context
   const calculateCurrentSlippage = useCallback(() => {
     // Need at least fromChain to make any determination
-    if (!enabled || !fromChain?.chainId) {
+    if (!fromChain?.chainId) {
       return undefined;
     }
 
@@ -72,14 +69,10 @@ export function useSmartSlippage({
     }
 
     return slippage;
-  }, [fromChain, toChain, fromToken, toToken, isSwap, enabled]);
+  }, [fromChain, toChain, fromToken, toToken, isSwap]);
 
   // Update slippage when context changes
   useEffect(() => {
-    if (!enabled) {
-      return;
-    }
-
     const newSlippage = calculateCurrentSlippage();
     dispatch(setSlippage(newSlippage));
   }, [
@@ -88,7 +81,6 @@ export function useSmartSlippage({
     fromToken,
     toToken,
     isSwap,
-    enabled,
     calculateCurrentSlippage,
     dispatch,
   ]);

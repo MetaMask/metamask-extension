@@ -514,7 +514,6 @@ const PrepareBridgePage = () => {
     fromToken,
     toToken,
     isSwap,
-    enabled: Boolean(fromChain?.chainId),
   });
 
   // Trace swap/bridge view loaded
