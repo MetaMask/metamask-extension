@@ -188,7 +188,7 @@ if (args.lavamoat) {
       readableResourceIds: true,
       inlineLockdown: /^runtime|contentscript\.js/u,
       unlockedChunksUnsafe: /inpage\.js/u,
-      debugRuntime: false,
+      debugRuntime: isDevelopment,
       lockdown: {
         consoleTaming: 'unsafe',
         errorTaming: 'unsafe',
