@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Uncategorized
 
+- release: dedupe, update LavaMoat policies, update attributions
+- updated changelog and generated feature test plan
+- bump semvar version to 13.1.0
+- Merge origin/main into master-sync
+- Merge origin/main into master-sync
 - bump semvar version to 13.1.0
 - build(webpack): silence swc sourcemap messages on Windows ([#34777](https://github.com/MetaMask/metamask-extension/pull/34777))
 - test: Fix test failure when WebDriver is inactive before shutdown ([#34748](https://github.com/MetaMask/metamask-extension/pull/34748))

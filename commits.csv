@@ -1,4 +1,8 @@
 Commit Message,Author,PR Link,Team,Change Type
+test: cherry-pick `4be7602` balance e2e flaky test (#34832),seaona,https://github.com/MetaMask/metamask-extension/pull/34832,team-qa,,Ops
+chore: add CODEOWNERS for QA Team - E2E Framework (#34719),chloeYue,https://github.com/MetaMask/metamask-extension/pull/34719,team-qa,,Changed
+test: Fixed the test aggregated balance  (#34629),Harika,https://github.com/MetaMask/metamask-extension/pull/34629,team-qa,,Changed
+feat: enabled websocket for Solana e2e (#34250),javiergarciavera,https://github.com/MetaMask/metamask-extension/pull/34250,team-qa,,Added
 build(webpack): silence swc sourcemap messages on Windows (#34777),David Murdoch,https://github.com/MetaMask/metamask-extension/pull/34777,team-extension-platform,,Unknown
 release: Update 13.0.0 changelog (#34755),Danica Shen,https://github.com/MetaMask/metamask-extension/pull/34755,team-extension-platform,,Ops
 style: tell VSCode to end all files with a newline (#34673),Howard Braham,https://github.com/MetaMask/metamask-extension/pull/34673,team-extension-platform,,Unknown
@@ -159,9 +163,6 @@ feat: enable SeedlessOnboarding feature cp-13.0.0 (#34429),Lwin,https://github.c
 fix: handle recovery ratelimit error cp-13.0.0 (#34397),Lwin,https://github.com/MetaMask/metamask-extension/pull/34397,team-web3auth,,Fixed
 fix: Apple login cp-13.0.0 (#34391),Lwin,https://github.com/MetaMask/metamask-extension/pull/34391,team-web3auth,,Fixed
 fix: use button for quiz words instead of text-field cp-13.0.0 (#34280),Lionell Briones,https://github.com/MetaMask/metamask-extension/pull/34280,team-web3auth,,Fixed
-chore: add CODEOWNERS for QA Team - E2E Framework (#34719),chloeYue,https://github.com/MetaMask/metamask-extension/pull/34719,team-qa,,Changed
-test: Fixed the test aggregated balance  (#34629),Harika,https://github.com/MetaMask/metamask-extension/pull/34629,team-qa,,Changed
-feat: enabled websocket for Solana e2e (#34250),javiergarciavera,https://github.com/MetaMask/metamask-extension/pull/34250,team-qa,,Added
 chore: Remove remote mode (#34041),Kevin Bluer,https://github.com/MetaMask/metamask-extension/pull/34041,team-vault,,Changed
 feat: solana websockets (#34620),Alejandro Garcia Anglada,https://github.com/MetaMask/metamask-extension/pull/34620,team-new-networks,,Added
 fix: cp-13.0.0 allows editing non-evm accounts name (#34552),António Regadas,https://github.com/MetaMask/metamask-extension/pull/34552,team-new-networks,,Fixed
