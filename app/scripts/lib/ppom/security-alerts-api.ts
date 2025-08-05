@@ -24,19 +24,28 @@ export async function validateWithSecurityAlertsAPI(
   body:
     | SecurityAlertsAPIRequestBody
     | Pick<JsonRpcRequest, 'method' | 'params'>,
+  isShieldEnabled: () => Promise<boolean> = async () => false,
 ): Promise<SecurityAlertResponse> {
   const endpoint = `${ENDPOINT_VALIDATE}/${chainId}`;
-  return request(endpoint, {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: {
-      'Content-Type': 'application/json',
+  return request(
+    endpoint,
+    {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     },
-  });
+    await isShieldEnabled(),
+  );
 }
 
-async function request(endpoint: string, options?: RequestInit) {
-  const url = getUrl(endpoint);
+async function request(
+  endpoint: string,
+  options?: RequestInit,
+  isShieldEnabled: boolean = false,
+) {
+  const url = getUrl(endpoint, isShieldEnabled);
 
   const response = await fetch(url, options);
 
@@ -49,8 +58,10 @@ async function request(endpoint: string, options?: RequestInit) {
   return await response.json();
 }
 
-function getUrl(endpoint: string) {
-  const host = process.env.SECURITY_ALERTS_API_URL;
+function getUrl(endpoint: string, isShieldEnabled: boolean = false) {
+  const host = isShieldEnabled
+    ? process.env.SECURITY_ALERTS_API_URL_SHIELD
+    : process.env.SECURITY_ALERTS_API_URL;
 
   if (!host) {
     throw new Error('Security alerts API URL is not set');
