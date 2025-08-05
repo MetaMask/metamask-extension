@@ -509,13 +509,14 @@ export default function Routes() {
           {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
           <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
           {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
-          <Route path={LOCK_ROUTE} component={Lock} />
-          <Initialized path={UNLOCK_ROUTE} component={UnlockPage} />
+          <Route path={LOCK_ROUTE} component={Lock} exact />
+          <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
           {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
           <Route path={DEEP_LINK_ROUTE} component={DeepLink} />
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
+            exact
           />
           <Authenticated
             path={SMART_ACCOUNT_UPDATE}
@@ -538,17 +539,18 @@ export default function Routes() {
             component={NotificationDetails}
           />
           <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
-          <Authenticated path={SNAPS_ROUTE} component={SnapList} />
+          <Authenticated path={SNAPS_ROUTE} component={SnapList} exact />
           <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
           <Authenticated
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
           />
-          <Authenticated path={SEND_ROUTE} component={SendPage} />
+          <Authenticated path={SEND_ROUTE} component={SendPage} exact />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
             component={CrossChainSwapTxDetails}
+            exact
           />
           <Authenticated
             path={CROSS_CHAIN_SWAP_ROUTE}
@@ -557,10 +559,12 @@ export default function Routes() {
           <Authenticated
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
             component={ConfirmAddSuggestedTokenPage}
+            exact
           />
           <Authenticated
             path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
             component={ConfirmAddSuggestedNftPage}
+            exact
           />
           <Authenticated
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
@@ -595,22 +599,26 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
-          <Authenticated path={PERMISSIONS} component={PermissionsPage} />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={ReviewPermissions}
+            exact
           />
           <Authenticated
             path={WALLET_DETAILS_ROUTE}
             component={WalletDetails}
+            exact
           />
           <Authenticated
             path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
             component={MultichainAccountDetails}
+            exact
           />
           <Authenticated
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
             component={AddressQRCode}
+            exact
           />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>

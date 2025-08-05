@@ -26,4 +26,5 @@ Authenticated.propTypes = {
   completedOnboarding: PropTypes.bool,
   path: PropTypes.string,
   component: PropTypes.object,
+  exact: PropTypes.bool,
 };
