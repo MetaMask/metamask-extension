@@ -157,8 +157,10 @@ class SendTokenPage {
 
   async checkAccountValueAndSuffix(value: string): Promise<void> {
     console.log(`Checking if account value and suffix is ${value}`);
-    await this.driver.waitForSelector({ css: this.assetValue, text: value });
-    console.log(`Account value and suffix is ${value}`);
+    await this.driver.waitForSelector({
+      css: this.assetValue,
+      text: value,
+    });
   }
 
   async clickCancelButton(): Promise<void> {
