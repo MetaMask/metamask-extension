@@ -83,7 +83,9 @@ export class SlippageService {
    *
    * @param context
    */
-  public static calculateSlippage(context: SlippageContext): number | undefined {
+  public static calculateSlippage(
+    context: SlippageContext,
+  ): number | undefined {
     const { fromChain, toChain, fromToken, toToken, isSwap } = context;
 
     // If no source chain, we can't determine the type
@@ -103,7 +105,10 @@ export class SlippageService {
 
     // Solana swaps always use undefined (AUTO mode)
     // Must check that BOTH chains are Solana
-    if (isSolanaChainId(fromChain.chainId) && isSolanaChainId(toChain.chainId)) {
+    if (
+      isSolanaChainId(fromChain.chainId) &&
+      isSolanaChainId(toChain.chainId)
+    ) {
       return undefined;
     }
 
@@ -137,7 +142,10 @@ export class SlippageService {
       return 'Incomplete swap setup - using EVM default';
     }
 
-    if (isSolanaChainId(fromChain.chainId) && isSolanaChainId(toChain.chainId)) {
+    if (
+      isSolanaChainId(fromChain.chainId) &&
+      isSolanaChainId(toChain.chainId)
+    ) {
       return 'Solana swap (AUTO mode)';
     }
 
