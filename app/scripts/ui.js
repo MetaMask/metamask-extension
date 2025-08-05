@@ -145,12 +145,12 @@ async function start() {
         criticalErrorHandler.uninstall();
       }
 
-      // Clear the global provider
-      if (global.ethereumProvider) {
-        delete global.ethereumProvider;
-      }
+      // Note: we do NOT clear the global.ethereumProvider here, as it is only a
+      // pointer to a Proxy object, which we swap out upon reconnection.
+      // i.e., we don't do this: `delete global.ethereumProvider;`
 
       // Wait a bit before reconnecting to avoid rapid reconnection attempts
+      // which could lead to performance issues
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Recreate all connections
@@ -160,7 +160,7 @@ async function start() {
     } catch (error) {
       log.error('Failed to reconnect:', error);
       // Retry reconnection
-      setTimeout(handleDisconnection, 0);
+      requestAnimationFrame(handleDisconnection);
     }
   }
 
