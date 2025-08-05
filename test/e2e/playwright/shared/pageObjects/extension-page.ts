@@ -1,5 +1,5 @@
 import path from 'path';
-import { chromium } from '@playwright/test';
+import { chromium, firefox } from '@playwright/test';
 
 // Set browser for manifest flags
 if (process.env.BROWSER === undefined) {
@@ -25,7 +25,12 @@ export class ChromeExtensionPage {
     };
 
     try {
-      const context = await chromium.launchPersistentContext('', launchOptions);
+      // Determine browser based on test project name or environment
+      const isFirefoxProject = process.env.PLAYWRIGHT_PROJECT?.includes('firefox') ||
+                               globalThis.__PLAYWRIGHT_TEST_PROJECT_NAME__?.includes('firefox');
+
+      const browserType = isFirefoxProject ? firefox : chromium;
+      const context = await browserType.launchPersistentContext('', launchOptions);
 
       // Extension loads quickly, no need for artificial delay
 

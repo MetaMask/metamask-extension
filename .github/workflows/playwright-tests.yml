@@ -1,0 +1,230 @@
+name: Playwright Tests
+
+on:
+  workflow_call:
+    inputs:
+      build-artifact:
+        type: string
+        default: 'build-test-browserify'
+        description: The build artifact to download
+      build-command:
+        type: string
+        default: 'yarn build:test'
+        description: The build command to run
+
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      build-artifact:
+        type: string
+        default: 'build-test-browserify'
+        description: The build artifact to download
+      build-command:
+        type: string
+        default: 'yarn build:test'
+        description: The build command to run
+
+jobs:
+  playwright-chrome:
+    name: Playwright Chrome Tests
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v1.0.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      JOB_NAME: "Playwright Chrome Tests"
+      RUN_ID: ${{ github.run_id }}
+      PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install anvil
+        run: yarn mm-foundryup
+
+      - name: Download build artifact
+        if: ${{ inputs.build-artifact != '' }}
+        id: download-build-artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.build-artifact }}
+
+      - name: Run build command
+        if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
+        run: ${{ inputs.build-command }}
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Install Playwright browsers
+        run: yarn playwright install --with-deps chromium
+
+      - name: Run Playwright tests (Chrome - All Projects)
+        timeout-minutes: 30
+        run: yarn test:e2e:pw:chrome --reporter=html,junit,list
+        env:
+          DISPLAY: :99
+          PLAYWRIGHT_HTML_REPORT: ./public/playwright/playwright-reports/html/chrome/
+
+      - name: Upload Playwright Chrome test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-chrome-results
+          path: |
+            ./public/playwright/playwright-reports/
+            ./test-results/
+          retention-days: 7
+
+      - name: Upload Playwright Chrome HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-chrome-html-report
+          path: ./public/playwright/playwright-reports/html/chrome/
+          retention-days: 7
+
+  playwright-firefox:
+    name: Playwright Firefox Tests
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v1.0.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      JOB_NAME: "Playwright Firefox Tests"
+      RUN_ID: ${{ github.run_id }}
+      PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install anvil
+        run: yarn mm-foundryup
+
+      - name: Download build artifact
+        if: ${{ inputs.build-artifact != '' }}
+        id: download-build-artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.build-artifact }}
+
+      - name: Run build command
+        if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
+        run: ${{ inputs.build-command }}
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Install Playwright browsers
+        run: yarn playwright install --with-deps firefox
+
+      - name: Run Playwright tests (Firefox - All Projects)
+        timeout-minutes: 30
+        run: yarn test:e2e:pw:firefox --reporter=html,junit,list
+        env:
+          DISPLAY: :99
+          PLAYWRIGHT_HTML_REPORT: ./public/playwright/playwright-reports/html/firefox/
+
+      - name: Upload Playwright Firefox test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-firefox-results
+          path: |
+            ./public/playwright/playwright-reports/
+            ./test-results/
+          retention-days: 7
+
+      - name: Upload Playwright Firefox HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-firefox-html-report
+          path: ./public/playwright/playwright-reports/html/firefox/
+          retention-days: 7
+
+  generate-test-report:
+    name: Generate Combined Test Report
+    runs-on: ubuntu-latest
+    needs: [playwright-chrome, playwright-firefox]
+    if: always()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Chrome test results
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: playwright-chrome-results
+          path: ./chrome-results/
+
+      - name: Download Firefox test results
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: playwright-firefox-results
+          path: ./firefox-results/
+
+      - name: Generate test summary
+        run: |
+          echo "# Playwright Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Execution Status" >> $GITHUB_STEP_SUMMARY
+
+          CHROME_STATUS="${{ needs.playwright-chrome.result }}"
+          FIREFOX_STATUS="${{ needs.playwright-firefox.result }}"
+
+          if [ "$CHROME_STATUS" = "success" ]; then
+            echo "✅ **Chrome Tests**: PASSED" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Chrome Tests**: FAILED" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "$FIREFOX_STATUS" = "success" ]; then
+            echo "✅ **Firefox Tests**: PASSED" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Firefox Tests**: FAILED" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- 📊 [Chrome HTML Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "- 📊 [Firefox HTML Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "- 📁 [Test Results Archives](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Quick Stats" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workflow Run ID**: ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.head_ref || github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.event.pull_request.head.sha || github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload combined test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-combined-report
+          path: |
+            ./chrome-results/
+            ./firefox-results/
+          retention-days: 14

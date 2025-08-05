@@ -33,20 +33,38 @@ const config: PlaywrightTestConfig = {
       },
     ],
     ['junit', { outputFile: `${logOutputFolder}/junit/test-results.xml` }],
+    ['json', { outputFile: `${logOutputFolder}/json/test-results.json` }],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on',
-    video: 'off',
+    trace: 'on-first-retry',
+    video: 'retain-on-failure',
+    screenshot: 'only-on-failure',
     /* Run tests headless in local */
     headless: isHeadless('PLAYWRIGHT'),
   },
 
   /* Configure projects for major browsers */
   projects: [
+    {
+      name: 'chrome-global',
+      testMatch: '/global/specs/**.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: true,
+      },
+    },
+    {
+      name: 'firefox-global',
+      testMatch: '/global/specs/**.spec.ts',
+      use: {
+        ...devices['Desktop Firefox'],
+        headless: true,
+      },
+    },
     {
       name: 'swap',
       testMatch: '/swap/specs/*swap.spec.ts',
