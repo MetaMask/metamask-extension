@@ -507,7 +507,7 @@ const PrepareBridgePage = () => {
     [],
   );
 
-  // Use smart slippage defaults while respecting user overrides
+  // Use smart slippage defaults
   useSmartSlippage({
     fromChain,
     toChain,
