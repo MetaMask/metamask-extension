@@ -294,8 +294,6 @@ const getInternalAccountFromGroup = (
 /**
  * Get an internal account from the account tree by its group ID and CAIP chain ID.
  *
- * @param accountTree - The account tree state.
- * @param internalAccounts - The internal accounts object.
  * @param groupId - The ID of the group to search in.
  * @param caipChainId - The CAIP chain ID to search for.
  * @returns The internal account object, or null if not found.
@@ -303,12 +301,10 @@ const getInternalAccountFromGroup = (
 export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
   getAccountTree,
   getInternalAccountsObject,
-  (
-    _accountTree,
-    _internalAccounts,
-    groupId: AccountGroupId,
-    caipChainId: CaipChainId,
-  ) => ({ groupId, caipChainId }),
+  (_, groupId: AccountGroupId, caipChainId: CaipChainId) => ({
+    groupId,
+    caipChainId,
+  }),
   (
     accountTree: AccountTreeState,
     internalAccounts: Record<AccountId, InternalAccount>,
@@ -338,9 +334,6 @@ export const getSelectedAccountGroup = createDeepEqualSelector(
 /**
  * Get an internal account from the account tree by its selected account group and CAIP chain ID.
  *
- * @param accountTree - The account tree state.
- * @param internalAccounts - The internal accounts object.
- * @param selectedAccountGroup - The ID of the selected account group.
  * @param caipChainId - The CAIP chain ID to search for.
  * @returns The internal account object, or null if not found.
  */
