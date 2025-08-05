@@ -1049,16 +1049,10 @@ async function buildEventFragmentProperties({
       ...properties,
       simulation_receiving_assets_total_value:
         properties.simulation_receiving_assets_total_value ??
-        // TODO: Remove when we have fiatValue in transactionMeta
-        // https://github.com/MetaMask/core/pull/6178
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (transactionMeta as any)?.assetsFiatValues?.receiving,
+        transactionMeta?.assetsFiatValues?.receiving,
       simulation_sending_assets_total_value:
         properties.simulation_sending_assets_total_value ??
-        // TODO: Remove when we have fiatValue in transactionMeta
-        // https://github.com/MetaMask/core/pull/6178
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (transactionMeta as any)?.assetsFiatValues?.sending,
+        transactionMeta?.assetsFiatValues?.sending,
       transaction_approval_amount_type: transactionApprovalAmountType,
     };
   }
