@@ -1,12 +1,13 @@
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
-  SlippageService,
+  calculateSlippage,
+  getSlippageReason,
   SlippageValue,
   type SlippageContext,
 } from './slippage-service';
 
-describe('SlippageService', () => {
+describe('Slippage Service', () => {
   // Mock tokens
   const mockUSDC: BridgeToken = {
     chainId: '0x1',
@@ -59,7 +60,7 @@ describe('SlippageService', () => {
           isSwap: false,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.BridgeDefault);
       });
 
@@ -72,7 +73,7 @@ describe('SlippageService', () => {
           isSwap: false,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.BridgeDefault);
       });
     });
@@ -87,7 +88,7 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(undefined);
       });
     });
@@ -102,7 +103,7 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.EvmStablecoin);
       });
 
@@ -115,7 +116,7 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.EvmDefault);
       });
 
@@ -133,7 +134,7 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.EvmDefault);
       });
     });
@@ -148,7 +149,7 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.BridgeDefault);
       });
 
@@ -161,7 +162,7 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.BridgeDefault);
       });
     });
@@ -176,7 +177,7 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.BridgeDefault);
       });
 
@@ -189,11 +190,11 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.BridgeDefault);
       });
 
-      it('returns EVM default when toChain is missing for swap', () => {
+      it('returns bridge default when toChain is missing', () => {
         const context: SlippageContext = {
           fromChain: { chainId: '0x1' },
           toChain: null,
@@ -202,8 +203,8 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
-        expect(result).toBe(SlippageValue.EvmDefault);
+        const result = calculateSlippage(context);
+        expect(result).toBe(SlippageValue.BridgeDefault);
       });
 
       it('handles case-insensitive stablecoin addresses', () => {
@@ -220,7 +221,7 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.EvmStablecoin);
       });
 
@@ -233,7 +234,7 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.EvmDefault);
       });
 
@@ -246,7 +247,7 @@ describe('SlippageService', () => {
           isSwap: true,
         };
 
-        const result = SlippageService.calculateSlippage(context);
+        const result = calculateSlippage(context);
         expect(result).toBe(SlippageValue.EvmDefault);
       });
     });
@@ -262,8 +263,8 @@ describe('SlippageService', () => {
         isSwap: false,
       };
 
-      const reason = SlippageService.getSlippageReason(context);
-      expect(reason).toBe('Cross-chain bridge transaction');
+      const reason = getSlippageReason(context);
+      expect(reason).toBe('Cross-chain transaction');
     });
 
     it('returns correct reason for incomplete swap', () => {
@@ -275,8 +276,8 @@ describe('SlippageService', () => {
         isSwap: true,
       };
 
-      const reason = SlippageService.getSlippageReason(context);
-      expect(reason).toBe('Incomplete swap setup - using EVM default');
+      const reason = getSlippageReason(context);
+      expect(reason).toBe('Incomplete chain setup - using bridge default');
     });
 
     it('returns correct reason for Solana swap', () => {
@@ -288,7 +289,7 @@ describe('SlippageService', () => {
         isSwap: true,
       };
 
-      const reason = SlippageService.getSlippageReason(context);
+      const reason = getSlippageReason(context);
       expect(reason).toBe('Solana swap (AUTO mode)');
     });
 
@@ -301,7 +302,7 @@ describe('SlippageService', () => {
         isSwap: true,
       };
 
-      const reason = SlippageService.getSlippageReason(context);
+      const reason = getSlippageReason(context);
       expect(reason).toBe('EVM stablecoin pair');
     });
 
@@ -314,7 +315,7 @@ describe('SlippageService', () => {
         isSwap: true,
       };
 
-      const reason = SlippageService.getSlippageReason(context);
+      const reason = getSlippageReason(context);
       expect(reason).toBe('EVM token swap');
     });
 
@@ -327,8 +328,8 @@ describe('SlippageService', () => {
         isSwap: true,
       };
 
-      const reason = SlippageService.getSlippageReason(context);
-      expect(reason).toBe('Cross-chain swap (treated as bridge)');
+      const reason = getSlippageReason(context);
+      expect(reason).toBe('Cross-chain transaction');
     });
 
     it('returns correct reason when no chain', () => {
@@ -340,8 +341,8 @@ describe('SlippageService', () => {
         isSwap: true,
       };
 
-      const reason = SlippageService.getSlippageReason(context);
-      expect(reason).toBe('No source chain - using bridge default');
+      const reason = getSlippageReason(context);
+      expect(reason).toBe('Incomplete chain setup - using bridge default');
     });
   });
 });

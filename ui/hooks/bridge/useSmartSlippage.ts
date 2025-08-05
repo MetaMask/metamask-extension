@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  SlippageService,
+  calculateSlippage,
+  getSlippageReason,
   type SlippageContext,
 } from '../../pages/bridge/utils/slippage-service';
 import { setSlippage } from '../../ducks/bridge/actions';
@@ -60,11 +61,11 @@ export function useSmartSlippage({
       isSwap,
     };
 
-    const slippage = SlippageService.calculateSlippage(context);
+    const slippage = calculateSlippage(context);
 
     // Log the reason in development
     if (process.env.NODE_ENV === 'development') {
-      const reason = SlippageService.getSlippageReason(context);
+      const reason = getSlippageReason(context);
       console.log(
         `[useSmartSlippage] Slippage calculated: ${slippage ?? 'AUTO'}% - ${reason}`,
       );
