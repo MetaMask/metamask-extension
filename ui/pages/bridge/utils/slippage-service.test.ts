@@ -138,6 +138,34 @@ describe('SlippageService', () => {
       });
     });
 
+    describe('Cross-chain swaps', () => {
+      it('returns 0.5% for cross-chain swaps (treated as bridges)', () => {
+        const context: SlippageContext = {
+          fromChain: { chainId: '0x1' },
+          toChain: { chainId: '0xa' },
+          fromToken: mockWETH,
+          toToken: mockWETH,
+          isSwap: true,
+        };
+
+        const result = SlippageService.calculateSlippage(context);
+        expect(result).toBe(SlippageValue.BridgeDefault);
+      });
+
+      it('returns 0.5% for cross-chain stablecoin swaps (treated as bridges)', () => {
+        const context: SlippageContext = {
+          fromChain: { chainId: '0x1' },
+          toChain: { chainId: '0x89' }, // Polygon
+          fromToken: mockUSDC,
+          toToken: mockUSDT,
+          isSwap: true,
+        };
+
+        const result = SlippageService.calculateSlippage(context);
+        expect(result).toBe(SlippageValue.BridgeDefault);
+      });
+    });
+
     describe('Edge cases', () => {
       it('returns bridge default when fromChain is null', () => {
         const context: SlippageContext = {
@@ -288,6 +316,19 @@ describe('SlippageService', () => {
 
       const reason = SlippageService.getSlippageReason(context);
       expect(reason).toBe('EVM token swap');
+    });
+
+    it('returns correct reason for cross-chain swap', () => {
+      const context: SlippageContext = {
+        fromChain: { chainId: '0x1' },
+        toChain: { chainId: '0xa' },
+        fromToken: mockWETH,
+        toToken: mockWETH,
+        isSwap: true,
+      };
+
+      const reason = SlippageService.getSlippageReason(context);
+      expect(reason).toBe('Cross-chain swap (treated as bridge)');
     });
 
     it('returns correct reason when no chain', () => {

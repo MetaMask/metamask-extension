@@ -76,7 +76,7 @@ export class SlippageService {
    * Rules:
    * - Bridge (cross-chain): Always 0.5%
    * - Swap on Solana: Always undefined (AUTO mode)
-   * - Swap on EVM stablecoin pairs: 0.5%
+   * - Swap on EVM stablecoin pairs (same chain only): 0.5%
    * - Swap on EVM other pairs: 2%
    *
    * @param context
@@ -101,16 +101,18 @@ export class SlippageService {
       return SlippageValue.EvmDefault;
     }
 
+    // Cross-chain swaps are treated as bridges (0.5%)
+    if (fromChain.chainId !== toChain.chainId) {
+      return SlippageValue.BridgeDefault;
+    }
+
     // Solana swaps always use undefined (AUTO mode)
-    // Must check that BOTH chains are Solana
-    if (
-      isSolanaChainId(fromChain.chainId) &&
-      isSolanaChainId(toChain.chainId)
-    ) {
+    // Must check that BOTH chains are Solana (already same chain at this point)
+    if (isSolanaChainId(fromChain.chainId)) {
       return undefined;
     }
 
-    // EVM stablecoin pairs use 0.5%
+    // EVM stablecoin pairs use 0.5% (only for same-chain swaps)
     if (this.isStablecoinPair(fromChain.chainId, fromToken, toToken)) {
       return SlippageValue.EvmStablecoin;
     }
@@ -140,10 +142,11 @@ export class SlippageService {
       return 'Incomplete swap setup - using EVM default';
     }
 
-    if (
-      isSolanaChainId(fromChain.chainId) &&
-      isSolanaChainId(toChain.chainId)
-    ) {
+    if (fromChain.chainId !== toChain.chainId) {
+      return 'Cross-chain swap (treated as bridge)';
+    }
+
+    if (isSolanaChainId(fromChain.chainId)) {
       return 'Solana swap (AUTO mode)';
     }
 
