@@ -5141,27 +5141,26 @@ export default class MetamaskController extends EventEmitter {
       await this.keyringController.changePassword(newPassword);
 
       if (isSocialLoginFlow) {
-        let changePasswordSuccess = false;
         try {
           await this.seedlessOnboardingController.changePassword(
             newPassword,
             oldPassword,
           );
-          changePasswordSuccess = true;
+          // store the new keyring encryption key in the seedless onboarding controller
+          const keyringEncKey =
+            await this.keyringController.exportEncryptionKey();
+          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
+            keyringEncKey,
+          );
         } catch (err) {
           // revert the keyring password change by changing the password back to the old password
           await this.keyringController.changePassword(oldPassword);
-        }
-
-        // store the new keyring encryption key in the seedless onboarding controller
-        const keyringEncKey =
-          await this.keyringController.exportEncryptionKey();
-        await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-          keyringEncKey,
-        );
-
-        if (!changePasswordSuccess) {
-          throw new Error('Failed to change password');
+          // store the old keyring encryption key in the seedless onboarding controller
+          const revertedKeyringEncKey =
+            await this.keyringController.exportEncryptionKey();
+          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
+            revertedKeyringEncKey,
+          );
         }
       }
     } catch (error) {
