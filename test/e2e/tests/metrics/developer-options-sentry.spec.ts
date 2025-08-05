@@ -50,7 +50,6 @@ describe('Developer Options - Sentry', function (this: Suite) {
         testSpecificMock: mockSentryError,
         ignoredConsoleErrors: [
           'Unable to find value of key "developerOptions" for locale "en"',
-          'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -77,7 +76,6 @@ describe('Developer Options - Sentry', function (this: Suite) {
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'Unable to find value of key "developerOptions" for locale "en"',
-          'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -100,7 +98,6 @@ describe('Developer Options - Sentry', function (this: Suite) {
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'Unable to find value of key "developerOptions" for locale "en"',
-          'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
