@@ -204,16 +204,6 @@ class SendTokenPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkChange(networkName: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.toastText,
-      text: `You're now using ${networkName}`,
-    });
-    console.log(`Network changed to ${networkName} successfully`);
-  }
-
   async chooseNFTToSend(index = 0, timeout = 10000): Promise<void> {
     console.log(`Choosing NFT to send at index ${index}`);
     const nfts = await this.driver.findElements(this.nftListItem);

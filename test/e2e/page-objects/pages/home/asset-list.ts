@@ -67,8 +67,6 @@ class AssetListPage {
 
   private readonly coinSendButton = '[data-testid="coin-overview-send"]';
 
-  private readonly swapButton = '[data-testid="eth-overview-swap"]';
-
   private readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
   private readonly tokenFiatAmount =
@@ -198,11 +196,6 @@ class AssetListPage {
   async clickCoinSendButton(): Promise<void> {
     console.log(`Clicking on the send button`);
     await this.driver.clickElement(this.coinSendButton);
-  }
-
-  async clickSwapButton(): Promise<void> {
-    console.log(`Clicking on the swap button`);
-    await this.driver.clickElement(this.swapButton);
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
