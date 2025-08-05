@@ -432,6 +432,10 @@ import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
+import {
+  getSendBundleSupportedChains,
+  isSendBundleSupported,
+} from './lib/transaction/sentinel-api';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2174,6 +2178,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
           isRelaySupported,
+          getSendBundleSupportedChains,
         },
         this.controllerMessenger,
       ),
@@ -4367,7 +4372,7 @@ export default class MetamaskController extends EventEmitter {
           notificationServicesController,
         ),
 
-      // E2E testing
+      // Testing
       throwTestError: this.throwTestError.bind(this),
       captureTestError: this.captureTestError.bind(this),
 
@@ -4418,6 +4423,7 @@ export default class MetamaskController extends EventEmitter {
       // Other
       endTrace,
       isRelaySupported,
+      isSendBundleSupported,
       openUpdateTabAndReload: () =>
         openUpdateTabAndReload(this.requestSafeReload.bind(this)),
       requestSafeReload: this.requestSafeReload.bind(this),
@@ -8371,7 +8377,7 @@ export default class MetamaskController extends EventEmitter {
    * Throw an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
    * use this for handling errors.
    */
   throwTestError(message) {
@@ -8386,7 +8392,7 @@ export default class MetamaskController extends EventEmitter {
    * Capture an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
    * use this for handling errors.
    */
   captureTestError(message) {

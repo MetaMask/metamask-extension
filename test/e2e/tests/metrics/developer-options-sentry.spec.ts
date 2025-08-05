@@ -49,8 +49,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryError,
         ignoredConsoleErrors: [
-          'Error#1: Unable to find value of key "developerOptions" for locale "en"',
-          'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
+          'Unable to find value of key "developerOptions" for locale "en"',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -76,8 +75,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
-          'Error#1: Unable to find value of key "developerOptions" for locale "en"',
-          'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
+          'Unable to find value of key "developerOptions" for locale "en"',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -99,8 +97,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
-          'Error#1: Unable to find value of key "developerOptions" for locale "en"',
-          'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
+          'Unable to find value of key "developerOptions" for locale "en"',
         ],
       },
       async ({ driver }: { driver: Driver }) => {
