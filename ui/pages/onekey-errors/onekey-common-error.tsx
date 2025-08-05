@@ -1,11 +1,5 @@
-import React, { useMemo } from 'react';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  Box,
-  Text,
-  Button,
-  ButtonVariant,
-} from '../../components/component-library';
+import React from 'react';
+import { Box, Text } from '../../components/component-library';
 import {
   Display,
   JustifyContent,
@@ -18,8 +12,6 @@ import {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function OneKeyCommonError({ error }: { error: string }) {
-  const t = useI18nContext();
-
   return (
     <Box
       display={Display.Flex}
