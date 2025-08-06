@@ -121,7 +121,7 @@ export const DEEP_LINK_ROUTE = '/link';
 export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
 export const DEFI_ROUTE = '/defi';
 
-export const ROUTES: AppRoute[] = [
+export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
@@ -609,7 +609,7 @@ export const ROUTES: AppRoute[] = [
     trackInAnalytics: false,
   },
   ///: END:ONLY_INCLUDE_IF
-];
+] as const satisfies AppRoute[];
 
 export const getPaths = memoize((): string[] =>
   ROUTES.filter((r) => r.trackInAnalytics).map((r) => r.path),
