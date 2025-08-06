@@ -16,7 +16,7 @@ export async function watchEoaAddress(
   const homePage = new HomePage(driver);
   await homePage.headerNavbar.openAccountMenu();
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.check_pageIsLoaded();
+  await accountListPage.checkPageIsLoaded();
   await accountListPage.addEoaAccount(address);
-  await homePage.check_pageIsLoaded();
+  await homePage.checkPageIsLoaded();
 }
