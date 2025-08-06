@@ -308,7 +308,7 @@ ${Object.entries(env)
   });
 
   // these tests should be temporary until the below options are supported
-  const unsupportedOptions = [['--lavamoat'], ['--manifest_version', '3']];
+  const unsupportedOptions = [['--manifest_version', '3']];
   for (const args of unsupportedOptions) {
     it(`should throw on unsupported option \`${args.join('=')}\``, () => {
       assert.throws(
