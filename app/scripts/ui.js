@@ -160,7 +160,7 @@ async function start() {
     } catch (error) {
       log.error('Failed to reconnect:', error);
       // Retry reconnection
-      requestAnimationFrame(handleDisconnection);
+      setTimeout(handleDisconnection, 0);
     }
   }
 
