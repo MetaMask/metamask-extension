@@ -316,22 +316,20 @@ export const BridgeQuoteCard = ({
                   variant={TextVariant.bodyMdMedium}
                   color={TextColor.textAlternativeSoft}
                 >
-                  {/* // TODO: add translation */}
-                  Slippage
+                  {t('slippage')}
                 </Text>
                 <ButtonIcon
                   iconName={IconName.Edit}
                   size={ButtonIconSize.Sm}
                   color={IconColor.iconAlternativeSoft}
                   onClick={onOpenSlippageModal}
-                  // TODO: add translation
-                  ariaLabel="Edit slippage"
+                  ariaLabel={t('slippageEditAriaLabel')}
                   data-testid="slippage-edit-button"
                 />
               </Row>
               <Text variant={TextVariant.bodyMd}>
                 {slippage === undefined && isSolanaSwap
-                  ? 'Auto' // TODO: add translation
+                  ? t('slippageAuto')
                   : `${slippage}%`}
               </Text>
             </Row>
