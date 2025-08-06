@@ -611,6 +611,8 @@ export const ROUTES = [
   ///: END:ONLY_INCLUDE_IF
 ] as const satisfies AppRoute[];
 
+export type AppRoutes = (typeof ROUTES)[number];
+
 export const getPaths = memoize((): string[] =>
   ROUTES.filter((r) => r.trackInAnalytics).map((r) => r.path),
 );
