@@ -12,6 +12,7 @@
     "foundryup": "yarn mm-foundryup",
     "postinstall": "yarn webpack:clearcache && yarn foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
+    "webpack:lavamoat": "yarn webpack --lavamoat --no-cache",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
     "start:mv2": "ENABLE_MV3=false yarn build:dev dev --apply-lavamoat=false --snow=false",
@@ -236,7 +237,9 @@
     "nanoid@npm:^5.1.5": "^3.3.8",
     "tar-fs@npm:^2.1.0": "^2.1.3",
     "lodash.memoize@npm:^4.1.2": "patch:lodash.memoize@npm%3A4.1.2#~/.yarn/patches/lodash.memoize-npm-4.1.2-0e6250041f.patch",
-    "lodash": "patch:lodash@npm%3A4.17.21#~/.yarn/patches/lodash-npm-4.17.21-6382451519.patch"
+    "lodash": "patch:lodash@npm%3A4.17.21#~/.yarn/patches/lodash-npm-4.17.21-6382451519.patch",
+    "@metamask/post-message-stream@npm:^8.0.0": "patch:@metamask/post-message-stream@npm%3A10.0.0#~/.yarn/patches/@metamask-post-message-stream-npm-10.0.0-43ddd1daa7.patch",
+    "@metamask/post-message-stream@npm:^10.0.0": "patch:@metamask/post-message-stream@npm%3A10.0.0#~/.yarn/patches/@metamask-post-message-stream-npm-10.0.0-43ddd1daa7.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -256,6 +259,7 @@
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.3",
+    "@lavamoat/webpack": "1.1.0",
     "@ledgerhq/errors": "^6.21.0",
     "@material-ui/core": "^4.12.4",
     "@metamask/abi-utils": "^3.0.0",
@@ -324,7 +328,7 @@
     "@metamask/permission-controller": "^11.0.6",
     "@metamask/permission-log-controller": "^4.0.0",
     "@metamask/phishing-controller": "^13.1.0",
-    "@metamask/post-message-stream": "^10.0.0",
+    "@metamask/post-message-stream": "patch:@metamask/post-message-stream@npm%3A10.0.0#~/.yarn/patches/@metamask-post-message-stream-npm-10.0.0-43ddd1daa7.patch",
     "@metamask/ppom-validator": "0.36.0",
     "@metamask/preinstalled-example-snap": "^0.7.1",
     "@metamask/profile-sync-controller": "^23.0.0",

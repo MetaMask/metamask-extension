@@ -1248,7 +1248,6 @@ function getScriptTags({
         './scripts/policy-load.js',
       ]
     : [
-        './scripts/lockdown-install.js',
         ...(shouldIncludeOcapKernel
           ? ['./scripts/eventual-send-install.js']
           : []),

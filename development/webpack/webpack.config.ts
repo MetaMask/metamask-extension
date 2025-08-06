@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
+import LavamoatPlugin from '@lavamoat/webpack';
 import {
   ProvidePlugin,
   type Configuration,
@@ -46,9 +47,6 @@ if (args.dryRun) {
 }
 
 // #region short circuit for unsupported build configurations
-if (args.lavamoat) {
-  throw new Error("The webpack build doesn't support LavaMoat yet. So sorry.");
-}
 if (args.manifest_version === 3) {
   throw new Error(
     "The webpack build doesn't support manifest_version version 3 yet. So sorry.",
@@ -57,6 +55,7 @@ if (args.manifest_version === 3) {
 // #endregion short circuit for unsupported build configurations
 
 const context = join(__dirname, '../../app');
+const projectRoot = join(__dirname, '../../'); // While ../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up. This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
 const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
@@ -179,6 +178,85 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
+if (args.lavamoat) {
+  plugins.push(
+    new LavamoatPlugin({
+      rootDir: projectRoot,
+      diagnosticsVerbosity: 2,
+      generatePolicy: true,
+      runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
+      readableResourceIds: true,
+      inlineLockdown: /^runtime|contentscript\.js/u,
+      unlockedChunksUnsafe: /inpage\.js/u,
+      debugRuntime: isDevelopment,
+      lockdown: {
+        consoleTaming: 'unsafe',
+        errorTaming: 'unsafe',
+        stackFiltering: 'verbose',
+        overrideTaming: 'severe',
+        localeTaming: 'unsafe',
+      },
+      scuttleGlobalThis: {
+        enabled: true,
+        // scuttlerName: 'SCUTTLER', // TODO(weizman) SUPPORT SNOW AND SCUTTLER
+        exceptions: [
+          // globals used by different mm deps outside of lm compartment
+          'Proxy',
+          'toString',
+          'getComputedStyle',
+          'addEventListener',
+          'removeEventListener',
+          'ShadowRoot',
+          'HTMLElement',
+          'Element',
+          'pageXOffset',
+          'pageYOffset',
+          'visualViewport',
+          'Reflect',
+          'Set',
+          'Object',
+          'navigator',
+          'harden',
+          'console',
+          'WeakSet',
+          'Event',
+          'Image', // Used by browser to generate notifications
+          'fetch', // Used by browser to generate notifications
+          'OffscreenCanvas', // Used by browser to generate notifications
+          // globals chromedriver needs to function
+          // @ts-expect-error - regex is not included in the types for some reason
+          /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+          'name',
+          'performance',
+          'parseFloat',
+          'innerWidth',
+          'innerHeight',
+          'Symbol',
+          'Math',
+          'DOMRect',
+          'Number',
+          'Array',
+          'crypto',
+          'Function',
+          'Uint8Array',
+          'String',
+          'Promise',
+          'JSON',
+          'Date',
+          // globals sentry needs to function
+          '__SENTRY__',
+          'appState',
+          'extra',
+          'stateHooks',
+          'sentryHooks',
+          'sentry',
+          // webpack
+          'webpackChunk',
+        ],
+      },
+    }),
+  );
+}
 // enable React Refresh in 'development' mode when `watch` is enabled
 if (__HMR_READY__ && isDevelopment && args.watch) {
   const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
