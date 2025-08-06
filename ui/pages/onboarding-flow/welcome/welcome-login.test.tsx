@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import WelcomeLogin from './welcome-login';
-import { LOGIN_OPTION, LOGIN_TYPE } from './types';
 
 describe('Welcome login', () => {
   it('should render', () => {
@@ -11,15 +10,11 @@ describe('Welcome login', () => {
     );
     expect(getByTestId('get-started')).toBeInTheDocument();
 
-    const importButton = getByText('Import using Secret Recovery Phrase');
+    const importButton = getByText('I have an existing wallet');
     expect(importButton).toBeInTheDocument();
 
-    fireEvent.click(importButton);
-
-    expect(mockOnLogin).toHaveBeenCalledWith(
-      LOGIN_TYPE.SRP,
-      LOGIN_OPTION.EXISTING,
-    );
+    const createButton = getByText('Create a new wallet');
+    expect(createButton).toBeInTheDocument();
   });
 
   it('should display Login Options modal when seedless onboarding feature is enabled', () => {
