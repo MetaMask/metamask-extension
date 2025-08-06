@@ -43,12 +43,14 @@ class TestDappMultichain {
     this.driver = driver;
   }
 
+  // eslint-disable-next-line @metamask/design-tokens/color-no-hex
   addCustomAccountAddressInput(i: number) {
     // Not a hex color value
     // eslint-disable-next-line @metamask/design-tokens/color-no-hex
     return `#add-custom-caip\\ address-button-${i}`;
   }
 
+  // eslint-disable-next-line @metamask/design-tokens/color-no-hex
   addCustomScopeButton(i: number) {
     // Not a hex color value
     // eslint-disable-next-line @metamask/design-tokens/color-no-hex
