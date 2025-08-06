@@ -202,16 +202,6 @@ class SendTokenPage {
     });
   }
 
-  async checkNetworkChange(networkName: string): Promise<void> {
-    const toastTextElement = await this.driver.findElement(this.toastText);
-    const toastText = await toastTextElement.getText();
-    assert.equal(
-      toastText,
-      `You're now using ${networkName}`,
-      'Toast text is correct',
-    );
-  }
-
   async chooseNFTToSend(index = 0, timeout = 10000): Promise<void> {
     console.log(`Choosing NFT to send at index ${index}`);
     const nfts = await this.driver.findElements(this.nftListItem);
