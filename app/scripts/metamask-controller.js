@@ -3841,10 +3841,7 @@ export default class MetamaskController extends EventEmitter {
       restoreSocialBackupAndGetSeedPhrase:
         this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
-      socialSyncChangePassword:
-        this.seedlessOnboardingController.changePassword.bind(
-          this.seedlessOnboardingController,
-        ),
+      changePassword: this.changePassword.bind(this),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
@@ -3854,12 +3851,6 @@ export default class MetamaskController extends EventEmitter {
         this.generateNewMnemonicAndAddToVault.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
-      keyringChangePassword: this.keyringController.changePassword.bind(
-        this.keyringController,
-      ),
-      exportEncryptionKey: this.keyringController.exportEncryptionKey.bind(
-        this.keyringController,
-      ),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -5130,6 +5121,51 @@ export default class MetamaskController extends EventEmitter {
         data: seedPhraseAsUint8Array,
         type: SecretType.Mnemonic,
       });
+    }
+  }
+
+  /**
+   * Changes the password for the wallet.
+   *
+   * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
+   *
+   * @param {string} newPassword - The new password.
+   * @param {string} oldPassword - The old password.
+   */
+  async changePassword(newPassword, oldPassword) {
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    try {
+      await this.keyringController.changePassword(newPassword);
+
+      if (isSocialLoginFlow) {
+        try {
+          await this.seedlessOnboardingController.changePassword(
+            newPassword,
+            oldPassword,
+          );
+          // store the new keyring encryption key in the seedless onboarding controller
+          const keyringEncKey =
+            await this.keyringController.exportEncryptionKey();
+          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
+            keyringEncKey,
+          );
+        } catch (err) {
+          log.error('error while changing seedless-onboarding password', err);
+          log.error('reverting keyring password change');
+          // revert the keyring password change by changing the password back to the old password
+          await this.keyringController.changePassword(oldPassword);
+          // store the old keyring encryption key in the seedless onboarding controller
+          const revertedKeyringEncKey =
+            await this.keyringController.exportEncryptionKey();
+          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
+            revertedKeyringEncKey,
+          );
+          throw err;
+        }
+      }
+    } catch (error) {
+      log.error('error while changing password', error);
+      throw error;
     }
   }
 
