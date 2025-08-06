@@ -41,6 +41,18 @@ async function mockSentryTrace(mockServer: Mockttp) {
     });
 }
 
+async function mockSegment(mockServer: Mockttp) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withBodyIncluding('Test Event')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+}
+
 describe('Preinstalled example Snap', function () {
   it('displays the Snap settings page', async function () {
     await withFixtures(
@@ -145,6 +157,45 @@ describe('Preinstalled example Snap', function () {
 
         assert.equal(error.type, 'TestError');
         assert.equal(error.value, 'This is a test error.');
+      },
+    );
+  });
+
+  it('tracks an event in Segment with `snap_trackEvent`', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: MOCK_META_METRICS_ID,
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSegment,
+      },
+      async ({ driver, mockedEndpoint }) => {
+        await loginWithBalanceValidation(driver);
+
+        const testSnaps = new TestSnaps(driver);
+        await testSnaps.openPage();
+
+        // Click the button to track an event.
+        await testSnaps.scrollAndClickButton('trackEventButton');
+
+        // Wait for the mocked Sentry endpoint to be called.
+        await driver.wait(async () => {
+          const isPending = await mockedEndpoint.isPending();
+          return isPending === false;
+        }, largeDelayMs);
+
+        const requests = await mockedEndpoint.getSeenRequests();
+        assert.equal(requests.length, 1, 'Expected one request to Segment.');
+
+        const request = requests[0];
+        const json = JSON.parse(await request.body.getText());
+        assert.equal(json.batch[0].type, 'track');
+        assert.equal(json.batch[0].event, 'Test Event');
+        assert.equal(json.batch[0].properties.test_property, 'test value');
       },
     );
   });
