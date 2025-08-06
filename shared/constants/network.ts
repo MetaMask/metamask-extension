@@ -161,7 +161,7 @@ export const CHAIN_IDS = {
   WETHIO: '0x4e',
   CHZ: '0x15b38',
   NUMBERS: '0x290b',
-  SEI: '0x531',
+  SEI: '0x1329',
   APECHAIN_TESTNET: '0x8157',
   APECHAIN_MAINNET: '0x8173',
   BERACHAIN: '0x138de',
