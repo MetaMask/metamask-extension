@@ -5675,22 +5675,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/chain-agnostic-permission@npm:1.0.0"
-  dependencies:
-    "@metamask/api-specs": "npm:^0.14.0"
-    "@metamask/controller-utils": "npm:^11.10.0"
-    "@metamask/network-controller": "npm:^24.0.0"
-    "@metamask/permission-controller": "npm:^11.0.6"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.2.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/d4786433f9f2fedb03ff80f81d4ed57ebb0c0873ff09f1c87bc1f4bb04db16e51b1deea982bfdee35d25ad44a09d6bef52e41def88fc6626639dd5a72c5f252a
-  languageName: node
-  linkType: hard
-
-"@metamask/chain-agnostic-permission@npm:^1.1.0":
+"@metamask/chain-agnostic-permission@npm:^1.0.0, @metamask/chain-agnostic-permission@npm:^1.1.0":
   version: 1.1.0
   resolution: "@metamask/chain-agnostic-permission@npm:1.1.0"
   dependencies:
