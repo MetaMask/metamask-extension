@@ -38,7 +38,6 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import { nanoid } from 'nanoid';
-import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
   ApprovalController,
@@ -183,6 +182,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import { captureException } from '../../shared/lib/sentry';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -433,6 +433,10 @@ import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
+import {
+  getSendBundleSupportedChains,
+  isSendBundleSupported,
+} from './lib/transaction/sentinel-api';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -988,6 +992,8 @@ export default class MetamaskController extends EventEmitter {
       includeUsdRate: true,
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
+      useExternalServices: () =>
+        this.preferencesController.state.useExternalServices,
     });
     const initialFetchMultiExchangeRate =
       this.currencyRateController.fetchMultiExchangeRate.bind(
@@ -1471,6 +1477,8 @@ export default class MetamaskController extends EventEmitter {
           'TokenListController:getState',
           'TokensController:getState',
           'TokensController:addDetectedTokens',
+          'TokensController:addTokens',
+          'NetworkController:findNetworkClientIdByChainId',
         ],
         allowedEvents: [
           'AccountsController:selectedEvmAccountChange',
@@ -1492,6 +1500,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       useAccountsAPI: true,
       platform: 'extension',
+      useTokenDetection: () =>
+        this.preferencesController.state.useTokenDetection,
+      useExternalServices: () =>
+        this.preferencesController.state.useExternalServices,
     });
 
     const addressBookControllerMessenger =
@@ -2167,6 +2179,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
           isRelaySupported,
+          getSendBundleSupportedChains,
         },
         this.controllerMessenger,
       ),
@@ -3831,10 +3844,7 @@ export default class MetamaskController extends EventEmitter {
       restoreSocialBackupAndGetSeedPhrase:
         this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
-      socialSyncChangePassword:
-        this.seedlessOnboardingController.changePassword.bind(
-          this.seedlessOnboardingController,
-        ),
+      changePassword: this.changePassword.bind(this),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
@@ -3844,12 +3854,6 @@ export default class MetamaskController extends EventEmitter {
         this.generateNewMnemonicAndAddToVault.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
-      keyringChangePassword: this.keyringController.changePassword.bind(
-        this.keyringController,
-      ),
-      exportEncryptionKey: this.keyringController.exportEncryptionKey.bind(
-        this.keyringController,
-      ),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -4277,8 +4281,8 @@ export default class MetamaskController extends EventEmitter {
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,
       ),
-      getUserProfileMetaMetrics:
-        authenticationController.getUserProfileMetaMetrics.bind(
+      getUserProfileLineage:
+        authenticationController.getUserProfileLineage.bind(
           authenticationController,
         ),
 
@@ -4360,7 +4364,7 @@ export default class MetamaskController extends EventEmitter {
           notificationServicesController,
         ),
 
-      // E2E testing
+      // Testing
       throwTestError: this.throwTestError.bind(this),
       captureTestError: this.captureTestError.bind(this),
 
@@ -4411,6 +4415,7 @@ export default class MetamaskController extends EventEmitter {
       // Other
       endTrace,
       isRelaySupported,
+      isSendBundleSupported,
       openUpdateTabAndReload: () =>
         openUpdateTabAndReload(this.requestSafeReload.bind(this)),
       requestSafeReload: this.requestSafeReload.bind(this),
@@ -4827,6 +4832,14 @@ export default class MetamaskController extends EventEmitter {
     // we will proceed with the normal flow and use the password to unlock the vault
     if (!isSocialLoginFlow || !isPasswordOutdated) {
       await this.submitPassword(password);
+      if (isSocialLoginFlow) {
+        // revoke seedless refresh token asynchronously
+        this.seedlessOnboardingController
+          .revokeRefreshToken(password)
+          .catch((err) => {
+            log.error('error while revoking seedless refresh token', err);
+          });
+      }
       isPasswordSynced = true;
       return isPasswordSynced;
     }
@@ -4862,25 +4875,22 @@ export default class MetamaskController extends EventEmitter {
             `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
           );
           if (err instanceof RecoveryError) {
+            // Keyring controller password verification succeeds and seedless controller failed.
+            if (
+              err?.message ===
+                SeedlessOnboardingControllerErrorMessage.IncorrectPassword &&
+              isKeyringPasswordValid
+            ) {
+              throw new Error(
+                SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+              );
+            }
             throw new JsonRpcError(-32603, err.message, err.data);
           } else if (
             err.message ===
             SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
           ) {
             isPasswordSynced = false;
-          } else if (
-            err.message.includes(
-              SeedlessOnboardingControllerErrorMessage.IncorrectPassword,
-            )
-          ) {
-            // Case 2: Keyring controller password verification succeeds and seedless controller failed.
-            if (isKeyringPasswordValid) {
-              throw new Error(
-                SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
-              );
-            }
-            // Case 3: Both keyring and seedless controller password verification failed.
-            throw err;
           } else {
             throw err;
           }
@@ -4925,6 +4935,13 @@ export default class MetamaskController extends EventEmitter {
         await this.seedlessOnboardingController.checkIsPasswordOutdated({
           skipCache: true,
         });
+
+        // revoke seedless refresh token asynchronously
+        this.seedlessOnboardingController
+          .revokeRefreshToken(password)
+          .catch((err) => {
+            log.error('error while revoking seedless refresh token', err);
+          });
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Unknown error';
@@ -5107,6 +5124,51 @@ export default class MetamaskController extends EventEmitter {
         data: seedPhraseAsUint8Array,
         type: SecretType.Mnemonic,
       });
+    }
+  }
+
+  /**
+   * Changes the password for the wallet.
+   *
+   * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
+   *
+   * @param {string} newPassword - The new password.
+   * @param {string} oldPassword - The old password.
+   */
+  async changePassword(newPassword, oldPassword) {
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    try {
+      await this.keyringController.changePassword(newPassword);
+
+      if (isSocialLoginFlow) {
+        try {
+          await this.seedlessOnboardingController.changePassword(
+            newPassword,
+            oldPassword,
+          );
+          // store the new keyring encryption key in the seedless onboarding controller
+          const keyringEncKey =
+            await this.keyringController.exportEncryptionKey();
+          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
+            keyringEncKey,
+          );
+        } catch (err) {
+          log.error('error while changing seedless-onboarding password', err);
+          log.error('reverting keyring password change');
+          // revert the keyring password change by changing the password back to the old password
+          await this.keyringController.changePassword(oldPassword);
+          // store the old keyring encryption key in the seedless onboarding controller
+          const revertedKeyringEncKey =
+            await this.keyringController.exportEncryptionKey();
+          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
+            revertedKeyringEncKey,
+          );
+          throw err;
+        }
+      }
+    } catch (error) {
+      log.error('error while changing password', error);
+      throw error;
     }
   }
 
@@ -5412,17 +5474,22 @@ export default class MetamaskController extends EventEmitter {
         seedPhraseAsUint8Array,
       );
 
+      // We re-created the vault, meaning we only have 1 new HD keyring
+      // now. We re-create the internal list of accounts (which is
+      // not an expensive operation, since we should only have 1 HD
+      // keyring that has one default account.
+      // TODO: Remove this once the `accounts-controller` once only
+      // depends only on keyrings `:stateChange`.
+      await this.accountsController.updateAccounts();
+
+      // And we re-init the account tree controller too, to use the
+      // newly created accounts.
+      // TODO: Remove this once the `accounts-controller` once only
+      // depends only on keyrings `:stateChange`.
+      this.accountTreeController.init();
+
       if (completedOnboarding) {
         await this._addAccountsWithBalance();
-
-        // This must be set as soon as possible to communicate to the
-        // keyring's iframe and have the setting initialized properly
-        // Optimistically called to not block MetaMask login due to
-        // Ledger Keyring GitHub downtime
-        this.#withKeyringForDevice(
-          { name: HardwareDeviceNames.ledger },
-          async (keyring) => this.setLedgerTransportPreference(keyring),
-        );
       }
 
       if (getIsSeedlessOnboardingFeatureEnabled()) {
@@ -5755,7 +5822,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} params.encryptionKey - The user's encryption key.
    */
   async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
-    const { completedOnboarding } = this.onboardingController.state;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
@@ -5784,17 +5850,6 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
-
-    if (completedOnboarding) {
-      // This must be set as soon as possible to communicate to the
-      // keyring's iframe and have the setting initialized properly
-      // Optimistically called to not block MetaMask login due to
-      // Ledger Keyring GitHub downtime
-      this.#withKeyringForDevice(
-        { name: HardwareDeviceNames.ledger },
-        async (keyring) => this.setLedgerTransportPreference(keyring),
-      );
-    }
   }
 
   async _loginUser(password) {
@@ -5920,10 +5975,6 @@ export default class MetamaskController extends EventEmitter {
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
-        if (deviceName === HardwareDeviceNames.ledger) {
-          await this.setLedgerTransportPreference(keyring);
-        }
-
         let accounts = [];
         switch (page) {
           case -1:
@@ -6723,8 +6774,16 @@ export default class MetamaskController extends EventEmitter {
     if (!caip25Caveat) {
       return;
     }
+
+    // The optional chain operator below shouldn't be needed as
+    // the existence of sessionProperties is enforced by the caveat
+    // validator, but we are still seeing some instances where it
+    // isn't defined in production:
+    // https://github.com/MetaMask/metamask-extension/issues/33412
+    // This suggests state corruption, but we can't find definitive proof that.
+    // For now we are using this patch which is harmless and silences the error in Sentry.
     const solanaAccountsChangedNotifications =
-      caip25Caveat.value.sessionProperties[
+      caip25Caveat.value.sessionProperties?.[
         KnownSessionProperties.SolanaAccountChangedNotifications
       ];
 
@@ -7473,6 +7532,11 @@ export default class MetamaskController extends EventEmitter {
       setEnabledNetworks: (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworks(chainIds, namespace);
       },
+      getEnabledNetworks: (namespace) => {
+        return (
+          this.networkOrderController.state.enabledNetworkMap[namespace] || {}
+        );
+      },
       getCurrentChainIdForDomain: (domain) => {
         const networkClientId =
           this.selectedNetworkController.getNetworkClientIdForDomain(domain);
@@ -7586,6 +7650,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.phishingController,
         this.preferencesController,
+        this.getPermittedAccounts.bind(this),
       ),
     );
 
@@ -7813,7 +7878,10 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:get',
         ),
         trackError: (error) => {
-          return captureException(error);
+          // `captureException` imported from `@sentry/browser` does not seem to
+          // work in E2E tests. This is a workaround which works in both E2E
+          // tests and production.
+          return global.sentry?.captureException?.(error);
         },
         trackEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
@@ -7905,7 +7973,12 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'NetworkController:getNetworkClientById',
         ),
-        startTrace: trace,
+        startTrace: (options) => {
+          // We intentionally strip out `_isStandaloneSpan` since it can be undefined
+          // eslint-disable-next-line no-unused-vars
+          const { _isStandaloneSpan, ...result } = trace(options);
+          return result;
+        },
         endTrace,
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         handleSnapRpcRequest: (args) =>
@@ -8462,7 +8535,7 @@ export default class MetamaskController extends EventEmitter {
    * Throw an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
    * use this for handling errors.
    */
   throwTestError(message) {
@@ -8477,14 +8550,14 @@ export default class MetamaskController extends EventEmitter {
    * Capture an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
    * use this for handling errors.
    */
   captureTestError(message) {
     setTimeout(() => {
       const error = new Error(message);
       error.name = 'TestError';
-      global.sentry.captureException(error);
+      captureException(error);
     });
   }
 
@@ -9371,6 +9444,10 @@ export default class MetamaskController extends EventEmitter {
 
         if (options.name === HardwareDeviceNames.lattice) {
           keyring.appName = 'MetaMask';
+        }
+
+        if (options.name === HardwareDeviceNames.ledger) {
+          await this.setLedgerTransportPreference(keyring);
         }
 
         if (

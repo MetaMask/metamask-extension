@@ -43,7 +43,7 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/consensys-vertical-apps/metamask-extension-e2e-image:v1.0.0
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v1.0.0
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -68,8 +68,16 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      # not installed by checkout-and-setup when cache is restored
-      - name: Install anvil
+      - name: Restore .metamask folder
+        id: restore-metamask
+        uses: actions/cache/restore@v4
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
         run: yarn mm-foundryup
 
       - name: Download build artifact

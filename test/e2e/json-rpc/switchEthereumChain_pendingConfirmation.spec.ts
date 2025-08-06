@@ -39,7 +39,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.clickPersonalSign();
 
         // switchEthereumChain request
@@ -56,32 +56,32 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickNextPage();
 
         // User reviews pending alerts
         const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
           driver,
         );
-        await reviewPermissionsConfirmation.check_pageIsLoaded();
+        await reviewPermissionsConfirmation.checkPageIsLoaded();
         await reviewPermissionsConfirmation.clickConfirmReviewPermissionsButton();
         const networkSwitchAlertModal = new NetworkSwitchAlertModal(driver);
-        await networkSwitchAlertModal.check_pageIsLoaded();
+        await networkSwitchAlertModal.checkPageIsLoaded();
         await networkSwitchAlertModal.clickShowPendingConfirmationButton();
 
         // user confirms permissions
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickNextPage();
-        await reviewPermissionsConfirmation.check_pageIsLoaded();
+        await reviewPermissionsConfirmation.checkPageIsLoaded();
         await reviewPermissionsConfirmation.clickConfirmReviewPermissionsButton();
-        await networkSwitchAlertModal.check_pageIsLoaded();
+        await networkSwitchAlertModal.checkPageIsLoaded();
         await networkSwitchAlertModal.clickGotItButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // Wait for chain id element to change, there's a page reload.
-        await testDapp.check_networkIsConnected('0x53a');
+        await testDapp.checkNetworkIsConnected('0x53a');
       },
     );
   });
@@ -121,7 +121,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.clickPersonalSign();
 
         // switchEthereumChain request
@@ -138,30 +138,30 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickNextPage();
 
         // User reviews pending alerts
         const switchNetworkConfirmation = new SwitchNetworkConfirmation(driver);
-        await switchNetworkConfirmation.check_pageIsLoaded();
+        await switchNetworkConfirmation.checkPageIsLoaded();
         await switchNetworkConfirmation.clickApproveSwitchNetwork();
         const networkSwitchAlertModal = new NetworkSwitchAlertModal(driver);
-        await networkSwitchAlertModal.check_pageIsLoaded();
+        await networkSwitchAlertModal.checkPageIsLoaded();
         await networkSwitchAlertModal.clickShowPendingConfirmationButton();
 
         // user confirms permissions
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickNextPage();
-        await switchNetworkConfirmation.check_pageIsLoaded();
+        await switchNetworkConfirmation.checkPageIsLoaded();
         await switchNetworkConfirmation.clickApproveSwitchNetwork();
-        await networkSwitchAlertModal.check_pageIsLoaded();
+        await networkSwitchAlertModal.checkPageIsLoaded();
         await networkSwitchAlertModal.clickGotItButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // Wait for chain id element to change, there's a page reload.
-        await testDapp.check_networkIsConnected('0x53a');
+        await testDapp.checkNetworkIsConnected('0x53a');
       },
     );
   });

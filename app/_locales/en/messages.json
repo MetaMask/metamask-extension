@@ -1961,6 +1961,12 @@
   "downArrow": {
     "message": "down arrow"
   },
+  "downloadAppDescription": {
+    "message": "Bring MetaMask with you everywhere you go with the mobile app. Plus, turn on Face ID so you always have access, even if you forget your password."
+  },
+  "downloadAppTitle": {
+    "message": "Scan QR code and download the app"
+  },
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
@@ -2253,6 +2259,10 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
+  "errorDetails": {
+    "message": "Error details",
+    "description": "Label for the error details field in the error screen."
+  },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
   },
@@ -2424,10 +2434,6 @@
   },
   "floatAmountToken": {
     "message": "Token amount must be an integer"
-  },
-  "followUsOnX": {
-    "message": "Follow us on $1",
-    "description": "$1 is the x icon"
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
@@ -4155,7 +4161,7 @@
     "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
-    "message": "Continue with Secret Recovery Phrase"
+    "message": "Use Secret Recovery Phrase"
   },
   "onboardingSrpImport": {
     "message": "Import using Secret Recovery Phrase"
@@ -4773,9 +4779,6 @@
   },
   "rateIncludesMMFee": {
     "message": "Rate includes $1% fee"
-  },
-  "rateIncludesMMFeeAndGas": {
-    "message": "Rate includes $1% fee and gas"
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -5550,12 +5553,6 @@
   "slideMultiSrpTitle": {
     "message": "Add multiple Secret Recovery Phrases"
   },
-  "slideRemoteModeDescription": {
-    "message": "Use your cold wallet wirelessly"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold storage, fast access"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Same address, smarter features"
   },
@@ -5760,6 +5757,9 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
+  },
+  "snapUIAccountSelectorTitle": {
+    "message": "Select account"
   },
   "snapUIAssetSelectorTitle": {
     "message": "Select an asset"
@@ -6700,7 +6700,7 @@
     "message": "Agree"
   },
   "termsOfUseAgreeText": {
-    "message": "I agree to the Terms of use, which apply to my use of MetaMask and all of its features"
+    "message": "I agree to the Terms of Use, which apply to my use of MetaMask and all of its features."
   },
   "termsOfUseFooterText": {
     "message": "Please scroll to read all sections"
@@ -6938,8 +6938,11 @@
     "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleStarting": {
-    "message": "MetaMask had trouble starting. This error could be intermittent, so try restarting the extension."
+  "troubleStartingMessage": {
+    "message": "This error could be intermittent, so try restarting the extension."
+  },
+  "troubleStartingTitle": {
+    "message": "MetaMask had trouble starting."
   },
   "tryAgain": {
     "message": "Try again"

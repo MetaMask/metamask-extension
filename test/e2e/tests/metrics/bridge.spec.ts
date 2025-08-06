@@ -16,7 +16,6 @@ import {
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 const quote = {
   amount: '25',
@@ -47,15 +46,13 @@ describe('Bridge tests', function (this: Suite) {
 
         await bridgeTransaction(driver, quote, 2);
 
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
-
         // Start the flow again
         await homePage.startBridgeFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
         await bridgePage.enterBridgeQuote(quote);
         await bridgePage.waitForQuote();
-        await bridgePage.check_expectedNetworkFeeIsDisplayed();
+        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
         await bridgePage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
@@ -117,7 +114,10 @@ describe('Bridge tests', function (this: Suite) {
          * chain_destination
          */
 
-        assert.ok(swapBridgeInputChanged.length === 17);
+        assert(
+          swapBridgeInputChanged.length === 17,
+          'Should have at least 17 input change events',
+        );
 
         const inputTypes = [
           'token_source',
