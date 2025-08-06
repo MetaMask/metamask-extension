@@ -49,7 +49,6 @@ describe('Forgot password', function () {
         await driver.waitUntil(
           async () => {
             const requests = await mockedEndpoint.getSeenRequests();
-            console.log("Requests ==============", )
             return requests.length > 0;
           },
           { interval: 200, timeout: 10000 },
