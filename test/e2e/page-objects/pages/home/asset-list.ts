@@ -366,23 +366,17 @@ class AssetListPage {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_buySellButtonIsPresent(): Promise<void> {
+  async checkBuySellButtonIsPresent(): Promise<void> {
     console.log(`Verify the buy/sell button is displayed`);
     await this.driver.waitForSelector(this.buySellButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_multichainTokenListButtonIsPresent(): Promise<void> {
+  async checkMultichainTokenListButtonIsPresent(): Promise<void> {
     console.log(`Verify the multichain-token-list-button is displayed`);
     await this.driver.waitForSelector(this.tokenListItem);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkFilterText(expectedText: string): Promise<void> {
+  async checkNetworkFilterText(expectedText: string): Promise<void> {
     console.log(
       `Verify the displayed account label in header is: ${expectedText}`,
     );
@@ -392,9 +386,7 @@ class AssetListPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_priceChartIsShown(): Promise<void> {
+  async checkPriceChartIsShown(): Promise<void> {
     console.log(`Verify the price chart is displayed`);
     await this.driver.waitUntil(
       async () => {
@@ -409,9 +401,7 @@ class AssetListPage {
    *
    * @param tokenAmount - The token amount to be checked for.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
+  async checkTokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
     await this.driver.waitForSelector({
       css: this.tokenAmountValue,
@@ -426,9 +416,7 @@ class AssetListPage {
    * @param tokenName - The name of the token to check for.
    * @param tokenAmount - The token amount to be checked for.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenAmountInTokenDetailsModal(
+  async checkTokenAmountInTokenDetailsModal(
     tokenName: string,
     tokenAmount: string,
   ): Promise<void> {
@@ -445,9 +433,7 @@ class AssetListPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenFiatAmountIsDisplayed(
+  async checkTokenFiatAmountIsDisplayed(
     tokenFiatAmount: string,
   ): Promise<void> {
     console.log(
@@ -467,9 +453,7 @@ class AssetListPage {
    * @returns A promise that resolves if the token exists and the amount is displayed (if provided), otherwise it throws an error.
    * @throws Will throw an error if the token is not found in the token list.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenExistsInList(
+  async checkTokenExistsInList(
     tokenName: string,
     amount?: string,
   ): Promise<void> {
@@ -483,7 +467,7 @@ class AssetListPage {
     console.log(`Token "${tokenName}" was found in the token list`);
 
     if (amount) {
-      await this.check_tokenAmountIsDisplayed(amount);
+      await this.checkTokenAmountIsDisplayed(amount);
     }
   }
 
@@ -493,9 +477,7 @@ class AssetListPage {
    * @param expectedNumber - The number of token items expected to be displayed. Defaults to 1.
    * @returns A promise that resolves if the expected number of token items is displayed.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenItemNumber(expectedNumber: number = 1): Promise<void> {
+  async checkTokenItemNumber(expectedNumber: number = 1): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
     await this.driver.wait(async () => {
       const tokenItemsNumber = await this.getNumberOfAssets();
@@ -512,9 +494,7 @@ class AssetListPage {
    * @param address - The token address to check
    * @param expectedChange - The expected change percentage value (e.g. '+0.02%' or '-0.03%')
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenGeneralChangePercentage(
+  async checkTokenGeneralChangePercentage(
     address: string,
     expectedChange: string,
   ): Promise<void> {
@@ -538,9 +518,7 @@ class AssetListPage {
    *
    * @param address - The token address to check
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenGeneralChangePercentageNotPresent(
+  async checkTokenGeneralChangePercentageNotPresent(
     address: string,
   ): Promise<void> {
     console.log(
@@ -561,9 +539,7 @@ class AssetListPage {
    *
    * @param expectedChangeValue - The expected change value (e.g. '+$50.00' or '-$30.00')
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenGeneralChangeValue(
+  async checkTokenGeneralChangeValue(
     expectedChangeValue: string,
   ): Promise<void> {
     try {
@@ -589,9 +565,7 @@ class AssetListPage {
    * @param expectedMarketCap - The expected market cap (e.g. "$1.23.00")
    * @throws Error if the price or market cap don't match the expected values
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenPriceAndMarketCap(
+  async checkTokenPriceAndMarketCap(
     expectedPrice: string,
     expectedMarketCap: string,
   ): Promise<void> {
@@ -625,9 +599,7 @@ class AssetListPage {
    * @param tokenAddress - The expected token address
    * @throws Error if the token details don't match the expected values
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenSymbolAndAddressDetails(
+  async checkTokenSymbolAndAddressDetails(
     symbol: string,
     tokenAddress: string,
   ): Promise<void> {

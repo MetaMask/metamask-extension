@@ -11,6 +11,9 @@ class OnboardingCompletePage {
   private readonly onboardingCompleteDoneButton =
     '[data-testid="onboarding-complete-done"]';
 
+  private readonly downloadAppContinueButton =
+    '[data-testid="download-app-continue"]';
+
   private readonly pinExtensionDoneButton =
     '[data-testid="pin-extension-done"]';
 
@@ -37,13 +40,16 @@ class OnboardingCompletePage {
   private readonly manageDefaultSettingsButton =
     '[data-testid="manage-default-settings"]';
 
+  private readonly downloadAppTitle = {
+    text: 'Scan QR code and download the app',
+    tag: 'h2',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.manageDefaultSettingsButton,
@@ -59,9 +65,7 @@ class OnboardingCompletePage {
     console.log('Onboarding wallet creation complete page is loaded');
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded_backup(): Promise<void> {
+  async checkPageIsLoadedBackup(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.keepSrpSafeMessage,
@@ -83,11 +87,21 @@ class OnboardingCompletePage {
     );
   }
 
+  async displayDownloadAppPageAndContinue(): Promise<void> {
+    await this.driver.waitForSelector(this.downloadAppTitle);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.downloadAppContinueButton,
+    );
+  }
+
   async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
     console.log('Complete onboarding');
     if (!isSocialImportFlow) {
       await this.clickCreateWalletDoneButton();
     }
+
+    await this.displayDownloadAppPageAndContinue();
+
     await this.driver.waitForSelector(this.installCompleteMessage);
     await this.driver.waitForSelector(this.pinExtensionMessage);
     await this.driver.clickElementAndWaitToDisappear(
@@ -106,21 +120,15 @@ class OnboardingCompletePage {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_walletReadyMessageIsDisplayed(): Promise<void> {
+  async checkWalletReadyMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.walletReadyMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_keepSrpSafeMessageIsDisplayed(): Promise<void> {
+  async checkKeepSrpSafeMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.keepSrpSafeMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_remindMeLaterButtonIsDisplayed(): Promise<void> {
+  async checkRemindMeLaterButtonIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.remindMeLaterButton);
   }
 }

@@ -157,10 +157,10 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.checkTokenItemNumber(3);
         await assetListPage.clickOnAsset('Ethereum');
-        await assetListPage.check_buySellButtonIsPresent();
-        await assetListPage.check_multichainTokenListButtonIsPresent();
+        await assetListPage.checkBuySellButtonIsPresent();
+        await assetListPage.checkMultichainTokenListButtonIsPresent();
       },
     );
   });
@@ -172,10 +172,10 @@ describe('Multichain Asset List', function (this: Suite) {
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromSendFlow(driver, POLYGON_NAME_MAINNET);
         const sendPage = new SendTokenPage(driver);
-        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.checkTokenItemNumber(3);
         await assetListPage.clickOnAsset('TST');
         await assetListPage.clickSendButton();
-        await sendPage.check_pageIsLoaded();
+        await sendPage.checkPageIsLoaded();
         await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
