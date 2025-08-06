@@ -32,9 +32,7 @@ class OnboardingSrpPage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.srpMessage,
@@ -93,9 +91,7 @@ class OnboardingSrpPage {
     }
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_confirmSrpButtonIsDisabled(): Promise<void> {
+  async checkConfirmSrpButtonIsDisabled(): Promise<void> {
     console.log('Check that confirm SRP button is disabled');
     const confirmSeedPhrase = await this.driver.findElement(
       this.srpConfirmButton,
@@ -103,9 +99,7 @@ class OnboardingSrpPage {
     assert.equal(await confirmSeedPhrase.isEnabled(), false);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_srpError(): Promise<void> {
+  async checkSrpError(): Promise<void> {
     console.log('Check that SRP error is displayed');
     await this.driver.waitForSelector(this.srpError);
   }
