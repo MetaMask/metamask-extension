@@ -33,6 +33,7 @@ import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import {
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
   getShowTestNetworks,
@@ -44,6 +45,9 @@ export const CustomNetworks = React.memo(() => {
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
+  );
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
   );
   const showTestnets = useSelector(getShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
@@ -120,16 +124,18 @@ export const CustomNetworks = React.memo(() => {
 
   // Memoize the rendered network lists with filtering
   const renderedCustomNetworks = useMemo(() => {
-    const filteredNetworks = orderedNetworks.filter((network) => {
-      // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected) {
-        return network.isEvm;
-      }
-      // If non-EVM network is selected, only show non-EVM networks
-      return !network.isEvm;
-    });
+    const orderedNetworksListToRender = isMultichainAccountsState2Enabled
+      ? orderedNetworks
+      : orderedNetworks.filter((network) => {
+          // If EVM network is selected, only show EVM networks
+          if (isEvmNetworkSelected) {
+            return network.isEvm;
+          }
+          // If non-EVM network is selected, only show non-EVM networks
+          return !network.isEvm;
+        });
 
-    return filteredNetworks.length > 0 ? (
+    return orderedNetworksListToRender.length > 0 ? (
       <>
         <Text
           variant={TextVariant.bodyMdMedium}
@@ -140,7 +146,7 @@ export const CustomNetworks = React.memo(() => {
         >
           {t('customNetworks')}
         </Text>
-        {filteredNetworks.map((network) =>
+        {orderedNetworksListToRender.map((network) =>
           generateMultichainNetworkListItem(network),
         )}
       </>
@@ -149,26 +155,30 @@ export const CustomNetworks = React.memo(() => {
     orderedNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
+    isMultichainAccountsState2Enabled,
     t,
   ]);
 
   const renderedTestNetworks = useMemo(() => {
-    const filteredTestNetworks = orderedTestNetworks.filter((network) => {
-      // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected) {
-        return network.isEvm;
-      }
-      // If non-EVM network is selected, only show non-EVM networks
-      return !network.isEvm;
-    });
+    const orderedTestNetworksListToRender = isMultichainAccountsState2Enabled
+      ? orderedTestNetworks
+      : orderedTestNetworks.filter((network) => {
+          // If EVM network is selected, only show EVM networks
+          if (isEvmNetworkSelected) {
+            return network.isEvm;
+          }
+          // If non-EVM network is selected, only show non-EVM networks
+          return !network.isEvm;
+        });
 
-    return filteredTestNetworks.map((network) =>
+    return orderedTestNetworksListToRender.map((network) =>
       generateMultichainNetworkListItem(network),
     );
   }, [
     orderedTestNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
+    isMultichainAccountsState2Enabled,
   ]);
 
   // Memoize the padding value to prevent unnecessary re-renders

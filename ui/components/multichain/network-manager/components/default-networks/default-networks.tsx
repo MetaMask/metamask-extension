@@ -53,6 +53,9 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
+  getEnabledNetworks,
+  getIsMultichainAccountsState1Enabled,
+  getIsMultichainAccountsState2Enabled,
 } from '../../../../../selectors';
 import Tooltip from '../../../../ui/tooltip';
 
@@ -64,6 +67,7 @@ const DefaultNetworks = memo(() => {
     getMultichainNetworkConfigurationsByChainId,
   );
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const allEnabledNetworks = useSelector(getEnabledNetworks);
   // Use the shared callbacks hook
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
   const currentCaipChainId = useSelector(getSelectedMultichainNetworkChainId);
@@ -76,6 +80,13 @@ const DefaultNetworks = memo(() => {
   const { handleAdditionalNetworkClick } = useAdditionalNetworkHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
+
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
+  );
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
@@ -141,75 +152,78 @@ const DefaultNetworks = memo(() => {
   const networkListItems = useMemo(() => {
     const enabledChainIds = Object.keys(enabledNetworks);
 
-    return orderedNetworks
-      .filter((network) => {
-        // If EVM network is selected, only show EVM networks
-        if (isEvmNetworkSelected) {
-          return network.isEvm;
+    const orderedNetworksListToUse = isMultichainAccountsState1Enabled
+      ? orderedNetworks
+      : orderedNetworks.filter((network) => {
+          // If EVM network is selected, only show EVM networks
+          if (isEvmNetworkSelected) {
+            return network.isEvm;
+          }
+          // If non-EVM network is selected, only show non-EVM networks
+          return !network.isEvm;
+        });
+
+    return orderedNetworksListToUse.map((network) => {
+      const networkChainId = network.chainId; // eip155:59144
+      // Convert CAIP format to hex format for comparison
+      const hexChainId = network.isEvm
+        ? convertCaipToHexChainId(networkChainId)
+        : networkChainId;
+
+      if (!isNetworkInDefaultNetworkTab(network)) {
+        return null;
+      }
+
+      const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
+        getItemCallbacks(network);
+      const iconSrc = getNetworkIcon(network);
+      let isEnabled = false;
+      // check the account selecteed group then process it
+      Object.values(allEnabledNetworks).forEach((item) => {
+        if (Object.keys(item).includes(hexChainId)) {
+          isEnabled = true;
         }
-        // If non-EVM network is selected, only show non-EVM networks
-        return !network.isEvm;
-      })
-      .map((network) => {
-        const networkChainId = network.chainId; // eip155:59144
-        // Convert CAIP format to hex format for comparison
-        const hexChainId = network.isEvm
-          ? convertCaipToHexChainId(networkChainId)
-          : networkChainId;
-
-        if (!isNetworkInDefaultNetworkTab(network)) {
-          return null;
-        }
-
-        const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
-          getItemCallbacks(network);
-        const iconSrc = getNetworkIcon(network);
-        const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
-          hexChainId,
-        );
-
-        const singleRemainingNetwork = enabledChainIds.length === 1;
-        const isLastRemainingNetwork =
-          singleRemainingNetwork && enabledChainIds[0] === hexChainId;
-
-        return (
-          <NetworkListItem
-            startAccessory={
-              singleRemainingNetwork && isLastRemainingNetwork ? (
-                <Tooltip
-                  title={t('networkManagerMustHaveAtLeastOneNetworkEnabled')}
-                  position="top"
-                >
-                  <Checkbox label="" isChecked={isEnabled} />
-                </Tooltip>
-              ) : (
-                <Checkbox label="" isChecked={isEnabled} />
-              )
-            }
-            key={network.chainId}
-            chainId={network.chainId}
-            name={network.name}
-            iconSrc={iconSrc}
-            iconSize={AvatarNetworkSize.Md}
-            rpcEndpoint={
-              hasMultiRpcOptions(network)
-                ? getRpcDataByChainId(network.chainId, evmNetworks)
-                    .defaultRpcEndpoint
-                : undefined
-            }
-            onClick={() =>
-              handleNetworkChangeCallback(
-                network.chainId,
-                isLastRemainingNetwork,
-              )
-            }
-            onDeleteClick={onDelete}
-            onEditClick={onEdit}
-            onDiscoverClick={onDiscoverClick}
-            onRpcEndpointClick={onRpcSelect}
-          />
-        );
       });
+
+      const singleRemainingNetwork = enabledChainIds.length === 1;
+      const isLastRemainingNetwork =
+        singleRemainingNetwork && enabledChainIds[0] === hexChainId;
+
+      return (
+        <NetworkListItem
+          startAccessory={
+            singleRemainingNetwork && isLastRemainingNetwork ? (
+              <Tooltip
+                title={t('networkManagerMustHaveAtLeastOneNetworkEnabled')}
+                position="top"
+              >
+                <Checkbox label="" isChecked={isEnabled} />
+              </Tooltip>
+            ) : (
+              <Checkbox label="" isChecked={isEnabled} />
+            )
+          }
+          key={network.chainId}
+          chainId={network.chainId}
+          name={network.name}
+          iconSrc={iconSrc}
+          iconSize={AvatarNetworkSize.Md}
+          rpcEndpoint={
+            hasMultiRpcOptions(network)
+              ? getRpcDataByChainId(network.chainId, evmNetworks)
+                  .defaultRpcEndpoint
+              : undefined
+          }
+          onClick={() =>
+            handleNetworkChangeCallback(network.chainId, isLastRemainingNetwork)
+          }
+          onDeleteClick={onDelete}
+          onEditClick={onEdit}
+          onDiscoverClick={onDiscoverClick}
+          onRpcEndpointClick={onRpcSelect}
+        />
+      );
+    });
   }, [
     enabledNetworks,
     orderedNetworks,
@@ -220,6 +234,7 @@ const DefaultNetworks = memo(() => {
     hasMultiRpcOptions,
     evmNetworks,
     handleNetworkChangeCallback,
+    allEnabledNetworks,
   ]);
 
   // Memoize the additional network list items

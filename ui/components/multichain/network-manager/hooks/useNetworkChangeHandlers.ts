@@ -23,7 +23,11 @@ import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/netw
 import {
   getAllChainsToPoll,
   getAllDomains,
+  getAllEnabledNetworks,
+  getAllEnabledNetworksUsed,
+  getEnabledNetworks,
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,
   getOriginOfCurrentTab,
   getPermittedEVMAccountsForSelectedTab,
@@ -77,7 +81,12 @@ export const useNetworkChangeHandlers = () => {
   );
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const enabledNetworks = useSelector(getAllEnabledNetworksUsed);
   const allChainIds = useSelector(getAllChainsToPoll);
+
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   // This value needs to be tracked in case the user changes to a Non EVM
   // network and there is no account created for that network. This will
@@ -109,7 +118,9 @@ export const useNetworkChangeHandlers = () => {
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
-      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
+      const enabledNetworkKeys = isMultichainAccountsState2Enabled
+        ? enabledNetworks
+        : Object.keys(enabledNetworksByNamespace ?? {});
 
       if (!isPopularNetwork) {
         // if custom network is enabled, select the new network and disable the custom network
@@ -198,7 +209,7 @@ export const useNetworkChangeHandlers = () => {
         getMultichainNetworkConfigurationOrThrow(currentChainId);
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
-      if (chain.isEvm) {
+      if (chain.isEvm || isMultichainAccountsState2Enabled) {
         handleEvmNetworkChange(chainId);
       } else {
         await handleNonEvmNetworkChange(chainId);

@@ -11,8 +11,10 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { Hex, isStrictHexString } from '@metamask/utils';
 import {
   getAllChainsToPoll,
+  getAllEnabledNetworksUsed,
   getIsLineaMainnet,
   getIsMainnet,
+  getIsMultichainAccountsState2Enabled,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getTokenNetworkFilter,
   getUseNftDetection,
@@ -109,6 +111,12 @@ const AssetListControlBar = ({
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
+
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  const allEnabledNetworks = useSelector(getAllEnabledNetworksUsed);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -285,6 +293,9 @@ const AssetListControlBar = ({
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworksByNamespace).length > 1
     ) {
+      return t('enabledNetworks');
+    }
+    if (isMultichainAccountsState2Enabled && allEnabledNetworks.length > 0) {
       return t('enabledNetworks');
     }
     if (
