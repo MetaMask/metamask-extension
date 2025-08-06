@@ -17,7 +17,7 @@ describe('Update modal', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsNotPresent();
+        await updateModal.checkPageIsNotPresent();
       },
     );
   });
@@ -40,7 +40,7 @@ describe('Update modal', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsLoaded();
+        await updateModal.checkPageIsLoaded();
       },
     );
   });
@@ -63,9 +63,9 @@ describe('Update modal', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsLoaded();
+        await updateModal.checkPageIsLoaded();
         await updateModal.close();
-        await updateModal.check_pageIsNotPresent();
+        await updateModal.checkPageIsNotPresent();
       },
     );
   });
@@ -98,7 +98,7 @@ describe('Update modal', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsLoaded();
+        await updateModal.checkPageIsLoaded();
         await updateModal.confirm();
         await driver.switchToWindowByTitleWithoutSocket(
           WINDOW_TITLES.ExtensionUpdating,
@@ -126,7 +126,7 @@ describe('Update modal', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsNotPresent();
+        await updateModal.checkPageIsNotPresent();
       },
     );
   });
@@ -150,7 +150,7 @@ describe('Update modal', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsNotPresent();
+        await updateModal.checkPageIsNotPresent();
       },
     );
   });

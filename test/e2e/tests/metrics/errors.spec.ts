@@ -295,7 +295,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -492,7 +492,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -537,7 +537,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -601,7 +601,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
 
           // Trigger error
           await driver.executeScript(
@@ -636,7 +636,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -674,7 +674,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
 
           // Trigger error
           await driver.executeScript(
@@ -782,7 +782,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -931,7 +931,7 @@ describe('Sentry errors', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await new LoginPage(driver).check_pageIsLoaded();
+        await new LoginPage(driver).checkPageIsLoaded();
 
         const fullUiState = await driver.executeScript(() =>
           (

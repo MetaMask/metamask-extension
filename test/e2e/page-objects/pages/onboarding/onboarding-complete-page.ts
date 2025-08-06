@@ -41,9 +41,7 @@ class OnboardingCompletePage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.manageDefaultSettingsButton,
@@ -59,9 +57,7 @@ class OnboardingCompletePage {
     console.log('Onboarding wallet creation complete page is loaded');
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded_backup(): Promise<void> {
+  async checkPageIsLoadedBackup(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.keepSrpSafeMessage,
@@ -106,21 +102,15 @@ class OnboardingCompletePage {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_walletReadyMessageIsDisplayed(): Promise<void> {
+  async checkWalletReadyMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.walletReadyMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_keepSrpSafeMessageIsDisplayed(): Promise<void> {
+  async checkKeepSrpSafeMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.keepSrpSafeMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_remindMeLaterButtonIsDisplayed(): Promise<void> {
+  async checkRemindMeLaterButtonIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.remindMeLaterButton);
   }
 }

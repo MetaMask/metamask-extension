@@ -47,7 +47,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
         await testDapp.initCreateSessionScopes(
           INITIAL_SCOPES,
@@ -56,30 +56,30 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.openEditAccountsModal();
 
         const editConnectedAccountsModal = new EditConnectedAccountsModal(
           driver,
         );
-        await editConnectedAccountsModal.check_pageIsLoaded();
+        await editConnectedAccountsModal.checkPageIsLoaded();
         await editConnectedAccountsModal.addNewEthereumAccount();
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         /**
          * We make sure to update selected accounts via wallet extension UI
          */
         await homePage.headerNavbar.openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
+        await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
         const sitePermissionPage = new SitePermissionPage(driver);
-        await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
+        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
         await sitePermissionPage.editPermissionsForAccount(['Account 1']);
         await sitePermissionPage.editPermissionsForNetwork(['Localhost 8545']);
 
@@ -87,7 +87,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
          * And also update selected scope to {@link UPDATED_SCOPE}
          */
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const expectedScope = getExpectedSessionScope(UPDATED_SCOPE, [
           UPDATED_ACCOUNT,

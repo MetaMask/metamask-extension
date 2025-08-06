@@ -48,14 +48,14 @@ describe('Account syncing - Accounts with Balances', function () {
         await unlockWallet(driver);
 
         const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
+        await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // Should see default account
-        await accountListPage.check_accountDisplayedInAccountList('Account 1');
+        await accountListPage.checkAccountDisplayedInAccountList('Account 1');
 
         // Set up event counter to track sync operations
         const {
@@ -78,9 +78,9 @@ describe('Account syncing - Accounts with Balances', function () {
 
         // Reopen account menu to verify both accounts are visible
         await header.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.check_accountDisplayedInAccountList('Account 2');
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList('Account 1');
+        await accountListPage.checkAccountDisplayedInAccountList('Account 2');
 
         await accountListPage.closeAccountModal();
       },
@@ -108,18 +108,18 @@ describe('Account syncing - Accounts with Balances', function () {
         });
 
         const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
+        await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // Verify synced accounts + discovered account with balance are present
         // 2 synced accounts + 1 discovered via balance = 3 total
         const visibleAccounts = ['Account 1', 'Account 2', 'Account 3'];
 
         for (const accountName of visibleAccounts) {
-          await accountListPage.check_accountDisplayedInAccountList(
+          await accountListPage.checkAccountDisplayedInAccountList(
             accountName,
           );
         }

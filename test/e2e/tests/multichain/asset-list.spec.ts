@@ -39,12 +39,12 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.checkTokenItemNumber(3);
         await assetListPage.openNetworksFilter();
         await assetListPage.clickCurrentNetworkOption();
         await switchToNetworkFromSendFlow(driver, 'Linea');
         await assetListPage.waitUntilFilterLabelIs('Linea');
-        await assetListPage.check_tokenItemNumber(1);
+        await assetListPage.checkTokenItemNumber(1);
         assert.equal(await assetListPage.getNetworksFilterLabel(), 'Linea');
       },
     );
@@ -56,7 +56,7 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.checkTokenItemNumber(3);
         await driver.clickElement('.multichain-token-list-item');
         const coinOverviewElement = await driver.findElement(
           '[data-testid="coin-overview-buy"]',
@@ -80,11 +80,11 @@ describe('Multichain Asset List', function (this: Suite) {
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
         const sendPage = new SendTokenPage(driver);
-        await assetListPage.check_tokenItemNumber(4);
+        await assetListPage.checkTokenItemNumber(4);
         await assetListPage.clickOnAsset('TST');
         await driver.clickElement('[data-testid="eth-overview-send"]');
-        await sendPage.check_networkChange(POLYGON_NAME_MAINNET);
-        await sendPage.check_pageIsLoaded();
+        await sendPage.checkNetworkChange(POLYGON_NAME_MAINNET);
+        await sendPage.checkPageIsLoaded();
         await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
@@ -105,7 +105,7 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await assetListPage.check_tokenItemNumber(4);
+        await assetListPage.checkTokenItemNumber(4);
         await assetListPage.clickOnAsset('TST');
         await driver.clickElement('.mm-box > button:nth-of-type(3)');
         const toastTextElement = await driver.findElement('.toast-text');
@@ -125,7 +125,7 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromSendFlow(driver, 'Linea');
-        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.checkTokenItemNumber(3);
         await assetListPage.clickOnAsset('Ethereum');
 
         const swapButton = await driver.findElement(

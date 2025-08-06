@@ -1849,13 +1849,13 @@ export async function withSolanaAccountSnap(
           accountType: ACCOUNT_TYPE.Solana,
           accountName: `Solana ${i}`,
         });
-        await new NonEvmHomepage(driver).check_pageIsLoaded();
-        await headerComponent.check_accountLabel(`Solana ${i}`);
-        await assetList.check_networkFilterText('Solana');
+        await new NonEvmHomepage(driver).checkPageIsLoaded();
+        await headerComponent.checkAccountLabel(`Solana ${i}`);
+        await assetList.checkNetworkFilterText('Solana');
       }
 
       if (numberOfAccounts > 0) {
-        await headerComponent.check_accountLabel(`Solana ${numberOfAccounts}`);
+        await headerComponent.checkAccountLabel(`Solana ${numberOfAccounts}`);
       }
 
       await driver.delay(regularDelayMs); // workaround to avoid flakiness
