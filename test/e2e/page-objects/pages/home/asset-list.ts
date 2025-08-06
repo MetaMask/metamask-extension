@@ -65,8 +65,6 @@ class AssetListPage {
   private readonly sortByPopoverToggle =
     '[data-testid="sort-by-popover-toggle"]';
 
-  private readonly coinSendButton = '[data-testid="coin-overview-send"]';
-
   private readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
   private readonly tokenFiatAmount =
@@ -191,11 +189,6 @@ class AssetListPage {
     console.log('Dismissing token imported success message');
     await this.driver.clickElement(this.tokenImportedMessageCloseButton);
     await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage);
-  }
-
-  async clickCoinSendButton(): Promise<void> {
-    console.log(`Clicking on the send button`);
-    await this.driver.clickElement(this.coinSendButton);
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {

@@ -11,6 +11,7 @@ import { Mockttp } from '../../mock-e2e';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
+const POLYGON_NAME_MAINNET = 'Polygon';
 
 async function mockSetup(mockServer: Mockttp) {
   return [
@@ -115,7 +116,7 @@ async function mockSetup(mockServer: Mockttp) {
       })),
   ];
 }
-function buildFixtures(title: string, chainId: number = 1337) {
+function buildFixtures(title: string, chainId: number = 137) {
   return {
     fixtures: new FixtureBuilder()
       .withNetworkControllerOnPolygon()
@@ -156,7 +157,7 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
-        await assetListPage.check_tokenItemNumber(2);
+        await assetListPage.check_tokenItemNumber(3);
         await assetListPage.clickOnAsset('Ethereum');
         await assetListPage.check_buySellButtonIsPresent();
         await assetListPage.check_multichainTokenListButtonIsPresent();
@@ -165,15 +166,15 @@ describe('Multichain Asset List', function (this: Suite) {
   });
   it('switches networks when clicking on send for a token on another network', async function () {
     await withFixtures(
-      buildFixtures(this.test?.fullTitle() as string, 1337),
+      buildFixtures(this.test?.fullTitle() as string, 137),
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
-        await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
+        await switchToNetworkFromSendFlow(driver, POLYGON_NAME_MAINNET);
         const sendPage = new SendTokenPage(driver);
-        await assetListPage.check_tokenItemNumber(2);
-        await assetListPage.clickOnAsset('Ethereum');
-        await assetListPage.clickCoinSendButton();
+        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.clickOnAsset('TST');
+        await assetListPage.clickSendButton();
         await sendPage.check_pageIsLoaded();
         await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -182,8 +183,8 @@ describe('Multichain Asset List', function (this: Suite) {
         const assetPickerItems = await sendPage.getAssetPickerItems();
         assert.equal(
           assetPickerItems.length,
-          1,
-          'One assets should be shown in the asset picker for the Ethereum network',
+          2,
+          'Two assets should be shown in the asset picker',
         );
       },
     );
