@@ -43,6 +43,8 @@ describe('Forgot password', function () {
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
+        // debug
+        await driver.delay(5000);
         // Lock Wallet
         // We need to wait for this request to happen, before locking the wallet, to avoid the error 'unable to proceed, wallet is locked'
         // https://github.com/MetaMask/core/blob/main/packages/profile-sync-controller/src/controllers/authentication/AuthenticationController.ts#L263
