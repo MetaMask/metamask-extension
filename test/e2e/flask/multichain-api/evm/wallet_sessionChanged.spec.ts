@@ -94,7 +94,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         ]);
 
         const parsedNotificationResult = JSON.parse(
-          await testDapp.get_walletSessionChangedResult(0),
+          await testDapp.getWalletSessionChangedResult(0),
         );
         const sessionChangedScope =
           parsedNotificationResult.params.sessionScopes;
