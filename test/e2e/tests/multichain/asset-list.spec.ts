@@ -11,7 +11,6 @@ import { Mockttp } from '../../mock-e2e';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
-const POLYGON_NAME_MAINNET = 'Polygon';
 
 async function mockSetup(mockServer: Mockttp) {
   return [
@@ -21,7 +20,6 @@ async function mockSetup(mockServer: Mockttp) {
         statusCode: 200,
         json: [],
       })),
-
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/137/topAssets')
       .thenCallback(() => ({
@@ -33,86 +31,6 @@ async function mockSetup(mockServer: Mockttp) {
       .thenCallback(() => ({
         statusCode: 200,
         json: {},
-      })),
-    await mockServer
-      .forGet('https://gas.api.cx.metamask.io/networks/137/suggestedGasFees')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          low: {
-            suggestedMaxFeePerGas: '30',
-            suggestedMaxPriorityFeePerGas: '30',
-          },
-          medium: {
-            suggestedMaxFeePerGas: '40',
-            suggestedMaxPriorityFeePerGas: '40',
-          },
-          high: {
-            suggestedMaxFeePerGas: '50',
-            suggestedMaxPriorityFeePerGas: '50',
-          },
-        },
-      })),
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: [],
-      })),
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: [],
-      })),
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/aggregatorMetadata')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {},
-      })),
-    await mockServer
-      .forGet('https://gas.api.cx.metamask.io/networks/1/suggestedGasFees')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          low: {
-            suggestedMaxFeePerGas: '30',
-            suggestedMaxPriorityFeePerGas: '30',
-          },
-          medium: {
-            suggestedMaxFeePerGas: '40',
-            suggestedMaxPriorityFeePerGas: '40',
-          },
-          high: {
-            suggestedMaxFeePerGas: '50',
-            suggestedMaxPriorityFeePerGas: '50',
-          },
-        },
-      })),
-    await mockServer
-      .forGet()
-      .matching(
-        (req) =>
-          req.url?.includes('accounts.api.cx.metamask.io/v1/accounts/') &&
-          req.url?.includes('/transactions'),
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: [],
-      })),
-    await mockServer
-      .forGet()
-      .matching(
-        (req) =>
-          req.url?.includes('accounts.api.cx.metamask.io/v2/accounts/') &&
-          req.url?.includes('/balances'),
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          balances: [],
-        },
       })),
   ];
 }
@@ -164,13 +82,12 @@ describe('Multichain Asset List', function (this: Suite) {
       },
     );
   });
-  it('switches networks when clicking on send for a token on another network', async function () {
+  it('validate the tokens appear on send given network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 137),
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
-        await switchToNetworkFromSendFlow(driver, POLYGON_NAME_MAINNET);
         const sendPage = new SendTokenPage(driver);
         await assetListPage.checkTokenItemNumber(3);
         await assetListPage.clickOnAsset('TST');
