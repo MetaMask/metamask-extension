@@ -312,7 +312,7 @@
     "@metamask/message-signing-snap": "1.1.2",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-account-service": "^0.3.0",
-    "@metamask/multichain-api-client": "^0.6.4",
+    "@metamask/multichain-api-client": "^0.6.5",
     "@metamask/multichain-api-middleware": "1.0.0",
     "@metamask/multichain-network-controller": "^0.11.0",
     "@metamask/multichain-transactions-controller": "^0.9.0",
