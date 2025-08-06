@@ -183,7 +183,7 @@ describe('Multichain Asset List', function (this: Suite) {
         assert.equal(
           assetPickerItems.length,
           1,
-          'Two assets should be shown in the asset picker',
+          'One assets should be shown in the asset picker for the Ethereum network',
         );
       },
     );
