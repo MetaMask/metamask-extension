@@ -52,14 +52,14 @@ describe('Switch Modal - Switch Account', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountDetailsModal();
         const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.check_pageIsLoaded();
+        await accountDetailsModal.checkPageIsLoaded();
         await accountDetailsModal.triggerAccountSwitch();
 
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
-        await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           "You're switching to a smart account",
         );
-        await upgradeAndBatchTxConfirmation.check_expectedInteractingWithIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedInteractingWithIsDisplayed(
           'Account 1',
         );
         await increaseGasLimit(driver);
@@ -71,14 +71,14 @@ describe('Switch Modal - Switch Account', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
         let activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 
         // Downgrade Account
         await headerNavbar.openAccountDetailsModal();
-        await accountDetailsModal.check_pageIsLoaded();
+        await accountDetailsModal.checkPageIsLoaded();
         await accountDetailsModal.triggerAccountSwitch();
 
-        await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           "You're switching back to a standard account (EOA).",
         );
         await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
@@ -89,7 +89,7 @@ describe('Switch Modal - Switch Account', function (this: Suite) {
 
         await homePage.goToActivityList();
         activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(2);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
       },
     );
   });

@@ -3,7 +3,6 @@ import {
   UserStorageControllerState,
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
-import { captureException } from '@sentry/browser';
 import { ControllerInitFunction } from '../types';
 import { isProduction } from '../../../../shared/modules/environment';
 import {
@@ -11,6 +10,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { trace } from '../../../../shared/lib/trace';
+import { captureException } from '../../../../shared/lib/sentry';
 
 /**
  * Initialize the UserStorage controller.

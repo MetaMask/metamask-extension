@@ -535,6 +535,7 @@
       }
     },
     "accountTree": {
+      "selectedAccountGroup": "01JKAF3DSGM3AB87EM9N0K41AJ:default",
       "wallets": {
         "01JKAF3DSGM3AB87EM9N0K41AJ": {
           "id": "01JKAF3DSGM3AB87EM9N0K41AJ",

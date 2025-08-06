@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   automated-rca:
-    uses: MetaMask/github-tools/.github/workflows/post-gh-rca.yml@af33de88e00adce0e41583beb7954d691ad3e304
+    uses: MetaMask/github-tools/.github/workflows/post-gh-rca.yml@727c028d5fdb2b86f6b1cf205b97fa8e79f7de61
     with:
       google-form-base-url: 'https://docs.google.com/forms/d/e/1FAIpQLSfnfEWH7JCFFtvjCHixgyqJdTU3LW3BmTwdF1dDezTNf7m4ig/viewform'
       repo-owner: ${{ github.repository_owner }}

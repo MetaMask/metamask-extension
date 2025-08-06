@@ -9,7 +9,9 @@ on:
     branches-ignore:
       # Do not count lines on PRs targeting master or releases
       - master
+      - stable
       - Version-v*
+      - release/*
 
 jobs:
   check-pr-max-lines:

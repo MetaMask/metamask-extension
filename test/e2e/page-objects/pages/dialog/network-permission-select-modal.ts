@@ -23,9 +23,7 @@ class NetworkPermissionSelectModal {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.editNetworksModalTitle,
@@ -115,9 +113,7 @@ class NetworkPermissionSelectModal {
    *
    * @param expectedSelectedNetworks - Array of network names that should be selected
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkStatus(expectedSelectedNetworks: string[]): Promise<void> {
+  async checkNetworkStatus(expectedSelectedNetworks: string[]): Promise<void> {
     console.log(
       'Validating network selection in edit network permission modal',
     );

@@ -24,7 +24,7 @@ describe('Test Snap networkAccess', function () {
           driver,
           'connectNetworkAccessButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectNetworkAccessButton',
           'Reconnect to Network Access Snap',
         );
@@ -32,7 +32,7 @@ describe('Test Snap networkAccess', function () {
         // click on alert dialog and validate the message
         await testSnaps.clickButton('sendNetworkAccessTestButton');
         await driver.delay(500);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'networkAccessResultSpan',
           '"hello": "world"',
         );

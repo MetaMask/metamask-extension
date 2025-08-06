@@ -87,7 +87,7 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
         await homePage.goToActivityList();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_noTxInActivity();
+        await activityListPage.checkNoTxInActivity();
       },
     );
   });

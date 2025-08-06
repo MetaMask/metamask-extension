@@ -11,8 +11,9 @@ import {
   isEthSignTypedData,
   isEthSendTransaction,
   hasValidTransactionParams,
-  isEthAccounts,
   isSecurityAlertsEnabledByUser,
+  isConnected,
+  connectScreenHasBeenPrompted,
 } from './trust-signals-util';
 
 export function createTrustSignalsMiddleware(
@@ -20,6 +21,7 @@ export function createTrustSignalsMiddleware(
   appStateController: AppStateController,
   phishingController: PhishingController,
   preferencesController: PreferencesController,
+  getPermittedAccounts: (origin: string) => string[],
 ) {
   return async (
     req: JsonRpcRequest & { origin?: string },
@@ -40,7 +42,9 @@ export function createTrustSignalsMiddleware(
       } else if (isEthSignTypedData(req)) {
         handleEthSignTypedData(req, appStateController, networkController);
         scanUrl(req, phishingController);
-      } else if (isEthAccounts(req)) {
+      } else if (isConnected(req, getPermittedAccounts)) {
+        scanUrl(req, phishingController);
+      } else if (connectScreenHasBeenPrompted(req)) {
         scanUrl(req, phishingController);
       }
     } catch (error) {
