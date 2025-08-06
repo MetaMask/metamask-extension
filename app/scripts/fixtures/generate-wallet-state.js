@@ -70,9 +70,10 @@ async function generateVaultAndAccount(seedPhrase, password) {
     messenger: keyringControllerMessenger,
   });
 
+  const mnemonicUtil = await getMnemonicUtil();
   await krCtrl.createNewVaultAndRestore(
     password,
-    getMnemonicUtil().convertMnemonicToWordlistIndices(seedPhrase),
+    mnemonicUtil.convertMnemonicToWordlistIndices(seedPhrase),
   );
 
   const accounts = [];
