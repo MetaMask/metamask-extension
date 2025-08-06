@@ -4368,7 +4368,7 @@ export default class MetamaskController extends EventEmitter {
           notificationServicesController,
         ),
 
-      // E2E testing
+      // Testing
       throwTestError: this.throwTestError.bind(this),
       captureTestError: this.captureTestError.bind(this),
 
