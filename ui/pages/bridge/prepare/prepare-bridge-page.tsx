@@ -177,7 +177,11 @@ export const useEnableMissingNetwork = () => {
   return enableMissingNetwork;
 };
 
-const PrepareBridgePage = () => {
+const PrepareBridgePage = ({
+  onOpenSettings,
+}: {
+  onOpenSettings?: () => void;
+}) => {
   const dispatch = useDispatch();
   const enableMissingNetwork = useEnableMissingNetwork();
 
@@ -906,9 +910,11 @@ const PrepareBridgePage = () => {
               {!wasTxDeclined &&
                 activeQuote &&
                 (isSolanaBridgeEnabled ? (
-                  <MultichainBridgeQuoteCard />
+                  <MultichainBridgeQuoteCard
+                    onOpenSlippageModal={onOpenSettings}
+                  />
                 ) : (
-                  <BridgeQuoteCard />
+                  <BridgeQuoteCard onOpenSlippageModal={onOpenSettings} />
                 ))}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
