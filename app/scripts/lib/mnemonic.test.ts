@@ -1,5 +1,5 @@
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { getMnemonicUtil } from './mnemonic';
+import { getMnemonicUtil, MnemonicUtil } from './mnemonic';
 
 const abandon = wordlist[0];
 const ability = wordlist[1];
@@ -24,9 +24,13 @@ function fromUtf8Array(arr: Uint8Array): string {
   return new TextDecoder().decode(arr);
 }
 
-const mu = getMnemonicUtil();
-
 describe('convertMnemonicToWordlistIndices', () => {
+  let mu: MnemonicUtil;
+
+  beforeAll(async () => {
+    mu = await getMnemonicUtil();
+  });
+
   it(`converts a single valid word (e.g. "${abandon}") to the correct index`, () => {
     const input = toUtf8Array(abandon);
     const indices = mu.convertMnemonicToWordlistIndices(input);

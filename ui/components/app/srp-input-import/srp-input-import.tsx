@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 
 import { Textarea, TextareaResize } from '../../component-library/textarea';
@@ -27,6 +26,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import {
+  MnemonicUtil,
+  getMnemonicUtil,
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+} from '../../../../app/scripts/lib/mnemonic';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const SRP_LENGTHS = [12, 15, 18, 21, 24];
@@ -54,6 +59,15 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   const [firstWord, setFirstWord] = useState('');
   const [showAll, setShowAll] = useState(false);
   const [misSpelledWords, setMisSpelledWords] = useState<string[]>([]);
+  const [mnemonicUtil, setMnemonicUtil] = useState<MnemonicUtil | null>(null);
+
+  useEffect(() => {
+    const fetchMnemonicUtil = async () => {
+      const util = await getMnemonicUtil();
+      setMnemonicUtil(util);
+    };
+    fetchMnemonicUtil();
+  }, []);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
 
@@ -241,13 +255,19 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   };
 
   useEffect(() => {
+    if (!mnemonicUtil) {
+      return;
+    }
+
     const activeWord = draftSrp.find((word) => word.active);
     if (activeWord) {
       srpRefs.current[activeWord.id]?.focus();
     }
 
     const wordsNotInWordList = draftSrp
-      .filter((word) => word.word !== '' && !wordlist.includes(word.word))
+      .filter(
+        (word) => word.word !== '' && !mnemonicUtil.isValidWord(word.word),
+      )
       .map((word) => word.word);
     setMisSpelledWords(wordsNotInWordList);
 
@@ -262,7 +282,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
     } else {
       onChange('');
     }
-  }, [draftSrp, onChange]);
+  }, [mnemonicUtil, draftSrp, onChange]);
 
   return (
     <>

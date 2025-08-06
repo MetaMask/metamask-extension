@@ -547,13 +547,17 @@ export function importMnemonicToVault(mnemonic: string): ThunkAction<
     const arrayMnemonic = [...new TextEncoder().encode(mnemonic)];
 
     return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('importMnemonicToVault', [arrayMnemonic], (err) => {
-        if (err, result) {
-          reject(err);
-          return;
-        }
-        resolve(result);
-      });
+      callBackgroundMethod(
+        'importMnemonicToVault',
+        [arrayMnemonic],
+        (err, result) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(result);
+        },
+      );
     })
       .then(async (result) => {
         dispatch(hideLoadingIndication());

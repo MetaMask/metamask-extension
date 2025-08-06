@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
-import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
@@ -49,6 +48,9 @@ import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
 import { MetaMaskReduxDispatch } from '../../../store/store';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getMnemonicUtil } from '../../../../app/scripts/lib/mnemonic';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -143,7 +145,8 @@ export const ImportSrp = () => {
   }, [secretRecoveryPhrase, numberOfWords]);
 
   const onSrpChange = useCallback(
-    (newDraftSrp: string[]) => {
+    async (newDraftSrp: string[]) => {
+      const mnemonicUtil = await getMnemonicUtil();
       const validateSrp = (phrase: string[], words: boolean[]) => {
         if (!phrase.some((word) => word !== '')) {
           return { error: '', words };
@@ -151,7 +154,7 @@ export const ImportSrp = () => {
 
         const state = {
           error: '',
-          words: phrase.map((word) => !wordlist.includes(word)),
+          words: phrase.map((word) => !mnemonicUtil.isValidWord(word)),
         };
 
         return state;
@@ -420,8 +423,8 @@ export const ImportSrp = () => {
               severity={BannerAlertSeverity.Danger}
               description={srpError}
               actionButtonLabel={t('clear')}
-              actionButtonOnClick={() => {
-                onSrpChange(Array(defaultNumberOfWords).fill(''));
+              actionButtonOnClick={async () => {
+                await onSrpChange(Array(defaultNumberOfWords).fill(''));
                 setSrpError('');
               }}
               data-testid="bannerAlert"

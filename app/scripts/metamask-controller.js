@@ -96,7 +96,6 @@ import {
 } from '@metamask/remote-feature-flag-controller';
 
 import { SignatureController } from '@metamask/signature-controller';
-import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import {
   NameController,
@@ -271,6 +270,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
+import { getMnemonicUtil } from './lib/mnemonic';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -484,8 +484,6 @@ export default class MetamaskController extends EventEmitter {
     super();
 
     const { isFirstMetaMaskControllerSetup } = opts;
-
-    this.mnemonicUtil = getMnemonicUtil();
 
     this.defaultMaxListeners = 20;
 
@@ -4740,8 +4738,9 @@ export default class MetamaskController extends EventEmitter {
         op: TraceOperation.OnboardingSecurityOp,
       });
 
+      const mnemonicUtil = await getMnemonicUtil();
       const seedPhrase =
-        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
+        mnemonicUtil.convertMnemonicToWordlistIndices(encodedSeedPhrase);
 
       await this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase(
         password,
@@ -5055,9 +5054,9 @@ export default class MetamaskController extends EventEmitter {
 
         // If SRP is not in the local state, import it to the vault
         // convert the seed phrase to a mnemonic (string)
-        const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
-          secret.data,
-        );
+        const mnemonicUtil = await getMnemonicUtil();
+        const encodedSrp =
+          mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(secret.data);
         const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
         // import the new mnemonic to the current vault
@@ -5183,13 +5182,14 @@ export default class MetamaskController extends EventEmitter {
     } = options;
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      const mnemonicUtil = await getMnemonicUtil();
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
       const alreadyImportedSrp = this.keyringController
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {
           return isEqual(
-            this.mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(
+            mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(
               keyring.mnemonic,
             ),
             mnemonic,
@@ -5307,7 +5307,8 @@ export default class MetamaskController extends EventEmitter {
 
       // If SRP is not in the local state, import it to the vault
       // convert the seed phrase to a mnemonic (string)
-      const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
+      const mnemonicUtil = await getMnemonicUtil();
+      const encodedSrp = mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(
         secret.data,
       );
       const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
@@ -5334,9 +5335,11 @@ export default class MetamaskController extends EventEmitter {
       const [firstSecretData, ...remainingSecretData] =
         await this.fetchAllSecretData(password);
 
-      const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
-        firstSecretData.data,
-      );
+      const mnemonicUtil = await getMnemonicUtil();
+      const firstSeedPhrase =
+        mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(
+          firstSecretData.data,
+        );
       const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
       const encodedSeedPhrase = Array.from(
         Buffer.from(mnemonic, 'utf8').values(),
@@ -5430,8 +5433,9 @@ export default class MetamaskController extends EventEmitter {
       const seedPhraseAsUint8Array =
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
       const utf8ArraySeedPhrase = Uint8Array.from(encodedSeedPhrase);
+      const mnemonicUtil = await getMnemonicUtil();
       const seed =
-        this.mnemonicUtil.convertMnemonicToWordlistIndices(utf8ArraySeedPhrase);
+        mnemonicUtil.convertMnemonicToWordlistIndices(utf8ArraySeedPhrase);
       await this.keyringController.createNewVaultAndRestore(password, seed);
 
       // We re-created the vault, meaning we only have 1 new HD keyring
@@ -6158,13 +6162,16 @@ export default class MetamaskController extends EventEmitter {
    * Called when the first account is created and on unlocking the vault.
    *
    * @param {string} password
-   * @param {string} _keyringId - This is the identifier for the hd keyring.
+   * @param {string} keyringId - This is the identifier for the hd keyring.
    * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
    * encoded as an array of UTF-8 bytes.
    */
-  async getSeedPhrase(password, _keyringId) {
-    const srp = await this.keyringController.exportSeedPhrase(password, _keyringId);
-    return this.mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(srp);
+  async getSeedPhrase(password, keyringId) {
+    const [mnemonicUtil, srp] = await Promise.all([
+      getMnemonicUtil(),
+      this.keyringController.exportSeedPhrase(password, keyringId),
+    ]);
+    return mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(srp);
   }
 
   /**

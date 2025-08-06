@@ -26,8 +26,6 @@
  * maintenance.
  */
 
-import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-
 /**
  * 0xffff is the max uint16 value. we use it to represent a node that is not a
  * terminal node, i.e., not the last character of a word.
@@ -355,7 +353,14 @@ function indicesToUtf8Array(
  * This can be used to regenerate the binary files if needed.
  * Uncomment the fs require and calls when running in a Node.js environment.
  */
-function generateBinaryFiles(): void {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function generateBinaryWordList(): Promise<void> {
+  const { wordlist } = await import(
+    // @ts-expect-error its fine
+    '@metamask/scure-bip39/dist/wordlists/english'
+  );
+  const fs = await import('fs');
+
   const { trieNodes, wordEndNodes } = buildTrie(wordlist);
 
   // Debug information
@@ -369,10 +374,51 @@ function generateBinaryFiles(): void {
     `Total size: ${trieNodes.byteLength + wordEndNodes.byteLength} bytes`,
   );
 
-  // Uncomment these lines when running in Node.js to generate the files
-  const fs = require("fs");
-  fs.writeFileSync('app/scripts/lib/trieNodes.bin', Buffer.from(trieNodes.buffer));
-  fs.writeFileSync('app/scripts/lib/wordEndNodes.bin', Buffer.from(wordEndNodes.buffer));
+  // combine the two buffers into a single ArrayBuffer with metadata header
+  const headerSize = 8; // 4 bytes for trieNodes size + 4 bytes for wordEndNodes size
+  const totalBytes =
+    headerSize + trieNodes.byteLength + wordEndNodes.byteLength;
+  const buffer = new ArrayBuffer(totalBytes);
+
+  // Write header with sizes
+  const headerView = new Uint32Array(buffer, 0, 2);
+  headerView[0] = trieNodes.byteLength;
+  headerView[1] = wordEndNodes.byteLength;
+
+  // Write the data buffers directly to the main buffer
+  const trieNodesView = new Uint8Array(
+    buffer,
+    headerSize,
+    trieNodes.byteLength,
+  );
+  const wordEndNodesView = new Uint8Array(
+    buffer,
+    headerSize + trieNodes.byteLength,
+    wordEndNodes.byteLength,
+  );
+
+  // Copy only the relevant portions of the source buffers
+  trieNodesView.set(
+    new Uint8Array(
+      trieNodes.buffer,
+      trieNodes.byteOffset,
+      trieNodes.byteLength,
+    ),
+  );
+  wordEndNodesView.set(
+    new Uint8Array(
+      wordEndNodes.buffer,
+      wordEndNodes.byteOffset,
+      wordEndNodes.byteLength,
+    ),
+  );
+
+  // and write the combined buffer
+  // GZIP compress the buffer before saving
+  const compressed = await import('zlib').then((zlib) =>
+    zlib.gzipSync(Buffer.from(buffer)),
+  );
+  fs.writeFileSync('app/scripts/lib/trieNodes.bin', compressed);
   console.debug('Trie nodes and word end nodes written to files.');
 }
 
@@ -390,22 +436,32 @@ class MnemonicUtil {
   }
 
   static async create(): Promise<MnemonicUtil> {
-    const [trieNodesResponse, wordEndNodesResponse] = await Promise.all([
-      fetch(new URL('app/scripts/lib/trieNodes.bin', import.meta.url)),
-      fetch(new URL('app/scripts/lib/wordEndNodes.bin', import.meta.url)),
-    ]);
+    // @ts-expect-error its fine, we need `import.meta.url` for our build process
+    const response = await fetch(new URL('./trieNodes.bin', import.meta.url));
 
-    if (!trieNodesResponse.ok) {
-      throw new Error(`Failed to fetch trieNodes.bin: ${trieNodesResponse.statusText}`);
-    }
-    if (!wordEndNodesResponse.ok) {
-      throw new Error(`Failed to fetch wordEndNodes.bin: ${wordEndNodesResponse.statusText}`);
+    if (!response.ok || !response.body) {
+      throw new Error(`Failed to fetch trieNodes.bin: ${response.statusText}`);
     }
 
-    const [trieNodesBuffer, wordEndNodesBuffer] = await Promise.all([
-      trieNodesResponse.arrayBuffer(),
-      wordEndNodesResponse.arrayBuffer(),
-    ]);
+    const ds = new DecompressionStream('gzip');
+    const decompressedStream = response.body.pipeThrough(ds);
+    const combinedBuffer = await new Response(decompressedStream).arrayBuffer();
+
+    // Read header to get sizes
+    const headerView = new Uint32Array(combinedBuffer, 0, 2);
+    const trieNodesSize = headerView[0];
+    const wordEndNodesSize = headerView[1];
+
+    // Extract the individual buffers
+    const headerSize = 8; // 2 * 4 bytes
+    const trieNodesBuffer = combinedBuffer.slice(
+      headerSize,
+      headerSize + trieNodesSize,
+    );
+    const wordEndNodesBuffer = combinedBuffer.slice(
+      headerSize + trieNodesSize,
+      headerSize + trieNodesSize + wordEndNodesSize,
+    );
 
     const trieNodes = new Uint32Array(trieNodesBuffer);
     const wordEndNodes = new Uint16Array(wordEndNodesBuffer);
@@ -456,6 +512,11 @@ class MnemonicUtil {
     );
     return indicesToUtf8Array(this.trieNodes, this.wordEndNodes, indices);
   }
+
+  isValidWord(word: string): boolean {
+    const wordBytes = new TextEncoder().encode(word);
+    return findWordIndex(this.trieNodes, wordBytes) !== -1;
+  }
 }
 
 let singletonMnemonicUtil: MnemonicUtil | undefined;
@@ -466,5 +527,4 @@ export const getMnemonicUtil = async () => {
   return singletonMnemonicUtil;
 };
 
-
-getMnemonicUtil();
+export type { MnemonicUtil };
