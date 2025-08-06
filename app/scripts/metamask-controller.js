@@ -5153,6 +5153,8 @@ export default class MetamaskController extends EventEmitter {
             keyringEncKey,
           );
         } catch (err) {
+          log.error('error while changing seedless-onboarding password', err);
+          log.error('reverting keyring password change');
           // revert the keyring password change by changing the password back to the old password
           await this.keyringController.changePassword(oldPassword);
           // store the old keyring encryption key in the seedless onboarding controller
@@ -5161,6 +5163,7 @@ export default class MetamaskController extends EventEmitter {
           await this.seedlessOnboardingController.storeKeyringEncryptionKey(
             revertedKeyringEncKey,
           );
+          throw err;
         }
       }
     } catch (error) {
