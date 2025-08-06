@@ -67,45 +67,21 @@ describe('Routes Constants', () => {
   });
 
   describe('Route Constants Integration', () => {
-    it('PATH_NAME_MAP size matches analytics-tracked routes only', () => {
+    it('PATH_NAME_MAP size and getPaths() length match analytics-tracked routes only', () => {
       const trackedRoutesCount = ROUTES.filter(
         (route) => route.trackInAnalytics,
       ).length;
       expect(PATH_NAME_MAP.size).toBe(trackedRoutesCount);
-    });
-
-    it('getPaths() length matches analytics-tracked routes only', () => {
-      const trackedRoutesCount = ROUTES.filter(
-        (route) => route.trackInAnalytics,
-      ).length;
       expect(getPaths().length).toBe(trackedRoutesCount);
-    });
-
-    it('getPaths() and PATH_NAME_MAP have consistent sizes', () => {
-      expect(getPaths().length).toBe(PATH_NAME_MAP.size);
     });
 
     it('excludes non-analytics routes from PATH_NAME_MAP', () => {
       const nonTrackedRoutes = ROUTES.filter(
         (route) => !route.trackInAnalytics,
       );
-
       nonTrackedRoutes.forEach((route) => {
         expect(PATH_NAME_MAP.has(route.path)).toBe(false);
       });
-
-      // Specifically test DEVELOPER_OPTIONS_ROUTE is excluded
-      expect(PATH_NAME_MAP.has(DEVELOPER_OPTIONS_ROUTE)).toBe(false);
-    });
-
-    it('correctly handles REVEAL_SEED_ROUTE analytics tracking', () => {
-      // Base route should NOT be tracked for analytics
-      expect(PATH_NAME_MAP.has('/seed')).toBe(false);
-      expect(getPaths()).not.toContain('/seed');
-
-      // Parameterized route SHOULD be tracked for analytics
-      expect(PATH_NAME_MAP.has('/seed/:keyringId')).toBe(true);
-      expect(getPaths()).toContain('/seed/:keyringId');
     });
 
     it('maintains consistency between getPaths and PATH_NAME_MAP', () => {

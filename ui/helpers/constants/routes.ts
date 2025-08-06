@@ -150,6 +150,7 @@ export const ROUTES = [
   {
     path: DEVELOPER_OPTIONS_ROUTE,
     label: 'Developer Options Page',
+    // DEVELOPER_OPTIONS_ROUTE not in PATH_NAME_MAP because we're not tracking analytics for this page
     trackInAnalytics: false,
   },
   {
