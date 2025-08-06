@@ -87,10 +87,6 @@ describe('Actions', () => {
 
   let originalNavigator;
 
-  beforeAll(() => {
-    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
-  });
-
   beforeEach(async () => {
     // Save original navigator for restoring after tests
     originalNavigator = global.navigator;

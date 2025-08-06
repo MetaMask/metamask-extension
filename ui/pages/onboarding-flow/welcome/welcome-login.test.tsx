@@ -23,7 +23,6 @@ describe('Welcome login', () => {
   });
 
   it('should display Login Options modal when seedless onboarding feature is enabled', () => {
-    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
     const mockOnLogin = jest.fn();
 
     const { getByTestId, getByText } = renderWithProvider(
