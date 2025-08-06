@@ -58,6 +58,8 @@
     "test:api-specs-multichain": "SELENIUM_BROWSER=chrome ts-node test/e2e/run-api-specs-multichain.ts",
     "test:e2e:swap": "yarn playwright test --project=swap",
     "test:e2e:global": "yarn playwright test --project=global",
+    "test:e2e:benchmark": "yarn playwright test --project=benchmark",
+    "test:e2e:benchmark:quick": "BENCHMARK_BROWSER_LOADS=2 BENCHMARK_PAGE_LOADS=2 yarn playwright test --project=benchmark",
     "test:e2e:pw:report": "yarn playwright show-report public/playwright/playwright-reports/html",
     "test:e2e:chrome:rpc": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --rpc",
     "test:e2e:chrome:multi-provider": "MULTIPROVIDER=true SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --multi-provider",
