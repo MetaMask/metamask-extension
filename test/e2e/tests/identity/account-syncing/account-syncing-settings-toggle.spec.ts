@@ -143,9 +143,7 @@ describe('Account syncing - Settings Toggle', function () {
         const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];
 
         for (const accountName of visibleAccounts) {
-          await accountListPage.checkAccountDisplayedInAccountList(
-            accountName,
-          );
+          await accountListPage.checkAccountDisplayedInAccountList(accountName);
         }
 
         // Verify third account (created with sync disabled) is NOT restored

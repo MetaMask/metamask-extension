@@ -23,12 +23,8 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
-        await accountListPage.checkWalletDisplayedInAccountListMenu(
-          'Wallet 1',
-        );
-        await accountListPage.checkWalletDisplayedInAccountListMenu(
-          'Wallet 2',
-        );
+        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
+        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
         await accountListPage.checkWalletDetailsButtonIsDisplayed();
 
         // Ensure that accounts within the wallets are displayed
@@ -58,9 +54,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
-        await accountListPage.checkWalletDisplayedInAccountListMenu(
-          'Wallet 1',
-        );
+        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
         await accountListPage.checkWalletDetailsButtonIsDisplayed();
 
@@ -106,9 +100,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
-        await accountListPage.checkWalletDisplayedInAccountListMenu(
-          'Wallet 1',
-        );
+        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
         await accountListPage.checkWalletDisplayedInAccountListMenu(
           'MetaMask Simple Snap Keyring',
         );
@@ -118,9 +110,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkAccountBalanceDisplayed('$42,500.00');
         await accountListPage.checkAccountBalanceDisplayed('$0.00');
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
-        await accountListPage.checkAccountDisplayedInAccountList(
-          'SSK Account',
-        );
+        await accountListPage.checkAccountDisplayedInAccountList('SSK Account');
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
     );

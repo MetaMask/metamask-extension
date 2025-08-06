@@ -98,9 +98,7 @@ describe('Remove ERC1155 NFT', function () {
         const nftListPage = new NftListPage(driver);
         await driver.clickElement('[data-testid="sort-by-networks"]');
         await driver.clickElement('[data-testid="modal-header-close-button"]');
-        await nftListPage.checkNftNameIsDisplayed(
-          'ENS: Ethereum Name Service',
-        );
+        await nftListPage.checkNftNameIsDisplayed('ENS: Ethereum Name Service');
         await nftListPage.checkNftImageIsDisplayed();
         await nftListPage.clickNFTIconOnActivityList();
 

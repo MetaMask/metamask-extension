@@ -71,7 +71,6 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="confirmation__token-details-section"]';
   }
 
-
   async checkWalletInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.walletInitiatedHeadingTitle);
   }

@@ -119,9 +119,7 @@ describe('Account syncing - Accounts with Balances', function () {
         const visibleAccounts = ['Account 1', 'Account 2', 'Account 3'];
 
         for (const accountName of visibleAccounts) {
-          await accountListPage.checkAccountDisplayedInAccountList(
-            accountName,
-          );
+          await accountListPage.checkAccountDisplayedInAccountList(accountName);
         }
       },
     );

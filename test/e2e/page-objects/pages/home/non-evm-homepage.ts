@@ -59,10 +59,7 @@ class NonEvmHomepage extends HomePage {
    * @param balance
    * @param token
    */
-  async checkGetBalance(
-    balance: string,
-    token: string = 'SOL',
-  ): Promise<void> {
+  async checkGetBalance(balance: string, token: string = 'SOL'): Promise<void> {
     await this.driver.waitForSelector(
       {
         text: balance,

@@ -101,9 +101,7 @@ export async function bridgeTransaction(
   await homePage.goToActivityList();
 
   const activityList = new ActivityListPage(driver);
-  await activityList.checkCompletedBridgeTransactionActivity(
-    transactionsCount,
-  );
+  await activityList.checkCompletedBridgeTransactionActivity(transactionsCount);
 
   if (quote.unapproved) {
     await activityList.checkTxAction(`Bridged to ${quote.toChain}`);

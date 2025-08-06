@@ -109,9 +109,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the send confirmation.
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.checkNetworkIsDisplayed(
-          'Localhost 7777',
-        );
+        await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
         await transactionConfirmation.clickFooterConfirmButton();
 

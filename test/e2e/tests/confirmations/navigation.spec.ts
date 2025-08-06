@@ -95,12 +95,8 @@ describe('Confirmation Navigation', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkFailedSignTypedData('User rejected the request.');
-        await testDapp.checkFailedSignTypedDataV3(
-          'User rejected the request.',
-        );
-        await testDapp.checkFailedSignTypedDataV4(
-          'User rejected the request.',
-        );
+        await testDapp.checkFailedSignTypedDataV3('User rejected the request.');
+        await testDapp.checkFailedSignTypedDataV4('User rejected the request.');
       },
     );
   });

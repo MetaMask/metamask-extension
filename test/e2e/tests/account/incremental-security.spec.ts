@@ -96,7 +96,7 @@ describe('Incremental Security', function (this: Suite) {
         await secureWalletPage.revealAndConfirmSRP(WALLET_PASSWORD);
 
         // complete backup
-        await onboardingCompletePage.checkPageIsLoaded_backup();
+        await onboardingCompletePage.checkPageIsLoadedBackup();
         await onboardingCompletePage.checkKeepSrpSafeMessageIsDisplayed();
         await onboardingCompletePage.completeBackup();
 

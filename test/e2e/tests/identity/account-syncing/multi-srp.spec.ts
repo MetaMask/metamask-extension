@@ -160,9 +160,7 @@ describe('Account syncing - Multiple SRPs', function () {
         ];
 
         for (const accountName of visibleAccounts) {
-          await accountListPage.checkAccountDisplayedInAccountList(
-            accountName,
-          );
+          await accountListPage.checkAccountDisplayedInAccountList(accountName);
         }
 
         // Verify we have exactly 4 accounts

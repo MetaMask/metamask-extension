@@ -125,9 +125,7 @@ describe('Account syncing - Unsupported Account types', function () {
         const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];
 
         for (const accountName of visibleAccounts) {
-          await accountListPage.checkAccountDisplayedInAccountList(
-            accountName,
-          );
+          await accountListPage.checkAccountDisplayedInAccountList(accountName);
         }
 
         // Verify imported account is NOT visible (not synced)

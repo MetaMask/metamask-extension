@@ -230,9 +230,7 @@ class HomePage {
    *
    * @param networkName - The name of the network that was edited.
    */
-  async checkEditNetworkMessageIsDisplayed(
-    networkName: string,
-  ): Promise<void> {
+  async checkEditNetworkMessageIsDisplayed(networkName: string): Promise<void> {
     console.log(
       `Check the toaster message for editing network ${networkName} is displayed on homepage`,
     );
@@ -348,9 +346,7 @@ class HomePage {
     await this.checkExpectedBalanceIsDisplayed(expectedBalance);
   }
 
-  async checkNewSrpAddedToastIsDisplayed(
-    srpNumber: number = 2,
-  ): Promise<void> {
+  async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {
     await this.driver.waitForSelector({
       text: `Secret Recovery Phrase ${srpNumber} imported`,
     });

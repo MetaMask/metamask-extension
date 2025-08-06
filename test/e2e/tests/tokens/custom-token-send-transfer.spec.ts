@@ -69,9 +69,7 @@ describe('Transfer custom tokens', function () {
 
           // check that transaction has completed correctly and is displayed in the activity list
           await activityListPage.checkTxAction(`Sent ${symbol}`);
-          await activityListPage.checkTxAmountInActivity(
-            valueWithSymbol('-1'),
-          );
+          await activityListPage.checkTxAmountInActivity(valueWithSymbol('-1'));
         },
       );
     });

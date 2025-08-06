@@ -29,9 +29,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new HeaderNavbar(driver).checkAccountLabel(
-          newCustomAccountLabel,
-        );
+        await new HeaderNavbar(driver).checkAccountLabel(newCustomAccountLabel);
       },
     );
   });

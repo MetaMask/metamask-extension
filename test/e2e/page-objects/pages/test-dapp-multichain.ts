@@ -222,7 +222,7 @@ class TestDappMultichain {
    * @param index - The index of the wallet session changed result. 0-based index.
    * @returns The wallet session changed result.
    */
-  async get_walletSessionChangedResult(index: number): Promise<string> {
+  async getWalletSessionChangedResult(index: number): Promise<string> {
     console.log(
       `Getting wallet session changed result for index ${index} on multichain test dapp.`,
     );

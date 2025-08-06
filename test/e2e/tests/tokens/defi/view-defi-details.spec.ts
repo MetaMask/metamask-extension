@@ -63,9 +63,7 @@ describe('View DeFi details', function () {
 
         // check second underlying position in AaveV3
         await defiDetailsTab.checkTokenName('Wrapped Ether');
-        await defiDetailsTab.checkTokenBalanceWithName(
-          '0.00903 Wrapped Ether',
-        );
+        await defiDetailsTab.checkTokenBalanceWithName('0.00903 Wrapped Ether');
         await defiDetailsTab.checkTokenMarketValue('$14.44');
 
         // click back button
