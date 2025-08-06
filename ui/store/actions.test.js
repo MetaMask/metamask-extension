@@ -105,6 +105,7 @@ describe('Actions', () => {
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
+    background.changePassword = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {
@@ -220,13 +221,13 @@ describe('Actions', () => {
       const oldPassword = 'old-password';
       const newPassword = 'new-password';
 
-      const changePasswordStub = background.changePassword.resolves();
+      background.changePassword.resolves();
       setBackgroundConnection(background);
 
       await store.dispatch(actions.changePassword(newPassword, oldPassword));
 
       expect(
-        changePasswordStub.calledOnceWith(newPassword, oldPassword),
+        background.changePassword.calledOnceWith(newPassword, oldPassword),
       ).toStrictEqual(true);
     });
   });
