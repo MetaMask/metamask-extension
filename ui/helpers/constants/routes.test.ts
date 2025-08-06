@@ -109,11 +109,11 @@ describe('Routes Constants', () => {
     });
 
     it('maintains consistency between getPaths and PATH_NAME_MAP', () => {
-      const trackedPaths = getPaths();
+      const trackedRoutes = ROUTES.filter((route) => route.trackInAnalytics);
 
-      trackedPaths.forEach((path) => {
-        expect(PATH_NAME_MAP.has(path)).toBe(true);
-        expect(typeof PATH_NAME_MAP.get(path)).toBe('string');
+      trackedRoutes.forEach((route) => {
+        expect(PATH_NAME_MAP.has(route.path)).toBe(true);
+        expect(typeof PATH_NAME_MAP.get(route.path)).toBe('string');
       });
     });
 

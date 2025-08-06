@@ -618,7 +618,7 @@ export const getPaths = memoize((): string[] =>
 );
 
 // PATH_NAME_MAP for backward compatibility - only includes analytics-tracked routes
-export const PATH_NAME_MAP = new Map<string, string>();
+export const PATH_NAME_MAP = new Map<AppRoutes['path'], AppRoutes['label']>();
 
 // Populate the map only with routes that have trackInAnalytics: true
 ROUTES.forEach((route) => {
