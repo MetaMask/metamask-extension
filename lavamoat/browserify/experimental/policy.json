@@ -1040,16 +1040,6 @@
         "lodash": true
       }
     },
-    "@metamask/multichain-api-middleware>@metamask/chain-agnostic-permission": {
-      "packages": {
-        "@metamask/multichain-api-middleware>@metamask/api-specs": true,
-        "@metamask/controller-utils": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
     "@metamask/controller-utils": {
       "globals": {
         "URL": true,
@@ -1521,7 +1511,7 @@
       },
       "packages": {
         "@metamask/multichain-api-middleware>@metamask/api-specs": true,
-        "@metamask/multichain-api-middleware>@metamask/chain-agnostic-permission": true,
+        "@metamask/chain-agnostic-permission": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
         "@metamask/json-rpc-engine": true,
