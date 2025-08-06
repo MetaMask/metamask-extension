@@ -247,6 +247,8 @@ class TestDapp {
    * @param params - The parameters for the RPC method.
    * @returns The result of the RPC call.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async request<T>(method: string, params?: unknown[] | object): Promise<T> {
     console.log(`Sending request: ${method}`, params);
     return await this.driver.executeScript(
