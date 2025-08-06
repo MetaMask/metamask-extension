@@ -5,6 +5,7 @@ ignores:
   #
 
   - '@lavamoat/snow'
+  - '@lavamoat/webpack'
   - '@lavamoat/allow-scripts'
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
