@@ -24,9 +24,14 @@ class SnapTransactionConfirmation {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkAccountIsDisplayed(expectedValue: string): Promise<void> {
+    await this.driver.findElement({
+      testId: this.addressTestId,
+      text: expectedValue,
+    });
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.header,
@@ -49,15 +54,6 @@ class SnapTransactionConfirmation {
 
   async clickFooterConfirmButton() {
     await this.driver.clickElement(this.confirmButton);
-  }
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountIsDisplayed(expectedValue: string): Promise<void> {
-    await this.driver.findElement({
-      testId: this.addressTestId,
-      text: expectedValue,
-    });
   }
 }
 export default SnapTransactionConfirmation;
