@@ -1,0 +1,31 @@
+diff --git a/src/runtime/runtime.js b/src/runtime/runtime.js
+index e2ca1fe5fc01b3676324833a6a0daaf458fa563d..2a7754fa9c8c59c901a01371aa530211003d9257 100644
+--- a/src/runtime/runtime.js
++++ b/src/runtime/runtime.js
+@@ -170,6 +170,26 @@ const installGlobalsForPolicy = (resourceId, packageCompartmentGlobal) => {
+       packageCompartmentGlobal
+     )
+
++    if (endowments['MessageEvent']) {
++      const original = Object.getOwnPropertyDescriptor(
++        endowments['MessageEvent'].prototype,
++        'source'
++      );
++      defineProperty(endowments['MessageEvent'].prototype, 'source', {
++        get() {
++          if (original && original.get) {
++            const w = original.get.call(this);
++            if (w === theRealGlobalThis) {
++              return packageCompartmentGlobal;
++            } else {
++              return w;
++            }
++          }
++        },
++      })
++    }
++
++
+     defineProperties(packageCompartmentGlobal, {
+       ...getOwnPropertyDescriptors(endowments),
+       // preserve the correct global aliases even if endowments define them differently
