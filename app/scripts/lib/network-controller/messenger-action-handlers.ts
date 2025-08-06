@@ -1,6 +1,5 @@
 import log from 'loglevel';
 import { Hex, Json, hexToNumber, isObject, isValidJson } from '@metamask/utils';
-import { JsonRpcError } from '@metamask/rpc-errors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
