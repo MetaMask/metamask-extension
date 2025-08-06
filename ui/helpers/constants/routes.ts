@@ -230,7 +230,7 @@ export const ROUTES: AppRoute[] = [
   {
     path: REVEAL_SEED_ROUTE,
     label: 'Reveal Secret Recovery Phrase Page',
-    trackInAnalytics: true,
+    trackInAnalytics: false,
   },
   {
     path: `${REVEAL_SEED_ROUTE}/:keyringId`,
@@ -615,10 +615,12 @@ export const getPaths = memoize((): string[] =>
   ROUTES.filter((r) => r.trackInAnalytics).map((r) => r.path),
 );
 
-// PATH_NAME_MAP for backward compatibility - automatically generated from ROUTES
+// PATH_NAME_MAP for backward compatibility - only includes analytics-tracked routes
 export const PATH_NAME_MAP = new Map<string, string>();
 
-// Populate the map from the ROUTES array
+// Populate the map only with routes that have trackInAnalytics: true
 ROUTES.forEach((route) => {
-  PATH_NAME_MAP.set(route.path, route.label);
+  if (route.trackInAnalytics) {
+    PATH_NAME_MAP.set(route.path, route.label);
+  }
 });
