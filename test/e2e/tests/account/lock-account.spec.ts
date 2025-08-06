@@ -40,7 +40,7 @@ describe('Lock and unlock', function (this: Suite) {
         await driver.waitUntil(
           async () => {
             const requests = await mockedEndpoint.getSeenRequests();
-            return requests.length > 0;
+            return requests.length > 3;
           },
           { interval: 200, timeout: 10000 },
         );
