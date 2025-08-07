@@ -7,6 +7,7 @@ import { exitWithError } from '../../development/lib/exit-with-error';
 import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
 import { Driver } from './webdriver/driver';
 import FixtureBuilder from './fixture-builder';
+import { loginWithBalanceValidation } from './page-objects/flows/login.flow';
 import HomePage from './page-objects/pages/home/homepage';
 import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
 import {
@@ -14,7 +15,6 @@ import {
   MOCK_TOKENS_ETHEREUM,
 } from './tests/bridge/constants';
 import {
-  logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   withFixtures,
@@ -77,7 +77,7 @@ async function confirmTx(): Promise<number> {
       title: 'benchmark-userActions-confirmTx',
     },
     async ({ driver }: { driver: Driver }) => {
-      await logInWithBalanceValidation(driver);
+      await loginWithBalanceValidation(driver);
 
       await openActionMenuAndStartSendFlow(driver);
 
@@ -141,7 +141,7 @@ async function bridgeUserActions(): Promise<{
       },
     },
     async ({ driver }: { driver: Driver }) => {
-      await logInWithBalanceValidation(driver);
+      await loginWithBalanceValidation(driver);
       const homePage = new HomePage(driver);
       const quotePage = new BridgeQuotePage(driver);
 

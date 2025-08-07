@@ -755,12 +755,6 @@ async function createWebSocketConnection(driver, hostname) {
   }
 }
 
-const logInWithBalanceValidation = async (driver, localNode) => {
-  await unlockWallet(driver);
-  // Wait for balance to load
-  await locateAccountBalanceDOM(driver, localNode);
-};
-
 function roundToXDecimalPlaces(number, decimalPlaces) {
   return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
 }
@@ -973,7 +967,6 @@ module.exports = {
   sendTransaction,
   sendScreenToConfirmScreen,
   unlockWallet,
-  logInWithBalanceValidation,
   locateAccountBalanceDOM,
   WALLET_PASSWORD,
   WINDOW_TITLES,

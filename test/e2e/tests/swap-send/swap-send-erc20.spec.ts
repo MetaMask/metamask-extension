@@ -1,16 +1,13 @@
 import { Suite } from 'mocha';
 import { Browser } from 'selenium-webdriver';
-import {
-  withFixtures,
-  openActionMenuAndStartSendFlow,
-  logInWithBalanceValidation,
-} from '../../helpers';
+import { withFixtures, openActionMenuAndStartSendFlow } from '../../helpers';
 import {
   NATIVE_TOKEN_SYMBOL,
   SwapSendPage,
   getSwapSendFixtures,
 } from './swap-send-test-utils';
 import { SWAP_SEND_QUOTES_RESPONSE_TST_ETH } from './mocks/erc20-data';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const RECIPIENT_ADDRESS = '0xc427D562164062a23a5cFf596A4a3208e72Acd28';
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
@@ -26,7 +23,7 @@ describe('Swap-Send ERC20', function () {
         ),
         async ({ driver }) => {
           const swapSendPage = new SwapSendPage(driver);
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           // START SWAP AND SEND FLOW
           await openActionMenuAndStartSendFlow(driver);
