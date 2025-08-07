@@ -57,6 +57,7 @@ const bridgeSlice = createSlice({
     setToChainId: (state, { payload }: ChainIdPayload) => {
       state.toChainId = payload ? formatChainIdToCaip(payload) : null;
       state.toToken = null;
+      state.toAccount = null;
     },
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
@@ -89,6 +90,7 @@ const bridgeSlice = createSlice({
           : true)
       ) {
         state.toChainId = formatChainIdToCaip(toToken.chainId);
+        state.toAccount = null;
       }
     },
     setFromTokenInputValue: (
