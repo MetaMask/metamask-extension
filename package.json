@@ -530,6 +530,7 @@
     "@types/micromatch": "^4",
     "@types/mocha": "^10.0.3",
     "@types/node": "^20",
+    "@types/node-zopfli": "^2",
     "@types/path-browserify": "^1.0.2",
     "@types/pify": "^5.0.1",
     "@types/react": "^17.0.11",
@@ -563,6 +564,7 @@
     "addons-linter": "^6.28.0",
     "autoprefixer": "^10.4.19",
     "axios": "^1.8.2",
+    "babel-jest": "^30.0.5",
     "babelify": "^10.0.0",
     "bify-module-groups": "^2.0.0",
     "browserify": "^17.0.0",
@@ -648,6 +650,7 @@
     "navigator.locks": "^0.8.6",
     "nock": "patch:nock@npm%3A13.5.4#~/.yarn/patches/nock-npm-13.5.4-2c4f77b249.patch",
     "node-fetch": "^2.6.1",
+    "node-zopfli": "^2.1.4",
     "nyc": "^15.1.0",
     "octokit": "^4.1.3",
     "path-browserify": "^1.0.1",
@@ -802,7 +805,8 @@
       "@metamask/kernel-browser-runtime>@metamask/streams": false,
       "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": false,
       "@metamask/logger>@metamask/streams": false,
-      "@metamask/streams": false
+      "@metamask/streams": false,
+      "node-zopfli": true
     }
   },
   "packageManager": "yarn@4.9.1",

@@ -26,6 +26,18 @@ module.exports = function (api) {
           rootPath: '/snaps/',
         },
       ],
+      [
+        path.resolve(
+          __dirname,
+          'development/build/transforms/import-meta-url.js',
+        ),
+        {
+          pattern:
+            /\.\/trieNodes\.bin$/u,
+          rootPath: '/',
+        },
+        "trie nodes"
+      ],
     ],
     presets: [
       '@babel/preset-typescript',

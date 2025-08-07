@@ -29,8 +29,8 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import {
   MnemonicUtil,
   getMnemonicUtil,
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/mnemonic';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 

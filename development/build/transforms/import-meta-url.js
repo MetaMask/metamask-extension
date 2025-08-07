@@ -87,7 +87,7 @@ module.exports = function ({ types: t }) {
     if (t.isStringLiteral(originalArg)) {
       if (pattern instanceof RegExp) {
         const match = originalArg.value.match(pattern);
-        if (match) {
+        if (match && match[1]) {
           const filename = match[1];
           const ext = originalArg.value.split('.').slice(1).join('.');
           return t.stringLiteral(join(rootPath, `${filename}.${ext}`));
@@ -101,8 +101,8 @@ module.exports = function ({ types: t }) {
 
     quasis[0] = t.templateElement(
       {
-        raw: rootPath + quasis[0].value.raw,
-        cooked: rootPath + quasis[0].value.cooked,
+        raw: join(rootPath, quasis[0].value.raw),
+        cooked: join(rootPath, quasis[0].value.cooked),
       },
       quasis[0].tail,
     );
@@ -155,10 +155,6 @@ module.exports = function ({ types: t }) {
          * @type {string}
          */
         const rootPath = state.opts.rootPath || '';
-
-        if (!rootPath) {
-          throw new Error('rootPath option is required');
-        }
 
         // Check if it's our target expression
         if (!isTargetNewURL(path)) {

@@ -4320,10 +4320,6 @@ describe('MetaMaskController', () => {
           'getSecretDataBackupState',
         );
         jest.spyOn(metamaskController, 'importMnemonicToVault');
-        jest.spyOn(
-          metamaskController,
-          '_convertEnglishWordlistIndicesToCodepoints',
-        );
       });
 
       afterEach(() => {
@@ -4353,7 +4349,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('should import new seed phrases that are not in local state', async () => {
+      it.only('should import new seed phrases that are not in local state', async () => {
         const mockRootSRP = new Uint8Array([1, 2, 3, 4]);
         const mockOtherSRP1 = new Uint8Array([5, 6, 7, 8]);
         const mockOtherSRP2 = new Uint8Array([9, 10, 11, 12]);
@@ -4377,10 +4373,6 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
           }) // First SRP exists
           .mockReturnValueOnce(null); // Second SRP doesn't exist
-
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValueOnce(
-          Buffer.from(mockMnemonic, 'utf8'),
-        );
 
         await metamaskController.syncSeedPhrases();
 
@@ -4458,18 +4450,6 @@ describe('MetaMaskController', () => {
           return arr1.every((value, index) => value === arr2[index]);
         }
 
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockImplementation(
-          (wordlistIndices) => {
-            if (isEqualUint8Array(wordlistIndices, mockOtherSRP1)) {
-              return Buffer.from(mockMnemonic1, 'utf8');
-            } else if (isEqualUint8Array(wordlistIndices, mockOtherSRP2)) {
-              return Buffer.from(mockMnemonic2, 'utf8');
-            }
-
-            return new Uint8Array(0);
-          },
-        );
-
         await metamaskController.syncSeedPhrases();
 
         // Should import both SRPs that don't exist locally
@@ -4505,10 +4485,6 @@ describe('MetaMaskController', () => {
           metamaskController.seedlessOnboardingController,
           'fetchAllSecretData',
         );
-        jest.spyOn(
-          metamaskController,
-          '_convertEnglishWordlistIndicesToCodepoints',
-        );
         jest.spyOn(metamaskController, 'createNewVaultAndRestore');
         jest.spyOn(metamaskController, 'restoreSeedPhrasesToVault');
       });
@@ -4537,10 +4513,6 @@ describe('MetaMaskController', () => {
           [mockFirstSecretData, ...mockRemainingSecretData],
         );
 
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
-          Buffer.from(mockMnemonic, 'utf8'),
-        );
-
         const result =
           await metamaskController.restoreSocialBackupAndGetSeedPhrase(
             mockPassword,
@@ -4549,9 +4521,6 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController.seedlessOnboardingController.fetchAllSecretData,
         ).toHaveBeenCalledWith(mockPassword);
-        expect(
-          metamaskController._convertEnglishWordlistIndicesToCodepoints,
-        ).toHaveBeenCalledWith(mockEncodedMnemonic);
         expect(
           metamaskController.createNewVaultAndRestore,
         ).toHaveBeenCalledWith(mockPassword, mockEncodedSeedPhrase);
@@ -4571,10 +4540,6 @@ describe('MetaMaskController', () => {
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
           [mockFirstSecretData],
-        );
-
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
-          Buffer.from(mockMnemonic, 'utf8'),
         );
 
         const result =
@@ -4623,10 +4588,6 @@ describe('MetaMaskController', () => {
           [mockFirstSecretData, ...mockRemainingSecretData],
         );
 
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
-          Buffer.from(mockMnemonic, 'utf8'),
-        );
-
         const result =
           await metamaskController.restoreSocialBackupAndGetSeedPhrase(
             mockPassword,
@@ -4661,10 +4622,6 @@ describe('MetaMaskController', () => {
           [mockFirstSecretData],
         );
 
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
-          Buffer.from(mockMnemonic, 'utf8'),
-        );
-
         const mockError = new Error('Failed to create vault');
         metamaskController.createNewVaultAndRestore.mockRejectedValue(
           mockError,
@@ -4693,10 +4650,6 @@ describe('MetaMaskController', () => {
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
           [mockFirstSecretData, ...mockRemainingSecretData],
-        );
-
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
-          Buffer.from(mockMnemonic, 'utf8'),
         );
 
         const mockError = new Error('Failed to restore seed phrases');

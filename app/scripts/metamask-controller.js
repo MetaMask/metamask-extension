@@ -5035,6 +5035,7 @@ export default class MetamaskController extends EventEmitter {
       throw new Error('No root SRP found');
     }
 
+    const mnemonicUtil = await getMnemonicUtil();
     for (const secret of otherSecrets) {
       // import SRP secret
       // Get the SRP hash, and find the hash in the local state
@@ -5060,7 +5061,7 @@ export default class MetamaskController extends EventEmitter {
 
         // If SRP is not in the local state, import it to the vault
         // convert the seed phrase to a mnemonic (string)
-        const mnemonicUtil = await getMnemonicUtil();
+        debugger;
         const encodedSrp =
           mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(secret.data);
         const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
@@ -5151,7 +5152,6 @@ export default class MetamaskController extends EventEmitter {
    * For example, a mnemonic phrase can generate many accounts, and is a keyring.
    *
    * @param {string} password
-   * @returns {object} created keyring object
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
