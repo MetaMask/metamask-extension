@@ -54,7 +54,6 @@ const start = () => {
 
 (function () {
   let once = false;
-  const { chrome, browser } = window;
   // TODO: "document" because LavaMoat blocks props
   // TODO: definitions against the globalThis (window)
   Object.defineProperty(document, 'INJECT_ONCE', {
@@ -66,7 +65,6 @@ const start = () => {
       const d = document;
       const s = d.createElement('script');
       s.textContent = textContent;
-      s.nonce = btoa((browser || chrome).runtime.getURL('/'));
       d.documentElement.appendChild(s).remove();
     },
   });
