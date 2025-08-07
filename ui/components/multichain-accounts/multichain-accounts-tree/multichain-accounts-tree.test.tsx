@@ -10,12 +10,8 @@ import {
   AccountWalletType,
   MultichainAccountGroupId,
   MultichainAccountWalletId,
-  toAccountWalletId,
-  toDefaultAccountGroupId,
   toMultichainAccountGroupId,
   toMultichainAccountWalletId,
-  type AccountGroupId,
-  type AccountWalletId,
 } from '@metamask/account-api';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
