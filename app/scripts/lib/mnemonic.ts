@@ -1,7 +1,5 @@
 /* eslint-disable no-bitwise, no-plusplus */
 
-import { generate } from 'fast-json-patch';
-
 /**
  * @file Mnemonic utility for converting between BIP-39 mnemonics and wordlist
  * indices without using strings in memory.
@@ -357,79 +355,78 @@ function indicesToUtf8Array(
  * Uncomment the fs require and calls when running in a Node.js environment.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function generateBinaryWordList(): Promise<void> {
-  const { wordlist } = await import(
-    // @ts-expect-error its fine
-    '@metamask/scure-bip39/dist/wordlists/english'
-  );
-  const fs = await import('fs');
+// async function generateBinaryWordList(): Promise<void> {
+//   const { wordlist } = await import(
+//     // @ts-expect-error its fine
+//     '@metamask/scure-bip39/dist/wordlists/english'
+//   );
+//   const fs = await import('fs');
 
-  const { trieNodes, wordEndNodes } = buildTrie(wordlist);
+//   const { trieNodes, wordEndNodes } = buildTrie(wordlist);
 
-  // Debug information
-  console.debug(
-    `Trie nodes: ${trieNodes.length}, Word end nodes: ${wordEndNodes.length}`,
-  );
-  console.debug(
-    `Trie nodes size: ${trieNodes.byteLength} bytes, Word end nodes size: ${wordEndNodes.byteLength} bytes`,
-  );
-  console.debug(
-    `Total size: ${trieNodes.byteLength + wordEndNodes.byteLength} bytes`,
-  );
+//   // Debug information
+//   console.debug(
+//     `Trie nodes: ${trieNodes.length}, Word end nodes: ${wordEndNodes.length}`,
+//   );
+//   console.debug(
+//     `Trie nodes size: ${trieNodes.byteLength} bytes, Word end nodes size: ${wordEndNodes.byteLength} bytes`,
+//   );
+//   console.debug(
+//     `Total size: ${trieNodes.byteLength + wordEndNodes.byteLength} bytes`,
+//   );
 
-  // combine the two buffers into a single ArrayBuffer with metadata header
-  const headerSize = 8; // 4 bytes for trieNodes size + 4 bytes for wordEndNodes size
-  const totalBytes =
-    headerSize + trieNodes.byteLength + wordEndNodes.byteLength;
-  const buffer = new ArrayBuffer(totalBytes);
+//   // combine the two buffers into a single ArrayBuffer with metadata header
+//   const headerSize = 8; // 4 bytes for trieNodes size + 4 bytes for wordEndNodes size
+//   const totalBytes =
+//     headerSize + trieNodes.byteLength + wordEndNodes.byteLength;
+//   const buffer = new ArrayBuffer(totalBytes);
 
-  // Write header with sizes
-  const headerView = new Uint32Array(buffer, 0, 2);
-  headerView[0] = trieNodes.byteLength;
-  headerView[1] = wordEndNodes.byteLength;
+//   // Write header with sizes
+//   const headerView = new Uint32Array(buffer, 0, 2);
+//   headerView[0] = trieNodes.byteLength;
+//   headerView[1] = wordEndNodes.byteLength;
 
-  // Write the data buffers directly to the main buffer
-  const trieNodesView = new Uint8Array(
-    buffer,
-    headerSize,
-    trieNodes.byteLength,
-  );
-  const wordEndNodesView = new Uint8Array(
-    buffer,
-    headerSize + trieNodes.byteLength,
-    wordEndNodes.byteLength,
-  );
+//   // Write the data buffers directly to the main buffer
+//   const trieNodesView = new Uint8Array(
+//     buffer,
+//     headerSize,
+//     trieNodes.byteLength,
+//   );
+//   const wordEndNodesView = new Uint8Array(
+//     buffer,
+//     headerSize + trieNodes.byteLength,
+//     wordEndNodes.byteLength,
+//   );
 
-  // Copy only the relevant portions of the source buffers
-  trieNodesView.set(
-    new Uint8Array(
-      trieNodes.buffer,
-      trieNodes.byteOffset,
-      trieNodes.byteLength,
-    ),
-  );
-  wordEndNodesView.set(
-    new Uint8Array(
-      wordEndNodes.buffer,
-      wordEndNodes.byteOffset,
-      wordEndNodes.byteLength,
-    ),
-  );
+//   // Copy only the relevant portions of the source buffers
+//   trieNodesView.set(
+//     new Uint8Array(
+//       trieNodes.buffer,
+//       trieNodes.byteOffset,
+//       trieNodes.byteLength,
+//     ),
+//   );
+//   wordEndNodesView.set(
+//     new Uint8Array(
+//       wordEndNodes.buffer,
+//       wordEndNodes.byteOffset,
+//       wordEndNodes.byteLength,
+//     ),
+//   );
 
-  // Use Zopfli for maximum compression - it produces raw deflate directly
-  const { default: zopfli } = await import('node-zopfli');
-  const compressed = zopfli.deflateSync(Buffer.from(buffer), {
-    numiterations: 221,
-  });
+//   // Use Zopfli for maximum compression - it produces raw deflate directly
+//   const { default: zopfli } = await import('node-zopfli');
+//   const compressed = zopfli.deflateSync(Buffer.from(buffer), {
+//     numiterations: 221,
+//   });
 
-  console.debug(
-    `Zopfli compressed size: ${compressed.byteLength} bytes (vs 38266)`,
-  );
-  // write to app/scripts/lib/trieNodes.bin
-  fs.writeFileSync('app/scripts/lib/trieNodes.bin', compressed);
-  console.debug('Trie nodes and word end nodes written to files.');
-}
-generateBinaryWordList();
+//   console.debug(
+//     `Zopfli compressed size: ${compressed.byteLength} bytes (vs 38266)`,
+//   );
+//   // write to app/scripts/lib/trieNodes.bin
+//   fs.writeFileSync('app/scripts/lib/trieNodes.bin', compressed);
+//   console.debug('Trie nodes and word end nodes written to files.');
+// }
 
 /**
  * Mnemonic utility class for BIP-39 conversions without holding strings in
@@ -454,10 +451,6 @@ class MnemonicUtil {
       throw new Error(`Failed to fetch trieNodes.bin: ${response.statusText}`);
     }
 
-    console.debug(
-      `Fetched compressed data: ${response.headers.get('content-length')} bytes`,
-    );
-
     const ds = new DecompressionStream('deflate-raw');
     const decompressedStream = response.body.pipeThrough(ds);
     const combinedBuffer = await new Response(decompressedStream).arrayBuffer();
@@ -467,19 +460,18 @@ class MnemonicUtil {
     const trieNodesSize = headerView[0];
     const wordEndNodesSize = headerView[1];
 
-    // Extract the individual buffers
+    // Create views directly into the buffer (no copying)
     const headerSize = 8; // 2 * 4 bytes
-    const trieNodesBuffer = combinedBuffer.slice(
+    const trieNodes = new Uint32Array(
+      combinedBuffer,
       headerSize,
-      headerSize + trieNodesSize,
+      trieNodesSize / 4, // Uint32Array length is in 32-bit elements
     );
-    const wordEndNodesBuffer = combinedBuffer.slice(
+    const wordEndNodes = new Uint16Array(
+      combinedBuffer,
       headerSize + trieNodesSize,
-      headerSize + trieNodesSize + wordEndNodesSize,
+      wordEndNodesSize / 2, // Uint16Array length is in 16-bit elements
     );
-
-    const trieNodes = new Uint32Array(trieNodesBuffer);
-    const wordEndNodes = new Uint16Array(wordEndNodesBuffer);
 
     return new MnemonicUtil(trieNodes, wordEndNodes);
   }
