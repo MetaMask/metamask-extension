@@ -8,6 +8,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import {
   generateCaip25Caveat,
+  getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import {
@@ -155,13 +156,26 @@ export const MultichainConnectPage: React.FC<MultichainConnectPageProps> = ({
 
   console.log('requestedCaipChainIds', requestedCaipChainIds);
 
+  const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
+    requestedCaip25CaveatValueWithExistingPermissions,
+  );
+
+  const requestedNamespacesWithoutWallet = requestedNamespaces.filter(
+    (namespace) => namespace !== KnownCaipNamespace.Wallet,
+  );
+
+  console.log(
+    'requestedNamespacesWithoutWallet',
+    requestedNamespacesWithoutWallet,
+  );
+
   const {
     connectedAccountGroups,
     supportedAccountGroups,
     existingConnectedCaipAccountIds,
   } = useAccountGroupConnectionStatus(
     requestedCaip25CaveatValueWithExistingPermissions,
-    requestedCaipChainIds,
+    requestedNamespacesWithoutWallet,
   );
 
   console.log('connectedAccountGroups', connectedAccountGroups);

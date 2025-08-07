@@ -12,6 +12,8 @@ import {
 import {
   CaipAccountId,
   CaipChainId,
+  CaipNamespace,
+  isCaipNamespace,
   KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
@@ -21,7 +23,7 @@ import { AccountGroupObject } from '@metamask/account-tree-controller';
 
 export const useAccountGroupConnectionStatus = (
   existingPermission: Caip25CaveatValue,
-  requestedCaipChainIds: CaipChainId[],
+  requestedCaipChainIdsOrNamespaces: string[],
 ) => {
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
 
@@ -30,16 +32,28 @@ export const useAccountGroupConnectionStatus = (
   );
 
   // Extract EVM chains for selector
-  const deduplicatedEvmChains = useMemo(() => {
-    return Array.from(
-      new Set(
-        requestedCaipChainIds.filter((chainId) => {
-          const { namespace } = parseCaipChainId(chainId);
-          return namespace === KnownCaipNamespace.Eip155;
-        }),
+  const deduplicatedEvmChains = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          requestedCaipChainIdsOrNamespaces.map(
+            (chainId: CaipChainId | CaipNamespace) => {
+              let namespace: string;
+              if (isCaipNamespace(chainId)) {
+                namespace = chainId;
+              } else {
+                namespace = parseCaipChainId(chainId).namespace;
+              }
+              console.log('namespace', namespace);
+              return namespace.startsWith(KnownCaipNamespace.Eip155)
+                ? `${KnownCaipNamespace.Eip155}:0`
+                : chainId;
+            },
+          ),
+        ),
       ),
-    );
-  }, [requestedCaipChainIds]);
+    [requestedCaipChainIdsOrNamespaces],
+  );
 
   const supportedAccountGroups = useSelector((state) =>
     getMultichainAccountGroupsByScopes(state, deduplicatedEvmChains),

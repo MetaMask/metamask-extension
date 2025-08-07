@@ -8,6 +8,8 @@ import { AccountGroupObject } from '@metamask/account-tree-controller';
 import {
   type CaipAccountId,
   type CaipChainId,
+  CaipNamespace,
+  isCaipNamespace,
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
@@ -337,10 +339,10 @@ export const getCaip25IdByAccountGroupAndScope = createDeepEqualSelector(
 
 export const getMultichainAccountGroupsByScopes = createDeepEqualSelector(
   getAccountGroupWithInternalAccounts,
-  (_, scopes: CaipChainId[]) => scopes,
+  (_, scopes: string[]) => scopes,
   (
     accountGroupsWithInternalAccounts: AccountGroupWithInternalAccounts[],
-    scopes: CaipChainId[],
+    scopes: string[],
   ) => {
     const { cleanedScopes, hasEvmScope } = scopes.reduce(
       (acc, scope) => {
@@ -348,7 +350,7 @@ export const getMultichainAccountGroupsByScopes = createDeepEqualSelector(
         if (namespace === KnownCaipNamespace.Eip155) {
           acc.hasEvmScope = true;
         } else {
-          acc.cleanedScopes.push(scope);
+          acc.cleanedScopes.push(scope as CaipChainId);
         }
         return acc;
       },
