@@ -28,13 +28,13 @@ describe('Test Snap Lifecycle Hooks', function () {
           { withExtraScreen: true },
         );
         // Check installation success
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectLifeCycleButton',
           'Reconnect to Lifecycle Hooks Snap',
         );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         // Validate the message result in the dialog
-        await snapInstall.check_messageResultSpan(
+        await snapInstall.checkMessageResultSpan(
           snapInstall.lifeCycleHookMessageElement,
           'The Snap was installed successfully, and the "onInstall" handler was called.',
         );
@@ -68,7 +68,7 @@ describe('Test Snap Lifecycle Hooks', function () {
 
         // Validate the "onStart" lifecycle hook message.
         const snapInstall = new SnapInstall(driver);
-        await snapInstall.check_messageResultSpan(
+        await snapInstall.checkMessageResultSpan(
           snapInstall.lifeCycleHookMessageElement,
           'The client was started successfully, and the "onStart" handler was called.',
         );

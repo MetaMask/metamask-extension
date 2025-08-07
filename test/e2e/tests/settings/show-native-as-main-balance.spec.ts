@@ -38,7 +38,7 @@ describe('Settings: Show native token as main balance', function () {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
-        await assetListPage.check_tokenAmountIsDisplayed('25 ETH');
+        await assetListPage.checkTokenAmountIsDisplayed('25 ETH');
       },
     );
   });
@@ -55,21 +55,21 @@ describe('Settings: Show native token as main balance', function () {
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('$42,500.00', 'USD');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.clickAdvancedTab();
         const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.check_pageIsLoaded();
+        await advancedSettingsPage.checkPageIsLoaded();
         await advancedSettingsPage.toggleShowConversionOnTestnets();
         await settingsPage.closeSettingsPage();
 
         // assert amount displayed
         const assetListPage = new AssetListPage(driver);
-        await assetListPage.check_tokenFiatAmountIsDisplayed('$42,500.00');
+        await assetListPage.checkTokenFiatAmountIsDisplayed('$42,500.00');
       },
     );
   });
@@ -86,23 +86,23 @@ describe('Settings: Show native token as main balance', function () {
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('$42,500.00', 'USD');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.clickAdvancedTab();
         const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.check_pageIsLoaded();
+        await advancedSettingsPage.checkPageIsLoaded();
         await advancedSettingsPage.toggleShowConversionOnTestnets();
         await settingsPage.closeSettingsPage();
 
         // go to setting and back to home page and make sure popover is not shown again
         await homePage.headerNavbar.openSettingsPage();
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.closeSettingsPage();
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
       },
     );
   });
@@ -129,7 +129,7 @@ describe('Settings: Show native token as main balance', function () {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.toggleBalanceSetting();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -172,12 +172,12 @@ describe('Settings: Show native token as main balance', function () {
       }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('$42,500.00', 'USD');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.toggleBalanceSetting();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
