@@ -32,11 +32,10 @@ module.exports = function (api) {
           'development/build/transforms/import-meta-url.js',
         ),
         {
-          pattern:
-            /\.\/trieNodes\.bin$/u,
+          pattern: /\.\/trieNodes\.bin$/u,
           rootPath: '/',
         },
-        "trie nodes"
+        'trie nodes',
       ],
     ],
     presets: [

@@ -4426,8 +4426,6 @@ describe('MetaMaskController', () => {
         const mockOtherSRP2 = new Uint8Array([9, 10, 11, 12]);
         const mockMnemonic1 =
           'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
-        const mockMnemonic2 =
-          'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 
         metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
           true,
@@ -4443,14 +4441,6 @@ describe('MetaMaskController', () => {
         metamaskController.seedlessOnboardingController.getSecretDataBackupState
           .mockReturnValueOnce(null) // First other SRP doesn't exist
           .mockReturnValueOnce(null); // Second other SRP doesn't exist
-
-        function isEqualUint8Array(arr1, arr2) {
-          if (arr1.length !== arr2.length) {
-            return false;
-          }
-
-          return arr1.every((value, index) => value === arr2[index]);
-        }
 
         await metamaskController.syncSeedPhrases();
 

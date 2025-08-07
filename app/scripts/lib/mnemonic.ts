@@ -136,6 +136,7 @@ function countSetBits(v: number): number {
  * @param wordList - list of words to insert into the trie
  * @returns
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function buildTrie(wordList: string[]): {
   trieNodes: Uint32Array;
   wordEndNodes: Uint16Array;
