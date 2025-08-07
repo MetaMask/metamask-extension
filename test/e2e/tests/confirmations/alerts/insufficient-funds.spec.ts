@@ -13,7 +13,7 @@ describe('Alert for insufficient funds', function () {
   it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
     const nftSmartContract = SMART_CONTRACTS.NFTS;
     const localNodeOptions = {
-      mnemonic: 'test test test test test test test test test test test test junk',
+      mnemonic: 'test test test test test test test test test test test junk',
     };
     await withFixtures(
       {
