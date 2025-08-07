@@ -10,7 +10,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { tEn } from '../../../../test/lib/i18n-helpers';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
 import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -49,20 +49,12 @@ jest.mock('../../../ducks/app/app.ts', () => {
   };
 });
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  // eslint-disable-next-line react/display-name
-  withRouter: (Component) => (props) => (
-    <Component
-      {...props}
-      {...{
-        history: {
-          push: mockHistoryPush,
-        },
-      }}
-    />
-  ),
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => ({ pathname: '/settings/security' }),
+  useParams: () => ({}),
 }));
 
 describe('Security Tab', () => {
@@ -204,7 +196,7 @@ describe('Security Tab', () => {
 
     fireEvent.click(screen.getByTestId('reveal-seed-words'));
 
-    expect(mockHistoryPush).toHaveBeenCalledWith({
+    expect(mockNavigate).toHaveBeenCalledWith({
       pathname: REVEAL_SRP_LIST_ROUTE,
     });
   });

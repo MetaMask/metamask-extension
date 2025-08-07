@@ -1,7 +1,8 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { MemoryRouter, withRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   ABOUT_US_ROUTE,
   ADVANCED_ROUTE,
@@ -48,8 +49,7 @@ global.platform = {
   getVersion: () => 'V3.14.159',
 };
 
-const Settings = ({ history }) => {
-  const { location } = history;
+const Settings = ({ location, navigate }) => {
   const pathname =
     location.pathname === '/iframe.html'
       ? '/settings/general'
@@ -60,7 +60,8 @@ const Settings = ({ history }) => {
       <SettingsPage
         currentPath={pathname}
         mostRecentOverviewPage={pathname}
-        history={history}
+        navigate={navigate}
+        location={location}
         pathnameI18nKey={pathnameI18nKey}
         backRoute={SETTINGS_ROUTE}
         settingsPageSnaps={[]}
@@ -70,7 +71,8 @@ const Settings = ({ history }) => {
 };
 
 Settings.propTypes = {
-  history: PropTypes.object,
+  location: PropTypes.object,
+  navigate: PropTypes.func,
 };
 
-export const SettingsPageComponent = withRouter(Settings);
+export const SettingsPageComponent = withRouterHooks(Settings);

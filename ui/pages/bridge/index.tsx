@@ -140,7 +140,9 @@ const CrossChainSwap = () => {
                 setIsSettingsModalOpen(false);
               }}
             />
-            <PrepareBridgePage />
+            <PrepareBridgePage
+              onOpenSettings={() => setIsSettingsModalOpen(true)}
+            />
           </Route>
           <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
             <Content>

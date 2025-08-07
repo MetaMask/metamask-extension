@@ -28,7 +28,7 @@ describe('Test Snap Notification', function () {
           driver,
           'connectNotificationButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectNotificationButton',
           'Reconnect to Notifications Snap',
         );
@@ -38,15 +38,15 @@ describe('Test Snap Notification', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.check_notificationCountInMenuOption(1);
+        await headerNavbar.checkNotificationCountInMenuOption(1);
 
         // this click will close the menu
         await headerNavbar.openThreeDotMenu();
 
         // click the notification options and validate the message in the notification list
         await headerNavbar.clickNotificationsOptions();
-        await notificationsListPage.check_pageIsLoaded();
-        await notificationsListPage.check_snapsNotificationMessage(
+        await notificationsListPage.checkPageIsLoaded();
+        await notificationsListPage.checkSnapsNotificationMessage(
           'Hello from within MetaMask!',
         );
       },
@@ -72,7 +72,7 @@ describe('Test Snap Notification', function () {
           driver,
           'connectNotificationButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectNotificationButton',
           'Reconnect to Notifications Snap',
         );
@@ -82,15 +82,15 @@ describe('Test Snap Notification', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.check_notificationCountInMenuOption(1);
+        await headerNavbar.checkNotificationCountInMenuOption(1);
 
         // this click will close the menu
         await headerNavbar.openThreeDotMenu();
 
         // click the notification options
         await headerNavbar.clickNotificationsOptions();
-        await notificationsListPage.check_pageIsLoaded();
-        await notificationsListPage.check_snapsNotificationMessage(
+        await notificationsListPage.checkPageIsLoaded();
+        await notificationsListPage.checkSnapsNotificationMessage(
           'Hello from MetaMask, click here for an expanded view!',
         );
         await notificationsListPage.clickSpecificNotificationMessage(
