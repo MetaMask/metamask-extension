@@ -250,7 +250,7 @@ function getCopyTargets(
           },
         ]
       : []),
-      {
+    {
       src: './app/scripts/lib/trieNodes.bin',
       dest: 'trieNodes.bin',
     },
