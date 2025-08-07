@@ -1,6 +1,7 @@
 import { CaipChainId, parseCaipChainId } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { EthScope } from '@metamask/keyring-api';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
@@ -54,10 +55,13 @@ import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
   getEnabledNetworks,
-  getIsMultichainAccountsState1Enabled,
   getIsMultichainAccountsState2Enabled,
 } from '../../../../../selectors';
 import Tooltip from '../../../../ui/tooltip';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
+} from '../../../../../selectors/multichain-accounts/account-tree';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -66,7 +70,6 @@ const DefaultNetworks = memo(() => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allEnabledNetworks = useSelector(getEnabledNetworks);
   // Use the shared callbacks hook
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
@@ -81,11 +84,21 @@ const DefaultNetworks = memo(() => {
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
-  const isMultichainAccountsState1Enabled = useSelector(
-    getIsMultichainAccountsState1Enabled,
-  );
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
+  );
+
+  // extract the evm account of the selected account group
+  const evmAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
+  );
+
+  // extract the solana account of the selected account group
+  const solAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    ),
   );
 
   // Use the shared state hook
@@ -151,90 +164,113 @@ const DefaultNetworks = memo(() => {
   // Memoize the network list items to avoid recreation on every render
   const networkListItems = useMemo(() => {
     const enabledChainIds = Object.keys(enabledNetworks);
+    const singleRemainingNetwork = enabledChainIds.length === 1;
 
-    const orderedNetworksListToUse = isMultichainAccountsState1Enabled
-      ? orderedNetworks
-      : orderedNetworks.filter((network) => {
-          // If EVM network is selected, only show EVM networks
-          if (isEvmNetworkSelected) {
-            return network.isEvm;
+    // Helper function to check if a network is enabled
+    const isNetworkEnabled = (hexChainId: string): boolean => {
+      return Object.values(allEnabledNetworks).some((item) =>
+        Object.prototype.hasOwnProperty.call(item, hexChainId),
+      );
+    };
+
+    // Helper function to filter networks based on account type and selection
+    const getFilteredNetworks = () => {
+      if (isMultichainAccountsState2Enabled) {
+        return orderedNetworks.filter((network) => {
+          // Show EVM networks if user has EVM accounts
+          if (evmAccountGroup && network.isEvm) {
+            return true;
           }
-          // If non-EVM network is selected, only show non-EVM networks
-          return !network.isEvm;
+          // Show non-EVM networks if user has Solana accounts
+          if (solAccountGroup && !network.isEvm) {
+            return true;
+          }
+          return false;
         });
-
-    return orderedNetworksListToUse.map((network) => {
-      const networkChainId = network.chainId; // eip155:59144
-      // Convert CAIP format to hex format for comparison
-      const hexChainId = network.isEvm
-        ? convertCaipToHexChainId(networkChainId)
-        : networkChainId;
-
-      if (!isNetworkInDefaultNetworkTab(network)) {
-        return null;
       }
 
-      const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
-        getItemCallbacks(network);
-      const iconSrc = getNetworkIcon(network);
-      let isEnabled = false;
-      // check the account selecteed group then process it
-      Object.values(allEnabledNetworks).forEach((item) => {
-        if (Object.keys(item).includes(hexChainId)) {
-          isEnabled = true;
+      return orderedNetworks.filter((network) => {
+        // If EVM network is selected, only show EVM networks
+        if (isEvmNetworkSelected) {
+          return network.isEvm;
         }
+        // If non-EVM network is selected, only show non-EVM networks
+        return !network.isEvm;
       });
+    };
 
-      const singleRemainingNetwork = enabledChainIds.length === 1;
-      const isLastRemainingNetwork =
-        singleRemainingNetwork && enabledChainIds[0] === hexChainId;
+    const filteredNetworks = getFilteredNetworks();
 
-      return (
-        <NetworkListItem
-          startAccessory={
-            singleRemainingNetwork && isLastRemainingNetwork ? (
-              <Tooltip
-                title={t('networkManagerMustHaveAtLeastOneNetworkEnabled')}
-                position="top"
-              >
-                <Checkbox label="" isChecked={isEnabled} />
-              </Tooltip>
-            ) : (
-              <Checkbox label="" isChecked={isEnabled} />
-            )
-          }
-          key={network.chainId}
-          chainId={network.chainId}
-          name={network.name}
-          iconSrc={iconSrc}
-          iconSize={AvatarNetworkSize.Md}
-          rpcEndpoint={
-            hasMultiRpcOptions(network)
-              ? getRpcDataByChainId(network.chainId, evmNetworks)
-                  .defaultRpcEndpoint
-              : undefined
-          }
-          onClick={() =>
-            handleNetworkChangeCallback(network.chainId, isLastRemainingNetwork)
-          }
-          onDeleteClick={onDelete}
-          onEditClick={onEdit}
-          onDiscoverClick={onDiscoverClick}
-          onRpcEndpointClick={onRpcSelect}
-        />
-      );
-    });
+    // Filter out networks that shouldn't be shown in default tab and map to components
+    return filteredNetworks
+      .filter((network) => isNetworkInDefaultNetworkTab(network))
+      .map((network) => {
+        const networkChainId = network.chainId; // eip155:59144
+        // Convert CAIP format to hex format for comparison
+        const hexChainId = network.isEvm
+          ? convertCaipToHexChainId(networkChainId)
+          : networkChainId;
+
+        const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
+          getItemCallbacks(network);
+        const iconSrc = getNetworkIcon(network);
+        const isEnabled = isNetworkEnabled(hexChainId);
+        const isLastRemainingNetwork =
+          singleRemainingNetwork && enabledChainIds[0] === hexChainId;
+
+        // Create checkbox component with conditional tooltip
+        const checkboxComponent = isLastRemainingNetwork ? (
+          <Tooltip
+            title={t('networkManagerMustHaveAtLeastOneNetworkEnabled')}
+            position="top"
+          >
+            <Checkbox label="" isChecked={isEnabled} />
+          </Tooltip>
+        ) : (
+          <Checkbox label="" isChecked={isEnabled} />
+        );
+
+        return (
+          <NetworkListItem
+            startAccessory={checkboxComponent}
+            key={network.chainId}
+            chainId={network.chainId}
+            name={network.name}
+            iconSrc={iconSrc}
+            iconSize={AvatarNetworkSize.Md}
+            rpcEndpoint={
+              hasMultiRpcOptions(network)
+                ? getRpcDataByChainId(network.chainId, evmNetworks)
+                    .defaultRpcEndpoint
+                : undefined
+            }
+            onClick={() =>
+              handleNetworkChangeCallback(
+                network.chainId,
+                isLastRemainingNetwork,
+              )
+            }
+            onDeleteClick={onDelete}
+            onEditClick={onEdit}
+            onDiscoverClick={onDiscoverClick}
+            onRpcEndpointClick={onRpcSelect}
+          />
+        );
+      });
   }, [
     enabledNetworks,
     orderedNetworks,
+    isMultichainAccountsState2Enabled,
+    evmAccountGroup,
+    solAccountGroup,
     isEvmNetworkSelected,
     isNetworkInDefaultNetworkTab,
     getItemCallbacks,
-    enabledNetworksByNamespace,
     hasMultiRpcOptions,
     evmNetworks,
     handleNetworkChangeCallback,
     allEnabledNetworks,
+    t,
   ]);
 
   // Memoize the additional network list items

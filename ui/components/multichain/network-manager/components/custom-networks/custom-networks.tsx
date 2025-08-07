@@ -2,6 +2,7 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { EthScope } from '@metamask/keyring-api';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
   convertCaipToHexChainId,
@@ -38,6 +39,10 @@ import {
   getOrderedNetworksList,
   getShowTestNetworks,
 } from '../../../../../selectors';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
+} from '../../../../../selectors/multichain-accounts/account-tree';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
@@ -49,6 +54,18 @@ export const CustomNetworks = React.memo(() => {
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
+
+  const evmAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
+  );
+
+  const solAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    ),
+  );
+
   const showTestnets = useSelector(getShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
@@ -124,18 +141,39 @@ export const CustomNetworks = React.memo(() => {
 
   // Memoize the rendered network lists with filtering
   const renderedCustomNetworks = useMemo(() => {
-    const orderedNetworksListToRender = isMultichainAccountsState2Enabled
-      ? orderedNetworks
-      : orderedNetworks.filter((network) => {
-          // If EVM network is selected, only show EVM networks
-          if (isEvmNetworkSelected) {
-            return network.isEvm;
+    // Helper function to filter networks based on account type and selection
+    const getFilteredNetworks = () => {
+      if (isMultichainAccountsState2Enabled) {
+        return orderedNetworks.filter((network) => {
+          // Show EVM networks if user has EVM accounts
+          if (evmAccountGroup && network.isEvm) {
+            return true;
           }
-          // If non-EVM network is selected, only show non-EVM networks
-          return !network.isEvm;
+          // Show non-EVM networks if user has Solana accounts
+          if (solAccountGroup && !network.isEvm) {
+            return true;
+          }
+          return false;
         });
+      }
 
-    return orderedNetworksListToRender.length > 0 ? (
+      return orderedNetworks.filter((network) => {
+        if (isEvmNetworkSelected) {
+          return network.isEvm;
+        }
+        // If non-EVM network is selected, only show non-EVM networks
+        return !network.isEvm;
+      });
+    };
+
+    const filteredNetworks = getFilteredNetworks();
+
+    // Early return if no networks to render
+    if (filteredNetworks.length === 0) {
+      return null;
+    }
+
+    return (
       <>
         <Text
           variant={TextVariant.bodyMdMedium}
@@ -146,16 +184,18 @@ export const CustomNetworks = React.memo(() => {
         >
           {t('customNetworks')}
         </Text>
-        {orderedNetworksListToRender.map((network) =>
+        {filteredNetworks.map((network) =>
           generateMultichainNetworkListItem(network),
         )}
       </>
-    ) : null;
+    );
   }, [
     orderedNetworks,
+    isMultichainAccountsState2Enabled,
+    evmAccountGroup,
+    solAccountGroup,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
-    isMultichainAccountsState2Enabled,
     t,
   ]);
 
