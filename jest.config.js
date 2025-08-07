@@ -48,7 +48,10 @@ module.exports = {
     customExportConditions: ['node', 'node-addons'],
   },
   transform: {
-    '^.+\\.(js|jsx|ts|tsx|mjs|mts)$': ['babel-jest', { configFile: './babel.config.js' }],
+    '^.+\\.(js|jsx|ts|tsx|mjs|mts)$': [
+      'babel-jest',
+      { configFile: './babel.config.js' },
+    ],
   },
   workerIdleMemoryLimit: '500MB',
 };
