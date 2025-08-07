@@ -164,7 +164,10 @@ export const MultichainBridgeQuoteCard = ({
             )}
 
             {/* Network Fee */}
-            <Row justifyContent={JustifyContent.spaceBetween}>
+            <Row
+              justifyContent={JustifyContent.spaceBetween}
+              data-testid="network-fees"
+            >
               <Text
                 variant={TextVariant.bodyMd}
                 color={TextColor.textAlternative}
