@@ -583,7 +583,7 @@ const PrepareBridgePage = ({
 
   return (
     <>
-      <Column className="prepare-bridge-page" gap={8}>
+      <Column className="prepare-bridge-page" gap={isToOrFromSolana ? 2 : 8}>
         <BridgeInputGroup
           header={getFromInputHeader()}
           token={fromToken}
@@ -663,7 +663,7 @@ const PrepareBridgePage = ({
 
         <Column
           height={BlockSize.Full}
-          paddingTop={8}
+          paddingTop={isToOrFromSolana ? 4 : 8}
           backgroundColor={BackgroundColor.backgroundAlternativeSoft}
           style={{
             position: 'relative',
