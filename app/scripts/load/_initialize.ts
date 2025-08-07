@@ -13,7 +13,7 @@ if (process.env.ENABLE_SNOW === 'true') {
   require('@lavamoat/snow/snow.prod');
   require('../use-snow');
 }
-if (process.env.ENABLE_LOCKDOWN === 'true') {
+if (process.env.ENABLE_LAVAMOAT === 'true') {
   // LM: not calling lockdown here because lavamoat webpack plugin's runtime already did before invoking the entry to the bundle.
   // LM: This is the perfect place to run lockdown-more as the first thing in the bundle.
   require('../lockdown-more');
