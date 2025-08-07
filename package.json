@@ -36,7 +36,7 @@
     "build:test:flask": "yarn build:test --build-type flask",
     "build:test:flask:mv2": "ENABLE_MV3=false yarn build:test:flask",
     "build:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn build:test",
-    "build:test:webpack": "BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn env:e2e webpack --test --browser=chrome --browser=firefox --no-cache --zip --lockdown --sentry --snow",
+    "build:test:webpack": "BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn env:e2e webpack --test --browser=chrome --browser=firefox --no-cache --zip --lavamoat --sentry --snow",
     "test": "yarn lint && yarn test:unit",
     "dapp": "node development/static-server.js node_modules/@metamask/test-dapp/dist --port 8080",
     "dapp-multichain": "node development/static-server.js node_modules/@metamask/test-dapp-multichain/build --port 8080",
