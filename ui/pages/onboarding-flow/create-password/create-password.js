@@ -217,7 +217,12 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletCreated,
       properties: {
         biometrics_enabled: false,
-        password_strength: getPasswordStrengthCategory(password),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: getAccountType(
+          MetaMetricsEventAccountType.Default,
+          isSocialLoginFlow,
+        ),
       },
     });
 
