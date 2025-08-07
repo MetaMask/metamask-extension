@@ -105,6 +105,12 @@ describe('convertMnemonicToWordlistIndices', () => {
 });
 
 describe('convertEnglishWordlistIndicesToCodepoints', () => {
+  let mu: MnemonicUtil;
+
+  beforeAll(async () => {
+    mu = await getMnemonicUtil();
+  });
+
   it(`converts a single valid index (0 -> "${abandon}")`, () => {
     // Single word with index 0 => "abandon"
     // We store 0 in a Uint16. That becomes [0, 0] in bytes for little-endian systems.
@@ -152,6 +158,12 @@ describe('convertEnglishWordlistIndicesToCodepoints', () => {
 });
 
 describe('Round-trip tests', () => {
+  let mu: MnemonicUtil;
+
+  beforeAll(async () => {
+    mu = await getMnemonicUtil();
+  });
+
   it('converts a valid mnemonic to indices and back, resulting in the same mnemonic', () => {
     const originalMnemonic = `${abandon} ${ability} ${able}`; // indexes [0, 1, 2]
     const input = toUtf8Array(originalMnemonic);
