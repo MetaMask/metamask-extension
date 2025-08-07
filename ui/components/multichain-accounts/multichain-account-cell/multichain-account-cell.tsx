@@ -28,6 +28,7 @@ export type MultichainAccountCellProps = {
   balance: string;
   endAccessory?: React.ReactNode;
   selected?: boolean;
+  showBalance?: boolean;
 };
 
 export const MultichainAccountCell = ({
@@ -36,6 +37,7 @@ export const MultichainAccountCell = ({
   balance,
   endAccessory,
   selected = false,
+  showBalance = true,
 }: MultichainAccountCellProps) => {
   console.log('accountId', accountId);
   const accountGroup = useSelector((state) =>
@@ -108,13 +110,15 @@ export const MultichainAccountCell = ({
         justifyContent={JustifyContent.center}
         style={{ flexShrink: 0 }}
       >
-        <Text
-          className="multichain-account-cell__account-balance"
-          variant={TextVariant.bodyMdMedium}
-          marginRight={2}
-        >
-          {balance}
-        </Text>
+        {showBalance && (
+          <Text
+            className="multichain-account-cell__account-balance"
+            variant={TextVariant.bodyMdMedium}
+            marginRight={2}
+          >
+            {balance}
+          </Text>
+        )}
         <Box
           className="multichain-account-cell__end_accessory"
           display={Display.Flex}

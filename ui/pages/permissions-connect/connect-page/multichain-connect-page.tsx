@@ -52,7 +52,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../shared/constants/network';
+import {
+  CAIP_FORMATTED_EVM_TEST_CHAINS,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+} from '../../../../shared/constants/network';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
@@ -80,6 +83,8 @@ import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
 } from './utils';
+import { AvatarGroup } from '../../../components/multichain';
+import { AvatarType } from '../../../components/multichain/avatar-group/avatar-group.types';
 
 export type ConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -411,6 +416,15 @@ export const MultichainConnectPage: React.FC<MultichainConnectPageProps> = ({
     approveConnection,
   ]);
 
+  const selectedNetworks = allNetworksList.filter((chainId) =>
+    selectedChainIds.includes(chainId as CaipChainId),
+  );
+
+  const avatarNetworksData = selectedNetworks?.map((network) => ({
+    avatarValue: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network],
+    symbol: network,
+  }));
+
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
 
   return (
@@ -506,7 +520,15 @@ export const MultichainConnectPage: React.FC<MultichainConnectPageProps> = ({
                     accountId={accountGroupId}
                     balance={'0'}
                     key={accountGroupId}
+                    showBalance={false}
                     selected
+                    endAccessory={
+                      <AvatarGroup
+                        members={avatarNetworksData}
+                        limit={4}
+                        avatarType={AvatarType.TOKEN}
+                      />
+                    }
                   />
                 ))}
               </Box>
