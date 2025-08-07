@@ -64,10 +64,10 @@ describe('Backup and Restore', function () {
         // Download user settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.clickAdvancedTab();
         const advancedSettings = new AdvancedSettings(driver);
-        await advancedSettings.check_pageIsLoaded();
+        await advancedSettings.checkPageIsLoaded();
         await advancedSettings.downloadData();
 
         // Verify download

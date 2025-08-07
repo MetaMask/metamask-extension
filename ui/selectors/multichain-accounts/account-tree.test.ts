@@ -1,5 +1,13 @@
+import { AccountGroupId } from '@metamask/account-api';
 import mockState from '../../../test/data/mock-state.json';
-import { getAccountTree, getWalletsWithAccounts } from './account-tree';
+import {
+  getAccountTree,
+  getInternalAccountByGroupAndCaip,
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
+  getWalletIdAndNameByAccountAddress,
+  getWalletsWithAccounts,
+} from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 
 describe('Multichain Accounts Selectors', () => {
@@ -260,6 +268,91 @@ describe('Multichain Accounts Selectors', () => {
           },
         },
       });
+    });
+  });
+
+  describe('getWalletIdAndNameByAccountAddress', () => {
+    it('returns the wallet ID and name for an account', () => {
+      const result = getWalletIdAndNameByAccountAddress(
+        mockState,
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      );
+
+      expect(result).toStrictEqual({
+        id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        name: 'Wallet 1',
+      });
+    });
+
+    it('returns null if the account is not found', () => {
+      const result = getWalletIdAndNameByAccountAddress(
+        mockState,
+        '0x1234567890abcdef1234567890abcdef12345678',
+      );
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('getInternalAccountByGroupAndCaip', () => {
+    it('returns the internal account for a group and CAIP chain ID', () => {
+      const result = getInternalAccountByGroupAndCaip(
+        mockState,
+        '01JKAF3DSGM3AB87EM9N0K41AJ:default' as AccountGroupId,
+        'eip155:0',
+      );
+
+      expect(result).toStrictEqual(
+        mockState.metamask.internalAccounts.accounts[
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+        ],
+      );
+    });
+
+    it('returns null if the group is not found', () => {
+      const result = getInternalAccountByGroupAndCaip(
+        mockState,
+        '01JKAF3DSGM3AB87EM9N0K41AJ:default' as AccountGroupId,
+        'bip122:000000000019d6689c085ae165831e93',
+      );
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('getInternalAccountBySelectedAccountGroupAndCaip', () => {
+    it('returns the internal account for a selected account group and CAIP chain ID', () => {
+      const result = getInternalAccountBySelectedAccountGroupAndCaip(
+        mockState,
+        'eip155:0',
+      );
+
+      expect(result).toStrictEqual(
+        mockState.metamask.internalAccounts.accounts[
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+        ],
+      );
+    });
+
+    it('returns null if the internal account is not found in the selected account group', () => {
+      const result = getInternalAccountBySelectedAccountGroupAndCaip(
+        mockState,
+        'bip122:000000000019d6689c085ae165831e93',
+      );
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('getSelectedAccountGroup', () => {
+    it('returns the selected account group', () => {
+      const result = getSelectedAccountGroup(
+        mockState as MultichainAccountsState,
+      );
+
+      expect(result).toStrictEqual(
+        mockState.metamask.accountTree.selectedAccountGroup,
+      );
     });
   });
 });
