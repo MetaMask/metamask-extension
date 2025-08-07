@@ -316,7 +316,7 @@ const PrepareBridgePage = () => {
           };
         })()
       : null,
-    selectedDestinationAccount !== null && 'id' in selectedDestinationAccount
+    selectedDestinationAccount && 'id' in selectedDestinationAccount
       ? selectedDestinationAccount.id
       : undefined,
   );
