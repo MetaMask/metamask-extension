@@ -11,6 +11,8 @@ import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
+const newPassword = 'this is the best password ever';
+
 async function seeAuthenticationRequest(mockServer: Mockttp) {
   // the goal is to know when these requests happen, not to mock any specific response
   return [
@@ -44,8 +46,6 @@ async function seeAuthenticationRequest(mockServer: Mockttp) {
     ];
 }
 
-const newPassword = 'this is the best password ever';
-
 describe('Forgot password', function () {
   it('resets password and then unlock wallet with new password', async function () {
     await withFixtures(
@@ -63,7 +63,6 @@ describe('Forgot password', function () {
         localNodes: Anvil[] | Ganache[] | undefined[];
         mockedEndpoint: MockedEndpoint[];
       }) => {
-        await driver.delay(15000)
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         // We need to wait for this request to happen, before locking the wallet, to avoid the error 'unable to proceed, wallet is locked'
