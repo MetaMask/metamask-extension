@@ -352,7 +352,7 @@ export default function Routes() {
   );
   const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT, privacyMode } =
     useAppSelector(getPreferences);
-  const { completedOnboarding } = useAppSelector(getCompletedOnboarding);
+  const completedOnboarding = useAppSelector(getCompletedOnboarding);
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
