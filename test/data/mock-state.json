@@ -535,7 +535,7 @@
       }
     },
     "accountTree": {
-      "selectedAccountGroup": "01JKAF3DSGM3AB87EM9N0K41AJ:default",
+      "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
       "wallets": {
         "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
           "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
@@ -576,10 +576,10 @@
               "metadata": {
                 "name": "Default",
                 "hidden": false,
-                "pinned": false
-              },
-              "entropy": {
-                "groupIndex": 0
+                "pinned": false,
+                "entropy": {
+                  "groupIndex": 0
+                }
               }
             }
           },
@@ -594,8 +594,8 @@
           "id": "keyring:Ledger Hardware",
           "type": "keyring",
           "groups": {
-            "keyring:Ledger Hardware:default": {
-              "id": "keyring:Ledger Hardware:default",
+            "keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+              "id": "keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813",
               "type": "single-account",
               "accounts": ["15e69915-2a1a-4019-93b3-916e11fd432f"],
               "metadata": {
@@ -616,8 +616,8 @@
           "id": "snap:local:custody:test",
           "type": "snap",
           "groups": {
-            "snap:local:custody:test:default": {
-              "id": "snap:local:custody:test:default",
+            "snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+              "id": "snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
               "type": "single-account",
               "accounts": ["694225f4-d30b-4e77-a900-c8bbce735b42"],
               "metadata": {
@@ -638,8 +638,8 @@
           "id": "snap:local:snap-id",
           "type": "snap",
           "groups": {
-            "snap:local:snap-id:default": {
-              "id": "snap:local:snap-id:default",
+            "snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
+              "id": "snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d",
               "type": "single-account",
               "accounts": ["c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3"],
               "metadata": {
