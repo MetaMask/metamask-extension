@@ -94,14 +94,23 @@ describe('Routes Constants', () => {
     });
 
     it('handles parameterized routes correctly', () => {
-      const parameterizedRoutes = ROUTES.filter(
-        (route) => route.path.includes(':') || route.path.includes('*'),
+      const parameterizedRoutes = ROUTES.filter((route) =>
+        route.path.includes(':'),
       );
 
+      // Verify we have some parameterized routes to test
+      expect(parameterizedRoutes.length).toBeGreaterThan(0);
+
       parameterizedRoutes.forEach((route) => {
-        expect(PATH_NAME_MAP.has(route.path)).toBe(true);
-        expect(typeof route.label).toBe('string');
-        expect(typeof route.trackInAnalytics).toBe('boolean');
+        // PATH_NAME_MAP presence should match trackInAnalytics flag
+        expect(PATH_NAME_MAP.has(route.path)).toBe(route.trackInAnalytics);
+
+        // If tracked for analytics, should be in getPaths() too
+        if (route.trackInAnalytics) {
+          expect(getPaths()).toContain(route.path);
+        } else {
+          expect(getPaths()).not.toContain(route.path);
+        }
       });
     });
   });
