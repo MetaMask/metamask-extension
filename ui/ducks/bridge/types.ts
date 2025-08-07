@@ -1,4 +1,5 @@
 import type { Hex, CaipChainId, CaipAssetType } from '@metamask/utils';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type QuoteMetadata,
   type QuoteResponse,
@@ -41,6 +42,7 @@ export type BridgeState = {
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
   slippage?: number;
   txAlert: TxAlert | null;
+  toAccount: InternalAccount | null;
 };
 
 export type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };

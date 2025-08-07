@@ -22,6 +22,7 @@ const initialState: BridgeState = {
   wasTxDeclined: false,
   slippage: BRIDGE_DEFAULT_SLIPPAGE,
   txAlert: null,
+  toAccount: null,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -105,6 +106,9 @@ const bridgeSlice = createSlice({
     },
     setSlippage: (state, action) => {
       state.slippage = action.payload;
+    },
+    setToAccount: (state, action) => {
+      state.toAccount = action.payload;
     },
   },
   extraReducers: (builder) => {
