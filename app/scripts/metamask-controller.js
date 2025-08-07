@@ -5054,10 +5054,9 @@ export default class MetamaskController extends EventEmitter {
         // convert the seed phrase to a mnemonic (string)
         const encodedSrp =
           mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(secret.data);
-        const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
         // import the new mnemonic to the current vault
-        await this.importMnemonicToVault(mnemonicToRestore, {
+        await this.importMnemonicToVault(encodedSrp, {
           shouldCreateSocialBackup: false,
           shouldSelectAccount: false,
           shouldImportSolanaAccount: true,
@@ -5352,10 +5351,9 @@ export default class MetamaskController extends EventEmitter {
       const encodedSrp = mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(
         secret.data,
       );
-      const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
       // import the new mnemonic to the vault
-      await this.importMnemonicToVault(mnemonicToRestore, {
+      await this.importMnemonicToVault(encodedSrp, {
         shouldCreateSocialBackup,
         shouldSelectAccount: shouldSetSelectedAccount,
         shouldImportSolanaAccount,
