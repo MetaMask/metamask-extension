@@ -523,7 +523,10 @@ export function importMnemonicToVault(mnemonic: string): ThunkAction<
     log.debug(`background.importMnemonicToVault`);
     const arrayMnemonic = [...new TextEncoder().encode(mnemonic)];
 
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<{
+      newAccountAddress: string;
+      discoveredAccounts: { bitcoin: number; solana: number };
+    }>((resolve, reject) => {
       callBackgroundMethod(
         'importMnemonicToVault',
         [arrayMnemonic],

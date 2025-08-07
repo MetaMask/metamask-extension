@@ -4018,8 +4018,11 @@ describe('MetaMaskController', () => {
         ).toString('utf8');
 
         expect(
-          currentKeyrings.filter((kr) => kr.type === 'Snap Keyring'),
+          currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
         ).toHaveLength(2);
+        expect(
+          currentKeyrings.filter((kr) => kr.type === 'Snap Keyring'),
+        ).toHaveLength(1);
         expect(currentKeyrings).toHaveLength(previousKeyrings.length + 2);
         expect(newSRP).toStrictEqual(
           new TextDecoder().decode(Uint8Array.from(TEST_SEED_ALT)),
@@ -4348,7 +4351,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it.only('should import new seed phrases that are not in local state', async () => {
+      it('should import new seed phrases that are not in local state', async () => {
         const mockRootSRP = new Uint8Array([1, 2, 3, 4]);
         const mockOtherSRP1 = new Uint8Array([5, 6, 7, 8]);
         const mockOtherSRP2 = new Uint8Array([9, 10, 11, 12]);
