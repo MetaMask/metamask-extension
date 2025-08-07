@@ -137,7 +137,7 @@ export const SEI_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   name: 'Sei',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  // SEI using the same icon as Sei Network
+  // SEI using the same icon as Sei Mainnet
   iconUrl: SEI_IMAGE_URL,
 } as const;
 
