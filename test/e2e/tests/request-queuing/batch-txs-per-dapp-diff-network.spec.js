@@ -5,11 +5,13 @@ const {
 const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
+  DAPP_URL,
+  DAPP_ONE_URL,
+} = require('../../constants');
+const {
   withFixtures,
   openDapp,
   unlockWallet,
-  DAPP_URL,
-  DAPP_ONE_URL,
   WINDOW_TITLES,
   largeDelayMs,
 } = require('../../helpers');

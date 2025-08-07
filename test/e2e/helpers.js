@@ -19,7 +19,7 @@ const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
-  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+  DAPP_URL,
   ERC_4337_ACCOUNT,
 } = require('./constants');
 const {
@@ -496,11 +496,6 @@ const getWindowHandles = async (driver, handlesCount) => {
   return { extension, dapp, popup };
 };
 
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
-const DAPP_ONE_URL = 'http://127.0.0.1:8081';
-const DAPP_TWO_URL = 'http://127.0.0.1:8082';
-
 const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
   return contract
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
@@ -568,27 +563,8 @@ const connectToDapp = async (driver) => {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 };
 
-const PRIVATE_KEY =
-  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
-
-const PRIVATE_KEY_TWO =
-  '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
-
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
-
-const multipleGanacheOptions = {
-  accounts: [
-    {
-      secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
-    },
-    {
-      secretKey: PRIVATE_KEY_TWO,
-      balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
-    },
-  ],
-};
 
 // Edit priority gas fee form
 const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
@@ -945,14 +921,8 @@ async function openMenuSafe(driver) {
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 module.exports = {
-  DAPP_HOST_ADDRESS,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  DAPP_TWO_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
-  PRIVATE_KEY,
-  PRIVATE_KEY_TWO,
   ACCOUNT_1,
   ACCOUNT_2,
   getWindowHandles,

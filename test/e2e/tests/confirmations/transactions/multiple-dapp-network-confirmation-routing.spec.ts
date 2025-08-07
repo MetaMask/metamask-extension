@@ -2,8 +2,10 @@ import { By } from 'selenium-webdriver';
 
 import FixtureBuilder from '../../../fixture-builder';
 import {
-  DAPP_ONE_URL,
   DAPP_URL,
+  DAPP_ONE_URL,
+} from '../../../constants';
+import {
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
