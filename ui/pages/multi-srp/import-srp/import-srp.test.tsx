@@ -12,6 +12,13 @@ import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
 import { ImportSrp } from './import-srp';
 
+// Mock navigation
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
+}));
+
 const mockClearClipboard = jest.fn();
 const mockLockAccountSyncing = jest.fn();
 const mockUnlockAccountSyncing = jest.fn();

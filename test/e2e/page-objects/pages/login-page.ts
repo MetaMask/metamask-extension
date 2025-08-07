@@ -35,9 +35,7 @@ class LoginPage {
     };
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.welcomeBackMessage,
@@ -62,9 +60,7 @@ class LoginPage {
     await this.driver.clickElement(this.unlockButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_incorrectPasswordMessageIsDisplayed(): Promise<void> {
+  async checkIncorrectPasswordMessageIsDisplayed(): Promise<void> {
     console.log('Checking if incorrect password message is displayed');
     const isDisplayed = await this.driver.waitForSelector(
       this.incorrectPasswordMessage,

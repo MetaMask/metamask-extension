@@ -29,9 +29,6 @@ const mockRequestRevealSeedWords = jest
   .fn()
   .mockImplementation(mockSuccessfulSrpReveal);
 const mockShowModal = jest.fn();
-const mockUseParams = jest
-  .fn()
-  .mockReturnValue({ keyringId: 'ULID01234567890ABCDEFGHIJKLMN' });
 const password = 'password';
 
 jest.mock('../../store/actions.ts', () => ({
@@ -40,12 +37,11 @@ jest.mock('../../store/actions.ts', () => ({
     mockRequestRevealSeedWords(userPassword, keyringId),
 }));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: jest.fn(),
-    goBack: jest.fn(),
-  }),
+const mockNavigate = jest.fn();
+const mockUseParams = jest.fn().mockReturnValue({ keyringId: undefined });
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
   useParams: () => mockUseParams(),
 }));
 

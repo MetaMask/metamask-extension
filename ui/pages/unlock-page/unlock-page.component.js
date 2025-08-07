@@ -55,11 +55,11 @@ class UnlockPage extends Component {
 
   static propTypes = {
     /**
-     * History router for redirect after action
+     * Navigate function for redirect after action
      */
-    history: PropTypes.object.isRequired,
+    navigate: PropTypes.func.isRequired,
     /**
-     * Location router for redirect after action
+     * Location object for redirect after action
      */
     location: PropTypes.object.isRequired,
     /**
@@ -117,7 +117,7 @@ class UnlockPage extends Component {
   passwordLoginAttemptTraceCtx = null;
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, history, location } = this.props;
+    const { isUnlocked, navigate, location } = this.props;
 
     if (isUnlocked) {
       // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
@@ -126,7 +126,7 @@ class UnlockPage extends Component {
         const search = location.state.from.search || '';
         redirectTo = location.state.from.pathname + search;
       }
-      history.push(redirectTo);
+      navigate(redirectTo);
     }
   }
 
@@ -366,14 +366,14 @@ class UnlockPage extends Component {
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {
-    const { isSocialLoginFlow, history, isOnboardingCompleted } = this.props;
+    const { isSocialLoginFlow, navigate, isOnboardingCompleted } = this.props;
 
     // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
     // we can redirect to `onboarding_welcome` route to select a different login method
     if (!isOnboardingCompleted && isSocialLoginFlow) {
       await this.props.loginWithDifferentMethod();
       await this.props.forceUpdateMetamaskState();
-      history.replace(ONBOARDING_WELCOME_ROUTE);
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
       return;
     }
 

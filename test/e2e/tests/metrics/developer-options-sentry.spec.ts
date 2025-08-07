@@ -14,11 +14,11 @@ const triggerCrash = async (driver: Driver): Promise<void> => {
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.openSettingsPage();
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.check_pageIsLoaded();
+  await settingsPage.checkPageIsLoaded();
   await settingsPage.goToDeveloperOptions();
 
   const developOptionsPage = new DevelopOptions(driver);
-  await developOptionsPage.check_pageIsLoaded();
+  await developOptionsPage.checkPageIsLoaded();
   await developOptionsPage.clickGenerateCrashButton();
 };
 
@@ -56,8 +56,8 @@ describe('Developer Options - Sentry', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         await triggerCrash(driver);
         const errorPage = new ErrorPage(driver);
-        await errorPage.check_pageIsLoaded();
-        await errorPage.validate_errorMessage();
+        await errorPage.checkPageIsLoaded();
+        await errorPage.validateErrorMessage();
         await errorPage.submitToSentryUserFeedbackForm();
         await errorPage.waitForSentrySuccessModal();
       },
@@ -83,7 +83,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);
-        await errorPage.check_pageIsLoaded();
+        await errorPage.checkPageIsLoaded();
 
         await errorPage.clickContactButton();
         await errorPage.consentDataToMetamaskSupport();
@@ -105,7 +105,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);
-        await errorPage.check_pageIsLoaded();
+        await errorPage.checkPageIsLoaded();
 
         await errorPage.clickContactButton();
         await errorPage.rejectDataToMetamaskSupport();

@@ -44,12 +44,12 @@ describe('Linea Network Discover Button', function (this: Suite) {
 
         // Search for Linea Mainnet
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.fillNetworkSearchInput('Linea Mainnet');
         await selectNetworkDialog.openNetworkListOptions('eip155:59144');
 
         // Verify Discover button is visible
-        await selectNetworkDialog.check_discoverButtonIsVisible();
+        await selectNetworkDialog.checkDiscoverButtonIsVisible();
 
         // Click Discover button
         await selectNetworkDialog.clickDiscoverButton();

@@ -8,7 +8,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
 import {
@@ -58,7 +58,7 @@ const defaultNumberOfWords = 12;
 
 export const ImportSrp = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [srpError, setSrpError] = useState('');
@@ -127,7 +127,7 @@ export const ImportSrp = () => {
       });
     }
 
-    history.push(DEFAULT_ROUTE);
+    navigate(DEFAULT_ROUTE);
     dispatch(setShowNewSrpAddedToast(true));
   }
 
@@ -316,7 +316,7 @@ export const ImportSrp = () => {
             ariaLabel="back"
             iconName={IconName.ArrowLeft}
             onClick={() => {
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
           />
         }
@@ -325,7 +325,7 @@ export const ImportSrp = () => {
             ariaLabel="close"
             iconName={IconName.Close}
             onClick={() => {
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
           />
         }

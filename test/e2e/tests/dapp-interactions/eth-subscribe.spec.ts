@@ -18,7 +18,7 @@ describe('eth_subscribe', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const setupSubscriptionListener = `
           const responseContainer = document.createElement('div');
@@ -50,16 +50,16 @@ describe('eth_subscribe', function () {
         `);
 
         // Verify that the new block is seen on the first dapp
-        await testDapp.check_ethSubscribeResponse(true);
+        await testDapp.checkEthSubscribeResponse(true);
 
         // Switch to the second dapp
         const testDapp2 = new TestDapp(driver);
         await testDapp2.openTestDappPage({ url: DAPP_ONE_URL });
-        await testDapp2.check_pageIsLoaded();
+        await testDapp2.checkPageIsLoaded();
 
         // Setup the same subscription listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);
-        await testDapp2.check_ethSubscribeResponse(false);
+        await testDapp2.checkEthSubscribeResponse(false);
       },
     );
   });
