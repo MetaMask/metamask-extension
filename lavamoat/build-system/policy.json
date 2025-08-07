@@ -1925,7 +1925,7 @@
         "fs.Stats": true
       }
     },
-    "@metamask/jazzicon>color>clone": {
+    "node-zopfli>defaults>clone": {
       "globals": {
         "Buffer": true
       }
@@ -8456,7 +8456,7 @@
       },
       "packages": {
         "gulp-watch>vinyl-file>vinyl>clone-stats": true,
-        "@metamask/jazzicon>color>clone": true,
+        "node-zopfli>defaults>clone": true,
         "gulp-watch>vinyl-file>vinyl>replace-ext": true
       }
     },

@@ -3068,7 +3068,7 @@
         "define": true
       }
     },
-    "@metamask/jazzicon>color>clone": {
+    "node-zopfli>defaults>clone": {
       "packages": {
         "browserify>buffer": true
       }
@@ -3103,7 +3103,7 @@
     },
     "@metamask/jazzicon>color": {
       "packages": {
-        "@metamask/jazzicon>color>clone": true,
+        "node-zopfli>defaults>clone": true,
         "@metamask/jazzicon>color>color-convert": true,
         "@metamask/jazzicon>color>color-string": true
       }
