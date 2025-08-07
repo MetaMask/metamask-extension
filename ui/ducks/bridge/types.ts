@@ -24,14 +24,12 @@ export type BridgeToken = {
   aggregators?: string[];
 };
 
-export type BridgeDestinationAccount =
-  | InternalAccount
-  | {
-      address: InternalAccount['address'];
-      metadata: Pick<InternalAccount['metadata'], 'name'>;
-      type: InternalAccount['type'];
-      isExternal: boolean;
-    };
+export type BridgeDestinationAccount = {
+  address: InternalAccount['address'];
+  type: InternalAccount['type'];
+  metadata: { name: InternalAccount['metadata']['name'] };
+  isExternal: boolean;
+};
 
 export type BridgeState = {
   /*

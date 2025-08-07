@@ -52,15 +52,17 @@ export const setTxAlerts = createAsyncThunk(
 
 const bridgeSlice = createSlice({
   name: 'bridge',
-  initialState: { ...initialState },
+  initialState,
   reducers: {
-    setToChainId: (state, { payload }: ChainIdPayload) => {
-      state.toChainId = payload ? formatChainIdToCaip(payload) : null;
+    setToChainId: (state, action: ChainIdPayload) => {
+      state.toChainId = action.payload
+        ? formatChainIdToCaip(action.payload)
+        : null;
       state.toToken = null;
       state.toAccount = null;
     },
-    setFromToken: (state, { payload }: TokenPayload) => {
-      state.fromToken = toBridgeToken(payload);
+    setFromToken: (state, action: TokenPayload) => {
+      state.fromToken = toBridgeToken(action.payload);
       // Unset toToken if it's the same as the fromToken
       if (
         state.fromToken?.assetId &&
@@ -71,8 +73,8 @@ const bridgeSlice = createSlice({
         state.toToken = null;
       }
     },
-    setToToken: (state, { payload }: TokenPayload) => {
-      const toToken = toBridgeToken(payload);
+    setToToken: (state, action: TokenPayload) => {
+      const toToken = toBridgeToken(action.payload);
       state.toToken = toToken
         ? {
             ...toToken,
@@ -93,11 +95,8 @@ const bridgeSlice = createSlice({
         state.toAccount = null;
       }
     },
-    setFromTokenInputValue: (
-      state,
-      { payload }: { payload: string | null },
-    ) => {
-      state.fromTokenInputValue = payload;
+    setFromTokenInputValue: (state, action: { payload: string | null }) => {
+      state.fromTokenInputValue = action.payload;
     },
     resetInputFields: () => ({
       ...initialState,
