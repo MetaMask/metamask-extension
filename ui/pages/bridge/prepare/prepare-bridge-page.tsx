@@ -387,13 +387,6 @@ const PrepareBridgePage = ({
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
-  const isDestinationSolana = useMemo(() => {
-    if (!toChain?.chainId) {
-      return false;
-    }
-    return isSolanaChainId(toChain.chainId);
-  }, [toChain?.chainId]);
-
   const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
