@@ -1,8 +1,4 @@
-import { Mockttp } from 'mockttp';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { mockIdentityServices } from '../identity/mocks';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
-import { withFixtures } from '../../helpers';
+import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { E2E_SRP } from '../../default-fixture';
@@ -16,19 +12,10 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 const newPassword = 'this is the best password ever';
 
 describe('Forgot password', function () {
-  const userStorageMockttpController = new UserStorageMockttpController();
   it('resets password and then unlock wallet with new password', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: (server: Mockttp) => {
-          userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.accounts,
-            server,
-          );
-
-          return mockIdentityServices(server, userStorageMockttpController);
-        },
         title: this.test?.fullTitle(),
       },
       async ({
@@ -55,9 +42,6 @@ describe('Forgot password', function () {
         await homePage.headerNavbar.check_pageIsLoaded();
 
         // Lock wallet again
-
-        // debug
-        await driver.delay(5000);
         await homePage.headerNavbar.lockMetaMask();
 
         // Check user can log in with new password

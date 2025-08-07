@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Browser } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
+import { getCleanAppState } from '../../helpers';
 
 class HeaderNavbar {
   protected driver: Driver;
@@ -69,6 +70,13 @@ class HeaderNavbar {
   }
 
   async lockMetaMask(): Promise<void> {
+    // Wait for the wallet state to be unlocked before proceeding to lock
+    // to avoid the `unable to proceed, wallet is locked` error
+    await this.driver.wait(async () => {
+      const state = await getCleanAppState(this.driver);
+      return state?.metamask?.isUnlocked === true;
+    }, 10000);
+
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
   }
