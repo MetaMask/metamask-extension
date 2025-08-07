@@ -53,7 +53,6 @@ import {
   getIsUnifiedUIEnabled,
   getIsSwap,
   BridgeAppState,
-  isBridgeSolanaEnabled,
   getTxAlerts,
 } from '../../../ducks/bridge/selectors';
 import {
@@ -559,8 +558,6 @@ const PrepareBridgePage = ({
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
 
-  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
-
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
     useState<BridgeToken | null>(null);
@@ -845,7 +842,7 @@ const PrepareBridgePage = ({
             }}
           />
 
-          {isSolanaBridgeEnabled && isToOrFromSolana && (
+          {isToOrFromSolana && (
             <Box padding={6} paddingBottom={3} paddingTop={3}>
               <DestinationAccountPicker
                 onAccountSelect={setSelectedDestinationAccount}
@@ -882,7 +879,7 @@ const PrepareBridgePage = ({
                 paddingInline: 16,
                 position: 'relative',
                 overflow: 'hidden',
-                ...(activeQuote && !wasTxDeclined && isSolanaBridgeEnabled
+                ...(activeQuote && !wasTxDeclined
                   ? {
                       boxShadow:
                         'var(--shadow-size-sm) var(--color-shadow-default)',
@@ -932,9 +929,7 @@ const PrepareBridgePage = ({
                     });
                   }}
                   needsDestinationAddress={
-                    isSolanaBridgeEnabled &&
-                    isToOrFromSolana &&
-                    !selectedDestinationAccount
+                    isToOrFromSolana && !selectedDestinationAccount
                   }
                 />
                 {activeQuote &&
