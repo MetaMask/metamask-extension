@@ -14,6 +14,7 @@ import { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { DeepPartial } from 'redux';
 import {
+  AccountGroupType,
   AccountWalletType,
   toAccountWalletId,
   toDefaultAccountGroupId,
@@ -205,23 +206,31 @@ describe('MultichainAccountListMenu', () => {
             metadata: { id: 'Snap Keyring', name: '' },
           },
         ],
+        accountWalletsMetadata: {},
+        accountGroupsMetadata: {},
         accountTree: {
           selectedAccountGroup: mockGroupId1,
           wallets: {
             [mockWalletId1]: {
               id: mockWalletId1,
+              type: AccountWalletType.Entropy,
               groups: {
                 [mockGroupId1]: {
                   id: mockGroupId1,
+                  type: AccountGroupType.MultichainAccount,
                   accounts: [mockAccount.id, mockBtcAccount.id],
                   metadata: {
                     name: 'Default',
+                    entropy: {
+                      groupIndex: 0,
+                    },
+                    pinned: false,
+                    hidden: false,
                   },
                 },
               },
               metadata: {
                 name: 'Wallet 1',
-                type: AccountWalletType.Entropy,
                 entropy: {
                   id: mockPrimaryHdKeyringId,
                   index: 0,
