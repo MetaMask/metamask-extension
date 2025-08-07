@@ -169,10 +169,8 @@ describe('Vault Decryptor Page', function () {
       },
       async ({ driver }) => {
         // we don't need to use navigate since MM will automatically open a new window in prod build
-        await driver.waitUntilXWindowHandles(2);
-
-        // we cannot use the customized driver functions as there is no socket for window communications in prod builds
-        await driver.switchToWindowByTitleWithoutSocket(
+        await driver.waitAndSwitchToWindowWithTitle(
+          2,
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
@@ -187,16 +185,16 @@ describe('Vault Decryptor Page', function () {
 
         // go to privacy settings page
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         // fill password to reveal SRP and get the SRP
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
@@ -210,13 +208,13 @@ describe('Vault Decryptor Page', function () {
         // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
         await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
         const vaultDecryptorPage = new VaultDecryptorPage(driver);
-        await vaultDecryptorPage.check_pageIsLoaded();
+        await vaultDecryptorPage.checkPageIsLoaded();
         await vaultDecryptorPage.uploadLogFile(extensionLogFile);
 
         // fill the password and decrypt
         await vaultDecryptorPage.fillPassword();
         await vaultDecryptorPage.confirmDecrypt();
-        await vaultDecryptorPage.check_vaultIsDecrypted(seedPhrase);
+        await vaultDecryptorPage.checkVaultIsDecrypted(seedPhrase);
       },
     );
   });
@@ -229,10 +227,9 @@ describe('Vault Decryptor Page', function () {
       },
       async ({ driver }) => {
         // we don't need to use navigate since MM will automatically open a new window in prod build
-        await driver.waitUntilXWindowHandles(2);
 
-        // we cannot use the customized driver functions as there is no socket for window communications in prod builds
-        await driver.switchToWindowByTitleWithoutSocket(
+        await driver.waitAndSwitchToWindowWithTitle(
+          2,
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
@@ -247,16 +244,16 @@ describe('Vault Decryptor Page', function () {
 
         // go to privacy settings page
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         // fill password to reveal SRP and get the SRP
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
@@ -296,13 +293,13 @@ describe('Vault Decryptor Page', function () {
         // navigate to the Vault decryptor webapp and fill the text input field with the vault text
         await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
         const vaultDecryptorPage = new VaultDecryptorPage(driver);
-        await vaultDecryptorPage.check_pageIsLoaded();
+        await vaultDecryptorPage.checkPageIsLoaded();
         await vaultDecryptorPage.fillVaultText(JSON.stringify(vaultObj));
 
         // fill the password and decrypt
         await vaultDecryptorPage.fillPassword();
         await vaultDecryptorPage.confirmDecrypt();
-        await vaultDecryptorPage.check_vaultIsDecrypted(seedPhrase);
+        await vaultDecryptorPage.checkVaultIsDecrypted(seedPhrase);
       },
     );
   });

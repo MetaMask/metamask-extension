@@ -26,10 +26,10 @@ describe('Migrate vault with old encryption', function (this: Suite) {
         await loginWithBalanceValidation(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.checkPageIsLoaded();
         await headerNavbar.lockMetaMaskWithAuthWait(mockedEndpoint);
         const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
         await loginWithBalanceValidation(driver);
       },
     );

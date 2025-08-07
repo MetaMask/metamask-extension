@@ -33,18 +33,18 @@ describe('Forgot password', function () {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
-        await homePage.headerNavbar.check_pageIsLoaded();
+        await homePage.headerNavbar.checkPageIsLoaded();
         await homePage.headerNavbar.lockMetaMaskWithAuthWait(mockedEndpoint);
 
         // Click forgot password button and reset password
         await new LoginPage(driver).gotoResetPasswordPage();
 
         const resetPasswordPage = new ResetPasswordPage(driver);
-        await resetPasswordPage.check_pageIsLoaded();
+        await resetPasswordPage.checkPageIsLoaded();
 
         await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
         await resetPasswordPage.waitForSeedPhraseInputToNotBeVisible();
-        await homePage.headerNavbar.check_pageIsLoaded();
+        await homePage.headerNavbar.checkPageIsLoaded();
 
         // Lock wallet again
         await homePage.headerNavbar.lockMetaMask();
