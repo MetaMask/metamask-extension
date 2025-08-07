@@ -1,6 +1,8 @@
 import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
 import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import AccountListPage from '../page-objects/pages/account-list-page';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
 import { Driver } from '../webdriver/driver';
 
 const withState = {
@@ -14,7 +16,7 @@ const withState = {
 };
 
 describe('Power user persona', function () {
-  it('loads and unlocks the wallet', async function () {
+  it('loads the requested number of accounts', async function () {
     await withFixtures(
       {
         title: this.test?.fullTitle(),
@@ -25,6 +27,18 @@ describe('Power user persona', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
+
+        // Confirm the number of accounts in the account list
+        new HeaderNavbar(driver).openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkNumberOfAvailableAccounts(
+          withState.withAccounts,
+        );
+
+        // Confirm that the last account is displayed in the account list
+        await accountListPage.checkAccountDisplayedInAccountList(
+          `Account ${withState.withAccounts}`,
+        );
       },
     );
   });
