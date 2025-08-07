@@ -76,15 +76,14 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
 import { useAccountGroupConnectionStatus } from '../../../hooks/useAccountGroupConnectionStatus';
-import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/site-cell';
 import { MultichainEditAccountsModal } from '../../../components/multichain/edit-accounts-modal/multichain-edit-accounts-modal';
 import { MultichainSiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/multichain-site-cell';
+import { AvatarGroup } from '../../../components/multichain';
+import { AvatarType } from '../../../components/multichain/avatar-group/avatar-group.types';
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
 } from './utils';
-import { AvatarGroup } from '../../../components/multichain';
-import { AvatarType } from '../../../components/multichain/avatar-group/avatar-group.types';
 
 export type ConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -321,7 +320,7 @@ export const MultichainConnectPage: React.FC<MultichainConnectPageProps> = ({
 
             if (namespace === KnownCaipNamespace.Eip155) {
               shouldAdd = accountScopesSet.has(eip155Scope);
-            } else if (namespace === chainId) {
+            } else if (chainId) {
               shouldAdd = accountScopesSet.has(chainId);
             }
 
@@ -336,6 +335,10 @@ export const MultichainConnectPage: React.FC<MultichainConnectPageProps> = ({
 
       handleChainIdsSelected(updatedSelectedChains, { isUserModified });
       setSelectedAccountGroupIds(accountGroupIds);
+      console.log(
+        'updatedSelectedCaipAccountAddresses',
+        Array.from(updatedSelectedCaipAccountAddresses),
+      );
       setSelectedCaipAccountAddresses(
         Array.from(updatedSelectedCaipAccountAddresses),
       );
