@@ -18,7 +18,7 @@ describe('Migrate vault with old encryption', function (this: Suite) {
         fixtures: new FixtureBuilder().withKeyringControllerOldVault().build(),
         testSpecificMock: (server: Mockttp) => {
           userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.addressBook,
+            USER_STORAGE_FEATURE_NAMES.accounts,
             server,
           );
 

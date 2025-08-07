@@ -17,7 +17,7 @@ describe('Lock and unlock', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: (server: Mockttp) => {
           userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.addressBook,
+            USER_STORAGE_FEATURE_NAMES.accounts,
             server,
           );
 

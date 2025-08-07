@@ -23,7 +23,7 @@ describe('Forgot password', function () {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: (server: Mockttp) => {
           userStorageMockttpController.setupPath(
-            USER_STORAGE_FEATURE_NAMES.addressBook,
+            USER_STORAGE_FEATURE_NAMES.accounts,
             server,
           );
 
