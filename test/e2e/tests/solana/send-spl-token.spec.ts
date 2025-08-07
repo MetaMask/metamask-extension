@@ -20,10 +20,10 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('50');
+        await homePage.checkPageIsLoaded('50');
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
-        // await sendSolanaPage.check_pageIsLoaded('50 SOL'); // Get price might take a bit to get executed, so to avoid flakiness, wait until the call is made and mocked
+        // await sendSolanaPage.checkPageIsLoaded('50 SOL'); // Get price might take a bit to get executed, so to avoid flakiness, wait until the call is made and mocked
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -36,15 +36,15 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
           'Continue button is enabled when no address',
         );
         await sendSolanaPage.openTokenList();
-        await sendSolanaPage.check_tokenByNameIsDisplayed('SOL');
+        await sendSolanaPage.checkTokenByNameIsDisplayed('SOL');
 
-        await sendSolanaPage.check_tokenByNameIsDisplayed(splTokenName);
+        await sendSolanaPage.checkTokenByNameIsDisplayed(splTokenName);
 
         await sendSolanaPage.selectTokenFromTokenList(splTokenName);
 
-        await sendSolanaPage.check_amountCurrencyIsDisplayed(splTokenName);
+        await sendSolanaPage.checkAmountCurrencyIsDisplayed(splTokenName);
 
-        await sendSolanaPage.check_tokenBalanceIsDisplayed(
+        await sendSolanaPage.checkTokenBalanceIsDisplayed(
           '8.908',
           splTokenName,
         );
@@ -88,7 +88,7 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await sentTxPage.check_TransactionStatusText(
+          await sentTxPage.checkTransactionStatusText(
             '0.1',
             true,
             splTokenName,
@@ -97,7 +97,7 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
           'Transaction amount is not correct',
         );
         assert.equal(
-          await sentTxPage.check_TransactionStatus(true),
+          await sentTxPage.checkTransactionStatus(true),
           true,
           'Transaction was not sent as expected',
         );
@@ -128,7 +128,7 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
           'Network fee field not displayed',
         );
         assert.equal(
-          await sentTxPage.check_isViewTransactionLinkDisplayed(),
+          await sentTxPage.checkIsViewTransactionLinkDisplayed(),
           true,
           'View transaction link is not displayed and it should',
         );
@@ -146,15 +146,15 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('50');
+        await homePage.checkPageIsLoaded('50');
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);
-        // await sendSolanaPage.check_pageIsLoaded('50 SOL');
+        // await sendSolanaPage.checkPageIsLoaded('50 SOL');
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.openTokenList();
         await sendSolanaPage.selectTokenFromTokenList(splTokenName);
-        await sendSolanaPage.check_amountCurrencyIsDisplayed(splTokenName);
+        await sendSolanaPage.checkAmountCurrencyIsDisplayed(splTokenName);
         await sendSolanaPage.setAmount('0.1');
         // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
         await sendSolanaPage.clickOnContinue();
@@ -163,12 +163,12 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const failedTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await failedTxPage.check_TransactionStatusText('0.1', false),
+          await failedTxPage.checkTransactionStatusText('0.1', false),
           true,
           'Transaction amount is not correct',
         );
         assert.equal(
-          await failedTxPage.check_TransactionStatus(false),
+          await failedTxPage.checkTransactionStatus(false),
           true,
           'Transaction did not fail as expected',
         );
