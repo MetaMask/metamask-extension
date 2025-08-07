@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../../app/scripts/lib/multichain/address';
-import type { ExternalAccount } from '../prepare/types';
 import {
   getDomainResolutions,
   lookupDomainName,
@@ -11,6 +10,7 @@ import {
   initializeDomainSlice,
 } from '../../../ducks/domains';
 import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
+import { type BridgeDestinationAccount } from '../../../ducks/bridge/types';
 
 type UseExternalAccountResolutionProps = {
   searchQuery: string;
@@ -21,7 +21,7 @@ type UseExternalAccountResolutionProps = {
 type UseExternalAccountResolutionResult = {
   isValidAddress: boolean;
   isValidEnsName: boolean;
-  externalAccount: ExternalAccount | null;
+  externalAccount: BridgeDestinationAccount | null;
 };
 
 export const useExternalAccountResolution = ({
@@ -97,6 +97,7 @@ export const useExternalAccountResolution = ({
         metadata: {
           name: ensName,
         },
+        type: 'eip155:eoa' as const,
         isExternal: true,
       };
     }
@@ -104,11 +105,11 @@ export const useExternalAccountResolution = ({
     // For regular addresses
     if (isValidAddress) {
       const address = searchQuery.trim();
-      const addressExists = accounts.some(
+      const matchedAccount = accounts.find(
         (account) => account.address.toLowerCase() === address.toLowerCase(),
       );
 
-      if (addressExists) {
+      if (matchedAccount) {
         return null;
       }
 
@@ -117,6 +118,7 @@ export const useExternalAccountResolution = ({
         metadata: {
           name: address,
         },
+        type: 'any:account' as const,
         isExternal: true,
       };
     }

@@ -24,6 +24,15 @@ export type BridgeToken = {
   aggregators?: string[];
 };
 
+export type BridgeDestinationAccount =
+  | InternalAccount
+  | {
+      address: InternalAccount['address'];
+      metadata: Pick<InternalAccount['metadata'], 'name'>;
+      type: InternalAccount['type'];
+      isExternal: boolean;
+    };
+
 export type BridgeState = {
   /*
    * This stores the user's selected destination chain, and will be null if the user has not selected a destination chain
@@ -42,7 +51,7 @@ export type BridgeState = {
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
   slippage?: number;
   txAlert: TxAlert | null;
-  toAccount: InternalAccount | null;
+  toAccount: BridgeDestinationAccount | null;
 };
 
 export type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };

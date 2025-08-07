@@ -7,7 +7,12 @@ import {
 } from '@metamask/bridge-controller';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
-import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
+import type {
+  BridgeDestinationAccount,
+  BridgeState,
+  ChainIdPayload,
+  TokenPayload,
+} from './types';
 
 const initialState: BridgeState = {
   toChainId: null,
@@ -107,7 +112,10 @@ const bridgeSlice = createSlice({
     setSlippage: (state, action) => {
       state.slippage = action.payload;
     },
-    setToAccount: (state, action) => {
+    setToAccount: (
+      state,
+      action: { payload: BridgeDestinationAccount | null },
+    ) => {
       state.toAccount = action.payload;
     },
   },
