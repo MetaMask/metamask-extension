@@ -7,6 +7,7 @@ import {
   formatEtaInMinutes,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
+  selectBridgeFeatureFlags,
 } from '@metamask/bridge-controller';
 import {
   Text,
@@ -51,7 +52,9 @@ import {
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { formatPriceImpact } from '../utils/priceImpact';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+import { PriceImpactWarningModal } from './price-impact-warning-modal';
 
 export const MultichainBridgeQuoteCard = ({
   onOpenSlippageModal,
@@ -77,6 +80,36 @@ export const MultichainBridgeQuoteCard = ({
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
+  // TODO: fix this by using selectors.ts.
+  const bridgeFeatureFlags = useSelector((state: any) =>
+    selectBridgeFeatureFlags({
+      remoteFeatureFlags: {
+        bridgeConfig: state.metamask?.remoteFeatureFlags?.bridgeConfig,
+      },
+    }),
+  );
+
+  const [showPriceImpactModal, setShowPriceImpactModal] = useState(false);
+
+  // Calculate if price impact warning should show
+  const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
+  const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
+
+  const shouldShowPriceImpactWarning = React.useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const priceImpactThreshold = (bridgeFeatureFlags as any)
+      ?.priceImpactThreshold;
+    if (!priceImpact || !priceImpactThreshold) {
+      return false;
+    }
+
+    const threshold = gasIncluded
+      ? priceImpactThreshold.gasless
+      : priceImpactThreshold.normal;
+
+    return Number(priceImpact) * 100 >= threshold;
+  }, [priceImpact, gasIncluded, bridgeFeatureFlags]);
+
   const getNetworkImage = (chainId: string | number) => {
     if (isSolanaChainId(chainId)) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA];
@@ -101,6 +134,11 @@ export const MultichainBridgeQuoteCard = ({
 
   return (
     <>
+      <PriceImpactWarningModal
+        isOpen={showPriceImpactModal}
+        onClose={() => setShowPriceImpactModal(false)}
+        isGasIncluded={gasIncluded}
+      />
       <BridgeQuotesModal
         isOpen={showAllQuotes}
         onClose={() => setShowAllQuotes(false)}
@@ -224,6 +262,39 @@ export const MultichainBridgeQuoteCard = ({
                   : `${slippage}%`}
               </Text>
             </Row>
+
+            {/* Price Impact */}
+            {priceImpact && (
+              <Row justifyContent={JustifyContent.spaceBetween}>
+                <Row gap={1}>
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textAlternative}
+                  >
+                    {t('bridgePriceImpact')}
+                  </Text>
+                  {shouldShowPriceImpactWarning && (
+                    <ButtonIcon
+                      iconName={IconName.Danger}
+                      color={IconColor.errorDefault}
+                      size={ButtonIconSize.Sm}
+                      ariaLabel={t('bridgePriceImpactWarningTitle')}
+                      onClick={() => setShowPriceImpactModal(true)}
+                    />
+                  )}
+                </Row>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={
+                    shouldShowPriceImpactWarning
+                      ? TextColor.errorDefault
+                      : TextColor.textDefault
+                  }
+                >
+                  {formatPriceImpact(priceImpact)}
+                </Text>
+              </Row>
+            )}
 
             {/* Time */}
             <Row justifyContent={JustifyContent.spaceBetween}>
