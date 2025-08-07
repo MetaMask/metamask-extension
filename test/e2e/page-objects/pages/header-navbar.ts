@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Browser } from 'selenium-webdriver';
-import { MockedEndpoint } from '../../mock-e2e';
 import { Driver } from '../../webdriver/driver';
 
 class HeaderNavbar {
@@ -64,34 +63,6 @@ class HeaderNavbar {
   async lockMetaMask(): Promise<void> {
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
-  }
-
-  /**
-   * Locks MetaMask after waiting for authentication requests to complete.
-   * This is needed to avoid the error 'unable to proceed, wallet is locked'
-   * when authentication requests are still pending and must be used in combination of the authentication mocks.
-   *
-   * @param mockedEndpoints - Array of mocked endpoints to wait for completion
-   */
-  async lockMetaMaskWithAuthWait(
-    mockedEndpoints: MockedEndpoint[],
-  ): Promise<void> {
-    // Wait for all authentication requests to happen, before locking the wallet
-    // There are 3 identical requests to lineage because of this issue #34938
-    await this.driver.waitUntil(
-      async () => {
-        const pendingStatuses = await Promise.all([
-          mockedEndpoints[0].isPending(), // srp login
-          mockedEndpoints[1].isPending(), // lineage endpoint call 1
-          mockedEndpoints[2].isPending(), // lineage endpoint call 2
-          mockedEndpoints[3].isPending(), // lineage endpoint call 3
-        ]);
-        return pendingStatuses.every((status) => status === false);
-      },
-      { interval: 200, timeout: 10000 },
-    );
-
-    await this.lockMetaMask();
   }
 
   async openAccountMenu(): Promise<void> {

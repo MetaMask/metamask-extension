@@ -4,28 +4,21 @@ import FixtureBuilder from '../../fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { MockedEndpoint } from '../../mock-e2e';
-import { seeAuthenticationRequest } from './mocks/authentication';
 
 describe('Lock and unlock', function (this: Suite) {
   it('successfully unlocks after lock', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: seeAuthenticationRequest,
+        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        mockedEndpoint,
-      }: {
-        driver: Driver;
-        mockedEndpoint: MockedEndpoint[];
-      }) => {
+      async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.headerNavbar.lockMetaMaskWithAuthWait(mockedEndpoint);
+        await homePage.headerNavbar.lockMetaMask();
         await loginWithBalanceValidation(driver);
       },
     );

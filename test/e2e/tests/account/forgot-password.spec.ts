@@ -1,4 +1,3 @@
-import { MockedEndpoint } from '../../mock-e2e';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
@@ -9,7 +8,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { seeAuthenticationRequest } from './mocks/authentication';
 
 const newPassword = 'this is the best password ever';
 
@@ -18,23 +16,22 @@ describe('Forgot password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: seeAuthenticationRequest,
+        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
         localNodes,
-        mockedEndpoint,
       }: {
         driver: Driver;
         localNodes: Anvil[] | Ganache[] | undefined[];
-        mockedEndpoint: MockedEndpoint[];
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.checkPageIsLoaded();
-        await homePage.headerNavbar.lockMetaMaskWithAuthWait(mockedEndpoint);
+        await homePage.headerNavbar.lockMetaMask();
 
         // Click forgot password button and reset password
         await new LoginPage(driver).gotoResetPasswordPage();
