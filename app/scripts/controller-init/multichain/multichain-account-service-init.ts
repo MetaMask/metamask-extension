@@ -1,4 +1,5 @@
 import { MultichainAccountService } from '@metamask/multichain-account-service';
+import { KeyringObject } from '@metamask/keyring-controller';
 import { ControllerInitFunction } from '../types';
 import { MultichainAccountServiceMessenger } from '../messengers/accounts';
 
@@ -13,6 +14,16 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   MultichainAccountService,
   MultichainAccountServiceMessenger
 > = ({ controllerMessenger }) => {
+  controllerMessenger.subscribe(
+    'KeyringController:stateChange',
+    (hdKeyring: KeyringObject | undefined) => {
+      console.log('@@ HD keyrinh update', hdKeyring?.accounts);
+    },
+    (state) => {
+      return state.keyrings[100];
+    },
+  );
+
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
   });

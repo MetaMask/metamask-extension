@@ -6,7 +6,7 @@ import {
   EthScope,
 } from '@metamask/keyring-api';
 import {
-  AccountWalletCategory,
+  AccountWalletType,
   toAccountWalletId,
   toDefaultAccountGroupId,
   type AccountGroupId,
@@ -26,12 +26,12 @@ const mockWalletTwoEntropySource: EntropySourceId =
   '01JKAF3PJ247KAM6C03G5Q0NP8';
 
 const walletOneId: AccountWalletId = toAccountWalletId(
-  AccountWalletCategory.Entropy,
+  AccountWalletType.Entropy,
   mockWalletOneEntropySource,
 );
 const walletOneGroupId: AccountGroupId = toDefaultAccountGroupId(walletOneId);
 const walletTwoId: AccountWalletId = toAccountWalletId(
-  AccountWalletCategory.Entropy,
+  AccountWalletType.Entropy,
   mockWalletTwoEntropySource,
 );
 const walletTwoGroupId: AccountGroupId = toDefaultAccountGroupId(walletTwoId);
@@ -76,7 +76,7 @@ const mockWallets: ConsolidatedWallets = {
     id: walletOneId,
     metadata: {
       name: 'Wallet 1',
-      type: AccountWalletCategory.Entropy as const,
+      type: AccountWalletType.Entropy as const,
       entropy: {
         id: mockWalletOneEntropySource,
         index: 0,
@@ -113,7 +113,7 @@ const mockWallets: ConsolidatedWallets = {
     id: walletTwoId,
     metadata: {
       name: 'Wallet 2',
-      type: AccountWalletCategory.Entropy as const,
+      type: AccountWalletType.Entropy as const,
       entropy: {
         id: mockWalletTwoEntropySource,
         index: 1,

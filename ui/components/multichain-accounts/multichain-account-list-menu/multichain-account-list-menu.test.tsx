@@ -14,7 +14,7 @@ import { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { DeepPartial } from 'redux';
 import {
-  AccountWalletCategory,
+  AccountWalletType,
   toAccountWalletId,
   toDefaultAccountGroupId,
 } from '@metamask/account-api';
@@ -177,7 +177,7 @@ describe('MultichainAccountListMenu', () => {
 
     const mockPrimaryHdKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
     const mockWalletId1 = toAccountWalletId(
-      AccountWalletCategory.Entropy,
+      AccountWalletType.Entropy,
       mockPrimaryHdKeyringId,
     );
     const mockGroupId1 = toDefaultAccountGroupId(mockWalletId1);
@@ -221,7 +221,7 @@ describe('MultichainAccountListMenu', () => {
               },
               metadata: {
                 name: 'Wallet 1',
-                type: AccountWalletCategory.Entropy,
+                type: AccountWalletType.Entropy,
                 entropy: {
                   id: mockPrimaryHdKeyringId,
                   index: 0,
