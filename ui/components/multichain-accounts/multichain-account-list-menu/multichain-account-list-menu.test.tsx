@@ -55,10 +55,22 @@ type TestState = {
     KeyringControllerState;
 };
 
+function asAccountTree(
+  accountTree: typeof mockDefaultState.metamask.accountTree,
+) {
+  // We type-cast manually as it seems that some mock values "clash" with the actual
+  // expected types... It could be because we have very strict type-constraint which
+  // are too match using a plain JSON dataset.
+  return accountTree as unknown as AccountTreeControllerState['accountTree'];
+}
+
 const MOCK_STATE: TestState = {
   ...mockDefaultState,
   metamask: {
     ...mockDefaultState.metamask,
+    accountTree: {
+      ...asAccountTree(mockDefaultState.metamask.accountTree),
+    },
     remoteFeatureFlags: {
       addBitcoinAccount: true,
     },
@@ -233,7 +245,6 @@ describe('MultichainAccountListMenu', () => {
                 name: 'Wallet 1',
                 entropy: {
                   id: mockPrimaryHdKeyringId,
-                  index: 0,
                 },
               },
             },
