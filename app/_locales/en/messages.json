@@ -5571,6 +5571,15 @@
   "slideSweepStakeTitle": {
     "message": "Enter the $5000 USDC Giveaway!"
   },
+  "slippage": {
+    "message": "Slippage"
+  },
+  "slippageAuto": {
+    "message": "Auto"
+  },
+  "slippageEditAriaLabel": {
+    "message": "Edit slippage"
+  },
   "smartAccountAccept": {
     "message": "Use smart account"
   },
