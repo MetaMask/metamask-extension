@@ -19,6 +19,9 @@ describe('Power user persona', function () {
       {
         title: this.test?.fullTitle(),
         fixtures: (await generateWalletState(withState, true)).build(),
+        manifestFlags: {
+          testing: { disableSync: true },
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);

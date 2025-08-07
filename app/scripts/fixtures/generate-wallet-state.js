@@ -47,13 +47,7 @@ export async function generateWalletState(withState, fromTest) {
     )
     .withPreferencesController(generatePreferencesControllerState(accounts))
     .withTokensController(generateTokensControllerState(accounts[0]))
-    .withTransactionController(generateTransactionControllerState(accounts[0]))
-
-    // Disable backup and sync in this case
-    .withBackupAndSyncSettings({
-      isProfileSyncingEnabled: false,
-      isAccountSyncingEnabled: false,
-    });
+    .withTransactionController(generateTransactionControllerState(accounts[0]));
 
   return fixtureBuilder;
 }
