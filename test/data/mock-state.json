@@ -571,28 +571,32 @@
           "groups": {
             "entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0": {
               "id": "entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0",
+              "type": "multichain-account",
               "accounts": ["784225f4-d30b-4e77-a900-c8bbce735b88"],
               "metadata": {
-                "name": "Default"
+                "name": "Default",
+                "hidden": false,
+                "pinned": false
               },
               "entropy": {
                 "groupIndex": 0
-              },
-              "hidden": false,
-              "pinned": false
+              }
             }
           },
           "metadata": {
-            "name": "Wallet 2"
+            "name": "Wallet 2",
+            "entropy": {
+              "id": "01JKAF3PJ247KAM6C03G5Q0NP8"
+            }
           }
         },
         "keyring:Ledger Hardware": {
           "id": "keyring:Ledger Hardware",
-          "type:": "keyring",
+          "type": "keyring",
           "groups": {
             "keyring:Ledger Hardware:default": {
               "id": "keyring:Ledger Hardware:default",
-              "type:": "single-account",
+              "type": "single-account",
               "accounts": ["15e69915-2a1a-4019-93b3-916e11fd432f"],
               "metadata": {
                 "name": "Default",
@@ -602,7 +606,10 @@
             }
           },
           "metadata": {
-            "name": "Ledger Hardware"
+            "name": "Ledger Hardware",
+            "keyring": {
+              "type": "Ledger Hardware"
+            }
           }
         },
         "snap:local:custody:test": {
@@ -611,7 +618,7 @@
           "groups": {
             "snap:local:custody:test:default": {
               "id": "snap:local:custody:test:default",
-              "type:": "single-account",
+              "type": "single-account",
               "accounts": ["694225f4-d30b-4e77-a900-c8bbce735b42"],
               "metadata": {
                 "name": "Default",
