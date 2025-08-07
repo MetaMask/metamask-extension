@@ -49,8 +49,8 @@ function transformState(
     return state;
   }
 
-  // If we are using `yarn start:with-state` do not enable syncing
-  if (!process.env.WITH_STATE) {
+  // If we are using `yarn start:with-state` or we're running a test, do not enable syncing
+  if (!process.env.WITH_STATE && !process.env.IN_TEST) {
     if (hasProperty(userStorageControllerState, 'isBackupAndSyncEnabled')) {
       // Set isBackupAndSyncEnabled to true for all users.
       userStorageControllerState.isBackupAndSyncEnabled = true;

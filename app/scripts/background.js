@@ -773,10 +773,14 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence(backup) {
   if (process.env.WITH_STATE) {
+    const withState = JSON.parse(process.env.WITH_STATE);
+
     // Use `require` to make it easier to exclude this test code from the Browserify build.
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
     const { generateWalletState } = require('./fixtures/generate-wallet-state');
-    const stateOverrides = await generateWalletState();
+    const fixtureBuilder = await generateWalletState(withState, false);
+
+    const stateOverrides = fixtureBuilder.fixture.data;
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
