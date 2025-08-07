@@ -70,13 +70,6 @@ class HeaderNavbar {
   }
 
   async lockMetaMask(): Promise<void> {
-    // Wait for the wallet state to be unlocked before proceeding to lock
-    // to avoid the `unable to proceed, wallet is locked` error
-    await this.driver.wait(async () => {
-      const state = await getCleanAppState(this.driver);
-      return state?.metamask?.isUnlocked === true;
-    }, 10000);
-
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
   }
