@@ -931,11 +931,6 @@ const PrepareBridgePage = ({
                       security_warnings: [], // TODO populate security warnings
                     });
                   }}
-                  needsDestinationAddress={
-                    isSolanaBridgeEnabled &&
-                    isToOrFromSolana &&
-                    !selectedDestinationAccount
-                  }
                 />
                 {activeQuote &&
                 activeQuote.approval &&

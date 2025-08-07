@@ -575,6 +575,22 @@ export const getFromAmountInCurrency = createSelector(
 
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 
+export const getIsToOrFromSolana = createSelector(
+  getFromChain,
+  getToChain,
+  (fromChain, toChain) => {
+    if (!fromChain?.chainId || !toChain?.chainId) {
+      return false;
+    }
+
+    const fromChainIsSolana = isSolanaChainId(fromChain.chainId);
+    const toChainIsSolana = isSolanaChainId(toChain.chainId);
+
+    // Only return true if either chain is Solana and the other is EVM
+    return toChainIsSolana !== fromChainIsSolana;
+  },
+);
+
 export const getValidationErrors = createDeepEqualSelector(
   getBridgeQuotes,
   _getValidatedSrcAmount,
@@ -584,6 +600,8 @@ export const getValidationErrors = createDeepEqualSelector(
     selectMinimumBalanceForRentExemptionInSOL(metamask),
   getQuoteRequest,
   getTxAlerts,
+  getToAccount,
+  getIsToOrFromSolana,
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
@@ -592,6 +610,8 @@ export const getValidationErrors = createDeepEqualSelector(
     minimumBalanceForRentExemptionInSOL,
     quoteRequest,
     txAlert,
+    toAccount,
+    isToOrFromSolana,
   ) => {
     const { gasIncluded } = activeQuote?.quote ?? {};
 
@@ -659,6 +679,7 @@ export const getValidationErrors = createDeepEqualSelector(
               ).times(activeQuote.sentAmount.valueInCurrency),
             )
           : false,
+      isToAccountValid: isToOrFromSolana && !toAccount,
     };
   },
 );
