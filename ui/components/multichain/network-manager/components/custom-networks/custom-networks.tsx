@@ -39,10 +39,7 @@ import {
   getOrderedNetworksList,
   getShowTestNetworks,
 } from '../../../../../selectors';
-import {
-  getInternalAccountBySelectedAccountGroupAndCaip,
-  getSelectedAccountGroup,
-} from '../../../../../selectors/multichain-accounts/account-tree';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();

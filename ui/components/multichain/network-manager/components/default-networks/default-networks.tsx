@@ -58,10 +58,7 @@ import {
   getIsMultichainAccountsState2Enabled,
 } from '../../../../../selectors';
 import Tooltip from '../../../../ui/tooltip';
-import {
-  getInternalAccountBySelectedAccountGroupAndCaip,
-  getSelectedAccountGroup,
-} from '../../../../../selectors/multichain-accounts/account-tree';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
