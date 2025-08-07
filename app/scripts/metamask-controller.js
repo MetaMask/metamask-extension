@@ -5061,7 +5061,6 @@ export default class MetamaskController extends EventEmitter {
 
         // If SRP is not in the local state, import it to the vault
         // convert the seed phrase to a mnemonic (string)
-        debugger;
         const encodedSrp =
           mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(secret.data);
         const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
