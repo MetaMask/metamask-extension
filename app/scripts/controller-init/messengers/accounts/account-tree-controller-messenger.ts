@@ -2,6 +2,7 @@ import { Messenger } from '@metamask/base-controller';
 import {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
+  AccountsControllerAccountRenamedEvent,
   AccountsControllerGetAccountAction,
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerListMultichainAccountsAction,
@@ -21,6 +22,7 @@ type Actions =
 
 type Events =
   | AccountsControllerAccountAddedEvent
+  | AccountsControllerAccountRenamedEvent
   | AccountsControllerAccountRemovedEvent
   | AccountsControllerSelectedAccountChangeEvent;
 
@@ -42,6 +44,7 @@ export function getAccountTreeControllerMessenger(
     name: 'AccountTreeController',
     allowedEvents: [
       'AccountsController:accountAdded',
+      'AccountsController:accountRenamed',
       'AccountsController:accountRemoved',
       'AccountsController:selectedAccountChange',
     ],
