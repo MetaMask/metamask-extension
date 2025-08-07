@@ -118,7 +118,6 @@ import {
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
-import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
@@ -907,15 +906,11 @@ const PrepareBridgePage = ({
                   backgroundColor={BackgroundColor.primaryMuted}
                 />
               )}
-              {!wasTxDeclined &&
-                activeQuote &&
-                (isSolanaBridgeEnabled ? (
-                  <MultichainBridgeQuoteCard
-                    onOpenSlippageModal={onOpenSettings}
-                  />
-                ) : (
-                  <BridgeQuoteCard onOpenSlippageModal={onOpenSettings} />
-                ))}
+              {!wasTxDeclined && activeQuote && (
+                <MultichainBridgeQuoteCard
+                  onOpenSlippageModal={onOpenSettings}
+                />
+              )}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
                   nativeAssetBalance={nativeAssetBalance}
