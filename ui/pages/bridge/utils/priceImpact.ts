@@ -9,7 +9,7 @@ export function formatPriceImpact(priceImpact: string | number | undefined): str
   }
 
   const impact = Number(priceImpact);
-  
+
   // If the impact is 0, show 0%
   if (impact === 0) {
     return '0%';
