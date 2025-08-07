@@ -5348,9 +5348,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@0.7.0-preview-4375dc2":
-  version: 0.7.0-preview-4375dc2
-  resolution: "@metamask-previews/account-tree-controller@npm:0.7.0-preview-4375dc2"
+"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@0.7.0-preview-5bf6b6e":
+  version: 0.7.0-preview-5bf6b6e
+  resolution: "@metamask-previews/account-tree-controller@npm:0.7.0-preview-5bf6b6e"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/snaps-sdk": "npm:^9.0.0"
@@ -5363,7 +5363,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/4f59ff4fe3cb20715433ceb3de1d9f9678713bebabd6826831ab98586d7ccc00cf1316181f15a8e5b1d83c45a2967fafeb0b0ac131c0bea09689cac400b9d6d5
+  checksum: 10/176e095fa8219f62a00d4d62a5ca0450538bb0e2352c7b93c45d230297ac51865f4a7767d9a6198014fb01ec47052248bf07e712b756c51a29a0fcf07a5f0617
   languageName: node
   linkType: hard
 
@@ -6696,9 +6696,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@0.3.0-preview-4375dc2":
-  version: 0.3.0-preview-4375dc2
-  resolution: "@metamask-previews/multichain-account-service@npm:0.3.0-preview-4375dc2"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@0.3.0-preview-5bf6b6e":
+  version: 0.3.0-preview-5bf6b6e
+  resolution: "@metamask-previews/multichain-account-service@npm:0.3.0-preview-5bf6b6e"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/eth-snap-keyring": "npm:^16.0.0"
@@ -6716,7 +6716,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/fa8ee5843cfceb942ea05048a781faadfe14a208ad5e70278b9bc9ad4c9e2421f593d619d90a37ff45a484cb41ad60f5c5f01aad20ddbce2e2a7765bb1bb8250
+  checksum: 10/e8a76cbe432faa3e9e1402d98883a680a034bb005f616622fe8f27631dbe58048359e4c91c0adeba317545e6b91854070bf517e79fa810840f307b238046f711
   languageName: node
   linkType: hard
 
