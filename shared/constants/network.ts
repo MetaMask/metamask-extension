@@ -1,7 +1,7 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
-import { Hex, hexToNumber } from '@metamask/utils';
+import { Hex, hexToNumber, KnownCaipNamespace } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
 
 /**
@@ -1423,6 +1423,13 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
 ];
 
 export const FEATURED_NETWORK_CHAIN_IDS = [
+  CHAIN_IDS.MAINNET,
+  ...FEATURED_RPCS.map((rpc) => rpc.chainId),
+];
+
+export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
+  `${KnownCaipNamespace.Solana}:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp`,
+  `${KnownCaipNamespace.Bip122}:000000000019d6689c085ae165831e93`,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];

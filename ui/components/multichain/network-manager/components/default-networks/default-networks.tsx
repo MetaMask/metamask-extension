@@ -106,8 +106,6 @@ const DefaultNetworks = memo(() => {
     ),
   );
 
-  console.log('btcAccountGroup 2222 ********', btcAccountGroup);
-
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
     useNetworkManagerState({ showDefaultNetworks: true });
@@ -192,7 +190,6 @@ const DefaultNetworks = memo(() => {
             solAccountGroup &&
             network.chainId === 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
           ) {
-            console.log('network ********', network);
             return true;
           }
           if (
@@ -231,6 +228,7 @@ const DefaultNetworks = memo(() => {
           getItemCallbacks(network);
         const iconSrc = getNetworkIcon(network);
         const isEnabled = isNetworkEnabled(hexChainId);
+
         const isLastRemainingNetwork =
           singleRemainingNetwork && enabledChainIds[0] === hexChainId;
 

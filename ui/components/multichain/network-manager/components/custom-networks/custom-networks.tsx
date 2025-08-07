@@ -2,6 +2,7 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { EthScope } from '@metamask/keyring-api';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
   convertCaipToHexChainId,
@@ -33,10 +34,12 @@ import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import {
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
   getShowTestNetworks,
 } from '../../../../../selectors';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
@@ -45,6 +48,14 @@ export const CustomNetworks = React.memo(() => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  const evmAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
+  );
+
   const showTestnets = useSelector(getShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
@@ -118,18 +129,35 @@ export const CustomNetworks = React.memo(() => {
     ],
   );
 
+  // Helper function to filter networks based on account type and selection
+  const getFilteredNetworks = useCallback(
+    (networks: MultichainNetworkConfiguration[]) => {
+      if (isMultichainAccountsState2Enabled) {
+        // Only show EVM networks if user has EVM accounts
+        return networks.filter((network) => evmAccountGroup && network.isEvm);
+      }
+
+      return networks.filter((network) => {
+        if (isEvmNetworkSelected) {
+          return network.isEvm;
+        }
+        // If non-EVM network is selected, only show non-EVM networks
+        return !network.isEvm;
+      });
+    },
+    [isMultichainAccountsState2Enabled, evmAccountGroup, isEvmNetworkSelected],
+  );
+
   // Memoize the rendered network lists with filtering
   const renderedCustomNetworks = useMemo(() => {
-    const filteredNetworks = orderedNetworks.filter((network) => {
-      // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected) {
-        return network.isEvm;
-      }
-      // If non-EVM network is selected, only show non-EVM networks
-      return !network.isEvm;
-    });
+    const filteredNetworks = getFilteredNetworks(orderedNetworks);
 
-    return filteredNetworks.length > 0 ? (
+    // Early return if no networks to render
+    if (filteredNetworks.length === 0) {
+      return null;
+    }
+
+    return (
       <>
         <Text
           variant={TextVariant.bodyMdMedium}
@@ -144,30 +172,23 @@ export const CustomNetworks = React.memo(() => {
           generateMultichainNetworkListItem(network),
         )}
       </>
-    ) : null;
+    );
   }, [
+    getFilteredNetworks,
     orderedNetworks,
-    isEvmNetworkSelected,
     generateMultichainNetworkListItem,
     t,
   ]);
 
   const renderedTestNetworks = useMemo(() => {
-    const filteredTestNetworks = orderedTestNetworks.filter((network) => {
-      // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected) {
-        return network.isEvm;
-      }
-      // If non-EVM network is selected, only show non-EVM networks
-      return !network.isEvm;
-    });
+    const filteredTestNetworks = getFilteredNetworks(orderedTestNetworks);
 
     return filteredTestNetworks.map((network) =>
       generateMultichainNetworkListItem(network),
     );
   }, [
+    getFilteredNetworks,
     orderedTestNetworks,
-    isEvmNetworkSelected,
     generateMultichainNetworkListItem,
   ]);
 
