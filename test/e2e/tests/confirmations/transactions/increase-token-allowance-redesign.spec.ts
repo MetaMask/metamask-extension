@@ -32,11 +32,16 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 2 transaction (EIP1559) with a small spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForEIP1559Tx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
             '3',
             contractRegistry,
+            localNodes,
           );
         },
       );
@@ -45,11 +50,16 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 0 transaction (Legacy) with a large spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForLegacyTx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
             '3000',
             contractRegistry,
+            localNodes,
           );
         },
       );
@@ -58,11 +68,16 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 2 transaction (EIP1559) with a large spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForEIP1559Tx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
             '3000',
             contractRegistry,
+            localNodes,
           );
         },
       );
