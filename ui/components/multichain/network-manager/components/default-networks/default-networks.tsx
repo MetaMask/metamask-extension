@@ -98,6 +98,16 @@ const DefaultNetworks = memo(() => {
     ),
   );
 
+  // extract the bitcoin account of the selected account group
+  const btcAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      'bip122:000000000019d6689c085ae165831e93',
+    ),
+  );
+
+  console.log('btcAccountGroup 2222 ********', btcAccountGroup);
+
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
     useNetworkManagerState({ showDefaultNetworks: true });
@@ -178,8 +188,17 @@ const DefaultNetworks = memo(() => {
           if (evmAccountGroup && network.isEvm) {
             return true;
           }
-          // Show non-EVM networks if user has Solana accounts
-          if (solAccountGroup && !network.isEvm) {
+          if (
+            solAccountGroup &&
+            network.chainId === 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+          ) {
+            console.log('network ********', network);
+            return true;
+          }
+          if (
+            btcAccountGroup &&
+            network.chainId === 'bip122:000000000019d6689c085ae165831e93'
+          ) {
             return true;
           }
           return false;

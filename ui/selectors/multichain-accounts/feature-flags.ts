@@ -68,8 +68,11 @@ export const isMultichainAccountsFeatureEnabled = (
 export const getMultichainAccountsRemoteFeatureFlags = (
   state: RemoteFeatureFlagsState,
 ) => {
-  const multichainAccountsFeatureFlags =
-    getRemoteFeatureFlags(state).enableMultichainAccounts;
+  const multichainAccountsFeatureFlags = {
+    enabled: true,
+    featureVersion: FEATURE_VERSION_2,
+    minimumVersion: '0.0.0',
+  };
 
   try {
     assert(multichainAccountsFeatureFlags, MultichainAccountsFeatureFlag);
