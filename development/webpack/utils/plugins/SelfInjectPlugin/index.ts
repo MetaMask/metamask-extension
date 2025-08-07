@@ -144,8 +144,6 @@ export class SelfInjectPlugin {
 
     // generate the new self-injecting source code:
     const newSource = new ConcatSource();
-    // TODO: I removed sourcemap stuff so I could move forward
-    // TODO: but we might need to circle back to this
     newSource.add(`document.INJECT_ONCE(`);
     newSource.add(this.escapeJs(source + sourceMappingURLComment));
     newSource.add(`);`);
