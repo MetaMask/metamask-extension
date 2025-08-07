@@ -23,9 +23,7 @@ import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/netw
 import {
   getAllChainsToPoll,
   getAllDomains,
-  getAllEnabledNetworks,
   getAllEnabledNetworksUsed,
-  getEnabledNetworks,
   getEnabledNetworksByNamespace,
   getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,

@@ -15,7 +15,7 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
         <span
           class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         >
-          Popular networks
+          Goerli
         </span>
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -245,7 +245,7 @@ exports[`TransactionList renders TransactionList component with props hideTokenT
         <span
           class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         >
-          Popular networks
+          Goerli
         </span>
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
