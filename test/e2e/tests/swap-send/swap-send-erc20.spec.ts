@@ -1,13 +1,13 @@
 import { Suite } from 'mocha';
 import { Browser } from 'selenium-webdriver';
 import { withFixtures, openActionMenuAndStartSendFlow } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   NATIVE_TOKEN_SYMBOL,
   SwapSendPage,
   getSwapSendFixtures,
 } from './swap-send-test-utils';
 import { SWAP_SEND_QUOTES_RESPONSE_TST_ETH } from './mocks/erc20-data';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const RECIPIENT_ADDRESS = '0xc427D562164062a23a5cFf596A4a3208e72Acd28';
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;

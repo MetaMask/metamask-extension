@@ -24,8 +24,8 @@ describe('Change assets', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         const accountListPage = new AccountListPage(driver);
@@ -76,8 +76,8 @@ describe('Change assets', function () {
         smartContract: [smartContract, tokenContract],
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         const accountListPage = new AccountListPage(driver);
@@ -125,8 +125,8 @@ describe('Change assets', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         const nftDetailsPage = new NFTDetailsPage(driver);
@@ -184,8 +184,8 @@ describe('Change assets', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         const headerNavbar = new HeaderNavbar(driver);

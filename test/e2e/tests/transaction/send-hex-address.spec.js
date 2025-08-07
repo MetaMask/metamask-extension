@@ -1,7 +1,13 @@
-const { withFixtures, openActionMenuAndStartSendFlow } = require('../../helpers');
+const {
+  withFixtures,
+  openActionMenuAndStartSendFlow,
+} = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
-const { loginWithBalanceValidation } = require('../../page-objects/flows/login.flow');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
+
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const hexAbbreviatedAddress = '0x2f318...5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);

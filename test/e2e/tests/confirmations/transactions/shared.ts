@@ -21,12 +21,13 @@ export async function openDAppWithContract(
   driver: Driver,
   contractRegistry: ContractAddressRegistry | undefined,
   smartContract: string,
+  localNode: Anvil | undefined,
 ) {
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
   ).getContractAddress(smartContract);
 
-  await loginWithBalanceValidation(driver);
+  await loginWithBalanceValidation(driver, localNode);
 
   await openDapp(driver, contractAddress);
 }

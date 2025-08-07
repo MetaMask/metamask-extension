@@ -1,6 +1,8 @@
 const { strict: assert } = require('assert');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const { loginWithBalanceValidation } = require('../../page-objects/flows/login.flow');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const {
   withFixtures,
   openDapp,

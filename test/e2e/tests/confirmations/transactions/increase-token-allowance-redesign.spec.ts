@@ -1,6 +1,7 @@
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
+import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
@@ -100,8 +101,14 @@ async function createAndAssertIncreaseAllowanceSubmission(
   driver: Driver,
   newSpendingCap: string,
   contractRegistry?: ContractAddressRegistry,
+  localNodes?: Anvil[],
 ) {
-  await openDAppWithContract(driver, contractRegistry, SMART_CONTRACTS.HST);
+  await openDAppWithContract(
+    driver,
+    contractRegistry,
+    SMART_CONTRACTS.HST,
+    localNodes?.[0],
+  );
 
   await createERC20IncreaseAllowanceTransaction(driver);
 

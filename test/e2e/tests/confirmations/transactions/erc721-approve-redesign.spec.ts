@@ -31,8 +31,13 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            contractRegistry,
+            smartContract,
+            localNodes?.[0],
+          );
 
           await createMintTransaction(driver);
           await confirmMintTransaction(driver);
@@ -56,8 +61,13 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            contractRegistry,
+            smartContract,
+            localNodes?.[0],
+          );
 
           await createMintTransaction(driver);
           await confirmMintTransaction(driver);

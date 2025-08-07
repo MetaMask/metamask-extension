@@ -13,7 +13,7 @@ describe('Alert for insufficient funds', function () {
   it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
     const nftSmartContract = SMART_CONTRACTS.NFTS;
     const localNodeOptions = {
-      mnemonic: 'test test test test test test test test test test test junk',
+      mnemonic: 'test test test test test test test test test test test test junk',
     };
     await withFixtures(
       {
@@ -25,12 +25,17 @@ describe('Alert for insufficient funds', function () {
         smartContract: nftSmartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
         const alertModal = new AlertModal(driver);
 
-        await openDAppWithContract(driver, contractRegistry, nftSmartContract);
+        await openDAppWithContract(
+          driver,
+          contractRegistry,
+          nftSmartContract,
+          localNodes?.[0],
+        );
         await testDapp.checkPageIsLoaded();
         await testDapp.clickERC721MintButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

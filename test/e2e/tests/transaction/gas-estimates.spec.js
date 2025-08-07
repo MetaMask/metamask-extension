@@ -1,4 +1,6 @@
-const { loginWithBalanceValidation } = require('../../page-objects/flows/login.flow');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const {
   withFixtures,
   openActionMenuAndStartSendFlow,
