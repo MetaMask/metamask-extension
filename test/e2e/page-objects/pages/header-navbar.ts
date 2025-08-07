@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { Browser } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
-import { getCleanAppState } from '../../helpers';
 
 class HeaderNavbar {
   protected driver: Driver;
