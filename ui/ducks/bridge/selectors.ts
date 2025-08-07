@@ -703,39 +703,6 @@ export const isBridgeSolanaEnabled = createDeepEqualSelector(
   },
 );
 
-/**
- * Checks if the destination chain is Solana and the user has no Solana accounts
- */
-export const needsSolanaAccountForDestination = createDeepEqualSelector(
-  getToChain,
-  (state: BridgeAppState) => hasSolanaAccounts(state),
-  (toChain, hasSolanaAccount) => {
-    if (!toChain) {
-      return false;
-    }
-
-    const isSolanaDestination = isSolanaChainId(toChain.chainId);
-
-    return isSolanaDestination && !hasSolanaAccount;
-  },
-);
-
-export const getIsToOrFromSolana = createSelector(
-  getFromChain,
-  getToChain,
-  (fromChain, toChain) => {
-    if (!fromChain?.chainId || !toChain?.chainId) {
-      return false;
-    }
-
-    const fromChainIsSolana = isSolanaChainId(fromChain.chainId);
-    const toChainIsSolana = isSolanaChainId(toChain.chainId);
-
-    // Only return true if either chain is Solana and the other is EVM
-    return toChainIsSolana !== fromChainIsSolana;
-  },
-);
-
 export const getIsSolanaSwap = createSelector(
   getFromChain,
   getToChain,
