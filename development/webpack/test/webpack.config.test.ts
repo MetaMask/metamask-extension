@@ -151,14 +151,7 @@ ${Object.entries(env)
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         content_scripts: [
-          {
-            js: [
-              'ignored',
-              'scripts/contentscript.js',
-              'scripts/inpage.js',
-              'ignored',
-            ],
-          },
+          { js: ['scripts/contentscript.js', 'scripts/inpage.js'] },
         ],
       },
       'brave',
