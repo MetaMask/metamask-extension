@@ -164,10 +164,7 @@ export const MultichainBridgeQuoteCard = ({
             )}
 
             {/* Network Fee */}
-            <Row
-              justifyContent={JustifyContent.spaceBetween}
-              data-testid="network-fees"
-            >
+            <Row justifyContent={JustifyContent.spaceBetween}>
               <Text
                 variant={TextVariant.bodyMd}
                 color={TextColor.textAlternative}
@@ -175,7 +172,7 @@ export const MultichainBridgeQuoteCard = ({
                 {t('networkFee')}
               </Text>
               {activeQuote.quote.gasIncluded && (
-                <Row gap={1}>
+                <Row gap={1} data-testid="network-fees-included">
                   <Text style={{ textDecoration: 'line-through' }}>
                     {activeQuote.includedTxFees?.valueInCurrency
                       ? formatCurrencyAmount(
@@ -193,7 +190,7 @@ export const MultichainBridgeQuoteCard = ({
                 </Row>
               )}
               {!activeQuote.quote.gasIncluded && (
-                <Text>
+                <Text data-testid="network-fees">
                   {formatCurrencyAmount(
                     activeQuote.totalMaxNetworkFee?.valueInCurrency,
                     currency,
