@@ -158,14 +158,16 @@ import {
   showAppHeader,
 } from './utils';
 
-// TODO: Temporary dummy type. Provide generic types for `mmLazy` that cover all component kinds.
+// TODO: Update `mmLazy` to handle all React module types used below.
+// This is a temporary stand-in type.
 type DefaultExportComponent = {
   default: ComponentType<unknown>;
 };
 
-// TODO: Fix `as unknown as` casting.
-// Casting is preferable here to using `@ts-expect-error` annotations,
-// because we can still get messages for other error cases e.g. "Cannot find module..."
+// TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle all React module types used below.
+// Casting is preferable over `@ts-expect-error` annotations in this case,
+// because it doesn't suppress competing error messages e.g. "Cannot find module..."
+
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(
   () =>
