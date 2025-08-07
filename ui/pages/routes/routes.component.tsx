@@ -278,7 +278,7 @@ const ConfirmationPage = mmLazy(
 const CreateAccountPage = mmLazy(
   () =>
     import(
-      '../../components/multichain/create-account/create-account.tsx'
+      '../create-account/create-account.component.js'
     ) as unknown as Promise<DefaultExportComponent>,
 );
 const NftFullImage = mmLazy(
