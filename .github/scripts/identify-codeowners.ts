@@ -1,10 +1,11 @@
 import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
-import { retrievePullRequestFiles, PullRequestFile } from './shared/pull-request';
+import {
+  retrievePullRequestFiles,
+  PullRequestFile,
+} from './shared/pull-request';
 import micromatch from 'micromatch';
-
-
 
 type TeamFiles = Record<string, PullRequestFile[]>;
 
@@ -12,23 +13,23 @@ type TeamChanges = {
   files: number;
   additions: number;
   deletions: number;
-}
+};
 
 type TeamEmojis = {
   [team: string]: string;
-}
+};
 
 type CodeOwnerRule = {
   pattern: string;
   owners: string[];
-}
+};
 
 // Team emoji mappings
 const teamEmojis: TeamEmojis = {
   '@MetaMask/extension-devs': '🧩',
   '@MetaMask/policy-reviewers': '📜',
   '@MetaMask/supply-chain': '🔗',
-  '@MetaMask/snaps-devs': '🫰',
+  '@MetaMask/core-platform': '🫰',
   '@MetaMask/extension-security-team': '🔒',
   '@MetaMask/extension-privacy-reviewers': '🕵️',
   '@MetaMask/confirmations': '✅',
@@ -40,6 +41,9 @@ const teamEmojis: TeamEmojis = {
   '@MetaMask/ramp': '📈',
   '@MetaMask/wallet-ux': '🖥️',
   '@MetaMask/metamask-assets': '💎',
+  '@MetaMask/web3auth': '🔐',
+  '@MetaMask/transactions': '💸',
+  '@MetaMask/qa': '🧪',
 };
 
 main().catch((error: Error): void => {
@@ -66,7 +70,12 @@ async function main(): Promise<void> {
   }
 
   // Get detailed file change information
-  const filesInfo: PullRequestFile[] = await retrievePullRequestFiles(octokit, owner, repo, prNumber);
+  const filesInfo: PullRequestFile[] = await retrievePullRequestFiles(
+    octokit,
+    owner,
+    repo,
+    prNumber,
+  );
 
   // Read and parse the CODEOWNERS file
   const codeownersContent = await getCodeownersContent(octokit, owner, repo);
@@ -98,7 +107,7 @@ async function main(): Promise<void> {
 async function getCodeownersContent(
   octokit: InstanceType<typeof GitHub>,
   owner: string,
-  repo: string
+  repo: string,
 ): Promise<string> {
   try {
     const response = await octokit.rest.repos.getContent({
@@ -106,7 +115,7 @@ async function getCodeownersContent(
       repo,
       path: '.github/CODEOWNERS',
       headers: {
-        'accept': 'application/vnd.github.raw',
+        accept: 'application/vnd.github.raw',
       },
     });
 
@@ -116,24 +125,29 @@ async function getCodeownersContent(
 
     throw new Error('Failed to get CODEOWNERS file content');
   } catch (error) {
-    throw new Error(`Failed to get CODEOWNERS file: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Failed to get CODEOWNERS file: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
 function parseCodeowners(content: string): CodeOwnerRule[] {
   return content
     .split('\n')
-    .filter(line => line.trim() && !line.startsWith('#'))
-    .map(line => {
+    .filter((line) => line.trim() && !line.startsWith('#'))
+    .map((line) => {
       const [pattern, ...owners] = line.trim().split(/\s+/);
       return { pattern, owners };
     });
 }
 
-function matchFilesToCodeowners(files: PullRequestFile[], codeowners: CodeOwnerRule[]): Map<string, Set<string>> {
+function matchFilesToCodeowners(
+  files: PullRequestFile[],
+  codeowners: CodeOwnerRule[],
+): Map<string, Set<string>> {
   const fileOwners: Map<string, Set<string>> = new Map();
 
-  files.forEach(file => {
+  files.forEach((file) => {
     for (const { pattern, owners } of codeowners) {
       if (isFileMatchingPattern(file.filename, pattern)) {
         // Not breaking here to allow for multiple patterns to match the same file
@@ -166,17 +180,20 @@ function isFileMatchingPattern(file: string, pattern: string): boolean {
   return micromatch.isMatch(file, pattern);
 }
 
-function groupFilesByTeam(fileOwners: Map<string, Set<string>>, filesInfo: PullRequestFile[]): TeamFiles {
+function groupFilesByTeam(
+  fileOwners: Map<string, Set<string>>,
+  filesInfo: PullRequestFile[],
+): TeamFiles {
   const teamFiles: TeamFiles = {};
 
   // Create a map for faster lookups
   const changeMap = new Map<string, PullRequestFile>();
-  filesInfo.forEach(file => {
+  filesInfo.forEach((file) => {
     changeMap.set(file.filename, file);
   });
 
   fileOwners.forEach((owners, filename) => {
-    owners.forEach(owner => {
+    owners.forEach((owner) => {
       if (!teamFiles[owner]) {
         teamFiles[owner] = [];
       }
@@ -189,8 +206,8 @@ function groupFilesByTeam(fileOwners: Map<string, Set<string>>, filesInfo: PullR
   });
 
   // Sort files within each team for consistent ordering
-  Object.values(teamFiles).forEach(files =>
-    files.sort((a, b) => a.filename.localeCompare(b.filename))
+  Object.values(teamFiles).forEach((files) =>
+    files.sort((a, b) => a.filename.localeCompare(b.filename)),
   );
 
   return teamFiles;
@@ -198,23 +215,33 @@ function groupFilesByTeam(fileOwners: Map<string, Set<string>>, filesInfo: PullR
 
 // Calculate total changes for a team
 function calculateTeamChanges(files: PullRequestFile[]): TeamChanges {
-  return files.reduce((acc, file) => {
-    acc.files += 1;
-    acc.additions += file.additions;
-    acc.deletions += file.deletions;
-    return acc;
-  }, { files: 0, additions: 0, deletions: 0 });
+  return files.reduce(
+    (acc, file) => {
+      acc.files += 1;
+      acc.additions += file.additions;
+      acc.deletions += file.deletions;
+      return acc;
+    },
+    { files: 0, additions: 0, deletions: 0 },
+  );
 }
-const policyReviewInstructions = `\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.\n`
+const policyReviewInstructions = `\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.\n`;
 
-function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string {
+function createCommentBody(
+  teamFiles: TeamFiles,
+  teamEmojis: TeamEmojis,
+): string {
   let commentBody = `<!-- METAMASK-CODEOWNERS-BOT -->\n✨ Files requiring CODEOWNER review ✨\n---\n`;
 
   // Sort teams for consistent ordering
   const allOwners = Object.keys(teamFiles);
 
-  const teamOwners = allOwners.filter(owner => owner.startsWith('@MetaMask/'));
-  const individualOwners = allOwners.filter(owner => !owner.startsWith('@MetaMask/'));
+  const teamOwners = allOwners.filter((owner) =>
+    owner.startsWith('@MetaMask/'),
+  );
+  const individualOwners = allOwners.filter(
+    (owner) => !owner.startsWith('@MetaMask/'),
+  );
 
   const sortFn = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase());
   const sortedTeamOwners = teamOwners.sort(sortFn);
@@ -237,8 +264,8 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
     // Close the details tag
     commentBody += `</details>\n`;
 
-    if(team === '@MetaMask/policy-reviewers') {
-      commentBody += policyReviewInstructions
+    if (team === '@MetaMask/policy-reviewers') {
+      commentBody += policyReviewInstructions;
     }
 
     // Only add divider if not the last team
@@ -250,10 +277,13 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   return commentBody;
 }
 
-function buildSimpleDirectoryTree(files: PullRequestFile[]): { [key: string]: PullRequestFile[] | { [key: string]: any } } {
-  const tree: { [key: string]: PullRequestFile[] | { [key: string]: any } } = {};
+function buildSimpleDirectoryTree(files: PullRequestFile[]): {
+  [key: string]: PullRequestFile[] | { [key: string]: any };
+} {
+  const tree: { [key: string]: PullRequestFile[] | { [key: string]: any } } =
+    {};
 
-  files.forEach(file => {
+  files.forEach((file) => {
     const parts = file.filename.split('/');
     let currentPath = '';
     let currentObj = tree;
@@ -270,7 +300,7 @@ function buildSimpleDirectoryTree(files: PullRequestFile[]): { [key: string]: Pu
         (currentObj['__files__'] as PullRequestFile[]).push({
           filename: part,
           additions: file.additions,
-          deletions: file.deletions
+          deletions: file.deletions,
         });
       } else {
         // This is a directory
@@ -286,14 +316,17 @@ function buildSimpleDirectoryTree(files: PullRequestFile[]): { [key: string]: Pu
 }
 
 // Render the directory tree using GitHub-compliant list indentation
-function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string): string {
+function renderSimpleDirectoryTree(
+  node: { [key: string]: any },
+  prefix: string,
+): string {
   let result = '';
 
   // Process directories (skip the special __files__ key)
-  const dirs = Object.keys(node).filter(key => key !== '__files__');
+  const dirs = Object.keys(node).filter((key) => key !== '__files__');
   dirs.sort(); // Sort directories alphabetically
 
-  dirs.forEach(dir => {
+  dirs.forEach((dir) => {
     // Escape underscores in directory names to prevent unwanted formatting
     const escapedDir = dir.replace(/_/g, '\\_');
     // Add directory with trailing slash
@@ -308,7 +341,7 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
     const files = node['__files__'] as PullRequestFile[];
     files.sort((a, b) => a.filename.localeCompare(b.filename)); // Sort files alphabetically
 
-    files.forEach(file => {
+    files.forEach((file) => {
       let changes = '';
       if (file.additions > 0 || file.deletions > 0) {
         changes = ` *+${file.additions} -${file.deletions}*`;
@@ -326,7 +359,7 @@ async function deleteExistingComment(
   octokit: InstanceType<typeof GitHub>,
   owner: string,
   repo: string,
-  prNumber: number
+  prNumber: number,
 ): Promise<void> {
   // Get existing comments
   const { data: comments } = await octokit.rest.issues.listComments({
@@ -335,8 +368,8 @@ async function deleteExistingComment(
     issue_number: prNumber,
   });
 
-  const botComment = comments.find(comment =>
-    comment.body?.includes('<!-- METAMASK-CODEOWNERS-BOT -->')
+  const botComment = comments.find((comment) =>
+    comment.body?.includes('<!-- METAMASK-CODEOWNERS-BOT -->'),
   );
 
   if (botComment) {
@@ -356,7 +389,7 @@ async function updateOrCreateComment(
   owner: string,
   repo: string,
   prNumber: number,
-  commentBody: string
+  commentBody: string,
 ): Promise<void> {
   // Get existing comments
   const { data: comments } = await octokit.rest.issues.listComments({
@@ -365,8 +398,8 @@ async function updateOrCreateComment(
     issue_number: prNumber,
   });
 
-  const botComment = comments.find(comment =>
-    comment.body?.includes('<!-- METAMASK-CODEOWNERS-BOT -->')
+  const botComment = comments.find((comment) =>
+    comment.body?.includes('<!-- METAMASK-CODEOWNERS-BOT -->'),
   );
 
   if (botComment) {
