@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   isSolanaChainId,
@@ -7,7 +7,6 @@ import {
   formatEtaInMinutes,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
-  selectBridgeFeatureFlags,
 } from '@metamask/bridge-controller';
 import {
   Text,
@@ -31,6 +30,7 @@ import {
   getSlippage,
   getIsSolanaSwap,
 } from '../../../ducks/bridge/selectors';
+import { getPriceImpactThresholds } from '../../../selectors/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
@@ -80,14 +80,7 @@ export const MultichainBridgeQuoteCard = ({
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
-  // TODO: fix this by using selectors.ts.
-  const bridgeFeatureFlags = useSelector((state: any) =>
-    selectBridgeFeatureFlags({
-      remoteFeatureFlags: {
-        bridgeConfig: state.metamask?.remoteFeatureFlags?.bridgeConfig,
-      },
-    }),
-  );
+  const priceImpactThresholds = useSelector(getPriceImpactThresholds);
 
   const [showPriceImpactModal, setShowPriceImpactModal] = useState(false);
 
@@ -95,20 +88,31 @@ export const MultichainBridgeQuoteCard = ({
   const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
 
+  const shouldRenderPriceImpactRow = useMemo(() => {
+    const priceImpactThreshold = priceImpactThresholds;
+    return (
+      priceImpactThreshold && priceImpact !== undefined && priceImpact !== null
+    );
+  }, [priceImpactThresholds, priceImpact]);
+
+  // Red state if above threshold
   const shouldShowPriceImpactWarning = React.useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const priceImpactThreshold = (bridgeFeatureFlags as any)
-      ?.priceImpactThreshold;
-    if (!priceImpact || !priceImpactThreshold) {
+    if (!shouldRenderPriceImpactRow) {
       return false;
     }
-
     const threshold = gasIncluded
-      ? priceImpactThreshold.gasless
-      : priceImpactThreshold.normal;
-
-    return Number(priceImpact) * 100 >= threshold;
-  }, [priceImpact, gasIncluded, bridgeFeatureFlags]);
+      ? priceImpactThresholds?.gasless
+      : priceImpactThresholds?.normal;
+    if (threshold === null || threshold === undefined) {
+      return false;
+    }
+    return Number(priceImpact) >= Number(threshold);
+  }, [
+    gasIncluded,
+    priceImpact,
+    shouldRenderPriceImpactRow,
+    priceImpactThresholds,
+  ]);
 
   const getNetworkImage = (chainId: string | number) => {
     if (isSolanaChainId(chainId)) {
@@ -263,8 +267,7 @@ export const MultichainBridgeQuoteCard = ({
               </Text>
             </Row>
 
-            {/* Price Impact */}
-            {priceImpact && (
+            {shouldRenderPriceImpactRow && (
               <Row justifyContent={JustifyContent.spaceBetween}>
                 <Row gap={1}>
                   <Text
@@ -273,15 +276,18 @@ export const MultichainBridgeQuoteCard = ({
                   >
                     {t('bridgePriceImpact')}
                   </Text>
-                  {shouldShowPriceImpactWarning && (
-                    <ButtonIcon
-                      iconName={IconName.Danger}
-                      color={IconColor.errorDefault}
-                      size={ButtonIconSize.Sm}
-                      ariaLabel={t('bridgePriceImpactWarningTitle')}
-                      onClick={() => setShowPriceImpactModal(true)}
-                    />
-                  )}
+                  <Tooltip
+                    title={t('bridgePriceImpactWarningTitle')}
+                    position={PopoverPosition.TopStart}
+                    offset={[-16, 16]}
+                    iconName={IconName.Question}
+                  >
+                    {t(
+                      gasIncluded
+                        ? 'bridgePriceImpactGaslessWarning'
+                        : 'bridgePriceImpactNormalWarning',
+                    )}
+                  </Tooltip>
                 </Row>
                 <Text
                   variant={TextVariant.bodyMd}

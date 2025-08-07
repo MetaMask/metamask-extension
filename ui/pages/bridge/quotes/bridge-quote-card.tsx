@@ -5,7 +5,6 @@ import {
   formatEtaInMinutes,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
-  selectBridgeFeatureFlags,
 } from '@metamask/bridge-controller';
 import {
   Text,
@@ -29,6 +28,7 @@ import {
   getSlippage,
   getIsSolanaSwap,
 } from '../../../ducks/bridge/selectors';
+import { getPriceImpactThresholds } from '../../../selectors/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import {
@@ -93,14 +93,7 @@ export const BridgeQuoteCard = ({
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
 
-  // TODO: fix this by using selectors.ts.
-  const bridgeFeatureFlags = useSelector((state: any) =>
-    selectBridgeFeatureFlags({
-      remoteFeatureFlags: {
-        bridgeConfig: state.metamask?.remoteFeatureFlags?.bridgeConfig,
-      },
-    }),
-  );
+  const priceImpactThresholds = useSelector(getPriceImpactThresholds);
 
   const [showPriceImpactModal, setShowPriceImpactModal] = useState(false);
 
@@ -108,20 +101,32 @@ export const BridgeQuoteCard = ({
   const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
 
+  const shouldRenderPriceImpactRow = React.useMemo((): boolean => {
+    const priceImpactThreshold = priceImpactThresholds;
+    return (
+      Boolean(priceImpactThreshold) &&
+      priceImpact !== undefined &&
+      priceImpact !== null
+    );
+  }, [priceImpactThresholds, priceImpact]);
+
   const shouldShowPriceImpactWarning = React.useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const priceImpactThreshold = (bridgeFeatureFlags as any)
-      ?.priceImpactThreshold;
-    if (!priceImpact || !priceImpactThreshold) {
+    if (!shouldRenderPriceImpactRow) {
       return false;
     }
-
     const threshold = gasIncluded
-      ? priceImpactThreshold.gasless
-      : priceImpactThreshold.normal;
-
-    return Number(priceImpact) * 100 >= threshold;
-  }, [priceImpact, gasIncluded, bridgeFeatureFlags]);
+      ? priceImpactThresholds?.gasless
+      : priceImpactThresholds?.normal;
+    if (threshold === null || threshold === undefined) {
+      return false;
+    }
+    return Number(priceImpact) >= Number(threshold);
+  }, [
+    gasIncluded,
+    priceImpact,
+    shouldRenderPriceImpactRow,
+    priceImpactThresholds,
+  ]);
 
   return (
     <>
@@ -373,8 +378,7 @@ export const BridgeQuoteCard = ({
               </Text>
             </Row>
 
-            {/* Price Impact display */}
-            {priceImpact && (
+            {shouldRenderPriceImpactRow && (
               <Row justifyContent={JustifyContent.spaceBetween}>
                 <Row gap={1} alignItems={AlignItems.center}>
                   <Text
@@ -384,14 +388,18 @@ export const BridgeQuoteCard = ({
                   >
                     {t('bridgePriceImpact')}
                   </Text>
-                  {shouldShowPriceImpactWarning && (
-                    <Tooltip
-                      title={t('bridgePriceImpactWarningTitle')}
-                      position={PopoverPosition.Top}
-                      iconName={IconName.Danger}
-                      onClick={() => setShowPriceImpactModal(true)}
-                    />
-                  )}
+                  <Tooltip
+                    title={t('bridgePriceImpactWarningTitle')}
+                    position={PopoverPosition.TopStart}
+                    offset={[-16, 16]}
+                    iconName={IconName.Question}
+                  >
+                    {t(
+                      gasIncluded
+                        ? 'bridgePriceImpactGaslessWarning'
+                        : 'bridgePriceImpactNormalWarning',
+                    )}
+                  </Tooltip>
                 </Row>
                 <Text
                   variant={TextVariant.bodyMd}
