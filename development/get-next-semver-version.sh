@@ -10,6 +10,6 @@ then
 fi
 
 # Get the version from package.json
-VERSION_PACKAGE=$(node -p "require('../package.json').version")
+VERSION_PACKAGE=$(node -p "require(process.env.GITHUB_WORKSPACE + '/package.json').version")
 
 echo "NEXT_SEMVER_VERSION=${VERSION_PACKAGE}" >> "$GITHUB_ENV"
