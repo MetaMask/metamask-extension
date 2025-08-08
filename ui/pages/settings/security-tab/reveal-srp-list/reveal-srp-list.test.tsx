@@ -2,17 +2,15 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore, { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
 import { RevealSrpList } from './reveal-srp-list';
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
 }));
 
 const mockKeyringId = mockState.metamask.keyrings[0].metadata.id;
@@ -64,7 +62,7 @@ describe('RevealSrpList', () => {
 
     fireEvent.click(srpListItem);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockNavigate).toHaveBeenCalledWith(
       `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true&isFromSettingsSecurity=true`,
     );
   });

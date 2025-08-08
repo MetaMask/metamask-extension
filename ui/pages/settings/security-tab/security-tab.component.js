@@ -71,7 +71,7 @@ export default class SecurityTab extends PureComponent {
   };
 
   static propTypes = {
-    history: PropTypes.object,
+    navigate: PropTypes.func.isRequired,
     openSeaEnabled: PropTypes.bool,
     setOpenSeaEnabled: PropTypes.func,
     useNftDetection: PropTypes.bool,
@@ -174,12 +174,8 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
-    const {
-      history,
-      isSeedPhraseBackedUp,
-      socialLoginEnabled,
-      socialLoginType,
-    } = this.props;
+    const { isSeedPhraseBackedUp, socialLoginEnabled, socialLoginType } =
+      this.props;
 
     const getBannerDescription = () => {
       if (socialLoginEnabled) {
@@ -255,7 +251,7 @@ export default class SecurityTab extends PureComponent {
                       location: 'Settings',
                     },
                   });
-                  history.push({
+                  this.props.navigate({
                     pathname: REVEAL_SRP_LIST_ROUTE,
                   });
                 }}
@@ -277,7 +273,6 @@ export default class SecurityTab extends PureComponent {
 
   renderChangePassword() {
     const { t } = this.context;
-    const { history } = this.props;
 
     return (
       <>
@@ -304,7 +299,7 @@ export default class SecurityTab extends PureComponent {
                 data-testid="change-password-button"
                 size={ButtonSize.Lg}
                 onClick={() => {
-                  history.push(SECURITY_PASSWORD_CHANGE_ROUTE);
+                  this.props.navigate(SECURITY_PASSWORD_CHANGE_ROUTE);
                 }}
               >
                 {t('securityChangePassword')}
@@ -538,7 +533,7 @@ export default class SecurityTab extends PureComponent {
                 ? global.platform.openExtensionInBrowser(
                     ADD_POPULAR_CUSTOM_NETWORK,
                   )
-                : this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
+                : this.props.navigate(ADD_POPULAR_CUSTOM_NETWORK);
             }}
           >
             {t('addCustomNetwork')}

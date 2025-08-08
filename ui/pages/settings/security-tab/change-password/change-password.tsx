@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   Button,
@@ -52,7 +52,7 @@ const ChangePasswordSteps = {
 const ChangePassword = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const animationEventEmitter = useRef(new EventEmitter());
@@ -115,7 +115,7 @@ const ChangePassword = () => {
       });
 
       // upon successful password change, go back to the settings page
-      history.push(SECURITY_ROUTE);
+      navigate(SECURITY_ROUTE);
       dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Success));
     } catch (error) {
       console.error(error);
