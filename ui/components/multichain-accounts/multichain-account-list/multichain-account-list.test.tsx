@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import {
-  AccountWalletCategory,
+  AccountGroupType,
+  AccountWalletType,
   toAccountWalletId,
   toDefaultAccountGroupId,
 } from '@metamask/account-api';
@@ -15,12 +16,12 @@ const mockWalletOneEntropySource = '01JKAF3DSGM3AB87EM9N0K41AJ';
 const mockWalletTwoEntropySource = '01JKAF3PJ247KAM6C03G5Q0NP8';
 
 const walletOneId = toAccountWalletId(
-  AccountWalletCategory.Entropy,
+  AccountWalletType.Entropy,
   mockWalletOneEntropySource,
 );
 const walletOneGroupId = toDefaultAccountGroupId(walletOneId);
 const walletTwoId = toAccountWalletId(
-  AccountWalletCategory.Entropy,
+  AccountWalletType.Entropy,
   mockWalletTwoEntropySource,
 );
 const walletTwoGroupId = toDefaultAccountGroupId(walletTwoId);
@@ -28,19 +29,24 @@ const walletTwoGroupId = toDefaultAccountGroupId(walletTwoId);
 const mockWallets = {
   [walletOneId]: {
     id: walletOneId,
+    type: AccountWalletType.Entropy,
     metadata: {
       name: 'Wallet 1',
-      type: AccountWalletCategory.Entropy,
       entropy: {
         id: mockWalletOneEntropySource,
-        index: 0,
       },
     },
     groups: {
       [walletOneGroupId]: {
         id: walletOneGroupId,
+        type: AccountGroupType.MultichainAccount,
         metadata: {
           name: 'Account 1 from wallet 1',
+          entropy: {
+            groupIndex: 0,
+          },
+          pinned: false,
+          hidden: false,
         },
         accounts: ['cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'],
       },
@@ -48,19 +54,24 @@ const mockWallets = {
   },
   [walletTwoId]: {
     id: walletTwoId,
+    type: AccountWalletType.Entropy,
     metadata: {
       name: 'Wallet 2',
-      type: AccountWalletCategory.Entropy,
       entropy: {
         id: mockWalletTwoEntropySource,
-        index: 1,
       },
     },
     groups: {
       [walletTwoGroupId]: {
         id: walletTwoGroupId,
+        type: AccountGroupType.MultichainAccount,
         metadata: {
           name: 'Account 1 from wallet 2',
+          entropy: {
+            groupIndex: 0,
+          },
+          pinned: false,
+          hidden: false,
         },
         accounts: ['784225f4-d30b-4e77-a900-c8bbce735b88'],
       },
