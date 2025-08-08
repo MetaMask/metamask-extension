@@ -29,8 +29,8 @@ import {
   getFromToken,
   getSlippage,
   getIsSolanaSwap,
+  getPriceImpactThresholds,
 } from '../../../ducks/bridge/selectors';
-import { getPriceImpactThresholds } from '../../../selectors/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';

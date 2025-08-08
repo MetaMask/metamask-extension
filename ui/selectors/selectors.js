@@ -1902,11 +1902,6 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
   },
 );
 
-export const getPriceImpactThresholds = createDeepEqualSelector(
-  getBridgeFeatureFlags,
-  (bridgeFeatureFlags) => bridgeFeatureFlags?.priceImpactThreshold,
-);
-
 export const getIsBridgeEnabled = createSelector(
   [getBridgeFeatureFlags, getUseExternalServices],
   (bridgeFeatureFlags, shouldUseExternalServices) => {
