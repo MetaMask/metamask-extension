@@ -37,6 +37,7 @@ import { getSwcLoader } from './utils/loaders/swcLoader';
 import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
+import { lavamoatPlugin } from './utils/plugins/LavamoatPlugin';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -46,9 +47,6 @@ if (args.dryRun) {
 }
 
 // #region short circuit for unsupported build configurations
-if (args.lavamoat) {
-  throw new Error("The webpack build doesn't support LavaMoat yet. So sorry.");
-}
 if (args.manifest_version === 3) {
   throw new Error(
     "The webpack build doesn't support manifest_version version 3 yet. So sorry.",
@@ -179,6 +177,9 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
+if (args.lavamoat) {
+  plugins.push(lavamoatPlugin);
+}
 // enable React Refresh in 'development' mode when `watch` is enabled
 if (__HMR_READY__ && isDevelopment && args.watch) {
   const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
