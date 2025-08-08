@@ -260,5 +260,122 @@ describe('Security Alerts API', () => {
         mockAppStateController.addAddressSecurityAlertResponse,
       ).not.toHaveBeenCalled();
     });
+
+    describe('optional parameters', () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+        mockAppStateController = {
+          getAddressSecurityAlertResponse: jest.fn(),
+          addAddressSecurityAlertResponse: jest.fn(),
+        };
+      });
+
+      it('uses provided chainId when networkController is not provided', async () => {
+        mockAppStateController.getAddressSecurityAlertResponse.mockReturnValue(
+          undefined,
+        );
+
+        const scope = nock(BASE_URL)
+          .post('/address/evm/scan', {
+            chain: SupportedEVMChain.Polygon,
+            address: TEST_ADDRESS,
+          })
+          .reply(200, RESPONSE_MOCK);
+
+        const result = await scanAddressAndAddToCache(
+          TEST_ADDRESS,
+          mockAppStateController,
+          undefined,
+          SupportedEVMChain.Polygon,
+        );
+
+        expect(result).toEqual(RESPONSE_MOCK);
+        expect(
+          mockAppStateController.getAddressSecurityAlertResponse,
+        ).toHaveBeenCalledWith(TEST_ADDRESS);
+        expect(mockedGetChainId).not.toHaveBeenCalled(); // Should not be called when chainId is provided
+        expect(
+          mockAppStateController.addAddressSecurityAlertResponse,
+        ).toHaveBeenCalledWith(TEST_ADDRESS, RESPONSE_MOCK);
+        expect(scope.isDone()).toBe(true);
+      });
+
+      it('prioritizes networkController chainId over provided chainId', async () => {
+        mockAppStateController.getAddressSecurityAlertResponse.mockReturnValue(
+          undefined,
+        );
+        mockedGetChainId.mockReturnValue(SupportedEVMChain.Ethereum);
+
+        const scope = nock(BASE_URL)
+          .post('/address/evm/scan', {
+            chain: SupportedEVMChain.Ethereum,
+            address: TEST_ADDRESS,
+          })
+          .reply(200, RESPONSE_MOCK);
+
+        const result = await scanAddressAndAddToCache(
+          TEST_ADDRESS,
+          mockAppStateController,
+          mockNetworkController,
+          SupportedEVMChain.Polygon,
+        );
+
+        expect(result).toEqual(RESPONSE_MOCK);
+        expect(mockedGetChainId).toHaveBeenCalledWith(mockNetworkController);
+        expect(
+          mockAppStateController.addAddressSecurityAlertResponse,
+        ).toHaveBeenCalledWith(TEST_ADDRESS, RESPONSE_MOCK);
+        expect(scope.isDone()).toBe(true);
+      });
+
+      it('throws error when neither networkController nor chainId is provided', async () => {
+        mockAppStateController.getAddressSecurityAlertResponse.mockReturnValue(
+          undefined,
+        );
+
+        await expect(
+          scanAddressAndAddToCache(
+            TEST_ADDRESS,
+            mockAppStateController,
+            undefined,
+            undefined,
+          ),
+        ).rejects.toThrow('[scanAddressAndAddToCache] chainId is not set');
+
+        expect(
+          mockAppStateController.getAddressSecurityAlertResponse,
+        ).toHaveBeenCalledWith(TEST_ADDRESS);
+        expect(mockedGetChainId).not.toHaveBeenCalled();
+        expect(
+          mockAppStateController.addAddressSecurityAlertResponse,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('uses cached response even when using optional parameters', async () => {
+        const cachedResponse = {
+          result_type: ResultType.Benign,
+          label: 'Cached safe address',
+        };
+        mockAppStateController.getAddressSecurityAlertResponse.mockReturnValue(
+          cachedResponse,
+        );
+
+        const result = await scanAddressAndAddToCache(
+          TEST_ADDRESS,
+          mockAppStateController,
+          undefined,
+          SupportedEVMChain.Polygon,
+        );
+
+        expect(result).toEqual(cachedResponse);
+        expect(
+          mockAppStateController.getAddressSecurityAlertResponse,
+        ).toHaveBeenCalledWith(TEST_ADDRESS);
+        expect(mockedGetChainId).not.toHaveBeenCalled();
+        expect(
+          mockAppStateController.addAddressSecurityAlertResponse,
+        ).not.toHaveBeenCalled();
+      });
+    });
   });
 });
