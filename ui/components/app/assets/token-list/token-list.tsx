@@ -58,7 +58,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   });
 
   const accountGroupIdAssets = useSelector(getAllAssetsForSelectedAccountGroup);
-  console.log('accountGroupIdAssets', accountGroupIdAssets);
+  console.log('accountGroupIdAssets', {
+    accountGroupIdAssets,
+    evmBalances,
+  });
 
   const multichainAssets = useMultiChainAssets();
 

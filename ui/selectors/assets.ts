@@ -2,7 +2,7 @@ import {
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
-  selectAllAssetsForSelectedAccountGroup,
+  selectAssetsBySelectedAccountGroup,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import { CaipAssetId } from '@metamask/keyring-api';
@@ -519,4 +519,4 @@ export const getAllAssetsForSelectedAccountGroup = (state: {
     MultichainAssetsControllerState &
     AccountTreeControllerState &
     AccountsControllerState;
-}) => selectAllAssetsForSelectedAccountGroup(state.metamask);
+}) => selectAssetsBySelectedAccountGroup(state.metamask);
