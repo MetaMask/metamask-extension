@@ -460,19 +460,18 @@ class MnemonicUtil {
     const trieNodesSize = headerView[0];
     const wordEndNodesSize = headerView[1];
 
-    // Extract the individual buffers
+    // Create views directly into the buffer (no copying)
     const headerSize = 8; // 2 * 4 bytes
-    const trieNodesBuffer = combinedBuffer.slice(
+    const trieNodes = new Uint32Array(
+      combinedBuffer,
       headerSize,
-      headerSize + trieNodesSize,
+      trieNodesSize / 4, // Uint32Array length is in 32-bit elements
     );
-    const wordEndNodesBuffer = combinedBuffer.slice(
+    const wordEndNodes = new Uint16Array(
+      combinedBuffer,
       headerSize + trieNodesSize,
-      headerSize + trieNodesSize + wordEndNodesSize,
+      wordEndNodesSize / 2, // Uint16Array length is in 16-bit elements
     );
-
-    const trieNodes = new Uint32Array(trieNodesBuffer);
-    const wordEndNodes = new Uint16Array(wordEndNodesBuffer);
 
     return new MnemonicUtil(trieNodes, wordEndNodes);
   }
