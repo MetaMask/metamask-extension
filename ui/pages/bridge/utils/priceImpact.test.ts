@@ -11,8 +11,8 @@ describe('formatPriceImpact', () => {
   });
 
   it('should return <0.01% for very small positive values', () => {
-    expect(formatPriceImpact(0.00007998969070672714)).toBe('<0.01%');
-    expect(formatPriceImpact(0.00009)).toBe('<0.01%');
+    expect(formatPriceImpact('0.00007998969070672714')).toBe('<0.01%');
+    expect(formatPriceImpact('0.00009')).toBe('<0.01%');
     expect(formatPriceImpact('0.00009')).toBe('<0.01%');
   });
 

@@ -18,8 +18,10 @@ describe('PriceImpactWarningModal', () => {
       />,
     );
 
-    expect(getByText('bridgePriceImpactWarningTitle')).toBeInTheDocument();
-    expect(getByText('bridgePriceImpactNormalWarning')).toBeInTheDocument();
+    expect(getByText(/\[bridgePriceImpactWarningTitle\]/u)).toBeInTheDocument();
+    expect(
+      getByText(/\[bridgePriceImpactNormalWarning\]/u),
+    ).toBeInTheDocument();
   });
 
   it('should render with gasless warning when gas is included', () => {
@@ -31,8 +33,10 @@ describe('PriceImpactWarningModal', () => {
       />,
     );
 
-    expect(getByText('bridgePriceImpactWarningTitle')).toBeInTheDocument();
-    expect(getByText('bridgePriceImpactGaslessWarning')).toBeInTheDocument();
+    expect(getByText(/\[bridgePriceImpactWarningTitle\]/u)).toBeInTheDocument();
+    expect(
+      getByText(/\[bridgePriceImpactGaslessWarning\]/u),
+    ).toBeInTheDocument();
   });
 
   it('should not render when isOpen is false', () => {
@@ -50,7 +54,7 @@ describe('PriceImpactWarningModal', () => {
   });
 
   it('should call onClose when modal is closed', () => {
-    const { getByLabelText } = renderWithProvider(
+    const { getByRole } = renderWithProvider(
       <PriceImpactWarningModal
         isOpen={true}
         onClose={mockOnClose}
@@ -58,7 +62,7 @@ describe('PriceImpactWarningModal', () => {
       />,
     );
 
-    const closeButton = getByLabelText('Close');
+    const closeButton = getByRole('button', { name: /\[close\]/iu });
     closeButton.click();
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
