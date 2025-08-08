@@ -273,7 +273,10 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    const wd = await buildWebDriver(driverOptions);
+    const wd = await buildWebDriver({
+      ...driverOptions,
+      disableServerMochaToBackground,
+    });
     driver = wd.driver;
     extensionId = wd.extensionId;
     webDriver = driver.driver;
@@ -412,6 +415,9 @@ async function withFixtures(options, testSuite) {
                   }
                   return resolve();
                 });
+                // We need to close all connections to stop the server quickly
+                // Otherwise it takes a few seconds for it to close
+                dappServer[i].closeAllConnections();
               }),
             );
           }
