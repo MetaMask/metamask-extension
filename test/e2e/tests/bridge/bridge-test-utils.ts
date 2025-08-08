@@ -654,6 +654,7 @@ export const getBridgeFixtures = (
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
+    .withSmartTransactionsMigrationDisabled()
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -838,6 +839,7 @@ export const getBridgeNegativeCasesFixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
+    .withSmartTransactionsMigrationDisabled()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
@@ -925,6 +927,7 @@ export const getBridgeL2Fixtures = (
     inputChainId: CHAIN_IDS.MAINNET,
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withSmartTransactionsMigrationDisabled()
     .withBridgeControllerDefaultState()
     .withNetworkControllerOnLineaLocahost()
     .withEnabledNetworks({

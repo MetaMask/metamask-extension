@@ -235,6 +235,7 @@ describe.skip('Swap', function () {
                 '0x1': true,
               },
             })
+            .withSmartTransactionsMigrationDisabled()
             .withTokensController({
               allTokens: {
                 '0x1': {
@@ -272,19 +273,6 @@ describe.skip('Swap', function () {
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedTokenBalanceIsDisplayed('50', 'WETH');
           await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
-
-          // disable smart transactions
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.checkPageIsLoaded();
-          await headerNavbar.openSettingsPage();
-
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.checkPageIsLoaded();
-          await settingsPage.clickAdvancedTab();
-          const advancedSettingsPage = new AdvancedSettings(driver);
-          await advancedSettingsPage.checkPageIsLoaded();
-          await advancedSettingsPage.toggleSmartTransactions();
-          await settingsPage.closeSettingsPage();
 
           // Swap tokens
           const assetListPage = new AssetListPage(driver);

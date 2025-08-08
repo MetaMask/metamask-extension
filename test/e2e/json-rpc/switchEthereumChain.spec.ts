@@ -100,6 +100,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
+          .withSmartTransactionsMigrationDisabled()
+          .withPreferencesController({
+            preferences: {
+              smartTransactionsOptInStatus: false,
+            },
+          })
           .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
@@ -122,20 +128,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-
-        // disable smart transactions step by step
-        // we cannot use fixtures because migration 135 overrides the opt in value to true
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.openSettingsPage();
-
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.checkPageIsLoaded();
-        await advancedSettingsPage.toggleSmartTransactions();
-        await settingsPage.closeSettingsPage();
 
         // open two dapps
         const dappOne = new TestDapp(driver);

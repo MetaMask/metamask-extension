@@ -924,16 +924,20 @@ class FixtureBuilder {
     });
   }
 
+
   /**
-   * @deprecated this method should not be used, as the `smartTransactionsOptInStatus` value is overridden by the migration 135
-   * Use the `toggleStxSetting` flow to disable this setting effectively.
+   * Disables the smart transactions migration (migration 135) by setting the manifest flag.
+   * This allows tests to control the smart transactions opt-in status without being overridden by the migration.
    */
-  withPreferencesControllerSmartTransactionsOptedOut() {
-    return this.withPreferencesController({
-      preferences: {
-        smartTransactionsOptInStatus: false,
-      },
-    });
+  withSmartTransactionsMigrationDisabled() {
+    if (!this.fixture.manifestFlags) {
+      this.fixture.manifestFlags = {};
+    }
+    if (!this.fixture.manifestFlags.testing) {
+      this.fixture.manifestFlags.testing = {};
+    }
+    this.fixture.manifestFlags.testing.disableSmartTransactionsMigration = true;
+    return this;
   }
 
   withAccountsController(data) {
