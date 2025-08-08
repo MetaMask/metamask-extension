@@ -1,0 +1,145 @@
+name: Playwright E2E CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'test/e2e/playwright/**'
+      - 'playwright.config.ts'
+      - 'package.json'
+      - '.github/workflows/playwright-*.yml'
+
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'test/e2e/playwright/**'
+      - 'playwright.config.ts'
+      - 'package.json'
+      - '.github/workflows/playwright-*.yml'
+
+  workflow_dispatch:
+    inputs:
+      build-type:
+        type: choice
+        description: Build type to test
+        options:
+          - main
+          - beta
+          - flask
+        default: main
+
+jobs:
+  # First, build the extension
+  build:
+    name: Build Extension
+    runs-on: ubuntu-latest
+    outputs:
+      build-artifact-name: ${{ steps.set-artifact-name.outputs.artifact-name }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+
+      - name: Set artifact name
+        id: set-artifact-name
+        run: echo "artifact-name=build-test-browserify-${{ github.run_id }}" >> $GITHUB_OUTPUT
+
+      - name: Build extension
+        run: yarn build:test
+        env:
+          METAMASK_BUILD_TYPE: ${{ inputs.build-type || 'main' }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.set-artifact-name.outputs.artifact-name }}
+          path: |
+            ./dist/
+            ./builds/
+          retention-days: 1
+
+  # Run Playwright tests
+  playwright-tests:
+    name: Run Playwright Tests
+    needs: build
+    uses: ./.github/workflows/playwright-tests.yml
+    with:
+      build-artifact: ${{ needs.build.outputs.build-artifact-name }}
+      build-command: ''  # Skip build since we're using artifact
+    secrets: inherit
+
+  # Post results as PR comment if this is a PR
+  comment-pr:
+    name: Comment on PR
+    runs-on: ubuntu-latest
+    needs: [playwright-tests]
+    if: always() && github.event_name == 'pull_request'
+
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: playwright-combined-report
+          path: ./test-results/
+
+      - name: Create PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            let comment = '## 🎭 Playwright Test Results\n\n';
+
+            // Check if we have test results
+            try {
+              const chromeJunitPath = './test-results/chrome-results/public/playwright/playwright-reports/junit/test-results.xml';
+              const firefoxJunitPath = './test-results/firefox-results/public/playwright/playwright-reports/junit/test-results.xml';
+
+              comment += '### Test Execution Summary\n';
+              comment += `- **Chrome Tests**: ${{ needs.playwright-tests.outputs.chrome-status || 'Unknown' }}\n`;
+              comment += `- **Firefox Tests**: ${{ needs.playwright-tests.outputs.firefox-status || 'Unknown' }}\n\n`;
+
+              comment += '### 📊 Reports & Artifacts\n';
+              comment += `- [View detailed HTML reports](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n`;
+              comment += `- Download test artifacts from the workflow run\n\n`;
+
+              comment += '### ℹ️ About\n';
+              comment += 'This comment is automatically generated for Playwright E2E test results.\n';
+              comment += `Workflow run: [#${context.runId}](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`;
+
+            } catch (error) {
+              comment += '⚠️ Could not parse test results. Check the workflow logs for details.\n';
+              comment += `Error: ${error.message}`;
+            }
+
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existingComment = comments.data.find(c =>
+              c.body.includes('🎭 Playwright Test Results')
+            );
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
