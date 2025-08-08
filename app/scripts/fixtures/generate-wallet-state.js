@@ -1,11 +1,11 @@
 import { Messenger } from '@metamask/base-controller';
 import { KeyringController } from '@metamask/keyring-controller';
-import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { WALLET_PASSWORD } from '../../../test/e2e/constants';
 import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
+import { getMnemonicUtil } from '../lib/mnemonic';
 import { withAddressBook } from './with-address-book';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { withConfirmedTransactions } from './with-confirmed-transactions';
@@ -55,11 +55,11 @@ export async function generateWalletState(withState, fromTest) {
 /**
  * Generates a new vault and account based on the provided seed phrase and password.
  *
- * @param {string} encodedSeedPhrase - The encoded seed phrase.
+ * @param {string} seedPhrase - The seed phrase.
  * @param {string} password - The password for the vault.
  * @returns {Promise<{vault: object, accounts: Array<string>}>} The generated vault and account.
  */
-async function generateVaultAndAccount(encodedSeedPhrase, password) {
+async function generateVaultAndAccount(seedPhrase, password) {
   const messenger = new Messenger();
   const keyringControllerMessenger = messenger.getRestricted({
     name: 'KeyringController',
@@ -69,18 +69,10 @@ async function generateVaultAndAccount(encodedSeedPhrase, password) {
     messenger: keyringControllerMessenger,
   });
 
-  const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-  const _convertMnemonicToWordlistIndices = (mnemonic) => {
-    const indices = mnemonic
-      .toString()
-      .split(' ')
-      .map((word) => wordlist.indexOf(word));
-    return new Uint8Array(new Uint16Array(indices).buffer);
-  };
-
+  const mnemonicUtil = await getMnemonicUtil();
   await krCtrl.createNewVaultAndRestore(
     password,
-    _convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
+    mnemonicUtil.convertMnemonicToWordlistIndices(seedPhrase),
   );
 
   const accounts = [];

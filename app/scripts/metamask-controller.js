@@ -14,7 +14,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, pick, uniq } from 'lodash';
+import { debounce, pick, uniq, isEqual } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -96,7 +96,6 @@ import {
 } from '@metamask/remote-feature-flag-controller';
 
 import { SignatureController } from '@metamask/signature-controller';
-import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import {
   NameController,
@@ -271,6 +270,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
+import { getMnemonicUtil } from './lib/mnemonic';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -4734,10 +4734,10 @@ export default class MetamaskController extends EventEmitter {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         op: TraceOperation.OnboardingSecurityOp,
       });
-      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
+      const mnemonicUtil = await getMnemonicUtil();
       const seedPhrase =
-        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
+        mnemonicUtil.convertMnemonicToWordlistIndices(encodedSeedPhrase);
 
       await this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase(
         password,
@@ -5026,6 +5026,7 @@ export default class MetamaskController extends EventEmitter {
       throw new Error('No root SRP found');
     }
 
+    const mnemonicUtil = await getMnemonicUtil();
     for (const secret of otherSecrets) {
       // import SRP secret
       // Get the SRP hash, and find the hash in the local state
@@ -5051,13 +5052,11 @@ export default class MetamaskController extends EventEmitter {
 
         // If SRP is not in the local state, import it to the vault
         // convert the seed phrase to a mnemonic (string)
-        const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
-          secret.data,
-        );
-        const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
+        const encodedSrp =
+          mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(secret.data);
 
         // import the new mnemonic to the current vault
-        await this.importMnemonicToVault(mnemonicToRestore, {
+        await this.importMnemonicToVault(encodedSrp, {
           shouldCreateSocialBackup: false,
           shouldSelectAccount: false,
           shouldImportSolanaAccount: true,
@@ -5187,7 +5186,6 @@ export default class MetamaskController extends EventEmitter {
    * For example, a mnemonic phrase can generate many accounts, and is a keyring.
    *
    * @param {string} password
-   * @returns {object} created keyring object
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
@@ -5202,7 +5200,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Imports a new mnemonic to the vault.
    *
-   * @param {string} mnemonic - The mnemonic to import.
+   * @param {number[]} mnemonic - The mnemonic to import.
    * @param {object} options - The options for the import.
    * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
    * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
@@ -5224,15 +5222,17 @@ export default class MetamaskController extends EventEmitter {
     } = options;
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      const mnemonicUtil = await getMnemonicUtil();
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
       const alreadyImportedSrp = this.keyringController
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {
-          return (
-            Buffer.from(
-              this._convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
-            ).toString('utf8') === mnemonic
+          return isEqual(
+            mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(
+              keyring.mnemonic,
+            ),
+            mnemonic,
           );
         });
 
@@ -5347,13 +5347,13 @@ export default class MetamaskController extends EventEmitter {
 
       // If SRP is not in the local state, import it to the vault
       // convert the seed phrase to a mnemonic (string)
-      const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
+      const mnemonicUtil = await getMnemonicUtil();
+      const encodedSrp = mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(
         secret.data,
       );
-      const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
       // import the new mnemonic to the vault
-      await this.importMnemonicToVault(mnemonicToRestore, {
+      await this.importMnemonicToVault(encodedSrp, {
         shouldCreateSocialBackup,
         shouldSelectAccount: shouldSetSelectedAccount,
         shouldImportSolanaAccount,
@@ -5374,9 +5374,11 @@ export default class MetamaskController extends EventEmitter {
       const [firstSecretData, ...remainingSecretData] =
         await this.fetchAllSecretData(password);
 
-      const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
-        firstSecretData.data,
-      );
+      const mnemonicUtil = await getMnemonicUtil();
+      const firstSeedPhrase =
+        mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(
+          firstSecretData.data,
+        );
       const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
       const encodedSeedPhrase = Array.from(
         Buffer.from(mnemonic, 'utf8').values(),
@@ -5469,10 +5471,11 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       const seedPhraseAsUint8Array =
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-      await this.keyringController.createNewVaultAndRestore(
-        password,
-        seedPhraseAsUint8Array,
-      );
+      const utf8ArraySeedPhrase = Uint8Array.from(encodedSeedPhrase);
+      const mnemonicUtil = await getMnemonicUtil();
+      const seed =
+        mnemonicUtil.convertMnemonicToWordlistIndices(utf8ArraySeedPhrase);
+      await this.keyringController.createNewVaultAndRestore(password, seed);
 
       // We re-created the vault, meaning we only have 1 new HD keyring
       // now. We re-create the internal list of accounts (which is
@@ -5732,34 +5735,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
   ///: END:ONLY_INCLUDE_IF
-
-  /**
-   * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
-   *
-   * @param {Buffer} mnemonic - The BIP-39 mnemonic.
-   * @returns {Buffer} The Unicode code points for the seed phrase formed from the words in the wordlist.
-   */
-  _convertMnemonicToWordlistIndices(mnemonic) {
-    const indices = mnemonic
-      .toString()
-      .split(' ')
-      .map((word) => wordlist.indexOf(word));
-    return new Uint8Array(new Uint16Array(indices).buffer);
-  }
-
-  /**
-   * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to a buffer of Unicode code points.
-   *
-   * @param {Uint8Array} wordlistIndices - Indices to specific words in the BIP-39 English wordlist.
-   * @returns {Buffer} The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
-   */
-  _convertEnglishWordlistIndicesToCodepoints(wordlistIndices) {
-    return Buffer.from(
-      Array.from(new Uint16Array(wordlistIndices.buffer))
-        .map((i) => wordlist[i])
-        .join(' '),
-    );
-  }
 
   /**
    * Get an account balance from the AccountTrackerController or request it directly from the network.
@@ -6226,14 +6201,16 @@ export default class MetamaskController extends EventEmitter {
    * Called when the first account is created and on unlocking the vault.
    *
    * @param {string} password
-   * @param {string} _keyringId - This is the identifier for the hd keyring.
+   * @param {string} keyringId - This is the identifier for the hd keyring.
    * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
    * encoded as an array of UTF-8 bytes.
    */
-  async getSeedPhrase(password, _keyringId) {
-    return this._convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.exportSeedPhrase(password, _keyringId),
-    );
+  async getSeedPhrase(password, keyringId) {
+    const [mnemonicUtil, srp] = await Promise.all([
+      getMnemonicUtil(),
+      this.keyringController.exportSeedPhrase(password, keyringId),
+    ]);
+    return mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(srp);
   }
 
   /**
@@ -8535,7 +8512,7 @@ export default class MetamaskController extends EventEmitter {
    * Throw an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+   * @deprecated This is only mean to facilitiate E2E testing. We should not
    * use this for handling errors.
    */
   throwTestError(message) {
@@ -8550,7 +8527,7 @@ export default class MetamaskController extends EventEmitter {
    * Capture an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
+   * @deprecated This is only mean to facilitiate E2E testing. We should not
    * use this for handling errors.
    */
   captureTestError(message) {

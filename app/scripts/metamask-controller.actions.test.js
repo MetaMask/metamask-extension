@@ -88,8 +88,11 @@ jest.mock('ulid', () => ({
   ulid: jest.fn().mockImplementation(() => mockUlidGenerator.next().value),
 }));
 
-const TEST_SEED =
-  'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+const TEST_SEED = [
+  ...new TextEncoder().encode(
+    'debris dizzy just program just float decrease vacant alarm reduce speak stadium',
+  ),
+];
 
 describe('MetaMaskController', function () {
   let metamaskController;
