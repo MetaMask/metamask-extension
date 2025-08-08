@@ -195,6 +195,8 @@ export const CHAIN_IDS = {
   ABSTRACT: '0xab5',
   OMNI: '0xa6',
   XRPLEVM: '0x15f900',
+  HYDRA: '0x1188',
+  HYDRA_TESTNET: '0x228C',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -346,6 +348,8 @@ export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
 export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
+export const HYDRA_DISPLAY_NAME = 'Hydra Chain';
+export const HYDRA_TESTNET_DISPLAY_NAME = 'Hydra Chain Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -415,6 +419,8 @@ export const CURRENCY_SYMBOLS = {
   ABSTRACT: 'ETH',
   OMNI: 'OMNI',
   XRPLEVM: 'XRP',
+  HYDRA: 'HYDRA',
+  HYDRA_TESTNET: 'tHYDRA',
 } as const;
 
 // Non-EVM currency symbols
@@ -616,6 +622,11 @@ export const OMNI_IMAGE_URL = './images/omni.png';
 export const OMNI_NATIVE_TOKEN_IMAGE_URL = './images/omni-native.png';
 export const XRPLEVM_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_NATIVE_TOKEN_IMAGE_URL = './images/xrplevm-native.svg';
+export const HYDRA_IMAGE_URL = './images/hydra.svg';
+export const HYDRA_NATIVE_TOKEN_IMAGE_URL = './images/hydra.svg';
+export const HYDRA_TESTNET_IMAGE_URL = './images/hydra.svg';
+export const HYDRA_TESTNET_NATIVE_TOKEN_IMAGE_URL =
+  './images/hydra.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -766,6 +777,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_DISPLAY_NAME,
   [CHAIN_IDS.OMNI]: OMNI_DISPLAY_NAME,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_DISPLAY_NAME,
+  [CHAIN_IDS.HYDRA]: HYDRA_DISPLAY_NAME,
+  [CHAIN_IDS.HYDRA_TESTNET]: HYDRA_TESTNET_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -914,6 +927,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.ABSTRACT]: CURRENCY_SYMBOLS.ABSTRACT,
   [CHAIN_IDS.OMNI]: CURRENCY_SYMBOLS.OMNI,
   [CHAIN_IDS.XRPLEVM]: CURRENCY_SYMBOLS.XRPLEVM,
+  [CHAIN_IDS.HYDRA]: CURRENCY_SYMBOLS.HYDRA,
+  [CHAIN_IDS.HYDRA_TESTNET]: CURRENCY_SYMBOLS.HYDRA_TESTNET,
 } as const;
 
 /**
@@ -1070,6 +1085,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_IMAGE_URL,
   [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_IMAGE_URL,
+  [CHAIN_IDS.HYDRA]: HYDRA_IMAGE_URL,
+  [CHAIN_IDS.HYDRA_TESTNET]: HYDRA_TESTNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1141,6 +1158,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_NATIVE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]:
     XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.HYDRA]: HYDRA_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.HYDRA_TESTNET]: HYDRA_TESTNET_NATIVE_TOKEN_IMAGE_URL,
 } as const;
 
 /**
@@ -1418,6 +1437,36 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.HYDRA,
+    name: HYDRA_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.HYDRA,
+    rpcEndpoints: [
+      {
+        url: 'https://rpc-mainnet.hydrachain.org',
+        failoverUrls: [],
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://skynet.hydrachain.org/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.HYDRA_TESTNET,
+    name: HYDRA_TESTNET_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.HYDRA_TESTNET,
+    rpcEndpoints: [
+      {
+        url: 'https://rpc-testnet.hydrachain.org',
+        failoverUrls: [],
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://hydragon.hydrachain.org/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];
