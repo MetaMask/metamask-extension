@@ -79,6 +79,10 @@ export type ManifestFlags = {
      * The public key used to verify deep links
      */
     deepLinkPublicKey?: string;
+    /**
+     * Whether to disable the smart transactions migration (migration 135)
+     */
+    disableSmartTransactionsMigration?: boolean;
   };
 };
 

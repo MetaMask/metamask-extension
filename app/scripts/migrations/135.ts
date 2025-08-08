@@ -2,6 +2,7 @@ import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 
 export type VersionedData = {
   meta: {
@@ -29,6 +30,13 @@ export type VersionedData = {
 export const version = 135;
 
 function transformState(state: VersionedData['data']) {
+  // Check if smart transactions migration should be disabled
+  const manifestFlags = getManifestFlags();
+  if (manifestFlags.testing?.disableSmartTransactionsMigration === true) {
+    // Skip the migration if the flag is enabled
+    return state;
+  }
+
   if (
     !hasProperty(state, 'PreferencesController') ||
     !isObject(state.PreferencesController)
