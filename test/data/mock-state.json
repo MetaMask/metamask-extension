@@ -538,7 +538,7 @@
       "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
       "wallets": {
         "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
-          "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
+          "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
           "type": "entropy",
           "groups": {
             "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
