@@ -798,7 +798,7 @@
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
-        "process.env": true
+        "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
