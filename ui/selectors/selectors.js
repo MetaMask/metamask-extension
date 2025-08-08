@@ -2394,6 +2394,15 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
   return numUnapprovedMessages;
 }
 
+export const getAllEnabledNetworksUsed = createDeepEqualSelector(
+  getEnabledNetworks,
+  (enabledNetworks) => {
+    return Object.values(enabledNetworks)
+      .map((network) => Object.keys(network))
+      .flat();
+  },
+);
+
 export const getCurrentNetwork = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,

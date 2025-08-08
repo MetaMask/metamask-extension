@@ -15,6 +15,8 @@ import {
 } from '../../../../../shared/constants/network';
 import {
   getEnabledNetworksByNamespace,
+  getAllEnabledNetworksUsed,
+  getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkConfiguration,
 } from '../../../../selectors';
@@ -31,6 +33,10 @@ export const useNetworkManagerState = ({
     getMultichainNetworkConfigurationsByChainId,
   );
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const allEnabledNetworks = useSelector(getAllEnabledNetworksUsed);
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -106,6 +112,9 @@ export const useNetworkManagerState = ({
   );
 
   const initialTab = useMemo(() => {
+    if (isMultichainAccountsState2Enabled && allEnabledNetworks.length > 0) {
+      return 'networks';
+    }
     if (!currentMultichainNetwork.isEvm) {
       return 'networks';
     }

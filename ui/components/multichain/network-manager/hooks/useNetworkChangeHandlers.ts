@@ -1,6 +1,11 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { parseCaipChainId, type CaipChainId } from '@metamask/utils';
+import {
+  KnownCaipNamespace,
+  parseCaipChainId,
+  type CaipChainId,
+} from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -19,11 +24,13 @@ import {
   showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../../store/actions';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
+import { FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN } from '../../../../../shared/constants/network';
 import {
   getAllChainsToPoll,
   getAllDomains,
+  getAllEnabledNetworksUsed,
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,
   getOriginOfCurrentTab,
   getPermittedEVMAccountsForSelectedTab,
@@ -77,7 +84,12 @@ export const useNetworkChangeHandlers = () => {
   );
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const enabledNetworks = useSelector(getAllEnabledNetworksUsed);
   const allChainIds = useSelector(getAllChainsToPoll);
+
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   // This value needs to be tracked in case the user changes to a Non EVM
   // network and there is no account created for that network. This will
@@ -103,39 +115,73 @@ export const useNetworkChangeHandlers = () => {
   const handleEvmNetworkChange = useCallback(
     (chainId: CaipChainId) => {
       const { namespace } = parseCaipChainId(chainId);
-      const hexChainId = convertCaipToHexChainId(chainId);
-      const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
-      const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
+      const hexChainId =
+        namespace === KnownCaipNamespace.Eip155
+          ? convertCaipToHexChainId(chainId)
+          : chainId;
 
-      const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
+      let finalNetworkClientId;
 
-      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
+      if (namespace === KnownCaipNamespace.Eip155) {
+        const { defaultRpcEndpoint } = getRpcDataByChainId(
+          chainId,
+          evmNetworks,
+        );
+        finalNetworkClientId = defaultRpcEndpoint.networkClientId;
+      }
+
+      const isPopularNetwork =
+        FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN.includes(hexChainId);
+
+      const enabledNetworkKeys = isMultichainAccountsState2Enabled
+        ? enabledNetworks
+        : Object.keys(enabledNetworksByNamespace ?? {});
 
       if (!isPopularNetwork) {
         // if custom network is enabled, select the new network and disable the custom network
         dispatch(setEnabledNetworks([hexChainId], namespace));
       } else if (enabledNetworkKeys.includes(hexChainId)) {
         const filteredPopularNetworks = enabledNetworkKeys.filter((key) =>
-          FEATURED_NETWORK_CHAIN_IDS.includes(key as `0x${string}`),
+          FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN.includes(key as `0x${string}`),
         );
+
         // deselect if selected
         const filteredEnabledNetworks = filteredPopularNetworks.filter(
           (key) => key !== hexChainId,
         );
+
+        // filter based on namespace
+        const networkToEnable = filteredEnabledNetworks.filter((key) => {
+          const caipChainId = formatChainIdToCaip(key);
+
+          const { namespace: namespaceToEnable } =
+            parseCaipChainId(caipChainId);
+
+          return namespaceToEnable === namespace;
+        });
+
         dispatch(
-          setEnabledNetworks(
-            filteredEnabledNetworks as CaipChainId[],
-            namespace,
-          ),
+          setEnabledNetworks(networkToEnable as CaipChainId[], namespace),
         );
       } else {
         const filteredPopularNetworks = enabledNetworkKeys.filter((key) =>
-          FEATURED_NETWORK_CHAIN_IDS.includes(key as `0x${string}`),
+          FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN.includes(key as `0x${string}`),
         );
+
+        // filter based on namespace
+        const networkToEnable = filteredPopularNetworks.filter((key) => {
+          const caipChainId = formatChainIdToCaip(key);
+
+          const { namespace: namespaceToEnable } =
+            parseCaipChainId(caipChainId);
+
+          return namespaceToEnable === namespace;
+        });
+
         // multiselect default networks
         dispatch(
           setEnabledNetworks(
-            [...filteredPopularNetworks, hexChainId] as CaipChainId[],
+            [...networkToEnable, hexChainId] as CaipChainId[],
             namespace,
           ),
         );
@@ -144,7 +190,12 @@ export const useNetworkChangeHandlers = () => {
       // If presently on a dapp, communicate a change to
       // the dapp via silent switchEthereumChain that the
       // network has changed due to user action
-      if (selectedTabOrigin && domains[selectedTabOrigin]) {
+      if (
+        selectedTabOrigin &&
+        domains[selectedTabOrigin] &&
+        namespace === KnownCaipNamespace.Eip155 &&
+        finalNetworkClientId
+      ) {
         // setActiveNetwork should be called before setNetworkClientIdForDomain
         // to ensure that the isConnected value can be accurately inferred from
         // NetworkController.state.networksMetadata in return value of
@@ -152,9 +203,12 @@ export const useNetworkChangeHandlers = () => {
         setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId);
       }
 
-      if (permittedAccountAddresses.length > 0) {
+      if (
+        permittedAccountAddresses.length > 0 &&
+        namespace === KnownCaipNamespace.Eip155
+      ) {
         dispatch(addPermittedChain(selectedTabOrigin, chainId));
-        if (!permittedChainIds.includes(hexChainId)) {
+        if (!permittedChainIds.includes(hexChainId as `0x${string}`)) {
           dispatch(showPermittedNetworkToast());
         }
       }
@@ -198,7 +252,7 @@ export const useNetworkChangeHandlers = () => {
         getMultichainNetworkConfigurationOrThrow(currentChainId);
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
-      if (chain.isEvm) {
+      if (chain.isEvm || isMultichainAccountsState2Enabled) {
         handleEvmNetworkChange(chainId);
       } else {
         await handleNonEvmNetworkChange(chainId);

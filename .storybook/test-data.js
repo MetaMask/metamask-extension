@@ -408,6 +408,49 @@ const state = {
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
+    accountTree: {
+      wallets: {
+        'entropy:01K21VA06VZDASAA0C6M74WFGZ': {
+          id: 'entropy:01K21VA06VZDASAA0C6M74WFGZ',
+          metadata: {
+            name: 'Wallet 1',
+            type: 'entropy',
+            entropy: {
+              id: '01K21VA06VZDASAA0C6M74WFGZ',
+              index: 0,
+            },
+          },
+          groups: {
+            'entropy:01K21VA06VZDASAA0C6M74WFGZ/3': {
+              id: 'entropy:01K21VA06VZDASAA0C6M74WFGZ/3',
+              accounts: ['cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'],
+              metadata: { name: '0x64a845…' },
+            },
+            'entropy:01K21VA06VZDASAA0C6M74WFGZ/7': {
+              id: 'entropy:01K21VA06VZDASAA0C6M74WFGZ/7',
+              accounts: ['07c2cfec-36c9-46c4-8115-3836d3ac9047'],
+              metadata: { name: '0xb19ac5…' },
+            },
+            'entropy:01K21VA06VZDASAA0C6M74WFGZ/f': {
+              id: 'entropy:01K21VA06VZDASAA0C6M74WFGZ/f',
+              accounts: ['15e69915-2a1a-4019-93b3-916e11fd432f'],
+              metadata: { name: '0x9d0ba4…' },
+            },
+            'entropy:01K21VA06VZDASAA0C6M74WFGZ/8': {
+              id: 'entropy:01K21VA06VZDASAA0C6M74WFGZ/8',
+              accounts: ['784225f4-d30b-4e77-a900-c8bbce735b88'],
+              metadata: { name: '0xeb9e64…' },
+            },
+            'entropy:01K21VA06VZDASAA0C6M74WFGZ/e': {
+              id: 'entropy:01K21VA06VZDASAA0C6M74WFGZ/e',
+              accounts: ['b990b846-b384-4508-93d9-587461f1123e'],
+              metadata: { name: '0x71C765…' },
+            },
+          },
+        },
+      },
+      selectedAccountGroup: 'entropy:01K21VA06VZDASAA0C6M74WFGZ/3',
+    },
     identities: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         name: 'This is a Really Long Account Name',
