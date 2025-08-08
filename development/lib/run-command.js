@@ -113,6 +113,8 @@ async function runInShell(command, args, output = undefined) {
         errorSignal = signal;
         return reject(internalError);
       });
+
+      childProcess.once('error', (error) => reject(error));
     });
   } catch (error) {
     /**
