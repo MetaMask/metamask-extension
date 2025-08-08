@@ -6,9 +6,6 @@ import {
   withFixtures,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
@@ -213,7 +210,7 @@ describe('Swap-Send ETH', function () {
                 '0x1': true, // Ethereum Mainnet
               },
             })
-            .withSmartTransactionsMigrationDisabled()
+            .withPreferencesControllerSmartTransactionsOptedOut()
             .withTokensController({
               allTokens: {
                 '0x1': {

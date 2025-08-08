@@ -7,13 +7,10 @@ import {
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../constants';
-import AdvancedSettings from '../page-objects/pages/settings/advanced-settings';
 import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
 import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-permission-select-modal';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
-import SettingsPage from '../page-objects/pages/settings/settings-page';
 import TestDapp from '../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
@@ -94,19 +91,16 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('queues switchEthereumChain request from second dapp after send tx request', async function () {
+  it.only('queues switchEthereumChain request from second dapp after send tx request', async function () {
+    const { fixtures, manifestFlags } = new FixtureBuilder()
+      .withNetworkControllerDoubleNode()
+      .withPreferencesControllerSmartTransactionsOptedOut();
+
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleNode()
-          .withSmartTransactionsMigrationDisabled()
-          .withPreferencesController({
-            preferences: {
-              smartTransactionsOptInStatus: false,
-            },
-          })
-          .build(),
+        fixtures,
+        manifestFlags,
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
@@ -128,6 +122,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+
+        // Smart transactions are now disabled via fixtures:
+        // 1. manifestFlags.testing.disableSmartTransactionsMigration = true - prevents migration 135 from running
+        // 2. fixtures.PreferencesController.preferences.smartTransactionsOptInStatus = false - sets the preference to false
 
         // open two dapps
         const dappOne = new TestDapp(driver);

@@ -25,7 +25,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
-          .withSmartTransactionsMigrationDisabled()
+          .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         localNodeOptions: {
           hardfork: 'prague',

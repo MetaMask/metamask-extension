@@ -5,9 +5,6 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
   mockEmptyHistoricalPrices,
@@ -235,7 +232,7 @@ describe.skip('Swap', function () {
                 '0x1': true,
               },
             })
-            .withSmartTransactionsMigrationDisabled()
+            .withPreferencesControllerSmartTransactionsOptedOut()
             .withTokensController({
               allTokens: {
                 '0x1': {
