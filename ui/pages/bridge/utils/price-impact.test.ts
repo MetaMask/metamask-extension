@@ -1,4 +1,4 @@
-import { formatPriceImpact } from './priceImpact';
+import { formatPriceImpact } from './price-impact';
 
 describe('formatPriceImpact', () => {
   it('should return 0% for undefined', () => {

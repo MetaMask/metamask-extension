@@ -56,9 +56,8 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import { formatPriceImpact } from '../utils/priceImpact';
+import { formatPriceImpact } from '../utils/price-impact';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
-import { PriceImpactWarningModal } from './price-impact-warning-modal';
 
 export const BridgeQuoteCard = ({
   onOpenSlippageModal,
@@ -95,8 +94,6 @@ export const BridgeQuoteCard = ({
 
   const priceImpactThresholds = useSelector(getPriceImpactThresholds);
 
-  const [showPriceImpactModal, setShowPriceImpactModal] = useState(false);
-
   // Calculate if price impact warning should show
   const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
@@ -130,11 +127,6 @@ export const BridgeQuoteCard = ({
 
   return (
     <>
-      <PriceImpactWarningModal
-        isOpen={showPriceImpactModal}
-        onClose={() => setShowPriceImpactModal(false)}
-        isGasIncluded={gasIncluded}
-      />
       <BridgeQuotesModal
         isOpen={showAllQuotes}
         onClose={() => setShowAllQuotes(false)}

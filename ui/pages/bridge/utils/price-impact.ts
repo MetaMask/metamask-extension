@@ -13,8 +13,7 @@ export function formatPriceImpact(
 
   const impact = Number(priceImpact);
 
-  // If the impact is 0, show 0%
-  if (impact === 0) {
+  if (isNaN(impact) || !impact) {
     return '0%';
   }
 
