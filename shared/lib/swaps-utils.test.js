@@ -70,7 +70,7 @@ describe('Swaps Utils', () => {
       },
     };
     it('should fetch trade info on prod', async () => {
-      nock('https://swap.api.cx.metamask.io')
+      nock('https://bridge.api.cx.metamask.io')
         .get('/networks/1/trades')
         .query(true)
         .reply(200, MOCK_TRADE_RESPONSE_2);
