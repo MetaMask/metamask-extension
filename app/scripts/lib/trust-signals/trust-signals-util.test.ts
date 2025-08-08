@@ -446,42 +446,186 @@ describe('trust-signals-util', () => {
   describe('mapChainIdToSupportedEVMChain', () => {
     describe('supported chain mappings', () => {
       const supportedChainTestCases = [
-        { chainId: CHAIN_IDS.ARBITRUM, expected: SupportedEVMChain.Arbitrum, description: 'arbitrum' },
-        { chainId: CHAIN_IDS.AVALANCHE, expected: SupportedEVMChain.Avalanche, description: 'avalanche' },
-        { chainId: CHAIN_IDS.BASE, expected: SupportedEVMChain.Base, description: 'base' },
-        { chainId: CHAIN_IDS.BASE_SEPOLIA, expected: SupportedEVMChain.BaseSepolia, description: 'base sepolia' },
-        { chainId: CHAIN_IDS.BSC, expected: SupportedEVMChain.Bsc, description: 'bsc' },
-        { chainId: CHAIN_IDS.MAINNET, expected: SupportedEVMChain.Ethereum, description: 'mainnet' },
-        { chainId: CHAIN_IDS.OPTIMISM, expected: SupportedEVMChain.Optimism, description: 'optimism' },
-        { chainId: CHAIN_IDS.POLYGON, expected: SupportedEVMChain.Polygon, description: 'polygon' },
-        { chainId: CHAIN_IDS.SEPOLIA, expected: SupportedEVMChain.EthereumSepolia, description: 'sepolia' },
-        { chainId: CHAIN_IDS.ZKSYNC_ERA, expected: SupportedEVMChain.Zksync, description: 'zksync era' },
-        { chainId: CHAIN_IDS.ZK_SYNC_ERA_TESTNET, expected: SupportedEVMChain.ZksyncSepolia, description: 'zksync era testnet' },
-        { chainId: '0x76adf1', expected: SupportedEVMChain.Zora, description: 'zora' },
-        { chainId: CHAIN_IDS.LINEA_MAINNET, expected: SupportedEVMChain.Linea, description: 'linea' },
-        { chainId: CHAIN_IDS.BLAST, expected: SupportedEVMChain.Blast, description: 'blast' },
-        { chainId: CHAIN_IDS.SCROLL, expected: SupportedEVMChain.Scroll, description: 'scroll' },
-        { chainId: CHAIN_IDS.SEPOLIA, expected: SupportedEVMChain.EthereumSepolia, description: 'sepolia' },
-        { chainId: '0x27bc86aa', expected: SupportedEVMChain.Degen, description: 'degen' },
-        { chainId: CHAIN_IDS.AVALANCHE_TESTNET, expected: SupportedEVMChain.AvalancheFuji, description: 'avalanche testnet' },
-        { chainId: '0x343b', expected: SupportedEVMChain.ImmutableZkevm, description: 'immutable zkevm' },
-        { chainId: '0x34a1', expected: SupportedEVMChain.ImmutableZkevmTestnet, description: 'immutable zkevm testnet' },
-        { chainId: CHAIN_IDS.GNOSIS, expected: SupportedEVMChain.Gnosis, description: 'gnosis' },
-        { chainId: '0x1e0', expected: SupportedEVMChain.Worldchain, description: 'worldchain' },
-        { chainId: '0x79a', expected: SupportedEVMChain.SoneiumMinato, description: 'soneium minato' },
-        { chainId: '0x7e4', expected: SupportedEVMChain.Ronin, description: 'ronin' },
-        { chainId: CHAIN_IDS.APECHAIN_MAINNET, expected: SupportedEVMChain.ApeChain, description: 'apechain' },
-        { chainId: '0x849ea', expected: SupportedEVMChain.ZeroNetwork, description: 'zero network' },
-        { chainId: CHAIN_IDS.BERACHAIN, expected: SupportedEVMChain.Berachain, description: 'berachain' },
-        { chainId: '0x138c5', expected: SupportedEVMChain.BerachainBartio, description: 'berachain bartio' },
-        { chainId: CHAIN_IDS.INK, expected: SupportedEVMChain.Ink, description: 'ink' },
-        { chainId: CHAIN_IDS.INK_SEPOLIA, expected: SupportedEVMChain.InkSepolia, description: 'ink sepolia' },
-        { chainId: '0xab5', expected: SupportedEVMChain.Abstract, description: 'abstract' },
-        { chainId: '0x2b74', expected: SupportedEVMChain.AbstractTestnet, description: 'abstract testnet' },
-        { chainId: '0x74c', expected: SupportedEVMChain.Soneium, description: 'soneium' },
-        { chainId: CHAIN_IDS.UNICHAIN, expected: SupportedEVMChain.Unichain, description: 'unichain' },
-        { chainId: CHAIN_IDS.SEI, expected: SupportedEVMChain.Sei, description: 'sei' },
-        { chainId: CHAIN_IDS.FLOW, expected: SupportedEVMChain.FlowEvm, description: 'flow' },
+        {
+          chainId: CHAIN_IDS.ARBITRUM,
+          expected: SupportedEVMChain.Arbitrum,
+          description: 'arbitrum',
+        },
+        {
+          chainId: CHAIN_IDS.AVALANCHE,
+          expected: SupportedEVMChain.Avalanche,
+          description: 'avalanche',
+        },
+        {
+          chainId: CHAIN_IDS.BASE,
+          expected: SupportedEVMChain.Base,
+          description: 'base',
+        },
+        {
+          chainId: CHAIN_IDS.BASE_SEPOLIA,
+          expected: SupportedEVMChain.BaseSepolia,
+          description: 'base sepolia',
+        },
+        {
+          chainId: CHAIN_IDS.BSC,
+          expected: SupportedEVMChain.Bsc,
+          description: 'bsc',
+        },
+        {
+          chainId: CHAIN_IDS.MAINNET,
+          expected: SupportedEVMChain.Ethereum,
+          description: 'mainnet',
+        },
+        {
+          chainId: CHAIN_IDS.OPTIMISM,
+          expected: SupportedEVMChain.Optimism,
+          description: 'optimism',
+        },
+        {
+          chainId: CHAIN_IDS.POLYGON,
+          expected: SupportedEVMChain.Polygon,
+          description: 'polygon',
+        },
+        {
+          chainId: CHAIN_IDS.SEPOLIA,
+          expected: SupportedEVMChain.EthereumSepolia,
+          description: 'sepolia',
+        },
+        {
+          chainId: CHAIN_IDS.ZKSYNC_ERA,
+          expected: SupportedEVMChain.Zksync,
+          description: 'zksync era',
+        },
+        {
+          chainId: CHAIN_IDS.ZK_SYNC_ERA_TESTNET,
+          expected: SupportedEVMChain.ZksyncSepolia,
+          description: 'zksync era testnet',
+        },
+        {
+          chainId: '0x76adf1',
+          expected: SupportedEVMChain.Zora,
+          description: 'zora',
+        },
+        {
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          expected: SupportedEVMChain.Linea,
+          description: 'linea',
+        },
+        {
+          chainId: CHAIN_IDS.BLAST,
+          expected: SupportedEVMChain.Blast,
+          description: 'blast',
+        },
+        {
+          chainId: CHAIN_IDS.SCROLL,
+          expected: SupportedEVMChain.Scroll,
+          description: 'scroll',
+        },
+        {
+          chainId: CHAIN_IDS.SEPOLIA,
+          expected: SupportedEVMChain.EthereumSepolia,
+          description: 'sepolia',
+        },
+        {
+          chainId: '0x27bc86aa',
+          expected: SupportedEVMChain.Degen,
+          description: 'degen',
+        },
+        {
+          chainId: CHAIN_IDS.AVALANCHE_TESTNET,
+          expected: SupportedEVMChain.AvalancheFuji,
+          description: 'avalanche testnet',
+        },
+        {
+          chainId: '0x343b',
+          expected: SupportedEVMChain.ImmutableZkevm,
+          description: 'immutable zkevm',
+        },
+        {
+          chainId: '0x34a1',
+          expected: SupportedEVMChain.ImmutableZkevmTestnet,
+          description: 'immutable zkevm testnet',
+        },
+        {
+          chainId: CHAIN_IDS.GNOSIS,
+          expected: SupportedEVMChain.Gnosis,
+          description: 'gnosis',
+        },
+        {
+          chainId: '0x1e0',
+          expected: SupportedEVMChain.Worldchain,
+          description: 'worldchain',
+        },
+        {
+          chainId: '0x79a',
+          expected: SupportedEVMChain.SoneiumMinato,
+          description: 'soneium minato',
+        },
+        {
+          chainId: '0x7e4',
+          expected: SupportedEVMChain.Ronin,
+          description: 'ronin',
+        },
+        {
+          chainId: CHAIN_IDS.APECHAIN_MAINNET,
+          expected: SupportedEVMChain.ApeChain,
+          description: 'apechain',
+        },
+        {
+          chainId: '0x849ea',
+          expected: SupportedEVMChain.ZeroNetwork,
+          description: 'zero network',
+        },
+        {
+          chainId: CHAIN_IDS.BERACHAIN,
+          expected: SupportedEVMChain.Berachain,
+          description: 'berachain',
+        },
+        {
+          chainId: '0x138c5',
+          expected: SupportedEVMChain.BerachainBartio,
+          description: 'berachain bartio',
+        },
+        {
+          chainId: CHAIN_IDS.INK,
+          expected: SupportedEVMChain.Ink,
+          description: 'ink',
+        },
+        {
+          chainId: CHAIN_IDS.INK_SEPOLIA,
+          expected: SupportedEVMChain.InkSepolia,
+          description: 'ink sepolia',
+        },
+        {
+          chainId: '0xab5',
+          expected: SupportedEVMChain.Abstract,
+          description: 'abstract',
+        },
+        {
+          chainId: '0x2b74',
+          expected: SupportedEVMChain.AbstractTestnet,
+          description: 'abstract testnet',
+        },
+        {
+          chainId: '0x74c',
+          expected: SupportedEVMChain.Soneium,
+          description: 'soneium',
+        },
+        {
+          chainId: CHAIN_IDS.UNICHAIN,
+          expected: SupportedEVMChain.Unichain,
+          description: 'unichain',
+        },
+        {
+          chainId: CHAIN_IDS.SEI,
+          expected: SupportedEVMChain.Sei,
+          description: 'sei',
+        },
+        {
+          chainId: CHAIN_IDS.FLOW,
+          expected: SupportedEVMChain.FlowEvm,
+          description: 'flow',
+        },
       ];
 
       supportedChainTestCases.forEach(({ chainId, expected, description }) => {
@@ -493,8 +637,16 @@ describe('trust-signals-util', () => {
 
     describe('case insensitive handling', () => {
       const caseTestCases = [
-        { chainId: '0X1', expected: SupportedEVMChain.Ethereum, description: 'uppercase mainnet' },
-        { chainId: '0xA86A', expected: SupportedEVMChain.Avalanche, description: 'uppercase avalanche' },
+        {
+          chainId: '0X1',
+          expected: SupportedEVMChain.Ethereum,
+          description: 'uppercase mainnet',
+        },
+        {
+          chainId: '0xA86A',
+          expected: SupportedEVMChain.Avalanche,
+          description: 'uppercase avalanche',
+        },
       ];
 
       caseTestCases.forEach(({ chainId, expected, description }) => {

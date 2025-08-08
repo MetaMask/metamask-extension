@@ -110,7 +110,8 @@ const CHAIN_IDS_LOWERCASED: Record<string, SupportedEVMChain> = {
   [CHAIN_IDS.OPTIMISM.toLowerCase()]: SupportedEVMChain.Optimism,
   [CHAIN_IDS.POLYGON.toLowerCase()]: SupportedEVMChain.Polygon,
   [CHAIN_IDS.ZKSYNC_ERA.toLowerCase()]: SupportedEVMChain.Zksync,
-  [CHAIN_IDS.ZK_SYNC_ERA_TESTNET.toLowerCase()]: SupportedEVMChain.ZksyncSepolia,
+  [CHAIN_IDS.ZK_SYNC_ERA_TESTNET.toLowerCase()]:
+    SupportedEVMChain.ZksyncSepolia,
   '0x76adf1': SupportedEVMChain.Zora,
   [CHAIN_IDS.LINEA_MAINNET.toLowerCase()]: SupportedEVMChain.Linea,
   [CHAIN_IDS.BLAST.toLowerCase()]: SupportedEVMChain.Blast,
