@@ -33,17 +33,11 @@ export type MultichainAccountsState = {
   };
 };
 
-export type ConsolidatedAccountGroup = {
-  id: AccountGroupObject['id'];
-  type: AccountGroupObject['type'];
-  metadata: AccountGroupObject['metadata'];
+export type ConsolidatedAccountGroup = Omit<AccountGroupObject, 'accounts'> & {
   accounts: MergedInternalAccount[];
 };
 
-export type ConsolidatedAccountWallet = {
-  id: AccountWalletObject['id'];
-  type: AccountWalletObject['type'];
-  metadata: AccountWalletObject['metadata'];
+export type ConsolidatedAccountWallet = Omit<AccountWalletObject, 'groups'> & {
   groups: {
     [groupId: AccountGroupId]: ConsolidatedAccountGroup;
   };
