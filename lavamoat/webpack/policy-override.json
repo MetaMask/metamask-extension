@@ -42,12 +42,22 @@
     },
     "@sentry/utils": {
       "globals": {
-        "crypto": true,
+        "performance": true,
         "performance.now": true,
+        "performance.now.now": true,
+        "performance.now.now.timeOrigin": true,
+        "performance.now.now.timeOrigin.timeOrigin": true,
+        "performance.now.now.timeOrigin.timeOrigin.Symbol(Symbol.toPrimitive)": true,
+        "performance.now.now.timeOrigin.timeOrigin.timing": true,
+        "performance.now.now.timeOrigin.timeOrigin.timing.timing": true,
+        "performance.now.now.timeOrigin.timeOrigin.timing.timing.navigationStart": true,
+        "navigator": true,
         "devicePixelRatio": true,
         "navigator.userAgent": true,
         "navigator.language": true,
-        "navigator.userAgentData": true
+        "navigator.userAgentData": true,
+        "crypto": true,
+        "onerror": true
       }
     },
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
