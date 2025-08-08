@@ -1771,7 +1771,7 @@ class FixtureBuilder {
         },
         'avalanche-mainnet': {
           chainId: CHAIN_IDS.AVALANCHE,
-          nickname: 'Avalanche Network C-Chain',
+          nickname: 'Avalanche',
           rpcPrefs: {},
           rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
           ticker: 'AVAX',
