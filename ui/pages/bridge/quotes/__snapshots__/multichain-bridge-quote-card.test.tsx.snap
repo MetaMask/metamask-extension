@@ -97,6 +97,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote 1`] = `
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="network-fees"
         >
           $2.52
         </p>
