@@ -922,6 +922,9 @@
   "bridgePriceImpactNormalWarning": {
     "message": "Price impact reflects how your swap order affects the market price of the asset. It depends on the trade size and the available liquidity in the pool. MetaMask does not influence or control price impact."
   },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Price Impact"
+  },
   "bridgePriceImpactWarningTitle": {
     "message": "Price Impact Warning"
   },

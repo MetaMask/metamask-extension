@@ -381,7 +381,11 @@ export const BridgeQuoteCard = ({
                     {t('bridgePriceImpact')}
                   </Text>
                   <Tooltip
-                    title={t('bridgePriceImpactWarningTitle')}
+                    title={
+                      shouldShowPriceImpactWarning
+                        ? t('bridgePriceImpactWarningTitle')
+                        : t('bridgePriceImpactTooltipTitle')
+                    }
                     position={PopoverPosition.TopStart}
                     offset={[-16, 16]}
                     iconName={IconName.Question}
