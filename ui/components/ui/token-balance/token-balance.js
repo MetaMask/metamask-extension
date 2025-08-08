@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CurrencyDisplay from '../currency-display';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { useTokenTracker } from '../../../hooks/useTokenBalances';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
 import { Text } from '../../component-library';

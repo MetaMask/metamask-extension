@@ -1074,18 +1074,6 @@
         "punycode": true
       }
     },
-    "@metamask/eth-token-tracker>@metamask/eth-block-tracker": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
-      }
-    },
     "@metamask/network-controller>@metamask/eth-block-tracker": {
       "globals": {
         "clearTimeout": true,
@@ -1248,22 +1236,6 @@
         "@metamask/utils": true,
         "webpack>events": true,
         "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
-      }
-    },
-    "@metamask/eth-token-tracker": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
-        "@metamask/safe-event-emitter": true,
-        "bn.js": true,
-        "@metamask/eth-token-tracker>deep-equal": true,
-        "human-standard-token-abi": true
       }
     },
     "@metamask/eth-trezor-keyring": {
@@ -2687,12 +2659,6 @@
         "browserify>buffer": true
       }
     },
-    "string.prototype.matchall>es-abstract>array-buffer-byte-length": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract>is-array-buffer": true
-      }
-    },
     "crypto-browserify>public-encrypt>parse-asn1>asn1.js": {
       "packages": {
         "bn.js": true,
@@ -3252,40 +3218,11 @@
         "process": true
       }
     },
-    "@metamask/eth-token-tracker>deep-equal": {
-      "packages": {
-        "string.prototype.matchall>es-abstract>array-buffer-byte-length": true,
-        "string.prototype.matchall>call-bind": true,
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "browserify>util>is-arguments": true,
-        "string.prototype.matchall>es-abstract>is-array-buffer": true,
-        "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
-        "string.prototype.matchall>es-abstract>is-regex": true,
-        "string.prototype.matchall>es-abstract>is-shared-array-buffer": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
-        "@ngraveio/bc-ur>assert>object-is": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true,
-        "gulp>vinyl-fs>object.assign": true,
-        "string.prototype.matchall>regexp.prototype.flags": true,
-        "string.prototype.matchall>side-channel": true,
-        "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive": true,
-        "@metamask/eth-token-tracker>deep-equal>which-collection": true,
-        "browserify>util>which-typed-array": true
-      }
-    },
     "string.prototype.matchall>define-properties>define-data-property": {
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>gopd": true
-      }
-    },
-    "string.prototype.matchall>define-properties": {
-      "packages": {
-        "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
       }
     },
     "crypto-browserify>browserify-cipher>browserify-des>des.js": {
@@ -3337,20 +3274,6 @@
         "pumpify>inherits": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-crypto-utils": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>es-get-iterator": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>has-symbols": true,
-        "browserify>util>is-arguments": true,
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-map": true,
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-set": true,
-        "eslint-plugin-react>array-includes>is-string": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
-        "process": true,
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator>stop-iteration-iterator": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": {
@@ -3765,31 +3688,7 @@
         "browserify>punycode": true
       }
     },
-    "string.prototype.matchall>internal-slot": {
-      "packages": {
-        "string.prototype.matchall>es-abstract>es-errors": true,
-        "axios>form-data>hasown": true,
-        "string.prototype.matchall>side-channel": true
-      }
-    },
     "browserify>util>is-arguments": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "koa>is-generator-function>has-tostringtag": true
-      }
-    },
-    "string.prototype.matchall>es-abstract>is-array-buffer": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-bigint": {
-      "packages": {
-        "string.prototype.matchall>es-abstract>unbox-primitive>has-bigints": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-boolean-object": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "koa>is-generator-function>has-tostringtag": true
@@ -3798,11 +3697,6 @@
     "string.prototype.matchall>es-abstract>is-callable": {
       "globals": {
         "document": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>is-date-object": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true
       }
     },
     "koa>is-generator-function": {
@@ -3815,41 +3709,9 @@
         "document": true
       }
     },
-    "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-number-object": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true
-      }
-    },
-    "string.prototype.matchall>es-abstract>is-regex": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "koa>is-generator-function>has-tostringtag": true
-      }
-    },
-    "string.prototype.matchall>es-abstract>is-shared-array-buffer": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true
-      }
-    },
-    "eslint-plugin-react>array-includes>is-string": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true
-      }
-    },
-    "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": {
-      "packages": {
-        "string.prototype.matchall>has-symbols": true
-      }
-    },
     "browserify>util>is-typed-array": {
       "packages": {
         "browserify>util>which-typed-array": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakset": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>borc>iso-url": {
@@ -4182,20 +4044,6 @@
       },
       "packages": {
         "browserify>browser-resolve": true
-      }
-    },
-    "@ngraveio/bc-ur>assert>object-is": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>define-properties": true
-      }
-    },
-    "gulp>vinyl-fs>object.assign": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>has-symbols": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
       }
     },
     "@metamask/object-multiplex>once": {
@@ -4799,16 +4647,6 @@
         "@babel/runtime": true
       }
     },
-    "string.prototype.matchall>regexp.prototype.flags": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>get-intrinsic>get-proto": true,
-        "string.prototype.matchall>es-abstract>gopd": true,
-        "string.prototype.matchall>regexp.prototype.flags>set-function-name": true
-      }
-    },
     "react-markdown>remark-parse": {
       "packages": {
         "react-markdown>remark-parse>mdast-util-from-markdown": true
@@ -4935,14 +4773,6 @@
         "string.prototype.matchall>es-abstract>has-property-descriptors": true
       }
     },
-    "string.prototype.matchall>regexp.prototype.flags>set-function-name": {
-      "packages": {
-        "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>es-abstract>function.prototype.name>functions-have-names": true,
-        "string.prototype.matchall>es-abstract>has-property-descriptors": true
-      }
-    },
     "eth-method-registry>@metamask/ethjs-query>promise-to-callback>set-immediate-shim": {
       "globals": {
         "setTimeout.apply": true
@@ -4999,14 +4829,6 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random": true,
         "ethers": true,
         "@metamask/controller-utils>@spruceid/siwe-parser>valid-url": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>es-get-iterator>stop-iteration-iterator": {
-      "globals": {
-        "StopIteration": true
-      },
-      "packages": {
-        "string.prototype.matchall>internal-slot": true
       }
     },
     "stream-browserify": {
@@ -5342,23 +5164,6 @@
         "console.warn": true,
         "define": true,
         "setTimeout": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive": {
-      "packages": {
-        "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-bigint": true,
-        "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-boolean-object": true,
-        "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-number-object": true,
-        "eslint-plugin-react>array-includes>is-string": true,
-        "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-collection": {
-      "packages": {
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-map": true,
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-set": true,
-        "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakmap": true,
-        "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakset": true
       }
     },
     "browserify>util>which-typed-array": {

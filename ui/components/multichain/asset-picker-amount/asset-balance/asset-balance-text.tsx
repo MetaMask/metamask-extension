@@ -12,7 +12,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import CurrencyDisplay from '../../../ui/currency-display';
-import { useTokenTracker } from '../../../../hooks/useTokenTracker';
+import { useTokenTracker } from '../../../../hooks/useTokenBalances';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getIsFiatPrimary } from '../utils';

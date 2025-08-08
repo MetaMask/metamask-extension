@@ -9,7 +9,7 @@ import {
 } from '../../../store/actions';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { useTokenTracker } from '../../../hooks/useTokenBalances';
 import { selectNftsByChainId } from '../../../selectors';
 
 export function useAssetDetails(

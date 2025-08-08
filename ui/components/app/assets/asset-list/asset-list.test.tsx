@@ -48,7 +48,7 @@ const mockTokens = [
   },
 ];
 
-jest.mock('../../../../hooks/useTokenTracker', () => {
+jest.mock('../../../../hooks/useTokenBalances', () => {
   return {
     useTokenTracker: () => ({
       loading: false,

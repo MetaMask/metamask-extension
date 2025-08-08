@@ -1120,7 +1120,7 @@
   "ui/hooks/useTokenDisplayValue.js",
   "ui/hooks/useTokenDisplayValue.test.js",
   "ui/hooks/useTokenFiatAmount.js",
-  "ui/hooks/useTokenTracker.js",
+  "ui/hooks/useTokenBalances.js",
   "ui/hooks/useTokensToSearch.js",
   "ui/hooks/useTransactionDisplayData.js",
   "ui/hooks/useTransactionDisplayData.test.js",
