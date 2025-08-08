@@ -5481,9 +5481,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A72.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-72.0.0-781cbafc4f.patch":
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A72.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-72.0.0-d780726ee3.patch":
   version: 72.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A72.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-72.0.0-781cbafc4f.patch::version=72.0.0&hash=98aa24"
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A72.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-72.0.0-d780726ee3.patch::version=72.0.0&hash=7b7b85"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5525,7 +5525,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^58.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/061593861bd62be8feed3e0d66165ffa62d1598fb8fe284d61b871fe2b2c0cd9ab81eb0a0b8c48e945ae623ab6033a9b4000b4d36eade995eaf763a90e2fb18a
+  checksum: 10/98df08fa8189c4d07a5fd323ad75984f83250fa6b4b7deb623d8979924a3d9e412784ea0a39439e2d71e9b09d7d98d291e4e1f14fd4c43d94219ff69165069fd
   languageName: node
   linkType: hard
 
@@ -31996,7 +31996,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A72.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-72.0.0-781cbafc4f.patch"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A72.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-72.0.0-d780726ee3.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.17.0"
