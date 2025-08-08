@@ -7,6 +7,8 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
+  private readonly accountListPage = '.account-list-page';
+
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
@@ -68,6 +70,11 @@ class HeaderNavbar {
   async openAccountMenu(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
     await this.driver.waitForSelector('.multichain-account-menu-popover__list');
+  }
+
+  async openAccountsPage(): Promise<void> {
+    await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.waitForSelector(this.accountListPage);
   }
 
   async openAccountDetailsModalDetailsTab(): Promise<void> {
