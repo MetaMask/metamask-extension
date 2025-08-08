@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  ONBOARDING_PIN_EXTENSION_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import CreationSuccessful from './creation-successful';
@@ -96,7 +96,7 @@ describe('Wallet Ready Page', () => {
     fireEvent.click(doneButton);
     await waitFor(() => {
       expect(mockHistoryPush).toHaveBeenCalledWith(
-        ONBOARDING_PIN_EXTENSION_ROUTE,
+        ONBOARDING_DOWNLOAD_APP_ROUTE,
       );
     });
   });

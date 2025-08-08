@@ -1961,6 +1961,12 @@
   "downArrow": {
     "message": "down arrow"
   },
+  "downloadAppDescription": {
+    "message": "Bring MetaMask with you everywhere you go with the mobile app. Plus, turn on Face ID so you always have access, even if you forget your password."
+  },
+  "downloadAppTitle": {
+    "message": "Scan QR code and download the app"
+  },
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
