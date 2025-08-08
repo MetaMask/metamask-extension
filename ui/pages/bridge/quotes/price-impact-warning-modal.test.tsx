@@ -15,7 +15,7 @@ describe('PriceImpactWarningModal', () => {
         isOpen={true}
         onClose={mockOnClose}
         isGasIncluded={false}
-      />
+      />,
     );
 
     expect(getByText('bridgePriceImpactWarningTitle')).toBeInTheDocument();
@@ -28,7 +28,7 @@ describe('PriceImpactWarningModal', () => {
         isOpen={true}
         onClose={mockOnClose}
         isGasIncluded={true}
-      />
+      />,
     );
 
     expect(getByText('bridgePriceImpactWarningTitle')).toBeInTheDocument();
@@ -41,10 +41,12 @@ describe('PriceImpactWarningModal', () => {
         isOpen={false}
         onClose={mockOnClose}
         isGasIncluded={false}
-      />
+      />,
     );
 
-    expect(queryByText('bridgePriceImpactWarningTitle')).not.toBeInTheDocument();
+    expect(
+      queryByText('bridgePriceImpactWarningTitle'),
+    ).not.toBeInTheDocument();
   });
 
   it('should call onClose when modal is closed', () => {
@@ -53,7 +55,7 @@ describe('PriceImpactWarningModal', () => {
         isOpen={true}
         onClose={mockOnClose}
         isGasIncluded={false}
-      />
+      />,
     );
 
     const closeButton = getByLabelText('Close');

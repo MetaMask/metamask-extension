@@ -16,11 +16,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Column } from '../layout';
 
-interface PriceImpactWarningModalProps {
+type PriceImpactWarningModalProps = {
   isOpen: boolean;
   onClose: () => void;
   isGasIncluded?: boolean;
-}
+};
 
 export const PriceImpactWarningModal = ({
   isOpen,

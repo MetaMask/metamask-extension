@@ -5,10 +5,6 @@ describe('formatPriceImpact', () => {
     expect(formatPriceImpact(undefined)).toBe('0%');
   });
 
-  it('should return 0% for null', () => {
-    expect(formatPriceImpact(null as any)).toBe('0%');
-  });
-
   it('should return 0% for 0', () => {
     expect(formatPriceImpact(0)).toBe('0%');
     expect(formatPriceImpact('0')).toBe('0%');

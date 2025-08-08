@@ -1,9 +1,12 @@
 /**
- * Formats price impact percentage for display
- * @param priceImpact - The price impact value from the API (in decimal form, e.g., 0.87 = 87%)
- * @returns Formatted price impact string
+ * Formats price impact percentage for display.
+ *
+ * @param priceImpact - The price impact value from the API (in decimal form, e.g., 0.87 = 87%).
+ * @returns Formatted price impact string.
  */
-export function formatPriceImpact(priceImpact: string | number | undefined): string {
+export function formatPriceImpact(
+  priceImpact: string | number | undefined,
+): string {
   if (priceImpact === undefined || priceImpact === null) {
     return '0%';
   }
