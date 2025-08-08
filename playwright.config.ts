@@ -65,6 +65,18 @@ const config: PlaywrightTestConfig = {
         headless: true,
       },
     },
+    // System: comprehensive end-to-end system tests
+    {
+      name: 'system',
+      testMatch: '/system/specs/**.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: true,
+      },
+      timeout: 120 * 1000, // Extended timeout for system tests
+      fullyParallel: false, // Run tests sequentially to avoid multiple browser instances
+      workers: 1, // Use only 1 worker to prevent multiple browser windows
+    },
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */

@@ -1,0 +1,26 @@
+{
+  "name": "@metamask/system-tests",
+  "version": "1.0.0",
+  "description": "System-level end-to-end tests for MetaMask Extension using Playwright",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "HEADLESS=false playwright test",
+    "test:debug": "HEADLESS=false playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:onboarding": "playwright test --grep=\"onboarding\"",
+    "test:transactions": "playwright test --grep=\"transaction\"",
+    "report": "playwright show-report test-results/html",
+    "trace": "playwright show-trace"
+  },
+  "keywords": [
+    "metamask",
+    "playwright",
+    "e2e",
+    "system-tests",
+    "browser-extension"
+  ],
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

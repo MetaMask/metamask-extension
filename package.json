@@ -59,6 +59,7 @@
     "test:e2e:swap": "yarn playwright test --project=swap",
     "test:e2e:global": "yarn playwright test --project=global",
     "test:e2e:pw:report": "yarn playwright show-report public/playwright/playwright-reports/html",
+    "test:e2e:system": "yarn playwright test --project=system",
     "test:e2e:chrome:rpc": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --rpc",
     "test:e2e:chrome:multi-provider": "MULTIPROVIDER=true SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --multi-provider",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox tsx test/e2e/run-all.ts",

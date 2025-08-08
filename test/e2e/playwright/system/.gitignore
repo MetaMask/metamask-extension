@@ -1,0 +1,23 @@
+# Test results and artifacts
+test-results/
+test-artifacts/
+
+# Screenshots
+screenshots/
+
+# Videos
+videos/
+
+# Traces
+traces/
+
+# Coverage reports
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS generated files
+.DS_Store
+Thumbs.db
