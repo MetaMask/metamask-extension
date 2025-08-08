@@ -215,6 +215,10 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletCreated,
       properties: {
         biometrics_enabled: false,
+        account_type: getAccountType(
+          MetaMetricsEventAccountType.Default,
+          isSocialLoginFlow,
+        ),
       },
     });
 

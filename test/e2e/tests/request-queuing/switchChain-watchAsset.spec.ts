@@ -42,7 +42,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.clickConnectAccountButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -50,7 +50,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.goToPermissionsTab();
         await connectAccountConfirmation.openEditNetworksModal();
 
@@ -65,7 +65,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // Switch Ethereum Chain
         const switchEthereumChainRequest = JSON.stringify({
@@ -80,18 +80,18 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await reviewPermissionsConfirmation.check_useEnabledNetworksMessageIsDisplayed();
+        await reviewPermissionsConfirmation.checkUseEnabledNetworksMessageIsDisplayed();
 
         // Switch back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // Watch Asset
         await testDapp.clickAddTokenToWallet();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Confirm Switch Network
-        await reviewPermissionsConfirmation.check_pageIsLoaded();
+        await reviewPermissionsConfirmation.checkPageIsLoaded();
         await reviewPermissionsConfirmation.clickConfirmReviewPermissionsButton();
 
         await driver.waitUntilXWindowHandles(3);

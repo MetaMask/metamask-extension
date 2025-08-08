@@ -152,7 +152,6 @@ import {
   getUseSmartAccount,
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -376,30 +375,12 @@ export function changePassword(
   newPassword: string,
   oldPassword: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (
-    dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
-  ) => {
-    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
-    const isSeedlessOnboardingFeatureEnabled =
-      getIsSeedlessOnboardingFeatureEnabled();
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await keyringChangePassword(newPassword);
-      if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
-        try {
-          await socialSyncChangePassword(newPassword, oldPassword);
-
-          // store the keyring encryption key in the seedless onboarding controller
-          const keyringEncryptionKey = await exportEncryptionKey();
-          await storeKeyringEncryptionKey(keyringEncryptionKey);
-        } catch (error) {
-          // revert the keyring password change
-          await keyringChangePassword(oldPassword);
-          const revertedKeyringEncryptionKey = await exportEncryptionKey();
-          await storeKeyringEncryptionKey(revertedKeyringEncryptionKey);
-          throw error;
-        }
-      }
+      await submitRequestToBackground('changePassword', [
+        newPassword,
+        oldPassword,
+      ]);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
@@ -413,10 +394,6 @@ export function storeKeyringEncryptionKey(
   return submitRequestToBackground('storeKeyringEncryptionKey', [
     encryptionKey,
   ]);
-}
-
-export function exportEncryptionKey(): Promise<string> {
-  return submitRequestToBackground('exportEncryptionKey');
 }
 
 export function tryUnlockMetamask(
@@ -714,20 +691,6 @@ export function verifyPassword(password: string): Promise<boolean> {
       resolve(true);
     });
   });
-}
-
-export function socialSyncChangePassword(
-  newPassword: string,
-  currentPassword: string,
-): Promise<void> {
-  return submitRequestToBackground('socialSyncChangePassword', [
-    newPassword,
-    currentPassword,
-  ]);
-}
-
-export function keyringChangePassword(newPassword: string): Promise<void> {
-  return submitRequestToBackground('keyringChangePassword', [newPassword]);
 }
 
 export async function getSeedPhrase(password: string, keyringId?: string) {
@@ -6269,7 +6232,7 @@ export async function updateDataDeletionTaskStatus() {
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not use
  * this for handling errors.
  */
 export async function throwTestBackgroundError(message: string): Promise<void> {
@@ -6280,7 +6243,7 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
  * Capture an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not use
  * this for handling errors.
  */
 export async function captureTestBackgroundError(
@@ -7060,6 +7023,12 @@ export function setTransactionActive(
 
 export async function isRelaySupported(chainId: Hex): Promise<boolean> {
   return await submitRequestToBackground<boolean>('isRelaySupported', [
+    chainId,
+  ]);
+}
+
+export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
+  return await submitRequestToBackground<boolean>('isSendBundleSupported', [
     chainId,
   ]);
 }

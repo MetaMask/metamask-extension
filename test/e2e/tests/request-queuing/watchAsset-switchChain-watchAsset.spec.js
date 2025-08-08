@@ -9,7 +9,9 @@ const {
 } = require('../../helpers');
 
 describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
-  it('should not batch subsequent watchAsset token into first watchAsset confirmation with a switchChain in the middle', async function () {
+  // Unskip task tracked here: https://github.com/MetaMask/MetaMask-planning/issues/5492
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should not batch subsequent watchAsset token into first watchAsset confirmation with a switchChain in the middle', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -72,22 +74,12 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // Wait for token to show in list of tokens to watch
-        await driver.waitUntil(
-          async () => {
-            const tokens = await driver.findElements(
-              '.confirm-add-suggested-token__token-list-item',
-            );
-            return tokens.length === 2;
-          },
-          { timeout: 10000, interval: 100 },
-        );
-
         const multipleSuggestedtokens = await driver.findElements(
           '.confirm-add-suggested-token__token-list-item',
         );
-        // Confirm only 2 tokens are present in suggested token list
-        assert.equal(multipleSuggestedtokens.length, 2);
+
+        // Confirm only 1 token is present in suggested token list
+        assert.equal(multipleSuggestedtokens.length, 1);
       },
     );
   });

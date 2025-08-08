@@ -265,16 +265,16 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
   await nftDetailsPage.clickNFTSendButton();
 
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient(TOKEN_RECIPIENT_ADDRESS);
   await sendToPage.goToNextScreen();
 
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickScrollToBottomButton();
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
@@ -307,10 +307,10 @@ async function createERC721DAppInitiatedTransactionAndAssertDetails(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_dappInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkDappInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickScrollToBottomButton();
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
@@ -324,7 +324,7 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   await loginWithBalanceValidation(driver, localNode);
 
   const homePage = new HomePage(driver);
-  await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+  await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -358,17 +358,17 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   await nftDetailsPage.clickNFTSendButton();
 
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient(TOKEN_RECIPIENT_ADDRESS);
   await sendToPage.fillNFTAmount('1');
   await sendToPage.goToNextScreen();
 
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickScrollToBottomButton();
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();

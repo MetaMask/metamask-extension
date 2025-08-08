@@ -193,7 +193,7 @@ describe('Import flow', function () {
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await assetListPage.importMultipleTokensBySearch([
           'CHAIN',
           'CHANGE',
@@ -204,12 +204,12 @@ describe('Import flow', function () {
 
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
         // ERC20 Tokens: Chain Games, Chai
-        await tokenList.check_tokenItemNumber(6);
-        await tokenList.check_tokenExistsInList('Ethereum');
-        await tokenList.check_tokenExistsInList('Chain Games');
+        await tokenList.checkTokenItemNumber(6);
+        await tokenList.checkTokenExistsInList('Ethereum');
+        await tokenList.checkTokenExistsInList('Chain Games');
         // TODO: add back this check once we figure out why tokens name displayed when running the test locally is changex but on CI it is ChangeX
-        // await tokenList.check_tokenExistsInList('Changex');
-        await tokenList.check_tokenExistsInList('Chai');
+        // await tokenList.checkTokenExistsInList('Changex');
+        await tokenList.checkTokenExistsInList('Chai');
       },
     );
   });
@@ -269,7 +269,7 @@ describe('Import flow', function () {
         await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         const assetListPage = new AssetListPage(driver);
 
@@ -279,12 +279,12 @@ describe('Import flow', function () {
 
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
         // ERC20 Tokens: Polygon USDT, Polygon ERP
-        await tokenList.check_tokenItemNumber(6);
+        await tokenList.checkTokenItemNumber(6);
 
-        await tokenList.check_tokenExistsInList('Ethereum');
-        await tokenList.check_tokenExistsInList('ERP');
-        await tokenList.check_tokenExistsInList('USDT');
-        await tokenList.check_tokenExistsInList('POL');
+        await tokenList.checkTokenExistsInList('Ethereum');
+        await tokenList.checkTokenExistsInList('ERP');
+        await tokenList.checkTokenExistsInList('USDT');
+        await tokenList.checkTokenExistsInList('POL');
       },
     );
   });
@@ -343,7 +343,7 @@ describe('Import flow', function () {
         await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         const assetListPage = new AssetListPage(driver);
 
@@ -356,11 +356,11 @@ describe('Import flow', function () {
 
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
         // ERC20 Tokens: Polygon USDT
-        await tokenList.check_tokenItemNumber(5);
+        await tokenList.checkTokenItemNumber(5);
 
-        await tokenList.check_tokenExistsInList('Ethereum');
-        await tokenList.check_tokenExistsInList('USDT');
-        await tokenList.check_tokenExistsInList('POL');
+        await tokenList.checkTokenExistsInList('Ethereum');
+        await tokenList.checkTokenExistsInList('USDT');
+        await tokenList.checkTokenExistsInList('POL');
       },
     );
   });
