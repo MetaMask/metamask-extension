@@ -71,6 +71,9 @@ export const lavamoatPlugin = new LavamoatPlugin({
       'stateHooks',
       'sentryHooks',
       'sentry',
+      // e2e
+      'HTMLFormElement',
+      'getSelection',
       // webpack
       'webpackChunk',
     ],

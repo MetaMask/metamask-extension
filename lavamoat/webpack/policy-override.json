@@ -149,6 +149,12 @@
         "DOMException.prototype": true,
         "fetch": true
       }
+    },
+    "react-beautiful-dnd": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
     }
   }
 }
