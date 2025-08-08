@@ -40,7 +40,8 @@ export async function scanAddress(
 export async function scanAddressAndAddToCache(
   address: string,
   appStateController: AppStateController,
-  networkController: NetworkController,
+  networkController?: NetworkController,
+  chainId?: SupportedEVMChain,
 ): Promise<ScanAddressResponse> {
   const cachedResponse =
     appStateController.getAddressSecurityAlertResponse(address);
@@ -48,7 +49,14 @@ export async function scanAddressAndAddToCache(
     return cachedResponse;
   }
 
-  const chainId = getChainId(networkController);
+  if (networkController) {
+    chainId = getChainId(networkController);
+  }
+
+  if (!chainId) {
+    throw new Error('[scanAddressAndAddToCache] chainId is not set');
+  }
+
   const result = await scanAddress(chainId, address);
   appStateController.addAddressSecurityAlertResponse(address, result);
   return result;

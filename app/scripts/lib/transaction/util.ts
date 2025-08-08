@@ -28,6 +28,10 @@ import {
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
 } from '../../../../shared/constants/security-provider';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
+import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-util';
+import { AppStateController } from '../../controllers/app-state-controller';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -95,8 +99,10 @@ export async function addDappTransaction(
 
 export async function addTransaction(
   request: AddTransactionRequest,
+  getAddressSecurityAlertResponse: (address: string) => SecurityAlertResponse | undefined,
+  addAddressSecurityAlertResponse: (address: string, securityAlertResponse: SecurityAlertResponse) => void,
 ): Promise<TransactionMeta> {
-  await validateSecurity(request);
+  await validateSecurity(request, getAddressSecurityAlertResponse, addAddressSecurityAlertResponse);
 
   const { transactionMeta, waitForHash } =
     await addTransactionOrUserOperation(request);
@@ -226,7 +232,41 @@ function getTransactionByHash(
   );
 }
 
-async function validateSecurity(request: AddTransactionRequest) {
+function scanAddressForTrustSignals(
+  transactionOptions: Partial<AddTransactionOptions>,
+  transactionParams: TransactionParams,
+  chainId: string,
+  getAddressSecurityAlertResponse: (address: string) => SecurityAlertResponse | undefined,
+  addAddressSecurityAlertResponse: (address: string, securityAlertResponse: SecurityAlertResponse) => void,
+) {
+  const { origin } = transactionOptions;
+  if (origin !== ORIGIN_METAMASK) {
+    return;
+  }
+  const { to } = transactionParams;
+  if (typeof to !== 'string') {
+    return;
+  }
+  const chain = mapChainIdToSupportedEVMChain(chainId);
+  if (!chain) {
+    return;
+  }
+
+  const appStateControllerProxy = {
+    getAddressSecurityAlertResponse,
+    addAddressSecurityAlertResponse,
+  };
+
+  scanAddressAndAddToCache(to, appStateControllerProxy as unknown as AppStateController, undefined, chain).catch((error) => {
+      console.error(
+        '[validateSecurity] error scanning address for trust signals:',
+        error,
+      );
+    },
+  );
+}
+
+async function validateSecurity(request: AddTransactionRequest, getAddressSecurityAlertResponse: (address: string) => SecurityAlertResponse | undefined, addAddressSecurityAlertResponse: (address: string, securityAlertResponse: SecurityAlertResponse) => void) {
   const {
     chainId,
     ppomController,
@@ -237,6 +277,7 @@ async function validateSecurity(request: AddTransactionRequest) {
     internalAccounts,
   } = request;
 
+  scanAddressForTrustSignals(transactionOptions, transactionParams, chainId, getAddressSecurityAlertResponse, addAddressSecurityAlertResponse);
   const { type } = transactionOptions;
 
   const typeIsExcludedFromPPOM =

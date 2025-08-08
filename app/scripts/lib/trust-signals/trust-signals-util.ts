@@ -100,7 +100,9 @@ export function getChainId(
   return mapChainIdToSupportedEVMChain(chainId);
 }
 
-function mapChainIdToSupportedEVMChain(chainId: string): SupportedEVMChain {
+export function mapChainIdToSupportedEVMChain(
+  chainId: string,
+): SupportedEVMChain {
   const chainIdMap: Record<string, SupportedEVMChain> = {
     [CHAIN_IDS.ARBITRUM]: SupportedEVMChain.Arbitrum,
     [CHAIN_IDS.AVALANCHE]: SupportedEVMChain.Avalanche,
