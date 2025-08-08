@@ -389,30 +389,87 @@ async function withFixtures(options, testSuite) {
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
-      const shutdownTasks = [fixtureServer.stop()];
+      console.log('🔄 Starting test cleanup and server shutdown...');
+      const shutdownTasks = [
+        (async () => {
+          console.log('🔄 Shutting down fixture server...');
+          const fixtureTimeout = new Promise((_, reject) => {
+            setTimeout(() => {
+              reject(new Error('Fixture server shutdown timed out'));
+            }, 10000);
+          });
+          await Promise.race([fixtureServer.stop(), fixtureTimeout]);
+          console.log('✅ Fixture server shutdown completed');
+        })(),
+      ];
 
       for (const server of localNodes) {
         if (server) {
-          shutdownTasks.push(server.quit());
+          shutdownTasks.push(
+            (async () => {
+              console.log(`🔄 Shutting down local node (${server.constructor.name})...`);
+              const nodeTimeout = new Promise((_, reject) => {
+                setTimeout(() => {
+                  reject(new Error('Local node shutdown timed out'));
+                }, 10000);
+              });
+              await Promise.race([server.quit(), nodeTimeout]);
+              console.log(`✅ Local node (${server.constructor.name}) shutdown completed`);
+            })(),
+          );
         }
       }
 
       if (useBundler) {
-        shutdownTasks.push(bundlerServer.stop());
+        shutdownTasks.push(
+          (async () => {
+            console.log('🔄 Shutting down bundler server...');
+            const bundlerTimeout = new Promise((_, reject) => {
+              setTimeout(() => {
+                reject(new Error('Bundler server shutdown timed out'));
+              }, 10000);
+            });
+            await Promise.race([bundlerServer.stop(), bundlerTimeout]);
+            console.log('✅ Bundler server shutdown completed');
+          })(),
+        );
       }
 
       if (webDriver) {
-        shutdownTasks.push(driver.quit());
+        shutdownTasks.push(
+          (async () => {
+            console.log('🔄 Shutting down WebDriver...');
+            const driverTimeout = new Promise((_, reject) => {
+              setTimeout(() => {
+                reject(new Error('Driver quit timed out'));
+              }, 15000); // 15 second timeout for driver quit
+            });
+
+            await Promise.race([
+              driver.quit(),
+              driverTimeout,
+            ]);
+            console.log('✅ WebDriver shutdown completed');
+          })(),
+        );
       }
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
             shutdownTasks.push(
               new Promise((resolve, reject) => {
+                console.log(`🔄 Shutting down dapp server ${i}...`);
+                const serverTimeout = setTimeout(() => {
+                  reject(new Error(`Dapp server ${i} shutdown timed out`));
+                }, 10000); // 10 second timeout for individual server
+
                 dappServer[i].close((error) => {
+                  clearTimeout(serverTimeout);
                   if (error) {
+                    console.error(`❌ Dapp server ${i} shutdown failed:`, error);
                     return reject(error);
                   }
+                  console.log(`✅ Dapp server ${i} shutdown completed`);
                   return resolve();
                 });
                 // We need to close all connections to stop the server quickly
@@ -424,25 +481,65 @@ async function withFixtures(options, testSuite) {
         }
       }
       if (phishingPageServer.isRunning()) {
-        shutdownTasks.push(phishingPageServer.quit());
+        shutdownTasks.push(
+          (async () => {
+            console.log('🔄 Shutting down phishing page server...');
+            const phishingTimeout = new Promise((_, reject) => {
+              setTimeout(() => {
+                reject(new Error('Phishing page server shutdown timed out'));
+              }, 10000);
+            });
+            await Promise.race([phishingPageServer.quit(), phishingTimeout]);
+            console.log('✅ Phishing page server shutdown completed');
+          })(),
+        );
       }
 
       shutdownTasks.push(
         (async () => {
+          console.log('🔄 Shutting down mock server...');
           // Since mockServer could be stop'd at another location,
           // use a try/catch to avoid an error
           try {
-            await mockServer.stop();
+            const mockServerTimeout = new Promise((_, reject) => {
+              setTimeout(() => {
+                reject(new Error('Mock server shutdown timed out'));
+              }, 10000); // 10 second timeout for mock server
+            });
+
+            await Promise.race([
+              mockServer.stop(),
+              mockServerTimeout,
+            ]);
+            console.log('✅ Mock server shutdown completed');
           } catch (e) {
-            console.log('mockServer already stopped');
+            console.log('ℹ️ Mock server already stopped');
           }
         })(),
       );
 
-      const results = await Promise.allSettled(shutdownTasks);
+      console.log(`🔄 Waiting for ${shutdownTasks.length} shutdown tasks to complete...`);
+      // Add a timeout to prevent hanging during shutdown
+      const shutdownTimeout = 30000; // 30 seconds timeout for shutdown
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error(`Shutdown timed out after ${shutdownTimeout}ms`));
+        }, shutdownTimeout);
+      });
+
+      const results = await Promise.race([
+        Promise.allSettled(shutdownTasks),
+        timeoutPromise,
+      ]);
+      console.log('📊 Shutdown results:', results.map((result, index) => ({
+        task: index,
+        status: result.status,
+        reason: result.reason?.message || 'N/A'
+      })));
+
       const failures = results.filter((result) => result.status === 'rejected');
       for (const { reason } of failures) {
-        console.error('Failed to shut down:', reason);
+        console.error('❌ Failed to shut down:', reason);
       }
       if (failures.length) {
         // A test error may get overridden here by the shutdown error, but this is OK because a
@@ -453,6 +550,7 @@ async function withFixtures(options, testSuite) {
           'Failed to shut down test servers',
         );
       }
+      console.log('✅ All servers shut down successfully');
     }
   }
 }
