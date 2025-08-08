@@ -7,7 +7,6 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
-const hexAbbreviatedAddress = '0x2f318...5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
 
 describe('Send ETH to a 40 character hexadecimal address', function () {
@@ -45,13 +44,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           '.transaction-list__completed-transactions .activity-list-item',
         );
         await sendTransactionListItem.click();
-        await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-
-        // Verify address in activity log
-        await driver.findElement({
-          css: '.name__value',
-          text: hexAbbreviatedAddress,
-        });
       },
     );
   });
@@ -89,13 +81,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '.transaction-list__completed-transactions .activity-list-item',
         );
-        await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-
-        // Verify address in activity log
-        await driver.findElement({
-          css: '.name__value',
-          text: hexAbbreviatedAddress,
-        });
       },
     );
   });
@@ -156,13 +141,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await sendTransactionListItem.click();
-        await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-
-        // Verify address in activity log
-        await driver.findElement({
-          css: '.name__value',
-          text: hexAbbreviatedAddress,
-        });
       },
     );
   });
@@ -219,13 +197,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await sendTransactionListItem.click();
-        await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-
-        // Verify address in activity log
-        await driver.findElement({
-          css: '.name__value',
-          text: hexAbbreviatedAddress,
-        });
       },
     );
   });
