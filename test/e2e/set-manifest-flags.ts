@@ -60,7 +60,10 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
     delete manifest.key;
   }
 
-  fs.writeFileSync(`${folder}/manifest.json`, JSON.stringify(manifest));
+  fs.writeFileSync(
+    `${folder}/manifest.json`,
+    JSON.stringify(manifest, null, 2),
+  );
 }
 
 export function getManifestVersion(): number {
