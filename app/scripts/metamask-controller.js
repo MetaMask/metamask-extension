@@ -3871,6 +3871,12 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: false,
           }),
+          this.appStateController.getAddressSecurityAlertResponse.bind(
+            this.appStateController,
+          ),
+          this.appStateController.addAddressSecurityAlertResponse.bind(
+            this.appStateController,
+          ),
         ),
       addTransactionAndWaitForPublish: (
         transactionParams,
@@ -3882,6 +3888,12 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: true,
           }),
+          this.appStateController.getAddressSecurityAlertResponse.bind(
+            this.appStateController,
+          ),
+          this.appStateController.addAddressSecurityAlertResponse.bind(
+            this.appStateController,
+          ),
         ),
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(
