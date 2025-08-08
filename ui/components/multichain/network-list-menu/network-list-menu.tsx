@@ -454,13 +454,13 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   };
 
   const isDiscoverBtnEnabled = useCallback(
-    (hexChainId: Hex): boolean => {
+    (chainId: string): boolean => {
       // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
       // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
       return (
-        (isNetworkDiscoverButtonEnabled as Record<Hex, boolean>)?.[
-          hexChainId
-        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+        (isNetworkDiscoverButtonEnabled as Record<string, boolean>)?.[
+          chainId
+        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
       );
     },
     [isNetworkDiscoverButtonEnabled],
@@ -491,7 +491,16 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       const { chainId, isEvm } = network;
 
       if (!isEvm) {
-        return {};
+        return {
+          onDiscoverClick: isDiscoverBtnEnabled(chainId)
+            ? () => {
+                openWindow(
+                  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[chainId],
+                  '_blank',
+                );
+              }
+            : undefined,
+        };
       }
 
       // Non-EVM networks cannot be deleted, edited or have
