@@ -7,12 +7,14 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
-  DAPP_URL,
-  DAPP_ONE_URL,
   WINDOW_TITLES,
   veryLargeDelayMs,
-  DAPP_TWO_URL,
 } = require('../../helpers');
+const {
+  DAPP_URL,
+  DAPP_ONE_URL,
+  DAPP_TWO_URL,
+} = require('../../constants');
 const { PAGES } = require('../../webdriver/driver');
 const {
   PermissionNames,
