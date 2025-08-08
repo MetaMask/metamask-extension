@@ -16,6 +16,7 @@ import {
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -43,26 +44,31 @@ import {
   MULTICHAIN_PROVIDER_CONFIGS,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/multichain/networks';
-import {
-  getHardwareWalletType,
-  getUSDConversionRateByChainId,
-  selectConversionRateByChainId,
-} from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
-import {} from '../../pages/bridge/utils/quote';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
-import {
-  getMultichainCoinRates,
-  getMultichainProviderConfig,
-} from '../../selectors/multichain';
-import { getAssetsRates } from '../../selectors/assets';
 import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
 import { toAssetId } from '../../../shared/lib/asset-utils';
+import {
+  getLastSelectedSolanaAccount,
+  getMultichainCoinRates,
+  getMultichainProviderConfig,
+} from '../../selectors/multichain';
+import { getAssetsRates } from '../../selectors/assets';
+import {
+  getHardwareWalletType,
+  getUSDConversionRateByChainId,
+  selectConversionRateByChainId,
+} from '../../selectors/selectors';
+import {
+  getSelectedEvmInternalAccount,
+  getSelectedInternalAccount,
+} from '../../selectors';
+
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   exchangeRateFromMarketData,
@@ -166,8 +172,7 @@ export const getFromChains = createDeepEqualSelector(
 );
 
 export const getFromChain = createDeepEqualSelector(
-  getMultichainProviderConfig,
-  getFromChains,
+  [getMultichainProviderConfig, getFromChains],
   (providerConfig, fromChains) => {
     return providerConfig?.chainId
       ? fromChains.find(({ chainId }) => chainId === providerConfig.chainId)
@@ -176,8 +181,7 @@ export const getFromChain = createDeepEqualSelector(
 );
 
 export const getToChains = createDeepEqualSelector(
-  getAllBridgeableNetworks,
-  getBridgeFeatureFlags,
+  [getAllBridgeableNetworks, getBridgeFeatureFlags],
   (allBridgeableNetworks, bridgeFeatureFlags) =>
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
@@ -256,6 +260,50 @@ export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
 export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
+
+const _getSelectedToAccount = (state: BridgeAppState) => state.bridge.toAccount;
+
+/**
+ * Returns the account to use for the destination chain
+ * If toAccount is defined in the bridge state and is in the selected toChain, it is returned
+ * Otherwise the last selected EVM or non-EVM account is returned
+ */
+export const getToAccount = createSelector(
+  getFromChain,
+  getToChain,
+  getSelectedInternalAccount,
+  _getSelectedToAccount,
+  getSelectedEvmInternalAccount,
+  getLastSelectedSolanaAccount,
+  (
+    fromChain: ReturnType<typeof getFromChain>,
+    toChain: ReturnType<typeof getToChain>,
+    currentSelectedAccount: ReturnType<typeof getSelectedInternalAccount>,
+    toAccount: ReturnType<typeof _getSelectedToAccount>,
+    selectedEvmAccount: ReturnType<typeof getSelectedEvmInternalAccount>,
+    selectedSolanaAccount: ReturnType<typeof getLastSelectedSolanaAccount>,
+  ) => {
+    if (!fromChain || !toChain) {
+      return null;
+    }
+
+    // For bridges, use the appropriate account type for the destination chain
+    if (isCrossChain(fromChain.chainId, toChain.chainId)) {
+      if (
+        toAccount?.type === 'any:account' ||
+        toAccount?.type?.split(':')?.[0] ===
+          formatChainIdToCaip(toChain.chainId).split(':')[0]
+      ) {
+        return toAccount;
+      }
+      return isSolanaChainId(toChain.chainId)
+        ? selectedSolanaAccount
+        : selectedEvmAccount;
+    }
+    // For swaps, always use the currently selected account
+    return currentSelectedAccount;
+  },
+);
 
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask;
@@ -527,6 +575,22 @@ export const getFromAmountInCurrency = createSelector(
 
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 
+export const getIsToOrFromSolana = createSelector(
+  getFromChain,
+  getToChain,
+  (fromChain, toChain) => {
+    if (!fromChain?.chainId || !toChain?.chainId) {
+      return false;
+    }
+
+    const fromChainIsSolana = isSolanaChainId(fromChain.chainId);
+    const toChainIsSolana = isSolanaChainId(toChain.chainId);
+
+    // Only return true if either chain is Solana and the other is EVM
+    return toChainIsSolana !== fromChainIsSolana;
+  },
+);
+
 export const getValidationErrors = createDeepEqualSelector(
   getBridgeQuotes,
   _getValidatedSrcAmount,
@@ -536,6 +600,8 @@ export const getValidationErrors = createDeepEqualSelector(
     selectMinimumBalanceForRentExemptionInSOL(metamask),
   getQuoteRequest,
   getTxAlerts,
+  getToAccount,
+  getIsToOrFromSolana,
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
@@ -544,6 +610,8 @@ export const getValidationErrors = createDeepEqualSelector(
     minimumBalanceForRentExemptionInSOL,
     quoteRequest,
     txAlert,
+    toAccount,
+    isToOrFromSolana,
   ) => {
     const { gasIncluded } = activeQuote?.quote ?? {};
 
@@ -611,6 +679,7 @@ export const getValidationErrors = createDeepEqualSelector(
               ).times(activeQuote.sentAmount.valueInCurrency),
             )
           : false,
+      isToAccountValid: isToOrFromSolana && !toAccount,
     };
   },
 );
@@ -631,39 +700,6 @@ export const isBridgeSolanaEnabled = createDeepEqualSelector(
     // Directly check if Solana is enabled as a source or destination chain
     const solanaConfig = bridgeFeatureFlags?.chains?.[solanaChainIdCaip];
     return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
-  },
-);
-
-/**
- * Checks if the destination chain is Solana and the user has no Solana accounts
- */
-export const needsSolanaAccountForDestination = createDeepEqualSelector(
-  getToChain,
-  (state: BridgeAppState) => hasSolanaAccounts(state),
-  (toChain, hasSolanaAccount) => {
-    if (!toChain) {
-      return false;
-    }
-
-    const isSolanaDestination = isSolanaChainId(toChain.chainId);
-
-    return isSolanaDestination && !hasSolanaAccount;
-  },
-);
-
-export const getIsToOrFromSolana = createSelector(
-  getFromChain,
-  getToChain,
-  (fromChain, toChain) => {
-    if (!fromChain?.chainId || !toChain?.chainId) {
-      return false;
-    }
-
-    const fromChainIsSolana = isSolanaChainId(fromChain.chainId);
-    const toChainIsSolana = isSolanaChainId(toChain.chainId);
-
-    // Only return true if either chain is Solana and the other is EVM
-    return toChainIsSolana !== fromChainIsSolana;
   },
 );
 

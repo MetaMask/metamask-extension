@@ -36,14 +36,12 @@ import { Row } from '../layout';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
-  needsDestinationAddress = false,
   nativeAssetBalance,
   srcTokenBalance,
 }: {
   nativeAssetBalance?: BigNumber;
   srcTokenBalance?: BigNumber;
   onFetchNewQuotes: () => void;
-  needsDestinationAddress?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -71,6 +69,7 @@ export const BridgeCTAButton = ({
     // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientGasForQuote: isInsufficientGasForQuote_,
     isTxAlertPresent,
+    isToAccountValid,
   } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
@@ -114,16 +113,16 @@ export const BridgeCTAButton = ({
 
     if (!fromAmount) {
       if (!toToken) {
-        return needsDestinationAddress
+        return isToAccountValid
           ? 'bridgeSelectTokenAmountAndAccount'
           : 'bridgeSelectTokenAndAmount';
       }
-      return needsDestinationAddress
+      return isToAccountValid
         ? 'bridgeEnterAmountAndSelectAccount'
         : 'bridgeEnterAmount';
     }
 
-    if (needsDestinationAddress) {
+    if (isToAccountValid) {
       return 'bridgeSelectDestinationAccount';
     }
 
@@ -143,7 +142,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     wasTxDeclined,
     isQuoteExpired,
-    needsDestinationAddress,
+    isToAccountValid,
     activeQuote,
     isNoQuotesAvailable,
   ]);
@@ -190,13 +189,7 @@ export const BridgeCTAButton = ({
         }
       }}
       loading={isSubmitting}
-      disabled={
-        !isTxSubmittable ||
-        isTxAlertPresent ||
-        isQuoteExpired ||
-        isSubmitting ||
-        needsDestinationAddress
-      }
+      disabled={!isTxSubmittable || isQuoteExpired || isSubmitting}
     >
       {label ? t(label) : ''}
     </ButtonPrimary>
