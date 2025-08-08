@@ -28,6 +28,22 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 
+// this was Truffle's original dev recovery phrase from ~2017
+export const fakeSeedPhraseWords = [
+  'candy',
+  'maple',
+  'cake',
+  'sugar',
+  'pudding',
+  'cream',
+  'honey',
+  'rich',
+  'smooth',
+  'crumble',
+  'sweet',
+  'treat',
+];
+
 export default function RecoveryPhraseChips({
   secretRecoveryPhrase,
   phraseRevealed = true,
@@ -37,7 +53,6 @@ export default function RecoveryPhraseChips({
   setInputValue,
 }) {
   const t = useI18nContext();
-  const phrasesToDisplay = secretRecoveryPhrase;
   const indicesToCheck = useMemo(
     () => quizWords.map((word) => word.index),
     [quizWords],
@@ -116,6 +131,14 @@ export default function RecoveryPhraseChips({
     }
   }, [quizWords]);
 
+  // obfuscate the blurred recovery phrase to prevent blur-reversal attacks
+  // from revealing the underlying words.
+  const phrasesToDisplay = phraseRevealed
+    ? secretRecoveryPhrase
+    : secretRecoveryPhrase.map((_word, index) => {
+        return fakeSeedPhraseWords[index % fakeSeedPhraseWords.length];
+      });
+
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
       <Box
@@ -127,6 +150,7 @@ export default function RecoveryPhraseChips({
         className="recovery-phrase__secret"
       >
         <Box
+          key="recovery-phrase-chips"
           display={Display.Grid}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
@@ -205,6 +229,7 @@ export default function RecoveryPhraseChips({
 
         {!phraseRevealed && (
           <Box
+            key="recovery-phrase__secret-blocker-container"
             width={BlockSize.Full}
             height={BlockSize.Full}
             className="recovery-phrase__secret-blocker-container"

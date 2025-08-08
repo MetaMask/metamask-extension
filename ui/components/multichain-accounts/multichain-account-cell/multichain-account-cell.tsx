@@ -102,6 +102,7 @@ export const MultichainAccountCell = ({
       >
         <Text
           className="multichain-account-cell__account-balance"
+          data-testid="balance-display"
           variant={TextVariant.bodyMdMedium}
           marginRight={2}
         >

@@ -51,6 +51,7 @@ import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
   getUseBlockie,
+  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -63,7 +64,10 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  REVIEW_PERMISSIONS,
+} from '../../../helpers/constants/routes';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
   getShowSupportDataConsentModal,
@@ -90,6 +94,9 @@ export const AppHeaderUnlockedContent = ({
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const useBlockie = useSelector(getUseBlockie);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -186,8 +193,16 @@ export const AppHeaderUnlockedContent = ({
     [copied, handleCopyClick, shortenedAddress],
   );
 
-  const AppContent = useMemo(
-    () => (
+  const AppContent = useMemo(() => {
+    const handleAccountMenuClick = () => {
+      if (isMultichainAccountsState2Enabled) {
+        history.push(ACCOUNT_LIST_PAGE_ROUTE);
+      } else {
+        dispatch(toggleAccountMenu());
+      }
+    };
+
+    return (
       <>
         <AvatarAccount
           variant={
@@ -211,7 +226,7 @@ export const AppHeaderUnlockedContent = ({
               name={internalAccount.metadata.name}
               showAvatarAccount={false}
               onClick={() => {
-                dispatch(toggleAccountMenu());
+                handleAccountMenuClick();
 
                 trackEvent({
                   event: MetaMetricsEventName.NavAccountMenuOpened,
@@ -229,18 +244,19 @@ export const AppHeaderUnlockedContent = ({
           </Text>
         )}
       </>
-    ),
-    [
-      disableAccountPicker,
-      dispatch,
-      internalAccount,
-      t,
-      trackEvent,
-      useBlockie,
-      CopyButton,
-      copied,
-    ],
-  );
+    );
+  }, [
+    disableAccountPicker,
+    dispatch,
+    internalAccount,
+    t,
+    trackEvent,
+    useBlockie,
+    CopyButton,
+    copied,
+    history,
+    isMultichainAccountsState2Enabled,
+  ]);
 
   return (
     <>

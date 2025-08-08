@@ -12,10 +12,12 @@ export type WalletMetadata = {
   name: string;
 };
 
+export type AccountTreeWallets = {
+  [walletId: AccountWalletId]: AccountWalletObject;
+};
+
 export type AccountTreeState = {
-  wallets: {
-    [walletId: AccountWalletId]: AccountWalletObject;
-  };
+  wallets: AccountTreeWallets;
   selectedAccountGroup: AccountGroupId;
 };
 
