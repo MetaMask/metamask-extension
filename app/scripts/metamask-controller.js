@@ -437,6 +437,7 @@ import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
+import LockWithStatus from './lib/lock/custom-lock-with-status';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -546,6 +547,8 @@ export default class MetamaskController extends EventEmitter {
 
     // lock to ensure only one seedless password sync is running at once
     this.syncSeedlessGlobalPasswordMutex = new Mutex();
+
+    this.changePasswordMutex = new LockWithStatus();
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -5136,6 +5139,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} oldPassword - The old password.
    */
   async changePassword(newPassword, oldPassword) {
+    const releaseLock = await this.changePasswordMutex.acquire();
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     try {
       await this.keyringController.changePassword(newPassword);
@@ -5169,6 +5173,8 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.error('error while changing password', error);
       throw error;
+    } finally {
+      releaseLock();
     }
   }
 
@@ -8848,8 +8854,14 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Locks MetaMask
    */
-  setLocked() {
-    return this.keyringController.setLocked();
+  async setLocked() {
+    if (this.changePasswordMutex.isLocked()) {
+      log.error('changePasswordMutex is locked');
+      throw new Error('changePasswordMutex is locked');
+    }
+
+    await this.seedlessOnboardingController.setLocked();
+    await this.keyringController.setLocked();
   }
 
   removePermissionsFor = (subjects) => {
