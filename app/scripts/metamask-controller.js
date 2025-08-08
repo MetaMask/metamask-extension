@@ -26,7 +26,6 @@ import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import {
-  OneKeyKeyring,
   TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
@@ -144,7 +143,7 @@ import {
   bytesToHex,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
-
+import { OneKeyKeyring, OneKeyWebBridge } from 'eth-onekey-bridge-keyring';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
 import {
@@ -347,6 +346,8 @@ import { DataDeletionService } from './services/data-deletion-service';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-bridge';
+import { OneKeyOffscreenBridge } from './lib/offscreen-bridge/onekey-offscreen-bridge';
+import { hardwareOneKeyKeyringBuilderFactory } from './lib/hardware-onekey-keyring-builder-factory';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
@@ -1180,10 +1181,6 @@ export default class MetamaskController extends EventEmitter {
           bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
         },
         {
-          keyring: keyringOverrides?.oneKey || OneKeyKeyring,
-          bridge: keyringOverrides?.oneKeyBridge || TrezorConnectBridge,
-        },
-        {
           keyring: keyringOverrides?.ledger || LedgerKeyring,
           bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
         },
@@ -1201,6 +1198,13 @@ export default class MetamaskController extends EventEmitter {
           ),
         ),
       );
+      additionalKeyrings.push(
+        hardwareOneKeyKeyringBuilderFactory(
+          keyringOverrides?.oneKey || OneKeyKeyring,
+          keyringOverrides?.oneKeyBridge || OneKeyWebBridge,
+          this.platform,
+        ),
+      );
     } else {
       additionalKeyrings.push(
         hardwareKeyringBuilderFactory(
@@ -1208,14 +1212,15 @@ export default class MetamaskController extends EventEmitter {
           keyringOverrides?.trezorBridge || TrezorOffscreenBridge,
         ),
         hardwareKeyringBuilderFactory(
-          OneKeyKeyring,
-          keyringOverrides?.oneKey || TrezorOffscreenBridge,
-        ),
-        hardwareKeyringBuilderFactory(
           LedgerKeyring,
           keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
         ),
         keyringBuilderFactory(LatticeKeyringOffscreen),
+        hardwareOneKeyKeyringBuilderFactory(
+          OneKeyKeyring,
+          keyringOverrides?.oneKey || OneKeyOffscreenBridge,
+          this.platform,
+        ),
       );
     }
 
@@ -3561,6 +3566,7 @@ export default class MetamaskController extends EventEmitter {
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
+      connectHardwareBeforeCheck: this.connectHardwareBeforeCheck.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
@@ -5961,6 +5967,14 @@ export default class MetamaskController extends EventEmitter {
       { name: HardwareDeviceNames.ledger },
       async (keyring) => keyring.attemptMakeApp(),
     );
+  }
+
+  async connectHardwareBeforeCheck(deviceName) {
+    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
+      if (deviceName === HardwareDeviceNames.oneKey) {
+        await keyring?.lock?.();
+      }
+    });
   }
 
   /**

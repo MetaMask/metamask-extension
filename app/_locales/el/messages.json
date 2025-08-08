@@ -4110,6 +4110,39 @@
   "onekey": {
     "message": "OneKey"
   },
+  "onekeyBridgeInstallationRequired": {
+    "message": "Το υλικό απαιτεί το λογισμικό OneKey Bridge, $1"
+  },
+  "onekeyConnectDevice": {
+    "message": "Σύνδεση συσκευής"
+  },
+  "onekeyDownloadBridge": {
+    "message": "Κατεβάστε το OneKey Bridge"
+  },
+  "onekeyExitBootloaderMode": {
+    "message": "Το OneKey πρέπει να βγει από τη λειτουργία bootloader για να χρησιμοποιήσει αυτή τη λειτουργία."
+  },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "Ο PIN ή η μυστική φράση δεν ταιριάζει με το τρέχον λογαριασμό"
+  },
+  "onekeyForceUpdate": {
+    "message": "Το firmware του OneKey χρειάζεται ενημέρωση. $1"
+  },
+  "onekeyGoToUpdateFirmware": {
+    "message": "Μετάβαση σε ενημέρωση firmware"
+  },
+  "onekeyHardwareError": {
+    "message": "Σφάλμα υλικού OneKey"
+  },
+  "onekeyHardwareHelpLink": {
+    "message": "Παρακαλούμε επισκεφθείτε τα online tutorials μας για αναλυτικές οδηγίες."
+  },
+  "onekeyNeedUpdateFirmware": {
+    "message": "Απαιτείται ενημέρωση του firmware OneKey για να χρησιμοποιήσετε αυτή τη λειτουργία, $1"
+  },
+  "onekeyWebUSBNotConnectedErrorMessage": {
+    "message": "Απαιτείται εξουσιοδότηση χρήστη για τη σύνδεση της συσκευής OneKey. Εάν θέλετε να συνδέσετε το OneKey σας, κάντε κλικ στο 'Σύνδεση συσκευής' και εγκρίνετε τη σύνδεση USB"
+  },
   "only": {
     "message": "μόνο"
   },
@@ -6029,6 +6062,13 @@
   "step1LedgerWalletMsg": {
     "message": "Κατεβάστε, εγκαταστήστε και πληκτρολογήστε τον κωδικό πρόσβασής σας για να ξεκλειδώσετε το $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
+  },
+  "step1OnekeyWallet": {
+    "message": "Συνδέστε το OneKey σας"
+  },
+  "step1OnekeyWalletMsg": {
+    "message": "Συνδέστε το OneKey σας απευθείας στον υπολογιστή σας και ξεκλειδώστε το. Βεβαιωθείτε ότι χρησιμοποιείτε τη σωστή φράση πρόσβασης. Για περισσότερες λεπτομερείς πληροφορίες σχετικά με τη χρήση του υλικού πορτοφολιού σας, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Συνδέστε το Trezor σας"

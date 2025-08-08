@@ -4110,6 +4110,39 @@
   "onekey": {
     "message": "OneKey"
   },
+  "onekeyBridgeInstallationRequired": {
+    "message": "हार्डवेयर को OneKey Bridge सॉफ़्टवेयर की आवश्यकता है, $1"
+  },
+  "onekeyConnectDevice": {
+    "message": "डिवाइस कनेक्ट करें"
+  },
+  "onekeyDownloadBridge": {
+    "message": "OneKey Bridge डाउनलोड करें"
+  },
+  "onekeyExitBootloaderMode": {
+    "message": "इस सुविधा का उपयोग करने के लिए OneKey को बूटलोडर मोड से बाहर निकलना होगा।"
+  },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "पिन या पासवर्ड वर्तमान खाते से मेल नहीं खाता"
+  },
+  "onekeyForceUpdate": {
+    "message": "OneKey फर्मवेयर को अपडेट करने की आवश्यकता है। $1"
+  },
+  "onekeyGoToUpdateFirmware": {
+    "message": "फर्मवेयर अपडेट पर जाएं"
+  },
+  "onekeyHardwareError": {
+    "message": "OneKey हार्डवेयर त्रुटि"
+  },
+  "onekeyHardwareHelpLink": {
+    "message": "विस्तृत मार्गदर्शन के लिए कृपया हमारे ऑनलाइन ट्यूटोरियल देखें।"
+  },
+  "onekeyNeedUpdateFirmware": {
+    "message": "इस सुविधा का उपयोग करने के लिए OneKey फर्मवेयर को अपडेट करने की आवश्यकता है, $1"
+  },
+  "onekeyWebUSBNotConnectedErrorMessage": {
+    "message": "OneKey डिवाइस को कनेक्ट करने के लिए उपयोगकर्ता अनुमति की आवश्यकता है। यदि आप अपने OneKey को कनेक्ट करना चाहते हैं, तो कृपया 'डिवाइस कनेक्ट करें' पर क्लिक करें और USB कनेक्शन को स्वीकार करें"
+  },
   "only": {
     "message": "केवल"
   },
@@ -6029,6 +6062,13 @@
   "step1LedgerWalletMsg": {
     "message": "$1 अनलॉक करने के लिए डाउनलोड करें, सेट करें और अपना पासवर्ड डालें।",
     "description": "$1 represents the `ledgerLiveApp` localization value"
+  },
+  "step1OnekeyWallet": {
+    "message": "अपने OneKey को कनेक्ट करें"
+  },
+  "step1OnekeyWalletMsg": {
+    "message": "अपने OneKey को सीधे कंप्यूटर से जोड़ें और अनलॉक करें। सुनिश्चित करें कि आप सही पासफ्रेज़ का उपयोग कर रहे हैं। अपने हार्डवेयर वॉलेट के उपयोग के बारे में अधिक विस्तृत जानकारी के लिए, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "अपने Trezor को कनेक्ट करें"
