@@ -141,6 +141,10 @@ export abstract class BaseLoginHandler {
       },
     );
 
+    if (!res.ok) {
+      throw new Error('Failed to revoke refresh token');
+    }
+
     const data = await res.json();
     return {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -171,6 +175,10 @@ export abstract class BaseLoginHandler {
         body: requestData,
       },
     );
+
+    if (!res.ok) {
+      throw new Error('Failed to get auth token');
+    }
 
     const data = await res.json();
     return data;
