@@ -1,9 +1,11 @@
 const { strict: assert } = require('assert');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
+const {
   withFixtures,
   openDapp,
-  logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   editGasFeeForm,
   WINDOW_TITLES,
@@ -26,8 +28,8 @@ describe('Send ETH', function () {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
         },
-        async ({ driver, localNodes }) => {
-          await logInWithBalanceValidation(driver, localNodes[0]);
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
 
           await openActionMenuAndStartSendFlow(driver);
 
@@ -100,7 +102,7 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           await openActionMenuAndStartSendFlow(driver);
           await driver.fill(
@@ -153,7 +155,7 @@ describe('Send ETH', function () {
         async ({ driver, contractRegistry, localNodes }) => {
           const contractAddress =
             await contractRegistry.getContractAddress(smartContract);
-          await logInWithBalanceValidation(driver, localNodes[0]);
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
@@ -200,7 +202,7 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
@@ -237,7 +239,7 @@ describe('Send ETH', function () {
             },
           },
           async ({ driver }) => {
-            await logInWithBalanceValidation(driver);
+            await loginWithBalanceValidation(driver);
 
             // initiates a send from the dapp
             await openDapp(driver);
@@ -310,7 +312,7 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
-            await logInWithBalanceValidation(driver);
+            await loginWithBalanceValidation(driver);
 
             // initiates a transaction from the dapp
             await openDapp(driver);
@@ -414,7 +416,7 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
-            await logInWithBalanceValidation(driver);
+            await loginWithBalanceValidation(driver);
 
             await openActionMenuAndStartSendFlow(driver);
 

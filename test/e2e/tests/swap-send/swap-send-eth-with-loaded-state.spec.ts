@@ -1,11 +1,8 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import {
-  logInWithBalanceValidation,
-  openActionMenuAndStartSendFlow,
-  withFixtures,
-} from '../../helpers';
+import { openActionMenuAndStartSendFlow, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
@@ -245,7 +242,7 @@ describe('Swap-Send ETH', function () {
         },
         async ({ driver }) => {
           const swapSendPage = new SwapSendPage(driver);
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();

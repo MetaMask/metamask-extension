@@ -42,8 +42,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            contractRegistry,
+            smartContract,
+            localNodes?.[0],
+          );
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -61,8 +70,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            contractRegistry,
+            smartContract,
+            localNodes?.[0],
+          );
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -97,7 +115,12 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             '0x100000000000000000000',
           )) ?? console.error('localNodes is undefined or empty');
 
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+          await openDAppWithContract(
+            driver,
+            contractRegistry,
+            smartContract,
+            localNodes?.[0],
+          );
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -166,8 +189,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            contractRegistry,
+            smartContract,
+            localNodes?.[0],
+          );
 
           await createDepositTransaction(driver);
 
@@ -186,8 +218,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            contractRegistry,
+            smartContract,
+            localNodes?.[0],
+          );
 
           await createDepositTransaction(driver);
 
@@ -214,8 +255,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            contractRegistry,
+            smartContract,
+            localNodes?.[0],
+          );
 
           await createDepositTransaction(driver);
 
@@ -238,8 +288,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            contractRegistry,
+            smartContract,
+            localNodes?.[0],
+          );
 
           await toggleOnHexData(driver);
 
