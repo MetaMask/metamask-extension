@@ -910,6 +910,21 @@
   "bridgeNetCost": {
     "message": "Net cost"
   },
+  "bridgePriceImpact": {
+    "message": "Price Impact"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "Price impact reflects how your swap order affects the market price of the asset. If you do not hold enough funds for gas, part of your source token is automatically allocated to cover fees, which will reduce the amount swapped. MetaMask does not influence or control price impact."
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "Price impact reflects how your swap order affects the market price of the asset. It depends on the trade size and the available liquidity in the pool. MetaMask does not influence or control price impact."
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Price Impact"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "Price Impact Warning"
+  },
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },

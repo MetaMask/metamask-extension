@@ -145,6 +145,11 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
   },
 );
 
+export const getPriceImpactThresholds = createDeepEqualSelector(
+  getBridgeFeatureFlags,
+  (bridgeFeatureFlags) => bridgeFeatureFlags?.priceImpactThreshold,
+);
+
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   getBridgeFeatureFlags,
