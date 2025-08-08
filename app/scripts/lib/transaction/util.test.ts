@@ -17,6 +17,8 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -26,6 +28,13 @@ import {
 } from './util';
 
 jest.mock('../ppom/ppom-util');
+jest.mock('../trust-signals/security-alerts-api');
+jest.mock('../trust-signals/trust-signals-util');
+
+// Import the mocked functions
+import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
+import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-util';
+import { SupportedEVMChain } from '../trust-signals/types';
 
 jest.mock('uuid', () => {
   const actual = jest.requireActual('uuid');
@@ -97,8 +106,12 @@ describe('Transaction Utils', () => {
   let dappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
   let userOperationController: jest.Mocked<UserOperationController>;
+  let getAddressSecurityAlertResponseMock: jest.Mock;
+  let addAddressSecurityAlertResponseMock: jest.Mock;
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
+  const scanAddressAndAddToCacheMock = jest.mocked(scanAddressAndAddToCache);
+  const mapChainIdToSupportedEVMChainMock = jest.mocked(mapChainIdToSupportedEVMChain);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -106,6 +119,13 @@ describe('Transaction Utils', () => {
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
+    getAddressSecurityAlertResponseMock = jest.fn();
+    addAddressSecurityAlertResponseMock = jest.fn();
+
+    scanAddressAndAddToCacheMock.mockResolvedValue({
+      result_type: 'Benign',
+      label: 'Safe address',
+    } as any);
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -139,7 +159,7 @@ describe('Transaction Utils', () => {
   describe('addTransaction', () => {
     describe('if selected account is EOA', () => {
       it('adds transaction', async () => {
-        await addTransaction(request);
+        await addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
 
         expect(
           request.transactionController.addTransaction,
@@ -152,7 +172,7 @@ describe('Transaction Utils', () => {
       });
 
       it('returns transaction meta', async () => {
-        const transactionMeta = await addTransaction(request);
+        const transactionMeta = await addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
         expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
       });
 
@@ -162,7 +182,7 @@ describe('Transaction Utils', () => {
           transactionMeta: TRANSACTION_META_MOCK,
         });
 
-        await expect(addTransaction(request)).resolves.toBeTruthy();
+        await expect(addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock)).resolves.toBeTruthy();
       });
 
       it('throws if result promise fails if waitForSubmit is true', async () => {
@@ -173,7 +193,7 @@ describe('Transaction Utils', () => {
           transactionMeta: TRANSACTION_META_MOCK,
         });
 
-        await expect(addTransaction(request)).rejects.toThrow('Test Error');
+        await expect(addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock)).rejects.toThrow('Test Error');
       });
 
       it('does not wait for result if waitForSubmit is false', async () => {
@@ -184,7 +204,7 @@ describe('Transaction Utils', () => {
           transactionMeta: TRANSACTION_META_MOCK,
         });
 
-        await expect(addTransaction(request)).resolves.toBeTruthy();
+        await expect(addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock)).resolves.toBeTruthy();
       });
 
       it('waits for result if waitForSubmit is true', async () => {
@@ -202,7 +222,7 @@ describe('Transaction Utils', () => {
           transactionMeta: TRANSACTION_META_MOCK,
         });
 
-        addTransaction(request).then(() => {
+        addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock).then(() => {
           completed = true;
         });
 
@@ -225,7 +245,7 @@ describe('Transaction Utils', () => {
       });
 
       it('adds user operation', async () => {
-        await addTransaction(request);
+        await addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
 
         expect(
           request.userOperationController.addUserOperationFromTransaction,
@@ -242,7 +262,7 @@ describe('Transaction Utils', () => {
       });
 
       it('starts polling', async () => {
-        await addTransaction(request);
+        await addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
 
         expect(
           userOperationController.startPollingByNetworkClientId,
@@ -253,7 +273,7 @@ describe('Transaction Utils', () => {
       });
 
       it('returns transaction meta', async () => {
-        const transactionMeta = await addTransaction(request);
+        const transactionMeta = await addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
         expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
       });
 
@@ -269,7 +289,7 @@ describe('Transaction Utils', () => {
           },
         );
 
-        await expect(addTransaction(request)).resolves.toBeTruthy();
+        await expect(addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock)).resolves.toBeTruthy();
       });
 
       it('waits for transaction hash promise if waitForSubmit is true', async () => {
@@ -290,7 +310,7 @@ describe('Transaction Utils', () => {
           },
         );
 
-        addTransaction(request).then(() => {
+        addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock).then(() => {
           completed = true;
         });
 
@@ -315,7 +335,7 @@ describe('Transaction Utils', () => {
           },
         );
 
-        await expect(addTransaction(request)).resolves.toBeTruthy();
+        await expect(addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock)).resolves.toBeTruthy();
       });
 
       it('throws if transaction hash promise fails and waitForSubmit is true', async () => {
@@ -331,7 +351,7 @@ describe('Transaction Utils', () => {
           },
         );
 
-        await expect(addTransaction(request)).rejects.toThrow('Test Error');
+        await expect(addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock)).rejects.toThrow('Test Error');
       });
 
       it('removes type from swaps metadata', async () => {
@@ -342,7 +362,7 @@ describe('Transaction Utils', () => {
           },
         };
 
-        await addTransaction(request);
+        await addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
 
         expect(
           request.userOperationController.addUserOperationFromTransaction,
@@ -363,7 +383,7 @@ describe('Transaction Utils', () => {
         request.transactionParams.maxFeePerGas = 'a';
         request.transactionParams.maxPriorityFeePerGas = 'b';
 
-        await addTransaction(request);
+        await addTransaction(request, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
 
         expect(
           request.userOperationController.addUserOperationFromTransaction,
@@ -387,7 +407,7 @@ describe('Transaction Utils', () => {
           ...request,
           securityAlertsEnabled: true,
           chainId: '0x1',
-        });
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
 
         expect(
           request.transactionController.addTransaction,
@@ -412,7 +432,7 @@ describe('Transaction Utils', () => {
           ...request,
           securityAlertsEnabled: false,
           chainId: '0x1',
-        });
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
 
         expect(
           request.transactionController.addTransaction,
@@ -441,7 +461,7 @@ describe('Transaction Utils', () => {
           securityAlertsEnabled: false,
           chainId: '0x1',
           internalAccounts: [INTERNAL_ACCOUNT],
-        });
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
 
         expect(
           request.transactionController.addTransaction,
@@ -465,7 +485,7 @@ describe('Transaction Utils', () => {
           ...swapRequest,
           securityAlertsEnabled: true,
           chainId: '0x1',
-        });
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
 
         expect(
           request.transactionController.addTransaction,
@@ -489,7 +509,7 @@ describe('Transaction Utils', () => {
           ...swapRequest,
           securityAlertsEnabled: true,
           chainId: '0x1',
-        });
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
 
         expect(
           request.transactionController.addTransaction,
@@ -503,6 +523,103 @@ describe('Transaction Utils', () => {
         });
 
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    describe('adds trust signals', () => {
+      beforeEach(() => {
+        request.transactionOptions.origin = ORIGIN_METAMASK;
+        request.transactionParams.to = '0x1234567890123456789012345678901234567890';
+        mapChainIdToSupportedEVMChainMock.mockReturnValue(SupportedEVMChain.Ethereum);
+      });
+
+      it('calls scanAddressAndAddToCache', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
+
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
+          '0x1234567890123456789012345678901234567890',
+          expect.objectContaining({
+            getAddressSecurityAlertResponse: getAddressSecurityAlertResponseMock,
+            addAddressSecurityAlertResponse: addAddressSecurityAlertResponseMock,
+          }),
+          undefined,
+          SupportedEVMChain.Ethereum,
+        );
+      });
+
+      it('does not call scanAddressAndAddToCache when security alerts are disabled', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: false,
+          chainId: CHAIN_IDS.MAINNET,
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+      });
+
+      it('does not call scanAddressAndAddToCache when origin is not ORIGIN_METAMASK', async () => {
+        request.transactionOptions.origin = 'https://example.com';
+
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+      });
+
+      it('does not call scanAddressAndAddToCache when to address is not a string', async () => {
+        request.transactionParams.to = undefined;
+
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+      });
+
+      it('does not call scanAddressAndAddToCache when chain is not supported', async () => {
+        mapChainIdToSupportedEVMChainMock.mockReturnValue(undefined as any);
+
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: '0xfake-chain-id',
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock);
+
+        expect(mapChainIdToSupportedEVMChainMock).toHaveBeenCalledWith('0xfake-chain-id');
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+      });
+
+      it('handles scanAddressAndAddToCache errors gracefully without throwing', async () => {
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+        scanAddressAndAddToCacheMock.mockRejectedValue(new Error('Network error'));
+
+        await expect(addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        }, getAddressSecurityAlertResponseMock, addAddressSecurityAlertResponseMock)).resolves.toBeTruthy();
+
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
+
+        // Wait for async error handling
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        expect(consoleSpy).toHaveBeenCalledWith(
+          '[validateSecurity] error scanning address for trust signals:',
+          expect.any(Error)
+        );
+
+        consoleSpy.mockRestore();
       });
     });
   });
