@@ -84,6 +84,7 @@ const createConsolidatedWallets = (
     (consolidatedWallets: ConsolidatedWallets, [walletId, wallet]) => {
       consolidatedWallets[walletId as AccountWalletId] = {
         id: walletId as AccountWalletId,
+        type: wallet.type,
         metadata: wallet.metadata,
         groups: {},
       };
@@ -124,6 +125,7 @@ const createConsolidatedWallets = (
           groupId as AccountGroupId
         ] = {
           id: groupId as AccountGroupId,
+          type: group.type,
           metadata: group.metadata,
           accounts: accountsFromGroup,
         };

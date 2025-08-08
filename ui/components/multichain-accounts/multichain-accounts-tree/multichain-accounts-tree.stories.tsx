@@ -3,9 +3,13 @@ import { StoryFn, Meta } from '@storybook/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { MultichainAccountsTree } from './index';
-import type {
-  AccountGroupId,
-  AccountWalletId,
+import {
+  AccountGroupType,
+  AccountWalletType,
+  toAccountGroupId,
+  toAccountWalletId,
+  type AccountGroupId,
+  type AccountWalletId,
 } from '@metamask/account-api';
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 
@@ -25,22 +29,36 @@ export default {
   },
 } as Meta<typeof MultichainAccountsTree>;
 
-const walletOneId: AccountWalletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
-const walletOneGroupId: AccountGroupId = `${walletOneId}/default`;
-const walletTwoId: AccountWalletId = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
-const walletTwoGroupId: AccountGroupId = `${walletTwoId}/default`;
+const walletOneType = AccountWalletType.Entropy;
+const walletOneEntropySourceId = '01JKAF3DSGM3AB87EM9N0K41AJ';
+const walletOneId = toAccountWalletId(walletOneType, walletOneEntropySourceId);
+const walletOneGroupId = toAccountGroupId(walletOneId, '0');
+const walletOneGroupType = AccountGroupType.MultichainAccount;
+
+const walletTwoType = AccountWalletType.Entropy;
+const walletTwoEntropySourceId = '01JKAF3PJ247KAM6C03G5Q0NP8';
+const walletTwoId = toAccountWalletId(walletOneType, walletTwoEntropySourceId);
+const walletTwoGroupId = toAccountGroupId(walletTwoId, '0');
+const walletTwoGroupType = AccountGroupType.MultichainAccount;
 
 const mockWallets: ConsolidatedWallets = {
   [walletOneId]: {
     id: walletOneId,
+    type: walletOneType,
     metadata: {
       name: 'Wallet 1',
+      entropy: {
+        id: walletOneEntropySourceId,
+      },
     },
     groups: {
       [walletOneGroupId]: {
         id: walletOneGroupId,
+        type: walletOneGroupType,
         metadata: {
-          name: 'Default',
+          name: 'Account 1',
+          pinned: false,
+          hidden: false,
         },
         accounts: [
           {
@@ -97,14 +115,21 @@ const mockWallets: ConsolidatedWallets = {
   },
   [walletTwoId]: {
     id: walletTwoId,
+    type: walletTwoType,
     metadata: {
       name: 'Wallet 2',
+      entropy: {
+        id: walletTwoEntropySourceId,
+      },
     },
     groups: {
       [walletTwoGroupId]: {
         id: walletTwoGroupId,
+        type: walletTwoGroupType,
         metadata: {
-          name: 'Default',
+          name: 'Account 1',
+          pinned: false,
+          hidden: false,
         },
         accounts: [
           {
