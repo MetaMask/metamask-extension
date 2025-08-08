@@ -277,7 +277,9 @@ async function validateSecurity(request: AddTransactionRequest, getAddressSecuri
     internalAccounts,
   } = request;
 
-  scanAddressForTrustSignals(transactionOptions, transactionParams, chainId, getAddressSecurityAlertResponse, addAddressSecurityAlertResponse);
+  if (securityAlertsEnabled) {
+    scanAddressForTrustSignals(transactionOptions, transactionParams, chainId, getAddressSecurityAlertResponse, addAddressSecurityAlertResponse);
+  }
   const { type } = transactionOptions;
 
   const typeIsExcludedFromPPOM =
