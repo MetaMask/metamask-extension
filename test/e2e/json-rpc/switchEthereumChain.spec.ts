@@ -92,15 +92,13 @@ describe('Switch Ethereum Chain for two dapps', function () {
   });
 
   it('queues switchEthereumChain request from second dapp after send tx request', async function () {
-    const { fixtures, manifestFlags } = new FixtureBuilder()
-      .withNetworkControllerDoubleNode()
-      .withPreferencesControllerSmartTransactionsOptedOut();
-
     await withFixtures(
       {
         dapp: true,
-        fixtures,
-        manifestFlags,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleNode()
+          .withPreferencesControllerSmartTransactionsOptedOut()
+          .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
