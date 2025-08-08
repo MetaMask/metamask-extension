@@ -91,7 +91,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it.only('queues switchEthereumChain request from second dapp after send tx request', async function () {
+  it('queues switchEthereumChain request from second dapp after send tx request', async function () {
     const { fixtures, manifestFlags } = new FixtureBuilder()
       .withNetworkControllerDoubleNode()
       .withPreferencesControllerSmartTransactionsOptedOut();
@@ -122,10 +122,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-
-        // Smart transactions are now disabled via fixtures:
-        // 1. manifestFlags.testing.disableSmartTransactionsMigration = true - prevents migration 135 from running
-        // 2. fixtures.PreferencesController.preferences.smartTransactionsOptInStatus = false - sets the preference to false
 
         // open two dapps
         const dappOne = new TestDapp(driver);
