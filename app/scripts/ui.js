@@ -87,21 +87,82 @@ async function start() {
   // identify window type (popup, notification)
   const windowType = getEnvironmentType();
 
-  // setup stream to background
-  const extensionPort = browser.runtime.connect({ name: windowType });
+  // Connection state management
+  /**
+   * @type {browser.Runtime.Port}
+   */
+  let extensionPort;
+  /**
+   * @type {PortStream}
+   */
+  let connectionStream;
+  /**
+   * @type {ReturnType<typeof connectSubstreams>}
+   */
+  let subStreams;
+  /**
+   * @type {ReturnType<typeof metaRPCClientFactory>}
+   */
+  let backgroundConnection;
+  /**
+   * @type {CriticalStartupErrorHandler}
+   */
+  let criticalErrorHandler;
+  let isInitialized = false;
 
-  // Set up error handlers as early as possible to ensure we are ready to
-  // handle any errors that occur at any time
-  const criticalErrorHandler = new CriticalStartupErrorHandler(
-    extensionPort,
-    container,
-  );
-  criticalErrorHandler.install();
+  async function createConnections() {
+    // setup stream to background
+    extensionPort = browser.runtime.connect({ name: windowType });
 
-  const connectionStream = new PortStream(extensionPort);
-  const subStreams = connectSubstreams(connectionStream);
-  const backgroundConnection = metaRPCClientFactory(subStreams.controller);
-  connectToBackground(backgroundConnection, handleStartUISync);
+    // Set up error handlers as early as possible to ensure we are ready to
+    // handle any errors that occur at any time
+    criticalErrorHandler = new CriticalStartupErrorHandler(
+      extensionPort,
+      container,
+    );
+    criticalErrorHandler.install();
+
+    connectionStream = new PortStream(extensionPort);
+    subStreams = connectSubstreams(connectionStream);
+    backgroundConnection = metaRPCClientFactory(subStreams.controller);
+
+    if (isManifestV3) {
+      // Set up disconnect handler for reconnection, which is only necessary
+      // in MV3, as far as we know.
+      extensionPort.onDisconnect.addListener(() => {
+        log.warn('Extension port disconnected, attempting to reconnect...');
+        handleDisconnection();
+      });
+    }
+
+    connectToBackground(backgroundConnection, handleStartUISync);
+  }
+
+  async function handleDisconnection() {
+    try {
+      // Destroy existing connections
+      if (criticalErrorHandler) {
+        criticalErrorHandler.uninstall();
+      }
+
+      // Note: we do NOT clear the global.ethereumProvider here, as it is only a
+      // pointer to a Proxy object, which we swap out upon reconnection.
+      // i.e., we don't do this: `delete global.ethereumProvider;`
+
+      // Wait a bit before reconnecting to avoid rapid reconnection attempts
+      // which could lead to performance issues
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Recreate all connections
+      await createConnections();
+
+      log.info('Successfully reconnected to background');
+    } catch (error) {
+      log.error('Failed to reconnect:', error);
+      // Retry reconnection
+      setTimeout(handleDisconnection, 0);
+    }
+  }
 
   async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
@@ -118,17 +179,24 @@ async function start() {
 
     const activeTab = await queryCurrentActiveTab(windowType);
 
-    await initializeUiWithTab(
-      activeTab,
-      backgroundConnection,
-      windowType,
-      traceContext,
-    );
+    // Only initialize UI once, subsequent reconnections shouldn't re-initialize the UI
+    if (!isInitialized) {
+      await initializeUiWithTab(
+        activeTab,
+        backgroundConnection,
+        windowType,
+        traceContext,
+      );
+      isInitialized = true;
+    }
 
     if (isManifestV3) {
       await loadPhishingWarningPage();
     }
   }
+
+  // Initial connection setup
+  await createConnections();
 
   trace({
     name: TraceName.BackgroundConnect,
@@ -320,6 +388,7 @@ function connectSubstreams(connectionStream) {
   };
 }
 
+let _stream;
 /**
  * Establishes a streamed connection to a Web3 provider
  *
@@ -333,5 +402,25 @@ async function setupProviderConnection(connectionStream) {
   providerStream.on('error', console.error.bind(console));
 
   await providerStream.initialize();
-  global.ethereumProvider = providerStream;
+
+  if (global.ethereumProvider) {
+    _stream = providerStream;
+  } else {
+    // we need to proxy all properties on the provider to the global object,
+    // and swap the proxied object out if it changes later
+    const proxy = new Proxy(
+      {},
+      {
+        get: (_, prop) => {
+          if (prop in _stream) {
+            return _stream[prop].bind(_stream);
+          }
+          return undefined;
+        },
+      },
+    );
+
+    global.ethereumProvider = proxy;
+    _stream = providerStream;
+  }
 }
