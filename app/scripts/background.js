@@ -320,8 +320,12 @@ function maybeDetectPhishing(theController) {
 
       theController.phishingController.maybeUpdateState();
 
+      console.time(`isBlockedRequest:${details.url}`);
+
       const blockedRequestResponse =
         theController.phishingController.isBlockedRequest(details.url);
+
+      console.timeEnd(`isBlockedRequest:${details.url}`);
 
       let phishingTestResponse;
       if (details.type === 'main_frame' || details.type === 'sub_frame') {
