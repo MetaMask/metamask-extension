@@ -353,6 +353,7 @@ describe('Security Alerts API', () => {
 
       it('uses cached response even when using optional parameters', async () => {
         const cachedResponse = {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Benign,
           label: 'Cached safe address',
         };

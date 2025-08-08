@@ -701,6 +701,7 @@ describe('Transaction Utils', () => {
       });
 
       it('does not call scanAddressAndAddToCache when chain is not supported', async () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mapChainIdToSupportedEVMChainMock.mockReturnValue(undefined as any);
 
         await addTransaction(
