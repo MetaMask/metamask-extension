@@ -414,14 +414,12 @@ function indicesToUtf8Array(
 //     ),
 //   );
 
-//   // Zopfli is slow, but provides better compression
+//   // Use Zopfli for maximum compression - it produces raw deflate directly
 //   const { default: zopfli } = await import('node-zopfli');
-//   const compressedWithHeaders = zopfli.deflateSync(Buffer.from(buffer), {
-//     numiterations: 221, // mined the best value experimentally
+//   const compressed = zopfli.deflateSync(Buffer.from(buffer), {
+//     numiterations: 221,
 //   });
-//   // Strip the 2-byte zlib header and 4-byte Adler-32 checksum to get
-//   // raw deflate, as node-zopfli doesn't support deflate-raw directly.
-//   const compressed = compressedWithHeaders.subarray(2, -4);
+
 //   console.debug(
 //     `Zopfli compressed size: ${compressed.byteLength} bytes (vs 38266)`,
 //   );
