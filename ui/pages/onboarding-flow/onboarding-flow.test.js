@@ -2,6 +2,9 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
+// TODO: Temporarily fix the test for <unlock-page>, and the above import
+// can be removed after https://github.com/MetaMask/MetaMask-planning/issues/5557
+import { renderWithProvider as renderWithProviderRouterV5 } from '../../../test/lib/render-helpers-navigate';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
@@ -212,7 +215,7 @@ describe('Onboarding Flow', () => {
 
   describe('Unlock Screen', () => {
     it('should render unlock page', () => {
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId } = renderWithProviderRouterV5(
         <OnboardingFlow />,
         store,
         ONBOARDING_UNLOCK_ROUTE,
@@ -223,7 +226,7 @@ describe('Onboarding Flow', () => {
     });
 
     it('should call unlockAndGetSeedPhrase when unlocking with a password', async () => {
-      const { getByLabelText, getByText } = renderWithProvider(
+      const { getByLabelText, getByText } = renderWithProviderRouterV5(
         <OnboardingFlow />,
         configureMockStore()({
           ...mockState,
