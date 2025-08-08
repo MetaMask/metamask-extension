@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Button from '../../ui/button';
+import { Button, ButtonVariant } from '../../component-library';
 import Checkbox from '../../ui/check-box';
 import Tooltip from '../../ui/tooltip';
 import { Icon, IconName } from '../../component-library';
@@ -48,7 +48,7 @@ const HomeNotification = ({
       <div className="home-notification__buttons">
         {onAccept && acceptText ? (
           <Button
-            type="primary"
+            variant={ButtonVariant.Primary}
             className="home-notification__accept-button"
             onClick={onAccept}
           >
@@ -57,7 +57,7 @@ const HomeNotification = ({
         ) : null}
         {onIgnore && ignoreText ? (
           <Button
-            type="secondary"
+            variant={ButtonVariant.Secondary}
             className="home-notification__ignore-button"
             // Some onIgnore handlers use the checkboxState to determine whether
             // to disable the notification
