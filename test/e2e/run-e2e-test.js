@@ -166,6 +166,8 @@ async function main() {
       );
     }
   }
+
+  process.exit();
 }
 
 main().catch((error) => {
