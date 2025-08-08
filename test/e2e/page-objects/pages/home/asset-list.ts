@@ -65,6 +65,8 @@ class AssetListPage {
   private readonly sortByPopoverToggle =
     '[data-testid="sort-by-popover-toggle"]';
 
+  private readonly buySellButton = '[data-testid="coin-overview-buy"]';
+
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
 
@@ -362,6 +364,16 @@ class AssetListPage {
       },
       { timeout: 5000, interval: 100 },
     );
+  }
+
+  async checkBuySellButtonIsPresent(): Promise<void> {
+    console.log(`Verify the buy/sell button is displayed`);
+    await this.driver.waitForSelector(this.buySellButton);
+  }
+
+  async checkMultichainTokenListButtonIsPresent(): Promise<void> {
+    console.log(`Verify the multichain-token-list-button is displayed`);
+    await this.driver.waitForSelector(this.tokenListItem);
   }
 
   async checkNetworkFilterText(expectedText: string): Promise<void> {
