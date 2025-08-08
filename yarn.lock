@@ -1911,7 +1911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/base64@npm:^1.0.12, @endo/base64@npm:^1.0.9":
+"@endo/base64@npm:^1.0.11, @endo/base64@npm:^1.0.9":
   version: 1.0.12
   resolution: "@endo/base64@npm:1.0.12"
   checksum: 10/570d1a2e0b0e8686cdaaa9d349269c1100980d9f72379914285dbd158c91bf17526b45ab63030b476afde64fe5f0ff7e2033ca2477fd273bda2a7e160ed66805
@@ -1956,7 +1956,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/compartment-mapper@npm:^1.6.0, @endo/compartment-mapper@npm:^1.6.3":
+"@endo/compartment-mapper@npm:^1.6.0, @endo/compartment-mapper@npm:^1.6.2":
   version: 1.6.3
   resolution: "@endo/compartment-mapper@npm:1.6.3"
   dependencies:
@@ -1977,7 +1977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/errors@npm:^1.2.10, @endo/errors@npm:^1.2.13, @endo/errors@npm:^1.2.9":
+"@endo/errors@npm:^1.2.10, @endo/errors@npm:^1.2.12, @endo/errors@npm:^1.2.9":
   version: 1.2.13
   resolution: "@endo/errors@npm:1.2.13"
   dependencies:
@@ -2029,15 +2029,15 @@ __metadata:
   linkType: hard
 
 "@endo/import-bundle@npm:^1.5.0":
-  version: 1.5.2
-  resolution: "@endo/import-bundle@npm:1.5.2"
+  version: 1.5.1
+  resolution: "@endo/import-bundle@npm:1.5.1"
   dependencies:
-    "@endo/base64": "npm:^1.0.12"
-    "@endo/compartment-mapper": "npm:^1.6.3"
-    "@endo/errors": "npm:^1.2.13"
+    "@endo/base64": "npm:^1.0.11"
+    "@endo/compartment-mapper": "npm:^1.6.2"
+    "@endo/errors": "npm:^1.2.12"
     "@endo/where": "npm:^1.0.11"
-    ses: "npm:^1.14.0"
-  checksum: 10/521a4bc3a0e7b75626df996e5f965e9bedc8e463586b8dee57d90958371731617a205b98d825afaeeb920b64a1fc105a1acc1f3716742100097068e114169b43
+    ses: "npm:^1.13.1"
+  checksum: 10/f2aca3dcb1f37f14cb21f605ab073dbae0a41e11a80aa2801632885ce0bc16a1bfb5260992919193e683be831d98f2ac5ec6bc4b6d82bab83c510553794c0cc2
   languageName: node
   linkType: hard
 
@@ -6469,9 +6469,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^22.1.0":
-  version: 22.1.0
-  resolution: "@metamask/keyring-controller@npm:22.1.0"
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@22.1.0-preview-7b919d75":
+  version: 22.1.0-preview-7b919d75
+  resolution: "@metamask-previews/keyring-controller@npm:22.1.0-preview-7b919d75"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -6480,19 +6480,19 @@ __metadata:
     "@metamask/eth-hd-keyring": "npm:^12.0.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-simple-keyring": "npm:^10.0.0"
-    "@metamask/keyring-api": "npm:^18.0.0"
-    "@metamask/keyring-internal-api": "npm:^6.2.0"
-    "@metamask/utils": "npm:^11.2.0"
+    "@metamask/keyring-api": "npm:^19.0.0"
+    "@metamask/keyring-internal-api": "npm:^7.0.0"
+    "@metamask/utils": "npm:^11.4.2"
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/dccc4f5411b3ae194ef824acb6c150daba08aa37768b3f31f8056b5b21a240d6f8fbafd4424fb9f818ad83ae403f5f4229964a014bf1c5537f6ed2423a63e493
+  checksum: 10/0ff963ce2860fdd97de24c30f92c6dbd4ab27af8722fea8f9433111445af54fc37832adbd916944ab9a19f32db2eb1d96872bb88475b37f0b6f2e8b16c16e3d4
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^6.0.1, @metamask/keyring-internal-api@npm:^6.2.0":
+"@metamask/keyring-internal-api@npm:^6.0.1":
   version: 6.2.0
   resolution: "@metamask/keyring-internal-api@npm:6.2.0"
   dependencies:
@@ -20326,19 +20326,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-hash@npm:~1.1.3":
-  version: 1.1.3
-  resolution: "create-hash@npm:1.1.3"
-  dependencies:
-    cipher-base: "npm:^1.0.1"
-    inherits: "npm:^2.0.1"
-    ripemd160: "npm:^2.0.0"
-    sha.js: "npm:^2.4.0"
-  checksum: 10/b9f675719321dd3a3c3540bb46afcbdaf7182366ce93da9265318290e928be881e5edeff8c48a5ee9263c342e5e3f705fad5eb48f2e2cddc5fed1eb54077e076
-  languageName: node
-  linkType: hard
-
-"create-hmac@npm:^1.1.7":
+"create-hmac@npm:^1.1.4, create-hmac@npm:^1.1.7":
   version: 1.1.7
   resolution: "create-hmac@npm:1.1.7"
   dependencies:
@@ -22508,7 +22496,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es-set-tostringtag@npm:^2.0.3, es-set-tostringtag@npm:^2.1.0":
+"es-set-tostringtag@npm:^2.0.3":
   version: 2.1.0
   resolution: "es-set-tostringtag@npm:2.1.0"
   dependencies:
@@ -23421,11 +23409,11 @@ __metadata:
   linkType: hard
 
 "esquery@npm:^1.4.0, esquery@npm:^1.4.2, esquery@npm:^1.5.0":
-  version: 1.6.0
-  resolution: "esquery@npm:1.6.0"
+  version: 1.5.0
+  resolution: "esquery@npm:1.5.0"
   dependencies:
     estraverse: "npm:^5.1.0"
-  checksum: 10/c587fb8ec9ed83f2b1bc97cf2f6854cc30bf784a79d62ba08c6e358bf22280d69aee12827521cf38e69ae9761d23fb7fde593ce315610f85655c139d99b05e5a
+  checksum: 10/e65fcdfc1e0ff5effbf50fb4f31ea20143ae5df92bb2e4953653d8d40aa4bc148e0d06117a592ce4ea53eeab1dafdfded7ea7e22a5be87e82d73757329a1b01d
   languageName: node
   linkType: hard
 
@@ -25078,28 +25066,24 @@ __metadata:
   linkType: hard
 
 "form-data@npm:^3.0.0":
-  version: 3.0.4
-  resolution: "form-data@npm:3.0.4"
+  version: 3.0.1
+  resolution: "form-data@npm:3.0.1"
   dependencies:
     asynckit: "npm:^0.4.0"
     combined-stream: "npm:^1.0.8"
-    es-set-tostringtag: "npm:^2.1.0"
-    hasown: "npm:^2.0.2"
-    mime-types: "npm:^2.1.35"
-  checksum: 10/68e4598e55cb193ef80304bff4d7513bf81ed4116d57b29c6c9a4c28c6f7ce57d46ddd60ba1a80aadf26703a722551e660bca2acaf9212d8b6e1f2e180d9e668
+    mime-types: "npm:^2.1.12"
+  checksum: 10/944b40ff63b9cb1ca7a97e70f72104c548e0b0263e3e817e49919015a0d687453086259b93005389896dbffd3777cccea2e67c51f4e827590e5979b14ff91bf7
   languageName: node
   linkType: hard
 
 "form-data@npm:^4.0.0":
-  version: 4.0.4
-  resolution: "form-data@npm:4.0.4"
+  version: 4.0.0
+  resolution: "form-data@npm:4.0.0"
   dependencies:
     asynckit: "npm:^0.4.0"
     combined-stream: "npm:^1.0.8"
-    es-set-tostringtag: "npm:^2.1.0"
-    hasown: "npm:^2.0.2"
     mime-types: "npm:^2.1.12"
-  checksum: 10/a4b62e21932f48702bc468cc26fb276d186e6b07b557e3dd7cc455872bdbb82db7db066844a64ad3cf40eaf3a753c830538183570462d3649fdfd705601cbcfb
+  checksum: 10/7264aa760a8cf09482816d8300f1b6e2423de1b02bba612a136857413fdc96d7178298ced106817655facc6b89036c6e12ae31c9eb5bdc16aabf502ae8a5d805
   languageName: node
   linkType: hard
 
@@ -26671,15 +26655,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hash-base@npm:^2.0.0":
-  version: 2.0.2
-  resolution: "hash-base@npm:2.0.2"
-  dependencies:
-    inherits: "npm:^2.0.1"
-  checksum: 10/e39f3f2bb91679ed350bd2eb81035acb1e1e6e9bb86d9f1197fcfdc3cf39a2c56bf82a1870f000fae651477883b4c107fd6ac0c640a18ab06298b87c39939396
-  languageName: node
-  linkType: hard
-
 "hash-base@npm:^3.0.0":
   version: 3.1.0
   resolution: "hash-base@npm:3.1.0"
@@ -27378,9 +27353,9 @@ __metadata:
   linkType: hard
 
 "ignore@npm:^5.1.1, ignore@npm:^5.1.8, ignore@npm:^5.2.0, ignore@npm:^5.2.4, ignore@npm:^5.3.1":
-  version: 5.3.2
-  resolution: "ignore@npm:5.3.2"
-  checksum: 10/cceb6a457000f8f6a50e1196429750d782afce5680dd878aa4221bd79972d68b3a55b4b1458fc682be978f4d3c6a249046aa0880637367216444ab7b014cfc98
+  version: 5.3.1
+  resolution: "ignore@npm:5.3.1"
+  checksum: 10/0a884c2fbc8c316f0b9f92beaf84464253b73230a4d4d286697be45fca081199191ca33e1c2e82d9e5f851f5e9a48a78e25a35c951e7eb41e59f150db3530065
   languageName: node
   linkType: hard
 
@@ -32905,7 +32880,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-types@npm:^2.1.12, mime-types@npm:^2.1.18, mime-types@npm:^2.1.25, mime-types@npm:^2.1.27, mime-types@npm:^2.1.31, mime-types@npm:^2.1.35, mime-types@npm:~2.1.17, mime-types@npm:~2.1.24, mime-types@npm:~2.1.34":
+"mime-types@npm:^2.1.12, mime-types@npm:^2.1.18, mime-types@npm:^2.1.25, mime-types@npm:^2.1.27, mime-types@npm:^2.1.31, mime-types@npm:~2.1.17, mime-types@npm:~2.1.24, mime-types@npm:~2.1.34":
   version: 2.1.35
   resolution: "mime-types@npm:2.1.35"
   dependencies:
@@ -35345,16 +35320,15 @@ __metadata:
   linkType: hard
 
 "pbkdf2@npm:^3.0.17, pbkdf2@npm:^3.1.2":
-  version: 3.1.3
-  resolution: "pbkdf2@npm:3.1.3"
+  version: 3.1.2
+  resolution: "pbkdf2@npm:3.1.2"
   dependencies:
-    create-hash: "npm:~1.1.3"
-    create-hmac: "npm:^1.1.7"
-    ripemd160: "npm:=2.0.1"
-    safe-buffer: "npm:^5.2.1"
-    sha.js: "npm:^2.4.11"
-    to-buffer: "npm:^1.2.0"
-  checksum: 10/980cf2977aa84ec3166fde195a28464ab494131c0a5778fc8f20b8894410747e502159c19ef2b41842c728bc52ba49ffee6847e3ee61ac0d482689f85d8a1b30
+    create-hash: "npm:^1.1.2"
+    create-hmac: "npm:^1.1.4"
+    ripemd160: "npm:^2.0.1"
+    safe-buffer: "npm:^5.0.1"
+    sha.js: "npm:^2.4.8"
+  checksum: 10/40bdf30df1c9bb1ae41ec50c11e480cf0d36484b7c7933bf55e4451d1d0e3f09589df70935c56e7fccc5702779a0d7b842d012be8c08a187b44eb24d55bb9460
   languageName: node
   linkType: hard
 
@@ -38667,16 +38641,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ripemd160@npm:=2.0.1":
-  version: 2.0.1
-  resolution: "ripemd160@npm:2.0.1"
-  dependencies:
-    hash-base: "npm:^2.0.0"
-    inherits: "npm:^2.0.1"
-  checksum: 10/f1a20b72b3ef897a981544c72a1fe15c2bd580f6f40e3062f7839af8e81232f746aa860964686e4b81e90929ad086f14823a9864e4e4bed3367e597fe14a0968
-  languageName: node
-  linkType: hard
-
 "ripemd160@npm:^2.0.0, ripemd160@npm:^2.0.1, ripemd160@npm:^2.0.2":
   version: 2.0.2
   resolution: "ripemd160@npm:2.0.2"
@@ -41901,7 +41865,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"to-buffer@npm:^1.1.1, to-buffer@npm:^1.2.0":
+"to-buffer@npm:^1.1.1":
   version: 1.2.1
   resolution: "to-buffer@npm:1.2.1"
   dependencies:
