@@ -408,9 +408,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Sie haben nicht genug $1 auf Ihrem Konto, um die Netzwerkgebühren zu bezahlen."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
-  },
   "alertMessageNoGasPrice": {
     "message": "Wir können mit dieser Transaktion nicht fortfahren, bis Sie die Gebühr manuell aktualisieren."
   },
@@ -449,9 +446,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Unnötige Genehmigung"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Netzwerk ist ausgelastet"
   },
   "alertReasonNoGasPrice": {
     "message": "Gebührenschätzung nicht verfügbar"
