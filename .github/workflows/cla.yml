@@ -17,6 +17,10 @@ jobs:
       pull-requests: write
       contents: write
     steps:
+      - name: 'Delay for closed PRs'
+        if: github.event_name == 'pull_request_target' && github.event.action == 'closed'
+        # Delay to allow other workflows to add comments in the closed PR before is locked in the next step
+        run: sleep 30
       - name: 'CLA Signature Bot'
         uses: MetaMask/cla-signature-bot@v4.0.0
         env:
