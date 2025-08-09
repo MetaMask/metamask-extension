@@ -380,7 +380,9 @@
     "socialBackupsMetadata": "object",
     "srpSessionData": "object",
     "enableEnforcedSimulations": true,
-    "enableEnforcedSimulationsForTransactions": "object"
+    "enableEnforcedSimulationsForTransactions": "object",
+    "enforcedSimulationsSlippage": "number",
+    "enforcedSimulationsSlippageForTransactions": "object"
   },
   "ramps": "object",
   "send": "object",

@@ -1,7 +1,8 @@
+import { sep } from 'node:path';
 import type { LoaderContext } from 'webpack';
-import type { JSONSchema7 } from 'schema-utils/declarations/validate';
-import type { FromSchema } from 'json-schema-to-ts';
+import { type JSONSchema7 } from 'schema-utils/declarations/validate';
 import { validate } from 'schema-utils';
+import type { FromSchema } from 'json-schema-to-ts';
 import { transform, type Options } from '@swc/core';
 import { type Args } from '../cli';
 import { __HMR_READY__ } from '../helpers';
@@ -154,6 +155,16 @@ const schema = {
       },
       additionalProperties: false,
     },
+    module: {
+      type: 'object',
+      properties: {
+        type: {
+          type: 'string',
+          enum: ['es6', 'commonjs'],
+        },
+      },
+      required: ['type'],
+    },
   },
   additionalProperties: false,
 } as const satisfies JSONSchema7;
@@ -170,7 +181,15 @@ export default function swcLoader(this: Context, src: string, srcMap?: string) {
     ...pluginOptions,
     envName: this.mode,
     filename: this.resourcePath,
-    inputSourceMap: srcMap,
+    inputSourceMap:
+      // some files in node_modules claim to have sourcemaps when they do
+      // not[0], and SWC has a bug where logs to stderror if it tries to use a
+      // sourcemap that does not exist[1]. So we disable sourcemaps for
+      // node_modules. Ideally, we would not disable them, as they *are* useful
+      // for debugging.
+      // [0]: https://github.com/trezor/trezor-suite/issues/20298
+      // [1]: https://github.com/swc-project/swc/issues/9416
+      this.resourcePath.includes(`${sep}node_modules${sep}`) ? false : srcMap,
     sourceFileName: this.resourcePath,
     sourceMaps: this.sourceMap,
     swcrc: false,
@@ -182,7 +201,6 @@ export default function swcLoader(this: Context, src: string, srcMap?: string) {
 
 export type SwcConfig = {
   args: Pick<Args, 'watch'>;
-  safeVariables: Record<string, string>;
   browsersListQuery: string;
   isDevelopment: boolean;
 };
@@ -190,15 +208,18 @@ export type SwcConfig = {
 /**
  * Gets the Speedy Web Compiler (SWC) loader for the given syntax.
  *
- * @param syntax
- * @param enableJsx
- * @param swcConfig
- * @returns
+ * @param syntax - The syntax to use, either 'typescript' or 'ecmascript'.
+ * @param enableJsx - Whether to enable JSX support.
+ * @param envs - Environment variables to inject into the code.
+ * @param swcConfig - The SWC configuration object containing browsers list and development mode.
+ * @param type - The module type to use, either 'es6' or 'commonjs'. Defaults to 'es6'.
  */
 export function getSwcLoader(
   syntax: 'typescript' | 'ecmascript',
   enableJsx: boolean,
+  envs: Record<string, string>,
   swcConfig: SwcConfig,
+  type: 'es6' | 'commonjs' = 'es6',
 ) {
   return {
     loader: __filename,
@@ -216,7 +237,7 @@ export function getSwcLoader(
           },
           optimizer: {
             globals: {
-              envs: swcConfig.safeVariables,
+              envs,
             },
           },
         },
@@ -225,6 +246,9 @@ export function getSwcLoader(
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
           importAttributes: true,
         },
+      },
+      module: {
+        type,
       },
     } as const satisfies SwcLoaderOptions,
   };

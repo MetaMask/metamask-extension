@@ -20,6 +20,7 @@ import {
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../useMultichainTransactionDisplay';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
 /**
  * Defines the structure for additional bridge-related information added to transactions.
@@ -60,7 +61,7 @@ export type BridgeOriginatedItem = {
   id: string; // Source Tx Hash
   account: string;
   timestamp: number;
-  type: 'send'; // Base type for potential filtering
+  type: 'swap' | 'bridge';
   from: {
     address: string;
     asset: {
@@ -200,21 +201,28 @@ export default function useSolanaBridgeTransactionMapping(
           const assetType: BridgeAsset =
             getNativeAssetForChainId(chainId) ?? 'eip155:1/slip44:60';
 
+          const srcChainId = bridgeTx.quote?.srcChainId;
+          const destChainId = bridgeTx.quote?.destChainId;
+          const isCrossChain =
+            srcChainId !== undefined &&
+            destChainId !== undefined &&
+            srcChainId !== destChainId;
+
           // Create the item with only the fields available from bridge history.
           const bridgeOriginatedTx: BridgeOriginatedItem = {
             id: srcTxHash,
             account: bridgeTx.account,
             timestamp: timestampSeconds,
-            type: 'send',
+            type: isCrossChain ? 'bridge' : 'swap',
             to: [],
             from: [
               {
                 address: bridgeTx.account,
                 asset: {
                   type: assetType,
-                  amount: (
-                    Number(bridgeTx.quote?.srcTokenAmount ?? 0) /
-                    10 ** (bridgeTx.quote?.srcAsset?.decimals ?? 9)
+                  amount: calcTokenAmount(
+                    bridgeTx.quote?.srcTokenAmount ?? 0,
+                    bridgeTx.quote?.srcAsset?.decimals ?? 9,
                   ).toString(),
                   unit: bridgeTx.quote?.srcAsset?.symbol ?? '',
                   fungible: true,
@@ -327,6 +335,20 @@ export default function useSolanaBridgeTransactionMapping(
       }
       return {
         ...(tx as Transaction),
+        from: [
+          {
+            address: matchingBridgeTx.account,
+            asset: {
+              type: matchingBridgeTx.quote?.srcAsset?.assetId,
+              amount: calcTokenAmount(
+                matchingBridgeTx.quote?.srcTokenAmount ?? 0,
+                matchingBridgeTx.quote?.srcAsset?.decimals ?? 9,
+              ).toString(),
+              unit: matchingBridgeTx.quote?.srcAsset?.symbol ?? '',
+              fungible: true,
+            },
+          },
+        ],
         isBridgeTx,
         bridgeInfo,
         isBridgeOriginated: false,

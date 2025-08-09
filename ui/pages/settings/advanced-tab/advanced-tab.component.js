@@ -240,7 +240,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span> {t('useSmartAccountTitle')}</span>
@@ -281,7 +281,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span> {t('dismissSmartAccountSuggestionEnabledTitle')}</span>
@@ -335,7 +335,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span>{t('smartTransactions')}</span>
@@ -371,7 +371,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
         data-testid="advanced-setting-hex-data"
       >
         <div className="settings-page__content-item">
@@ -405,7 +405,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
         data-testid="advanced-setting-show-testnet-conversion"
       >
         <div className="settings-page__content-item">
@@ -442,7 +442,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span>{t('showTestnetNetworks')}</span>
@@ -476,7 +476,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span>{t('showExtensionInFullSizeView')}</span>
@@ -559,7 +559,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span>{t('dismissReminderField')}</span>
@@ -663,7 +663,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        gap={[null, 4]}
       >
         <div className="settings-page__content-item">
           <span>{t('manageInstitutionalWallets')}</span>

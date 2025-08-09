@@ -23,7 +23,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-12"
+              aria-describedby="tippy-tooltip-13"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -126,7 +126,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-9"
+              aria-describedby="tippy-tooltip-10"
               class=""
               data-original-title="This is the address that will be able to withdraw your NFTs."
               data-tooltipped=""
@@ -189,7 +189,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-10"
+              aria-describedby="tippy-tooltip-11"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -241,7 +241,7 @@ exports[`Info renders info section for approve request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-11"
+                aria-describedby="tippy-tooltip-12"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""
@@ -829,7 +829,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-13"
+              aria-describedby="tippy-tooltip-14"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -932,7 +932,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-14"
+              aria-describedby="tippy-tooltip-15"
               class=""
               data-original-title="This is the address that will be able to withdraw your NFTs."
               data-tooltipped=""
@@ -995,7 +995,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-15"
+              aria-describedby="tippy-tooltip-16"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -1047,7 +1047,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-16"
+                aria-describedby="tippy-tooltip-17"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""

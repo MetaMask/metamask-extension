@@ -31,8 +31,16 @@ jobs:
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
 
-      # not installed by checkout-and-setup when cache is restored
-      - name: Install anvil
+      - name: Restore .metamask folder
+        id: restore-metamask
+        uses: actions/cache/restore@v4
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
         run: yarn mm-foundryup
 
       - name: Download artifact '${{ env.ARTIFACT_NAME }}'

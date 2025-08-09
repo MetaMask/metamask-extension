@@ -8,6 +8,7 @@
   "files.associations": {
     "app/*.html": "ejs"
   },
+  "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "gitlens.advanced.blame.customArguments": [
     "--ignore-revs-file .git-blame-ignore-revs"

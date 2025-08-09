@@ -172,6 +172,18 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.RESET_SOCIAL_LOGIN_ONBOARDING: {
+      return {
+        ...metamaskState,
+        userId: undefined,
+        accessToken: undefined,
+        refreshToken: undefined,
+        socialLoginEmail: undefined,
+        authConnection: undefined,
+        nodeAuthTokens: undefined,
+      };
+    }
+
     default:
       return metamaskState;
   }

@@ -70,4 +70,7 @@ export type BalanceChange = Readonly<{
 
   /** Callback to support editing the value. */
   onEdit?: () => void;
+
+  /** The amount of USD that corresponds to the asset amount. */
+  usdAmount: FiatAmount;
 }>;

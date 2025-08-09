@@ -1,19 +1,14 @@
-import { createModuleLogger, createProjectLogger } from '@metamask/utils';
+import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
+import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
 
-const projectLogger = createProjectLogger('sentry');
 let installType = 'unknown';
-
-export const log = createModuleLogger(
-  projectLogger,
-  globalThis.document ? 'ui' : 'background',
-);
 
 const internalLog = createModuleLogger(log, 'internal');
 

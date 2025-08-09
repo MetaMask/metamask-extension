@@ -78,6 +78,8 @@
       width: calc(100% + 32px);
     }
 
+    // TODO: Replace with design tokens @MetaMask/swaps-engineer - theme-specific shadow colors
+    /* stylelint-disable color-no-hex */
     [data-theme='light'],
     .light {
       box-shadow: 0 0 2px 0 #e2e4e9, 0 0 16px 0 rgba(226, 228, 233, 0.16);
@@ -87,6 +89,7 @@
     .dark {
       box-shadow: 0 0 2px 0 #18191b, 0 0 16px 0 #18191b;
     }
+    /* stylelint-enable color-no-hex */
   }
 }
 

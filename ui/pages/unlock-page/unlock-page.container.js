@@ -14,6 +14,7 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
+  resetOnboarding,
 } from '../../store/actions';
 import { getIsSocialLoginFlow } from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
@@ -35,6 +36,7 @@ const mapDispatchToProps = (dispatch) => {
     tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
+    loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
   };

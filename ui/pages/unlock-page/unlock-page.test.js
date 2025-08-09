@@ -36,7 +36,6 @@ jest.mock('@metamask/logo', () => () => {
 
 describe('Unlock Page', () => {
   process.env.METAMASK_BUILD_TYPE = 'main';
-  process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
 
   const mockState = {
     metamask: {},
@@ -112,9 +111,17 @@ describe('Unlock Page', () => {
     });
 
     jest.spyOn(history, 'replace');
+    const mockLoginWithDifferentMethod = jest.fn();
+    const mockForceUpdateMetamaskState = jest.fn();
+
+    const props = {
+      loginWithDifferentMethod: mockLoginWithDifferentMethod,
+      forceUpdateMetamaskState: mockForceUpdateMetamaskState,
+    };
+
     const { queryByText } = renderWithProvider(
       <Router history={history}>
-        <UnlockPage />
+        <UnlockPage {...props} />
       </Router>,
       store,
     );
@@ -122,6 +129,8 @@ describe('Unlock Page', () => {
     fireEvent.click(queryByText('Use a different login method'));
 
     await waitFor(() => {
+      expect(mockLoginWithDifferentMethod).toHaveBeenCalled();
+      expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
       expect(history.replace).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
     });
   });

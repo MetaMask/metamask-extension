@@ -12,6 +12,10 @@ import {
   disableMetamaskNotifications,
 } from '../../store/actions';
 import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
+import {
+  setUserHasTurnedOffNotificationsOnce,
+  updateNotificationSubscriptionExpiration,
+} from '../../contexts/metamask-notifications/notification-storage-keys';
 
 // Define KeyringType interface
 type KeyringType = {
@@ -95,6 +99,7 @@ export function useCreateNotifications(): {
 
     try {
       await dispatch(createOnChainTriggers());
+      await updateNotificationSubscriptionExpiration();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
@@ -131,6 +136,7 @@ export function useEnableNotifications(): {
 
     try {
       await dispatch(enableMetamaskNotifications());
+      await updateNotificationSubscriptionExpiration();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
@@ -163,6 +169,7 @@ export function useDisableNotifications(): {
 
     try {
       await dispatch(disableMetamaskNotifications());
+      await setUserHasTurnedOffNotificationsOnce();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);

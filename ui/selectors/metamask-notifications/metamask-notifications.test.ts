@@ -1,5 +1,4 @@
 import {
-  NotificationServicesControllerState,
   INotification as Notification,
   processNotification,
 } from '@metamask/notification-services-controller/notification-services';
@@ -11,18 +10,15 @@ import {
   getMetamaskNotificationsUnreadCount,
   selectIsFeatureAnnouncementsEnabled,
   getValidNotificationAccounts,
+  type NotificationAppState,
 } from './metamask-notifications';
-
-type AppState = {
-  metamask: Partial<NotificationServicesControllerState>;
-};
 
 const mockNotifications: Notification[] = [
   processNotification(createMockNotificationEthReceived()),
 ];
 
 describe('Metamask Notifications Selectors', () => {
-  const mockState = (): AppState => ({
+  const mockState = (): NotificationAppState => ({
     metamask: {
       subscriptionAccountsSeen: [] as string[],
       isMetamaskNotificationsFeatureSeen: true,
@@ -34,6 +30,9 @@ describe('Metamask Notifications Selectors', () => {
       isUpdatingMetamaskNotifications: false,
       isUpdatingMetamaskNotificationsAccount: [],
       isCheckingAccountsPresence: false,
+      remoteFeatureFlags: {
+        assetsEnableNotificationsByDefault: false,
+      },
     },
   });
 

@@ -2253,6 +2253,10 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
+  "errorDetails": {
+    "message": "Error details",
+    "description": "Label for the error details field in the error screen."
+  },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
   },
@@ -2424,10 +2428,6 @@
   },
   "floatAmountToken": {
     "message": "Token amount must be an integer"
-  },
-  "followUsOnX": {
-    "message": "Follow us on $1",
-    "description": "$1 is the x icon"
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
@@ -3783,6 +3783,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noNetworksAvailable": {
+    "message": "No networks available"
+  },
   "noNetworksFound": {
     "message": "No networks found for the given search query"
   },
@@ -4152,7 +4155,7 @@
     "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
-    "message": "Continue with Secret Recovery Phrase"
+    "message": "Use Secret Recovery Phrase"
   },
   "onboardingSrpImport": {
     "message": "Import using Secret Recovery Phrase"
@@ -5069,6 +5072,9 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
+  "searchNetworks": {
+    "message": "Search networks"
+  },
   "searchNfts": {
     "message": "Search NFTs"
   },
@@ -5448,6 +5454,12 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "simulationSettingsModalEnforceSlippage": {
+    "message": "Slippage tolerance"
+  },
+  "simulationSettingsModalEnforceSlippageDescription": {
+    "message": "Set a difference you're comfortable with for balance changes. Transactions won't go through if the difference is higher."
+  },
   "simulationSettingsModalEnforceToggle": {
     "message": "Enforce balance changes"
   },
@@ -5535,12 +5547,6 @@
   "slideMultiSrpTitle": {
     "message": "Add multiple Secret Recovery Phrases"
   },
-  "slideRemoteModeDescription": {
-    "message": "Use your cold wallet wirelessly"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold storage, fast access"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Same address, smarter features"
   },
@@ -5558,6 +5564,15 @@
   },
   "slideSweepStakeTitle": {
     "message": "Enter the $5000 USDC Giveaway!"
+  },
+  "slippage": {
+    "message": "Slippage"
+  },
+  "slippageAuto": {
+    "message": "Auto"
+  },
+  "slippageEditAriaLabel": {
+    "message": "Edit slippage"
   },
   "smartAccountAccept": {
     "message": "Use smart account"
@@ -5745,6 +5760,9 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
+  },
+  "snapUIAccountSelectorTitle": {
+    "message": "Select account"
   },
   "snapUIAssetSelectorTitle": {
     "message": "Select an asset"
@@ -6685,7 +6703,7 @@
     "message": "Agree"
   },
   "termsOfUseAgreeText": {
-    "message": "I agree to the Terms of use, which apply to my use of MetaMask and all of its features"
+    "message": "I agree to the Terms of Use, which apply to my use of MetaMask and all of its features."
   },
   "termsOfUseFooterText": {
     "message": "Please scroll to read all sections"
@@ -6923,8 +6941,11 @@
     "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleStarting": {
-    "message": "MetaMask had trouble starting. This error could be intermittent, so try restarting the extension."
+  "troubleStartingMessage": {
+    "message": "This error could be intermittent, so try restarting the extension."
+  },
+  "troubleStartingTitle": {
+    "message": "MetaMask had trouble starting."
   },
   "tryAgain": {
     "message": "Try again"
@@ -7132,6 +7153,10 @@
   },
   "viewActivity": {
     "message": "View activity"
+  },
+  "viewAddressOnExplorer": {
+    "message": "View on $1",
+    "description": "$1 is the block explorer name"
   },
   "viewAllQuotes": {
     "message": "view all quotes"

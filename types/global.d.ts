@@ -276,6 +276,8 @@ type StateHooks = {
   metamaskGetState?: () => Promise<any>;
   throwTestBackgroundError?: (msg?: string) => Promise<void>;
   throwTestError?: (msg?: string) => void;
+  captureTestError?: (msg?: string) => Promise<void>;
+  captureBackgroundError?: (msg?: string) => Promise<void>;
   /**
    * This is set in `app-init.js` to communicate why MetaMask installed or
    * updated. It is handled in `background.js`.

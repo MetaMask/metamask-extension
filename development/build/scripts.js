@@ -274,6 +274,20 @@ function createScriptTasks({
         shouldLintFenceFiles,
       }),
     );
+
+    // task for building devtools and kernel-panel
+    if (shouldIncludeOcapKernel) {
+      const devtoolsSubtask = createTask(
+        `${taskPrefix}:devtools`,
+        createDevtoolsBundle({ buildTarget }),
+      );
+      const kernelPanelSubtask = createTask(
+        `${taskPrefix}:kernel-panel`,
+        createKernelPanelBundle({ buildTarget }),
+      );
+      allSubtasks.push(devtoolsSubtask, kernelPanelSubtask);
+    }
+
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
@@ -317,6 +331,54 @@ function createScriptTasks({
       buildType,
       destFilepath: `scripts/${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
+      label,
+      policyOnly,
+      shouldLintFenceFiles,
+      version,
+      applyLavaMoat,
+    });
+  }
+
+  /**
+   * Create a bundle for the "devtools" module.
+   *
+   * @param {object} options - The build options.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createDevtoolsBundle({ buildTarget }) {
+    const label = 'devtools';
+    return createNormalBundle({
+      browserPlatforms,
+      buildTarget,
+      buildType,
+      destFilepath: `devtools/${label}.js`,
+      entryFilepath: `./app/devtools/${label}.ts`,
+      ignoredFiles,
+      label,
+      policyOnly,
+      shouldLintFenceFiles,
+      version,
+      applyLavaMoat,
+    });
+  }
+
+  /**
+   * Create a bundle for the "kernel-panel" module.
+   *
+   * @param {object} options - The build options.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createKernelPanelBundle({ buildTarget }) {
+    const label = 'kernel-panel';
+    return createNormalBundle({
+      browserPlatforms,
+      buildTarget,
+      buildType,
+      destFilepath: `devtools/ocap-kernel/${label}.js`,
+      entryFilepath: `./app/devtools/ocap-kernel/${label}.ts`,
       ignoredFiles,
       label,
       policyOnly,

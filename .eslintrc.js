@@ -20,7 +20,7 @@ module.exports = {
   parser: '@babel/eslint-parser',
   plugins: ['@metamask/design-tokens'],
   rules: {
-    '@metamask/design-tokens/color-no-hex': 'warn',
+    '@metamask/design-tokens/color-no-hex': 'error',
     'import/no-restricted-paths': [
       'error',
       {
@@ -387,6 +387,35 @@ module.exports = {
           // LavaMoat policy for all of React, in the build system. That's a
           // no-go, so we grab it from React's package.json.
           version: reactVersion,
+        },
+      },
+    },
+    /**
+     * Tailwind CSS
+     */
+    {
+      files: [
+        'ui/pages/design-system/**/*.{ts,tsx}',
+        // Add your workspace if you'd like to start using tailwind css,
+        // for example:
+        // 'ui/pages/your-page/**/*.{ts,tsx}',
+      ],
+      plugins: ['tailwindcss'],
+      rules: {
+        // Tailwind CSS rules - same as design system
+        'tailwindcss/classnames-order': 'error',
+        'tailwindcss/enforces-negative-arbitrary-values': 'error',
+        'tailwindcss/enforces-shorthand': 'error',
+        'tailwindcss/no-arbitrary-value': 'off', // There are legitimate reasons to use arbitrary values but we should specifically error on static colors
+        'tailwindcss/no-custom-classname': 'error',
+        'tailwindcss/no-contradicting-classname': 'error',
+        'tailwindcss/no-unnecessary-arbitrary-value': 'error',
+      },
+      settings: {
+        tailwindcss: {
+          callees: ['twMerge'],
+          config: 'tailwind.config.js',
+          classRegex: ['^(class(Name)?)$'],
         },
       },
     },

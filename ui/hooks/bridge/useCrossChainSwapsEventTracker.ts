@@ -1,6 +1,8 @@
 import { useCallback, useContext } from 'react';
-import { SortOrder } from '@metamask/bridge-controller';
+import { useSelector } from 'react-redux';
+import { SortOrder, formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getFromChain } from '../../ducks/bridge/selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -114,6 +116,7 @@ export type CrossChainSwapsEventProperties = {
  */
 export const useCrossChainSwapsEventTracker = () => {
   const trackEvent = useContext(MetaMetricsContext);
+  const fromChain = useSelector(getFromChain);
 
   const trackCrossChainSwapsEvent = useCallback(
     <EventName extends keyof CrossChainSwapsEventProperties>({
@@ -125,6 +128,10 @@ export const useCrossChainSwapsEventTracker = () => {
       category?: MetaMetricsEventCategory;
       properties: CrossChainSwapsEventProperties[EventName];
     }) => {
+      const chainId = fromChain?.chainId
+        ? formatChainIdToCaip(fromChain.chainId)
+        : undefined;
+
       trackEvent({
         category: category ?? MetaMetricsEventCategory.CrossChainSwaps,
         event,
@@ -132,12 +139,15 @@ export const useCrossChainSwapsEventTracker = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           action_type: ActionType.CROSSCHAIN_V1,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
           ...properties,
         },
         value: 'value' in properties ? (properties.value as never) : undefined,
       });
     },
-    [trackEvent],
+    [trackEvent, fromChain],
   );
 
   return trackCrossChainSwapsEvent;

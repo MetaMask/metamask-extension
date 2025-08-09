@@ -161,7 +161,7 @@ describe('BaseAccountDetails', () => {
       expect(screen.getByText('Wallet')).toBeInTheDocument();
 
       // Check if shortened address is displayed (short address stays as-is)
-      expect(screen.getByText('0x123')).toBeInTheDocument();
+      expect(screen.getByText('0xa0b86...f5e4b')).toBeInTheDocument();
 
       // Check if wallet name is displayed
       expect(screen.getByText('Mock Wallet')).toBeInTheDocument();

@@ -526,7 +526,14 @@ class Driver {
       }
     }
 
-    await this.driver.quit();
+    try {
+      await this.driver.quit();
+    } catch (error) {
+      console.warn(
+        'Failed to quit driver; continuing under assumption that it was already closed. Error:\n',
+        error,
+      );
+    }
   }
 
   /**

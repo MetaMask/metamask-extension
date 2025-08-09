@@ -123,7 +123,7 @@ module.exports = {
 
     // 'color-named': 'never',
     // This rule checks for the usage of hexadecimal color values and warns about it to encourage the use of Design Tokens https://github.com/MetaMask/design-tokens/
-    'color-no-hex': [true, { severity: 'warning' }],
+    'color-no-hex': [true, { severity: 'error' }],
     // 'font-family-name-quotes': 'always-where-recommended',
     // 'font-weight-notation': 'numeric',
     // 'function-url-quotes': 'always',

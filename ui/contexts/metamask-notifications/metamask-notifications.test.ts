@@ -9,6 +9,7 @@ import * as StorageHelpers from '../../../shared/lib/storage-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import {
   useBasicFunctionalityDisableEffect,
+  useEnableNotificationsByDefaultEffect,
   useFetchInitialNotificationsEffect,
 } from './metamask-notifications'; // Adjust path as needed
 
@@ -403,6 +404,207 @@ describe('useFetchInitialNotificationsEffect', () => {
     mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
     mocks.selectors.mockSelectIsSignedIn.mockReturnValue(true);
 
+    rerender();
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).toHaveBeenCalled();
+    });
+  });
+});
+
+describe('useEnableNotificationsByDefaultEffect', () => {
+  const arrangeHooks = () => {
+    const mockEnableNotifications = jest.fn();
+    const mockListNotifications = jest.fn();
+
+    const mockUseEnableNotifications = jest.spyOn(
+      NotificationHooks,
+      'useEnableNotifications',
+    );
+    const mockUseListNotifications = jest.spyOn(
+      NotificationHooks,
+      'useListNotifications',
+    );
+
+    mockUseEnableNotifications.mockReturnValue({
+      enableNotifications: mockEnableNotifications,
+      error: null,
+    });
+
+    mockUseListNotifications.mockReturnValue({
+      listNotifications: mockListNotifications,
+      notificationsData: [],
+      isLoading: false,
+      error: undefined,
+    });
+
+    return {
+      enableNotifications: mockEnableNotifications,
+      listNotifications: mockListNotifications,
+      mockUseEnableNotifications,
+      mockUseListNotifications,
+    };
+  };
+
+  const arrangeSelectors = () => {
+    const mockIsNotifsEnabled = jest
+      .spyOn(NotificationsSelectors, 'selectIsMetamaskNotificationsEnabled')
+      .mockReturnValue(false);
+
+    const mockGetUseExternalServices = jest
+      .spyOn(Selectors, 'getUseExternalServices')
+      .mockReturnValue(true);
+
+    const mockGetIsUnlocked = jest
+      .spyOn(MetamaskDucks, 'getIsUnlocked')
+      .mockReturnValue(true);
+
+    const mockGetIsNotificationEnabledByDefaultFeatureFlag = jest
+      .spyOn(
+        NotificationsSelectors,
+        'getIsNotificationEnabledByDefaultFeatureFlag',
+      )
+      .mockReturnValue(true);
+
+    return {
+      mockIsNotifsEnabled,
+      mockGetUseExternalServices,
+      mockGetIsUnlocked,
+      mockGetIsNotificationEnabledByDefaultFeatureFlag,
+    };
+  };
+
+  const arrange = () => {
+    const mockGetStorageItem = jest
+      .spyOn(StorageHelpers, 'getStorageItem')
+      .mockResolvedValue(undefined);
+
+    const mockSetStorageItem = jest.spyOn(StorageHelpers, 'setStorageItem');
+
+    return {
+      hooks: arrangeHooks(),
+      selectors: arrangeSelectors(),
+      helpers: {
+        mockGetStorageItem,
+        mockSetStorageItem,
+      },
+    };
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should enable notifications by default when all conditions are met and user has not turned off notifications', async () => {
+    const mocks = arrange();
+
+    renderHookWithProvider(() => useEnableNotificationsByDefaultEffect(), {});
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).toHaveBeenCalled();
+    });
+  });
+
+  it('should not enable notifications when notifications are already enabled', async () => {
+    const mocks = arrange();
+    mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true); // Already enabled
+
+    renderHookWithProvider(() => useEnableNotificationsByDefaultEffect(), {});
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not enable notifications when basic functionality is disabled', async () => {
+    const mocks = arrange();
+    mocks.selectors.mockGetUseExternalServices.mockReturnValue(false); // Basic functionality disabled
+
+    renderHookWithProvider(() => useEnableNotificationsByDefaultEffect(), {});
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not enable notifications when wallet is locked', async () => {
+    const mocks = arrange();
+    mocks.selectors.mockGetIsUnlocked.mockReturnValue(false); // Wallet locked
+
+    renderHookWithProvider(() => useEnableNotificationsByDefaultEffect(), {});
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not enable notifications when feature flag is disabled', async () => {
+    const mocks = arrange();
+    mocks.selectors.mockGetIsNotificationEnabledByDefaultFeatureFlag.mockReturnValue(
+      false,
+    ); // Feature flag disabled
+
+    renderHookWithProvider(() => useEnableNotificationsByDefaultEffect(), {});
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should not enable notifications when user has previously turned off notifications', async () => {
+    const mocks = arrange();
+    mocks.helpers.mockGetStorageItem.mockResolvedValue(true); // User has turned off notifications
+
+    renderHookWithProvider(() => useEnableNotificationsByDefaultEffect(), {});
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should handle errors gracefully when hasUserTurnedOffNotificationsOnce fails', async () => {
+    const mocks = arrange();
+    mocks.helpers.mockGetStorageItem.mockRejectedValueOnce(
+      new Error('Storage failed'),
+    );
+
+    renderHookWithProvider(() => useEnableNotificationsByDefaultEffect(), {});
+
+    await waitFor(() => {
+      // Should not call enable/list notifications when storage check fails
+      expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should re-run effect when dependencies change', async () => {
+    const mocks = arrange();
+
+    // Mocking useSelector so it does not memoize the selectors passed in.
+    const originalUseSelector = ReactRedux.useSelector;
+    jest.spyOn(ReactRedux, 'useSelector').mockImplementation((selector) => {
+      // Ensure the selector input is a new reference
+      const wrappedSelector = (state: unknown) => selector(state);
+      return originalUseSelector(wrappedSelector);
+    });
+
+    // First render - conditions not met (wallet locked)
+    mocks.selectors.mockGetIsUnlocked.mockReturnValue(false);
+
+    const { rerender } = renderHookWithProvider(
+      () => useEnableNotificationsByDefaultEffect(),
+      {},
+    );
+
+    // Second render - conditions met (notifications disabled and wallet is unlocked)
+    mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
     rerender();
 
     await waitFor(() => {

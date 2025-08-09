@@ -1,11 +1,11 @@
 import React from 'react';
-import * as Sentry from '@sentry/browser';
 import {
   I18NMessageDict,
   I18NSubstitution,
   getMessage as getMessageShared,
 } from '../../../shared/modules/i18n';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
+import { captureException } from '../../../shared/lib/sentry';
 
 /**
  * Returns a localized message for the given key
@@ -33,7 +33,7 @@ export const getMessage = (
     : undefined;
 
   const onError = (error: Error) => {
-    Sentry.captureException(error);
+    captureException(error);
   };
 
   return getMessageShared(

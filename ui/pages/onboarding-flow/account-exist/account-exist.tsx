@@ -27,7 +27,8 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  resetOAuthLoginState,
+  forceUpdateMetamaskState,
+  resetOnboarding,
   setFirstTimeFlowType,
 } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -51,11 +52,13 @@ export default function AccountExist() {
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     trackEvent;
 
-  const onLoginWithDifferentMethod = async () => {
-    // clear the social login state
-    await dispatch(resetOAuthLoginState());
-    // reset the first time flow type
-    await dispatch(setFirstTimeFlowType(null));
+  const onLoginWithDifferentMethod = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.preventDefault();
+    // reset onboarding flow
+    await dispatch(resetOnboarding());
+    await forceUpdateMetamaskState(dispatch);
     history.replace(ONBOARDING_WELCOME_ROUTE);
   };
 

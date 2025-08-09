@@ -35,7 +35,7 @@
       width: fit-content;
     }
 
-    border-bottom: 1px solid #858b9a33;
+    border-bottom: 1px solid var(--color-border-muted);
     display: grid;
     grid-template-columns: 1fr 1fr;
   }

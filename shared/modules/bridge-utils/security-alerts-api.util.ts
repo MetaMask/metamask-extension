@@ -217,10 +217,6 @@ export async function fetchTxAlerts({
 
   assert<MessageScanResponse, unknown>(respBody, MessageScanResponse);
 
-  if (respBody.error_details?.code === 'ResultWithNegativeLamports') {
-    return null;
-  }
-
   if (respBody.status === 'ERROR') {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line camelcase, @typescript-eslint/naming-convention

@@ -6,7 +6,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { pipeline } from 'readable-stream';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import PortStream from 'extension-port-stream';
-import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
+import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 import {

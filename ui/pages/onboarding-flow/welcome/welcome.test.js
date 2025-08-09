@@ -62,8 +62,6 @@ describe('Welcome Page', () => {
   });
 
   it('should show the error modal when the error thrown in login', async () => {
-    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
-
     jest
       .spyOn(Actions, 'startOAuthLogin')
       .mockRejectedValue(new Error('login error'));

@@ -228,7 +228,7 @@ export const CoinOverview = ({
 
   const handlePortfolioOnClick = useCallback(() => {
     const url = getPortfolioUrl(
-      '',
+      'explore/tokens',
       'ext_portfolio_button',
       metaMetricsId,
       isMetaMetricsEnabled,

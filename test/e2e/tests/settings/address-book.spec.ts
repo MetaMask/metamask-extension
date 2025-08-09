@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import FixtureBuilder from '../../fixture-builder';
@@ -15,6 +16,18 @@ import {
 } from '../../page-objects/flows/login.flow';
 import AssetPicker from '../../page-objects/pages/asset-picker';
 import NetworkManager from '../../page-objects/pages/network-manager';
+import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
+
+async function mockTokenList(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://swap.api.cx.metamask.io/networks/59144/tokens')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: TOKENS_API_MOCK_RESULT,
+      };
+    });
+}
 
 describe('Address Book', function (this: Suite) {
   it('Sends to an address book entry', async function () {
@@ -83,6 +96,7 @@ describe('Address Book', function (this: Suite) {
             },
           })
           .build(),
+        testSpecificMock: mockTokenList,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

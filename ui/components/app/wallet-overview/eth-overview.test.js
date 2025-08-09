@@ -280,7 +280,7 @@ describe('EthOverview', () => {
       );
     });
 
-    it('should have the Bridge button disabled if chain id is not part of supported chains', () => {
+    it('should not render the Bridge button on testnet chains', () => {
       const mockedFantomStore = {
         ...mockStore,
         metamask: {
@@ -295,12 +295,7 @@ describe('EthOverview', () => {
         mockedStore,
       );
       const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
-      expect(bridgeButton).toBeInTheDocument();
-      expect(bridgeButton).toBeDisabled();
-      expect(bridgeButton.parentElement).toHaveAttribute(
-        'data-original-title',
-        'Unavailable on this network',
-      );
+      expect(bridgeButton).not.toBeInTheDocument();
     });
 
     it('should always show the Receive button', () => {

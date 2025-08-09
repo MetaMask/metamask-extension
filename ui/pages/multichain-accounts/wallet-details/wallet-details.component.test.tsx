@@ -5,10 +5,7 @@ import { Provider } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { SolScope } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type {
-  AccountGroupId,
-  AccountWalletId,
-} from '@metamask/account-tree-controller';
+import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
@@ -429,7 +426,7 @@ describe('WalletDetails', () => {
       fireEvent.click(getByTestId('select-ethereum-account'));
 
       await waitFor(() => {
-        expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet');
+        expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet', false);
         expect(
           queryByTestId('mock-account-type-selection'),
         ).not.toBeInTheDocument();
@@ -446,7 +443,7 @@ describe('WalletDetails', () => {
       fireEvent.click(getByTestId('select-ethereum-account'));
 
       await waitFor(() => {
-        expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet');
+        expect(mockAddNewAccount).toHaveBeenCalledWith('test-wallet', false);
         expect(mockSetAccountLabel).not.toHaveBeenCalled();
       });
     });
@@ -461,7 +458,10 @@ describe('WalletDetails', () => {
       fireEvent.click(getByTestId('select-ethereum-account'));
 
       await waitFor(() => {
-        expect(mockAddNewAccount).toHaveBeenCalledWith('test-entropy-wallet');
+        expect(mockAddNewAccount).toHaveBeenCalledWith(
+          'test-entropy-wallet',
+          false,
+        );
       });
     });
 
