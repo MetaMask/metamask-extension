@@ -166,15 +166,14 @@ async function generateBinaryWordList(): Promise<void> {
   );
 
   // combine the two buffers into a single ArrayBuffer with metadata header
-  const headerSize = 8; // 4 bytes for trieNodes size + 4 bytes for wordEndNodes size
+  const headerSize = 4; // 4 bytes for trieNodes size (wordEndNodes size is fixed at 4096 bytes)
   const totalBytes =
     headerSize + trieNodes.byteLength + wordEndNodes.byteLength;
   const buffer = new ArrayBuffer(totalBytes);
 
-  // Write header with sizes
-  const headerView = new Uint32Array(buffer, 0, 2);
+  // Write header with trieNodes size only (wordEndNodes size is always 4096 bytes)
+  const headerView = new Uint32Array(buffer, 0, 1);
   headerView[0] = trieNodes.byteLength;
-  headerView[1] = wordEndNodes.byteLength;
 
   // Write the data buffers directly to the main buffer
   const trieNodesView = new Uint8Array(
@@ -206,12 +205,10 @@ async function generateBinaryWordList(): Promise<void> {
 
   // Use Zopfli for maximum compression - it produces raw deflate directly
   const compressed = await deflate(Buffer.from(buffer), {
-    numiterations: 221,
+    numiterations: 272,
   });
 
-  console.debug(
-    `Zopfli compressed size: ${compressed.byteLength} bytes (vs 38266)`,
-  );
+  console.debug(`Zopfli compressed size: ${compressed.byteLength} bytes`);
 
   const filePath = join(__dirname, './wordList.bin');
   await writeFile(filePath, compressed);

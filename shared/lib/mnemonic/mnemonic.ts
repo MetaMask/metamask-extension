@@ -158,11 +158,11 @@ class MnemonicUtil {
   static async create(
     compressedDataStream?: ReadableStream<Uint8Array>,
   ): Promise<MnemonicUtil> {
-    let dataStream: ReadableStream<Uint8Array>;
+    let readableStream: ReadableStream<Uint8Array>;
 
     if (compressedDataStream) {
       // Use provided stream (for testing)
-      dataStream = compressedDataStream;
+      readableStream = compressedDataStream;
     } else {
       // @ts-expect-error it's fine, we need `import.meta.url` for our build
       // process to output the correct path to use at runtime
@@ -173,30 +173,64 @@ class MnemonicUtil {
         throw new Error(`Failed to fetch wordList.bin: ${response.statusText}`);
       }
 
-      dataStream = response.body;
+      readableStream = response.body;
     }
 
-    const ds = new DecompressionStream('deflate-raw');
-    const decompressedStream = dataStream.pipeThrough(ds);
-    const combinedBuffer = await new Response(decompressedStream).arrayBuffer();
+    const decompressionStream = new DecompressionStream('deflate-raw');
+    const decompressedStream = readableStream.pipeThrough(decompressionStream);
+    const reader = decompressedStream.getReader();
+    // 1) Read exactly 4 bytes of header
+    const hdr = new Uint8Array(4);
+    let filled = 0;
+    let tail: Uint8Array | null = null;
 
-    // Read header to get sizes
-    const headerView = new Uint32Array(combinedBuffer, 0, 2);
-    const trieNodesSize = headerView[0];
-    const wordEndNodesSize = headerView[1];
+    while (filled < 4) {
+      const { value, done } = await reader.read();
+      if (done) throw new Error('Truncated stream: missing 4-byte header');
+      const take = Math.min(4 - filled, value.length);
+      hdr.set(value.subarray(0, take), filled);
+      filled += take;
+      if (take < value.length) {
+        tail = value.subarray(take); // remainder after header
+        break;
+      }
+    }
 
-    // Create views directly into the buffer (no copying)
-    const headerSize = 8; // 2 * 4 bytes
-    const trieNodes = new Uint32Array(
-      combinedBuffer,
-      headerSize,
-      trieNodesSize / 4, // Uint32Array length is in 32-bit elements
-    );
+    // 2) Parse sizes
+    const dv = new DataView(hdr.buffer, hdr.byteOffset, 4);
+    const trieBytes = dv.getUint32(0, true);
+    const endBytes = 4096; // Fixed size: 2048 words * 2 bytes each
+
+    const totalData = trieBytes + endBytes;
+
+    // 3) Single allocation
+    const data = new Uint8Array(totalData);
+    let off = 0;
+
+    if (tail) {
+      const n = Math.min(tail.length, totalData);
+      data.set(tail.subarray(0, n), 0);
+      off = n;
+    }
+
+    while (off < totalData) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      data.set(value, off);
+      off += value.length;
+    }
+    reader.releaseLock();
+
+    // 4) Zero-copy views over the single backing buffer
+    const buf = data.buffer;
+    const trieNodes = new Uint32Array(buf, /*byteOffset*/ 0, trieBytes >>> 2);
     const wordEndNodes = new Uint16Array(
-      combinedBuffer,
-      headerSize + trieNodesSize,
-      wordEndNodesSize / 2, // Uint16Array length is in 16-bit elements
+      buf,
+      /*byteOffset*/ trieBytes,
+      endBytes >>> 1,
     );
+
+    console.timeEnd('MnemonicUtil.create');
 
     return new MnemonicUtil(trieNodes, wordEndNodes);
   }
