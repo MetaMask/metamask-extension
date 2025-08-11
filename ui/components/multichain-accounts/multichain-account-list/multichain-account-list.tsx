@@ -48,33 +48,33 @@ export const MultichainAccountList = ({
   );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
-  const handleAccountClick = (accountGroupId: AccountGroupId) => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.NavAccountSwitched,
-      properties: {
-        location: 'Main Menu',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
-    endTrace({
-      name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-        defaultHomeActiveTabName
-      ],
-    });
-    trace({
-      name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-        defaultHomeActiveTabName
-      ],
-    });
-
-    dispatch(setSelectedMultichainAccount(accountGroupId));
-    history.push(DEFAULT_ROUTE);
-  };
-
   const walletTree = useMemo(() => {
+    const handleAccountClick = (accountGroupId: AccountGroupId) => {
+      trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.NavAccountSwitched,
+        properties: {
+          location: 'Main Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        },
+      });
+      endTrace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+          defaultHomeActiveTabName
+        ],
+      });
+      trace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+          defaultHomeActiveTabName
+        ],
+      });
+
+      dispatch(setSelectedMultichainAccount(accountGroupId));
+      history.push(DEFAULT_ROUTE);
+    };
+
     return Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
@@ -120,7 +120,15 @@ export const MultichainAccountList = ({
       },
       [] as React.ReactNode[],
     );
-  }, [wallets, selectedAccountGroup]);
+  }, [
+    wallets,
+    trackEvent,
+    hdEntropyIndex,
+    defaultHomeActiveTabName,
+    dispatch,
+    history,
+    selectedAccountGroup,
+  ]);
 
   return <>{walletTree}</>;
 };
