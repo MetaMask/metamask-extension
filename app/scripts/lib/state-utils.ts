@@ -1,3 +1,4 @@
+import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 
@@ -8,12 +9,16 @@ type FlattenedUIState = Record<string, any>;
 const REMOVE_KEYS = [
   'snapStates',
   'unencryptedSnapStates',
-  'vault',
   'phishingLists',
   'whitelist',
   'hotlistLastFetched',
   'stalelistLastFetched',
   'c2DomainBlocklistLastFetched',
+
+  // Keyring controller
+  'vault',
+  'encryptionKey',
+  'encryptionSalt',
 ];
 
 export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
@@ -24,6 +29,8 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   }
 
   sanitizeSnapData(newState);
+  sanitizeAuthenticationControllerState(newState);
+  sanitizeSeedlessOnboardingControllerState(newState);
 
   return newState;
 }
@@ -53,4 +60,55 @@ function stripLargeSnapData(snapData: Snap): Partial<Snap> {
   delete newData.auxiliaryFiles;
 
   return newData;
+}
+
+function sanitizeAuthenticationControllerState(state: FlattenedUIState) {
+  const srpSessionData = state.srpSessionData as
+    | AuthenticationControllerState['srpSessionData']
+    | undefined;
+
+  if (!srpSessionData) {
+    return;
+  }
+
+  state.srpSessionData = Object.entries(srpSessionData).reduce(
+    (acc, [key, value]) => {
+      acc[key] = {
+        ...value,
+        token: {
+          ...value.token,
+          accessToken: 'redacted',
+        },
+      };
+      return acc;
+    },
+    {} as NonNullable<AuthenticationControllerState['srpSessionData']>,
+  );
+}
+
+function sanitizeSeedlessOnboardingControllerState(state: FlattenedUIState) {
+  const toDelete = [
+    'vault',
+    'vaultEncryptionKey',
+    'vaultEncryptionSalt',
+    'encryptedSeedlessEncryptionKey',
+    'encryptedKeyringEncryptionKey',
+    'metadataAccessToken',
+    'revokeToken',
+  ];
+  for (const key of toDelete) {
+    delete state[key];
+  }
+
+  // Can't delete these because a selector in `social-sync.ts` depends on them.
+  const toReplace = [
+    { key: 'refreshToken', value: 'redacted' },
+    { key: 'accessToken', value: 'redacted' },
+    { key: 'nodeAuthTokens', value: [] },
+  ];
+  for (const { key, value } of toReplace) {
+    if (state[key]) {
+      state[key] = value;
+    }
+  }
 }
