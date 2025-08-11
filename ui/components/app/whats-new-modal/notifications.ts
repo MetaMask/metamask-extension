@@ -4,7 +4,7 @@ import {
 } from '../../../../shared/notifications';
 
 export const getTranslatedUINotifications = (
-  t: TranslationFunction,
+  _t: TranslationFunction,
 ): TranslatedUINotifications => {
   return {};
 };

@@ -75,7 +75,11 @@ const renderNotification = ({
       {modal?.body && <modal.body.component title={title} />}
       {modal?.footer && (
         <modal.footer.component
-          onAction={() => {}}
+          onAction={() => {
+            // No action needed for whats-new notifications
+            // This is required by the ModalFooterProps type
+            console.log('No action needed for now');
+          }}
           onCancel={handleNotificationClose}
         />
       )}
