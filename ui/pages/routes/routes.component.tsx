@@ -89,7 +89,6 @@ import {
   oldestPendingConfirmationSelector,
   getUnapprovedTransactions,
   getPendingApprovals,
-  getOriginOfCurrentTab,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
 import {
@@ -358,7 +357,6 @@ export default function Routes() {
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
   const account = useAppSelector(getSelectedInternalAccount);
-  const activeTabOrigin = useAppSelector(getOriginOfCurrentTab);
   const isNetworkLoading = useAppSelector(getIsNetworkLoading);
 
   const networkToAutomaticallySwitchTo = useAppSelector(
