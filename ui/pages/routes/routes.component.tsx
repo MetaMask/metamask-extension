@@ -493,14 +493,17 @@ export default function Routes() {
       dispatch(setCurrentCurrency('usd'));
     }
 
-    history.listen((locationObj: Location, action: 'PUSH') => {
+    const unlisten = history.listen((locationObj: Location, action: 'PUSH') => {
       if (action === 'PUSH') {
         dispatch(pageChanged(locationObj.pathname));
       }
     });
 
     setTheme(theme);
-  }, [currentCurrency, showExtensionInFullSizeView, theme, history, dispatch]);
+
+    return () => {
+      unlisten();
+    };
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
