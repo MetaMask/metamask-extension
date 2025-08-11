@@ -8,7 +8,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 function getValues(pendingApproval, t, actions, _history) {
-  console.log('🚀 Hyperliquid referral consent template called!');
   return {
     content: [
       {
@@ -138,7 +137,7 @@ function getValues(pendingApproval, t, actions, _history) {
               paddingBottom: 4,
             },
             children: [
-                            {
+              {
                 element: 'input',
                 key: 'hyperliquid-referral-checkbox',
                 props: {
@@ -162,7 +161,9 @@ function getValues(pendingApproval, t, actions, _history) {
                     cursor: 'pointer',
                   },
                   onClick: () => {
-                    const checkbox = document.getElementById('hyperliquid-referral-consent');
+                    const checkbox = document.getElementById(
+                      'hyperliquid-referral-consent',
+                    );
                     if (checkbox) {
                       checkbox.click();
                     }
@@ -201,8 +202,9 @@ function getValues(pendingApproval, t, actions, _history) {
     cancelText: t('cancel'),
     onSubmit: () => {
       const checkbox = document.getElementById('hyperliquid-referral-consent');
-      const isChecked = checkbox ? checkbox.checked || checkbox.ariaChecked === 'true' : true;
-
+      const isChecked = checkbox
+        ? checkbox.checked || checkbox.ariaChecked === 'true'
+        : true;
       actions.resolvePendingApproval(pendingApproval.id, {
         approved: isChecked,
         allAccounts: isChecked, // If approved, applies to all accounts

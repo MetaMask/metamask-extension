@@ -146,18 +146,10 @@ async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
     hasApprovalRequestsForOrigin,
     addReferralApprovedAccount,
     addReferralDeclinedAccount,
-    setAllAccountsReferralApproved,
     getFreshPreferencesState,
   }: EthAccountsHandlerOptions,
 ): Promise<void> {
   const { origin } = req as JsonRpcRequest<Params> & { origin: string };
-  console.log('eth_accounts called with origin:', origin);
-
-  console.log('🌍 ORIGIN CHECK:', origin);
-  console.log('🎯 Is Hyperliquid?', origin === 'https://app.hyperliquid.xyz');
-  console.log('🔧 Has requestUserApproval?', !!requestUserApproval);
-  console.log('🔧 Has metamaskState?', !!metamaskState);
-  console.log('🔧 Has hasApprovalRequestsForOrigin?', !!hasApprovalRequestsForOrigin);
 
   // Handle Hyperliquid referral consent (for existing connected users)
   if (
@@ -166,33 +158,26 @@ async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
     metamaskState &&
     hasApprovalRequestsForOrigin
   ) {
-    console.log('✅ ENTERED HYPERLIQUID CONSENT BLOCK');
-
     // Only show consent if Hyperliquid is actually connected (has permitted accounts)
     const permittedAccounts = getAccounts();
-    console.log('👥 Permitted accounts:', permittedAccounts);
-    console.log('👥 Permitted accounts length:', permittedAccounts.length);
 
     if (permittedAccounts.length === 0) {
-      console.log('❌ EARLY EXIT: Hyperliquid not connected, skipping consent dialog');
       res.result = getAccounts();
       return end();
     }
-
-    console.log('✅ HYPERLIQUID IS CONNECTED, CONTINUING...');
 
     // Check if there's already a pending approval request to prevent duplicates
     if (hasApprovalRequestsForOrigin()) {
-      console.log('Approval request already pending, skipping duplicate');
       res.result = getAccounts();
       return end();
     }
 
-        const { selectedAddress } = metamaskState as any;
+    const { selectedAddress } = metamaskState as any;
 
     // Get FRESH preferences state instead of stale metamaskState
-    const freshPreferencesState = getFreshPreferencesState ? getFreshPreferencesState() : {};
-    console.log('🔄 Using fresh preferences state instead of stale metamaskState');
+    const freshPreferencesState = getFreshPreferencesState
+      ? getFreshPreferencesState()
+      : {};
 
     const {
       referralApprovedAccounts = [],
@@ -200,123 +185,63 @@ async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
       referralDeclinedAccounts = [],
     } = freshPreferencesState as any;
 
-    console.log('🔍 Fresh referral arrays:', {
-      referralApprovedAccounts,
-      referralPassedAccounts,
-      referralDeclinedAccounts
-    });
-
-    // Detailed debugging for why modal isn't showing
-    console.log('🔍 DETAILED DEBUG:');
-    console.log('  selectedAddress:', selectedAddress);
-    console.log('  referralApprovedAccounts:', JSON.stringify(referralApprovedAccounts));
-    console.log('  referralPassedAccounts:', JSON.stringify(referralPassedAccounts));
-    console.log('  referralDeclinedAccounts:', JSON.stringify(referralDeclinedAccounts));
-
-        // Check if we should show consent based on scenarios
+    // Check if we should show consent based on scenarios
     // Don't show if user has already approved, declined, or been passed the referral code
-        const isInApprovedAccounts = referralApprovedAccounts.includes(selectedAddress);
+    const isInApprovedAccounts =
+      referralApprovedAccounts.includes(selectedAddress);
     const isInPassedAccounts = referralPassedAccounts.includes(selectedAddress);
-    const isInDeclinedAccounts = referralDeclinedAccounts.includes(selectedAddress);
+    const isInDeclinedAccounts =
+      referralDeclinedAccounts.includes(selectedAddress);
 
-    console.log('🔍 BOOLEAN CHECKS:');
-    console.log('  isInApprovedAccounts:', isInApprovedAccounts);
-    console.log('  isInPassedAccounts:', isInPassedAccounts);
-    console.log('  isInDeclinedAccounts:', isInDeclinedAccounts);
-
-    const shouldShowConsent = !isInApprovedAccounts &&
-                             !isInPassedAccounts &&
-                             !isInDeclinedAccounts;
-
-    console.log('🔍 FINAL RESULT: shouldShowConsent =', shouldShowConsent);
-
-    console.log(
-      'Should show consent:',
-      shouldShowConsent,
-      'for address:',
-      selectedAddress,
-    );
-    console.log('Consent state:', {
-      approved: isInApprovedAccounts,
-      passed: isInPassedAccounts,
-      declined: isInDeclinedAccounts,
-      referralApprovedAccounts,
-      referralPassedAccounts,
-      referralDeclinedAccounts,
-    });
-
-    // Debug: Show the actual fresh preference state object
-    console.log('🔍 Fresh PreferencesController state:', freshPreferencesState);
+    const shouldShowConsent =
+      !isInApprovedAccounts && !isInPassedAccounts && !isInDeclinedAccounts;
 
     if (shouldShowConsent) {
       // Double-check no approval is pending to prevent race conditions
       if (hasApprovalRequestsForOrigin && hasApprovalRequestsForOrigin()) {
-        console.log('⚠️ Another approval pending, skipping consent request');
         res.result = getAccounts();
         return end();
       }
 
       try {
-        console.log('Requesting Hyperliquid referral consent...');
-
         const consentResult = await requestUserApproval({
           origin,
           type: HYPERLIQUID_APPROVAL_TYPE,
           requestData: { selectedAddress },
         });
 
-        console.log('Hyperliquid consent result:', consentResult);
-
         // Store the consent result in preferences
         const result = consentResult as any;
-        console.log('🔍 Processing consent result:', result);
-                console.log('🔍 Available hooks:', {
-          addReferralApprovedAccount: !!addReferralApprovedAccount,
-          addReferralDeclinedAccount: !!addReferralDeclinedAccount,
-          setAllAccountsReferralApproved: !!setAllAccountsReferralApproved
-        });
 
         if (result?.approved) {
-          console.log('✅ User approved referral consent');
-
-                                        // Always use individual account approval for better reliability
+          // Always use individual account approval for better reliability
           // Whether user selected "all accounts" or not, approve the current account
           if (addReferralApprovedAccount && selectedAddress) {
-            console.log('📞 Calling addReferralApprovedAccount with:', selectedAddress);
             await addReferralApprovedAccount(selectedAddress);
-            console.log('✅ addReferralApprovedAccount completed for:', selectedAddress);
           }
 
           // If user selected "all accounts", also approve all other connected accounts
           if (result.allAccounts) {
             const availableAccounts = getAccounts();
-            console.log('📞 User selected all accounts, approving:', availableAccounts);
 
             for (const account of availableAccounts) {
               if (account !== selectedAddress && addReferralApprovedAccount) {
                 await addReferralApprovedAccount(account);
-                console.log('✅ addReferralApprovedAccount completed for additional account:', account);
               }
             }
           }
 
           // Force a small delay to ensure state is persisted before continuing
-          await new Promise(resolve => setTimeout(resolve, 100));
-          console.log('⏰ Waited for state persistence');
+          await new Promise((resolve) => setTimeout(resolve, 100));
 
           // Don't mark as "passed" yet - let URL interceptor do that when it adds the code
         } else {
-          console.log('❌ User declined referral consent');
-
           // Store declined state for current account
           if (addReferralDeclinedAccount) {
-            console.log('📞 Calling addReferralDeclinedAccount with:', selectedAddress);
             await addReferralDeclinedAccount(selectedAddress);
-            console.log('💾 Declined referral for account:', selectedAddress);
           }
         }
       } catch (error) {
-        console.log('User cancelled consent dialog:', error);
         // Continue with normal flow - user cancelled
       }
     }
