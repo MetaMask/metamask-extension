@@ -41,6 +41,7 @@ export const IMPORT_TOKEN_ROUTE = '/import-token';
 export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
+export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 export const ACCOUNT_DETAILS_ROUTE = '/account-details';
 export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
@@ -127,6 +128,11 @@ export const ROUTES = [
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
+  {
+    path: ACCOUNT_LIST_PAGE_ROUTE,
+    label: 'Account List Page',
+    trackInAnalytics: true,
+  },
   {
     path: `${ASSET_ROUTE}/:asset/:id`,
     label: 'Asset Page',

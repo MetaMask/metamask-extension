@@ -15,11 +15,15 @@ class AccountListPage {
   private readonly accountListBalance =
     '[data-testid="first-currency-display"]';
 
+  private readonly accountPageBalance = '[data-testid="balance-display"]';
+
   private readonly accountValueAndSuffix =
     '[data-testid="account-value-and-suffix"]';
 
   private readonly accountListItem =
     '.multichain-account-menu-popover__list--menu-item';
+
+  private readonly multichainAccountListItem = '.multichain-account-cell';
 
   private readonly walletHeader =
     '[data-testid="multichain-account-tree-wallet-header"]';
@@ -607,6 +611,23 @@ class AccountListPage {
     });
   }
 
+  /**
+   * Checks that the account balance is displayed on the multichain account list page.
+   *
+   * @param expectedBalance - The expected balance to check.
+   */
+  async checkMultichainAccountBalanceDisplayed(
+    expectedBalance: string,
+  ): Promise<void> {
+    console.log(
+      `Check that multichain account balance ${expectedBalance} is displayed in account list on accounts page`,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountPageBalance,
+      text: expectedBalance,
+    });
+  }
+
   async checkAccountDisplayedInAccountList(
     expectedLabel: string = 'Account',
   ): Promise<void> {
@@ -615,6 +636,23 @@ class AccountListPage {
     );
     await this.driver.waitForSelector({
       css: this.accountListItem,
+      text: expectedLabel,
+    });
+  }
+
+  /**
+   * Checks that the multichain account label is displayed on the multichain account list page.
+   *
+   * @param expectedLabel - The expected label to check.
+   */
+  async checkMultichainAccountNameDisplayed(
+    expectedLabel: string = 'Account',
+  ): Promise<void> {
+    console.log(
+      `Check that multichain account label ${expectedLabel} is displayed on account list page`,
+    );
+    await this.driver.waitForSelector({
+      css: this.multichainAccountListItem,
       text: expectedLabel,
     });
   }

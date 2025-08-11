@@ -68,6 +68,8 @@ describe('OAuthService - startOAuthLogin', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             id_token: MOCK_JWT_TOKEN,
           }),
+          status: 200,
+          ok: true,
         });
       }) as jest.Mock,
     );
@@ -157,8 +159,7 @@ describe('OAuthService - startOAuthLogin', () => {
 });
 
 describe('OAuthService - getNewRefreshToken', () => {
-  beforeEach(() => {
-    // mock the fetch call to auth-server
+  it('should be able to get new refresh token', async () => {
     jest.spyOn(global, 'fetch').mockImplementation(
       jest.fn(() => {
         return Promise.resolve({
@@ -173,12 +174,12 @@ describe('OAuthService - getNewRefreshToken', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
           }),
+          status: 200,
+          ok: true,
         });
       }) as jest.Mock,
     );
-  });
 
-  it('should be able to get new refresh token', async () => {
     const oauthConfig = loadOAuthConfig();
 
     const oauthService = new OAuthService({
@@ -222,10 +223,34 @@ describe('OAuthService - getNewRefreshToken', () => {
       },
     );
   });
+
+  it('should throw an error if the get refresh token api call fails', async () => {
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn(() => {
+        return Promise.resolve({
+          status: 401,
+        });
+      }) as jest.Mock,
+    );
+
+    const oauthService = new OAuthService({
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+    });
+
+    await expect(
+      oauthService.getNewRefreshToken({
+        connection: AuthConnection.Google,
+        refreshToken: 'MOCK_REFRESH_TOKEN',
+      }),
+    ).rejects.toThrow('Failed to get auth token');
+  });
 });
 
 describe('OAuthService - revokeAndGetNewRefreshToken', () => {
-  beforeEach(() => {
+  it('should be able to get new refresh token', async () => {
     // mock the fetch call to auth-server
     jest.spyOn(global, 'fetch').mockImplementation(
       jest.fn(() => {
@@ -240,12 +265,12 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
           }),
+          status: 201,
+          ok: true,
         });
       }) as jest.Mock,
     );
-  });
 
-  it('should be able to get new refresh token', async () => {
     const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
@@ -278,5 +303,29 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
         }),
       },
     );
+  });
+
+  it('should throw an error if the revoke refresh token api call fails', async () => {
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn(() => {
+        return Promise.resolve({
+          status: 401,
+        });
+      }) as jest.Mock,
+    );
+
+    const oauthService = new OAuthService({
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+    });
+
+    await expect(
+      oauthService.revokeAndGetNewRefreshToken({
+        connection: AuthConnection.Google,
+        revokeToken: 'MOCK_REVOKE_TOKEN',
+      }),
+    ).rejects.toThrow('Failed to revoke refresh token');
   });
 });
