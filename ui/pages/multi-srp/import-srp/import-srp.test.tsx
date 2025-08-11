@@ -9,15 +9,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
-import * as actions from '../../../store/actions';
+import { importMnemonicToVault } from '../../../store/actions';
 import { ImportSrp } from './import-srp';
-
-// Mock navigation
-const mockNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
-}));
 
 const mockClearClipboard = jest.fn();
 const mockLockAccountSyncing = jest.fn();
@@ -164,7 +157,7 @@ describe('ImportSrp', () => {
     fireEvent.click(importButton);
 
     await waitFor(() => {
-      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
+      expect(importMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
       const dispatchedActions = store.getActions();
@@ -183,7 +176,7 @@ describe('ImportSrp', () => {
     fireEvent.click(importButton);
     await waitFor(() => {
       expect(mockLockAccountSyncing).toHaveBeenCalled();
-      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
+      expect(importMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
       expect(mockUnlockAccountSyncing).toHaveBeenCalled();
@@ -215,7 +208,7 @@ describe('ImportSrp', () => {
     fireEvent.click(importButton);
 
     await waitFor(() => {
-      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
+      expect(importMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
     });
@@ -255,7 +248,7 @@ describe('ImportSrp', () => {
   });
 
   it('logs an error and not call onActionComplete on import failure', async () => {
-    (actions.importMnemonicToVault as jest.Mock).mockImplementation(() =>
+    (importMnemonicToVault as jest.Mock).mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
@@ -270,7 +263,7 @@ describe('ImportSrp', () => {
     fireEvent.click(importButton);
 
     await waitFor(() => {
-      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
+      expect(importMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
       expect(onActionComplete).not.toHaveBeenCalled();
