@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   isSolanaChainId,
@@ -29,6 +29,7 @@ import {
   getFromToken,
   getSlippage,
   getIsSolanaSwap,
+  getPriceImpactThresholds,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -51,6 +52,7 @@ import {
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { formatPriceImpact } from '../utils/price-impact';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const MultichainBridgeQuoteCard = ({
@@ -76,6 +78,38 @@ export const MultichainBridgeQuoteCard = ({
   const dispatch = useDispatch();
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
+
+  const priceImpactThresholds = useSelector(getPriceImpactThresholds);
+
+  // Calculate if price impact warning should show
+  const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
+  const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
+
+  const shouldRenderPriceImpactRow = useMemo(() => {
+    const priceImpactThreshold = priceImpactThresholds;
+    return (
+      priceImpactThreshold && priceImpact !== undefined && priceImpact !== null
+    );
+  }, [priceImpactThresholds, priceImpact]);
+
+  // Red state if above threshold
+  const shouldShowPriceImpactWarning = React.useMemo(() => {
+    if (!shouldRenderPriceImpactRow) {
+      return false;
+    }
+    const threshold = gasIncluded
+      ? priceImpactThresholds?.gasless
+      : priceImpactThresholds?.normal;
+    if (threshold === null || threshold === undefined) {
+      return false;
+    }
+    return Number(priceImpact) >= Number(threshold);
+  }, [
+    gasIncluded,
+    priceImpact,
+    shouldRenderPriceImpactRow,
+    priceImpactThresholds,
+  ]);
 
   const getNetworkImage = (chainId: string | number) => {
     if (isSolanaChainId(chainId)) {
@@ -224,6 +258,45 @@ export const MultichainBridgeQuoteCard = ({
                   : `${slippage}%`}
               </Text>
             </Row>
+
+            {shouldRenderPriceImpactRow && (
+              <Row justifyContent={JustifyContent.spaceBetween}>
+                <Row gap={1}>
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textAlternative}
+                  >
+                    {t('bridgePriceImpact')}
+                  </Text>
+                  <Tooltip
+                    title={
+                      shouldShowPriceImpactWarning
+                        ? t('bridgePriceImpactWarningTitle')
+                        : t('bridgePriceImpactTooltipTitle')
+                    }
+                    position={PopoverPosition.TopStart}
+                    offset={[-16, 16]}
+                    iconName={IconName.Question}
+                  >
+                    {t(
+                      gasIncluded
+                        ? 'bridgePriceImpactGaslessWarning'
+                        : 'bridgePriceImpactNormalWarning',
+                    )}
+                  </Tooltip>
+                </Row>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={
+                    shouldShowPriceImpactWarning
+                      ? TextColor.errorDefault
+                      : TextColor.textDefault
+                  }
+                >
+                  {formatPriceImpact(priceImpact)}
+                </Text>
+              </Row>
+            )}
 
             {/* Time */}
             <Row justifyContent={JustifyContent.spaceBetween}>
