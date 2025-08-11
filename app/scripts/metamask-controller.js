@@ -5482,6 +5482,11 @@ export default class MetamaskController extends EventEmitter {
       // depends only on keyrings `:stateChange`.
       await this.accountsController.updateAccounts();
 
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      // Init multichain accounts after creating internal accounts.
+      this.multichainAccountService.init();
+      ///: END:ONLY_INCLUDE_IF
+
       // And we re-init the account tree controller too, to use the
       // newly created accounts.
       // TODO: Remove this once the `accounts-controller` once only
