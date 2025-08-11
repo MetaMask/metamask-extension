@@ -24,9 +24,6 @@ import {
   getSelectedInternalAccount,
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  getIsSolanaSupportEnabled,
-  ///: END:ONLY_INCLUDE_IF
   getShowUpdateModal,
   getShowConnectionsRemovedModal,
 } from '../../selectors';
@@ -127,7 +124,7 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  let TEMPORARY_DISABLE_WHATS_NEW = true;
+  const TEMPORARY_DISABLE_WHATS_NEW = true;
 
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
     ? false
