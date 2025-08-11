@@ -200,7 +200,6 @@ const bridgeSlice = createSlice({
         name: TraceName.BridgeBalancesUpdated,
       });
     });
-    builder.addCase(setEVMSrcNativeBalance.pending, (state) => {});
     builder.addCase(setEVMSrcNativeBalance.fulfilled, (state, action) => {
       if (!isCrossChain(action.meta.arg.chainId, state.fromToken?.chainId)) {
         state.fromNativeBalance = action.payload?.toString() ?? null;

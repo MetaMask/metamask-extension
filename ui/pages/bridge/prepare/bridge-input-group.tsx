@@ -5,7 +5,6 @@ import {
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { type BigNumber } from 'bignumber.js';
 import {
   Text,
   TextField,
@@ -290,7 +289,7 @@ export const BridgeInputGroup = ({
             gap={1}
             variant={TextVariant.bodyMd}
             color={
-              isInsufficientBalance(balanceAmount)
+              isInsufficientBalance
                 ? TextColor.errorDefault
                 : TextColor.textAlternativeSoft
             }

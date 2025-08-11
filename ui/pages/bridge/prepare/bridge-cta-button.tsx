@@ -14,8 +14,6 @@ import {
   getWasTxDeclined,
   getIsQuoteExpired,
   BridgeAppState,
-  getFromTokenBalance,
-  getFromNativeBalance,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -48,10 +46,6 @@ export const BridgeCTAButton = ({
 
   const fromAmount = useSelector(getFromAmount);
 
-  const srcTokenBalance = useSelector(getFromTokenBalance);
-
-  const nativeAssetBalance = useSelector(getFromNativeBalance);
-
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
   const isQuoteExpired = useSelector((state) =>
@@ -62,15 +56,9 @@ export const BridgeCTAButton = ({
 
   const {
     isNoQuotesAvailable,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    isInsufficientBalance: isInsufficientBalance_,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    isInsufficientGasBalance: isInsufficientGasBalance_,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    isInsufficientGasForQuote: isInsufficientGasForQuote_,
+    isInsufficientBalance,
+    isInsufficientGasBalance,
+    isInsufficientGasForQuote,
     isTxAlertPresent,
   } = useSelector(getValidationErrors);
 
@@ -81,13 +69,6 @@ export const BridgeCTAButton = ({
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
   const tradeProperties = useTradeProperties();
-
-  const isInsufficientBalance = isInsufficientBalance_(srcTokenBalance);
-
-  const isInsufficientGasBalance =
-    isInsufficientGasBalance_(nativeAssetBalance);
-  const isInsufficientGasForQuote =
-    isInsufficientGasForQuote_(nativeAssetBalance);
 
   const label = useMemo(() => {
     if (wasTxDeclined) {

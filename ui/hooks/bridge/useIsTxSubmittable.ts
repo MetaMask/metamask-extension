@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { type BigNumber } from 'bignumber.js';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -7,8 +6,6 @@ import {
   getToChain,
   getValidationErrors,
   getToToken,
-  getFromTokenBalance,
-  getFromNativeBalance,
 } from '../../ducks/bridge/selectors';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { useMultichainSelector } from '../useMultichainSelector';
@@ -21,8 +18,6 @@ export const useIsTxSubmittable = () => {
   const toChain = useSelector(getToChain);
   const fromAmount = useSelector(getFromAmount);
   const { activeQuote } = useSelector(getBridgeQuotes);
-  const srcTokenBalance = useSelector(getFromTokenBalance);
-  const nativeAssetBalance = useSelector(getFromNativeBalance);
 
   const isSwap = useIsMultichainSwap();
   const {
@@ -39,9 +34,9 @@ export const useIsTxSubmittable = () => {
       (isSwap || toChain) &&
       fromAmount &&
       activeQuote &&
-      !isInsufficientBalance(srcTokenBalance) &&
-      !isInsufficientGasBalance(nativeAssetBalance) &&
-      !isInsufficientGasForQuote(nativeAssetBalance) &&
+      !isInsufficientBalance &&
+      !isInsufficientGasBalance &&
+      !isInsufficientGasForQuote &&
       !isTxAlertPresent,
   );
 };

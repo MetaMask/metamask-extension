@@ -54,8 +54,6 @@ import {
   getIsSwap,
   BridgeAppState,
   getTxAlerts,
-  getFromTokenBalance,
-  getFromNativeBalance,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -281,15 +279,7 @@ const PrepareBridgePage = ({
   const txAlert = useSelector(getTxAlerts);
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const nativeAsset = useMemo(
-    () =>
-      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
-    [fromChain?.chainId],
-  );
-  const nativeAssetBalance = useSelector(getFromNativeBalance);
-
   const { tokenAlert } = useTokenAlerts();
-  const srcTokenBalance = useSelector(getFromTokenBalance);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
     useDestinationAccount(isSwap);
 
@@ -366,7 +356,7 @@ const PrepareBridgePage = ({
   const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isInsufficientGasForQuote(nativeAssetBalance)) {
+    if (isInsufficientGasForQuote) {
       insufficientBalanceBannerRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
@@ -378,12 +368,7 @@ const PrepareBridgePage = ({
         block: 'start',
       });
     }
-  }, [
-    isEstimatedReturnLow,
-    nativeAssetBalance,
-    isInsufficientGasForQuote,
-    isLowReturnBannerOpen,
-  ]);
+  }, [isEstimatedReturnLow, isInsufficientGasForQuote, isLowReturnBannerOpen]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
@@ -1073,8 +1058,8 @@ const PrepareBridgePage = ({
           )}
           {!isLoading &&
             activeQuote &&
-            !isInsufficientBalance(srcTokenBalance) &&
-            isInsufficientGasForQuote(nativeAssetBalance) && (
+            !isInsufficientBalance &&
+            isInsufficientGasForQuote && (
               <BannerAlert
                 ref={isEstimatedReturnLowRef}
                 marginInline={4}

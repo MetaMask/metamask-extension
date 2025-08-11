@@ -264,7 +264,7 @@ export const getToToken = createSelector(
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
-export const getFromNativeBalance = createSelector(
+const _getFromNativeBalance = createSelector(
   getFromChain,
   (state: BridgeAppState) => state.bridge.fromNativeBalance,
   getMultichainBalances,
@@ -601,6 +601,8 @@ export const getValidationErrors = createDeepEqualSelector(
     selectMinimumBalanceForRentExemptionInSOL(metamask),
   getQuoteRequest,
   getTxAlerts,
+  _getFromNativeBalance,
+  getFromTokenBalance,
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
@@ -609,6 +611,8 @@ export const getValidationErrors = createDeepEqualSelector(
     minimumBalanceForRentExemptionInSOL,
     quoteRequest,
     txAlert,
+    nativeBalance,
+    fromTokenBalance,
   ) => {
     const { gasIncluded } = activeQuote?.quote ?? {};
 
@@ -629,45 +633,40 @@ export const getValidationErrors = createDeepEqualSelector(
           quotesRefreshCount > 0,
       ),
       // Shown prior to fetching quotes
-      // TODO use balance selectors
-      isInsufficientGasBalance: (balance: string | null) => {
-        if (
-          balance &&
+      isInsufficientGasBalance: Boolean(
+        nativeBalance &&
           !activeQuote &&
           validatedSrcAmount &&
           fromToken &&
-          !gasIncluded
-        ) {
-          return isNativeAddress(fromToken.address)
-            ? new BigNumber(balance)
+          !gasIncluded &&
+          (isNativeAddress(fromToken.address)
+            ? new BigNumber(nativeBalance)
                 .sub(minimumBalanceToUse)
                 .lte(validatedSrcAmount)
-            : new BigNumber(balance).lte(0);
-        }
-        return false;
-      },
+            : new BigNumber(nativeBalance).lte(0)),
+      ),
       // Shown after fetching quotes
-      isInsufficientGasForQuote: (balance: string | null) => {
-        if (
-          balance &&
+      isInsufficientGasForQuote: Boolean(
+        nativeBalance &&
           activeQuote &&
           fromToken &&
           fromTokenInputValue &&
-          !gasIncluded
-        ) {
-          return isNativeAddress(fromToken.address)
-            ? new BigNumber(balance)
+          !gasIncluded &&
+          (isNativeAddress(fromToken.address)
+            ? new BigNumber(nativeBalance)
                 .sub(activeQuote.totalMaxNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
                 .sub(minimumBalanceToUse)
                 .lte(0)
-            : new BigNumber(balance).lte(activeQuote.totalMaxNetworkFee.amount);
-        }
-        return false;
-      },
-      isInsufficientBalance: (balance: string | null) =>
-        validatedSrcAmount && balance && !isNaN(Number(balance))
-          ? new BigNumber(balance).lt(validatedSrcAmount)
+            : new BigNumber(nativeBalance).lte(
+                activeQuote.totalMaxNetworkFee.amount,
+              )),
+      ),
+      isInsufficientBalance:
+        validatedSrcAmount &&
+        fromTokenBalance &&
+        !isNaN(Number(fromTokenBalance))
+          ? new BigNumber(fromTokenBalance).lt(validatedSrcAmount)
           : false,
       isEstimatedReturnLow:
         activeQuote?.sentAmount?.valueInCurrency &&

@@ -1,14 +1,10 @@
 /* eslint-disable camelcase */
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   getBridgeQuotes,
   getFromAmount,
-  getFromChain,
-  getFromNativeBalance,
-  getFromTokenBalance,
   getQuoteRequest,
   getValidationErrors,
 } from '../../ducks/bridge/selectors';
@@ -45,16 +41,6 @@ export const useQuoteFetchEvents = () => {
   const quoteListProperties = useQuoteProperties();
   const tradeProperties = useTradeProperties();
 
-  const fromChain = useSelector(getFromChain);
-
-  const balanceAmount = useSelector(getFromTokenBalance);
-  const nativeAsset = useMemo(
-    () =>
-      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
-    [fromChain?.chainId],
-  );
-  const nativeAssetBalance = useSelector(getFromNativeBalance);
-
   const warnings = useMemo(() => {
     const {
       isEstimatedReturnLow,
@@ -68,12 +54,10 @@ export const useQuoteFetchEvents = () => {
 
     isEstimatedReturnLow && latestWarnings.push('low_return');
     isNoQuotesAvailable && latestWarnings.push('no_quotes');
-    isInsufficientGasBalance(nativeAssetBalance) &&
-      latestWarnings.push('insufficient_gas_balance');
-    isInsufficientGasForQuote(nativeAssetBalance) &&
+    isInsufficientGasBalance && latestWarnings.push('insufficient_gas_balance');
+    isInsufficientGasForQuote &&
       latestWarnings.push('insufficient_gas_for_selected_quote');
-    isInsufficientBalance(balanceAmount) &&
-      latestWarnings.push('insufficient_balance');
+    isInsufficientBalance && latestWarnings.push('insufficient_balance');
 
     return latestWarnings;
   }, [validationErrors]);
