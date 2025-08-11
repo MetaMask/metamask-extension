@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 
 type VersionedData = {
   meta: { version: number };
@@ -60,6 +61,14 @@ function transformState(
       // Set isAccountSyncingEnabled to true for all users.
       userStorageControllerState.isAccountSyncingEnabled = true;
     }
+  }
+
+  // If we are using `yarn start:with-state` or running an E2E test with generateWalletState, disable all syncing
+  if (process.env.WITH_STATE || getManifestFlags().testing?.disableSync) {
+    userStorageControllerState.isBackupAndSyncEnabled = false;
+    userStorageControllerState.isAccountSyncingEnabled = false;
+    userStorageControllerState.isProfileSyncingEnabled = false;
+    userStorageControllerState.isContactSyncingEnabled = false;
   }
 
   return state;

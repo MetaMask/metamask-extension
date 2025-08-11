@@ -53,7 +53,6 @@ import {
   getIsUnifiedUIEnabled,
   getIsSwap,
   BridgeAppState,
-  isBridgeSolanaEnabled,
   getTxAlerts,
 } from '../../../ducks/bridge/selectors';
 import {
@@ -118,7 +117,6 @@ import {
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
-import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
@@ -177,7 +175,11 @@ export const useEnableMissingNetwork = () => {
   return enableMissingNetwork;
 };
 
-const PrepareBridgePage = () => {
+const PrepareBridgePage = ({
+  onOpenSettings,
+}: {
+  onOpenSettings?: () => void;
+}) => {
   const dispatch = useDispatch();
   const enableMissingNetwork = useEnableMissingNetwork();
 
@@ -316,7 +318,7 @@ const PrepareBridgePage = () => {
           };
         })()
       : null,
-    selectedDestinationAccount !== null && 'id' in selectedDestinationAccount
+    selectedDestinationAccount && 'id' in selectedDestinationAccount
       ? selectedDestinationAccount.id
       : undefined,
   );
@@ -556,8 +558,6 @@ const PrepareBridgePage = () => {
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
 
-  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
-
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
     useState<BridgeToken | null>(null);
@@ -579,7 +579,7 @@ const PrepareBridgePage = () => {
 
   return (
     <>
-      <Column className="prepare-bridge-page" gap={8}>
+      <Column className="prepare-bridge-page" gap={isToOrFromSolana ? 2 : 8}>
         <BridgeInputGroup
           header={getFromInputHeader()}
           token={fromToken}
@@ -659,7 +659,7 @@ const PrepareBridgePage = () => {
 
         <Column
           height={BlockSize.Full}
-          paddingTop={8}
+          paddingTop={isToOrFromSolana ? 4 : 8}
           backgroundColor={BackgroundColor.backgroundAlternativeSoft}
           style={{
             position: 'relative',
@@ -842,7 +842,7 @@ const PrepareBridgePage = () => {
             }}
           />
 
-          {isSolanaBridgeEnabled && isToOrFromSolana && (
+          {isToOrFromSolana && (
             <Box padding={6} paddingBottom={3} paddingTop={3}>
               <DestinationAccountPicker
                 onAccountSelect={setSelectedDestinationAccount}
@@ -879,7 +879,7 @@ const PrepareBridgePage = () => {
                 paddingInline: 16,
                 position: 'relative',
                 overflow: 'hidden',
-                ...(activeQuote && !wasTxDeclined && isSolanaBridgeEnabled
+                ...(activeQuote && !wasTxDeclined
                   ? {
                       boxShadow:
                         'var(--shadow-size-sm) var(--color-shadow-default)',
@@ -903,13 +903,11 @@ const PrepareBridgePage = () => {
                   backgroundColor={BackgroundColor.primaryMuted}
                 />
               )}
-              {!wasTxDeclined &&
-                activeQuote &&
-                (isSolanaBridgeEnabled ? (
-                  <MultichainBridgeQuoteCard />
-                ) : (
-                  <BridgeQuoteCard />
-                ))}
+              {!wasTxDeclined && activeQuote && (
+                <MultichainBridgeQuoteCard
+                  onOpenSlippageModal={onOpenSettings}
+                />
+              )}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
                   nativeAssetBalance={nativeAssetBalance}
@@ -931,9 +929,7 @@ const PrepareBridgePage = () => {
                     });
                   }}
                   needsDestinationAddress={
-                    isSolanaBridgeEnabled &&
-                    isToOrFromSolana &&
-                    !selectedDestinationAccount
+                    isToOrFromSolana && !selectedDestinationAccount
                   }
                 />
                 {activeQuote &&

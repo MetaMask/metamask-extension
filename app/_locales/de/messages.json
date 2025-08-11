@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Grundfunktionalität einschalten"
   },
-  "bestPrice": {
-    "message": "Bester Preis"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Swapping von $1 für $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Bedingungen"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 Min.",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask ist weltweit konzipiert und aufgebaut."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Ausgelastet"
@@ -2664,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Honeypot"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Geschätzte Gebühr für die Abwicklung der Transaktion. Die maximale Gebühr ist $1."
   },
   "howQuotesWork": {
     "message": "Funktionsweise von Angeboten"
