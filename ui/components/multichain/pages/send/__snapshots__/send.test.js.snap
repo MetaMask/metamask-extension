@@ -110,7 +110,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                   </div>
                   <span
                     class="mm-box mm-text multichain-account-picker__label multichain-send-page__account-picker__label mm-text--body-md-medium mm-text--ellipsis mm-box--padding-inline-start-1 mm-box--color-text-default"
-                    style="flex-grow: 1; text-align: start;"
+                    style="font-weight: medium;"
                   >
                     Test Account
                     <p
