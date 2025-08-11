@@ -9,7 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import * as actions from '../../../store/actions';
+import {
+  hideWarning,
+  checkIsSeedlessPasswordOutdated,
+  importMnemonicToVault,
+  lockAccountSyncing,
+  unlockAccountSyncing,
+} from '../../../store/actions';
 import {
   Text,
   Box,
@@ -84,14 +90,14 @@ export const ImportSrp = () => {
   // We want to hide the warning when the component unmounts
   useEffect(() => {
     return () => {
-      dispatch(actions.hideWarning());
+      dispatch(hideWarning());
     };
   }, [dispatch]);
 
   async function importWallet() {
     if (isSocialLoginEnabled) {
       const isPasswordOutdated = await dispatch(
-        actions.checkIsSeedlessPasswordOutdated(true),
+        checkIsSeedlessPasswordOutdated(true),
       );
       if (isPasswordOutdated) {
         return;
@@ -101,7 +107,7 @@ export const ImportSrp = () => {
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
       const result = (await dispatch(
-        actions.importMnemonicToVault(joinedSrp),
+        importMnemonicToVault(joinedSrp),
       )) as unknown as {
         newAccountAddress: string;
         discoveredAccounts: { bitcoin: number; solana: number };
@@ -465,7 +471,7 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
-                await dispatch(actions.lockAccountSyncing());
+                await dispatch(lockAccountSyncing());
                 await importWallet();
               } catch (e) {
                 setSrpError(
@@ -476,7 +482,7 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
-                await dispatch(actions.unlockAccountSyncing());
+                await dispatch(unlockAccountSyncing());
               }
             }}
           >
