@@ -1,5 +1,12 @@
+/** @jest-environment node */
+// JSDom's `Response` object is broken (jest-environment===web), but Node.js
+// implements the correct Web version anyway, so we can just disable the JSDom
+// polyfill entirely for this test
+import { createReadStream } from 'node:fs';
+import { join } from 'node:path';
+import { Readable } from 'node:stream';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { getMnemonicUtil, MnemonicUtil } from './mnemonic';
+import { getMnemonicUtil, type MnemonicUtil } from './mnemonic';
 
 const abandon = wordlist[0];
 const ability = wordlist[1];
@@ -9,7 +16,7 @@ const zoo = wordlist[2047]; // a wordlist has 2048 words, grab the last one
 /**
  * Helper to convert a string to a Uint8Array (UTF-8).
  *
- * @param str
+ * @param str - The string to convert.
  */
 function toUtf8Array(str: string): Uint8Array {
   return new TextEncoder().encode(str);
@@ -18,7 +25,7 @@ function toUtf8Array(str: string): Uint8Array {
 /**
  * Helper to convert a Uint8Array (UTF-8) to string.
  *
- * @param arr
+ * @param arr - The Uint8Array to convert.
  */
 function fromUtf8Array(arr: Uint8Array): string {
   return new TextDecoder().decode(arr);
@@ -27,8 +34,24 @@ function fromUtf8Array(arr: Uint8Array): string {
 describe('MnemonicUtil', () => {
   let mu: MnemonicUtil;
 
+  async function getMnemonicUtilInstance() {
+    // `getMnemonicUtil` can `fetch` the binary itself, but since we
+    // aren't running in a web server `fetch` won't work, so we just pass in a web
+    // stream directly.
+    const filePath = join(__dirname, 'wordList.bin');
+    const fileWebStream = Readable.toWeb(createReadStream(filePath));
+    return await getMnemonicUtil(fileWebStream);
+  }
+
   beforeAll(async () => {
-    mu = await getMnemonicUtil();
+    mu = await getMnemonicUtilInstance();
+  });
+
+  describe('getMnemonicUtil', () => {
+    it('returns the same singleton instance when called again', async () => {
+      const mu2 = await getMnemonicUtilInstance();
+      expect(mu2).toBe(mu);
+    });
   });
 
   describe('convertMnemonicToWordlistIndices', () => {
@@ -69,7 +92,7 @@ describe('MnemonicUtil', () => {
       const indices = mu.convertMnemonicToWordlistIndices(input);
 
       expect(indices).toBeInstanceOf(Uint8Array);
-      expect(indices.length).toBe(0);
+      expect(indices).toHaveLength(0);
     });
 
     it('throws an error if any word is not in the BIP-39 English list', () => {
@@ -138,7 +161,7 @@ describe('MnemonicUtil', () => {
       const input = new Uint8Array(indices.buffer);
 
       const result = mu.convertEnglishWordlistIndicesToCodepoints(input);
-      expect(result.length).toBe(0);
+      expect(result).toHaveLength(0);
     });
 
     it('throws an error if an index is out of range (e.g., 999999)', () => {
@@ -148,6 +171,7 @@ describe('MnemonicUtil', () => {
 
       expect(() => {
         mu.convertEnglishWordlistIndicesToCodepoints(input);
+        // eslint-disable-next-line jest/require-to-throw-message
       }).toThrow();
     });
   });

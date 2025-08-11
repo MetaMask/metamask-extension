@@ -251,8 +251,8 @@ function getCopyTargets(
         ]
       : []),
     {
-      src: './app/scripts/lib/trieNodes.bin',
-      dest: 'trieNodes.bin',
+      src: './shared/lib/mnemonic/wordList.bin',
+      dest: 'wordList.bin',
     },
   ];
 

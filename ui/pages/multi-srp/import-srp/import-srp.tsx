@@ -48,9 +48,7 @@ import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
 import { MetaMaskReduxDispatch } from '../../../store/store';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getMnemonicUtil } from '../../../../app/scripts/lib/mnemonic';
+import { getMnemonicUtil } from '../../../../shared/lib/mnemonic/mnemonic';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
