@@ -9,24 +9,106 @@ const fetchWithTimeout = getFetchWithTimeout();
 
 const supportedTopLevelDomains = ['eth'];
 
+// Hyperliquid referral interceptor
+const createHyperliquidReferralHandler = (
+  getPreferencesState,
+  getSelectedAddress,
+  addReferralPassedAccount,
+) => {
+  return async (details) => {
+    const { tabId, url } = details;
+    const { search } = new URL(url);
+    const searchParams = new URLSearchParams(search);
+
+    // Don't override existing referral codes
+    if (searchParams.get('refCode')) {
+      return;
+    }
+
+    // Check user consent state
+    const preferencesState = getPreferencesState();
+    const selectedAddress = getSelectedAddress();
+
+    console.log('🌐 Hyperliquid URL intercepted:', url);
+    console.log('🔍 Selected address:', selectedAddress);
+    console.log('🔍 Preferences state:', preferencesState);
+
+    const {
+      referralApprovedAccounts = [],
+      referralPassedAccounts = [],
+      referralDeclinedAccounts = [],
+    } = preferencesState;
+
+    // Only add referral code if user has approved AND hasn't already been passed for this account
+    const hasApproved = referralApprovedAccounts.includes(selectedAddress);
+    const alreadyPassed = referralPassedAccounts.includes(selectedAddress);
+    const hasDeclined = referralDeclinedAccounts.includes(selectedAddress);
+
+    console.log('🔍 Account status:', { hasApproved, alreadyPassed, hasDeclined });
+    console.log('🔍 Arrays:', { referralApprovedAccounts, referralPassedAccounts, referralDeclinedAccounts });
+
+    if (hasApproved && !alreadyPassed && !hasDeclined) {
+      console.log('✅ Adding referral code to URL...');
+      searchParams.set('refCode', 'MM_REF_CODE');
+      const newUrl = `${url.split('?')[0]}?${searchParams.toString()}`;
+      console.log('🔗 New URL:', newUrl);
+
+      await browser.tabs.update(tabId, { url: newUrl });
+
+      // Mark this account as having received the referral code
+      if (addReferralPassedAccount) {
+        console.log('📞 Calling addReferralPassedAccount...');
+        addReferralPassedAccount(selectedAddress);
+        console.log('💾 Marked account as passed referral code');
+      }
+
+      console.log('🚀 Added Hyperliquid referral code for account:', selectedAddress);
+    } else {
+      console.log('⏭️ Skipping referral code - reason:', {
+        notApproved: !hasApproved,
+        alreadyPassed,
+        hasDeclined,
+      });
+    }
+  };
+};
+
 export default function setupEnsIpfsResolver({
   provider,
   getCurrentChainId,
   getIpfsGateway,
   getUseAddressBarEnsResolution,
+  getPreferencesState,
+  getSelectedAddress,
+  addReferralPassedAccount,
 }) {
-  // install listener
+  // install ENS listener
   const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`);
   browser.webRequest.onErrorOccurred.addListener(webRequestDidFail, {
     urls: urlPatterns,
     types: ['main_frame'],
   });
 
+  // install Hyperliquid referral listener
+  const hyperliquidReferralHandler = createHyperliquidReferralHandler(
+    getPreferencesState,
+    getSelectedAddress,
+    addReferralPassedAccount,
+  );
+
+  browser.webRequest.onBeforeRequest.addListener(hyperliquidReferralHandler, {
+    urls: ['https://app.hyperliquid.xyz/trade*'],
+    types: ['main_frame'],
+  });
+
   // return api object
   return {
-    // uninstall listener
+    // uninstall listeners
     remove() {
       browser.webRequest.onErrorOccurred.removeListener(webRequestDidFail);
+      browser.webRequest.onBeforeRequest.removeListener(
+        hyperliquidReferralHandler,
+      );
     },
   };
 
