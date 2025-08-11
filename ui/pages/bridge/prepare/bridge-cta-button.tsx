@@ -15,6 +15,7 @@ import {
   getWasTxDeclined,
   getIsQuoteExpired,
   BridgeAppState,
+  getFromTokenBalance,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -38,10 +39,8 @@ export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
   nativeAssetBalance,
-  srcTokenBalance,
 }: {
   nativeAssetBalance?: BigNumber;
-  srcTokenBalance?: BigNumber;
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
 }) => {
@@ -50,6 +49,8 @@ export const BridgeCTAButton = ({
   const toToken = useSelector(getToToken);
 
   const fromAmount = useSelector(getFromAmount);
+
+  const srcTokenBalance = useSelector(getFromTokenBalance);
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
@@ -75,10 +76,7 @@ export const BridgeCTAButton = ({
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const isTxSubmittable = useIsTxSubmittable(
-    nativeAssetBalance,
-    srcTokenBalance,
-  );
+  const isTxSubmittable = useIsTxSubmittable(nativeAssetBalance);
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();

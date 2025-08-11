@@ -191,7 +191,7 @@ export const useBridgeQueryParams = (
         };
         // Only update if chain is different
         if (fromChainId === formatChainIdToCaip(network.chainId)) {
-          dispatch(setFromToken(token));
+          dispatch(setFromToken(token, evmAccount?.address ?? ''));
         } else {
           const targetChain = networks.find(
             (chain) => formatChainIdToCaip(chain.chainId) === fromChainId,

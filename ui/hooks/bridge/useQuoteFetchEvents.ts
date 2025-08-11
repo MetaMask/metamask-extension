@@ -7,7 +7,7 @@ import {
   getBridgeQuotes,
   getFromAmount,
   getFromChain,
-  getFromToken,
+  getFromTokenBalance,
   getQuoteRequest,
   getValidationErrors,
 } from '../../ducks/bridge/selectors';
@@ -45,16 +45,15 @@ export const useQuoteFetchEvents = () => {
   const quoteListProperties = useQuoteProperties();
   const tradeProperties = useTradeProperties();
 
-  const fromToken = useSelector(getFromToken);
   const fromChain = useSelector(getFromChain);
 
-  const balanceAmount = useLatestBalance(fromToken);
+  const balanceAmount = useSelector(getFromTokenBalance);
   const nativeAsset = useMemo(
     () =>
       fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
     [fromChain?.chainId],
   );
-  const nativeAssetBalance = useLatestBalance(nativeAsset);
+  const nativeAssetBalance = useLatestBalance(nativeAsset); // TODO remove this
 
   const warnings = useMemo(() => {
     const {

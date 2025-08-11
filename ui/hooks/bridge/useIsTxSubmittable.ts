@@ -7,21 +7,20 @@ import {
   getToChain,
   getValidationErrors,
   getToToken,
+  getFromTokenBalance,
 } from '../../ducks/bridge/selectors';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { useMultichainSelector } from '../useMultichainSelector';
 import { useIsMultichainSwap } from '../../pages/bridge/hooks/useIsMultichainSwap';
 
-export const useIsTxSubmittable = (
-  nativeAssetBalance?: BigNumber,
-  srcTokenBalance?: BigNumber,
-) => {
+export const useIsTxSubmittable = (nativeAssetBalance?: BigNumber) => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
   const toChain = useSelector(getToChain);
   const fromAmount = useSelector(getFromAmount);
   const { activeQuote } = useSelector(getBridgeQuotes);
+  const srcTokenBalance = useSelector(getFromTokenBalance);
 
   const isSwap = useIsMultichainSwap();
   const {

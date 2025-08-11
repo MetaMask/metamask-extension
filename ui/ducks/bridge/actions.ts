@@ -2,6 +2,9 @@ import {
   BridgeBackgroundAction,
   type BridgeController,
   BridgeUserAction,
+  formatChainIdToCaip,
+  formatChainIdToHex,
+  isNativeAddress,
   isSolanaChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
@@ -12,6 +15,7 @@ import type {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   forceUpdateMetamaskState,
   setActiveNetworkWithError,
@@ -25,13 +29,14 @@ import {
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setTxAlerts,
+  setEVMSrcTokenBalance,
 } from './bridge';
 import { isNetworkAdded } from './utils';
 import type { TokenPayload } from './types';
 
 const {
   setToChainId,
-  setFromToken,
+  setFromToken: setFromToken_,
   setToToken,
   setFromTokenInputValue,
   resetInputFields,
@@ -112,6 +117,34 @@ export const updateQuoteRequestParams = (
   };
 };
 
+const setFromToken = (
+  token: TokenPayload['payload'],
+  selectedAddress: string,
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(setFromToken_(token));
+
+    if (token) {
+      trace({
+        name: TraceName.BridgeBalancesUpdated,
+        data: {
+          srcChainId: formatChainIdToCaip(token.chainId),
+          isNative: isNativeAddress(token.address),
+        },
+        startTime: Date.now(),
+      });
+      await dispatch(
+        setEVMSrcTokenBalance({
+          provider: global.ethereumProvider,
+          selectedAddress,
+          tokenAddress: token.address,
+          chainId: formatChainIdToHex(token.chainId),
+        }),
+      );
+    }
+  };
+};
+
 export const setFromChain = ({
   networkConfig,
   selectedSolanaAccount,
@@ -143,7 +176,12 @@ export const setFromChain = ({
       );
     }
     if (token) {
-      await dispatch(setFromToken(token));
+      await dispatch(
+        setFromToken(
+          token,
+          selectedEvmAccount?.address ?? selectedSolanaAccount?.address ?? '',
+        ),
+      );
     }
   };
 };

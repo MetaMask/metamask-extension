@@ -36,6 +36,7 @@ export type BridgeState = {
   fromTokenExchangeRate: number | null; // Exchange rate from selected token to the default currency (can be fiat or crypto)
   toTokenExchangeRate: number | null; // Exchange rate from the selected token to the default currency (can be fiat or crypto)
   toTokenUsdExchangeRate: number | null; // Exchange rate from the selected token to the USD. This is needed for metrics
+  fromTokenBalance: string | null; // User's balance for the selected token (EVM)
   sortOrder: SortOrder;
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.

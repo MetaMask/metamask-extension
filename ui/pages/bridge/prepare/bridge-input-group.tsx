@@ -30,6 +30,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   getBridgeQuotes,
+  getFromTokenBalance,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
@@ -71,9 +72,7 @@ export const BridgeInputGroup = ({
   isMultiselectEnabled,
   onBlockExplorerClick,
   buttonProps,
-  balanceAmount,
 }: {
-  balanceAmount?: BigNumber;
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
@@ -107,6 +106,8 @@ export const BridgeInputGroup = ({
   const [, handleCopy] = useCopyToClipboard(MINUTE);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const balanceAmount = useSelector(getFromTokenBalance);
 
   const isAmountReadOnly =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -298,11 +299,11 @@ export const BridgeInputGroup = ({
               textDecoration: 'none',
             }}
           >
-            {formatTokenAmount(locale, balanceAmount.toString(), token.symbol)}
+            {formatTokenAmount(locale, balanceAmount, token.symbol)}
             {onMaxButtonClick && (
               <ButtonLink
                 variant={TextVariant.bodyMd}
-                onClick={() => onMaxButtonClick(balanceAmount.toFixed())}
+                onClick={() => onMaxButtonClick(balanceAmount)}
               >
                 {t('max')}
               </ButtonLink>

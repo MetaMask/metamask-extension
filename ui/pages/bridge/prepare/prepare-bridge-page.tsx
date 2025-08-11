@@ -54,6 +54,7 @@ import {
   getIsSwap,
   BridgeAppState,
   getTxAlerts,
+  getFromTokenBalance,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -285,10 +286,10 @@ const PrepareBridgePage = ({
       fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
     [fromChain?.chainId],
   );
-  const nativeAssetBalance = useLatestBalance(nativeAsset);
+  const nativeAssetBalance = useLatestBalance(nativeAsset); // TODO remove this
 
   const { tokenAlert } = useTokenAlerts();
-  const srcTokenBalance = useLatestBalance(fromToken);
+  const srcTokenBalance = useSelector(getFromTokenBalance);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
     useDestinationAccount(isSwap);
 
@@ -533,10 +534,13 @@ const PrepareBridgePage = ({
 
       if (srcAsset && destAsset && destChainId) {
         dispatch(
-          setFromToken({
-            ...srcAsset,
-            chainId: srcChainId,
-          }),
+          setFromToken(
+            {
+              ...srcAsset,
+              chainId: srcChainId,
+            },
+            selectedEvmAccount?.address ?? '',
+          ),
         );
         // Set inputs to values from active quote
         dispatch(
@@ -591,7 +595,9 @@ const PrepareBridgePage = ({
               ...token,
               address: token.address ?? zeroAddress(),
             };
-            dispatch(setFromToken(bridgeToken));
+            dispatch(
+              setFromToken(bridgeToken, selectedEvmAccount?.address ?? ''),
+            );
             dispatch(setFromTokenInputValue(null));
             if (token.address === toToken?.address) {
               dispatch(setToToken(null));
@@ -640,7 +646,6 @@ const PrepareBridgePage = ({
               ? fromAmountInCurrency.valueInCurrency.toString()
               : undefined
           }
-          balanceAmount={srcTokenBalance}
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
@@ -911,7 +916,6 @@ const PrepareBridgePage = ({
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
                   nativeAssetBalance={nativeAssetBalance}
-                  srcTokenBalance={srcTokenBalance}
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -4,8 +4,14 @@ import {
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  calcLatestSrcBalance,
+  isSolanaChainId,
+  isCrossChain,
 } from '@metamask/bridge-controller';
+import type { Hex } from '@metamask/utils';
+import type { SafeEventEmitterProvider } from '@metamask/eth-json-rpc-provider';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
+import { endTrace, TraceName } from '../../../shared/lib/trace';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
 
@@ -17,6 +23,7 @@ const initialState: BridgeState = {
   fromTokenExchangeRate: null,
   toTokenExchangeRate: null,
   toTokenUsdExchangeRate: null,
+  fromTokenBalance: null,
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   wasTxDeclined: false,
@@ -44,6 +51,33 @@ export const setTxAlerts = createAsyncThunk(
   fetchTxAlerts,
 );
 
+export const setEVMSrcTokenBalance = createAsyncThunk(
+  'bridge/setEVMSrcTokenBalance',
+  async ({
+    provider,
+    selectedAddress,
+    tokenAddress,
+    chainId,
+  }: {
+    provider: SafeEventEmitterProvider;
+    selectedAddress?: string;
+    tokenAddress: string;
+    chainId: Hex;
+  }) => {
+    if (isSolanaChainId(chainId) || !selectedAddress) {
+      return null;
+    }
+    return (
+      await calcLatestSrcBalance(
+        provider,
+        selectedAddress,
+        tokenAddress,
+        chainId,
+      )
+    )?.toString();
+  },
+);
+
 const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
@@ -54,6 +88,7 @@ const bridgeSlice = createSlice({
     },
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
+      state.fromTokenBalance = null;
       // Unset toToken if it's the same as the fromToken
       if (
         state.fromToken?.assetId &&
@@ -134,6 +169,25 @@ const bridgeSlice = createSlice({
     });
     builder.addCase(setTxAlerts.rejected, (state) => {
       state.txAlert = null;
+    });
+    builder.addCase(setEVMSrcTokenBalance.fulfilled, (state, action) => {
+      if (
+        !isCrossChain(action.meta.arg.chainId, state.fromToken?.chainId) &&
+        state.fromToken?.address
+          ? action.meta.arg.tokenAddress === state.fromToken.address
+          : true
+      ) {
+        state.fromTokenBalance = action.payload?.toString() ?? null;
+      }
+      endTrace({
+        name: TraceName.BridgeBalancesUpdated,
+      });
+    });
+    builder.addCase(setEVMSrcTokenBalance.rejected, (state, action) => {
+      state.fromTokenBalance = null;
+      endTrace({
+        name: TraceName.BridgeBalancesUpdated,
+      });
     });
   },
 });

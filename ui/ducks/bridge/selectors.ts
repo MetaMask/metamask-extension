@@ -54,6 +54,7 @@ import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selec
 import {} from '../../pages/bridge/utils/quote';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
+  getMultichainBalances,
   getMultichainCoinRates,
   getMultichainProviderConfig,
 } from '../../selectors/multichain';
@@ -63,6 +64,9 @@ import {
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
 import { toAssetId } from '../../../shared/lib/asset-utils';
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   exchangeRateFromMarketData,
@@ -259,6 +263,35 @@ export const getToToken = createSelector(
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
+
+export const getFromTokenBalance = createSelector(
+  getFromToken,
+  (state: BridgeAppState) => state.bridge.fromTokenBalance,
+  getMultichainBalances,
+  getSelectedInternalAccount,
+  (fromToken, fromTokenBalance, nonEvmBalancesByAccountId, { id }) => {
+    if (!fromToken) {
+      return null;
+    }
+    const { chainId, decimals, address, assetId } = fromToken;
+
+    // Use the balance provided by the multichain balances controller
+    if (isSolanaChainId(chainId)) {
+      const caipAssetType = isNativeAddress(address)
+        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+        : (assetId ?? address);
+      return (
+        nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ??
+        fromToken.string ??
+        null
+      );
+    }
+
+    return fromTokenBalance
+      ? Numeric.from(fromTokenBalance, 10).shiftedBy(decimals).toString()
+      : null;
+  },
+);
 
 export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
 
@@ -602,9 +635,9 @@ export const getValidationErrors = createDeepEqualSelector(
         }
         return false;
       },
-      isInsufficientBalance: (balance?: BigNumber) =>
-        validatedSrcAmount && balance !== undefined
-          ? balance.lt(validatedSrcAmount)
+      isInsufficientBalance: (balance: string | null) =>
+        validatedSrcAmount && balance && !isNaN(Number(balance))
+          ? new BigNumber(balance).lt(validatedSrcAmount)
           : false,
       isEstimatedReturnLow:
         activeQuote?.sentAmount?.valueInCurrency &&
