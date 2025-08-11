@@ -59,7 +59,6 @@ export const setEVMSrcTokenBalance = createAsyncThunk(
     tokenAddress,
     chainId,
   }: {
-    provider: SafeEventEmitterProvider;
     selectedAddress?: string;
     tokenAddress: string;
     chainId: Hex;
@@ -69,7 +68,7 @@ export const setEVMSrcTokenBalance = createAsyncThunk(
     }
     return (
       await calcLatestSrcBalance(
-        provider,
+        global.ethereumProvider,
         selectedAddress,
         tokenAddress,
         chainId,

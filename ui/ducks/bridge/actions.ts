@@ -135,7 +135,6 @@ const setFromToken = (
       });
       await dispatch(
         setEVMSrcTokenBalance({
-          provider: global.ethereumProvider,
           selectedAddress,
           tokenAddress: token.address,
           chainId: formatChainIdToHex(token.chainId),
