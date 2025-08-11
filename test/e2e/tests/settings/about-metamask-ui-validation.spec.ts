@@ -23,23 +23,23 @@ describe('Setting - About MetaMask :', function (this: Suite) {
         // navigate to settings and click on about page
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToAboutPage();
 
         const aboutPage = new AboutPage(driver);
-        await aboutPage.check_pageIsLoaded();
+        await aboutPage.checkPageIsLoaded();
 
         // verify the version number of MetaMask
         const { version } = packageJson;
-        await aboutPage.check_metaMaskVersionNumber(version);
+        await aboutPage.checkMetaMaskVersionNumber(version);
 
         // click on `close` button
         await settingsPage.closeSettingsPage();
 
         // wait for home page and validate the balance
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed();
       },
     );
   });

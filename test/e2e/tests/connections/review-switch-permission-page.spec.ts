@@ -39,7 +39,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         // Open Dapp One and check the chainId
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         const chainIdRequest: string = JSON.stringify({
           method: 'eth_chainId',
         });
@@ -53,9 +53,9 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
 
         // Switch to ethereum network and check the chainId on testdapp
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await homePage.check_localNodeBalanceIsDisplayed();
+        await homePage.checkLocalNodeBalanceIsDisplayed();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const chainIdBeforeConnectAfterManualSwitch: string =
           await driver.executeScript(
@@ -86,10 +86,10 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
           driver,
         );
-        await reviewPermissionsConfirmation.check_pageIsLoaded();
+        await reviewPermissionsConfirmation.checkPageIsLoaded();
         await reviewPermissionsConfirmation.confirmReviewPermissions();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         const chainIdAfterSwitch: string = await driver.executeScript(
           `return window.ethereum.request(${chainIdRequest})`,
         );
@@ -99,11 +99,11 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         const chainIdAfterManualSwitch: string = await driver.executeScript(
           `return window.ethereum.request(${chainIdRequest})`,
         );

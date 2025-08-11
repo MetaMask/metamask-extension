@@ -13,6 +13,8 @@ import {
   PopoverPosition,
   IconName,
   ButtonLink,
+  ButtonIcon,
+  ButtonIconSize,
   Icon,
   IconSize,
   AvatarNetwork,
@@ -25,6 +27,8 @@ import {
   getIsBridgeTx,
   getToToken,
   getFromToken,
+  getSlippage,
+  getIsSolanaSwap,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -32,6 +36,7 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   BackgroundColor,
   FontStyle,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -48,7 +53,11 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
-export const MultichainBridgeQuoteCard = () => {
+export const MultichainBridgeQuoteCard = ({
+  onOpenSlippageModal,
+}: {
+  onOpenSlippageModal?: () => void;
+}) => {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
@@ -62,6 +71,8 @@ export const MultichainBridgeQuoteCard = () => {
   );
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
+  const slippage = useSelector(getSlippage);
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
@@ -161,7 +172,7 @@ export const MultichainBridgeQuoteCard = () => {
                 {t('networkFee')}
               </Text>
               {activeQuote.quote.gasIncluded && (
-                <Row gap={1}>
+                <Row gap={1} data-testid="network-fees-included">
                   <Text style={{ textDecoration: 'line-through' }}>
                     {activeQuote.includedTxFees?.valueInCurrency
                       ? formatCurrencyAmount(
@@ -179,7 +190,7 @@ export const MultichainBridgeQuoteCard = () => {
                 </Row>
               )}
               {!activeQuote.quote.gasIncluded && (
-                <Text>
+                <Text data-testid="network-fees">
                   {formatCurrencyAmount(
                     activeQuote.totalMaxNetworkFee?.valueInCurrency,
                     currency,
@@ -187,6 +198,31 @@ export const MultichainBridgeQuoteCard = () => {
                   )}
                 </Text>
               )}
+            </Row>
+
+            {/* Slippage */}
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Row gap={1}>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                >
+                  {t('slippage')}
+                </Text>
+                <ButtonIcon
+                  iconName={IconName.Edit}
+                  size={ButtonIconSize.Sm}
+                  color={IconColor.iconAlternative}
+                  onClick={onOpenSlippageModal}
+                  ariaLabel={t('slippageEditAriaLabel')}
+                  data-testid="slippage-edit-button"
+                />
+              </Row>
+              <Text variant={TextVariant.bodyMd}>
+                {slippage === undefined && isSolanaSwap
+                  ? t('slippageAuto')
+                  : `${slippage}%`}
+              </Text>
             </Row>
 
             {/* Time */}
