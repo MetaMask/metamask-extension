@@ -10,10 +10,23 @@ import { AccountTreeWallets } from '../../../selectors/multichain-accounts/accou
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   MultichainAccountList,
   MultichainAccountListProps,
 } from './multichain-account-list';
+
+const mockHistoryPush = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
+  return {
+    ...original,
+    useHistory: () => ({
+      push: mockHistoryPush,
+    }),
+  };
+});
 
 jest.mock('../../../store/actions', () => {
   const actualActions = jest.requireActual('../../../store/actions');
@@ -164,6 +177,7 @@ describe('MultichainAccountList', () => {
     expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
       walletTwoGroupId,
     );
+    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('updates selected account when selectedAccountGroup changes', () => {
