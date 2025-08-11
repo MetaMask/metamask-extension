@@ -755,7 +755,6 @@ export default class MetamaskController extends EventEmitter {
       async (data) => {
         onRpcEndpointUnavailable({
           ...data,
-          infuraProjectId: opts.infuraProjectId,
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
@@ -768,7 +767,6 @@ export default class MetamaskController extends EventEmitter {
       async (data) => {
         onRpcEndpointDegraded({
           ...data,
-          infuraProjectId: opts.infuraProjectId,
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
