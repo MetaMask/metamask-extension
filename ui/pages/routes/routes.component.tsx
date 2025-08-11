@@ -488,7 +488,9 @@ export default function Routes() {
     ) {
       openExtensionInBrowser();
     }
+  }, [showExtensionInFullSizeView]);
 
+  useEffect(() => {
     if (!currentCurrency) {
       dispatch(setCurrentCurrency('usd'));
     }
@@ -504,6 +506,7 @@ export default function Routes() {
     return () => {
       unlisten();
     };
+  }, [currentCurrency, theme, history, dispatch]);
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
