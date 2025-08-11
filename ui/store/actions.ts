@@ -2218,6 +2218,9 @@ export function setSelectedMultichainAccount(
       await submitRequestToBackground('setSelectedMultichainAccount', [
         accountGroupId,
       ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
