@@ -454,6 +454,15 @@ export default function Routes() {
       dispatch(automaticallySwitchNetwork(networkToAutomaticallySwitchTo));
     }
 
+    prevPropsRef.current = { isUnlocked, totalUnapprovedConfirmationCount };
+  }, [
+    networkToAutomaticallySwitchTo,
+    isUnlocked,
+    totalUnapprovedConfirmationCount,
+    dispatch,
+  ]);
+
+  useEffect(() => {
     // Terminate the popup when another popup is opened
     // if the user is using RPC queueing
     if (
@@ -467,16 +476,7 @@ export default function Routes() {
     ) {
       window.close();
     }
-
-    prevPropsRef.current = { isUnlocked, totalUnapprovedConfirmationCount };
-  }, [
-    activeTabOrigin,
-    currentExtensionPopupId,
-    networkToAutomaticallySwitchTo,
-    isUnlocked,
-    totalUnapprovedConfirmationCount,
-    dispatch,
-  ]);
+  }, [currentExtensionPopupId]);
 
   useEffect(() => {
     const windowType = getEnvironmentType();
@@ -491,22 +491,26 @@ export default function Routes() {
   }, [showExtensionInFullSizeView]);
 
   useEffect(() => {
-    if (!currentCurrency) {
-      dispatch(setCurrentCurrency('usd'));
-    }
-
     const unlisten = history.listen((locationObj: Location, action: 'PUSH') => {
       if (action === 'PUSH') {
         dispatch(pageChanged(locationObj.pathname));
       }
     });
 
-    setTheme(theme);
-
     return () => {
       unlisten();
     };
-  }, [currentCurrency, theme, history, dispatch]);
+  }, [history, dispatch]);
+
+  useEffect(() => {
+    setTheme(theme);
+  }, [theme]);
+
+  useEffect(() => {
+    if (!currentCurrency) {
+      dispatch(setCurrentCurrency('usd'));
+    }
+  }, [currentCurrency, dispatch]);
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
