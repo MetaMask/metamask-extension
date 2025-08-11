@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Relaunch MetaMask if the problem persists.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "Loading is taking longer than usual.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -737,9 +745,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
   },
-  "bestPrice": {
-    "message": "Best price"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -954,9 +959,6 @@
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Terms"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 min",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1043,9 +1045,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Busy"
@@ -2707,9 +2706,6 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Estimated fee required to process the transaction. The max fee is $1."
   },
   "howQuotesWork": {
     "message": "How quotes work"

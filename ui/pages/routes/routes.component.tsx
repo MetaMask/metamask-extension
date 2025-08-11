@@ -69,6 +69,7 @@ import {
   WALLET_DETAILS_ROUTE,
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
+  ACCOUNT_LIST_PAGE_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -149,7 +150,7 @@ import { type Confirmation } from '../confirmations/types/confirm';
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
-
+import { AccountList } from '../multichain-accounts/account-list';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -605,6 +606,11 @@ export default function Routes() {
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={ReviewPermissions}
+            exact
+          />
+          <Authenticated
+            path={ACCOUNT_LIST_PAGE_ROUTE}
+            component={AccountList}
             exact
           />
           <Authenticated
