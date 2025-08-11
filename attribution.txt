@@ -26431,7 +26431,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/assets-controllers
-73.0.0 <https://github.com/MetaMask/core>
+73.0.2 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -29786,7 +29786,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/solana-wallet-snap
-2.1.3 <https://github.com/MetaMask/snap-solana-wallet>
+2.1.4 <https://github.com/MetaMask/snap-solana-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 

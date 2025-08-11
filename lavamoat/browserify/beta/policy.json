@@ -909,7 +909,6 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "ethers>@ethersproject/address": true,
-        "@ethersproject/bignumber": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
