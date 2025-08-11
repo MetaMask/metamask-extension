@@ -30,6 +30,7 @@ import {
   setSrcTokenExchangeRates,
   setTxAlerts,
   setEVMSrcTokenBalance,
+  setEVMSrcNativeBalance,
 } from './bridge';
 import { isNetworkAdded } from './utils';
 import type { TokenPayload } from './types';
@@ -172,6 +173,20 @@ export const setFromChain = ({
           networkConfig.rpcEndpoints[networkConfig.defaultRpcEndpointIndex]
             .networkClientId || networkConfig.chainId,
         ),
+      );
+      trace({
+        name: TraceName.BridgeBalancesUpdated,
+        data: {
+          srcChainId: formatChainIdToCaip(networkConfig.chainId),
+          isNative: true,
+        },
+        startTime: Date.now(),
+      });
+      await dispatch(
+        setEVMSrcNativeBalance({
+          selectedAddress: selectedEvmAccount.address,
+          chainId: formatChainIdToHex(networkConfig.chainId),
+        }),
       );
     }
     if (token) {

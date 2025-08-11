@@ -264,6 +264,33 @@ export const getToToken = createSelector(
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
+export const getFromNativeBalance = createSelector(
+  getFromChain,
+  (state: BridgeAppState) => state.bridge.fromNativeBalance,
+  getMultichainBalances,
+  getSelectedInternalAccount,
+  (fromChain, fromNativeBalance, nonEvmBalancesByAccountId, { id }) => {
+    if (!fromChain) {
+      return null;
+    }
+
+    const { chainId } = fromChain;
+    const { decimals, address, assetId } = getNativeAssetForChainId(chainId);
+
+    // Use the balance provided by the multichain balances controller
+    if (isSolanaChainId(chainId)) {
+      const caipAssetType = isNativeAddress(address)
+        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+        : (assetId ?? address);
+      return nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ?? null;
+    }
+
+    return fromNativeBalance
+      ? Numeric.from(fromNativeBalance, 10).shiftedBy(decimals).toString()
+      : null;
+  },
+);
+
 export const getFromTokenBalance = createSelector(
   getFromToken,
   (state: BridgeAppState) => state.bridge.fromTokenBalance,
@@ -602,7 +629,8 @@ export const getValidationErrors = createDeepEqualSelector(
           quotesRefreshCount > 0,
       ),
       // Shown prior to fetching quotes
-      isInsufficientGasBalance: (balance?: BigNumber) => {
+      // TODO use balance selectors
+      isInsufficientGasBalance: (balance: string | null) => {
         if (
           balance &&
           !activeQuote &&
@@ -611,13 +639,15 @@ export const getValidationErrors = createDeepEqualSelector(
           !gasIncluded
         ) {
           return isNativeAddress(fromToken.address)
-            ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
-            : balance.lte(0);
+            ? new BigNumber(balance)
+                .sub(minimumBalanceToUse)
+                .lte(validatedSrcAmount)
+            : new BigNumber(balance).lte(0);
         }
         return false;
       },
       // Shown after fetching quotes
-      isInsufficientGasForQuote: (balance?: BigNumber) => {
+      isInsufficientGasForQuote: (balance: string | null) => {
         if (
           balance &&
           activeQuote &&
@@ -626,12 +656,12 @@ export const getValidationErrors = createDeepEqualSelector(
           !gasIncluded
         ) {
           return isNativeAddress(fromToken.address)
-            ? balance
+            ? new BigNumber(balance)
                 .sub(activeQuote.totalMaxNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
                 .sub(minimumBalanceToUse)
                 .lte(0)
-            : balance.lte(activeQuote.totalMaxNetworkFee.amount);
+            : new BigNumber(balance).lte(activeQuote.totalMaxNetworkFee.amount);
         }
         return false;
       },

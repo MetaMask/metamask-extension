@@ -55,6 +55,7 @@ import {
   BridgeAppState,
   getTxAlerts,
   getFromTokenBalance,
+  getFromNativeBalance,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -97,7 +98,6 @@ import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
@@ -286,7 +286,7 @@ const PrepareBridgePage = ({
       fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
     [fromChain?.chainId],
   );
-  const nativeAssetBalance = useLatestBalance(nativeAsset); // TODO remove this
+  const nativeAssetBalance = useSelector(getFromNativeBalance);
 
   const { tokenAlert } = useTokenAlerts();
   const srcTokenBalance = useSelector(getFromTokenBalance);
@@ -915,7 +915,6 @@ const PrepareBridgePage = ({
               )}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
-                  nativeAssetBalance={nativeAssetBalance}
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

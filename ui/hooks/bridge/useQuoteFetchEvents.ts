@@ -7,12 +7,12 @@ import {
   getBridgeQuotes,
   getFromAmount,
   getFromChain,
+  getFromNativeBalance,
   getFromTokenBalance,
   getQuoteRequest,
   getValidationErrors,
 } from '../../ducks/bridge/selectors';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
-import useLatestBalance from './useLatestBalance';
 import { useRequestMetadataProperties } from './events/useRequestMetadataProperties';
 import { useRequestProperties } from './events/useRequestProperties';
 import { useTradeProperties } from './events/useTradeProperties';
@@ -53,7 +53,7 @@ export const useQuoteFetchEvents = () => {
       fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
     [fromChain?.chainId],
   );
-  const nativeAssetBalance = useLatestBalance(nativeAsset); // TODO remove this
+  const nativeAssetBalance = useSelector(getFromNativeBalance);
 
   const warnings = useMemo(() => {
     const {

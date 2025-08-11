@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { type BigNumber } from 'bignumber.js';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -16,6 +15,7 @@ import {
   getIsQuoteExpired,
   BridgeAppState,
   getFromTokenBalance,
+  getFromNativeBalance,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -38,9 +38,7 @@ import { Row } from '../layout';
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
-  nativeAssetBalance,
 }: {
-  nativeAssetBalance?: BigNumber;
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
 }) => {
@@ -51,6 +49,8 @@ export const BridgeCTAButton = ({
   const fromAmount = useSelector(getFromAmount);
 
   const srcTokenBalance = useSelector(getFromTokenBalance);
+
+  const nativeAssetBalance = useSelector(getFromNativeBalance);
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
@@ -76,7 +76,7 @@ export const BridgeCTAButton = ({
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const isTxSubmittable = useIsTxSubmittable(nativeAssetBalance);
+  const isTxSubmittable = useIsTxSubmittable();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
