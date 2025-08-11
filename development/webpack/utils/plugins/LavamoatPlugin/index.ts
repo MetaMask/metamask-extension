@@ -75,6 +75,7 @@ export const lavamoatPlugin = new LavamoatPlugin({
       // e2e
       'HTMLFormElement',
       'getSelection',
+      'EventTarget',
       // webpack
       'webpackChunk',
     ],
