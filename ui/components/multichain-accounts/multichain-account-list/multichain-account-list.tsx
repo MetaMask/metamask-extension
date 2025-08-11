@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { AccountGroupId } from '@metamask/account-api';
+import { useDispatch } from 'react-redux';
 import { Box, Text } from '../../component-library';
 
 import {
@@ -12,6 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { MultichainAccountCell } from '../multichain-account-cell';
 import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
+import { setSelectedMultichainAccount } from '../../../store/actions';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -22,6 +24,12 @@ export const MultichainAccountList = ({
   wallets,
   selectedAccountGroup,
 }: MultichainAccountListProps) => {
+  const dispatch = useDispatch();
+
+  const handleAccountClick = (accountGroupId: AccountGroupId) => {
+    dispatch(setSelectedMultichainAccount(accountGroupId));
+  };
+
   const walletTree = useMemo(() => {
     return Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
@@ -54,10 +62,11 @@ export const MultichainAccountList = ({
             return [
               <MultichainAccountCell
                 key={`multichain-account-cell-${groupId}`}
-                accountId={groupId}
+                accountId={groupId as AccountGroupId}
                 accountName={groupData.metadata.name}
                 balance="$ n/a"
                 selected={selectedAccountGroup === groupId}
+                onClick={handleAccountClick}
               />,
             ];
           },
