@@ -9,13 +9,14 @@ export const lavamoatPlugin = new LavamoatPlugin({
   readableResourceIds: true,
   inlineLockdown: /^runtime|contentscript\.js/u,
   unlockedChunksUnsafe: /inpage\.js/u,
-  debugRuntime: false,
+  debugRuntime: true,
   lockdown: {
     consoleTaming: 'unsafe',
     errorTaming: 'unsafe',
     stackFiltering: 'verbose',
     overrideTaming: 'severe',
     localeTaming: 'unsafe',
+    errorTrapping: 'none',
   },
   scuttleGlobalThis: {
     enabled: true,
