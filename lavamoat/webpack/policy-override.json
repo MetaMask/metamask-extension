@@ -57,7 +57,16 @@
         "navigator.language": true,
         "navigator.userAgentData": true,
         "crypto": true,
-        "onerror": true
+        "onunhandledrejection": true,
+        "addEventListener": true,
+        "PerformanceObserver": true,
+        "chrome": true,
+        "chrome.runtime": true,
+        "chrome.runtime.runtime": true,
+        "chrome.runtime.runtime.id": true,
+        "location": true,
+        "location.href": true,
+        "top": true
       }
     },
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {

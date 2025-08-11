@@ -2596,6 +2596,7 @@
         "console.error": true,
         "document": true,
         "module": true,
+        "onerror": "write",
         "process": true,
         "setInterval": true,
         "setTimeout": true
