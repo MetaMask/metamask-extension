@@ -124,6 +124,7 @@ export const AccountPicker = ({
               labelProps.className ?? '',
             )}
             style={{
+              ...labelProps.style,
               fontWeight: isMultichainAccountsState2Enabled
                 ? 600
                 : FontWeight.Medium,
