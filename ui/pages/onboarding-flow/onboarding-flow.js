@@ -23,6 +23,7 @@ import {
   ONBOARDING_ACCOUNT_NOT_FOUND,
   SECURITY_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -81,6 +82,7 @@ import { WelcomePageState } from './welcome/types';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
+import OnboardingDownloadApp from './download-app/download-app';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
@@ -358,6 +360,10 @@ export default function OnboardingFlow() {
           <Route
             path={ONBOARDING_METAMETRICS}
             component={MetaMetricsComponent}
+          />
+          <Route
+            path={ONBOARDING_DOWNLOAD_APP_ROUTE}
+            component={OnboardingDownloadApp}
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)

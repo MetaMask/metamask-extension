@@ -51,7 +51,7 @@ import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
   USER_STORAGE_FEATURE_NAMES,
-  UserProfileMetaMetrics,
+  UserProfileLineage,
 } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -152,7 +152,6 @@ import {
   getUseSmartAccount,
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -261,6 +260,10 @@ export function resetOAuthLoginState() {
 
     try {
       await submitRequestToBackground('resetOAuthLoginState');
+
+      dispatch({
+        type: actionConstants.RESET_SOCIAL_LOGIN_ONBOARDING,
+      });
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
@@ -372,30 +375,12 @@ export function changePassword(
   newPassword: string,
   oldPassword: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (
-    dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
-  ) => {
-    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
-    const isSeedlessOnboardingFeatureEnabled =
-      getIsSeedlessOnboardingFeatureEnabled();
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await keyringChangePassword(newPassword);
-      if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
-        try {
-          await socialSyncChangePassword(newPassword, oldPassword);
-
-          // store the keyring encryption key in the seedless onboarding controller
-          const keyringEncryptionKey = await exportEncryptionKey();
-          await storeKeyringEncryptionKey(keyringEncryptionKey);
-        } catch (error) {
-          // revert the keyring password change
-          await keyringChangePassword(oldPassword);
-          const revertedKeyringEncryptionKey = await exportEncryptionKey();
-          await storeKeyringEncryptionKey(revertedKeyringEncryptionKey);
-          throw error;
-        }
-      }
+      await submitRequestToBackground('changePassword', [
+        newPassword,
+        oldPassword,
+      ]);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
@@ -409,10 +394,6 @@ export function storeKeyringEncryptionKey(
   return submitRequestToBackground('storeKeyringEncryptionKey', [
     encryptionKey,
   ]);
-}
-
-export function exportEncryptionKey(): Promise<string> {
-  return submitRequestToBackground('exportEncryptionKey');
 }
 
 export function tryUnlockMetamask(
@@ -710,20 +691,6 @@ export function verifyPassword(password: string): Promise<boolean> {
       resolve(true);
     });
   });
-}
-
-export function socialSyncChangePassword(
-  newPassword: string,
-  currentPassword: string,
-): Promise<void> {
-  return submitRequestToBackground('socialSyncChangePassword', [
-    newPassword,
-    currentPassword,
-  ]);
-}
-
-export function keyringChangePassword(newPassword: string): Promise<void> {
-  return submitRequestToBackground('keyringChangePassword', [newPassword]);
 }
 
 export async function getSeedPhrase(password: string, keyringId?: string) {
@@ -3954,10 +3921,17 @@ export function resetOnboarding(): ThunkAction<
 > {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     try {
-      await dispatch(setSeedPhraseBackedUp(false));
+      const isSocialLoginFlow = getIsSocialLoginFlow(getState());
       dispatch(resetOnboardingAction());
+
+      if (isSocialLoginFlow) {
+        await dispatch(resetOAuthLoginState());
+      }
     } catch (err) {
       console.error(err);
     }
@@ -6258,7 +6232,7 @@ export async function updateDataDeletionTaskStatus() {
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not use
  * this for handling errors.
  */
 export async function throwTestBackgroundError(message: string): Promise<void> {
@@ -6269,7 +6243,7 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
  * Capture an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not use
  * this for handling errors.
  */
 export async function captureTestBackgroundError(
@@ -6434,18 +6408,18 @@ export function setIsBackupAndSyncFeatureEnabled(
 }
 
 /**
- * Fetches the user profile meta metrics from the profile-sync.
+ * Fetches the user profile lineage from the authentication API.
  *
- * @returns A thunk action that, when dispatched, attempts to fetch the user profile meta metrics.
+ * @returns A thunk action that, when dispatched, attempts to fetch the user profile lineage.
  */
-export async function getUserProfileMetaMetrics(): Promise<
-  UserProfileMetaMetrics | undefined
+export async function getUserProfileLineage(): Promise<
+  UserProfileLineage | undefined
 > {
   try {
-    const userProfileMetaMetrics = await submitRequestToBackground(
-      'getUserProfileMetaMetrics',
+    const userProfileLineage = await submitRequestToBackground(
+      'getUserProfileLineage',
     );
-    return userProfileMetaMetrics;
+    return userProfileLineage;
   } catch (error) {
     logErrorWithMessage(error);
     return undefined;
@@ -7049,6 +7023,12 @@ export function setTransactionActive(
 
 export async function isRelaySupported(chainId: Hex): Promise<boolean> {
   return await submitRequestToBackground<boolean>('isRelaySupported', [
+    chainId,
+  ]);
+}
+
+export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
+  return await submitRequestToBackground<boolean>('isSendBundleSupported', [
     chainId,
   ]);
 }

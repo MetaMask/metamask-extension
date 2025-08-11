@@ -16,13 +16,13 @@ describe('Auto-Lock Timer', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.clickAdvancedTab();
         const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.check_pageIsLoaded();
+        await advancedSettingsPage.checkPageIsLoaded();
 
         // Set Auto Lock Timer
         const sixSecsInMins = '0.1';
@@ -38,7 +38,7 @@ describe('Auto-Lock Timer', function () {
 
         // Verify the wallet is locked
         const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
       },
     );
   });

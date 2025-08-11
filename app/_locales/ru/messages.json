@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Включить базовый функционал"
   },
-  "bestPrice": {
-    "message": "Лучшая цена"
-  },
   "beta": {
     "message": "Бета-версия"
   },
@@ -936,9 +933,6 @@
     "message": "Обменивается $1 на $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Условия"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 мин.",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask разработан и создан с учетом потребностей мира."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Занят"
@@ -2664,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Ловушка"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Расчетная комиссия, необходимая для обработки транзакции. Максимальная комиссия составляет $1."
   },
   "howQuotesWork": {
     "message": "Как работают котировки"
@@ -5439,12 +5427,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "Добавьте несколько секретных фраз для восстановления"
-  },
-  "slideRemoteModeDescription": {
-    "message": "Используйте свой холодный кошелек по беспроводной сети"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Холодное хранилище, быстрый доступ"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Один и тот же адрес, более умные функции"

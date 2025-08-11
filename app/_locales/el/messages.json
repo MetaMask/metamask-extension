@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Ενεργοποίηση βασικών λειτουργιών"
   },
-  "bestPrice": {
-    "message": "Καλύτερη τιμή"
-  },
   "beta": {
     "message": "Δοκιμαστική έκδοση"
   },
@@ -936,9 +933,6 @@
     "message": "Ανταλλαγή $1 για $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Όροι"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 ελαχ",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "Το MetaMask έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Απασχολημένο"
@@ -2664,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Εκτιμώμενα τέλη που απαιτούνται για τη διεκπεραίωση της συναλλαγής. Η μέγιστη χρέωση είναι $1."
   },
   "howQuotesWork": {
     "message": "Πώς λειτουργει η παράθεση προσφοράς"
@@ -5439,12 +5427,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "Προσθήκη πολλαπλών Φράσεων Μυστικής Ανάκτησης"
-  },
-  "slideRemoteModeDescription": {
-    "message": "Χρησιμοποιήστε το ψυχρό πορτοφόλι σας ασύρματα"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Ψυχρή αποθήκευση, γρήγορη πρόσβαση"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Ίδια διεύθυνση, πιο έξυπνες λειτουργίες"

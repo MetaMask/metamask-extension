@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Ativar funcionalidade básica"
   },
-  "bestPrice": {
-    "message": "Melhor preço"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Realizando swap de $1 para $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Termos"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 mín",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "A MetaMask é concebida e desenvolvida em todo o mundo."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Ocupado"
@@ -2664,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Honeypot"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Taxa estimada necessária para processar a transação. A taxa máxima é $1."
   },
   "howQuotesWork": {
     "message": "Como as cotações funcionam"
@@ -5439,12 +5427,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "Adicione múltiplas Frases de Recuperação Secretas"
-  },
-  "slideRemoteModeDescription": {
-    "message": "Use sua carteira fria sem fio"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Armazenamento a frio, acesso rápido"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Mesmo endereço, recursos mais inteligentes"

@@ -8,6 +8,7 @@ import {
   getAccountTypeForKeyring,
   getHardwareWalletType,
   getHDEntropyIndex,
+  getIsSocialLoginFlow,
   getUseBlockie,
   isSolanaAccount,
 } from '../../../selectors';
@@ -46,10 +47,8 @@ import {
   removeAccount,
   setAccountDetailsAddress,
 } from '../../../store/actions';
-import {
-  getWalletIdAndNameByAccountAddress,
-  WalletMetadata,
-} from '../../../selectors/multichain-accounts/account-tree';
+import { getWalletIdAndNameByAccountAddress } from '../../../selectors/multichain-accounts/account-tree';
+import { WalletMetadata } from '../../../selectors/multichain-accounts/account-tree.types';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
 import {
@@ -79,6 +78,7 @@ export const BaseAccountDetails = ({
   const chainId = useSelector(getCurrentChainId);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const deviceName = useSelector(getHardwareWalletType);
+  const socialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const {
     metadata: { name },
@@ -112,7 +112,8 @@ export const BaseAccountDetails = ({
 
   const isRemovable =
     account.metadata.keyring.type !== KeyringType.hdKeyTree &&
-    !isSolanaAccount(account);
+    !isSolanaAccount(account) &&
+    !socialLoginFlow; // social login accounts are not removable
 
   const [showAccountRemoveModal, setShowAccountRemoveModal] = useState(false);
 

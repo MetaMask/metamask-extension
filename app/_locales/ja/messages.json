@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "基本機能をオンにする"
   },
-  "bestPrice": {
-    "message": "最適な価格"
-  },
   "beta": {
     "message": "ベータ版"
   },
@@ -936,9 +933,6 @@
     "message": "$1を$2にスワップしています",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "利用規約"
-  },
   "bridgeTimingMinutes": {
     "message": "$1分",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "ビジー状態"
@@ -2664,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "ハニーポット"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "トランザクションの処理に必要な手数料の見積もりです。最大手数料は$1です。"
   },
   "howQuotesWork": {
     "message": "クォートの仕組み"
@@ -5439,12 +5427,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "複数のシークレットリカバリーフレーズの追加"
-  },
-  "slideRemoteModeDescription": {
-    "message": "コールドウォレットを無線で使用します"
-  },
-  "slideRemoteModeTitle": {
-    "message": "コールドストレージ、高速アクセス"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "同じアドレスでよりスマートな機能"

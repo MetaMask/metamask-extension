@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Activar la funcionalidad básica"
   },
-  "bestPrice": {
-    "message": "Mejor precio"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Intercambiando $1 por $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Términos"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 min",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Ocupado"
@@ -2664,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Honeypot"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Tarifa estimada necesaria para procesar la transacción. La tarifa máxima es $1."
   },
   "howQuotesWork": {
     "message": "Cómo funcionan las cotizaciones"
@@ -5439,12 +5427,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "Agregar varias frases secretas de recuperación"
-  },
-  "slideRemoteModeDescription": {
-    "message": "Use su monedero frío de forma inalámbrica"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Almacenamiento en frío, acceso rápido"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "La misma dirección, funciones más inteligentes"

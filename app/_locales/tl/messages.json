@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "I-on ang batayang kapakinabangan"
   },
-  "bestPrice": {
-    "message": "Pinakasulit na presyo"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Nagsa-swap ng $1 para sa $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Mga Tuntunin"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 min",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "Ang MetaMask ay dinisenyo at itinatag sa buong mundo."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Busy"
@@ -2664,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Tinatayang bayad na kinakailangan para maproseso ang transaksyon. Ang max na bayad ay $1."
   },
   "howQuotesWork": {
     "message": "Paano gumagana ang mga quote"
@@ -5439,12 +5427,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "Magdagdag ng maraming Lihim na Parirala sa Pagbawi"
-  },
-  "slideRemoteModeDescription": {
-    "message": "Gamitin ang cold wallet mo nang wireless"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold storage, mabilis na access"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Parehong address, mas matalinong mga feature"

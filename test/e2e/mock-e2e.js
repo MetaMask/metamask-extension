@@ -174,11 +174,9 @@ async function setupMocking(
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
 
-  // User Profile Metametrics
+  // User Profile Lineage
   await server
-    .forGet(
-      'https://authentication.api.cx.metamask.io/api/v2/profile/metametrics',
-    )
+    .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')
     .thenCallback(() => {
       return {
         statusCode: 200,

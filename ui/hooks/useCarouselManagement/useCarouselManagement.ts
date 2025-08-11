@@ -8,7 +8,7 @@ import { Platform } from '@metamask/profile-sync-controller/sdk';
 import { isSolanaAddress } from '../../../shared/lib/multichain/accounts';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
 import {
-  getUserProfileMetaMetrics as getUserProfileMetaMetricsAction,
+  getUserProfileLineage as getUserProfileLineageAction,
   updateSlides,
 } from '../../store/actions';
 import {
@@ -19,13 +19,11 @@ import {
   getSlides,
   getUseExternalServices,
 } from '../../selectors';
-import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
   FUND_SLIDE,
   BRIDGE_SLIDE,
   CARD_SLIDE,
   CASH_SLIDE,
-  REMOTE_MODE_SLIDE,
   SMART_ACCOUNT_UPGRADE_SLIDE,
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
@@ -73,7 +71,6 @@ export const useCarouselManagement = ({
   const slides: CarouselSlide[] = useSelector(getSlides);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
-  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const useExternalServices = useSelector(getUseExternalServices);
   const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
@@ -111,10 +108,6 @@ export const useCarouselManagement = ({
     ///: END:ONLY_INCLUDE_IF
     defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 
-    if (isRemoteModeEnabled) {
-      defaultSlides.unshift(REMOTE_MODE_SLIDE);
-    }
-
     // Handle sweepstakes slide
     const currentDate = testDate
       ? new Date(testDate)
@@ -147,9 +140,9 @@ export const useCarouselManagement = ({
         remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
       if (useExternalServices && showDownloadMobileAppSlide) {
-        const userProfileMetaMetrics = await getUserProfileMetaMetricsAction();
-        if (userProfileMetaMetrics) {
-          const isUserAvailableOnMobile = userProfileMetaMetrics.lineage.some(
+        const userProfileLineage = await getUserProfileLineageAction();
+        if (userProfileLineage) {
+          const isUserAvailableOnMobile = userProfileLineage.lineage.some(
             (lineage) => lineage.agent === Platform.MOBILE,
           );
 
@@ -216,7 +209,6 @@ export const useCarouselManagement = ({
   }, [
     dispatch,
     hasZeroBalance,
-    isRemoteModeEnabled,
     remoteFeatureFlags,
     testDate,
     inTest,

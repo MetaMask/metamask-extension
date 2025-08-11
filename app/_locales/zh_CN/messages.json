@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "开启基本功能"
   },
-  "bestPrice": {
-    "message": "最优价格"
-  },
   "beta": {
     "message": "测试版"
   },
@@ -936,9 +933,6 @@
     "message": "正在用 $1 兑换 $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "条款"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 分钟",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask 是在世界各地设计和建造的。"
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "忙碌中"
@@ -2664,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "蜜罐"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "处理交易所需的预估费用。最大费用为 $1。"
   },
   "howQuotesWork": {
     "message": "报价如何运作"
@@ -5439,12 +5427,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "添加多个助记词"
-  },
-  "slideRemoteModeDescription": {
-    "message": "无线使用您的冷钱包"
-  },
-  "slideRemoteModeTitle": {
-    "message": "冷存储，快速访问"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "地址相同，功能更加智能化"
