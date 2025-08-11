@@ -15958,28 +15958,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@whitespace/storybook-addon-html@npm:^5.1.6":
-  version: 5.1.6
-  resolution: "@whitespace/storybook-addon-html@npm:5.1.6"
-  peerDependencies:
-    "@storybook/addons": ^6.5.8 || ^7.0.12
-    "@storybook/api": ^6.5.8 || ^7.0.12
-    "@storybook/components": ^6.5.8 || ^7.0.12
-    "@storybook/core-events": ^6.5.8 || ^7.0.12
-    "@storybook/theming": ^6.5.8 || ^7.0.12
-    prettier: ^2.0.0
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-syntax-highlighter: ^15.0.0
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-dom:
-      optional: true
-  checksum: 10/7c7f5aae11d1d92aceecef8ff6d75c7a271166fcbb5c99d0bfb663651885692b8053226103a28eb76f36cb7952e33e5600c43ba59c7414299eb14924437e0f1c
-  languageName: node
-  linkType: hard
-
 "@xrplf/isomorphic@npm:^1.0.0, @xrplf/isomorphic@npm:^1.0.1":
   version: 1.0.1
   resolution: "@xrplf/isomorphic@npm:1.0.1"
@@ -32225,7 +32203,6 @@ __metadata:
     "@typescript-eslint/parser": "npm:^7.10.0"
     "@viem/anvil": "npm:^0.0.10"
     "@welldone-software/why-did-you-render": "npm:^8.0.3"
-    "@whitespace/storybook-addon-html": "npm:^5.1.6"
     "@zxing/browser": "npm:^0.1.5"
     "@zxing/library": "npm:0.21.3"
     addons-linter: "npm:^6.28.0"

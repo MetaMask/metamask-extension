@@ -559,7 +559,6 @@
     "@typescript-eslint/parser": "^7.10.0",
     "@viem/anvil": "^0.0.10",
     "@welldone-software/why-did-you-render": "^8.0.3",
-    "@whitespace/storybook-addon-html": "^5.1.6",
     "addons-linter": "^6.28.0",
     "autoprefixer": "^10.4.19",
     "axios": "^1.8.2",
