@@ -1,5 +1,5 @@
 import React, { Fragment, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../contexts/i18n';
 import Button from '../../../ui/button';
@@ -58,22 +58,22 @@ MMMMMMMMMMMMMMMMMm/....../mMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMmmmmmmmmMMMMMMMMMMMMMMMMMM`);
 
 /* eslint-disable no-irregular-whitespace */
-const EXPERIMENTAL_AREA = lineBreaksToBr(`█▀▀ ▄▀█ █░█ ▀█▀ █ █▀█ █▄░█ ▀  
-  █▄▄ █▀█ █▄█ ░█░ █ █▄█ █░▀█ ▄  
-  
-  █▀▀ ▀▄▀ █▀█ █▀▀ █▀█ █ █▀▄▀█ █▀▀ █▄░█ ▀█▀ ▄▀█ █░░  
-  ██▄ █░█ █▀▀ ██▄ █▀▄ █ █░▀░█ ██▄ █░▀█ ░█░ █▀█ █▄▄  
-  
+const EXPERIMENTAL_AREA = lineBreaksToBr(`█▀▀ ▄▀█ █░█ ▀█▀ █ █▀█ █▄░█ ▀ 
+  █▄▄ █▀█ █▄█ ░█░ █ █▄█ █░▀█ ▄ 
+
+  █▀▀ ▀▄▀ █▀█ █▀▀ █▀█ █ █▀▄▀█ █▀▀ █▄░█ ▀█▀ ▄▀█ █░░ 
+  ██▄ █░█ █▀▀ ██▄ █▀▄ █ █░▀░█ ██▄ █░▀█ ░█░ █▀█ █▄▄ 
+
   █▀ █▀█ █▀▀ ▀█▀ █░█░█ ▄▀█ █▀█ █▀▀
   ▄█ █▄█ █▀░ ░█░ ▀▄▀▄▀ █▀█ █▀▄ ██▄`);
 /* eslint-enable no-irregular-whitespace */
 
 export default function ExperimentalArea({ redirectTo }) {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onClick = () => {
-    history.push(redirectTo);
+    navigate(redirectTo);
   };
 
   return (

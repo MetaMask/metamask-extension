@@ -4,19 +4,17 @@ import configureMockStore from 'redux-mock-store';
 import { userEvent } from '@testing-library/user-event';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import ImportSrp from './import-srp';
 
-const mockHistoryReplace = jest.fn();
-const mockHistoryPush = jest.fn();
+const mockNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-    push: mockHistoryPush,
-  }),
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockNavigate,
+  };
+});
 
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -45,8 +43,11 @@ describe('Import SRP', () => {
     const mockStore = configureMockStore()(initializedMockState);
     renderWithProvider(<ImportSrp />, mockStore);
 
-    expect(mockHistoryReplace).toHaveBeenCalledWith(
+    expect(mockNavigate).toHaveBeenCalledWith(
       ONBOARDING_CREATE_PASSWORD_ROUTE,
+      {
+        replace: true,
+      },
     );
   });
 
@@ -85,9 +86,7 @@ describe('Import SRP', () => {
     fireEvent.click(confirmSrpButton);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
-    expect(mockHistoryPush).toHaveBeenCalledWith(
-      ONBOARDING_CREATE_PASSWORD_ROUTE,
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_CREATE_PASSWORD_ROUTE);
   });
 
   it('should input and submit srp', async () => {
@@ -114,8 +113,6 @@ describe('Import SRP', () => {
     fireEvent.click(confirmSrpButton);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
-    expect(mockHistoryPush).toHaveBeenCalledWith(
-      ONBOARDING_CREATE_PASSWORD_ROUTE,
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_CREATE_PASSWORD_ROUTE);
   });
 });

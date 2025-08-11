@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom-v5-compat';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -49,37 +49,38 @@ export default function OnboardingFlowSwitch() {
   );
 
   if (completedOnboarding) {
-    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+    return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
   if (seedPhraseBackedUp !== null || (isUnlocked && isSocialLoginFlow)) {
     return (
-      <Redirect
-        to={{
-          pathname: isParticipateInMetaMetricsSet
+      <Navigate
+        to={
+          isParticipateInMetaMetricsSet
             ? ONBOARDING_COMPLETION_ROUTE
-            : ONBOARDING_METAMETRICS,
-        }}
+            : ONBOARDING_METAMETRICS
+        }
+        replace
       />
     );
   }
 
   if (isUnlocked) {
-    return <Redirect to={{ pathname: LOCK_ROUTE }} />;
+    return <Navigate to={LOCK_ROUTE} replace />;
   }
 
   // TODO(ritave): Remove allow-list and only leave experimental_area exception
   if (!isInitialized && !isSocialLoginFlowInitialized) {
     let redirect;
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    redirect = <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
+    redirect = <Navigate to={ONBOARDING_EXPERIMENTAL_AREA} replace />;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
     redirect =
       getBrowserName() === PLATFORM_FIREFOX ? (
-        <Redirect to={{ pathname: ONBOARDING_METAMETRICS }} />
+        <Navigate to={ONBOARDING_METAMETRICS} replace />
       ) : (
-        <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />
+        <Navigate to={ONBOARDING_WELCOME_ROUTE} replace />
       );
     ///: END:ONLY_INCLUDE_IF
     return redirect;
@@ -89,8 +90,8 @@ export default function OnboardingFlowSwitch() {
     isSocialLoginFlowInitialized &&
     firstTimeFlowType === FirstTimeFlowType.socialCreate
   ) {
-    return <Redirect to={{ pathname: ONBOARDING_CREATE_PASSWORD_ROUTE }} />;
+    return <Navigate to={ONBOARDING_CREATE_PASSWORD_ROUTE} replace />;
   }
 
-  return <Redirect to={{ pathname: ONBOARDING_UNLOCK_ROUTE }} />;
+  return <Navigate to={ONBOARDING_UNLOCK_ROUTE} replace />;
 }

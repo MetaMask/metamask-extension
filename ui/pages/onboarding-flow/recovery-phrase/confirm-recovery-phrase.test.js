@@ -2,7 +2,7 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -17,14 +17,15 @@ jest.mock('../../../store/actions.ts', () => ({
   setSeedPhraseBackedUp: jest.fn().mockReturnValue(jest.fn()),
 }));
 
-const mockHistoryReplace = jest.fn();
+const mockNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockNavigate,
+    useLocation: () => ({ search: '' }),
+  };
+});
 
 // click and answer the srp quiz
 const clickAndAnswerSrpQuiz = (quizUnansweredChips) => {
@@ -193,7 +194,9 @@ describe('Confirm Recovery Phrase Component', () => {
     fireEvent.click(gotItButton);
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-    expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+      replace: true,
+    });
   });
 
   it('should go to Onboarding Completion page as a next step in firefox', async () => {
@@ -226,8 +229,8 @@ describe('Confirm Recovery Phrase Component', () => {
     fireEvent.click(getByText('Got it'));
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-    expect(mockHistoryReplace).toHaveBeenCalledWith(
-      ONBOARDING_COMPLETION_ROUTE,
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE, {
+      replace: true,
+    });
   });
 });

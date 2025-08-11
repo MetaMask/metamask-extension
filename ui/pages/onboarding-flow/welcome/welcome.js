@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -48,7 +48,7 @@ export default function OnboardingWelcome({
   setPageState,
 }) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
@@ -73,30 +73,30 @@ export default function OnboardingWelcome({
         firstTimeFlowType === FirstTimeFlowType.socialImport ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        history.replace(
+        navigate(
           isParticipateInMetaMetricsSet
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS,
         );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (getBrowserName() === PLATFORM_FIREFOX) {
-          history.replace(ONBOARDING_COMPLETION_ROUTE);
+          navigate(ONBOARDING_COMPLETION_ROUTE);
         } else {
-          history.replace(ONBOARDING_METAMETRICS);
+          navigate(ONBOARDING_METAMETRICS);
         }
       } else {
-        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
     } else if (isSocialLoginFlowInitialized) {
       if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+        navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
       } else {
-        history.replace(ONBOARDING_UNLOCK_ROUTE);
+        navigate(ONBOARDING_UNLOCK_ROUTE);
       }
     }
   }, [
     currentKeyring,
-    history,
+    navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
@@ -124,8 +124,8 @@ export default function OnboardingWelcome({
       parentContext: onboardingParentContext?.current,
     });
 
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  }, [dispatch, history, trackEvent, onboardingParentContext, bufferedTrace]);
+    navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
+  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
 
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -143,8 +143,8 @@ export default function OnboardingWelcome({
       parentContext: onboardingParentContext?.current,
     });
 
-    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-  }, [dispatch, history, trackEvent, onboardingParentContext, bufferedTrace]);
+    navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
 
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {
@@ -227,9 +227,9 @@ export default function OnboardingWelcome({
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
-          history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+          navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
         } else {
-          history.replace(ONBOARDING_ACCOUNT_EXIST);
+          navigate(ONBOARDING_ACCOUNT_EXIST);
         }
       } catch (error) {
         handleSocialLoginError(error, socialConnectionType);
@@ -241,7 +241,7 @@ export default function OnboardingWelcome({
       dispatch,
       handleSocialLogin,
       trackEvent,
-      history,
+      navigate,
       onboardingParentContext,
       handleSocialLoginError,
       bufferedTrace,
@@ -274,14 +274,14 @@ export default function OnboardingWelcome({
         });
 
         if (isNewUser) {
-          history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
+          navigate(ONBOARDING_ACCOUNT_NOT_FOUND);
         } else {
           bufferedTrace?.({
             name: TraceName.OnboardingExistingSocialLogin,
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
-          history.push(ONBOARDING_UNLOCK_ROUTE);
+          navigate(ONBOARDING_UNLOCK_ROUTE);
         }
       } catch (error) {
         handleSocialLoginError(error, socialConnectionType);
@@ -293,7 +293,7 @@ export default function OnboardingWelcome({
       dispatch,
       handleSocialLogin,
       trackEvent,
-      history,
+      navigate,
       onboardingParentContext,
       handleSocialLoginError,
       bufferedTrace,
