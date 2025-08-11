@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [13.0.1]
+### Fixed
+- fix: invalid refresh token error thrown when wallet was locked before some background requests completed (#34961)
+- fix: bridging to Solana without a Solana account failing on legacy extensions (#34943)
+- fix: polling rate being set to 1 minute instead of 10 minutes (#34883)
 
 ## [13.0.0]
 ### Added
