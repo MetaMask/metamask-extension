@@ -84,7 +84,7 @@ describe('Request Queueing chainId proxy sync', function () {
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
