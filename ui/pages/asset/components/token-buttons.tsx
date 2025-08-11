@@ -57,7 +57,7 @@ import {
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps,bitcoin)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 
@@ -234,6 +234,13 @@ const TokenButtons = ({
   const handleSwapOnClick = useCallback(async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
+      handleBridgeOnClick(true);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+    if (multichainChainId === MultichainNetworks.BITCOIN) {
       handleBridgeOnClick(true);
       return;
     }

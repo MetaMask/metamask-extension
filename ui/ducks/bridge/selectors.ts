@@ -1,5 +1,5 @@
 import type {
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps,bitcoin)
   NetworkConfiguration,
   ///: END:ONLY_INCLUDE_IF
   NetworkState,
@@ -39,7 +39,7 @@ import type { MultichainTransactionsControllerState } from '@metamask/multichain
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import {
   MultichainNetworks,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps,bitcoin)
   MULTICHAIN_PROVIDER_CONFIGS,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/multichain/networks';
@@ -123,6 +123,17 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
           rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
           defaultRpcEndpointIndex: 0,
           chainId: MultichainNetworks.SOLANA,
+        } as unknown as NetworkConfiguration,
+        {
+          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
+          blockExplorerUrls: [],
+          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN]
+            .nickname,
+          nativeCurrency:
+            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].ticker,
+          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+          defaultRpcEndpointIndex: 0,
+          chainId: MultichainNetworks.BITCOIN,
         } as unknown as NetworkConfiguration,
         ///: END:ONLY_INCLUDE_IF
       ],

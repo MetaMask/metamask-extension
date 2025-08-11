@@ -57,7 +57,7 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps,bitcoin)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 import { trace, TraceName } from '../../../../shared/lib/trace';
@@ -315,6 +315,13 @@ const CoinButtons = ({
     }
     ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
+      handleBridgeOnClick(true);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+    if (multichainChainId === MultichainNetworks.BITCOIN) {
       handleBridgeOnClick(true);
       return;
     }
