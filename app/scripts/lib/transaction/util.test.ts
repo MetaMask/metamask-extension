@@ -704,7 +704,7 @@ describe('Transaction Utils', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mapChainIdToSupportedEVMChainMock.mockReturnValue(undefined as any);
 
-        await addTransaction(
+        let transactionMeta = await addTransaction(
           {
             ...request,
             securityAlertsEnabled: true,
@@ -717,6 +717,26 @@ describe('Transaction Utils', () => {
         expect(mapChainIdToSupportedEVMChainMock).toHaveBeenCalledWith(
           '0xfake-chain-id',
         );
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+        expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
+
+        // Test that addTransaction continues even if mapChainIdToSupportedEVMChain throws an error
+        mapChainIdToSupportedEVMChainMock.mockImplementation(() => {
+          throw new Error('Invalid chain ID');
+        });
+
+        transactionMeta = await addTransaction(
+          {
+            ...request,
+            securityAlertsEnabled: true,
+            chainId: CHAIN_IDS.MAINNET,
+          },
+          getAddressSecurityAlertResponseMock,
+          addAddressSecurityAlertResponseMock,
+        );
+
+        expect(mapChainIdToSupportedEVMChainMock).toHaveBeenCalledTimes(2);
+        expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
         expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
       });
 

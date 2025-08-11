@@ -261,7 +261,14 @@ function scanAddressForTrustSignals(
   if (typeof to !== 'string') {
     return;
   }
-  const chain = mapChainIdToSupportedEVMChain(chainId);
+
+  let chain;
+  try {
+    chain = mapChainIdToSupportedEVMChain(chainId);
+  } catch (error) {
+    return;
+  }
+
   if (!chain) {
     return;
   }
