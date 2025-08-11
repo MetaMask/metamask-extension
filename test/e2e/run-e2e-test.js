@@ -166,6 +166,13 @@ async function main() {
       );
     }
   }
+
+  // In CI we sometimes get to this point without being ready to properly
+  // terminate the process. We haven't been able to figure out what is
+  // holding up the process. But this is a quick fix to ensure more
+  // stable CI going forward.
+  // eslint-disable-next-line node/no-process-exit
+  process.exit();
 }
 
 main().catch((error) => {
