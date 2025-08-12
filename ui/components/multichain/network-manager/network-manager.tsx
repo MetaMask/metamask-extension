@@ -7,10 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   MemoryRouter,
   Route,
-  Switch,
-  useHistory,
+  Routes,
+  useNavigate,
   useLocation,
-} from 'react-router-dom';
+} from 'react-router-dom-v5-compat';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
@@ -33,16 +33,16 @@ import { NetworkTabs } from './network-tabs';
 import { useNetworkManagerState } from './hooks/useNetworkManagerState';
 
 // Router content component
-const NetworkManagerRouter = () => {
+export const NetworkManagerRouter = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
 
   const { initialTab } = useNetworkManagerState();
 
   const handleNewNetwork = () => {
-    history.push('/add');
+    navigate('/add');
   };
 
   const [, evmNetworks] = useSelector(
@@ -83,13 +83,13 @@ const NetworkManagerRouter = () => {
         });
 
         if (location.pathname === '/edit-rpc') {
-          history.push('/edit');
+          navigate('/edit');
         } else {
-          history.push('/add');
+          navigate('/add');
         }
       }
     },
-    [history, networkFormState],
+    [navigate, networkFormState],
   );
 
   const handleAddExplorerUrl = useCallback(
@@ -109,121 +109,154 @@ const NetworkManagerRouter = () => {
               networkFormState.blockExplorers.blockExplorerUrls.length,
           });
           if (location.pathname === '/edit-explorer-url') {
-            history.push('/edit');
+            navigate('/edit');
           } else {
-            history.push('/add');
+            navigate('/add');
           }
           onComplete?.();
         }
       };
     },
-    [networkFormState, history],
+    [networkFormState, navigate],
   );
 
   const handleClose = () => {
     dispatch(hideModal());
-    history.push('/');
+    navigate('/');
   };
 
   const handleGoHome = () => {
-    history.push('/');
+    navigate('/');
   };
 
   const handleEditOnComplete = useCallback(() => {
-    history.push('/edit');
-  }, [history]);
+    navigate('/edit');
+  }, [navigate]);
 
   const handleAddOnComplete = useCallback(() => {
-    history.push('/add');
-  }, [history]);
+    navigate('/add');
+  }, [navigate]);
 
   return (
-    <Switch>
-      <Route path="/add">
-        <ModalHeader
-          onClose={handleClose}
-          onBack={handleGoHome}
-          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
-        >
-          {t('addNetwork')}
-        </ModalHeader>
-        <AddNetwork
-          networkFormState={networkFormState}
-          network={editedNetwork as UpdateNetworkFields}
-        />
-      </Route>
-      <Route path="/add-rpc">
-        <ModalHeader
-          onClose={handleClose}
-          onBack={handleNewNetwork}
-          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
-        >
-          {t('addRpcUrl')}
-        </ModalHeader>
-        <AddRpcUrlModal onAdded={handleAddRPC} />
-      </Route>
-      <Route path="/edit-rpc">
-        <ModalHeader
-          onClose={handleClose}
-          onBack={handleEditOnComplete}
-          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
-        >
-          {t('addRpcUrl')}
-        </ModalHeader>
-        <AddRpcUrlModal onAdded={handleAddRPC} />
-      </Route>
-      <Route path="/add-explorer-url">
-        <ModalHeader
-          onClose={handleClose}
-          onBack={handleNewNetwork}
-          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
-        >
-          {t('addBlockExplorerUrl')}
-        </ModalHeader>
-        <AddBlockExplorerModal
-          onAdded={handleAddExplorerUrl(handleAddOnComplete)}
-        />
-      </Route>
-      <Route path="/edit-explorer-url">
-        <ModalHeader
-          onClose={handleClose}
-          onBack={handleNewNetwork}
-          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
-        >
-          {t('addBlockExplorerUrl')}
-        </ModalHeader>
-        <AddBlockExplorerModal
-          onAdded={handleAddExplorerUrl(handleEditOnComplete)}
-        />
-      </Route>
-      <Route path="/edit">
-        <ModalHeader
-          onClose={handleClose}
-          onBack={handleGoHome}
-          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
-        >
-          {t('editNetwork')}
-        </ModalHeader>
-        <AddNetwork
-          networkFormState={networkFormState}
-          network={editedNetwork as UpdateNetworkFields}
-          isEdit={true}
-        />
-      </Route>
-      <Route path="/select-rpc">
-        <ModalHeader
-          onClose={handleClose}
-          onBack={handleGoHome}
-          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
-        >
-          {t('selectRpcUrl')}
-        </ModalHeader>
-        <SelectRpcUrlModal onNetworkChange={handleClose} />
-      </Route>
-      <Route path="/">
-        <NetworkTabs initialTab={initialTab} />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route
+        path="/add"
+        element={
+          <>
+            <ModalHeader
+              onClose={handleClose}
+              onBack={handleGoHome}
+              closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+            >
+              {t('addNetwork')}
+            </ModalHeader>
+            <AddNetwork
+              networkFormState={networkFormState}
+              network={editedNetwork as UpdateNetworkFields}
+            />
+          </>
+        }
+      />
+      <Route
+        path="/add-rpc"
+        element={
+          <>
+            <ModalHeader
+              onClose={handleClose}
+              onBack={handleNewNetwork}
+              closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+            >
+              {t('addRpcUrl')}
+            </ModalHeader>
+            <AddRpcUrlModal onAdded={handleAddRPC} />
+          </>
+        }
+      />
+      <Route
+        path="/edit-rpc"
+        element={
+          <>
+            <ModalHeader
+              onClose={handleClose}
+              onBack={handleEditOnComplete}
+              closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+            >
+              {t('addRpcUrl')}
+            </ModalHeader>
+            <AddRpcUrlModal onAdded={handleAddRPC} />
+          </>
+        }
+      />
+      <Route
+        path="/add-explorer-url"
+        element={
+          <>
+            <ModalHeader
+              onClose={handleClose}
+              onBack={handleNewNetwork}
+              closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+            >
+              {t('addBlockExplorerUrl')}
+            </ModalHeader>
+            <AddBlockExplorerModal
+              onAdded={handleAddExplorerUrl(handleAddOnComplete)}
+            />
+          </>
+        }
+      />
+      <Route
+        path="/edit-explorer-url"
+        element={
+          <>
+            <ModalHeader
+              onClose={handleClose}
+              onBack={handleNewNetwork}
+              closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+            >
+              {t('addBlockExplorerUrl')}
+            </ModalHeader>
+            <AddBlockExplorerModal
+              onAdded={handleAddExplorerUrl(handleEditOnComplete)}
+            />
+          </>
+        }
+      />
+      <Route
+        path="/edit"
+        element={
+          <>
+            <ModalHeader
+              onClose={handleClose}
+              onBack={handleGoHome}
+              closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+            >
+              {t('editNetwork')}
+            </ModalHeader>
+            <AddNetwork
+              networkFormState={networkFormState}
+              network={editedNetwork as UpdateNetworkFields}
+              isEdit={true}
+            />
+          </>
+        }
+      />
+      <Route
+        path="/select-rpc"
+        element={
+          <>
+            <ModalHeader
+              onClose={handleClose}
+              onBack={handleGoHome}
+              closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+            >
+              {t('selectRpcUrl')}
+            </ModalHeader>
+            <SelectRpcUrlModal onNetworkChange={handleClose} />
+          </>
+        }
+      />
+      <Route path="/" element={<NetworkTabs initialTab={initialTab} />} />
+    </Routes>
   );
 };
 
