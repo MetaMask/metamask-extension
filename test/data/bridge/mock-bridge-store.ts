@@ -67,6 +67,10 @@ export const createBridgeMockStore = ({
           suggestedMaxFeePerGas: '0.00018456',
           suggestedMaxPriorityFeePerGas: '0.0001',
         },
+        ['high']: {
+          suggestedMaxFeePerGas: '0.00018456',
+          suggestedMaxPriorityFeePerGas: '0.0001',
+        },
       },
       currencyRates: {
         ETH: { conversionRate: 2524.25 },
