@@ -4,7 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -269,24 +269,24 @@ describe('Ledger Swap', function () {
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             '0x15af1d78b58c40000',
           )) ?? console.error('localNodes is undefined or empty');
-          await loginWithoutBalanceValidation(driver, localNodes[0]);
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
           const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedTokenBalanceIsDisplayed('50', 'WETH');
-          await homePage.check_expectedTokenBalanceIsDisplayed('25', 'ETH');
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedTokenBalanceIsDisplayed('50', 'WETH');
+          await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
           // await driver.delay(100000000);
 
           // disable smart transactions
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_pageIsLoaded();
+          await headerNavbar.checkPageIsLoaded();
           await headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
 
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.clickAdvancedTab();
           const advancedSettingsPage = new AdvancedSettings(driver);
-          await advancedSettingsPage.check_pageIsLoaded();
+          await advancedSettingsPage.checkPageIsLoaded();
           await advancedSettingsPage.toggleSmartTransactions();
           await settingsPage.closeSettingsPage();
 
@@ -295,11 +295,11 @@ describe('Ledger Swap', function () {
           await assetListPage.clickOnAsset(testCase.sourceToken);
 
           const tokenOverviewPage = new TokenOverviewPage(driver);
-          await tokenOverviewPage.check_pageIsLoaded();
+          await tokenOverviewPage.checkPageIsLoaded();
           await tokenOverviewPage.clickSwap();
 
           const swapPage = new SwapPage(driver);
-          await swapPage.check_pageIsLoaded();
+          await swapPage.checkPageIsLoaded();
           await swapPage.enterSwapAmount(testCase.sourceAmount);
           await swapPage.selectDestinationToken(testCase.destinationToken);
 
@@ -307,7 +307,7 @@ describe('Ledger Swap', function () {
           await driver.delay(1500);
           await swapPage.submitSwap();
 
-          await homePage.check_expectedTokenBalanceIsDisplayed(
+          await homePage.checkExpectedTokenBalanceIsDisplayed(
             testCase.expectedWethBalance,
             'WETH',
           );
