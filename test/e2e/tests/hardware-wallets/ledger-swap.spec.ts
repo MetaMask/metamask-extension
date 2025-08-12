@@ -4,7 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -269,7 +269,7 @@ describe('Ledger Swap', function () {
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             '0x15af1d78b58c40000',
           )) ?? console.error('localNodes is undefined or empty');
-          await loginWithBalanceValidation(driver, localNodes[0]);
+          await loginWithoutBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
