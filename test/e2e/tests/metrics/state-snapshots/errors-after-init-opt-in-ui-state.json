@@ -23,6 +23,7 @@
     "externalServicesOnboardingToggleState": "boolean",
     "keyringRemovalSnapModal": "object",
     "showKeyringRemovalSnapModal": "boolean",
+    "showLockFailureToast": "boolean",
     "importTokensModalOpen": "boolean",
     "deprecatedNetworkModalOpen": "boolean",
     "accountDetail": "object",
