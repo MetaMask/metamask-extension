@@ -8,7 +8,6 @@ import {
   ButtonIconSize,
   IconName,
   Text,
-  Button,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -37,10 +36,9 @@ export const ReviewTokenStreamsPage = () => {
   const [networkName, setNetworkName] = useState('');
   const [totalTokenStreams, setTotalTokenStreams] = useState(0);
 
-  const { revokeGatorPermission, revokeGatorPermissionBatch } =
-    useRevokeGatorPermissions({
-      chainId,
-    });
+  const { revokeGatorPermission } = useRevokeGatorPermissions({
+    chainId,
+  });
 
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const nativeTokenStreams = useSelector((state) =>
@@ -63,6 +61,10 @@ export const ReviewTokenStreamsPage = () => {
     setTotalTokenStreams(nativeTokenStreams.length + erc20TokenStreams.length);
   }, [chainId, nativeTokenStreams, erc20TokenStreams, networks]);
 
+  const handleRevokeClick = async (stream) => {
+    await revokeGatorPermission(stream);
+  };
+
   const renderTokenStreams = (streams) =>
     streams.map((stream) => {
       const { permissionResponse, siteOrigin } = stream;
@@ -79,14 +81,10 @@ export const ReviewTokenStreamsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={async () => await revokeGatorPermission(stream)}
+          onRevokeClick={() => handleRevokeClick(stream)}
         />
       );
     });
-
-  const groupPermissions = (nativeStreams, erc20Streams) => {
-    return [...nativeStreams, ...erc20Streams];
-  };
 
   return (
     <Page className="main-container" data-testid="review-token-streams-page">
@@ -117,17 +115,6 @@ export const ReviewTokenStreamsPage = () => {
           <>
             {renderTokenStreams(nativeTokenStreams)}
             {renderTokenStreams(erc20TokenStreams)}
-
-            {/* Temporary button to revoke all token streams */}
-            <Button
-              onClick={async () => {
-                await revokeGatorPermissionBatch(
-                  groupPermissions(nativeTokenStreams, erc20TokenStreams),
-                );
-              }}
-            >
-              Revoke All
-            </Button>
           </>
         ) : (
           <Box

@@ -69,6 +69,10 @@ export const ReviewTokenSubscriptionsPage = () => {
     networks,
   ]);
 
+  const handleRevokeClick = async (stream) => {
+    await revokeGatorPermission(stream);
+  };
+
   const renderTokenSubscriptions = (subscriptions) =>
     subscriptions.map((subscription) => {
       const { permissionResponse, siteOrigin } = subscription;
@@ -84,7 +88,7 @@ export const ReviewTokenSubscriptionsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={async () => await revokeGatorPermission(subscription)}
+          onRevokeClick={() => handleRevokeClick(subscription)}
         />
       );
     });

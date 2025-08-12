@@ -278,22 +278,23 @@ export function useRevokeGatorPermissions({
     ): Promise<TransactionMeta[]> => {
       assertEmptyGatorPermission(gatorPermissions);
 
-      // TODO: We want to replace this with a batch 7702 transaction
+      // Make sure all gator permissions are on the same chain before revoking
+      for (const gatorPermission of gatorPermissions) {
+        assertChainId(gatorPermission);
+      }
+
+      // TODO: This is a temporary solution to revoke gator permissions sequentially
+      // We want to replace this with a batch 7702 transaction
       // so the user does not need to sequentially sign transactions
       const revokeTransactionMetas: TransactionMeta[] = [];
       for (const gatorPermission of gatorPermissions) {
-        assertChainId(gatorPermission);
         const transactionMeta = await addRevokeGatorPermissionTransaction(
           gatorPermission,
         );
         revokeTransactionMetas.push(transactionMeta);
       }
 
-      if (revokeTransactionMetas.length === 0) {
-        throw new Error('No transactions to add to batch');
-      }
-
-      setTransactionId(revokeTransactionMetas[0].id);
+      setTransactionId(revokeTransactionMetas[0]?.id);
 
       return revokeTransactionMetas;
     },
