@@ -238,8 +238,7 @@ export const useBridgeQueryParams = (
       !parsedFromAssetId ||
       !assetMetadataByAssetId ||
       !fromChain ||
-      !fromChains.length ||
-      !(selectedSolanaAccount || selectedEvmAccount)
+      !fromChains.length
     ) {
       return;
     }
