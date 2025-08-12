@@ -247,7 +247,7 @@ export const BridgeQuotesModal = ({
                             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                             // eslint-disable-next-line @typescript-eslint/naming-convention
                             usd_quoted_gas: Number(
-                              quote.gasFee?.effective?.usd,
+                              quote.gasFee?.effective?.usd ?? 0,
                             ),
                             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                             // eslint-disable-next-line @typescript-eslint/naming-convention
