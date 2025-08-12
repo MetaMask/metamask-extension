@@ -4822,11 +4822,18 @@ export default class MetamaskController extends EventEmitter {
     let isPasswordSynced = false;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     // check if the password is outdated
-    const isPasswordOutdated = isSocialLoginFlow
-      ? await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache: false,
-        })
-      : false;
+    let isPasswordOutdated = false;
+    if (isSocialLoginFlow) {
+      try {
+        isPasswordOutdated =
+          await this.seedlessOnboardingController.checkIsPasswordOutdated({
+            skipCache: false,
+          });
+      } catch (error) {
+        // we don't want to block the unlock flow if the password outdated check fails
+        log.error('error while checking if password is outdated', error);
+      }
+    }
 
     // if the flow is not social login or the password is not outdated,
     // we will proceed with the normal flow and use the password to unlock the vault
