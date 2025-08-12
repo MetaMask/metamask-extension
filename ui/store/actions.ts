@@ -2192,7 +2192,7 @@ export function lockMetamask(): ThunkAction<
       })
       .catch(() => {
         dispatch(hideLoadingIndication());
-        dispatch({ type: actionConstants.LOCK_METAMASK });
+        log.error('failed to lock metamask');
       });
   };
 }
