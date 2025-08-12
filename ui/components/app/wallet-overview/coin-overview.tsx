@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
-import log from 'loglevel';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
@@ -134,16 +133,6 @@ export const LegacyAggregatedBalance = ({
     balanceToDisplay = balance;
   } else {
     balanceToDisplay = totalFiatBalance;
-  }
-
-  if (process.env.NODE_ENV !== 'production') {
-    log.debug('[HomeBalance][Legacy] display', {
-      accountId: account.id,
-      usingFiat: !isNotAggregatedFiatBalance,
-      balance,
-      totalFiatBalance,
-      resolved: balanceToDisplay,
-    });
   }
 
   if (!balanceToDisplay) {
@@ -316,13 +305,6 @@ export const CoinOverview = ({
       ? renderNativeTokenView()
       : renderAggregatedView();
   };
-
-  if (process.env.NODE_ENV !== 'production') {
-    log.debug('[HomeBalance] gating', {
-      isEvm,
-      isMultichainAccountsState2Enabled,
-    });
-  }
 
   return (
     <WalletOverview
