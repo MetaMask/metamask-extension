@@ -22,6 +22,7 @@ import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import Spinner from '../spinner';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
 type AggregatedBalanceState2Props = {
   classPrefix: string;
@@ -49,11 +50,15 @@ export const AggregatedBalanceState2: React.FC<
     return selectBalanceForSelectedAccountGroup()(state as any);
   });
 
-  const allWalletsBalance = useSelector((state) => {
+  const accountTreeState = useSelector((state) => {
     const atc = (state as any)?.metamask?.AccountTreeController;
-    const hasTree = Boolean(atc?.accountTree?.wallets);
-    return hasTree ? selectBalanceForAllWallets()(state as any) : null;
+    return atc?.accountTree;
   });
+
+  console.log('accountTreeState', accountTreeState);
+
+  // Portfolio-level totals are safe to compute without ATC
+  const allWalletsBalance = useSelector(selectBalanceForAllWallets());
 
   // Resolve group by membership of the selected account (mobile parity)
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -99,10 +104,12 @@ export const AggregatedBalanceState2: React.FC<
     resolvedGroupBalance?.totalBalanceInUserCurrency ??
     allWalletsBalance?.totalBalanceInUserCurrency;
 
+  const fallbackCurrency = useSelector(getCurrentCurrency);
   const currency =
     selectedGroupBalance?.userCurrency ??
     resolvedGroupBalance?.userCurrency ??
-    allWalletsBalance?.userCurrency;
+    allWalletsBalance?.userCurrency ??
+    fallbackCurrency;
 
   if (typeof total !== 'number' || !currency) {
     return <Spinner className="loading-overlay__spinner" />;
