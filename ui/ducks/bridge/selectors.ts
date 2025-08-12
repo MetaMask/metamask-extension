@@ -293,11 +293,18 @@ const _getFromNativeBalance = createSelector(
 
 export const getFromTokenBalance = createSelector(
   getFromToken,
+  getFromChain,
   (state: BridgeAppState) => state.bridge.fromTokenBalance,
   getMultichainBalances,
   getSelectedInternalAccount,
-  (fromToken, fromTokenBalance, nonEvmBalancesByAccountId, { id }) => {
-    if (!fromToken) {
+  (
+    fromToken,
+    fromChain,
+    fromTokenBalance,
+    nonEvmBalancesByAccountId,
+    { id },
+  ) => {
+    if (!fromToken || !fromChain) {
       return null;
     }
     const { chainId, decimals, address, assetId } = fromToken;

@@ -519,13 +519,10 @@ const PrepareBridgePage = ({
 
       if (srcAsset && destAsset && destChainId) {
         dispatch(
-          setFromToken(
-            {
-              ...srcAsset,
-              chainId: srcChainId,
-            },
-            selectedEvmAccount?.address ?? '',
-          ),
+          setFromToken({
+            ...srcAsset,
+            chainId: srcChainId,
+          }),
         );
         // Set inputs to values from active quote
         dispatch(
@@ -580,9 +577,7 @@ const PrepareBridgePage = ({
               ...token,
               address: token.address ?? zeroAddress(),
             };
-            dispatch(
-              setFromToken(bridgeToken, selectedEvmAccount?.address ?? ''),
-            );
+            dispatch(setFromToken(bridgeToken));
             dispatch(setFromTokenInputValue(null));
             if (token.address === toToken?.address) {
               dispatch(setToToken(null));

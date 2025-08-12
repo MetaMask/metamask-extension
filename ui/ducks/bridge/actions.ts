@@ -3,7 +3,6 @@ import {
   type BridgeController,
   BridgeUserAction,
   formatChainIdToCaip,
-  formatChainIdToHex,
   isNativeAddress,
   isSolanaChainId,
   type RequiredEventContextFromClient,
@@ -29,7 +28,7 @@ import {
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setTxAlerts,
-  setEVMSrcTokenBalance,
+  setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
   setEVMSrcNativeBalance,
 } from './bridge';
 import { isNetworkAdded } from './utils';
@@ -37,7 +36,7 @@ import type { TokenPayload } from './types';
 
 const {
   setToChainId,
-  setFromToken: setFromToken_,
+  setFromToken,
   setToToken,
   setFromTokenInputValue,
   resetInputFields,
@@ -118,13 +117,11 @@ export const updateQuoteRequestParams = (
   };
 };
 
-const setFromToken = (
+export const setEVMSrcTokenBalance = (
   token: TokenPayload['payload'],
-  selectedAddress: string,
+  selectedAddress?: string,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(setFromToken_(token));
-
     if (token) {
       trace({
         name: TraceName.BridgeBalancesUpdated,
@@ -135,10 +132,10 @@ const setFromToken = (
         startTime: Date.now(),
       });
       await dispatch(
-        setEVMSrcTokenBalance({
+        setEVMSrcTokenBalance_({
           selectedAddress,
           tokenAddress: token.address,
-          chainId: formatChainIdToHex(token.chainId),
+          chainId: token.chainId,
         }),
       );
     }
@@ -185,17 +182,12 @@ export const setFromChain = ({
       await dispatch(
         setEVMSrcNativeBalance({
           selectedAddress: selectedEvmAccount.address,
-          chainId: formatChainIdToHex(networkConfig.chainId),
+          chainId: networkConfig.chainId,
         }),
       );
     }
     if (token) {
-      await dispatch(
-        setFromToken(
-          token,
-          selectedEvmAccount?.address ?? selectedSolanaAccount?.address ?? '',
-        ),
-      );
+      dispatch(setFromToken(token));
     }
   };
 };

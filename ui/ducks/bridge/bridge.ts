@@ -7,6 +7,8 @@ import {
   calcLatestSrcBalance,
   isSolanaChainId,
   isCrossChain,
+  formatChainIdToHex,
+  type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
 import type { Hex } from '@metamask/utils';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
@@ -58,7 +60,7 @@ const getBalanceString = async ({
 }: {
   selectedAddress?: string;
   tokenAddress: string;
-  chainId: Hex;
+  chainId: GenericQuoteRequest['srcChainId'];
 }) => {
   if (isSolanaChainId(chainId) || !selectedAddress) {
     return null;
@@ -68,7 +70,7 @@ const getBalanceString = async ({
       global.ethereumProvider,
       selectedAddress,
       tokenAddress,
-      chainId,
+      formatChainIdToHex(chainId),
     )
   )?.toString();
 };
@@ -81,7 +83,12 @@ export const setEVMSrcNativeBalance = createAsyncThunk(
   }: {
     selectedAddress: string;
     chainId: Hex;
-  }) => await getBalanceString({ selectedAddress, tokenAddress: '', chainId }),
+  }) =>
+    await getBalanceString({
+      selectedAddress,
+      tokenAddress: '',
+      chainId,
+    }),
 );
 
 export const setEVMSrcTokenBalance = createAsyncThunk(
@@ -201,9 +208,7 @@ const bridgeSlice = createSlice({
       });
     });
     builder.addCase(setEVMSrcNativeBalance.fulfilled, (state, action) => {
-      if (!isCrossChain(action.meta.arg.chainId, state.fromToken?.chainId)) {
-        state.fromNativeBalance = action.payload?.toString() ?? null;
-      }
+      state.fromNativeBalance = action.payload?.toString() ?? null;
       endTrace({
         name: TraceName.BridgeBalancesUpdated,
       });

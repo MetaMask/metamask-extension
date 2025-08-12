@@ -9,6 +9,7 @@ import {
 import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  isCrossChain,
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
@@ -20,6 +21,7 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
+  setEVMSrcTokenBalance,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
@@ -191,7 +193,7 @@ export const useBridgeQueryParams = (
         };
         // Only update if chain is different
         if (fromChainId === formatChainIdToCaip(network.chainId)) {
-          dispatch(setFromToken(token, evmAccount?.address ?? ''));
+          dispatch(setFromToken(token));
         } else {
           const targetChain = networks.find(
             (chain) => formatChainIdToCaip(chain.chainId) === fromChainId,
@@ -236,7 +238,8 @@ export const useBridgeQueryParams = (
       !parsedFromAssetId ||
       !assetMetadataByAssetId ||
       !fromChain ||
-      !fromChains.length
+      !fromChains.length ||
+      !(selectedSolanaAccount || selectedEvmAccount)
     ) {
       return;
     }
@@ -302,4 +305,25 @@ export const useBridgeQueryParams = (
       }
     }
   }, [parsedAmount, parsedFromAssetId, fromToken]);
+
+  // Set src token balance after url params are applied
+  useEffect(() => {
+    if (
+      // Wait for url params to be applied
+      !parsedFromAssetId &&
+      !searchParams.get(BridgeQueryParams.FROM) &&
+      fromToken &&
+      // Wait for network to be changed if needed
+      !isCrossChain(fromToken.chainId, fromChain?.chainId) &&
+      selectedEvmAccount
+    ) {
+      dispatch(setEVMSrcTokenBalance(fromToken, selectedEvmAccount.address));
+    }
+  }, [
+    parsedFromAssetId,
+    selectedEvmAccount,
+    fromToken,
+    fromChain,
+    searchParams,
+  ]);
 };
