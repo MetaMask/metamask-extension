@@ -56,6 +56,7 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
+import AggregatedBalanceState2 from '../../ui/aggregated-balance/aggregated-balance-state2';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
@@ -316,7 +317,7 @@ export const CoinOverview = ({
           <div className={`${classPrefix}-overview__balance`}>
             <div className={`${classPrefix}-overview__primary-container`}>
               {isMultichainAccountsState2Enabled && (
-                <AggregatedBalance
+                <AggregatedBalanceState2
                   classPrefix={classPrefix}
                   balanceIsCached={balanceIsCached}
                   handleSensitiveToggle={handleSensitiveToggle}
