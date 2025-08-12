@@ -7,7 +7,7 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { SolScope } from '@metamask/keyring-api';
+import { SolAccountType, SolScope } from '@metamask/keyring-api';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
@@ -1144,7 +1144,7 @@ describe('Bridge selectors', () => {
             address: zeroAddress(),
             chainId: formatChainIdToCaip(ChainId.SOLANA),
           },
-          srcTokenInputValue: '1000000000',
+          fromTokenInputValue: '1000000000',
           fromNativeBalance: null,
         },
         bridgeStateOverrides: {
@@ -1161,7 +1161,7 @@ describe('Bridge selectors', () => {
             accounts: {
               'test-account-id': {
                 id: 'test-account-id',
-                type: 'solana',
+                type: SolAccountType.DataAccount,
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 scopes: [SolScope.Mainnet],
               },
@@ -1170,11 +1170,21 @@ describe('Bridge selectors', () => {
           balances: {
             'test-account-id': {
               [getNativeAssetForChainId(ChainId.SOLANA).assetId]: {
-                amount: '1',
+                amount: '.99',
               },
             },
           },
           selectedMultichainNetworkChainId: formatChainIdToCaip(ChainId.SOLANA),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
         },
       });
       const result = getValidationErrors(state as never);
@@ -1204,7 +1214,7 @@ describe('Bridge selectors', () => {
             accounts: {
               'test-account-id': {
                 id: 'test-account-id',
-                type: 'solana',
+                type: SolAccountType.DataAccount,
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 scopes: [SolScope.Mainnet],
               },
@@ -1250,7 +1260,7 @@ describe('Bridge selectors', () => {
             accounts: {
               'test-account-id': {
                 id: 'test-account-id',
-                type: 'solana',
+                type: SolAccountType.DataAccount,
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 scopes: [SolScope.Mainnet],
               },
@@ -1836,7 +1846,7 @@ describe('Bridge selectors', () => {
             accounts: {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
-                type: 'solana:data-account',
+                type: SolAccountType.DataAccount,
                 scopes: [SolScope.Mainnet],
               },
             },
@@ -1894,7 +1904,7 @@ describe('Bridge selectors', () => {
             accounts: {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
-                type: 'solana:data-account',
+                type: SolAccountType.DataAccount,
                 scopes: [SolScope.Mainnet],
               },
             },
@@ -2090,7 +2100,7 @@ describe('Bridge selectors', () => {
             accounts: {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
-                type: 'solana:data-account',
+                type: SolAccountType.DataAccount,
                 scopes: [SolScope.Mainnet],
               },
             },
