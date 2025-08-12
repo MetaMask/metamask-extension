@@ -6557,9 +6557,10 @@ export default class MetamaskController extends EventEmitter {
     if (syncWithSocial) {
       const releaseLock = await this.seedlessOperationMutex.acquire();
       try {
-        await this.seedlessOnboardingController.addNewPrivateKeyBackup(
-          privateKey,
+        await this.seedlessOnboardingController.addNewSecretData(
           keyringId,
+          bufferedPrivateKey,
+          SecretType.PrivateKey,
         );
       } catch (error) {
         log.error('Error adding new private key backup', error);
