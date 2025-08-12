@@ -10,7 +10,7 @@ import {
   formatChainIdToHex,
   type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
-import type { Hex } from '@metamask/utils';
+import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { endTrace, TraceName } from '../../../shared/lib/trace';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
@@ -80,13 +80,10 @@ export const setEVMSrcNativeBalance = createAsyncThunk(
   async ({
     selectedAddress,
     chainId,
-  }: {
-    selectedAddress: string;
-    chainId: Hex;
-  }) =>
+  }: Omit<Parameters<typeof getBalanceString>[0], 'tokenAddress'>) =>
     await getBalanceString({
       selectedAddress,
-      tokenAddress: '',
+      tokenAddress: zeroAddress(),
       chainId,
     }),
 );

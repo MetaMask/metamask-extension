@@ -60,6 +60,7 @@ export {
   setWasTxDeclined,
   setSlippage,
   setTxAlerts,
+  setEVMSrcNativeBalance,
 };
 
 const callBridgeControllerMethod = (

@@ -22,6 +22,7 @@ import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
   setEVMSrcTokenBalance,
+  setEVMSrcNativeBalance,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
@@ -317,6 +318,12 @@ export const useBridgeQueryParams = (
       selectedEvmAccount
     ) {
       dispatch(setEVMSrcTokenBalance(fromToken, selectedEvmAccount.address));
+      dispatch(
+        setEVMSrcNativeBalance({
+          selectedAddress: selectedEvmAccount.address,
+          chainId: fromToken.chainId,
+        }),
+      );
     }
   }, [
     parsedFromAssetId,
