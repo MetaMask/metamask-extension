@@ -1,3 +1,4 @@
+import { sep } from 'node:path';
 import type { LoaderContext } from 'webpack';
 import { type JSONSchema7 } from 'schema-utils/declarations/validate';
 import { validate } from 'schema-utils';
@@ -188,7 +189,7 @@ export default function swcLoader(this: Context, src: string, srcMap?: string) {
       // for debugging.
       // [0]: https://github.com/trezor/trezor-suite/issues/20298
       // [1]: https://github.com/swc-project/swc/issues/9416
-      this.resourcePath.includes('/node_modules/') ? false : srcMap,
+      this.resourcePath.includes(`${sep}node_modules${sep}`) ? false : srcMap,
     sourceFileName: this.resourcePath,
     sourceMaps: this.sourceMap,
     swcrc: false,

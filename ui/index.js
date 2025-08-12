@@ -6,6 +6,7 @@ import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
+import { captureException } from '../shared/lib/sentry';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
@@ -41,6 +42,10 @@ import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
+export {
+  displayCriticalError,
+  CriticalErrorTranslationKey,
+} from './helpers/utils/display-critical-error';
 
 const METHOD_START_UI_SYNC = 'startUISync';
 
@@ -284,7 +289,7 @@ function setupStateHooks(store) {
   ) {
     /**
      * The following stateHook is a method intended to throw an error, used in
-     * our E2E test to ensure that errors are attempted to be sent to sentry.
+     * manual and E2E tests to ensure that errors are attempted to be sent to sentry.
      *
      * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
      */
@@ -295,18 +300,18 @@ function setupStateHooks(store) {
     };
     /**
      * The following stateHook is a method intended to capture an error, used in
-     * our E2E test to ensure that errors are correctly sent to sentry.
+     * manual and E2E tests to ensure that errors are correctly sent to sentry.
      *
      * @param {string} [msg] - The error message to capture, defaults to 'Test Error'
      */
     window.stateHooks.captureTestError = async function (msg = 'Test Error') {
       const error = new Error(msg);
       error.name = 'TestError';
-      global.sentry.captureException(error);
+      captureException(error);
     };
     /**
      * The following stateHook is a method intended to throw an error in the
-     * background, used in our E2E test to ensure that errors are attempted to be
+     * background, used in manual and E2E tests to ensure that errors are attempted to be
      * sent to sentry.
      *
      * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
@@ -318,7 +323,7 @@ function setupStateHooks(store) {
     };
     /**
      * The following stateHook is a method intended to capture an error in the background, used
-     * in our E2E test to ensure that errors are correctly sent to sentry.
+     * in manual and E2E tests to ensure that errors are correctly sent to sentry.
      *
      * @param {string} [msg] - The error message to capture, defaults to 'Test Error'
      */

@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "बेसिक फंक्शनलिटी को चालू करें"
   },
-  "bestPrice": {
-    "message": "सबसे अच्छी कीमत"
-  },
   "beta": {
     "message": "बीटा"
   },
@@ -936,9 +933,6 @@
     "message": "$1 को $2 से स्वैप किया जा रहा है",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "नियम"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 न्यूनतम",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask दुनिया भर में डिज़ाइन किया और बनाया गया है।"
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "बिज़ी"
@@ -2392,10 +2383,6 @@
   "floatAmountToken": {
     "message": "टोकन अमाउंट एक पूर्णांक होना चाहिए"
   },
-  "followUsOnX": {
-    "message": "$1 पर हमें फॉलो करें",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "निषिद्ध IPFS गेटवे: कृपया एक CID गेटवे बताएं"
   },
@@ -2668,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "हनी पॉट"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "ट्रांसेक्शन को प्रोसेस करने के लिए आवश्यक अनुमानित शुल्क। अधिकतम शुल्क $1 है।"
   },
   "howQuotesWork": {
     "message": "कोट्स कैसे काम करते हैं"
@@ -5444,12 +5428,6 @@
   "slideMultiSrpTitle": {
     "message": "कई सीक्रेट रिकवरी फ्रेज़ जोड़ें"
   },
-  "slideRemoteModeDescription": {
-    "message": "अपने कोल्ड वॉलेट का वायरलेस तरीके से उपयोग करें"
-  },
-  "slideRemoteModeTitle": {
-    "message": "कोल्ड स्टोरेज, तेज़ पहुंच"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "वही एड्रेस, और स्मार्ट फीचर्स"
   },
@@ -6828,9 +6806,6 @@
   "troubleConnectingToWallet": {
     "message": "हमें आपके $1 से कनेक्ट करने में परेशानी हुई, $2 की समीक्षा करने की कोशिश करें और दोबारा कोशिश करें।",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask को शुरू करने में परेशानी आई। यह गड़बड़ी रुक-रुक कर हो सकती है, इसलिए एक्सटेंशन को फिर से शुरू करके देखें।"
   },
   "tryAgain": {
     "message": "फिर से कोशिश करें"

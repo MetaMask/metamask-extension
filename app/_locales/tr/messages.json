@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Temel işlevselliği aç"
   },
-  "bestPrice": {
-    "message": "En iyi fiyat"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "$1 ile $2 swap ediliyor",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Şartlar"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 dk",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask dünya çapında geliştirilmiş ve yapılmıştır."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Meşgul"
@@ -2392,10 +2383,6 @@
   "floatAmountToken": {
     "message": "Token miktarı tam sayı olmalıdır"
   },
-  "followUsOnX": {
-    "message": "Bizi $1 üzerinden takip edin",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Yasaklı IPFS Ağ Geçidi: Lütfen bir CID ağ geçidi belirtin"
   },
@@ -2668,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Bal Tuzağı"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "İşlemi gerçekleştirmek için tahmini ücret gereklidir. Maksimum ücret $1."
   },
   "howQuotesWork": {
     "message": "Teklifler nasıl çalışır?"
@@ -5444,12 +5428,6 @@
   "slideMultiSrpTitle": {
     "message": "Birden fazla Gizli Kurtarma İfadesi ekleyin"
   },
-  "slideRemoteModeDescription": {
-    "message": "Soğuk cüzdanınızı kablosuz olarak kullanın"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Soğuk depolama, hızlı erişim"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Aynı adres, daha akıllı özellikler"
   },
@@ -6828,9 +6806,6 @@
   "troubleConnectingToWallet": {
     "message": "$1 ile bağlantı kurmada sorun yaşıyoruz, $2 kısmını inceleyip tekrar deneyin.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
   },
   "tryAgain": {
     "message": "Tekrar dene"

@@ -168,7 +168,7 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  await testDapp.check_successSignPermit(publicAddress);
+  await testDapp.checkSuccessSignPermit(publicAddress);
   await testDapp.verifySignPermitResult(expectedSignature);
   await testDapp.verifySignPermitResultR(expectedR);
   await testDapp.verifySignPermitResultS(expectedS);
