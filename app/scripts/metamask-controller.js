@@ -6558,7 +6558,6 @@ export default class MetamaskController extends EventEmitter {
       const releaseLock = await this.seedlessOperationMutex.acquire();
       try {
         await this.seedlessOnboardingController.addNewSecretData(
-          keyringId,
           bufferedPrivateKey,
           SecretType.PrivateKey,
         );
