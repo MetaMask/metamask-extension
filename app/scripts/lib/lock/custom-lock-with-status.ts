@@ -9,6 +9,7 @@ import { Mutex } from 'await-semaphore';
  */
 export default class LockWithStatus {
   private isLockAcquired: boolean;
+
   private mutex: Mutex;
 
   constructor() {
