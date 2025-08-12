@@ -5,11 +5,6 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 
 import CrossChainSwap from '../index';
-import { MemoryRouter } from 'react-router-dom';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import { RequestStatus } from '@metamask/bridge-controller';
 
@@ -20,11 +15,7 @@ const storybook = {
 
 const Wrapper = ({ children }) => (
   <div style={{ height: '600px' }}>
-    <MemoryRouter
-      initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
-    >
-      {children}
-    </MemoryRouter>
+    {children}
   </div>
 );
 

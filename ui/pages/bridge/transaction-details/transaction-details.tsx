@@ -1,6 +1,10 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams, useLocation } from 'react-router-dom';
+import {
+  useNavigate,
+  useParams,
+  useLocation,
+} from 'react-router-dom-v5-compat';
 import {
   TransactionStatus,
   TransactionType,
@@ -80,7 +84,7 @@ const CrossChainSwapTxDetails = () => {
   const locale = useSelector(getIntlLocale);
   const trackEvent = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
   const selectedAddressTxList = useSelector(
@@ -223,7 +227,7 @@ const CrossChainSwapTxDetails = () => {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
           />
         }
       >

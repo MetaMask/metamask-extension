@@ -1,11 +1,11 @@
 import React from 'react';
 import { act } from '@testing-library/react';
-import * as reactRouterUtils from 'react-router-dom-v5-compat';
 import * as ReactReduxModule from 'react-redux';
 import { userEvent } from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderHook } from '@testing-library/react-hooks';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { fireEvent } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -15,6 +15,15 @@ import * as ActionsModule from '../../../store/actions';
 import PrepareBridgePage, {
   useEnableMissingNetwork,
 } from './prepare-bridge-page';
+
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('PrepareBridgePage', () => {
   beforeAll(() => {
@@ -31,9 +40,7 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should render the component, with initial state', async () => {
-    jest
-      .spyOn(reactRouterUtils, 'useSearchParams')
-      .mockReturnValue([{ get: () => null }] as never);
+    mockUseNavigate.mockReturnValue(jest.fn());
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         extensionConfig: {
@@ -86,9 +93,7 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should render the component, with inputs set', async () => {
-    jest
-      .spyOn(reactRouterUtils, 'useSearchParams')
-      .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
+    mockUseNavigate.mockReturnValue(jest.fn());
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         extensionConfig: {
@@ -202,9 +207,7 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should validate src amount on change', async () => {
-    jest
-      .spyOn(reactRouterUtils, 'useSearchParams')
-      .mockReturnValue([{ get: () => null }] as never);
+    mockUseNavigate.mockReturnValue(jest.fn());
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         extensionConfig: {
