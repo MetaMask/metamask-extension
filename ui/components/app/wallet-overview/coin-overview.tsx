@@ -41,6 +41,7 @@ import {
   getParticipateInMetaMetrics,
   getEnabledNetworksByNamespace,
   isGlobalNetworkSelectorRemoved,
+  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
@@ -52,12 +53,11 @@ import {
 import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { AggregatedBalanceState2 } from '../../ui/aggregated-balance/aggregated-balance-state2';
+import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
-import AggregatedBalanceState2 from '../../ui/aggregated-balance/aggregated-balance-state2';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -231,6 +231,10 @@ export const CoinOverview = ({
     dispatch(setPrivacyMode(!privacyMode));
   };
 
+  console.log(
+    'isMultichainAccountsState2Enabled',
+    isMultichainAccountsState2Enabled,
+  );
   const handlePortfolioOnClick = useCallback(() => {
     const url = getPortfolioUrl(
       'explore/tokens',

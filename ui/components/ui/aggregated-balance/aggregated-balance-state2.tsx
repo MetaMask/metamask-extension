@@ -36,11 +36,18 @@ export const AggregatedBalanceState2: React.FC<
   const locale = useSelector(getIntlLocale);
 
   const { selectBalanceForSelectedAccountGroup } = balanceSelectors;
-  const selectedGroupBalance = useSelector(
-    selectBalanceForSelectedAccountGroup(),
-  );
+  const selectedGroupBalance = useSelector((state) => {
+    const atc = (state as any)?.metamask?.AccountTreeController;
+    const selectedGroupId = atc?.accountTree?.selectedAccountGroup;
+    if (!selectedGroupId) {
+      return null;
+    }
+    return selectBalanceForSelectedAccountGroup()(state as any);
+  });
 
+  console.log('selectedGroupBalance', selectedGroupBalance);
   const total = selectedGroupBalance?.totalBalanceInUserCurrency;
+
   const currency = selectedGroupBalance?.userCurrency;
 
   if (typeof total !== 'number' || !currency) {
