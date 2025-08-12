@@ -53,7 +53,6 @@ import {
   getIsUnifiedUIEnabled,
   getIsSwap,
   BridgeAppState,
-  isBridgeSolanaEnabled,
   getTxAlerts,
 } from '../../../ducks/bridge/selectors';
 import {
@@ -118,7 +117,6 @@ import {
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
-import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
@@ -320,7 +318,7 @@ const PrepareBridgePage = ({
           };
         })()
       : null,
-    selectedDestinationAccount !== null && 'id' in selectedDestinationAccount
+    selectedDestinationAccount && 'id' in selectedDestinationAccount
       ? selectedDestinationAccount.id
       : undefined,
   );
@@ -559,8 +557,6 @@ const PrepareBridgePage = ({
   const occurrences = toToken?.occurrences ?? toToken?.aggregators?.length;
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
-
-  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
@@ -846,7 +842,7 @@ const PrepareBridgePage = ({
             }}
           />
 
-          {isSolanaBridgeEnabled && isToOrFromSolana && (
+          {isToOrFromSolana && (
             <Box padding={6} paddingBottom={3} paddingTop={3}>
               <DestinationAccountPicker
                 onAccountSelect={setSelectedDestinationAccount}
@@ -883,7 +879,7 @@ const PrepareBridgePage = ({
                 paddingInline: 16,
                 position: 'relative',
                 overflow: 'hidden',
-                ...(activeQuote && !wasTxDeclined && isSolanaBridgeEnabled
+                ...(activeQuote && !wasTxDeclined
                   ? {
                       boxShadow:
                         'var(--shadow-size-sm) var(--color-shadow-default)',
@@ -907,15 +903,11 @@ const PrepareBridgePage = ({
                   backgroundColor={BackgroundColor.primaryMuted}
                 />
               )}
-              {!wasTxDeclined &&
-                activeQuote &&
-                (isSolanaBridgeEnabled ? (
-                  <MultichainBridgeQuoteCard
-                    onOpenSlippageModal={onOpenSettings}
-                  />
-                ) : (
-                  <BridgeQuoteCard onOpenSlippageModal={onOpenSettings} />
-                ))}
+              {!wasTxDeclined && activeQuote && (
+                <MultichainBridgeQuoteCard
+                  onOpenSlippageModal={onOpenSettings}
+                />
+              )}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
                   nativeAssetBalance={nativeAssetBalance}
@@ -937,9 +929,7 @@ const PrepareBridgePage = ({
                     });
                   }}
                   needsDestinationAddress={
-                    isSolanaBridgeEnabled &&
-                    isToOrFromSolana &&
-                    !selectedDestinationAccount
+                    isToOrFromSolana && !selectedDestinationAccount
                   }
                 />
                 {activeQuote &&

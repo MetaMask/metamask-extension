@@ -29,9 +29,10 @@ import {
  * @param state.metamask.accountTree - Account tree state object.
  * @returns Account tree state.
  */
-export const getAccountTree = (
-  state: MultichainAccountsState,
-): AccountTreeState => state.metamask.accountTree;
+export const getAccountTree = createDeepEqualSelector(
+  (state: MultichainAccountsState) => state.metamask.accountTree,
+  (accountTree: AccountTreeState): AccountTreeState => accountTree,
+);
 
 /**
  * Common function to create consolidated wallets with accounts.
@@ -83,6 +84,7 @@ const createConsolidatedWallets = (
     (consolidatedWallets: ConsolidatedWallets, [walletId, wallet]) => {
       consolidatedWallets[walletId as AccountWalletId] = {
         id: walletId as AccountWalletId,
+        type: wallet.type,
         metadata: wallet.metadata,
         groups: {},
       };
@@ -123,6 +125,7 @@ const createConsolidatedWallets = (
           groupId as AccountGroupId
         ] = {
           id: groupId as AccountGroupId,
+          type: group.type,
           metadata: group.metadata,
           accounts: accountsFromGroup,
         };
