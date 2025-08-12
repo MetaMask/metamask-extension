@@ -21,6 +21,7 @@ export class IndexedDBStore {
   #db: IDBDatabase | null = null;
 
   #isPersistedBackingStore: boolean | null = null;
+
   /**
    * Indicates whether the store is backed by a persistent IndexedDB instance,
    * or an in-memory store. Returns `null` if the database hasn't been opened.
@@ -41,6 +42,7 @@ export class IndexedDBStore {
   async open(name: string, version: number): Promise<void> {
     return this._open(name, version, indexedDB);
   }
+
   private async _open(
     name: string,
     version: number,
