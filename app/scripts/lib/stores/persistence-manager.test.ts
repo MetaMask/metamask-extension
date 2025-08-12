@@ -287,8 +287,6 @@ describe('PersistenceManager', () => {
     });
 
     it('Fails as expected', async () => {
-      // when we catch the DOMException here we log it. let's check that we log
-      // the right things
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
@@ -297,28 +295,39 @@ describe('PersistenceManager', () => {
         'InvalidStateError',
       );
       breakIndexedDbWithError(domException);
+
       brokenManager = new PersistenceManager({
         localStore: new ExtensionStore(),
       });
       await brokenManager.open();
+
       // We don't have a valid indexedDB database to use, so `getBackup` now
       // returns `undefined`
       expect(await brokenManager.getBackup()).toBeUndefined();
+
+      expect(mockedCaptureException).toHaveBeenCalledWith(domException);
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Could not open backup database; automatic vault recovery will not be available.',
       );
       expect(consoleErrorSpy).toHaveBeenCalledWith(domException);
-      expect(mockedCaptureException).toHaveBeenCalledWith(domException);
     });
 
     it('Fails as expected', async () => {
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
       const randomError = new Error('Random Error');
       breakIndexedDbWithError(randomError);
+
       brokenManager = new PersistenceManager({
         localStore: new ExtensionStore(),
       });
       await expect(brokenManager.open()).rejects.toThrow(randomError);
-      expect(mockedCaptureException).toHaveBeenCalledWith(randomError);
+      // in the application any other start up errors would be handled
+      // further up the stack. Logging them here would be redundant.
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
   });
 });

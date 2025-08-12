@@ -174,6 +174,7 @@ export class PersistenceManager {
           );
           console.error(error);
         } else {
+          // rethrow since we couldn't handle it here.
           throw error;
         }
       }
