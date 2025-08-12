@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { balanceSelectors } from '@metamask/assets-controllers';
+import log from 'loglevel';
 
 import {
   AlignItems,
@@ -45,6 +46,14 @@ export const AggregatedBalanceState2: React.FC<
 
   if (typeof total !== 'number' || !currency) {
     return <Spinner className="loading-overlay__spinner" />;
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    log.debug('[HomeBalance][State2] selected group balance', {
+      groupId: selectedGroupBalance?.groupId,
+      total,
+      currency,
+    });
   }
 
   const formattedFiatDisplay = formatWithThreshold(total, 0.0, locale, {
