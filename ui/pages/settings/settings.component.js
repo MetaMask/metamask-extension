@@ -5,6 +5,7 @@ import {
   Route,
   matchPath,
   Navigate,
+  useParams,
 } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
@@ -83,7 +84,13 @@ NetworkRouteHandler.propTypes = {
   onMount: PropTypes.func.isRequired,
 };
 
-class SettingsPage extends PureComponent {
+// Wrapper component to extract snapId from URL params and pass to SnapSettingsRenderer
+const SnapSettingsRendererWrapper = () => {
+  const { snapId } = useParams();
+  return <SnapSettingsRenderer snapId={snapId} />;
+};
+
+export default class SettingsPage extends PureComponent {
   static propTypes = {
     addNewNetwork: PropTypes.bool,
     addressName: PropTypes.string,
@@ -467,7 +474,7 @@ class SettingsPage extends PureComponent {
         <Route path={ABOUT_US_ROUTE} element={<InfoTab />} />
         <Route
           path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
-          element={<SnapSettingsRenderer />}
+          element={<SnapSettingsRendererWrapper />}
         />
         <Route path={ADVANCED_ROUTE} element={<AdvancedTab />} />
         <Route path={BACKUPANDSYNC_ROUTE} element={<BackupAndSyncTab />} />
@@ -533,5 +540,3 @@ class SettingsPage extends PureComponent {
     );
   }
 }
-
-export default SettingsPage;
