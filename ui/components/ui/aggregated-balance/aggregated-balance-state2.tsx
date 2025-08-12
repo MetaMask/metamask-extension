@@ -29,19 +29,19 @@ type AggregatedBalanceState2Props = {
   handleSensitiveToggle: () => void;
 };
 
-export const AggregatedBalanceState2: React.FC<AggregatedBalanceState2Props> = ({
-  classPrefix,
-  balanceIsCached,
-  handleSensitiveToggle,
-}) => {
+export const AggregatedBalanceState2: React.FC<
+  AggregatedBalanceState2Props
+> = ({ classPrefix, balanceIsCached, handleSensitiveToggle }) => {
   const { privacyMode } = useSelector(getPreferences);
   const locale = useSelector(getIntlLocale);
 
-  const { selectBalanceForAllWallets } = balanceSelectors;
-  const allWalletsBalance = useSelector(selectBalanceForAllWallets());
+  const { selectBalanceForSelectedAccountGroup } = balanceSelectors;
+  const selectedGroupBalance = useSelector(
+    selectBalanceForSelectedAccountGroup(),
+  );
 
-  const total = allWalletsBalance?.totalBalanceInUserCurrency;
-  const currency = allWalletsBalance?.userCurrency;
+  const total = selectedGroupBalance?.totalBalanceInUserCurrency;
+  const currency = selectedGroupBalance?.userCurrency;
 
   if (typeof total !== 'number' || !currency) {
     return <Spinner className="loading-overlay__spinner" />;
@@ -95,5 +95,3 @@ export const AggregatedBalanceState2: React.FC<AggregatedBalanceState2Props> = (
 };
 
 export default AggregatedBalanceState2;
-
-
