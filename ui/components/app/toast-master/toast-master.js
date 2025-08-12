@@ -33,6 +33,7 @@ import {
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
+  setShowLockFailureToast,
 } from '../../../store/actions';
 import {
   AvatarAccount,
@@ -52,6 +53,7 @@ import {
   selectNewSrpAdded,
   selectPasswordChangeToast,
   selectShowCopyAddressToast,
+  selectShowLockFailureToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -80,6 +82,7 @@ export function ToastMaster() {
         <PermittedNetworkToast />
         <NewSrpAddedToast />
         <CopyAddressToast />
+        <LockFailureToast />
       </ToastContainer>
     );
   }
@@ -368,6 +371,38 @@ const PasswordChangeToast = () => {
     )
   );
 };
+
+function LockFailureToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showLockFailureToast = useSelector(selectShowLockFailureToast);
+  console.log('showLockFailureToast', showLockFailureToast);
+  const autoHideToastDelay = 5 * SECOND;
+
+  return (
+    showLockFailureToast && (
+      <Toast
+        dataTestId="lock-failure-toast"
+        key="lock-failure-toast"
+        text={t('lockFailureToastText')}
+        className="toasts-container--lock-failure-toast--error"
+        startAdornment={
+          <Icon name={IconName.Danger} color={IconColor.iconDefault} />
+        }
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        autoHideTime={autoHideToastDelay}
+        onAutoHideToast={() => {
+          dispatch(setShowLockFailureToast(false));
+        }}
+        onClose={() => {
+          dispatch(setShowLockFailureToast(false));
+        }}
+      />
+    )
+  );
+}
 
 function CopyAddressToast() {
   const t = useI18nContext();

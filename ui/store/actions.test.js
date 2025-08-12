@@ -1196,7 +1196,7 @@ describe('Actions', () => {
       expect(backgroundSetLocked.callCount).toStrictEqual(1);
     });
 
-    it('returns display warning error with value when setLocked in background callback errors', async () => {
+    it('returns display warning error with value and error toast when setLocked in background callback errors', async () => {
       const store = mockStore();
 
       background.setLocked.rejects(new Error('error'));
@@ -1207,6 +1207,7 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'SET_SHOW_LOCK_FAILURE_TOAST', payload: true },
       ];
 
       await store.dispatch(actions.lockMetamask());

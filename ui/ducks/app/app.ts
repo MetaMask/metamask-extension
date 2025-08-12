@@ -128,6 +128,7 @@ type AppState = {
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
   showPasswordChangeToast: PasswordChangeToastType | null;
+  showLockFailureToast: boolean;
   showConnectionsRemovedModal: boolean;
   showCopyAddressToast: boolean;
 };
@@ -232,6 +233,7 @@ const initialState: AppState = {
   showCopyAddressToast: false,
   showSupportDataConsentModal: false,
   showConnectionsRemovedModal: false,
+  showLockFailureToast: false,
 };
 
 export default function reduceApp(
@@ -767,6 +769,12 @@ export default function reduceApp(
       return {
         ...appState,
         showPasswordChangeToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_LOCK_FAILURE_TOAST:
+      return {
+        ...appState,
+        showLockFailureToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:

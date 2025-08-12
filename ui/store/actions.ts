@@ -2192,8 +2192,16 @@ export function lockMetamask(): ThunkAction<
       })
       .catch(() => {
         dispatch(hideLoadingIndication());
+        dispatch(setShowLockFailureToast(true));
         log.error('failed to lock metamask');
       });
+  };
+}
+
+export function setShowLockFailureToast(shouldDisplay: boolean) {
+  return {
+    type: actionConstants.SET_SHOW_LOCK_FAILURE_TOAST,
+    payload: shouldDisplay,
   };
 }
 

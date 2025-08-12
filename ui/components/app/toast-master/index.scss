@@ -1,4 +1,14 @@
-// SRP_OVERRIDE: This is to show an error toast for password change
+// SRP_OVERRIDE: This is to show an error toast for password change and lock-failure
+.toasts-container--lock-failure-toast--error {
+  &[data-theme='light'] {
+    background-color: var(--brand-colors-red-red300);
+  }
+
+  &[data-theme='dark'] {
+    background-color: var(--brand-colors-red-red500);
+  }
+}
+
 .toasts-container--password-change-toast--error {
   &[data-theme='light'] {
     background-color: var(--brand-colors-red-red300);
