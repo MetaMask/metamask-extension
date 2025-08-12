@@ -334,6 +334,8 @@ export const MultichainBridgeQuoteCard = ({
                       trackUnifiedSwapBridgeEvent(
                         UnifiedSwapBridgeEventName.AllQuotesOpened,
                         {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           can_submit: !insufficientBal,
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
