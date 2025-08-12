@@ -2,7 +2,7 @@ import * as React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import SnapView from './snap-view';
 
@@ -20,10 +20,9 @@ jest.mock('../../../store/actions.ts', () => {
   };
 });
 
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
+jest.mock('react-router-dom-v5-compat', () => {
   return {
-    ...original,
+    ...jest.requireActual('react-router-dom-v5-compat'),
     useLocation: jest.fn(() => ({
       pathname: `/snaps/view/${encodeURIComponent(
         'npm:@metamask/test-snap-bip44',
