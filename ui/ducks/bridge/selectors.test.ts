@@ -7,6 +7,7 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
@@ -33,6 +34,7 @@ import {
   getValidationErrors,
   getFromTokenConversionRate,
   getToTokenConversionRate,
+  getFromTokenBalance,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -1678,6 +1680,60 @@ describe('Bridge selectors', () => {
 
       expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(null);
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
+    });
+  });
+
+  describe('getFromTokenBalance', () => {
+    it('should return the balance of a Solana token', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'test-account-id',
+            accounts: {
+              'test-account-id': {
+                id: 'test-account-id',
+                type: SolAccountType.DataAccount,
+                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
+                scopes: [SolScope.Mainnet],
+              },
+            },
+          },
+          balances: {
+            'test-account-id': {
+              [getNativeAssetForChainId(MultichainNetworks.SOLANA).assetId]: {
+                amount: '2',
+              },
+            },
+          },
+        },
+      });
+      const result = getFromTokenBalance(state as never);
+      expect(result).toBe('2');
+    });
+
+    it('should return the balance of an EVM fromToken token', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            decimals: 6,
+            chainId: toEvmCaipChainId(CHAIN_IDS.MAINNET),
+          },
+          fromTokenBalance: '2000000',
+        },
+      });
+      const result = getFromTokenBalance(state as never);
+      expect(result).toBe('2');
     });
   });
 
