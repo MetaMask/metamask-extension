@@ -62,6 +62,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: show solana connected state in the dapp view (#34375)
 - fix: reduce occurrences of Ledger timeout errors (#34574)
 - fix: fix issue where network is always Mainnet when switching to a Bitcoin testnet account (#34286)
+- fix: eliminate 'MetaMask extension not found' error logged in the console when connecting to some dapps on Chrome (#34783)
+- fix: improve default slippage values for swaps and bridges to reduce transaction failures, now using 0.5% for Solana swaps, stablecoin pairs, and bridges, while using 2% for other EVM token swaps (#34821)
+- fix: move password change operations to the background script, to ensure they can continue even when the wallet/browser window closes (#34852)
+- fix: make the slippage editable and visible in the quote card to reduce the risk of submitting transactions with unintended slippage (#34916)
+- fix: trigger Solana UI refreshes only when the client is active and the UI is open, to enhance performance and fix Solana asset removal logic (#34887)
 
 ## [13.0.1]
 ### Fixed
