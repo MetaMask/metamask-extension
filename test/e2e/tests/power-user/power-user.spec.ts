@@ -1,9 +1,9 @@
-import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
-import { withFixtures } from '../helpers';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import AccountListPage from '../page-objects/pages/account-list-page';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
-import { Driver } from '../webdriver/driver';
+import { generateWalletState } from '../../../../app/scripts/fixtures/generate-wallet-state';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import { Driver } from '../../webdriver/driver';
 
 const withState = {
   withAccounts: 30,
