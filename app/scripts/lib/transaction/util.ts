@@ -38,6 +38,7 @@ export type AddTransactionOptions = NonNullable<
 >;
 
 type BaseAddTransactionRequest = {
+  appStateController: AppStateController;
   chainId: Hex;
   networkClientId: string;
   ppomController: PPOMController;
@@ -99,19 +100,9 @@ export async function addDappTransaction(
 
 export async function addTransaction(
   request: AddTransactionRequest,
-  getAddressSecurityAlertResponse: (
-    address: string,
-  ) => SecurityAlertResponse | undefined,
-  addAddressSecurityAlertResponse: (
-    address: string,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void,
 ): Promise<TransactionMeta> {
-  await validateSecurity(
-    request,
-    getAddressSecurityAlertResponse,
-    addAddressSecurityAlertResponse,
-  );
+  // It doesn't have to be awaited - by nature we don't want to block the confirmation process.
+  validateSecurity(request);
 
   const { transactionMeta, waitForHash } =
     await addTransactionOrUserOperation(request);
@@ -241,20 +232,21 @@ function getTransactionByHash(
   );
 }
 
-function scanAddressForTrustSignals(
-  transactionOptions: Partial<AddTransactionOptions>,
-  transactionParams: TransactionParams,
-  chainId: string,
-  getAddressSecurityAlertResponse: (
-    address: string,
-  ) => SecurityAlertResponse | undefined,
-  addAddressSecurityAlertResponse: (
-    address: string,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void,
-) {
+function validateSecurity(request: AddTransactionRequest) {
+  scanAddressForTrustSignals(request);
+  validateSecurityWithPPOM(request);
+}
+
+function scanAddressForTrustSignals(request: AddTransactionRequest) {
+  const {
+    appStateController,
+    transactionOptions,
+    transactionParams,
+    chainId,
+    securityAlertsEnabled,
+  } = request;
   const { origin } = transactionOptions;
-  if (origin !== ORIGIN_METAMASK) {
+  if (origin !== ORIGIN_METAMASK || !securityAlertsEnabled) {
     return;
   }
   const { to } = transactionParams;
@@ -274,8 +266,10 @@ function scanAddressForTrustSignals(
   }
 
   const appStateControllerProxy = {
-    getAddressSecurityAlertResponse,
-    addAddressSecurityAlertResponse,
+    getAddressSecurityAlertResponse:
+      appStateController.getAddressSecurityAlertResponse,
+    addAddressSecurityAlertResponse:
+      appStateController.addAddressSecurityAlertResponse,
   };
 
   scanAddressAndAddToCache(
@@ -291,16 +285,7 @@ function scanAddressForTrustSignals(
   });
 }
 
-async function validateSecurity(
-  request: AddTransactionRequest,
-  getAddressSecurityAlertResponse: (
-    address: string,
-  ) => SecurityAlertResponse | undefined,
-  addAddressSecurityAlertResponse: (
-    address: string,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void,
-) {
+function validateSecurityWithPPOM(request: AddTransactionRequest) {
   const {
     chainId,
     ppomController,
@@ -311,15 +296,6 @@ async function validateSecurity(
     internalAccounts,
   } = request;
 
-  if (securityAlertsEnabled) {
-    scanAddressForTrustSignals(
-      transactionOptions,
-      transactionParams,
-      chainId,
-      getAddressSecurityAlertResponse,
-      addAddressSecurityAlertResponse,
-    );
-  }
   const { type } = transactionOptions;
 
   const typeIsExcludedFromPPOM =
