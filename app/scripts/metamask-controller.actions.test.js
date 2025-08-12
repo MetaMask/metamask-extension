@@ -263,6 +263,9 @@ describe('MetaMaskController', function () {
     });
 
     it('should throw an error if the `seedlessOperationMutex` is locked', async function () {
+      jest
+        .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+        .mockReturnValue(true);
       const checkIsLockedSpy = jest
         .spyOn(metamaskController.seedlessOperationMutex, 'isLocked')
         .mockReturnValue(true);
@@ -282,6 +285,9 @@ describe('MetaMaskController', function () {
     });
 
     it('should throw an error if the `seedlessOnboardingController.setLocked` fails', async function () {
+      jest
+        .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+        .mockReturnValue(true);
       const seedlessSetLockedSpy = jest
         .spyOn(metamaskController.seedlessOnboardingController, 'setLocked')
         .mockRejectedValue(new Error('error while setting seedless locked'));

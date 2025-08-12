@@ -4964,7 +4964,8 @@ export default class MetamaskController extends EventEmitter {
         });
 
         // lock app again on error after submitPassword succeeded
-        await this.setLocked();
+        // here we skip the seedless operation lock as we are already in the seedless operation lock
+        await this.setLocked(true);
         throw err;
       } finally {
         this.metaMetricsController.bufferedEndTrace?.({
@@ -8865,22 +8866,38 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Locks MetaMask
+   *
+   * @param {boolean} skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
-  async setLocked() {
-    if (this.seedlessOperationMutex.isLocked()) {
+  async setLocked(skipSeedlessOperationLock = false) {
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+
+    if (
+      isSocialLoginFlow &&
+      !skipSeedlessOperationLock &&
+      this.seedlessOperationMutex.isLocked()
+    ) {
       log.error('seedlessOperationMutex is locked');
       throw new Error('seedlessOperationMutex is locked');
     }
 
-    const releaseLock = await this.seedlessOperationMutex.acquire();
+    let releaseLock;
+    if (isSocialLoginFlow && !skipSeedlessOperationLock) {
+      releaseLock = await this.seedlessOperationMutex.acquire();
+    }
+
     try {
-      await this.seedlessOnboardingController.setLocked();
+      if (isSocialLoginFlow) {
+        await this.seedlessOnboardingController.setLocked();
+      }
       await this.keyringController.setLocked();
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;
     } finally {
-      releaseLock();
+      if (releaseLock) {
+        releaseLock();
+      }
     }
   }
 
