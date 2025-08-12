@@ -368,6 +368,7 @@ export class PortStream extends Duplex {
     try {
       // try to send the chunk as is first, it is probably fine!
       this.postMessage(chunk);
+      callback();
     } catch (err) {
       if (err instanceof Error) {
         const { chunkSize } = this;
