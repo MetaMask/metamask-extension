@@ -30,7 +30,6 @@ import {
   getSlippage,
   getIsSolanaSwap,
   getPriceImpactThresholds,
-  getQuoteRequest,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -65,7 +64,6 @@ export const MultichainBridgeQuoteCard = ({
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
 
-  const { insufficientBal } = useSelector(getQuoteRequest);
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
   const locale = useSelector(getIntlLocale);
@@ -334,7 +332,6 @@ export const MultichainBridgeQuoteCard = ({
                       trackUnifiedSwapBridgeEvent(
                         UnifiedSwapBridgeEventName.AllQuotesOpened,
                         {
-                          can_submit: !insufficientBal,
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
                           stx_enabled: isStxEnabled,

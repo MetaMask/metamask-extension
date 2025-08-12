@@ -40,7 +40,6 @@ import {
   getBridgeSortOrder,
   getFromChain,
   getFromToken,
-  getQuoteRequest,
   getToToken,
 } from '../../../ducks/bridge/selectors';
 import { Column, Row } from '../layout';
@@ -66,7 +65,6 @@ export const BridgeQuotesModal = ({
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChain = useSelector(getFromChain);
-  const { insufficientBal } = useSelector(getQuoteRequest);
 
   const isStxEnabled = useSelector((state) =>
     getIsSmartTransaction(state as never, fromChain?.chainId),
@@ -115,7 +113,6 @@ export const BridgeQuotesModal = ({
                     trackUnifiedSwapBridgeEvent(
                       UnifiedSwapBridgeEventName.AllQuotesSorted,
                       {
-                        can_submit: !insufficientBal,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         sort_order: sortOrder,
@@ -231,7 +228,6 @@ export const BridgeQuotesModal = ({
                         trackUnifiedSwapBridgeEvent(
                           UnifiedSwapBridgeEventName.QuoteSelected,
                           {
-                            can_submit: !insufficientBal,
                             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                             // eslint-disable-next-line @typescript-eslint/naming-convention
                             is_best_quote: isRecommendedQuote,
