@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>JSON Benchmark Extension</title>
+    <style>
+      body {
+        width: 300px;
+        min-height: 200px;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        margin: 0;
+      }
+
+      .header {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .message-container {
+        background: #f5f5f5;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        min-height: 50px;
+      }
+
+      .message {
+        color: #007cba;
+        font-weight: bold;
+      }
+
+      .timestamp {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+      }
+
+      button {
+        background: #007cba;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+
+      button:hover {
+        background: #005a8b;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">JSON Benchmark Extension</div>
+    <div class="message-container" id="messageContainer">
+      <div>Connecting to background service worker...</div>
+    </div>
+    <div class="input-group">
+      <label for="messageSize">Target JSON Data Size (characters):</label>
+      <input
+        type="number"
+        id="messageSize"
+        value="30015399"
+        min="1000"
+        placeholder="Enter approximate JSON size in characters"
+      />
+    </div>
+
+    <button id="sendMessage">
+      Run JSON Benchmark (JSON.stringify vs Direct JSON vs Direct JSON + DFS)
+    </button>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
