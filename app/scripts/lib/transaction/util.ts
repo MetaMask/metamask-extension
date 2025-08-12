@@ -277,7 +277,6 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     });
   } catch (error) {
     console.error('[scanAddressForTrustSignals] error:', error);
-    return;
   }
 }
 
