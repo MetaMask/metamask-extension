@@ -29312,7 +29312,7 @@ THE SOFTWARE.
 ******************************
 
 @metamask/seedless-onboarding-controller
-2.5.0 <https://github.com/MetaMask/core>
+2.5.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
