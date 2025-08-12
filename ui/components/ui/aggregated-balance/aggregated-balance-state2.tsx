@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { balanceSelectors } from '@metamask/assets-controllers';
@@ -18,7 +18,7 @@ import {
   IconName,
   SensitiveText,
 } from '../../component-library';
-import { getPreferences } from '../../../selectors';
+import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import Spinner from '../spinner';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
@@ -35,7 +35,11 @@ export const AggregatedBalanceState2: React.FC<
   const { privacyMode } = useSelector(getPreferences);
   const locale = useSelector(getIntlLocale);
 
-  const { selectBalanceForSelectedAccountGroup } = balanceSelectors;
+  const {
+    selectBalanceForSelectedAccountGroup,
+    selectBalanceForAllWallets,
+    selectBalanceByAccountGroup,
+  } = balanceSelectors;
   const selectedGroupBalance = useSelector((state) => {
     const atc = (state as any)?.metamask?.AccountTreeController;
     const selectedGroupId = atc?.accountTree?.selectedAccountGroup;
@@ -45,10 +49,60 @@ export const AggregatedBalanceState2: React.FC<
     return selectBalanceForSelectedAccountGroup()(state as any);
   });
 
-  console.log('selectedGroupBalance', selectedGroupBalance);
-  const total = selectedGroupBalance?.totalBalanceInUserCurrency;
+  const allWalletsBalance = useSelector((state) => {
+    const atc = (state as any)?.metamask?.AccountTreeController;
+    const hasTree = Boolean(atc?.accountTree?.wallets);
+    return hasTree ? selectBalanceForAllWallets()(state as any) : null;
+  });
 
-  const currency = selectedGroupBalance?.userCurrency;
+  // Resolve group by membership of the selected account (mobile parity)
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const resolvedGroupId = useSelector((state) => {
+    const atc = (state as any)?.metamask?.AccountTreeController;
+    const wallets: Record<string, any> = atc?.accountTree?.wallets || {};
+    const accountId = selectedAccount?.id;
+    let fallbackFirstGroup: string | undefined;
+    for (const [_walletId, wallet] of Object.entries(wallets || {})) {
+      const groups: Record<string, any> = wallet?.groups || {};
+      const firstGroupId = Object.keys(groups)[0];
+      if (!fallbackFirstGroup && firstGroupId) {
+        fallbackFirstGroup = firstGroupId;
+      }
+      if (!accountId) {
+        continue;
+      }
+      for (const [groupId, group] of Object.entries(groups || {})) {
+        const accounts: string[] = Array.isArray(group?.accounts)
+          ? (group.accounts as string[])
+          : [];
+        if (accounts.includes(accountId)) {
+          return groupId;
+        }
+      }
+    }
+    return fallbackFirstGroup;
+  });
+
+  const selectBalanceForResolvedGroup = useMemo(
+    () =>
+      resolvedGroupId ? selectBalanceByAccountGroup(resolvedGroupId) : null,
+    [resolvedGroupId, selectBalanceByAccountGroup],
+  );
+  const resolvedGroupBalance = useSelector((state) =>
+    selectBalanceForResolvedGroup
+      ? selectBalanceForResolvedGroup(state as any)
+      : null,
+  );
+
+  const total =
+    selectedGroupBalance?.totalBalanceInUserCurrency ??
+    resolvedGroupBalance?.totalBalanceInUserCurrency ??
+    allWalletsBalance?.totalBalanceInUserCurrency;
+
+  const currency =
+    selectedGroupBalance?.userCurrency ??
+    resolvedGroupBalance?.userCurrency ??
+    allWalletsBalance?.userCurrency;
 
   if (typeof total !== 'number' || !currency) {
     return <Spinner className="loading-overlay__spinner" />;

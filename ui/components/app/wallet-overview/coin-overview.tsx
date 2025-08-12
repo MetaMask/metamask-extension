@@ -267,7 +267,6 @@ export const CoinOverview = ({
           {t('discover')}
         </ButtonLink>
       );
-      return null;
     };
 
     const renderNativeTokenView = () => (
