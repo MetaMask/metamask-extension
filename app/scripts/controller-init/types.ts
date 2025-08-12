@@ -16,8 +16,8 @@ import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
-import { OAuthRefreshTokenResult } from '../services/oauth/types';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
+import { OAuthRefreshTokenResult } from '../services/oauth/types';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */

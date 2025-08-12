@@ -167,7 +167,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountDetailsPage.clickRemoveAccountConfirmButton();
 
           await headerNavbar.openAccountMenu();
-          await accountListPage.check_accountIsNotDisplayedInAccountList(
+          await accountListPage.checkAccountIsNotDisplayedInAccountList(
             importedAccount.name,
           );
         },
@@ -282,7 +282,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
           const viewOnExplorerButton = await driver.findElement({
             css: 'button',
-            text: 'View on explorer',
+            text: 'View on Etherscan',
           });
 
           const explorerLink =

@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Platform } from '@metamask/profile-sync-controller/sdk';
-import { getUserProfileMetaMetrics, updateSlides } from '../../store/actions';
+import { getUserProfileLineage, updateSlides } from '../../store/actions';
 import {
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
@@ -11,7 +11,6 @@ import {
   getUseExternalServices,
   getShowDownloadMobileAppSlide,
 } from '../../selectors';
-import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import { CarouselSlide } from '../../../shared/constants/app-state';
 import * as AccountUtils from '../../../shared/lib/multichain/accounts';
 import {
@@ -27,7 +26,6 @@ import {
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
   ZERO_BALANCE,
-  REMOTE_MODE_SLIDE,
   MULTI_SRP_SLIDE,
   BACKUPANDSYNC_SLIDE,
   SOLANA_SLIDE,
@@ -75,7 +73,6 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
 ];
 
 const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
-  REMOTE_MODE_SLIDE,
   { ...FUND_SLIDE, undismissable: true },
   SMART_ACCOUNT_UPGRADE_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -92,7 +89,6 @@ const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
 ];
 
 const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
-  REMOTE_MODE_SLIDE,
   SMART_ACCOUNT_UPGRADE_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BRIDGE_SLIDE,
@@ -144,7 +140,6 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
 
 const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
   { ...SWEEPSTAKES_SLIDE, dismissed: false },
-  REMOTE_MODE_SLIDE,
   { ...FUND_SLIDE, undismissable: true },
   SMART_ACCOUNT_UPGRADE_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -162,7 +157,6 @@ const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
 
 const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
   { ...SWEEPSTAKES_SLIDE, dismissed: false },
-  REMOTE_MODE_SLIDE,
   SMART_ACCOUNT_UPGRADE_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BRIDGE_SLIDE,
@@ -212,7 +206,7 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../../store/actions', () => ({
   updateSlides: jest.fn(),
-  getUserProfileMetaMetrics: jest.fn().mockResolvedValue({
+  getUserProfileLineage: jest.fn().mockResolvedValue({
     lineage: [
       {
         agent: 'extension',
@@ -228,10 +222,6 @@ jest.mock('../../selectors/selectors.js', () => ({
   getUseExternalServices: jest.fn(),
 }));
 
-jest.mock('../../selectors/remote-mode', () => ({
-  getIsRemoteModeEnabled: jest.fn(),
-}));
-
 const mockUpdateSlides = jest.mocked(updateSlides);
 const mockUseSelector = jest.mocked(useSelector);
 const mockUseDispatch = jest.mocked(useDispatch);
@@ -242,7 +232,6 @@ const mockGetUseExternalServices = jest.fn();
 const mockGetSelectedInternalAccount = jest
   .fn()
   .mockImplementation(() => MOCK_ACCOUNT);
-const mockGetIsRemoteModeEnabled = jest.fn();
 const mockGetShowDownloadMobileAppSlide = jest.fn().mockReturnValue(true);
 
 describe('useCarouselManagement', () => {
@@ -268,9 +257,6 @@ describe('useCarouselManagement', () => {
       if (selector === getSelectedInternalAccount) {
         return mockGetSelectedInternalAccount();
       }
-      if (selector === getIsRemoteModeEnabled) {
-        return mockGetIsRemoteModeEnabled();
-      }
       if (selector === getUseExternalServices) {
         return mockGetUseExternalServices();
       }
@@ -282,7 +268,6 @@ describe('useCarouselManagement', () => {
     // Default values
     mockGetSlides.mockReturnValue([]);
     mockGetSelectedAccountCachedBalance.mockReturnValue(ZERO_BALANCE);
-    mockGetIsRemoteModeEnabled.mockReturnValue(false);
     mockGetUseExternalServices.mockReturnValue(false);
     // Reset mocks
     jest.clearAllMocks();
@@ -344,10 +329,6 @@ describe('useCarouselManagement', () => {
   });
 
   describe('zero funds, remote on, sweepstakes off', () => {
-    beforeEach(() => {
-      mockGetIsRemoteModeEnabled.mockReturnValue(true);
-    });
-
     it('should have correct slide order', async () => {
       renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
 
@@ -374,10 +355,6 @@ describe('useCarouselManagement', () => {
   });
 
   describe('zero funds, remote on, sweepstakes on', () => {
-    beforeEach(() => {
-      mockGetIsRemoteModeEnabled.mockReturnValue(true);
-    });
-
     it('should have correct slide order', async () => {
       renderHook(() => useCarouselManagement({ testDate: validTestDate }));
 
@@ -410,7 +387,6 @@ describe('useCarouselManagement', () => {
   describe('positive funds, remote on, sweepstakes off', () => {
     beforeEach(() => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
-      mockGetIsRemoteModeEnabled.mockReturnValue(true);
       mockGetUseExternalServices.mockReturnValue(false);
     });
 
@@ -446,7 +422,6 @@ describe('useCarouselManagement', () => {
   describe('positive funds, remote on, sweepstakes on', () => {
     beforeEach(() => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
-      mockGetIsRemoteModeEnabled.mockReturnValue(true);
     });
 
     it('should have correct slide order', async () => {
@@ -590,7 +565,7 @@ describe('useCarouselManagement', () => {
     it('should display if user is not available on mobile', async () => {
       mockGetUseExternalServices.mockReturnValue(true);
 
-      jest.mocked(getUserProfileMetaMetrics).mockResolvedValue({
+      jest.mocked(getUserProfileLineage).mockResolvedValue({
         lineage: [
           {
             agent: Platform.EXTENSION,
@@ -629,7 +604,7 @@ describe('useCarouselManagement', () => {
     it('should not display if user is available on mobile', async () => {
       mockGetUseExternalServices.mockReturnValue(true);
 
-      jest.mocked(getUserProfileMetaMetrics).mockResolvedValue({
+      jest.mocked(getUserProfileLineage).mockResolvedValue({
         lineage: [
           {
             agent: Platform.MOBILE,

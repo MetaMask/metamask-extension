@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Grundfunktionalität einschalten"
   },
-  "bestPrice": {
-    "message": "Bester Preis"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Swapping von $1 für $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Bedingungen"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 Min.",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask ist weltweit konzipiert und aufgebaut."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Ausgelastet"
@@ -2392,10 +2383,6 @@
   "floatAmountToken": {
     "message": "Token-Betrag muss eine ganze Zahl sein"
   },
-  "followUsOnX": {
-    "message": "Folgen Sie uns auf $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Verbotene IPFS-Gateway: Bitte geben Sie ein CID-Gateway an."
   },
@@ -2668,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Honeypot"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Geschätzte Gebühr für die Abwicklung der Transaktion. Die maximale Gebühr ist $1."
   },
   "howQuotesWork": {
     "message": "Funktionsweise von Angeboten"
@@ -5444,12 +5428,6 @@
   "slideMultiSrpTitle": {
     "message": "Mehrere geheime Wiederherstellungsphrasen hinzufügen"
   },
-  "slideRemoteModeDescription": {
-    "message": "Verwenden Sie Ihr Cold Wallet kabellos"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold Storage, schneller Zugriff"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Dieselbe Adresse, intelligentere Funktionen"
   },
@@ -6828,9 +6806,6 @@
   "troubleConnectingToWallet": {
     "message": "Wir hatten Probleme mit der Verbindung zu Ihrem $1, versuchen Sie, $2 zu überprüfen und versuchen es erneut.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "Beim Starten von MetaMask ist ein Problem aufgetreten. Dies könnte ein vorübergehendes Problem sein. Versuchen Sie daher, die Erweiterung neu zu starten."
   },
   "tryAgain": {
     "message": "Erneut versuchen"

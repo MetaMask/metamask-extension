@@ -61,6 +61,7 @@ const BALANCE_CHANGE_ERC20_MOCK: ApprovalBalanceChange = {
   isAllApproval: false,
   isUnlimitedApproval: false,
   nestedTransactionIndex: 0,
+  usdAmount: null,
 };
 
 const BALANCE_CHANGE_ERC721_MOCK: ApprovalBalanceChange = {
@@ -76,6 +77,7 @@ const BALANCE_CHANGE_ERC721_MOCK: ApprovalBalanceChange = {
   isAllApproval: false,
   isUnlimitedApproval: false,
   nestedTransactionIndex: 0,
+  usdAmount: null,
 };
 
 const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
@@ -91,6 +93,7 @@ const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
   isAllApproval: false,
   isUnlimitedApproval: false,
   nestedTransactionIndex: 0,
+  usdAmount: null,
 };
 
 function render(transaction?: Confirmation) {
