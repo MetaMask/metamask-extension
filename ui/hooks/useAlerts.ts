@@ -75,6 +75,10 @@ const useAlerts = (ownerId: string) => {
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
 
+  if (alerts.length > 0) {
+    console.log('alerts', alerts);
+  }
+
   return {
     alerts,
     fieldAlerts,
