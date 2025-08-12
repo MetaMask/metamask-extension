@@ -28,6 +28,7 @@ import {
 } from '../../../components/component-library';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 
@@ -74,7 +75,7 @@ const HD_PATHS = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
-  onekey: TREZOR_HD_PATHS,
+  oneKey: TREZOR_HD_PATHS,
 };
 
 const getErrorMessage = (errorCode, t) => {
@@ -149,7 +150,7 @@ class ConnectHardwareForm extends Component {
     }
 
     // Default values
-    this.getPage(device, 0, this.props.defaultHdPaths[device]);
+    this.getPage(device, 0, this.props.defaultHdPaths[device], true);
   };
 
   onPathChange = (path) => {
@@ -185,9 +186,9 @@ class ConnectHardwareForm extends Component {
     }, SECOND * 5);
   }
 
-  getPage = (device, page, hdPath) => {
+  getPage = (device, page, hdPath, loadHid) => {
     this.props
-      .connectHardware(device, page, hdPath, this.context.t)
+      .connectHardware(device, page, hdPath, loadHid, this.context.t)
       .then((accounts) => {
         if (accounts.length) {
           // If we just loaded the accounts for the first time
@@ -280,8 +281,12 @@ class ConnectHardwareForm extends Component {
   };
 
   onUnlockAccounts = async (deviceName, path) => {
-    const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
-      this.props;
+    const {
+      history,
+      mostRecentOverviewPage,
+      unlockHardwareWalletAccounts,
+      hdEntropyIndex,
+    } = this.props;
     const { selectedAccounts } = this.state;
 
     if (selectedAccounts.length === 0) {
@@ -308,6 +313,7 @@ class ConnectHardwareForm extends Component {
             // For now we keep using the device name to avoid any discrepancies with our current metrics.
             // TODO: This will be addressed later, see: https://github.com/MetaMask/metamask-extension/issues/29777
             account_hardware_type: deviceName,
+            is_suggested_name: true,
           },
         });
         history.push(mostRecentOverviewPage);
@@ -321,6 +327,7 @@ class ConnectHardwareForm extends Component {
             // See comment above about `account_hardware_type`.
             account_hardware_type: deviceName,
             error: e.message,
+            hd_entropy_index: hdEntropyIndex,
           },
         });
         this.setState({ error: e.message });
@@ -458,6 +465,7 @@ ConnectHardwareForm.propTypes = {
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
   ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
+  hdEntropyIndex: PropTypes.number,
 };
 
 const mapStateToProps = (state) => ({
@@ -468,6 +476,7 @@ const mapStateToProps = (state) => ({
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
   ledgerTransportType: state.metamask.ledgerTransportType,
+  hdEntropyIndex: getHDEntropyIndex(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -475,8 +484,10 @@ const mapDispatchToProps = (dispatch) => {
     setHardwareWalletDefaultHdPath: ({ device, path }) => {
       return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }));
     },
-    connectHardware: (deviceName, page, hdPath, t) => {
-      return dispatch(actions.connectHardware(deviceName, page, hdPath, t));
+    connectHardware: (deviceName, page, hdPath, loadHid, t) => {
+      return dispatch(
+        actions.connectHardware(deviceName, page, hdPath, loadHid, t),
+      );
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));

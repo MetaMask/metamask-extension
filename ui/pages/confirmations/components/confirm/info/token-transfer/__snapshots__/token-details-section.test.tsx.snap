@@ -83,8 +83,12 @@ exports[`TokenDetailsSection renders correctly 1`] = `
       </div>
     </div>
     <div
-      style="height: 1px; margin-left: -8px; margin-right: -8px;"
-    />
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -121,58 +125,21 @@ exports[`TokenDetailsSection renders correctly 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 119);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#FB188D"
-                    height="16"
-                    transform="translate(-0.03888059901998558 -0.3611719722869608) rotate(292.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F90E01"
-                    height="16"
-                    transform="translate(6.546320180202683 5.992209110554258) rotate(106.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26E02"
-                    height="16"
-                    transform="translate(8.96370841230271 -9.40372192765907) rotate(416.7 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0x07614...3ad68
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x07614...3ad68
-          </p>
         </div>
       </div>
     </div>

@@ -8,8 +8,16 @@ import {
 import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
+import { PreinstalledSnap } from '@metamask/snaps-controllers';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import { MessageSender } from '../../../types/global';
+import {
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
+} from '../../../shared/constants/metametrics';
+import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
+import { OAuthRefreshTokenResult } from '../services/oauth/types';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -25,7 +33,11 @@ export type ControllerByName = {
  * e.g. `{ TransactionController: { transactions: [] } }`.
  */
 export type ControllerPersistedState = Partial<{
-  [name in ControllerName]: Partial<ControllerByName[name]['state']>;
+  [name in ControllerName]: Partial<
+    ControllerByName[name] extends { state: unknown }
+      ? ControllerByName[name]['state']
+      : never
+  >;
 }>;
 
 /** Generic controller messenger using base template types. */
@@ -114,6 +126,13 @@ export type ControllerInitRequest<
   getTransactionMetricsRequest(): TransactionMetricsRequest;
 
   /**
+   * Function to update account balance for network of the transaction
+   */
+  updateAccountBalanceForTransactionNetwork(
+    transactionMeta: TransactionMeta,
+  ): void;
+
+  /**
    * A promise that resolves when the offscreen document is ready.
    */
   offscreenPromise: Promise<void>;
@@ -163,15 +182,53 @@ export type ControllerInitRequest<
   ) => Promise<void>;
 
   /**
+   * Get the MetaMetrics ID.
+   */
+  getMetaMetricsId: () => string;
+
+  /**
+   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
+   *
+   * @param payload - details of the event
+   * @param options - options for handling/routing the event
+   */
+  trackEvent: (
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ) => void;
+
+  /**
+   * A list of preinstalled Snaps loaded from disk during boot.
+   */
+  preinstalledSnaps: PreinstalledSnap[];
+
+  /**
    * Required initialization messenger instance.
    * Generated using the callback specified in `getInitMessengerCallback`.
    */
   initMessenger: InitMessengerType;
+
+  /**
+   * Refresh the OAuth token.
+   */
+  refreshOAuthToken: () => Promise<OAuthRefreshTokenResult>;
+
+  /**
+   * Revoke the current OAuth refresh token and get a new one.
+   */
+  revokeAndGetNewRefreshToken: () => Promise<{
+    newRefreshToken: string;
+    newRevokeToken: string;
+  }>;
+
+  getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
 };
 
 /**
  * A single background API method available to the UI.
  */
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ControllerApi = (...args: any[]) => unknown;
 

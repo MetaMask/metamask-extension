@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useMemo, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  isSolanaChainId,
+  BRIDGE_MM_FEE_RATE,
+  formatChainIdToHex,
+  formatEtaInMinutes,
+  UnifiedSwapBridgeEventName,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 import {
   Text,
   PopoverPosition,
   IconName,
   ButtonLink,
+  ButtonIcon,
+  ButtonIconSize,
   Icon,
   IconSize,
   AvatarNetwork,
@@ -15,76 +25,111 @@ import {
   getFromChain,
   getToChain,
   getIsBridgeTx,
+  getToToken,
+  getFromToken,
+  getSlippage,
+  getIsSolanaSwap,
+  getPriceImpactThresholds,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  formatEtaInMinutes,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   BackgroundColor,
+  FontStyle,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import {
-  BRIDGE_MM_FEE_RATE,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import type { ChainId } from '../../../../shared/types/bridge';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { formatPriceImpact } from '../utils/price-impact';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
-export const MultichainBridgeQuoteCard = () => {
+export const MultichainBridgeQuoteCard = ({
+  onOpenSlippageModal,
+}: {
+  onOpenSlippageModal?: () => void;
+}) => {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
-
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
-  const { quoteRequestProperties } = useRequestProperties();
-  const requestMetadataProperties = useRequestMetadataProperties();
-  const quoteListProperties = useQuoteProperties();
 
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
   const locale = useSelector(getIntlLocale);
   const isBridgeTx = useSelector(getIsBridgeTx);
+  const isStxEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
+  const fromToken = useSelector(getFromToken);
+  const toToken = useSelector(getToToken);
+  const slippage = useSelector(getSlippage);
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
+  const dispatch = useDispatch();
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
-  const getNetworkImage = (chainId: ChainId) => {
-    if (chainId === 1151111081099710) {
+  const priceImpactThresholds = useSelector(getPriceImpactThresholds);
+
+  // Calculate if price impact warning should show
+  const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
+  const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
+
+  const shouldRenderPriceImpactRow = useMemo(() => {
+    const priceImpactThreshold = priceImpactThresholds;
+    return (
+      priceImpactThreshold && priceImpact !== undefined && priceImpact !== null
+    );
+  }, [priceImpactThresholds, priceImpact]);
+
+  // Red state if above threshold
+  const shouldShowPriceImpactWarning = React.useMemo(() => {
+    if (!shouldRenderPriceImpactRow) {
+      return false;
+    }
+    const threshold = gasIncluded
+      ? priceImpactThresholds?.gasless
+      : priceImpactThresholds?.normal;
+    if (threshold === null || threshold === undefined) {
+      return false;
+    }
+    return Number(priceImpact) >= Number(threshold);
+  }, [
+    gasIncluded,
+    priceImpact,
+    shouldRenderPriceImpactRow,
+    priceImpactThresholds,
+  ]);
+
+  const getNetworkImage = (chainId: string | number) => {
+    if (isSolanaChainId(chainId)) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA];
     }
     return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      `0x${decimalToHex(
+      formatChainIdToHex(
         chainId,
-      )}` as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
   };
 
-  const getNetworkName = (chainId: ChainId) => {
-    if (chainId === 1151111081099710) {
-      return 'Solana';
+  const getNetworkName = (chainId: string | number) => {
+    if (isSolanaChainId(chainId)) {
+      return NETWORK_TO_SHORT_NETWORK_NAME_MAP[MultichainNetworks.SOLANA];
     }
     return NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-      `0x${decimalToHex(
+      formatChainIdToHex(
         chainId,
-      )}` as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
     ];
   };
 
@@ -118,9 +163,7 @@ export const MultichainBridgeQuoteCard = () => {
               <Text>
                 {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
                   locale,
-                  activeQuote.toTokenAmount.amount.dividedBy(
-                    activeQuote.sentAmount.amount,
-                  ),
+                  activeQuote.swapRate,
                 )} ${activeQuote.quote.destAsset.symbol}`}
               </Text>
             </Row>
@@ -162,14 +205,98 @@ export const MultichainBridgeQuoteCard = () => {
               >
                 {t('networkFee')}
               </Text>
-              <Text>
-                {formatCurrencyAmount(
-                  activeQuote.totalNetworkFee?.valueInCurrency,
-                  currency,
-                  2,
-                )}
+              {activeQuote.quote.gasIncluded && (
+                <Row gap={1} data-testid="network-fees-included">
+                  <Text style={{ textDecoration: 'line-through' }}>
+                    {activeQuote.includedTxFees?.valueInCurrency
+                      ? formatCurrencyAmount(
+                          activeQuote.includedTxFees.valueInCurrency,
+                          currency,
+                          2,
+                        )
+                      : formatCurrencyAmount(
+                          activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                          currency,
+                          2,
+                        )}
+                  </Text>
+                  <Text fontStyle={FontStyle.Italic}>{' Included'}</Text>
+                </Row>
+              )}
+              {!activeQuote.quote.gasIncluded && (
+                <Text data-testid="network-fees">
+                  {formatCurrencyAmount(
+                    activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                    currency,
+                    2,
+                  )}
+                </Text>
+              )}
+            </Row>
+
+            {/* Slippage */}
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Row gap={1}>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                >
+                  {t('slippage')}
+                </Text>
+                <ButtonIcon
+                  iconName={IconName.Edit}
+                  size={ButtonIconSize.Sm}
+                  color={IconColor.iconAlternative}
+                  onClick={onOpenSlippageModal}
+                  ariaLabel={t('slippageEditAriaLabel')}
+                  data-testid="slippage-edit-button"
+                />
+              </Row>
+              <Text variant={TextVariant.bodyMd}>
+                {slippage === undefined && isSolanaSwap
+                  ? t('slippageAuto')
+                  : `${slippage}%`}
               </Text>
             </Row>
+
+            {shouldRenderPriceImpactRow && (
+              <Row justifyContent={JustifyContent.spaceBetween}>
+                <Row gap={1}>
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textAlternative}
+                  >
+                    {t('bridgePriceImpact')}
+                  </Text>
+                  <Tooltip
+                    title={
+                      shouldShowPriceImpactWarning
+                        ? t('bridgePriceImpactWarningTitle')
+                        : t('bridgePriceImpactTooltipTitle')
+                    }
+                    position={PopoverPosition.TopStart}
+                    offset={[-16, 16]}
+                    iconName={IconName.Question}
+                  >
+                    {t(
+                      gasIncluded
+                        ? 'bridgePriceImpactGaslessWarning'
+                        : 'bridgePriceImpactNormalWarning',
+                    )}
+                  </Tooltip>
+                </Row>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={
+                    shouldShowPriceImpactWarning
+                      ? TextColor.errorDefault
+                      : TextColor.textDefault
+                  }
+                >
+                  {formatPriceImpact(priceImpact)}
+                </Text>
+              </Row>
+            )}
 
             {/* Time */}
             <Row justifyContent={JustifyContent.spaceBetween}>
@@ -199,17 +326,34 @@ export const MultichainBridgeQuoteCard = () => {
               <ButtonLink
                 variant={TextVariant.bodyMd}
                 onClick={() => {
-                  quoteRequestProperties &&
-                    requestMetadataProperties &&
-                    quoteListProperties &&
-                    trackCrossChainSwapsEvent({
-                      event: MetaMetricsEventName.AllQuotesOpened,
-                      properties: {
-                        ...quoteRequestProperties,
-                        ...requestMetadataProperties,
-                        ...quoteListProperties,
-                      },
-                    });
+                  fromChain?.chainId &&
+                    activeQuote &&
+                    dispatch(
+                      trackUnifiedSwapBridgeEvent(
+                        UnifiedSwapBridgeEventName.AllQuotesOpened,
+                        {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          stx_enabled: isStxEnabled,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          token_symbol_source:
+                            fromToken?.symbol ??
+                            getNativeAssetForChainId(fromChain.chainId).symbol,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          token_symbol_destination: toToken?.symbol ?? null,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          price_impact: Number(
+                            activeQuote.quote?.priceData?.priceImpact ?? '0',
+                          ),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          gas_included: Boolean(activeQuote.quote?.gasIncluded),
+                        },
+                      ),
+                    );
                   setShowAllQuotes(true);
                 }}
               >

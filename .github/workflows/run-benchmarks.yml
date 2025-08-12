@@ -4,37 +4,60 @@ on:
 env:
   COMMANDS: |
     {
-      pageload: 'yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2',
-      userActions: 'yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2',
+      pageload: 'yarn tsx test/e2e/benchmark.mjs --out test-artifacts/benchmarks/benchmark-{0}-{1}-pageload.json --retries 2',
+      userActions: 'yarn tsx test/e2e/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
     }
 
 jobs:
   benchmarks:
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
+        browser: [chrome, firefox]
         buildType: [browserify, webpack]
         testType: [pageload, userActions]
-    name: ${{ matrix.buildType }}-${{ matrix.testType }}
+    name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
+    env:
+      SELENIUM_BROWSER: ${{ matrix.browser }}
+      HEADLESS: true
+      ARTIFACT_NAME: build-test-${{ matrix.buildType }}
+      OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}.json
     steps:
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
-      - name: Download artifact prep-build-test-${{ matrix.buildType }}
+      - name: Restore .metamask folder
+        id: restore-metamask
+        uses: actions/cache/restore@v4
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
+        run: yarn mm-foundryup
+
+      - name: Download artifact '${{ env.ARTIFACT_NAME }}'
         uses: actions/download-artifact@v4
         with:
-          path: ./dist/
-          pattern: prep-build-test-${{ matrix.buildType }}
-          merge-multiple: true
+          name: ${{ env.ARTIFACT_NAME }}
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
-        run: ${{ fromJson(env.COMMANDS)[matrix.testType] }}
+        # Then replace the {0} placeholder with the browser, and the {1} placeholder with the buildType
+        run: ${{ format(fromJson(env.COMMANDS)[matrix.testType], matrix.browser, matrix.buildType) }}
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload '${{ env.OUTPUT_NAME }}' to S3
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
-          name: benchmark-${{ matrix.buildType }}-${{ matrix.testType }}
-          path: test-artifacts/chrome/benchmark/
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
+          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}

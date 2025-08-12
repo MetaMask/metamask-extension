@@ -16,6 +16,8 @@ describe('Forgot password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
       async ({
@@ -27,16 +29,19 @@ describe('Forgot password', function () {
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
-        // Lock Wallet
         const homePage = new HomePage(driver);
+        await homePage.headerNavbar.checkPageIsLoaded();
         await homePage.headerNavbar.lockMetaMask();
 
         // Click forgot password button and reset password
         await new LoginPage(driver).gotoResetPasswordPage();
 
         const resetPasswordPage = new ResetPasswordPage(driver);
-        await resetPasswordPage.check_pageIsLoaded();
+        await resetPasswordPage.checkPageIsLoaded();
+
         await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
+        await resetPasswordPage.waitForSeedPhraseInputToNotBeVisible();
+        await homePage.headerNavbar.checkPageIsLoaded();
 
         // Lock wallet again
         await homePage.headerNavbar.lockMetaMask();

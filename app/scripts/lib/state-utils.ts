@@ -1,10 +1,20 @@
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FlattenedUIState = Record<string, any>;
 
-const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'];
+const REMOVE_KEYS = [
+  'snapStates',
+  'unencryptedSnapStates',
+  'vault',
+  'phishingLists',
+  'whitelist',
+  'hotlistLastFetched',
+  'stalelistLastFetched',
+  'c2DomainBlocklistLastFetched',
+];
 
 export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   const newState = { ...state };
@@ -25,10 +35,13 @@ function sanitizeSnapData(state: FlattenedUIState) {
     return;
   }
 
-  state.snaps = Object.values(snapsData).reduce((acc, snap) => {
-    acc[snap.id] = stripLargeSnapData(snap) as Snap;
-    return acc;
-  }, {} as SnapControllerState['snaps']);
+  state.snaps = Object.values(snapsData).reduce(
+    (acc, snap) => {
+      acc[snap.id] = stripLargeSnapData(snap) as Snap;
+      return acc;
+    },
+    {} as SnapControllerState['snaps'],
+  );
 }
 
 function stripLargeSnapData(snapData: Snap): Partial<Snap> {

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import classnames from 'classnames';
 import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import type { CaipChainId } from '@metamask/utils';
+import { isStrictHexString, type CaipChainId } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
@@ -27,6 +28,11 @@ import {
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  type SafeChain,
+  useSafeChains,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
@@ -56,6 +62,8 @@ type AssetListProps = {
   >;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AssetList({
   handleAssetChange,
   asset,
@@ -80,7 +88,7 @@ export default function AssetList({
   const balanceValue = useMultichainSelector(
     getMultichainSelectedAccountCachedBalance,
   );
-  const currentCurrency = useMultichainSelector(getMultichainCurrentCurrency);
+  const currentCurrency = useSelector(getMultichainCurrentCurrency);
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,
@@ -90,6 +98,21 @@ export default function AssetList({
   const [secondaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: nativeCurrency,
   });
+
+  const { safeChains } = useSafeChains();
+  const safeChainDetails: SafeChain | undefined = useMemo(
+    () =>
+      safeChains?.find((chain) => {
+        const decimalChainId =
+          isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
+        if (typeof decimalChainId === 'number') {
+          return chain.chainId === decimalChainId.toString();
+        }
+        return undefined;
+      }),
+    [safeChains, chainId],
+  );
+  const nativeCurrencySymbol = safeChainDetails?.nativeCurrency?.symbol;
 
   return (
     <Box className="tokens-main-view-modal">
@@ -162,6 +185,7 @@ export default function AssetList({
                     tokenImage={token.image}
                     isPrimaryTokenSymbolHidden
                     tokenChainImage={getImageForChainId(token.chainId)}
+                    nativeCurrencySymbol={nativeCurrencySymbol}
                     {...assetItemProps}
                   />
                 ) : (
@@ -170,7 +194,10 @@ export default function AssetList({
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }
-                    assetItemProps={assetItemProps}
+                    assetItemProps={{
+                      ...assetItemProps,
+                      nativeCurrencySymbol,
+                    }}
                   />
                 )}
               </Box>

@@ -51,13 +51,6 @@
     "message": "Ho letto e accetto i $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Accedi al tuo portafoglio con la tua frase di recupero segreta"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask non può recuperare la tua password. Useremo la tua frase di recupero segreta per assicurarci tu sia il proprietario, ripristinare il tuo portafoglio e impostare una nuova password. Innanzitutto, inserisci la frase di recupero segreta che ti è stata data in fase di creazione del tuo portafoglio. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Accesso alla fotocamera..."
   },
@@ -413,9 +406,6 @@
   "create": {
     "message": "Crea"
   },
-  "createNewWallet": {
-    "message": "Crea un nuovo portafoglio"
-  },
   "createPassword": {
     "message": "Crea Password"
   },
@@ -701,24 +691,8 @@
   "gasLimit": {
     "message": "Gas Limite"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Il gas limite è il massimo importo di unità di gas che sei disposto a spendere."
-  },
   "gasLimitTooLow": {
     "message": "Il Gas Limite deve essere almeno 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Il gas limite deve essere almeno $1",
-    "description": "$1 is the custom gas limit, in decimal."
-  },
-  "gasPrice": {
-    "message": "Prezzo del Gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Prezzo del gas troppo basso"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Il prezzo del gas specifica il totale di Ether che sei disposto a pagare per ogni unità di gas."
   },
   "gasUsed": {
     "message": "Gas Utilizzato"
@@ -1125,10 +1099,6 @@
   "send": {
     "message": "Invia"
   },
-  "sendSpecifiedTokens": {
-    "message": "Invia $1",
-    "description": "Symbol of the specified token"
-  },
   "settings": {
     "message": "Impostazioni"
   },
@@ -1143,13 +1113,6 @@
   },
   "showHexDataDescription": {
     "message": "Seleziona per mostrare il campo dei dati hex nella schermata di invio"
-  },
-  "showIncomingTransactions": {
-    "message": "Mostra Transazioni in Ingresso"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Usa Etherscan per visualizzare le transazioni in ingresso nella lista delle transazioni",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Mostra permessi"
@@ -1384,9 +1347,6 @@
   "termsOfService": {
     "message": "Termini di Servizio"
   },
-  "tips": {
-    "message": "Suggerimenti"
-  },
   "to": {
     "message": "A"
   },
@@ -1473,9 +1433,6 @@
   "unlock": {
     "message": "Sblocca"
   },
-  "unlockMessage": {
-    "message": "Il web decentralizzato ti attende"
-  },
   "urlErrorMsg": {
     "message": "Gli URI richiedono un prefisso HTTP/HTTPS."
   },
@@ -1515,8 +1472,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "La tua frase seed privata"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Prezzo del gas maggiore di zero"
   }
 }

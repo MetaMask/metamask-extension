@@ -3,27 +3,38 @@ import { merge } from 'lodash';
 import { ManifestFlags } from '../../shared/lib/manifestFlags';
 import { fetchManifestFlagsFromPRAndGit } from '../../development/lib/get-manifest-flag';
 
+if (process.env.SELENIUM_BROWSER === undefined) {
+  process.env.SELENIUM_BROWSER = 'chrome';
+}
+
 export const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
-type ManifestType = { _flags?: ManifestFlags; manifest_version: string };
+type ManifestType = {
+  _flags?: ManifestFlags;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  manifest_version: string;
+  /**
+   * The public key assigned to the extension's manifest to get consistent id. (For OAuth2 WAF redirect)
+   */
+  key?: string;
+};
 let manifest: ManifestType;
 
 function parseIntOrUndefined(value: string | undefined): number | undefined {
   return value ? parseInt(value, 10) : undefined;
 }
 
-// Alter the manifest with CircleCI environment variables and custom flags
+// Alter the manifest with CI environment variables and custom flags
 export async function setManifestFlags(flags: ManifestFlags = {}) {
-  if (process.env.CIRCLECI) {
-    flags.circleci = {
+  if (process.env.CI) {
+    flags.ci = {
       enabled: true,
-      branch: process.env.CIRCLE_BRANCH,
-      buildNum: parseIntOrUndefined(process.env.CIRCLE_BUILD_NUM),
-      job: process.env.CIRCLE_JOB,
-      nodeIndex: parseIntOrUndefined(process.env.CIRCLE_NODE_INDEX),
-      prNumber: parseIntOrUndefined(
-        process.env.CIRCLE_PULL_REQUEST?.split('/').pop(), // The CIRCLE_PR_NUMBER variable is only available on forked Pull Requests
-      ),
+      branch: process.env.BRANCH,
+      commitHash: process.env.HEAD_COMMIT_HASH,
+      job: process.env.JOB_NAME,
+      matrixIndex: parseIntOrUndefined(process.env.MATRIX_INDEX),
+      prNumber: parseIntOrUndefined(process.env.PR_NUMBER),
     };
 
     const additionalManifestFlags = await fetchManifestFlagsFromPRAndGit();
@@ -42,7 +53,17 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
 
   manifest._flags = flags;
 
-  fs.writeFileSync(`${folder}/manifest.json`, JSON.stringify(manifest));
+  if (process.env.MULTIPROVIDER && 'key' in manifest) {
+    // for multi-provider tests, we need to install the second extension
+    // if any key is present, we need to remove it to generate a new random key (id) for each extension
+    // since two extensions with the same key can't be installed at the same time
+    delete manifest.key;
+  }
+
+  fs.writeFileSync(
+    `${folder}/manifest.json`,
+    JSON.stringify(manifest, null, 2),
+  );
 }
 
 export function getManifestVersion(): number {

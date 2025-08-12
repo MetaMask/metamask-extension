@@ -30,10 +30,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
-import {
-  getSelectedMultichainNetworkConfiguration,
-  getIsEvmMultichainNetworkSelected,
-} from '../../../selectors/multichain/networks';
+import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
@@ -48,7 +45,6 @@ export const AppHeader = ({ location }) => {
   const multichainNetwork = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );
-  const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
   const { chainId, isEvm } = multichainNetwork;
   const networkIconSrc = getNetworkIcon(chainId, isEvm);
@@ -101,10 +97,6 @@ export const AppHeader = ({ location }) => {
     });
   }, [chainId, dispatch, trackEvent]);
 
-  // This is required to ensure send and confirmation screens
-  // look as desired
-  const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
-
   const unlockedStyling = {
     alignItems: AlignItems.center,
     width: BlockSize.Full,
@@ -128,27 +120,19 @@ export const AppHeader = ({ location }) => {
   return (
     <>
       {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null}
-      <AppHeaderContainer
-        isUnlocked={isUnlocked}
-        popupStatus={popupStatus}
-        headerBottomMargin={headerBottomMargin}
-      >
+      <AppHeaderContainer isUnlocked={isUnlocked} popupStatus={popupStatus}>
         <>
           <Box
             className={classnames(
               isUnlocked
                 ? 'multichain-app-header__contents'
                 : 'multichain-app-header__lock-contents',
-              {
-                'multichain-app-header-shadow': isUnlocked && !popupStatus,
-              },
             )}
             {...(isUnlocked ? unlockedStyling : lockStyling)}
           >
             {isUnlocked ? (
               <AppHeaderUnlockedContent
                 popupStatus={popupStatus}
-                isEvmNetwork={isEvmNetwork}
                 currentNetwork={multichainNetwork}
                 networkIconSrc={networkIconSrc}
                 networkOpenCallback={networkOpenCallback}

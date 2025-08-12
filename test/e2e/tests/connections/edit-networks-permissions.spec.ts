@@ -20,7 +20,7 @@ describe('Edit Networks Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
@@ -28,21 +28,23 @@ describe('Edit Networks Permissions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new Homepage(driver).check_pageIsLoaded();
+        await new Homepage(driver).checkPageIsLoaded();
 
         // Open permission page for dapp
         new HeaderNavbar(driver).openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
+        await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
         const sitePermissionPage = new SitePermissionPage(driver);
-        await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
+        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
 
         // Disconnect Mainnet
         await sitePermissionPage.editPermissionsForNetwork([
           'Ethereum Mainnet',
         ]);
-        await sitePermissionPage.check_connectedNetworksNumber(2);
+
+        // Default Chains Connected: Ethereum, Linea, Base
+        await sitePermissionPage.checkConnectedNetworksNumber(3);
       },
     );
   });

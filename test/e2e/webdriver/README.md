@@ -408,6 +408,27 @@ Each of these actions requires first [locating](#locators) the web element you w
 > ```
 
 </details>
+<details><summary><b>findScrollToAndClickElement</b></summary>
+
+> **`findScrollToAndClickElement`** function finds the element, scrolls the page until the element is in view, and clicks it.
+>
+> [source](https://github.com/MetaMask/metamask-extension/blob/4add40d41d9290941fb91ad451959b4ed0338626/test/e2e/webdriver/driver.js#L805)
+>
+> #### Arguments
+>
+> @param {string | object} rawLocator - Element locator<br>
+>
+> #### Returns
+>
+> @return `{Promise<WebElement>}` A promise that resolves to the WebElement.
+>
+> **Example**
+>
+> ```jsx
+> await driver.findScrollToAndClickElement('#sendGetFileTextButton');
+> ```
+
+</details>
 <details><summary><b>press</b></summary>
 
 > **`press`** function enables the simulation of keyboard actions on a specified web element. This can include typing characters into a text field, activating keyboard shortcuts, or any other keyboard-related interactions within a web page.
@@ -459,7 +480,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >
 > ```jsx
 > const pageTitle = await driver.findElement('.unlock-page__title');
-> assert.equal(await pageTitle.getText(), 'Welcome back!');
+> assert.equal(await pageTitle.getText(), 'Welcome back');
 > ```
 >
 > >

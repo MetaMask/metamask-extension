@@ -10,6 +10,7 @@ export { GlobalMenu } from './global-menu';
 export { TokenListItem } from './token-list-item';
 export { AddressCopyButton } from './address-copy-button';
 export { ConnectedSiteMenu } from './connected-site-menu';
+export { ConnectedSitePopover } from './connected-site-popover';
 export { NetworkListItem } from './network-list-item';
 export { NetworkListMenu } from './network-list-menu';
 export { ProductTour } from './product-tour-popover';
@@ -51,6 +52,4 @@ export { ReceiveModal } from './receive-modal';
 export { EditNetworksModal } from './edit-networks-modal';
 export { EditAccountsModal } from './edit-accounts-modal';
 export { Carousel } from './carousel';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-export { ImportSrp } from './multi-srp';
-///: END:ONLY_INCLUDE_IF
+export { SelectSrp, SrpList } from './multi-srp';

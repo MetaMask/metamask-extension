@@ -116,7 +116,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate =
-      !shouldShowFiat || isTestnet || !process.env.PORTFOLIO_VIEW
+      !shouldShowFiat || isTestnet
         ? // @ts-expect-error: balance is not typed.
           account.balance
         : totalFiatBalance;
@@ -157,15 +157,28 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          gap={2}
+          style={{ width: '100%' }}
         >
-          <Text variant={TextVariant.bodyMdMedium}>
-            {account.metadata.name}
-          </Text>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            style={{ minWidth: 0, flex: '1 1 auto', overflow: 'hidden' }}
+          >
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              ellipsis
+              style={{ maxWidth: '200px' }}
+            >
+              {account.metadata.name}
+            </Text>
+          </Box>
           <Box
             display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.flexEnd}
             gap={1}
+            style={{ minWidth: 'fit-content', flexShrink: 0 }}
           >
             {/* <AvatarToken
               src={primaryTokenImage}
@@ -179,8 +192,8 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
               flexDirection={FlexDirection.Row}
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.flexEnd}
-              ellipsis
               textAlign={TextAlign.End}
+              style={{ whiteSpace: 'nowrap' }}
             >
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}

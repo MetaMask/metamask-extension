@@ -27,10 +27,6 @@ $spacer-break-small: 16px;
   }
 }
 
-.badge-wrapper {
-  height: 70vh;
-}
-
 .fade-in {
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -123,6 +119,6 @@ $spacer-break-small: 16px;
     padding-top: 8px;
     padding-bottom: 8px;
     border-radius: var(--Spacing-sm, 8px);
-    border: 1px solid var(--border-muted, #d6d9dc);
+    border: 1px solid var(--border-muted);
   }
 }

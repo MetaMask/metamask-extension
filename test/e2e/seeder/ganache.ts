@@ -1,6 +1,6 @@
-import { Server, server } from 'ganache';
+import { Server, server, ServerOptions } from 'ganache';
 import { BigNumber } from 'bignumber.js';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../constants';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../constants';
 
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
@@ -12,6 +12,8 @@ const convertETHToHexGwei = (eth: number) => convertToHexValue(eth * 10 ** 18);
 
 const defaultOptions = {
   blockTime: 2,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   network_id: 1337,
   port: 8545,
   vmErrorsOnRPCResponse: false,
@@ -19,12 +21,15 @@ const defaultOptions = {
   quiet: true,
 };
 
+type GanacheStartOptions = Partial<ServerOptions> & {
+  mnemonic?: string;
+  accounts?: { secretKey: string; balance: string }[];
+};
+
 export class Ganache {
   #server: Server | undefined;
 
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async start(opts: any) {
+  async start(opts: GanacheStartOptions) {
     let customOptions = {
       ...defaultOptions,
       ...opts,
@@ -38,7 +43,7 @@ export class Ganache {
           {
             secretKey: PRIVATE_KEY,
             balance: convertETHToHexGwei(
-              Number(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+              Number(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
             ),
           },
         ],
@@ -115,11 +120,9 @@ export class Ganache {
     }
     try {
       await this.#server.close();
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    } catch (e: unknown) {
       // We can safely ignore the EBUSY error
-      if (e.code !== 'EBUSY') {
+      if ((e as { code?: string }).code !== 'EBUSY') {
         console.log('Caught error while Ganache closing:', e);
       }
     }

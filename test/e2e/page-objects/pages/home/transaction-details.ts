@@ -1,10 +1,11 @@
+import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class TransactionDetailsPage {
   private readonly driver: Driver;
 
-  private readonly solanaExplorerUrl = 'https://explorer.solana.com';
+  private readonly solanaExplorerUrl = 'https://solscan.io';
 
   private readonly transactionFromToLink = (accountAddress: string) => {
     return {
@@ -29,54 +30,56 @@ class TransactionDetailsPage {
     tag: 'span',
   };
 
-  async check_transactionStatus(status: string): Promise<void> {
+  async checkTransactionStatus(status: string): Promise<void> {
     await this.driver.waitForSelector({
       text: status,
       tag: 'p',
     });
   }
 
-  async check_transactionAmount(amount: string): Promise<void> {
-    await this.driver.waitForSelector({
-      text: amount,
-      tag: 'p',
-    });
+  async checkTransactionAmount(amount: string): Promise<void> {
+    const transactionAmount = await this.driver.findElement(
+      By.css('[data-testid="transaction-list-item-primary-currency"]'),
+    );
+    const transactionAmountText = await transactionAmount.getText();
+    assert.equal(transactionAmountText, amount);
   }
 
-  async check_transactionNetworkFee(networkFee: string): Promise<void> {
-    await this.driver.waitForSelector({
-      text: networkFee,
-      tag: 'p',
-    });
+  async checkTransactionNetworkFee(networkFee: string): Promise<void> {
+    const transactionAmount = await this.driver.findElement(
+      By.css('[data-testid="transaction-base-fee"]'),
+    );
+    const transactionAmountText = await transactionAmount.getText();
+    assert.equal(transactionAmountText, networkFee);
   }
 
-  async check_transactionFromToLink(fromToAddress: string): Promise<void> {
+  async checkTransactionFromToLink(fromToAddress: string): Promise<void> {
     await this.driver.waitForSelector(
-      By.css(`a[href='${this.solanaExplorerUrl}/address/${fromToAddress}']`),
+      By.css(`a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`),
     );
   }
 
-  async check_transactionHashLink(txHash: string): Promise<void> {
+  async checkTransactionHashLink(txHash: string): Promise<void> {
     await this.driver.waitForSelector(
       By.css(`a[href='${this.solanaExplorerUrl}/tx/${txHash}']`),
     );
   }
 
-  async check_amountTransaction(amount: string): Promise<void> {
+  async checkAmountTransaction(amount: string): Promise<void> {
     await this.driver.waitForSelector({
       text: amount,
       tag: 'p',
     });
   }
 
-  async check_networkFeeTransaction(amount: string): Promise<void> {
+  async checkNetworkFeeTransaction(amount: string): Promise<void> {
     await this.driver.waitForSelector({
       text: amount,
       tag: 'p',
     });
   }
 
-  async check_transactionViewDetailsLink(): Promise<void> {
+  async checkTransactionViewDetailsLink(): Promise<void> {
     await this.driver.waitForSelector({
       text: 'View details',
       tag: 'button',

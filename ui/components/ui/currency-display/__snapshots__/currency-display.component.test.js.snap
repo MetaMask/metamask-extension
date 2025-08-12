@@ -4,12 +4,14 @@ exports[`CurrencyDisplay Component should match default snapshot 1`] = `
 <div>
   <div
     class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-    title="null"
+    title="0"
   >
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
       data-testid="account-value-and-suffix"
-    />
+    >
+      0
+    </span>
   </div>
 </div>
 `;

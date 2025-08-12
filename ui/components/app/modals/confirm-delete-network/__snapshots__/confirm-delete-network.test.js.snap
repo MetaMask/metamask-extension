@@ -15,7 +15,7 @@ exports[`Confirm Delete Network should match snapshot 1`] = `
         <div
           class="modal-content__title"
         >
-          Delete Custom Mainnet RPC network?
+          Delete Goerli network?
         </div>
         <div
           class="modal-content__description"
@@ -28,12 +28,12 @@ exports[`Confirm Delete Network should match snapshot 1`] = `
       class="modal-container__footer"
     >
       <button
-        class="button btn--rounded btn-secondary modal-container__footer-button"
+        class="button btn-secondary modal-container__footer-button"
       >
         Cancel
       </button>
       <button
-        class="button btn--rounded btn-danger-primary modal-container__footer-button"
+        class="button btn-danger-primary modal-container__footer-button"
       >
         Delete
       </button>

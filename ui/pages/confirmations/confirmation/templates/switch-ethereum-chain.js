@@ -59,6 +59,14 @@ function getValues(pendingApproval, t, actions) {
         },
       },
       {
+        element: 'OriginPill',
+        key: 'origin-pill',
+        props: {
+          origin: pendingApproval.origin,
+          dataTestId: 'signature-origin-pill',
+        },
+      },
+      {
         element: 'Box',
         key: 'status-box',
         props: {

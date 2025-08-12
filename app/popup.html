@@ -1,18 +1,9 @@
 <!doctype html>
-<html style="width:357px; height:600px;" dir="ltr">
+<html style="width:400px; height:600px;" dir="ltr">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>MetaMask</title>
-    <link rel="preload" href="/_locales/en/messages.json" as="fetch" crossorigin="anonymous" />
-    <link rel="stylesheet" href="../ui/css/index.scss" />
+    <%~ include("partial-head.html") %>
   </head>
-  <body style="width:357px; height:600px;">
-    <div id="app-content">
-      <img class="loading-logo" src="./images/logo/metamask-fox.svg" alt="" loading="lazy" />
-      <img class="loading-spinner" src="./images/spinner.gif" alt="" loading="lazy" />
-    </div>
-    <div id="popover-content"></div>
-    <script src="./scripts/load/ui.ts" defer></script>
+  <body style="width:400px; height:600px;">
+    <%~ include("partial-body.html") %>
   </body>
 </html>

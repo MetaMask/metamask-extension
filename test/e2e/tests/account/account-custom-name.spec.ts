@@ -26,27 +26,27 @@ describe('Account Custom Name Persistence', function (this: Suite) {
 
         // Change account label for existing account and verify edited account label
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.openAccountDetailsModal('Account 1');
 
         const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.check_pageIsLoaded();
+        await accountDetailsModal.checkPageIsLoaded();
         await accountDetailsModal.changeAccountLabel(newAccountLabel);
-        await headerNavbar.check_accountLabel(newAccountLabel);
+        await headerNavbar.checkAccountLabel(newAccountLabel);
 
         // Add new account with custom label and verify new added account label
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Ethereum,
           accountName: anotherAccountLabel,
         });
-        await headerNavbar.check_accountLabel(anotherAccountLabel);
+        await headerNavbar.checkAccountLabel(anotherAccountLabel);
 
         // Switch back to the first account and verify first custom account persists
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList(
           newAccountLabel,
         );
         await accountListPage.switchToAccount(newAccountLabel);
@@ -56,10 +56,10 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         await loginWithBalanceValidation(driver);
 
         // Verify both account labels persist after unlock
-        await headerNavbar.check_accountLabel(newAccountLabel);
+        await headerNavbar.checkAccountLabel(newAccountLabel);
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList(
           anotherAccountLabel,
         );
       },

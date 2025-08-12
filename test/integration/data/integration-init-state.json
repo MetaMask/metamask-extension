@@ -45,6 +45,7 @@
       }
     }
   },
+  "addressSecurityAlertResponses": {},
   "advancedGasFee": {
     "0xaa36a7": {
       "maxBaseFee": "75",
@@ -140,33 +141,51 @@
         {
           "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
           "tokenId": "1",
-          "name": "MUNK #1",
+          "name": "MUNK #1 Mainnet",
           "description": null,
           "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-          "standard": "ERC721"
+          "standard": "ERC721",
+          "chainId": 1,
+          "tokenURI": null
         }
       ],
       "0x89": [
         {
           "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
           "tokenId": "1",
-          "name": "MUNK #1",
+          "name": "MUNK #1 Chain 137",
           "description": null,
           "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-          "standard": "ERC721"
+          "standard": "ERC721",
+          "chainId": 137,
+          "tokenURI": null
         }
       ],
       "0x5": [
         {
           "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
           "tokenId": "1",
-          "name": "MUNK #1",
+          "name": "MUNK #1 Chain 5",
           "description": null,
           "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-          "standard": "ERC721"
+          "standard": "ERC721",
+          "chainId": 5,
+          "tokenURI": null
         }
       ],
       "0xaa36a7": [
+        {
+          "address": "0x91b63808A2e470A64D5201f689B82ebb68c20219",
+          "tokenId": "1",
+          "favorite": false,
+          "isCurrentlyOwned": true,
+          "name": "Test Dapp NFTs #1",
+          "description": "Test Dapp NFTs for testing.",
+          "image": "data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==",
+          "standard": "ERC721",
+          "tokenURI": null,
+          "chainId": 11155111
+        },
         {
           "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
           "tokenId": "58076532811975507823669075598676816378162417803895263482849101575514658701313",
@@ -181,7 +200,9 @@
           },
           "description": "Red Mohawk bam!",
           "image": "https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE",
-          "standard": "ERC1155"
+          "standard": "ERC1155",
+          "chainId": 11155111,
+          "tokenURI": null
         },
         {
           "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
@@ -197,7 +218,9 @@
           },
           "description": "Clown PUNK!!!",
           "image": "https://lh3.googleusercontent.com/H7VrxaalZv4PF1B8U7ADuc8AfuqTVyzmMEDQ5OXKlx0Tqu5XiwsKYj4j_pAF6wUJjLMQbSN_0n3fuj84lNyRhFW9hyrxqDfY1IiQEQ",
-          "standard": "ERC1155"
+          "standard": "ERC1155",
+          "chainId": 11155111,
+          "tokenURI": null
         },
         {
           "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
@@ -213,78 +236,33 @@
           },
           "description": "Got glasses and black hair!",
           "image": "https://lh3.googleusercontent.com/CHNTSlKB_Gob-iwTq8jcag6XwBkTqBMLt_vEKeBv18Q4AoPFAEPceqK6mRzkad2s5djx6CT5zbGQwDy81WwtNzViK5dQbG60uAWv",
-          "standard": "ERC1155"
-        },
-        {
-          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
-          "tokenId": "58076532811975507823669075598676816378162417803895263482849101572216123817985",
-          "name": "Punk #1",
-          "creator": {
-            "user": {
-              "username": null
-            },
-            "profile_img_url": null,
-            "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
-            "config": ""
-          },
-          "image": "https://lh3.googleusercontent.com/4jfPi-nQNWCUXD5qVNVWX7LX2UufU_elEJcvICFlsTdcBXv70asnDEOlI8oKECZxlXq1wseeIXMwmP5tLyOUxMKk",
-          "standard": "ERC1155"
-        },
-        {
-          "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
-          "tokenId": "58076532811975507823669075598676816378162417803895263482849101571116612190209",
-          "name": "Punk #4651",
-          "creator": {
-            "user": {
-              "username": null
-            },
-            "profile_img_url": null,
-            "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
-            "config": ""
-          },
-          "image": "https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE",
-          "standard": "ERC1155"
-        },
-        {
-          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-          "tokenId": "1",
-          "name": "MUNK #1",
-          "description": null,
-          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-          "standard": "ERC721",
-          "lastSale": {
-            "total_price": "4900000000000000",
-            "event_timestamp": "2023-01-18T21:51:23",
-            "payment_token": {
-              "symbol": "ETH"
-            }
-          }
-        },
-        {
-          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-          "tokenId": "2",
-          "name": "MUNK #2",
-          "description": null,
-          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-          "standard": "ERC721"
-        },
-        {
-          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-          "tokenId": "3",
-          "name": "MUNK #3",
-          "description": null,
-          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-          "standard": "ERC721"
+          "standard": "ERC1155",
+          "chainId": 11155111,
+          "tokenURI": null
         }
-      ],
-      "0x99": [
+      ]
+    }
+  },
+  "allTokens": {
+    "0xaa36a7": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": [
         {
-          "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-          "tokenId": "1",
-          "name": "MUNK #1",
-          "description": null,
-          "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-          "standard": "ERC721"
+          "address": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+          "symbol": "TEST",
+          "balance": "0x0",
+          "decimals": "0"
+        },
+        {
+          "address": "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5",
+          "decimals": "8",
+          "balance": "0x0",
+          "symbol": "TEST2"
+        },
+        {
+          "address": "0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4",
+          "symbol": "META",
+          "balance": "0x0",
+          "decimals": "18"
         }
       ]
     }
@@ -360,6 +338,13 @@
   "desktopEnabled": false,
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
+  "enabledNetworkMap": {
+    "eip155": {
+      "0x1": true,
+      "0x5": true,
+      "0xaa36a7": true
+    }
+  },
   "ensEntries": {},
   "ensResolutionsByAddress": {},
   "featureFlags": {},
@@ -458,14 +443,6 @@
   },
   "ignoredNfts": [],
   "ignoredTokens": [],
-  "incomingTransactionsPreferences": {
-    "0x1": true,
-    "0xe708": false,
-    "0xfa": true,
-    "0x5": false,
-    "0xaa36a7": false,
-    "0xe704": true
-  },
   "internalAccounts": {
     "accounts": {
       "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
@@ -631,13 +608,13 @@
   "multichainNetworkConfigurationsByChainId": {
     "bip122:000000000019d6689c085ae165831e93": {
       "chainId": "bip122:000000000019d6689c085ae165831e93",
-      "name": "Bitcoin Mainnet",
+      "name": "Bitcoin",
       "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0",
       "isEvm": false
     },
     "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
       "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-      "name": "Solana Mainnet",
+      "name": "Solana",
       "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
       "isEvm": false
     }
@@ -746,6 +723,16 @@
       "status": "available"
     }
   },
+  "networksWithTransactionActivity": {
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "namespace": "eip155",
+      "activeChain": ["0x5"]
+    },
+    "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+      "namespace": "solana",
+      "activeChain": []
+    }
+  },
   "nftsDropdownState": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
       "0xaa36a7": {
@@ -772,21 +759,8 @@
   "openSeaEnabled": false,
   "orderedNetworkList": [],
   "participateInMetaMetrics": false,
-  "pendingApprovalCount": 1,
-  "pendingApprovals": {
-    "testApprovalId": {
-      "id": "testApprovalId",
-      "time": 1528133319641,
-      "origin": "metamask",
-      "type": "transaction",
-      "requestData": {
-        "txId": "testTransactionId"
-      },
-      "requestState": {
-        "test": "value"
-      }
-    }
-  },
+  "pendingApprovalCount": 0,
+  "pendingApprovals": {},
   "permissionHistory": {
     "https://metamask.github.io": {
       "eth_accounts": {
@@ -818,6 +792,11 @@
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
   "previousMigrationVersion": 112,
+  "remoteFeatureFlags": {
+    "bridgeConfig": {
+      "support": true
+    }
+  },
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -1254,7 +1233,6 @@
       }
     }
   },
-  "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1692109813199,
   "theme": "os",
   "tokenBalances": {

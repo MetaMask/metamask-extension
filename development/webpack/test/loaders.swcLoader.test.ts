@@ -22,7 +22,10 @@ describe('swcLoader', () => {
     // swc doesn't use node's fs module, so we can't mock
     const resourcePath = 'test.ts';
 
-    let resolveCallback: (value: CallbackArgs) => void;
+    // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
+    // browser support.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { promise, resolve } = Promise.withResolvers!<CallbackArgs>();
     const mockContext = {
       mode: 'production',
       sourceMap: true,
@@ -32,15 +35,12 @@ describe('swcLoader', () => {
       resourcePath,
       async: () => {
         return (...args: CallbackArgs) => {
-          resolveCallback(args);
+          resolve(args);
         };
       },
     } as unknown as LoaderContext<SwcLoaderOptions>;
-    const deferredPromise = new Promise<CallbackArgs>((resolve) => {
-      resolveCallback = resolve;
-    });
     mockContext.async = mockContext.async.bind(mockContext);
-    return { context: mockContext, source, expected, deferredPromise };
+    return { context: mockContext, source, expected, deferredPromise: promise };
   }
 
   it('should transform code', async () => {
@@ -108,12 +108,11 @@ describe('swcLoader', () => {
         // properties; it is mostly intended as sanity check.
         const swcConfig: SwcConfig = {
           args: { watch },
-          safeVariables: {},
           browsersListQuery: '',
           isDevelopment,
         };
 
-        const loader = getSwcLoader(syntax, enableJsx, swcConfig);
+        const loader = getSwcLoader(syntax, enableJsx, {}, swcConfig);
         assert.strictEqual(
           loader.loader,
           require.resolve('../utils/loaders/swcLoader'),

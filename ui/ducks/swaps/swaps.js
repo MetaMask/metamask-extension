@@ -2,10 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 
-import { captureMessage } from '@sentry/browser';
-
 import { TransactionType } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
+import { captureMessage } from '../../../shared/lib/sentry';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   addToken,
@@ -56,7 +55,10 @@ import {
   getValueFromWeiHex,
   hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../shared/modules/selectors/networks';
 import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
 import {
   getSelectedAccount,
@@ -68,6 +70,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getSelectedInternalAccount,
   getSelectedNetwork,
+  getHDEntropyIndex,
 } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
@@ -86,6 +89,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
   Slippage,
+  StablecoinsByChainId,
   SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/swaps';
 import {
@@ -589,7 +593,11 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
         await dispatch(setCurrentSmartTransactionsError(undefined));
-        await dispatch(fetchSmartTransactionsLiveness());
+        await dispatch(
+          fetchSmartTransactionsLiveness({
+            networkClientId: getSelectedNetworkClientId(state),
+          }),
+        );
         const transactions = await getTransactions({
           searchCriteria: {
             chainId,
@@ -632,14 +640,16 @@ export const fetchQuotesAndSetQuoteState = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const selectedNetwork = getSelectedNetwork(state);
+    const { chainId } = selectedNetwork.configuration;
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        selectedNetwork.configuration.chainId,
+        chainId,
         swapsFeatureFlags,
       );
     } catch (error) {
@@ -753,6 +763,35 @@ export const fetchQuotesAndSetQuoteState = (
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
+
+    // Helper function for case-insensitive address check in a Set
+    const checkAddressInSetCaseInsensitive = (addressSet, addressToCheck) => {
+      if (!addressToCheck) {
+        return false;
+      }
+      const lowerAddressToCheck = addressToCheck.toLowerCase();
+      for (const addrInSet of addressSet) {
+        if (addrInSet.toLowerCase() === lowerAddressToCheck) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    // Determines if the pair is an eligible stable token pair using case-insensitive check.
+    // If the pair is a stablecoin pair in our list, we can use a lower slippage value of 0.5%.
+    const stablecoinsForChain = StablecoinsByChainId[chainId];
+    const isStableTokenPair = Boolean(
+      stablecoinsForChain &&
+        checkAddressInSetCaseInsensitive(
+          stablecoinsForChain,
+          fromTokenAddress,
+        ) &&
+        checkAddressInSetCaseInsensitive(stablecoinsForChain, toTokenAddress),
+    );
+
+    const slippageForFetch = isStableTokenPair ? Slippage.stable : maxSlippage;
+
     trackEvent({
       event: MetaMetricsEventName.QuotesRequested,
       category: MetaMetricsEventCategory.Swaps,
@@ -761,14 +800,19 @@ export const fetchQuotesAndSetQuoteState = (
         token_from_amount: String(inputValue),
         token_to: toTokenSymbol,
         request_type: balanceError ? 'Quote' : 'Order',
-        slippage: maxSlippage,
-        custom_slippage: maxSlippage !== Slippage.default,
+        slippage: slippageForFetch,
+        custom_slippage:
+          slippageForFetch !== Slippage.default &&
+          slippageForFetch !== Slippage.stable,
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
         stx_enabled: smartTransactionsEnabled,
         current_stx_enabled: currentSmartTransactionsEnabled,
         stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
         anonymizedData: true,
+      },
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
       },
     });
 
@@ -779,7 +823,7 @@ export const fetchQuotesAndSetQuoteState = (
       const fetchAndSetQuotesPromise = dispatch(
         fetchAndSetQuotes(
           {
-            slippage: maxSlippage,
+            slippage: slippageForFetch,
             sourceToken: fromTokenAddress,
             destinationToken: toTokenAddress,
             value: inputValue,
@@ -817,8 +861,10 @@ export const fetchQuotesAndSetQuoteState = (
             token_from_amount: String(inputValue),
             token_to: toTokenSymbol,
             request_type: balanceError ? 'Quote' : 'Order',
-            slippage: maxSlippage,
-            custom_slippage: maxSlippage !== Slippage.default,
+            slippage: slippageForFetch,
+            custom_slippage:
+              slippageForFetch !== Slippage.default &&
+              slippageForFetch !== Slippage.stable,
             is_hardware_wallet: hardwareWalletUsed,
             hardware_wallet_type: hardwareWalletType,
             stx_enabled: smartTransactionsEnabled,
@@ -851,8 +897,10 @@ export const fetchQuotesAndSetQuoteState = (
             token_to: toTokenSymbol,
             token_to_amount: tokenToAmountToString,
             request_type: balanceError ? 'Quote' : 'Order',
-            slippage: maxSlippage,
-            custom_slippage: maxSlippage !== Slippage.default,
+            slippage: slippageForFetch,
+            custom_slippage:
+              slippageForFetch !== Slippage.default &&
+              slippageForFetch !== Slippage.stable,
             response_time: Date.now() - fetchStartTime,
             best_quote_source: newSelectedQuote.aggregator,
             available_quotes: Object.values(fetchedQuotes)?.length,
@@ -863,6 +911,9 @@ export const fetchQuotesAndSetQuoteState = (
             stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
             gas_included: newSelectedQuote.isGasIncludedTrade,
             anonymizedData: true,
+          },
+          properties: {
+            hd_entropy_index: hdEntropyIndex,
           },
         });
 
@@ -893,6 +944,7 @@ export const signAndSendSwapsSmartTransaction = ({
   return async (dispatch, getState) => {
     dispatch(setSwapsSTXSubmitLoading(true));
     const state = getState();
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const fetchParams = getFetchParams(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const hardwareWalletType = getHardwareWalletType(state);
@@ -949,6 +1001,9 @@ export const signAndSendSwapsSmartTransaction = ({
       event: 'STX Swap Started',
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: swapMetaData,
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
     });
 
     if (
@@ -1068,7 +1123,9 @@ export const signAndSendTransactions = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const chainId = getCurrentChainId(state);
+    const globalNetworkClientId = getSelectedNetworkClientId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const networkAndAccountSupports1559 =
       checkNetworkAndAccountSupports1559(state);
@@ -1236,6 +1293,9 @@ export const signAndSendTransactions = (
       event: MetaMetricsEventName.SwapStarted,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: swapMetaData,
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
     });
 
     if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
@@ -1273,6 +1333,7 @@ export const signAndSendTransactions = (
         finalApproveTxMeta = await addTransactionAndWaitForPublish(
           { ...approveTxParams, amount: '0x0' },
           {
+            networkClientId: globalNetworkClientId,
             requireApproval: false,
             type: TransactionType.swapApproval,
             swaps: {
@@ -1311,6 +1372,7 @@ export const signAndSendTransactions = (
 
     try {
       await addTransactionAndWaitForPublish(usedTradeTxParams, {
+        networkClientId: globalNetworkClientId,
         requireApproval: false,
         type: TransactionType.swap,
         swaps: {

@@ -11,8 +11,8 @@ import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
-import { captureException } from '@sentry/browser';
 import PropTypes from 'prop-types';
+import { captureException } from '../../../../shared/lib/sentry';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
@@ -147,8 +147,9 @@ import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../hooks/useAsync';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
@@ -190,6 +191,7 @@ export default function ReviewQuote({
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [submitClicked, setSubmitClicked] = useState(false);
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
@@ -745,6 +747,9 @@ export default function ReviewQuote({
         error_type: MetaMetricsEventErrorType.InsufficientGas,
         additional_balance_needed: additionalBalanceNeeded,
       },
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
     });
   }, [
     quotesLastFetched,
@@ -755,6 +760,7 @@ export default function ReviewQuote({
     prevEthBalanceNeededStx,
     ethBalanceNeeded,
     eventObjectBase,
+    hdEntropyIndex,
   ]);
 
   const metaMaskFee = usedQuote.fee;

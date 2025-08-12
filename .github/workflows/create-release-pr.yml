@@ -4,25 +4,29 @@ on:
   workflow_dispatch:
     inputs:
       base-branch:
-        description: 'The base branch, tag, or SHA for git operations and the pull request.'
+        description: 'The base branch, tag, or SHA for git operations and the pull request. Usually `main`'
         required: true
       semver-version:
-        description: 'A semantic version. eg: x.x.x'
+        description: 'A semantic version, eg: x.x.x'
         required: true
-      previous-version-tag:
-        description: 'Previous release version tag. eg: v7.7.0'
+      previous-version-ref:
+        description: 'Previous release version reference (tag or commit hash). eg: v7.7.0'
         required: true
+
 jobs:
   create-release-pr:
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@4f594ca7d90378da66b7efce987eff379934524b
+    name: Create Release Pull Request using Github Tools
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@dde6d530bebae07d1e50180894ab2cac64170a2c
     with:
       platform: extension
       base-branch: ${{ inputs.base-branch }}
       semver-version: ${{ inputs.semver-version }}
-      previous-version-tag: ${{ inputs.previous-version-tag }}
+      previous-version-tag: ${{ inputs.previous-version-ref }}
+      github-tools-version: dde6d530bebae07d1e50180894ab2cac64170a2c
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       github-token: ${{ secrets.PR_TOKEN }}
+      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
     permissions:
       contents: write
       pull-requests: write

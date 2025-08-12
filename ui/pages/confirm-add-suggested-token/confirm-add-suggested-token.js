@@ -1,13 +1,20 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
+import classnames from 'classnames';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import {
   BannerAlert,
   Button,
   ButtonLinkSize,
   ButtonVariant,
+  Text,
 } from '../../components/component-library';
+import {
+  TextVariant,
+  TextAlign,
+  Severity,
+} from '../../helpers/constants/design-system';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { PageContainerFooter } from '../../components/ui/page-container';
@@ -31,8 +38,8 @@ import {
   TokenStandard,
 } from '../../../shared/constants/transaction';
 import { getSuggestedTokens } from '../../selectors';
-import { Severity } from '../../helpers/constants/design-system';
 import { Nav } from '../confirmations/components/confirm/nav';
+import { hideAppHeader } from '../routes/utils';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -80,6 +87,13 @@ const ConfirmAddSuggestedToken = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const location = useLocation();
+  const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
+
+  const classNames = classnames('confirm-add-suggested-token page-container', {
+    'confirm-add-suggested-token--has-app-header-multichain': hasAppHeader,
+  });
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedTokens = useSelector(getSuggestedTokens);
@@ -169,51 +183,47 @@ const ConfirmAddSuggestedToken = () => {
   }, []);
 
   return (
-    <div className="page-container">
+    <div className={classNames}>
       <Nav confirmationId={approvalId} />
       <div className="page-container__header">
         <div className="page-container__title">{t('addSuggestedTokens')}</div>
-        <div className="page-container__subtitle">
+        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
           {t('likeToImportTokens')}
-        </div>
+        </Text>
         {knownTokenBannerAlert}
         {reusedTokenNameBannerAlert}
       </div>
       <div className="page-container__content">
-        <div className="confirm-add-suggested-token">
-          <div className="confirm-add-suggested-token__header">
-            <div className="confirm-add-suggested-token__token">
-              {t('token')}
-            </div>
-            <div className="confirm-add-suggested-token__balance">
-              {t('balance')}
-            </div>
+        <div className="confirm-add-suggested-token__header">
+          <div className="confirm-add-suggested-token__token">{t('token')}</div>
+          <div className="confirm-add-suggested-token__balance">
+            {t('balance')}
           </div>
-          <div className="confirm-add-suggested-token__token-list">
-            {suggestedTokens.map(({ requestData: { asset } }) => {
-              return (
-                <div
-                  className="confirm-add-suggested-token__token-list-item"
-                  key={asset.address}
-                >
-                  <div className="confirm-add-suggested-token__token confirm-add-suggested-token__data">
-                    <Identicon
-                      className="confirm-add-suggested-token__token-icon"
-                      diameter={48}
-                      address={asset.address}
-                      image={asset.image}
-                    />
-                    <div className="confirm-add-suggested-token__name">
-                      {getTokenName(asset.name, asset.symbol)}
-                    </div>
-                  </div>
-                  <div className="confirm-add-suggested-token__balance">
-                    <TokenBalance token={asset} />
+        </div>
+        <div className="confirm-add-suggested-token__token-list">
+          {suggestedTokens.map(({ requestData: { asset } }) => {
+            return (
+              <div
+                className="confirm-add-suggested-token__token-list-item"
+                key={asset.address}
+              >
+                <div className="confirm-add-suggested-token__token confirm-add-suggested-token__data">
+                  <Identicon
+                    className="confirm-add-suggested-token__token-icon"
+                    diameter={48}
+                    address={asset.address}
+                    image={asset.image}
+                  />
+                  <div className="confirm-add-suggested-token__name">
+                    {getTokenName(asset.name, asset.symbol)}
                   </div>
                 </div>
-              );
-            })}
-          </div>
+                <div className="confirm-add-suggested-token__balance">
+                  <TokenBalance token={asset} />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
       <PageContainerFooter

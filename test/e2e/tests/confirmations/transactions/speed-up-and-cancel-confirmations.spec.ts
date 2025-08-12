@@ -2,10 +2,7 @@
 import { Hex } from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../../../shared/modules/conversion.utils';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import {
-  defaultGanacheOptionsForType2Transactions,
-  unlockWallet,
-} from '../../../helpers';
+import { unlockWallet } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -26,7 +23,10 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: {
+            hardfork: 'london',
+            noMining: true,
+          },
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
@@ -35,8 +35,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           // Create initial stuck transaction
           await createDappTransaction(driver, {
             value: ethInHexWei(0.1),
-            maxFeePerGas: decimalToPrefixedHex(0),
-            maxPriorityFeePerGas: decimalToPrefixedHex(0),
+            maxFeePerGas: '0x22ae4b8bcb',
+            maxPriorityFeePerGas: '0x59682f04',
             to: DEFAULT_FIXTURE_ACCOUNT,
           });
 
@@ -50,22 +50,21 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          (await localNodes?.[0]?.mineBlock()) ??
-            console.error('localNodes is undefined or empty');
 
           const homePage = new HomePage(driver);
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.check_completedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
 
-          await activityListPage.click_transactionListItem();
-          await activityListPage.click_speedUpTransaction();
-          await activityListPage.click_confirmTransactionReplacement();
+          await activityListPage.clickTransactionListItem();
+          await activityListPage.clickSpeedUpTransaction();
+          await activityListPage.clickConfirmTransactionReplacement();
+          await driver.delay(3000); // Delay needed to ensure the transaction is updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
 
-          await activityListPage.check_waitForTransactionStatus('confirmed');
+          await activityListPage.checkWaitForTransactionStatus('confirmed');
         },
       );
     });
@@ -79,7 +78,10 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: {
+            hardfork: 'london',
+            noMining: true,
+          },
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
@@ -88,8 +90,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           // Create initial stuck transaction
           await createDappTransaction(driver, {
             value: ethInHexWei(0.1),
-            maxFeePerGas: decimalToPrefixedHex(0),
-            maxPriorityFeePerGas: decimalToPrefixedHex(0),
+            maxFeePerGas: '0x22ae4b8bcb',
+            maxPriorityFeePerGas: '0x59682f04',
             to: DEFAULT_FIXTURE_ACCOUNT,
           });
 
@@ -97,8 +99,6 @@ describe('Speed Up and Cancel Transaction Tests', function () {
 
           const confirmationPage = new Confirmation(driver);
           await confirmationPage.clickFooterConfirmButton();
-          (await localNodes?.[0]?.mineBlock()) ??
-            console.error('localNodes is undefined or empty');
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
@@ -107,13 +107,14 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.check_completedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
 
-          await activityListPage.click_cancelTransaction();
-          await activityListPage.click_confirmTransactionReplacement();
+          await activityListPage.clickCancelTransaction();
+          await activityListPage.clickConfirmTransactionReplacement();
+          await driver.delay(3000); // Delay needed to ensure the transaction updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
-          await activityListPage.check_waitForTransactionStatus('cancelled');
+          await activityListPage.checkWaitForTransactionStatus('cancelled');
         },
       );
     });

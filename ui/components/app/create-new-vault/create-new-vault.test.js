@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -13,6 +13,13 @@ const store = configureStore({
     ...mockState.metamask,
   },
 });
+
+const mockSignOut = jest.fn();
+jest.mock('../../../hooks/identity/useAuthentication', () => ({
+  useSignOut: () => ({
+    signOut: mockSignOut,
+  }),
+}));
 
 describe('CreateNewVault', () => {
   it('renders CreateNewVault component and shows Secret Recovery Phrase text', () => {
@@ -30,7 +37,7 @@ describe('CreateNewVault', () => {
     );
     expect(
       screen.getByText(
-        'You can paste your entire secret recovery phrase into any field',
+        'You can paste your entire Secret Recovery Phrase into any field.',
       ),
     ).toBeInTheDocument();
   });
@@ -73,7 +80,9 @@ describe('CreateNewVault', () => {
 
     fireEvent.change(passwordInput, passwordEvent);
 
-    const passwordError = queryByText('Password not long enough');
+    const passwordError = queryByText(
+      'Password must have at least 8 characters',
+    );
 
     expect(passwordError).toBeInTheDocument();
 
@@ -120,7 +129,7 @@ describe('CreateNewVault', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it('should valid', () => {
+  it('should sign out the user and submit successfully when password and confirm password match', () => {
     const props = {
       onSubmit: jest.fn(),
       submitText: 'Submit',
@@ -158,7 +167,10 @@ describe('CreateNewVault', () => {
 
     fireEvent.click(submitButton);
 
-    expect(props.onSubmit).toHaveBeenCalledWith(password, TEST_SEED);
+    waitFor(() => {
+      expect(mockSignOut).toHaveBeenCalled();
+      expect(props.onSubmit).toHaveBeenCalledWith(password, TEST_SEED);
+    });
   });
 });
 

@@ -14,6 +14,8 @@ class ConnectHardwareWalletPage {
 
   private readonly connectLatticeButton = '[data-testid="connect-lattice-btn"]';
 
+  private readonly connectLedgerButton = '[data-testid="connect-ledger-btn"]';
+
   private readonly connectTrezorButton = '[data-testid="connect-trezor-btn"]';
 
   private readonly continueButton = { text: 'Continue', tag: 'button' };
@@ -22,7 +24,7 @@ class ConnectHardwareWalletPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.connectHardwareWalletPageTitle,
@@ -44,10 +46,37 @@ class ConnectHardwareWalletPage {
     await this.driver.clickElement(this.continueButton);
   }
 
+  async clickConnectLedgerButton(): Promise<void> {
+    console.log(`Click connect Ledger button`);
+    await this.driver.clickElement(this.connectLedgerButton);
+  }
+
+  async clickContinueButton(): Promise<void> {
+    console.log(`Click continue button`);
+    await this.driver.clickElement(this.continueButton);
+  }
+
   async openConnectTrezorPage(): Promise<void> {
     console.log(`Open connect trezor page`);
     await this.driver.clickElement(this.connectTrezorButton);
     await this.driver.clickElement(this.continueButton);
+  }
+
+  async checkFirefoxNotSupportedIsDisplayed(): Promise<void> {
+    console.log('Check "Firefox Not Supported" message is displayed');
+    await this.driver.waitForSelector({
+      text: 'Firefox Not Supported',
+    });
+
+    // Continue button should be disabled
+    const continueButton = await this.driver.findElement({
+      text: 'Continue',
+      tag: 'button',
+    });
+    const isDisabled = (await continueButton.getAttribute('disabled')) !== null;
+    if (!isDisabled) {
+      throw new Error('Continue button should be disabled in Firefox');
+    }
   }
 }
 

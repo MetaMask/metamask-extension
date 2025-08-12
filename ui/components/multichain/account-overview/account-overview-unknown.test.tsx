@@ -1,4 +1,6 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
+import { CompatRouter } from 'react-router-dom-v5-compat';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
@@ -12,7 +14,14 @@ const render = (props: AccountOverviewUnknownProps) => {
     metamask: mockState.metamask,
   });
 
-  return renderWithProvider(<AccountOverviewUnknown {...props} />, store);
+  return renderWithProvider(
+    <MemoryRouter>
+      <CompatRouter>
+        <AccountOverviewUnknown {...props} />
+      </CompatRouter>
+    </MemoryRouter>,
+    store,
+  );
 };
 
 describe('AccountOverviewUnknown', () => {
@@ -29,5 +38,6 @@ describe('AccountOverviewUnknown', () => {
     ).not.toBeInTheDocument();
     expect(queryByTestId('account-overview__nfts-tab')).not.toBeInTheDocument();
     expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__defi-tab')).not.toBeInTheDocument();
   });
 });

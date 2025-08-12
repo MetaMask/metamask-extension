@@ -56,6 +56,7 @@ import {
   getTemplateState,
 } from './templates';
 
+const CONFIRMATION_TYPES_WITH_HEADER = ['result_success', 'result_error'];
 const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
 
 /**
@@ -210,7 +211,7 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
   }
 
   return (
-    <Box style={{ width: '100%', position: 'relative' }}>
+    <Box style={{ width: '100%', position: 'relative', overflow: 'hidden' }}>
       <Nav confirmationId={confirmation?.id} />
       {requiresSnapHeader && (
         <SnapAuthorshipHeader snapId={origin} onCancel={onCancel} />
@@ -298,6 +299,11 @@ export default function ConfirmationPage({
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
+
+  const hasHeaderMaybe = isSnapDialog;
+  const hasHeader =
+    isSnapCustomUIDialog ||
+    CONFIRMATION_TYPES_WITH_HEADER.includes(pendingConfirmation?.type);
 
   const INPUT_STATE_CONFIRMATIONS = [ApprovalType.SnapDialogPrompt];
 
@@ -496,9 +502,8 @@ export default function ConfirmationPage({
   return (
     <ConfirmContextProvider>
       <TemplateAlertContextProvider
-        pendingConfirmation={pendingConfirmation}
+        confirmationId={pendingConfirmation.id}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
-        onCancel={templatedValues.onCancel}
       >
         <div className="confirmation-page">
           <Header
@@ -508,7 +513,7 @@ export default function ConfirmationPage({
           />
           <Box
             className="confirmation-page__content"
-            padding={isSnapCustomUIDialog ? 0 : 4}
+            padding={hasHeader || hasHeaderMaybe ? 0 : 4}
             style={{
               overflowY: 'auto',
             }}

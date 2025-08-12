@@ -22,6 +22,8 @@ import reduceMetamask, {
   getSendToAccounts,
   isNotEIP1559Network,
   getCurrentCurrency,
+  getAllNfts,
+  getTokensByChainId,
 } from './metamask';
 
 jest.mock('@metamask/transaction-controller', () => ({
@@ -699,6 +701,112 @@ describe('MetaMask Reducers', () => {
       expect(getGasEstimateTypeByChainId(state, '0x1')).toStrictEqual(
         GAS_ESTIMATE_TYPES.FEE_MARKET,
       );
+    });
+  });
+
+  describe('getAllNfts', () => {
+    it('should return all nfts', () => {
+      const testAddress = '0xaccount';
+      const state = {
+        metamask: {
+          internalAccounts: {
+            accounts: {
+              testId: {
+                address: testAddress,
+                id: 'testId',
+              },
+            },
+            selectedAccount: 'testId',
+          },
+          allNfts: {
+            [testAddress]: {
+              '0x1': [
+                {
+                  address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+                  tokenId: '100',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(getAllNfts(state)).toStrictEqual({
+        '0x1': [
+          {
+            address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+            tokenId: '100',
+          },
+        ],
+      });
+    });
+  });
+
+  describe('getTokensByChainId', () => {
+    const state = {
+      metamask: {
+        allTokens: {
+          '0x1': {
+            '0x123': [
+              { symbol: 'ETH', address: '0xabc' },
+              { symbol: 'DAI', address: '0xdef' },
+            ],
+          },
+          '0x2': {
+            '0x456': [{ symbol: 'USDC', address: '0xghi' }],
+          },
+        },
+        internalAccounts: {
+          selectedAccount: 'account1',
+          accounts: {
+            account1: {
+              address: '0x123',
+            },
+            account2: {
+              address: '0x456',
+            },
+          },
+        },
+      },
+    };
+
+    it('returns tokens for the selected account and chain ID', () => {
+      const tokens = getTokensByChainId(state, '0x1');
+      expect(tokens).toStrictEqual([
+        { symbol: 'ETH', address: '0xabc' },
+        { symbol: 'DAI', address: '0xdef' },
+      ]);
+    });
+
+    it('returns an empty array if no tokens exist for the chain ID', () => {
+      const tokens = getTokensByChainId(state, '0x3');
+      expect(tokens).toStrictEqual([]);
+    });
+
+    it('returns an empty array if no tokens exist for the selected account', () => {
+      const stateWithNoTokens = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          allTokens: {
+            '0x1': {},
+          },
+        },
+      };
+      const tokens = getTokensByChainId(stateWithNoTokens, '0x1');
+      expect(tokens).toStrictEqual([]);
+    });
+
+    it('returns an empty array if allTokens is undefined', () => {
+      const stateWithNoTokens = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          allTokens: undefined,
+        },
+      };
+      const tokens = getTokensByChainId(stateWithNoTokens, '0x1');
+      expect(tokens).toStrictEqual([]);
     });
   });
 });

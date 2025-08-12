@@ -25,6 +25,7 @@ import { Content, Header } from '../../components/multichain/pages/page';
 import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
+  getValidNotificationAccounts,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getInternalAccounts } from '../../selectors';
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
@@ -32,6 +33,29 @@ import { NotificationsSettingsAllowNotifications } from './notifications-setting
 import { NotificationsSettingsTypes } from './notifications-settings-types';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
 
+function useNotificationAccounts() {
+  const accountAddresses = useSelector(getValidNotificationAccounts);
+  const internalAccounts = useSelector(getInternalAccounts);
+  const accounts = useMemo(() => {
+    return (
+      accountAddresses
+        .map((addr) => {
+          const account = internalAccounts.find(
+            (a) => a.address.toLowerCase() === addr.toLowerCase(),
+          );
+          return account;
+        })
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        .filter(<T,>(val: T | undefined): val is T => Boolean(val))
+    );
+  }, [accountAddresses, internalAccounts]);
+
+  return accounts;
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NotificationsSettings() {
   const history = useHistory();
   const location = useLocation();
@@ -44,7 +68,7 @@ export default function NotificationsSettings() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const accounts = useSelector(getInternalAccounts);
+  const accounts = useNotificationAccounts();
 
   // States
   const [loadingAllowNotifications, setLoadingAllowNotifications] =

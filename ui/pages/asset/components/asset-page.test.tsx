@@ -13,7 +13,10 @@ import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import {
+  mockNetworkState,
+  mockMultichainNetworkState,
+} from '../../../../test/stub/networks';
 import useMultiPolling from '../../../hooks/useMultiPolling';
 import AssetPage from './asset-page';
 
@@ -22,6 +25,8 @@ jest.mock('../../../store/actions', () => ({
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
+
+jest.mock('../../../store/controller-actions/transaction-controller');
 
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({ Line: () => null }));
@@ -44,6 +49,8 @@ jest.mock('../../../../shared/constants/network', () => ({
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
@@ -59,6 +66,12 @@ describe('AssetPage', () => {
       confirmationExchangeRates: {},
     },
     metamask: {
+      ...mockMultichainNetworkState(),
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: true,
+        },
+      },
       tokenList: {},
       tokenBalances: {
         [selectedAccountAddress]: {
@@ -90,6 +103,9 @@ describe('AssetPage', () => {
       },
       useCurrencyRateCheck: true,
       preferences: {},
+      enabledNetworkMap: {
+        eip155: {},
+      },
       internalAccounts: {
         accounts: {
           [selectedAccountAddress]: {
@@ -135,7 +151,6 @@ describe('AssetPage', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
       getTokenSymbol: jest.fn(),
-      setBridgeFeatureFlags: jest.fn(),
     } as never);
   });
 
@@ -289,18 +304,9 @@ describe('AssetPage', () => {
     const bridgeButton = queryByTestId('token-overview-bridge');
     expect(bridgeButton).toBeInTheDocument();
     expect(bridgeButton).not.toBeDisabled();
-
-    fireEvent.click(bridgeButton as HTMLElement);
-
-    await waitFor(() => {
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-      expect(openTabSpy).toHaveBeenCalledWith({
-        url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
-      });
-    });
   });
 
-  it('should not show the Bridge button if chain id is not supported', async () => {
+  it('should not render Bridge button on testnet chains', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -311,8 +317,9 @@ describe('AssetPage', () => {
         },
       }),
     );
+    // bridge button is hidden on unified and testnet chains.
     const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).not.toBeInTheDocument();
+    expect(bridgeButton).toBeNull();
   });
 
   it('should render the network name', async () => {
@@ -365,10 +372,10 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify no chart is rendered
+    // Verify we show the loading state
     await waitFor(() => {
-      const chart = queryByTestId('asset-price-chart');
-      expect(chart).toBeNull();
+      const chart = queryByTestId('asset-chart-loading');
+      expect(chart).toBeInTheDocument();
     });
 
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
@@ -415,7 +422,7 @@ describe('AssetPage', () => {
     // Verify chart is rendered
     await waitFor(() => {
       const chart = queryByTestId('asset-price-chart');
-      expect(chart).toHaveClass('mm-box--background-color-transparent');
+      expect(chart).toBeInTheDocument();
     });
 
     // Verify market data is rendered

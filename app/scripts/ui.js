@@ -18,9 +18,14 @@ import browser from 'webextension-polyfill';
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
+import launchMetaMaskUi, {
+  CriticalStartupErrorHandler,
+  connectToBackground,
+  displayCriticalError,
+  CriticalErrorTranslationKey,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
@@ -28,8 +33,6 @@ import {
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
-import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
@@ -38,12 +41,15 @@ import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
-const METHOD_START_UI_SYNC = 'startUISync';
 
+/**
+ * @type {HTMLElement}
+ */
 const container = document.getElementById('app-content');
 
-let extensionPort;
-let isUIInitialised = false;
+/**
+ * @typedef {import("@metamask/object-multiplex/dist/Substream").Substream} Substream
+ */
 
 /**
  * An error thrown if the phishing warning page takes too long to load.
@@ -82,72 +88,52 @@ async function start() {
   const windowType = getEnvironmentType();
 
   // setup stream to background
-  extensionPort = browser.runtime.connect({ name: windowType });
+  const extensionPort = browser.runtime.connect({ name: windowType });
 
-  let connectionStream = new PortStream(extensionPort);
+  // Set up error handlers as early as possible to ensure we are ready to
+  // handle any errors that occur at any time
+  const criticalErrorHandler = new CriticalStartupErrorHandler(
+    extensionPort,
+    container,
+  );
+  criticalErrorHandler.install();
 
-  const activeTab = await queryCurrentActiveTab(windowType);
+  const connectionStream = new PortStream(extensionPort);
+  const subStreams = connectSubstreams(connectionStream);
+  const backgroundConnection = metaRPCClientFactory(subStreams.controller);
+  connectToBackground(backgroundConnection, handleStartUISync);
 
-  /*
-   * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
-   * Code below ensures that UI is rendered only after "CONNECTION_READY" or "startUISync"
-   * messages are received thus the background is ready, and ensures that streams and
-   * phishing warning page load only after the "startUISync" message is received.
-   * In case the UI is already rendered, only update the streams.
-   */
-  const messageListener = async (message) => {
-    const method = message?.data?.method;
-
-    if (method !== METHOD_START_UI_SYNC) {
-      return;
-    }
-
+  async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
 
-    if (isManifestV3 && isUIInitialised) {
-      // Currently when service worker is revived we create new streams
-      // in later version we might try to improve it by reviving same streams.
-      updateUiStreams(connectionStream);
-    } else {
-      await initializeUiWithTab(
-        activeTab,
-        connectionStream,
-        windowType,
-        traceContext,
-      );
-    }
+    // this means we've received a message from the background, and so
+    // background startup has succeed, so we don't need to listen for error
+    // messages anymore
+    criticalErrorHandler.uninstall();
+
+    // Only after startUiSync has started can we set up the provider connection
+    // The provider connection *must* be set up before the UI is initialized, as
+    // it sets a global variable, `ethereumProvider`, that the UI relies on.
+    await setupProviderConnection(subStreams.provider);
+
+    const activeTab = await queryCurrentActiveTab(windowType);
+
+    await initializeUiWithTab(
+      activeTab,
+      backgroundConnection,
+      windowType,
+      traceContext,
+    );
 
     if (isManifestV3) {
       await loadPhishingWarningPage();
-    } else {
-      extensionPort.onMessage.removeListener(messageListener);
     }
-  };
-
-  if (isManifestV3) {
-    // resetExtensionStreamAndListeners takes care to remove listeners from closed streams
-    // it also creates new streams and attaches event listeners to them
-    const resetExtensionStreamAndListeners = () => {
-      extensionPort.onMessage.removeListener(messageListener);
-      extensionPort.onDisconnect.removeListener(
-        resetExtensionStreamAndListeners,
-      );
-
-      extensionPort = browser.runtime.connect({ name: windowType });
-      connectionStream = new PortStream(extensionPort);
-      extensionPort.onMessage.addListener(messageListener);
-      extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
-    };
-
-    extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
   }
 
   trace({
     name: TraceName.BackgroundConnect,
     parentContext: traceContext,
   });
-
-  extensionPort.onMessage.addListener(messageListener);
 }
 
 /**
@@ -245,8 +231,6 @@ async function initializeUiWithTab(
 
     endTrace({ name: TraceName.UIStartup });
 
-    isUIInitialised = true;
-
     if (process.env.IN_TEST) {
       window.document?.documentElement?.classList.add('controller-loaded');
     }
@@ -257,15 +241,13 @@ async function initializeUiWithTab(
     if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
       global.platform.openExtensionInBrowser();
     }
-  } catch (err) {
-    displayCriticalError('troubleStarting', err);
+  } catch (error) {
+    await displayCriticalError(
+      container,
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+    );
   }
-}
-
-// Function to update new backgroundConnection in the UI
-function updateUiStreams(connectionStream) {
-  const backgroundConnection = connectToAccountManager(connectionStream);
-  updateBackgroundConnection(backgroundConnection);
 }
 
 async function queryCurrentActiveTab(windowType) {
@@ -310,9 +292,7 @@ async function queryCurrentActiveTab(windowType) {
   return { id, title, origin, protocol, url };
 }
 
-async function initializeUi(activeTab, connectionStream, traceContext) {
-  const backgroundConnection = connectToAccountManager(connectionStream);
-
+async function initializeUi(activeTab, backgroundConnection, traceContext) {
   return await launchMetaMaskUi({
     activeTab,
     container,
@@ -321,60 +301,37 @@ async function initializeUi(activeTab, connectionStream, traceContext) {
   });
 }
 
-async function displayCriticalError(errorKey, err, metamaskState) {
-  const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState);
-
-  container.innerHTML = html;
-
-  const button = document.getElementById('critical-error-button');
-
-  button?.addEventListener('click', (_) => {
-    browser.runtime.reload();
-  });
-
-  log.error(err.stack);
-  throw err;
-}
-
 /**
- * Establishes a connection to the background and a Web3 provider
+ * Establishes a connections between the PortStream (background) and various UI
+ * streams.
  *
- * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
+ * @param {PortStream} connectionStream - PortStream instance establishing a background connection
+ * @returns The multiplexed streams
  */
-function connectToAccountManager(connectionStream) {
+function connectSubstreams(connectionStream) {
   const mx = setupMultiplex(connectionStream);
-  const controllerConnectionStream = mx.createStream('controller');
 
-  const backgroundConnection = setupControllerConnection(
-    controllerConnectionStream,
-  );
+  const controllerSubstream = mx.createStream('controller');
+  const providerSubstream = mx.createStream('provider');
 
-  setupWeb3Connection(mx.createStream('provider'));
-
-  return backgroundConnection;
+  return {
+    controller: controllerSubstream,
+    provider: providerSubstream,
+  };
 }
 
 /**
  * Establishes a streamed connection to a Web3 provider
  *
- * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
+ * @param {Substream} connectionStream - PortStream instance establishing a background connection
  */
-function setupWeb3Connection(connectionStream) {
+async function setupProviderConnection(connectionStream) {
   const providerStream = new StreamProvider(connectionStream, {
     rpcMiddleware: [createIdRemapMiddleware()],
   });
   connectionStream.on('error', console.error.bind(console));
   providerStream.on('error', console.error.bind(console));
-  providerStream.initialize().then(() => {
-    global.ethereumProvider = providerStream;
-  });
-}
 
-/**
- * Establishes a streamed connection to the background account manager
- *
- * @param {PortDuplexStream} controllerConnectionStream - PortStream instance establishing a background connection
- */
-function setupControllerConnection(controllerConnectionStream) {
-  return metaRPCClientFactory(controllerConnectionStream);
+  await providerStream.initialize();
+  global.ethereumProvider = providerStream;
 }

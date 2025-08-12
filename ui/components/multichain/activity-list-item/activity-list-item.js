@@ -77,16 +77,23 @@ export const ActivityListItem = ({
             display={Display.InlineFlex}
             flexDirection={FlexDirection.Column}
             className="activity-list-item__detail-container"
+            minWidth="0"
           >
-            <Text
-              ellipsis
-              textAlign={TextAlign.Left}
-              variant={TextVariant.bodyLgMedium}
-              fontWeight={FontWeight.Medium}
-              data-testid="activity-list-item-action"
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.center}
             >
-              {title}
-            </Text>
+              <Text
+                ellipsis
+                textAlign={TextAlign.Left}
+                variant={TextVariant.bodyLgMedium}
+                fontWeight={FontWeight.Medium}
+                data-testid="activity-list-item-action"
+              >
+                {title}
+              </Text>
+            </Box>
             {subtitle && (
               <Text
                 as="div"

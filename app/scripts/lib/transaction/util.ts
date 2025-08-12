@@ -55,7 +55,7 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dappRequest: Record<string, any>;
 };
@@ -98,9 +98,8 @@ export async function addTransaction(
 ): Promise<TransactionMeta> {
   await validateSecurity(request);
 
-  const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
-    request,
-  );
+  const { transactionMeta, waitForHash } =
+    await addTransactionOrUserOperation(request);
 
   if (!request.waitForSubmit) {
     waitForHash().catch(() => {
@@ -169,7 +168,8 @@ async function addUserOperationWithController(
   } = request;
 
   const { maxFeePerGas, maxPriorityFeePerGas } = transactionParams;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { origin, requireApproval, type } = transactionOptions as any;
 
@@ -208,7 +208,7 @@ async function addUserOperationWithController(
   };
 }
 
-function getTransactionById(
+export function getTransactionById(
   transactionId: string,
   transactionController: TransactionController,
 ) {

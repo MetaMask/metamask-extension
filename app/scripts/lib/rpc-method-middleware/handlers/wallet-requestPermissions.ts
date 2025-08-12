@@ -2,11 +2,8 @@ import { pick } from 'lodash';
 import { isPlainObject } from '@metamask/controller-utils';
 import {
   Caveat,
-  CaveatSpecificationConstraint,
   invalidParams,
   MethodNames,
-  PermissionController,
-  PermissionSpecificationConstraint,
   RequestedPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
@@ -15,7 +12,7 @@ import {
   Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import {
   AsyncJsonRpcEngineNextCallback,
@@ -26,6 +23,7 @@ import {
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
+import { GrantedPermissions } from './types';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.RequestPermissions],
@@ -36,15 +34,6 @@ export const requestPermissionsHandler = {
     getCaip25PermissionFromLegacyPermissionsForOrigin: true,
   },
 };
-
-type AbstractPermissionController = PermissionController<
-  PermissionSpecificationConstraint,
-  CaveatSpecificationConstraint
->;
-
-type GrantedPermissions = Awaited<
-  ReturnType<AbstractPermissionController['requestPermissions']>
->[0];
 
 /**
  * Request Permissions implementation to be used in JsonRpcEngine middleware.
@@ -108,9 +97,8 @@ async function requestPermissionsImplementation(
 
   let grantedPermissions: GrantedPermissions = {};
 
-  const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
-    requestedPermissions,
-  );
+  const [frozenGrantedPermissions] =
+    await requestPermissionsForOrigin(requestedPermissions);
 
   grantedPermissions = { ...frozenGrantedPermissions };
 

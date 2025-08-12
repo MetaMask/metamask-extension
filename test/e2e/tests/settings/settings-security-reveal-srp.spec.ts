@@ -2,7 +2,6 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { E2E_SRP } from '../../default-fixture';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -23,11 +22,11 @@ describe('Reveal SRP through settings', function () {
         // navigate to security & privacy settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(
@@ -50,22 +49,22 @@ describe('Reveal SRP through settings', function () {
         // navigate to security & privacy settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
 
         // fill password to reveal SRP and check the displayed SRP
         await privacySettings.openRevealSrpQuiz();
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(testPassword);
-        await privacySettings.check_srpTextIsDisplayed(E2E_SRP);
-        await privacySettings.check_displayedSrpCanBeCopied();
+        await privacySettings.checkSrpTextIsDisplayed(E2E_SRP);
+        await privacySettings.checkDisplayedSrpCanBeCopied();
 
-        // check that closing the reveal SRP dialog navigates user back to wallet view
+        // check that closing the reveal SRP dialog navigates user back to srp list page
         await privacySettings.closeRevealSrpDialog();
-        await new HomePage(driver).check_pageIsLoaded();
+        await privacySettings.checkSrpListIsLoaded();
       },
     );
   });
@@ -82,22 +81,22 @@ describe('Reveal SRP through settings', function () {
         // Navigate to security & privacy settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
 
         // fill password to reveal SRP and check the displayed SRP QR code
         await privacySettings.openRevealSrpQuiz();
         await privacySettings.completeRevealSrpQuiz(true);
         await privacySettings.fillPasswordToRevealSrp(testPassword);
-        await privacySettings.check_srpTextIsDisplayed(E2E_SRP);
-        await privacySettings.check_srpQrCodeIsDisplayed();
+        await privacySettings.checkSrpTextIsDisplayed(E2E_SRP);
+        await privacySettings.checkSrpQrCodeIsDisplayed();
 
-        // check that closing the reveal SRP dialog navigates user back to wallet view
+        // check that closing the reveal SRP dialog navigates user back to srp list page
         await privacySettings.closeRevealSrpDialog();
-        await new HomePage(driver).check_pageIsLoaded();
+        await privacySettings.checkSrpListIsLoaded();
       },
     );
   });

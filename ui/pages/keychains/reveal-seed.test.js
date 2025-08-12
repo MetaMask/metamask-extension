@@ -14,19 +14,39 @@ import { Modal } from '../../components/app/modals';
 import configureStore from '../../store/store';
 import RevealSeedPage from './reveal-seed';
 
-const mockRequestRevealSeedWords = jest.fn();
+const mockSuccessfulSrpReveal = () => {
+  return (dispatch) => {
+    dispatch({ type: 'MOCK_REQUEST_REVEAL_SEED_WORDS' });
+    return Promise.resolve('test srp');
+  };
+};
+const mockUnsuccessfulSrpReveal = () => {
+  return () => {
+    return Promise.reject(new Error('bad password'));
+  };
+};
+const mockRequestRevealSeedWords = jest
+  .fn()
+  .mockImplementation(mockSuccessfulSrpReveal);
 const mockShowModal = jest.fn();
+const mockUseParams = jest
+  .fn()
+  .mockReturnValue({ keyringId: 'ULID01234567890ABCDEFGHIJKLMN' });
+const password = 'password';
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
-  requestRevealSeedWords: () => mockRequestRevealSeedWords,
+  requestRevealSeedWords: (userPassword, keyringId) =>
+    mockRequestRevealSeedWords(userPassword, keyringId),
 }));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
     push: jest.fn(),
+    goBack: jest.fn(),
   }),
+  useParams: () => mockUseParams(),
 }));
 
 const mockStateWithModal = {
@@ -49,7 +69,6 @@ describe('Reveal Seed Page', () => {
   const mockStore = configureMockStore([thunk])(mockStateWithModal);
 
   afterEach(() => {
-    jest.resetAllMocks();
     jest.clearAllMocks();
   });
 
@@ -60,14 +79,13 @@ describe('Reveal Seed Page', () => {
   });
 
   it('form submit', async () => {
-    mockRequestRevealSeedWords.mockResolvedValueOnce('test srp');
     const { queryByTestId, queryByText } = renderWithProvider(
       <RevealSeedPage />,
       mockStore,
     );
 
     fireEvent.change(queryByTestId('input-password'), {
-      target: { value: 'password' },
+      target: { value: password },
     });
 
     fireEvent.click(queryByText('Next'));
@@ -78,14 +96,13 @@ describe('Reveal Seed Page', () => {
   });
 
   it('shows hold to reveal', async () => {
-    mockRequestRevealSeedWords.mockResolvedValueOnce('test srp');
     const { queryByTestId, queryByText } = renderWithProvider(
       <RevealSeedPage />,
       mockStore,
     );
 
     fireEvent.change(queryByTestId('input-password'), {
-      target: { value: 'password' },
+      target: { value: password },
     });
 
     fireEvent.click(queryByText('Next'));
@@ -96,7 +113,7 @@ describe('Reveal Seed Page', () => {
   });
 
   it('does not show modal on bad password', async () => {
-    mockRequestRevealSeedWords.mockRejectedValueOnce('incorrect password');
+    mockRequestRevealSeedWords.mockImplementation(mockUnsuccessfulSrpReveal);
 
     const { queryByTestId, queryByText } = renderWithProvider(
       <RevealSeedPage />,
@@ -115,9 +132,9 @@ describe('Reveal Seed Page', () => {
   });
 
   it('should show srp after hold to reveal', async () => {
+    mockRequestRevealSeedWords.mockImplementationOnce(mockSuccessfulSrpReveal);
     // need to use actual store because redux-mock-store does not execute actions
     const store = configureStore(mockState);
-    mockRequestRevealSeedWords.mockResolvedValueOnce('test srp');
     const { queryByTestId, queryByText } = renderWithProvider(
       <div>
         <Modal />
@@ -129,7 +146,7 @@ describe('Reveal Seed Page', () => {
     const nextButton = queryByText('Next');
 
     fireEvent.change(queryByTestId('input-password'), {
-      target: { value: 'password' },
+      target: { value: password },
     });
 
     fireEvent.click(nextButton);
@@ -143,8 +160,8 @@ describe('Reveal Seed Page', () => {
   it('emits events when correct password is entered', async () => {
     const store = configureStore(mockState);
     mockRequestRevealSeedWords
-      .mockRejectedValueOnce('incorrect password')
-      .mockResolvedValueOnce('test srp');
+      .mockImplementationOnce(mockUnsuccessfulSrpReveal)
+      .mockImplementationOnce(mockSuccessfulSrpReveal);
 
     const mockTrackEvent = jest.fn();
     const { queryByTestId, queryByText, getByText, queryByLabelText } =
@@ -169,6 +186,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
@@ -183,7 +201,8 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportFailed,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
-          reason: undefined,
+          hd_entropy_index: 0,
+          reason: 'bad password',
         },
       });
     });
@@ -191,7 +210,7 @@ describe('Reveal Seed Page', () => {
     mockTrackEvent.mockClear();
 
     fireEvent.change(queryByTestId('input-password'), {
-      target: { value: 'password' },
+      target: { value: password },
     });
 
     fireEvent.click(queryByText('Next'));
@@ -202,6 +221,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
@@ -216,6 +236,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportRevealed,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
         },
       });
       expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
@@ -288,6 +309,7 @@ describe('Reveal Seed Page', () => {
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
           copy_method: 'clipboard',
+          hd_entropy_index: 0,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
@@ -296,6 +318,7 @@ describe('Reveal Seed Page', () => {
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
           copy_method: 'clipboard',
+          hd_entropy_index: 0,
         },
       });
     });
@@ -316,8 +339,8 @@ describe('Reveal Seed Page', () => {
 
   it('should emit event when cancel is clicked', async () => {
     mockRequestRevealSeedWords
-      .mockRejectedValueOnce('incorrect password')
-      .mockResolvedValueOnce('test srp');
+      .mockImplementationOnce(mockUnsuccessfulSrpReveal)
+      .mockImplementationOnce(mockSuccessfulSrpReveal);
     const mockTrackEvent = jest.fn();
     const { queryByText } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
@@ -335,6 +358,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportCanceled,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
@@ -342,7 +366,54 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.SrpRevealCancelled,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
         },
+      });
+    });
+  });
+
+  describe('multi-srp', () => {
+    it('passes the keyringId to the requestRevealSeedWords action', async () => {
+      const keyringId = 'ULID01234567890ABCDEFGHIJKLMN';
+      mockUseParams.mockReturnValue({ keyringId });
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      fireEvent.change(queryByTestId('input-password'), {
+        target: { value: password },
+      });
+
+      fireEvent.click(queryByText('Next'));
+
+      await waitFor(() => {
+        expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
+          password,
+          keyringId,
+        );
+      });
+    });
+
+    it('passes undefined for keyringId if there is no param', async () => {
+      const keyringId = undefined;
+      mockUseParams.mockReturnValue({ keyringId });
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      fireEvent.change(queryByTestId('input-password'), {
+        target: { value: password },
+      });
+
+      fireEvent.click(queryByText('Next'));
+
+      await waitFor(() => {
+        expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
+          password,
+          keyringId,
+        );
       });
     });
   });

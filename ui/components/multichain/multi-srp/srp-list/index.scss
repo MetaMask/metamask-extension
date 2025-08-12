@@ -1,0 +1,33 @@
+@use "design-system";
+
+.srp-list {
+  &__container {
+    max-height: 500px;
+    overflow-y: auto;
+
+    &--settings {
+      max-height: unset;
+      overflow-y: visible;
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    background-color: var(--color-border-muted);
+  }
+
+  &__show-accounts {
+    color: var(--color-primary-default);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__account-name {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 80px;
+  }
+}

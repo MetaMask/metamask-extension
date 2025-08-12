@@ -1,218 +1,393 @@
+import { isEqual } from 'lodash';
+import { GetPreferencesResult } from '@metamask/snaps-sdk';
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
-import SnapInstall from './dialog/snap-install';
-import SnapInstallWarning from './dialog/snap-install-warning';
+import { veryLargeDelayMs } from '../../helpers';
+
+const inputLocator = {
+  dataManageStateInput: '#dataManageState',
+  dataStateInput: '#dataState',
+  dataUnencryptedManageStateInput: '#dataUnencryptedManageState',
+  entropyMessageInput: '#entropyMessage',
+  getStateInput: '#getState',
+  messageBip44Input: '#bip44Message',
+  messageEd25519Bip32Input: '#bip32Message-ed25519Bip32',
+  messageEd25519Input: '#bip32Message-ed25519',
+  messageSecp256k1Input: '#bip32Message-secp256k1',
+  personalSignMessageInput: '#personalSignMessage',
+  setStateKeyInput: '#setStateKey',
+  setStateKeyUnencryptedInput: '#setStateKeyUnencrypted',
+  signTypedDataMessageInput: '#signTypedData',
+  dataUnencryptedStateInput: '#dataUnencryptedState',
+  getUnencryptedStateInput: '#getUnencryptedState',
+  wasmInput: '#wasmInput',
+  backgroundEventDateInput: '#backgroundEventDate',
+  backgroundEventDurationInput: '#backgroundEventDuration',
+  cancelBackgroundEventInput: '#backgroundEventId',
+} satisfies Record<string, string>;
+
+export const buttonLocator = {
+  connectBip32Button: '#connectbip32',
+  connectBip44Button: '#connectbip44',
+  connectClientStatusButton: '#connectclient-status',
+  connectCronJobsButton: '#connectcronjobs',
+  connectCronjobDurationButton: '#connectcronjob-duration',
+  connectDialogsButton: '#connectdialogs',
+  connectErrorsButton: '#connecterrors',
+  connectGetEntropyButton: '#connectGetEntropySnap',
+  connectGetFileButton: '#connectgetfile',
+  connectHomePageButton: '#connecthomepage',
+  connectjsxButton: '#connectjsx',
+  displayJsxButton: '#displayJsx',
+  connectJsonRpcButton: '#connectjson-rpc',
+  connectInteractiveButton: '#connectinteractive-ui',
+  connectImagesButton: '#connectimages',
+  connectLifeCycleButton: '#connectlifecycle-hooks',
+  connectNameLookUpButton: '#connectname-lookup',
+  connectManageStateButton: '#connectmanage-state',
+  connectstateButton: '#connectstate',
+  connectPreinstalledButton: '#connectpreinstalled-snap',
+  connectProtocolButton: '#connectprotocol',
+  connectTransactionInsightButton: '#connecttransaction-insights',
+  connectUpdateButton: '#connectUpdate',
+  connectUpdateNewButton: '#connectUpdateNew',
+  connectWasmButton: '#connectwasm',
+  connectNotificationButton: '#connectnotifications',
+  confirmationButton: '#sendConfirmationButton',
+  createDialogButton: '#createDialogButton',
+  createDialogDisabledButton: '#createDisabledDialogButton',
+  clearManageStateButton: '#clearManageState',
+  clearUnencryptedManageStateButton: '#clearUnencryptedManageState',
+  ethereumProviderConnectButton: '#connectethereum-provider',
+  getAccountButton: '#getAccounts',
+  getAccountsButton: '#sendEthproviderAccounts',
+  getBip32CompressedPublicKeyButton: '#bip32GetCompressedPublic',
+  getBip32PublicKeyButton: '#bip32GetPublic',
+  getPreferencesConnectButton: '#connectpreferences',
+  getPreferencesSubmitButton: '#getPreferences',
+  getVersionButton: '#sendEthprovider',
+  incrementButton: '#increment',
+  getSettingsStateButton: '#settings-state',
+  personalSignButton: '#signPersonalSignMessage',
+  publicKeyBip44Button: '#sendBip44Test',
+  connectNetworkAccessButton: '#connectnetwork-access',
+  sendErrorButton: '#sendError',
+  sendExpandedViewNotificationButton: '#sendExpandedViewNotification',
+  sendInAppNotificationButton: '#sendInAppNotification',
+  sendGetFileBase64Button: '#sendGetFileBase64Button',
+  sendGetFileHexButton: '#sendGetFileHexButton',
+  sendGetFileTextButton: '#sendGetFileTextButton',
+  sendInsightButton: '#sendInsights',
+  sendGetStateButton: '#sendGetState',
+  sendNetworkAccessTestButton: '#sendNetworkAccessTest',
+  sendManageStateButton: '#sendManageState',
+  sendStateButton: '#sendState',
+  sendRpcButton: '#sendRpc',
+  sendUnencryptedManageStateButton: '#sendUnencryptedManageState',
+  sendWasmMessageButton: '#sendWasmMessage',
+  signBip32messageSecp256k1Button: '#sendBip32-secp256k1',
+  signBip44MessageButton: '#signBip44Message',
+  signEd25519Bip32MessageButton: '#sendBip32-ed25519Bip32',
+  signEd25519MessageButton: '#sendBip32-ed25519',
+  signEntropyMessageButton: '#signEntropyMessage',
+  signTypedDataButton: '#signTypedDataButton',
+  submitClientStatusButton: '#sendClientStatusTest',
+  trackErrorButton: '#trackError',
+  trackEventButton: '#trackEvent',
+  startTraceButton: '#start-trace',
+  endTraceButton: '#end-trace',
+  clearStateButton: '#clearState',
+  sendUnencryptedStateButton: '#sendUnencryptedState',
+  sendGetUnencryptedStateButton: '#sendGetUnencryptedState',
+  clearStateUnencryptedButton: '#clearStateUnencrypted',
+  connectBackgroundEventsButton: '#connectbackground-events',
+  scheduleBackgroundEventWithDateButton: '#scheduleBackgroundEventWithDate',
+  scheduleBackgroundEventWithDurationButton:
+    '#scheduleBackgroundEventWithDuration',
+  cancelBackgroundEventButton: '#cancelBackgroundEvent',
+  getBackgroundEventResultButton: '#getBackgroundEvents',
+  showPreinstalledDialogButton: '#showPreinstalledDialog',
+  startWebSocket: '#startWebSocket',
+  stopWebSocket: '#stopWebSocket',
+  getWebSocketState: '#getWebSocketState',
+} satisfies Record<string, string>;
+
+const spanLocator = {
+  addressResultSpan: '#ethproviderResult',
+  bip32MessageResultEd25519Span: '#bip32MessageResult-ed25519',
+  bip32MessageResultSecp256k1Span: '#bip32MessageResult-secp256k1',
+  bip32PublicKeyResultSpan: '#bip32PublicKeyResult',
+  bip32ResultSpan: '#bip32Result',
+  bip44ResultSpan: '#bip44Result',
+  bip44SignResultSpan: '#bip44SignResult',
+  clientStatusResultSpan: '#clientStatusResult',
+  clearManageStateResultSpan: '#clearManageStateResult',
+  clearUnencryptedManageStateResultSpan: '#clearUnencryptedManageStateResult',
+  encryptedStateResultSpan: '#encryptedStateResult',
+  entropySignResultSpan: '#entropySignResult',
+  errorResultSpan: '#errorResult',
+  getStateResultSpan: '#getStateResult',
+  fileResultSpan: '#getFileResult',
+  installedSnapResultSpan: '#installedSnapsResult',
+  interactiveUIResultSpan: '#interactiveUIResult',
+  networkAccessResultSpan: '#networkAccessResult',
+  messageResultEd25519SBip32Span: '#bip32MessageResult-ed25519Bip32',
+  personalSignResultSpan: '#personalSignResult',
+  preferencesResultSpan: '#preferencesResult',
+  providerVersionResultSpan: '#ethproviderResult',
+  sendManageStateResultSpan: '#sendManageStateResult',
+  snapUIRenderer: '.snap-ui-renderer__content',
+  sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
+  signTypedDataResultSpan: '#signTypedDataResult',
+  retrieveManageStateResultSpan: '#retrieveManageStateResult',
+  retrieveManageStateUnencryptedResultSpan:
+    '#retrieveManageStateUnencryptedResult',
+  rpcResultSpan: '#rpcResult',
+  updateVersionSpan: '#updateSnapVersion',
+  wasmResultSpan: '#wasmResult',
+  unencryptedStateResultSpan: '#unencryptedStateResult',
+  getStateUnencryptedResultSpan: '#getStateUnencryptedResult',
+  backgroundEventResultSpan: '#schedulebackgroundEventResult',
+  getBackgroundEventResultSpan: '#getBackgroundEventsResult',
+} satisfies Record<string, string>;
+
+const dropDownLocator = {
+  bip32EntropyDropDown: '#bip32-entropy-selector',
+  bip44EntropyDropDown: '#bip44-entropy-selector',
+  getEntropyDropDown: '#get-entropy-entropy-selector',
+  networkDropDown: '#select-chain',
+} satisfies Record<string, string>;
 
 export class TestSnaps {
   driver: Driver;
 
-  public readonly snapInstall;
-
   private readonly installedSnapsHeader = '[data-testid="InstalledSnaps"]';
-
-  private readonly dialogsSnapConfirmationButton = '#sendConfirmationButton';
-
-  private readonly getPublicKeyButton = {
-    css: '#bip32GetPublic',
-    text: 'Get Public Key',
-  };
-
-  private readonly getCompressedKeyButton = {
-    css: '#bip32GetCompressedPublic',
-    text: 'Get Compressed Public Key',
-  };
-
-  private readonly publicKeyBip44Button = '#sendBip44Test';
-
-  private readonly inputMessageEd25519 = '#bip32Message-ed25519';
-
-  private readonly inputMessageEd25519Bip32 = '#bip32Message-ed25519Bip32';
-
-  private readonly inputMessageSecp256k1 = '#bip32Message-secp256k1';
-
-  private readonly buttonMessageSecp256k1 = '#sendBip32-secp256k1';
-
-  private readonly buttonSignEd25519Message = '#sendBip32-ed25519';
-
-  private readonly inputMessageBip44 = '#bip44Message';
-
-  private readonly buttonSignBip44Message = '#signBip44Message';
-
-  private readonly buttonSignEd25519Bip32Message = '#sendBip32-ed25519Bip32';
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.snapInstall = new SnapInstall(driver);
   }
 
   async openPage() {
+    console.log('Opening Test Snap Dapp page');
     await this.driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
 
-  /**
-   * Install a Snap with the given `connectButton` selector. This assumes a
-   * button exists on the `test-snaps` page that will open a dialog to install
-   * the Snap.
-   *
-   * @param connectButton - The selector for the button that will open the
-   * dialog to install the Snap.
-   * @param withWarning - Whether the installation will have a warning dialog,
-   * e.g., in the case of entropy Snaps requiring special permissions.
-   */
-  async installSnap(connectButton: string, withWarning = false) {
-    await this.driver.scrollToElement(
-      this.driver.findClickableElement(connectButton),
-    );
-
-    await this.driver.delay(largeDelayMs);
-    await this.driver.waitForSelector(connectButton);
-    await this.driver.clickElement(connectButton);
-
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.snapInstall.check_pageIsLoaded();
-    await this.snapInstall.clickNextButton();
-
-    // click confirm
-    await this.snapInstall.clickConfirmButton();
-
-    if (withWarning) {
-      const snapInstallWarning = new SnapInstallWarning(this.driver);
-      await snapInstallWarning.clickCheckboxPermission();
-      await snapInstallWarning.clickConfirmButton();
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.installedSnapsHeader,
+        buttonLocator.connectBip32Button,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Test Snap Dapp page to be loaded',
+        e,
+      );
+      throw e;
     }
+    console.log('Test Snap Dapp page is loaded');
+  }
 
-    await this.snapInstall.clickNextButton();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-
+  async checkClientStatus(expectedStatus: string): Promise<void> {
+    console.log(`Checking that the client status should be ${expectedStatus}`);
     await this.driver.waitForSelector({
-      css: connectButton,
-      text: 'Reconnect',
+      css: spanLocator.clientStatusResultSpan,
+      text: expectedStatus,
     });
   }
 
-  /**
-   * Click a button with the given selector.
-   *
-   * @param selector - The selector for the button to click.
-   * @returns A promise that resolves after the button is clicked.
-   */
-  async clickButton(selector: string) {
-    console.log('Wait and click button');
-    await this.driver.waitForSelector(selector);
-    await this.driver.clickElement(selector);
+  async scrollAndClickButton(buttonElement: keyof typeof buttonLocator) {
+    console.log(`Finding, scrolling to, and clicking ${buttonElement}`);
+    await this.driver.findScrollToAndClickElement(buttonLocator[buttonElement]);
   }
 
-  /**
-   * Paste a message into a field with the given selector.
-   *
-   * @param selector - The selector for the field to paste the message into.
-   * @param message - The message to paste into the field.
-   * @returns A promise that resolves after the message is pasted into the
-   * field.
-   */
-  async pasteIntoField(selector: string, message: string) {
-    await this.driver.pasteIntoField(selector, message);
+  async fillMessage(inputElement: keyof typeof inputLocator, message: string) {
+    console.log(`Filling message in ${inputElement}`);
+    await this.driver.fill(inputLocator[inputElement], message);
   }
 
-  /**
-   * Click the approve button in the dialog window.
-   *
-   * @returns A promise that resolves after the approve button is clicked.
-   */
-  async approveDialog() {
-    // Switch to approve window.
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-    // Wait for and click on approve and wait for window to close.
-    await this.driver.waitForSelector({
-      text: 'Approve',
-      tag: 'button',
-    });
-    await this.driver.clickElementAndWaitForWindowToClose({
-      text: 'Approve',
-      tag: 'button',
-    });
-
-    // Switch back to `test-snaps` page.
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+  async clickButton(buttonElement: keyof typeof buttonLocator) {
+    console.log(`Clicking button ${buttonElement}`);
+    await this.driver.clickElement(buttonLocator[buttonElement]);
   }
 
-  async clickDialogsSnapConfirmationButton() {
-    await this.driver.clickElement(this.dialogsSnapConfirmationButton);
-  }
-
-  async clickGetPublicKeyButton() {
-    console.log('Wait and click get public key button');
-    await this.driver.waitForSelector(this.getPublicKeyButton);
-    await this.driver.clickElement(this.getPublicKeyButton);
-  }
-
-  async clickPublicKeyBip44Button() {
-    console.log('Wait and click get public key button');
-    await this.driver.waitForSelector(this.publicKeyBip44Button);
-    await this.driver.clickElement(this.publicKeyBip44Button);
-  }
-
-  async clickGetCompressedPublicKeyButton() {
-    console.log('Wait and click get compressed public key button');
-    await this.driver.waitForSelector(this.getCompressedKeyButton);
-    await this.driver.clickElement(this.getCompressedKeyButton);
-  }
-
-  async fillMessageSecp256k1(message: string) {
-    console.log('Wait and fill message in secp256k1');
-    await this.driver.fill(this.inputMessageSecp256k1, message);
-    await this.driver.clickElement(this.buttonMessageSecp256k1);
-  }
-
-  async fillMessageEd25519(message: string) {
-    console.log('Wait and fill message in ed25519');
-    await this.driver.waitForSelector(this.inputMessageEd25519);
-    await this.driver.fill(this.inputMessageEd25519, message);
-    await this.driver.clickElement(this.buttonSignEd25519Message);
-  }
-
-  async fillMessageEd25519Bip32(message: string) {
-    console.log('Wait and fill message in ed25519 bip32');
-    await this.driver.waitForSelector(this.inputMessageEd25519Bip32);
-    await this.driver.fill(this.inputMessageEd25519Bip32, message);
-    await this.driver.clickElement(this.buttonSignEd25519Bip32Message);
-  }
-
-  async fillBip44MessageAndSign(message: string) {
-    console.log('Wait and enter bip44 message ');
-    await this.driver.pasteIntoField(this.inputMessageBip44, message);
-    const buttonSignBip44 = await this.driver.findElement(
-      this.buttonSignBip44Message,
+  async scrollToButton(buttonElement: keyof typeof buttonLocator) {
+    console.log(`Scrolling button ${buttonElement}`);
+    const buttonSelector = await this.driver.findElement(
+      buttonLocator[buttonElement],
     );
-    await this.driver.scrollToElement(buttonSignBip44);
-    await this.driver.waitForSelector(this.buttonSignBip44Message);
-    await this.driver.clickElement(this.buttonSignBip44Message);
+    await this.driver.scrollToElement(buttonSelector);
   }
 
-  async scrollToSendEd25519() {
-    console.log('Scroll to send ed25519');
-    const sendEd25519 = await this.driver.findElement(this.inputMessageEd25519);
-    await this.driver.scrollToElement(sendEd25519);
+  async checkInstallationComplete(
+    selector: keyof typeof buttonLocator,
+    expectedMessage: string,
+  ) {
+    console.log(`Checking installation is complete - ${expectedMessage}`);
+    await this.driver.waitForSelector({
+      css: buttonLocator[selector],
+      text: expectedMessage,
+    });
+  }
+
+  async checkInstalledSnapsResult(expectedMessage: string) {
+    console.log('Checking installed snaps, result section on the top left');
+    await this.driver.waitForSelector({
+      css: spanLocator.installedSnapResultSpan,
+      text: expectedMessage,
+    });
+  }
+
+  async checkMessageResultSpan(
+    spanSelectorId: keyof typeof spanLocator,
+    expectedMessage: string,
+  ) {
+    console.log(
+      `Checking the received result against the following expected result: ${expectedMessage}`,
+    );
+    await this.driver.waitForSelector({
+      css: spanLocator[spanSelectorId],
+      text: expectedMessage,
+    });
+  }
+
+  async checkMessageResultSpanIncludes(
+    spanSelectorId: keyof typeof spanLocator,
+    partialMessage: string,
+  ) {
+    const element = await this.driver.findElement(spanLocator[spanSelectorId]);
+    const spanText = await element.getAttribute('textContent');
+    if (!spanText.includes(partialMessage)) {
+      throw new Error(`Expected partial message "${partialMessage}" not found`);
+    }
+  }
+
+  async checkCount(expectedCount: string) {
+    console.log(`Checking the count is ${expectedCount}`);
+    await this.driver.waitForSelector({
+      tag: 'p',
+      text: expectedCount,
+    });
   }
 
   /**
-   * Select an entropy source from the dropdown with the given ID.
+   * Select an entropy source from the dropdown with the given name.
    *
-   * @param id - The ID of the dropdown.
+   * @param dropDownName - The name of the dropdown locator to select the entropy source from.
    * @param name - The name of the entropy source to select.
    */
-  async selectEntropySource(id: string, name: string) {
-    console.log('Select entropy source');
-    const selector = await this.driver.findElement(`#${id}-entropy-selector`);
+  async scrollAndSelectEntropySource(
+    dropDownName: keyof typeof dropDownLocator,
+    name: string,
+  ) {
+    const locator = dropDownLocator[dropDownName];
+    console.log(`Select ${dropDownName} entropy source`);
+    const selector = await this.driver.findElement(locator);
     await this.driver.scrollToElement(selector);
-    await this.driver.clickElement(`#${id}-entropy-selector`);
-
+    await this.driver.clickElement(locator);
     await this.driver.clickElement({
       text: name,
-      css: `#${id}-entropy-selector option`,
+      css: `${locator} option`,
     });
+  }
+
+  /**
+   * Validate the preferences result span JSON response.
+   *
+   * @param expectedPreferences - The expected preferences object to validate against.
+   * @param expectedPreferences.locale
+   * @param expectedPreferences.currency
+   * @param expectedPreferences.hideBalances
+   * @param expectedPreferences.useSecurityAlerts
+   * @param expectedPreferences.useExternalPricingData
+   * @param expectedPreferences.simulateOnChainActions
+   * @param expectedPreferences.useTokenDetection
+   * @param expectedPreferences.batchCheckBalances
+   * @param expectedPreferences.displayNftMedia
+   * @param expectedPreferences.useNftDetection
+   */
+  async checkPreferencesResult(expectedPreferences: GetPreferencesResult) {
+    console.log('Validating preferences result span JSON response');
+
+    const element = await this.driver.findElement(
+      spanLocator.preferencesResultSpan,
+    );
+    const spanText = await element.getAttribute('textContent');
+    const actualPreferences = JSON.parse(spanText);
+
+    console.log(`Actual preferences: ${JSON.stringify(actualPreferences)}`);
+    console.log(`Expected preferences: ${JSON.stringify(expectedPreferences)}`);
+
+    if (!isEqual(actualPreferences, expectedPreferences)) {
+      throw new Error(
+        'Preferences result span JSON does not match expected values',
+      );
+    }
+    console.log('Preferences result span JSON is valid');
+  }
+
+  /**
+   * Select a network from the dropdown with the given name.
+   *
+   * @param dropDownName - The name of the dropdown locator to select the
+   * network from.
+   * @param name - The name of the network to select.
+   */
+  async scrollAndSelectNetwork(
+    dropDownName: keyof typeof dropDownLocator,
+    name: 'Ethereum' | 'Linea' | 'Sepolia',
+  ) {
+    const locator = dropDownLocator[dropDownName];
+    console.log(`Select ${name} network`);
+    const selector = await this.driver.findElement(locator);
+    await this.driver.scrollToElement(selector);
+    await this.driver.clickElement(locator);
+    await this.driver.clickElement({
+      text: name,
+      css: `${locator} option`,
+    });
+  }
+
+  async waitForWebSocketUpdate(state: {
+    open: boolean;
+    origin: string | null;
+    blockNumber: string | null;
+  }) {
+    const resultElement = await this.driver.findElement('#networkAccessResult');
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          await this.clickButton('getWebSocketState');
+
+          // Wait for response from Snap.
+          await this.driver.waitForSelector('#getWebSocketState', {
+            state: 'enabled',
+          });
+
+          const text = await resultElement.getText();
+
+          const { open, origin, blockNumber } = JSON.parse(text);
+
+          console.log('Retrieved WebSocket state:', {
+            open,
+            origin,
+            blockNumber,
+          });
+
+          const blockNumberMatch =
+            typeof state.blockNumber === 'string'
+              ? typeof blockNumber === state.blockNumber
+              : blockNumber === state.blockNumber;
+
+          return (
+            open === state.open && origin === state.origin && blockNumberMatch
+          );
+        } catch {
+          return false;
+        }
+      },
+      { timeout: veryLargeDelayMs * 2, interval: 200 },
+    );
   }
 }

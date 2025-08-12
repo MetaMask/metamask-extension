@@ -70,6 +70,7 @@ describe('Permit Single Signature Tests', () => {
       }),
     );
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -100,7 +101,7 @@ describe('Permit Single Signature Tests', () => {
       'Estimated changes',
       "You're giving the spender permission to spend this many tokens from your account.",
       'Spending cap',
-      '0xA0b86...6eB48',
+      'USDC',
       'Unlimited',
     ];
 

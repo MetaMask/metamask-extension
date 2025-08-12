@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   TextField,
   Box,
@@ -23,14 +22,16 @@ import {
   JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
+import { t } from '../../../../../shared/lib/translate';
+import { DestinationAccount } from '../types';
+import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
+import { ExternalAccountListItem } from './external-account-list-item';
 
 type DestinationAccountPickerProps = {
-  onAccountSelect: (account: InternalAccount | null) => void;
-  selectedSwapToAccount: InternalAccount | null;
+  onAccountSelect: (account: DestinationAccount | null) => void;
+  selectedSwapToAccount: DestinationAccount | null;
   isDestinationSolana: boolean;
 };
 
@@ -43,12 +44,24 @@ export const DestinationAccountPicker = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
 
+  const { externalAccount } = useExternalAccountResolution({
+    searchQuery,
+    isDestinationSolana,
+    accounts,
+  });
+
   const filteredAccounts = useMemo(
     () =>
       accounts.filter((account) => {
-        const matchesSearch = account.metadata.name
+        const matchesSearchByName = account.metadata.name
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
+
+        const matchesSearchByAddress = account.address
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+
+        const matchesSearch = matchesSearchByName || matchesSearchByAddress;
 
         const matchesChain = isDestinationSolana
           ? isSolanaAccount(account)
@@ -78,6 +91,7 @@ export const DestinationAccountPicker = ({
         <Box
           className="destination-account-picker__selected"
           width={BlockSize.Full}
+          style={{ flex: 1, minWidth: 0 }}
         >
           <DestinationSelectedAccountListItem
             account={selectedSwapToAccount}
@@ -137,7 +151,11 @@ export const DestinationAccountPicker = ({
       >
         <TextField
           // @ts-expect-error: TextField component expects different props than provided - works but needs type update
-          placeholder={t('destinationAccountPickerSearchPlaceholder')}
+          placeholder={
+            isDestinationSolana
+              ? t('destinationAccountPickerSearchPlaceholderToSolana')
+              : t('destinationAccountPickerSearchPlaceholderToMainnet')
+          }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           clearButtonOnClick={() => setSearchQuery('')}
@@ -177,8 +195,20 @@ export const DestinationAccountPicker = ({
             showOptions={false}
           />
         ))}
+        {externalAccount && (
+          <ExternalAccountListItem
+            key="external-account"
+            account={externalAccount}
+            selected={Boolean(
+              selectedSwapToAccount &&
+                (selectedSwapToAccount as DestinationAccount).address ===
+                  externalAccount.address,
+            )}
+            onClick={() => onAccountSelect(externalAccount)}
+          />
+        )}
 
-        {filteredAccounts.length === 0 && (
+        {filteredAccounts.length === 0 && !externalAccount && (
           <Box
             display={Display.Flex}
             style={{

@@ -7,13 +7,14 @@ import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
-import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
+import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import {
   CONTENT_SCRIPT,
   LEGACY_PROVIDER,
   LEGACY_PUBLIC_CONFIG,
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_COOKIE_HANDLER,
-  METAMASK_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
   PHISHING_SAFELIST,
   PHISHING_STREAM,
   PHISHING_WARNING_PAGE,
@@ -55,7 +56,8 @@ function setupPhishingPageStreams(): void {
   phishingPageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   phishingPageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
   phishingPageMux.ignoreStream(LEGACY_PROVIDER);
-  phishingPageMux.ignoreStream(METAMASK_PROVIDER);
+  phishingPageMux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+  phishingPageMux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   phishingPageMux.ignoreStream(PHISHING_STREAM);
 }
 
@@ -115,7 +117,8 @@ export const setupPhishingExtStreams = (): void => {
   phishingExtMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   phishingExtMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
   phishingExtMux.ignoreStream(LEGACY_PROVIDER);
-  phishingExtMux.ignoreStream(METAMASK_PROVIDER);
+  phishingExtMux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+  phishingExtMux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   phishingExtMux.ignoreStream(PHISHING_STREAM);
 
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -143,6 +146,8 @@ const onDisconnectDestroyPhishingStreams = (): void => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.warn(`${err} Resetting the phishing streams.`);
     setTimeout(setupPhishingExtStreams, 1000);
   }
@@ -182,6 +187,8 @@ export function redirectToPhishingWarning(): void {
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
 
   const querystring = new URLSearchParams({ hostname, href });
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   window.location.href = `${baseUrl}#${querystring}`;
   // eslint-disable-next-line no-constant-condition
   while (1) {

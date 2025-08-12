@@ -36,7 +36,7 @@ describe('Block Explorer', function () {
 
         // View account on explorer
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.viewAccountOnExplorer('Account 1');
 
         // Switch to block explorer
@@ -44,9 +44,9 @@ describe('Block Explorer', function () {
 
         // Verify block explorer
         await driver.waitForUrl({
-          url: `https://etherscan.io/address/${DEFAULT_FIXTURE_ACCOUNT}`,
+          url: `https://etherscan.io/address/${DEFAULT_FIXTURE_ACCOUNT}#asset-multichain`,
         });
-        await new MockedPage(driver).check_displayedMessage(
+        await new MockedPage(driver).checkDisplayedMessage(
           'Empty page by MetaMask',
         );
       },
@@ -54,6 +54,7 @@ describe('Block Explorer', function () {
   });
 
   it('links to the token tracker in the explorer, ', async function () {
+    const smartContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
         dapp: true,
@@ -69,19 +70,21 @@ describe('Block Explorer', function () {
           })
           .withTokensControllerERC20()
           .build(),
-        smartContract: SMART_CONTRACTS.HST,
+        smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }) => {
+      async ({ driver, localNodes, contractRegistry }) => {
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         // View TST token in block explorer
         const assetListPage = new AssetListPage(driver);
-        await assetListPage.check_tokenItemNumber(2);
+        await assetListPage.checkTokenItemNumber(2);
         await assetListPage.clickOnAsset('TST');
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
-        await tokenOverviewPage.check_pageIsLoaded();
+        await tokenOverviewPage.checkPageIsLoaded();
         await tokenOverviewPage.viewAssetInExplorer();
 
         // Switch to block explorer
@@ -89,9 +92,9 @@ describe('Block Explorer', function () {
 
         // Verify block explorer
         await driver.waitForUrl({
-          url: `https://etherscan.io/token/0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947`,
+          url: `https://etherscan.io/token/${contractAddress.toLowerCase()}`,
         });
-        await new MockedPage(driver).check_displayedMessage(
+        await new MockedPage(driver).checkDisplayedMessage(
           'Empty page by MetaMask',
         );
       },
@@ -122,7 +125,7 @@ describe('Block Explorer', function () {
         // View transaction on block explorer
         await new HomePage(driver).goToActivityList();
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_completedTxNumberDisplayedInActivity(1);
+        await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
         await activityListPage.viewTransactionOnExplorer(1);
 
         // Switch to block explorer
@@ -132,7 +135,7 @@ describe('Block Explorer', function () {
         await driver.waitForUrl({
           url: 'https://etherscan.io/tx/0xe5e7b95690f584b8f66b33e31acc6184fea553fa6722d42486a59990d13d5fa2',
         });
-        await new MockedPage(driver).check_displayedMessage(
+        await new MockedPage(driver).checkDisplayedMessage(
           'Empty page by MetaMask',
         );
       },

@@ -16,6 +16,8 @@ const validateChecksum = async (
     .join('');
 
   if (hashString !== checksum) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`Checksum mismatch for key ${key}`);
   }
 };
@@ -38,7 +40,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
         reject(
           new Error(
             `Failed to open database ${this.storeName}: ${
-              // TODO: Replace `any` with type
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (event.target as any)?.error
             }`,
@@ -67,11 +69,11 @@ export class IndexedDBPPOMStorage implements StorageBackend {
 
   private async objectStoreAction(
     method: 'get' | 'delete' | 'put' | 'getAllKeys',
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     args?: any,
     mode: IDBTransactionMode = 'readonly',
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise<Event>((resolve, reject) => {
@@ -87,7 +89,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
             reject(
               new Error(
                 `Error in indexDB operation ${method}: ${
-                  // TODO: Replace `any` with type
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   (event.target as any)?.error
                 }`,
@@ -103,7 +105,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
 
   async read(key: StorageKey, checksum: string): Promise<ArrayBuffer> {
     const event = await this.objectStoreAction('get', [key.name, key.chainId]);
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data = (event.target as any)?.result?.data;
     await validateChecksum(key, data, checksum);
@@ -129,7 +131,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
 
   async dir(): Promise<StorageKey[]> {
     const event = await this.objectStoreAction('getAllKeys');
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (event.target as any)?.result.map(([name, chainId]: string[]) => ({
       name,

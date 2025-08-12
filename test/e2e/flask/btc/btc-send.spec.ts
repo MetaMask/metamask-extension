@@ -1,102 +1,126 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { DEFAULT_BTC_ACCOUNT, DEFAULT_BTC_BALANCE } from '../../constants';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import { DEFAULT_BTC_BALANCE, DEFAULT_BTC_FEE_RATE } from '../../constants';
 import BitcoinSendPage from '../../page-objects/pages/send/bitcoin-send-page';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
-import { getTransactionRequest, withBtcAccountSnap } from './common-btc';
+import { withBtcAccountSnap } from './common-btc';
 
-// Skipping btc test for now because btc snap is outdated and does not yet allow for new assets fetching logic.
+// To be reactivated once we use a regtest network instead of mocked data
+// eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('BTC Account - Send', function (this: Suite) {
-  it.skip('can complete the send flow', async function () {
-    await withBtcAccountSnap(
-      { title: this.test?.fullTitle() },
-      async (driver, mockServer) => {
-        const homePage = new BitcoinHomepage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_isExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
-        );
-        await homePage.startSendFlow();
+  const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
+  it('fields validation', async function () {
+    await withBtcAccountSnap(async (driver) => {
+      const homePage = new BitcoinHomepage(driver);
+      await homePage.checkPageIsLoaded();
+      await homePage.checkIsExpectedBitcoinBalanceDisplayed(
+        DEFAULT_BTC_BALANCE,
+      );
+      await homePage.startSendFlow();
 
-        // Set the recipient address and amount
-        const bitcoinSendPage = new BitcoinSendPage(driver);
-        await bitcoinSendPage.check_pageIsLoaded();
-        await bitcoinSendPage.fillRecipientAddress(DEFAULT_BTC_ACCOUNT);
-        // TODO: Remove delay here. There is a race condition if the amount and address are set too fast.
-        await driver.delay(1000);
-        const mockAmountToSend = '0.5';
-        await bitcoinSendPage.fillAmount(mockAmountToSend);
-
-        // Click the review button
-        await bitcoinSendPage.clickReviewButton();
-
-        // TODO: There isn't any check for the fees and total amount. This requires calculating the vbytes used in a transaction dynamically.
-        // We already have unit tests for these calculations on the Snap.
-        // ------------------------------------------------------------------------------
-        // From here, we have moved to the confirmation screen (second part of the flow).
-
-        // Click the send transaction button
-        const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
-        await bitcoinReviewTxPage.check_pageIsLoaded();
-        await bitcoinReviewTxPage.clickSendButton();
-
-        // Check that we are on the activity list page and have no transactions message
-        await homePage.check_pageIsLoaded();
-        await new ActivityListPage(driver).check_warningMessage(
-          'You have no transactions',
-        );
-        const transaction = await getTransactionRequest(mockServer);
-        assert(transaction !== undefined);
-      },
-    );
+      const bitcoinSendPage = new BitcoinSendPage(driver);
+      await bitcoinSendPage.checkPageIsLoaded();
+      assert.equal(await bitcoinSendPage.checkAssetPickerIsDisplayed(), false);
+      assert.equal(await bitcoinSendPage.checkAmountFieldIsDisplayed(), false);
+      await bitcoinSendPage.fillRecipientAddress('invalidBTCAddress');
+      await bitcoinSendPage.checkAddressFieldValidationError(
+        'Invalid Bitcoin address',
+      );
+      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+      await bitcoinSendPage.fillRecipientAddress(recipientAddress);
+      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+      await bitcoinSendPage.fillAmount('50');
+      await bitcoinSendPage.checkAmountValidationError(
+        'Funds are insufficient to cover amount plus fee',
+      );
+      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+      await bitcoinSendPage.fillAmount('0');
+      await bitcoinSendPage.checkAmountValidationError(
+        'Amount below dust limit',
+      );
+      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+      await bitcoinSendPage.fillAmount('0.1');
+      await driver.delay(1000);
+      assert.equal(
+        await bitcoinSendPage.checkContinueButtonIsDisabled(),
+        false,
+      );
+      await bitcoinSendPage.clearRecipientAddress();
+      await driver.delay(1000);
+      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+    }, this.test?.fullTitle());
   });
 
-  it.skip('can send the max amount', async function () {
-    await withBtcAccountSnap(
-      { title: this.test?.fullTitle() },
-      async (driver, mockServer) => {
-        const homePage = new BitcoinHomepage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_isExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
-        );
-        await homePage.startSendFlow();
+  it('can complete the send flow', async function () {
+    const sendAmount = '0.5';
+    const expectedFee = '281';
+    const expectedTotal = '0.50000281';
 
-        // Use the max spendable amount of that account
-        const bitcoinSendPage = new BitcoinSendPage(driver);
-        await bitcoinSendPage.check_pageIsLoaded();
-        await bitcoinSendPage.fillRecipientAddress(DEFAULT_BTC_ACCOUNT);
-        // TODO: Remove delay here. There is a race condition if the amount and address are set too fast.
-        await driver.delay(1000);
-        await bitcoinSendPage.selectMaxAmount();
-        await bitcoinSendPage.check_amountIsDisplayed(
-          `${DEFAULT_BTC_BALANCE} BTC`,
-        );
+    await withBtcAccountSnap(async (driver) => {
+      const homePage = new BitcoinHomepage(driver);
+      await homePage.checkPageIsLoaded();
+      await homePage.checkIsExpectedBitcoinBalanceDisplayed(
+        DEFAULT_BTC_BALANCE,
+      );
+      await homePage.startSendFlow();
 
-        // From here, the "summary panel" should have some information about the fees and total.
-        await bitcoinSendPage.clickReviewButton();
+      const bitcoinSendPage = new BitcoinSendPage(driver);
+      await bitcoinSendPage.checkPageIsLoaded();
+      await bitcoinSendPage.fillRecipientAddress(recipientAddress);
+      await bitcoinSendPage.fillAmount(sendAmount);
+      await bitcoinSendPage.clickContinueButton();
 
-        // TODO: There isn't any check for the fees and total amount. This requires calculating the vbytes used in a transaction dynamically.
-        // We already have unit tests for these calculations on the snap.
+      // ------------------------------------------------------------------------------
+      // From here, we have moved to the confirmation screen (second part of the flow).
 
-        // ------------------------------------------------------------------------------
-        // From here, we have moved to the confirmation screen (second part of the flow).
+      const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
+      await bitcoinReviewTxPage.checkPageIsLoaded();
+      await bitcoinReviewTxPage.checkSendAmountIsDisplayed(sendAmount);
+      await bitcoinReviewTxPage.checkNetworkFeeIsDisplayed(expectedFee);
+      await bitcoinReviewTxPage.checkFeeRateIsDisplayed(
+        Math.floor(DEFAULT_BTC_FEE_RATE).toString(),
+      );
+      await bitcoinReviewTxPage.checkTotalAmountIsDisplayed(expectedTotal);
+      await bitcoinReviewTxPage.clickSendButton();
 
-        // Click the send transaction button
-        const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
-        await bitcoinReviewTxPage.check_pageIsLoaded();
-        await bitcoinReviewTxPage.clickSendButton();
+      // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin
+      await homePage.checkPageIsLoaded();
+    }, this.test?.fullTitle());
+  });
 
-        // Check that we are on the activity list page and have no transactions message
-        await homePage.check_pageIsLoaded();
-        await new ActivityListPage(driver).check_warningMessage(
-          'You have no transactions',
-        );
-        const transaction = await getTransactionRequest(mockServer);
-        assert(transaction !== undefined);
-      },
-    );
+  it('can send the max amount', async function () {
+    const expectedFee = 0.00000219;
+
+    await withBtcAccountSnap(async (driver) => {
+      const homePage = new BitcoinHomepage(driver);
+      await homePage.checkPageIsLoaded();
+      await homePage.checkIsExpectedBitcoinBalanceDisplayed(
+        DEFAULT_BTC_BALANCE,
+      );
+      await homePage.startSendFlow();
+
+      const bitcoinSendPage = new BitcoinSendPage(driver);
+      await bitcoinSendPage.checkPageIsLoaded();
+      await bitcoinSendPage.fillRecipientAddress(recipientAddress);
+      await bitcoinSendPage.selectMaxAmount();
+      await bitcoinSendPage.clickContinueButton();
+
+      // ------------------------------------------------------------------------------
+      // From here, we have moved to the confirmation screen (second part of the flow).
+
+      const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
+      await bitcoinReviewTxPage.checkPageIsLoaded();
+      await bitcoinReviewTxPage.checkSendAmountIsDisplayed(
+        (DEFAULT_BTC_BALANCE - expectedFee).toString(),
+      );
+      await bitcoinReviewTxPage.checkTotalAmountIsDisplayed(
+        DEFAULT_BTC_BALANCE.toString(),
+      );
+      await bitcoinReviewTxPage.clickSendButton();
+
+      // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin
+      await homePage.checkPageIsLoaded();
+    }, this.test?.fullTitle());
   });
 });

@@ -35,10 +35,10 @@ function migrateData(state: Record<string, unknown>): void {
   removeIncomingTransactionsControllerState(state);
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function moveIncomingTransactions(state: Record<string, any>) {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const incomingTransactions: Record<string, any> =
     state.IncomingTransactionsController?.incomingTransactions || {};
@@ -50,7 +50,7 @@ function moveIncomingTransactions(state: Record<string, any>) {
   const transactions = state.TransactionController?.transactions || {};
 
   const updatedTransactions = Object.values(incomingTransactions).reduce(
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (result: Record<string, any>, tx: any) => {
       result[tx.id] = tx;
@@ -65,10 +65,10 @@ function moveIncomingTransactions(state: Record<string, any>) {
   };
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function generateLastFetchedBlockNumbers(state: Record<string, any>) {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const incomingTransactions: Record<string, any> =
     state.IncomingTransactionsController?.incomingTransactions || {};

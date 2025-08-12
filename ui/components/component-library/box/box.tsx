@@ -73,13 +73,19 @@ const generateClassNames = memoize(
         : undefined;
     // single digit equals single value or single array item
     let singleValue;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     if (singleValueProp || singleValueProp === 0) {
       singleValue = singleValueProp;
     }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     if (singleArrayItemProp || singleArrayItemProp === 0) {
       singleValue = singleArrayItemProp;
     }
     // 0 is an acceptable value but is falsy in js
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     if (singleValue || singleValue === 0) {
       // add base style without any breakpoint prefixes to classObject
       classNamesObject[
@@ -130,10 +136,14 @@ const generateClassNames = memoize(
     }
     return classNamesObject;
   },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   (styleDeclaration, value) => `${styleDeclaration}${value}`,
 );
 
 export const Box: BoxComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       as,
@@ -175,6 +185,8 @@ export const Box: BoxComponent = React.forwardRef(
     }: BoxProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const Component = as || 'div';
     const boxClassName = classnames(
       BASE_CLASS_NAME,

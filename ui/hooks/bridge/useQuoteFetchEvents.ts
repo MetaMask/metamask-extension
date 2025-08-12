@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   getBridgeQuotes,
@@ -10,7 +11,6 @@ import {
   getQuoteRequest,
   getValidationErrors,
 } from '../../ducks/bridge/selectors';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 import useLatestBalance from './useLatestBalance';
 import { useRequestMetadataProperties } from './events/useRequestMetadataProperties';
@@ -34,8 +34,12 @@ export const useQuoteFetchEvents = () => {
 
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const { usd_amount_source } = useConvertedUsdAmounts();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const has_sufficient_funds = !insufficientBal;
 
   const quoteListProperties = useQuoteProperties();
@@ -44,15 +48,13 @@ export const useQuoteFetchEvents = () => {
   const fromToken = useSelector(getFromToken);
   const fromChain = useSelector(getFromChain);
 
-  const balanceAmount = useLatestBalance(fromToken, fromChain?.chainId);
-  const nativeAssetBalance = useLatestBalance(
-    fromChain?.chainId
-      ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-          fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-        ]
-      : null,
-    fromChain?.chainId,
+  const balanceAmount = useLatestBalance(fromToken);
+  const nativeAsset = useMemo(
+    () =>
+      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
+    [fromChain?.chainId],
   );
+  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   const warnings = useMemo(() => {
     const {
@@ -95,7 +97,11 @@ export const useQuoteFetchEvents = () => {
         properties: {
           ...quoteRequestProperties,
           ...requestMetadataProperties,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_sufficient_funds,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source,
         },
       });
@@ -115,8 +121,14 @@ export const useQuoteFetchEvents = () => {
         properties: {
           ...quoteRequestProperties,
           ...requestMetadataProperties,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_sufficient_funds,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           error_message: quoteFetchError,
         },
       });
@@ -142,6 +154,8 @@ export const useQuoteFetchEvents = () => {
           ...requestMetadataProperties,
           ...quoteListProperties,
           ...tradeProperties,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           refresh_count: quotesRefreshCount - 1,
           warnings,
         },

@@ -9,8 +9,8 @@ jobs:
       - name: Extract version from branch name if release branch
         id: extract_version
         run: |
-          if [[ "$GITHUB_REF" =~ ^refs/heads/Version-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            version="${GITHUB_REF#refs/heads/Version-v}"
+          if [[ "$GITHUB_REF" =~ ^refs/heads/(Version-v|release/)[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            version=$(echo "$GITHUB_REF" | sed -E 's#^refs/heads/(Version-v|release/)##')
             echo "New release branch($version), continue next steps"
             echo "version=$version" >> "$GITHUB_OUTPUT"
           else
@@ -19,9 +19,11 @@ jobs:
 
       - name: Checkout and setup environment
         if: steps.extract_version.outputs.version
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Create bug report issue on planning repo
         if: steps.extract_version.outputs.version

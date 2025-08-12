@@ -1,5 +1,4 @@
 .asset-picker {
-  min-width: 80px;
   height: 30px;
   flex-grow: 1;
   text-align: left;
@@ -16,7 +15,7 @@
 
   &__symbol {
     text-overflow: ellipsis;
-    max-width: 200px;
+    max-width: 100px;
     white-space: nowrap;
     overflow: hidden;
   }

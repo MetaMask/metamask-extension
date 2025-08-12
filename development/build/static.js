@@ -3,9 +3,9 @@ const fs = require('fs-extra');
 const watch = require('gulp-watch');
 const glob = require('fast-glob');
 
-const { loadBuildTypesConfig } = require('../lib/build-type');
-
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const { loadBuildTypesConfig } = require('../lib/build-type');
+const { getActiveFeatures } = require('./config');
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getPathInsideNodeModules } = require('./utils');
@@ -17,19 +17,19 @@ module.exports = function createStaticAssetTasks({
   browserPlatforms,
   shouldIncludeLockdown = true,
   shouldIncludeSnow = true,
-  buildType,
+  shouldIncludeOcapKernel = false,
 }) {
   const copyTargetsProds = {};
   const copyTargetsDevs = {};
 
   const buildConfig = loadBuildTypesConfig();
-
-  const activeFeatures = buildConfig.buildTypes[buildType].features ?? [];
+  const activeFeatures = getActiveFeatures();
 
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
+      shouldIncludeOcapKernel,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -108,7 +108,11 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
+function getCopyTargets(
+  shouldIncludeLockdown,
+  shouldIncludeSnow,
+  shouldIncludeOcapKernel,
+) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -197,7 +201,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           {
             src: getPathInsideNodeModules(
               '@metamask/snaps-execution-environments',
-              'dist/browserify/iframe/index.html',
+              'dist/webpack/iframe/index.html',
             ),
             dest: `snaps/index.html`,
             pattern: '',
@@ -205,10 +209,44 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           {
             src: getPathInsideNodeModules(
               '@metamask/snaps-execution-environments',
-              'dist/browserify/iframe/bundle.js',
+              'dist/webpack/iframe/bundle.js',
             ),
             dest: `snaps/bundle.js`,
             pattern: '',
+          },
+        ]
+      : []),
+    ...(shouldIncludeOcapKernel
+      ? [
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/kernel-shims',
+              'dist/eventual-send.js',
+            ),
+            dest: `scripts/eventual-send-install.js`,
+          },
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/kernel-browser-runtime',
+              'dist/static/',
+            ),
+            pattern: '*',
+            dest: 'ocap-kernel/',
+          },
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/kernel-ui',
+              'dist/styles.css',
+            ),
+            dest: `devtools/ocap-kernel/kernel-panel.css`,
+          },
+          {
+            src: `./app/devtools/devtools.html`,
+            dest: `devtools/devtools.html`,
+          },
+          {
+            src: `./app/devtools/ocap-kernel/kernel-panel.html`,
+            dest: `devtools/ocap-kernel/kernel-panel.html`,
           },
         ]
       : []),

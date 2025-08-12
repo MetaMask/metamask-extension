@@ -1,14 +1,17 @@
+import { ApprovalType } from '@metamask/controller-utils';
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 import { getValidUrl } from '../../util';
 
 export function validateChainId(chainId) {
@@ -165,11 +168,21 @@ export function validateAddEthereumChainParams(params) {
  * @param {string} chainId - The chainId being switched to.
  * @param {string} networkClientId - The network client being switched to.
  * @param {object} hooks - The hooks object.
+ * @param {string} hooks.origin - The origin sending this request.
+ * @param {boolean} hooks.isAddFlow - Variable to check if its add flow.
+ * @param {boolean} hooks.isSwitchFlow - Variable to check if its switch flow.
  * @param {boolean} [hooks.autoApprove] - A boolean indicating whether the request should prompt the user or be automatically approved.
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
  * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
  * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.setTokenNetworkFilter - The callback to set the token network filter.
+ * @param {Function} hooks.setEnabledNetworks - The callback to set the enabled networks.
+ * @param {Function} hooks.getEnabledNetworks - The callback to get the current enabled networks for a namespace.
+ * @param {Function} hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
+ * @param {Function} hooks.requestUserApproval - The callback to trigger user approval flow.
+ * @param {Function} hooks.hasApprovalRequestsForOrigin - Function to check if there are pending approval requests from the origin.
+ * @param {object} hooks.toNetworkConfiguration - Network configutation of network switching to.
+ * @param {object} hooks.fromNetworkConfiguration - Network configutation of network switching from.
  * @returns a null response on success or an error if user rejects an approval when autoApprove is false or on unexpected errors.
  */
 export async function switchChain(
@@ -178,11 +191,21 @@ export async function switchChain(
   chainId,
   networkClientId,
   {
+    origin,
+    isAddFlow,
+    isSwitchFlow,
     autoApprove,
     setActiveNetwork,
     getCaveat,
     requestPermittedChainsPermissionIncrementalForOrigin,
     setTokenNetworkFilter,
+    setEnabledNetworks,
+    getEnabledNetworks,
+    rejectApprovalRequestsForOrigin,
+    requestUserApproval,
+    hasApprovalRequestsForOrigin,
+    toNetworkConfiguration,
+    fromNetworkConfiguration,
   },
 ) {
   try {
@@ -195,9 +218,25 @@ export async function switchChain(
       const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
       if (!ethChainIds.includes(chainId)) {
+        let metadata;
+        if (isSwitchFlow) {
+          metadata = {
+            isSwitchEthereumChain: true,
+          };
+        }
         await requestPermittedChainsPermissionIncrementalForOrigin({
           chainId,
           autoApprove,
+          metadata,
+        });
+      } else if (hasApprovalRequestsForOrigin?.() && !isAddFlow) {
+        await requestUserApproval({
+          origin,
+          type: ApprovalType.SwitchEthereumChain,
+          requestData: {
+            toNetworkConfiguration,
+            fromNetworkConfiguration,
+          },
         });
       }
     } else {
@@ -207,8 +246,44 @@ export async function switchChain(
       });
     }
 
+    rejectApprovalRequestsForOrigin?.();
+
     await setActiveNetwork(networkClientId);
+
+    // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
+    // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
     setTokenNetworkFilter(chainId);
+
+    if (isPrefixedFormattedHexString(chainId)) {
+      const existingEnabledNetworks = getEnabledNetworks(
+        KnownCaipNamespace.Eip155,
+      );
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+
+      if (!existingChainIds.includes(chainId)) {
+        const isFeaturedNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
+
+        if (isFeaturedNetwork) {
+          const featuredExistingChainIds = existingChainIds.filter((id) =>
+            FEATURED_NETWORK_CHAIN_IDS.includes(id),
+          );
+          setEnabledNetworks(
+            [...featuredExistingChainIds, chainId],
+            KnownCaipNamespace.Eip155,
+          );
+        } else {
+          setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
+        }
+      }
+    } else {
+      const { namespace } = parseCaipChainId(chainId);
+      const existingEnabledNetworks = getEnabledNetworks(namespace);
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+      if (!existingChainIds.includes(chainId)) {
+        setEnabledNetworks([...existingChainIds, chainId], namespace);
+      }
+    }
+
     response.result = null;
     return end();
   } catch (error) {

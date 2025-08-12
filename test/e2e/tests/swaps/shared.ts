@@ -1,10 +1,9 @@
 import { strict as assert } from 'assert';
-import { ServerOptions } from 'ganache';
 import { MockttpServer } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
 import { regularDelayMs, veryLargeDelayMs } from '../../helpers';
 import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
+import { SWAP_TEST_GAS_INCLUDED_TRADES_MOCK } from '../smart-transactions/mocks';
 
 export async function mockEthDaiTrade(mockServer: MockttpServer) {
   return [
@@ -19,29 +18,25 @@ export async function mockEthDaiTrade(mockServer: MockttpServer) {
   ];
 }
 
-export const ganacheOptions: ServerOptions & { miner: { blockTime?: number } } =
-  {
-    wallet: {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000n,
-        },
-      ],
-    },
-    miner: {},
-  };
-
-export const withFixturesOptions = {
-  fixtures: new FixtureBuilder().build(),
-  localNodeOptions: ganacheOptions,
-};
+export async function mockEthUsdcGasIncludedTrade(mockServer: MockttpServer) {
+  return [
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .withQuery({ enableGasIncludedQuotes: 'true' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SWAP_TEST_GAS_INCLUDED_TRADES_MOCK,
+        };
+      }),
+  ];
+}
 
 type SwapOptions = {
   amount: number;
   swapTo?: string;
   swapToContractAddress?: string;
+  mainnet?: boolean;
 };
 
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
@@ -50,7 +45,14 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
     'input[data-testid="prepare-swap-page-from-token-amount"]',
     options.amount.toString(),
   );
-  await driver.delay(veryLargeDelayMs); // Need an extra delay after typing an amount.
+
+  if (options.swapTo && options.mainnet) {
+    await driver.waitForSelector({
+      tag: 'h6',
+      text: 'Estimated gas fee',
+    });
+  }
+
   await driver.clickElement('[data-testid="prepare-swap-page-swap-to"]');
   await driver.waitForSelector('[id="list-with-search__text-search"]');
 
@@ -95,8 +97,17 @@ export const reviewQuote = async (
     '[data-testid="exchange-rate-display-quote-rate"]',
   );
   const summaryText = await summary.getText();
-  assert.equal(summaryText.includes(options.swapFrom), true);
-  assert.equal(summaryText.includes(options.swapTo), true);
+
+  await driver.waitForSelector({
+    testId: 'prepare-swap-page-swap-from',
+    text: options.swapFrom,
+  });
+
+  await driver.waitForSelector({
+    testId: 'prepare-swap-page-swap-to',
+    text: options.swapTo,
+  });
+
   const quote = summaryText.split(`\n`);
 
   const elementSwapToAmount = await driver.findElement(
@@ -159,22 +170,20 @@ export const checkActivityTransaction = async (
   await driver.clickElement('[data-testid="account-overview__activity-tab"]');
   await driver.waitForSelector('.activity-list-item');
 
-  const transactionList = await driver.findElements(
-    '[data-testid="activity-list-item-action"]',
-  );
-  const transactionText = await transactionList[options.index].getText();
-  assert.equal(
-    transactionText,
-    `Swap ${options.swapFrom} to ${options.swapTo}`,
-    'Transaction not found',
-  );
+  await driver.waitForSelector({
+    tag: 'p',
+    text: `Swap ${options.swapFrom} to ${options.swapTo}`,
+  });
 
   await driver.findElement({
     css: '[data-testid="transaction-list-item-primary-currency"]',
     text: `-${options.amount} ${options.swapFrom}`,
   });
 
-  await transactionList[options.index].click();
+  await driver.clickElement({
+    tag: 'p',
+    text: `Swap ${options.swapFrom} to ${options.swapTo}`,
+  });
   await driver.delay(regularDelayMs);
 
   await driver.findElement({

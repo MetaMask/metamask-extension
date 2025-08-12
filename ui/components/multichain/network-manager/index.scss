@@ -1,0 +1,43 @@
+@use "design-system";
+
+
+.network-manager__tab-list {
+  display: flex;
+  width: 100%;
+
+  li {
+    flex: 1;
+    text-align: center;
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+.network-manager__tab-content {
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.network-manager__networks-button-icon {
+  justify-content: center;
+  display: flex;
+}
+
+.network-manager__additional-network-item {
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-background-default-hover);
+  }
+
+  .mm-button-icon {
+    --button-icon-size: 20px;
+  }
+}
+
+.add-network__warning-icon {
+  cursor: help;
+}

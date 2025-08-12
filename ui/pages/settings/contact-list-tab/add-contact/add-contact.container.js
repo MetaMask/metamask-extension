@@ -27,8 +27,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToAddressBook: (recipient, nickname) =>
-      dispatch(addToAddressBook(recipient, nickname)),
+    addToAddressBook: (recipient, nickname, memo, customChainId) =>
+      dispatch(addToAddressBook(recipient, nickname, memo, customChainId)),
     scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     resetDomainResolution: () => dispatch(resetDomainResolution()),

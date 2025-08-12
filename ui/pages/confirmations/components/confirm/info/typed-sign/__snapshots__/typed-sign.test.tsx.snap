@@ -23,7 +23,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-7"
+              aria-describedby="tippy-tooltip-11"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -84,7 +84,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
                 style="min-width: 0;"
               >
                 <div
-                  aria-describedby="tippy-tooltip-8"
+                  aria-describedby="tippy-tooltip-12"
                   class=""
                   data-original-title="3,000"
                   data-tooltipped=""
@@ -151,64 +151,31 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 65);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#FB1851"
-                    height="16"
-                    transform="translate(4.039516030164602 1.5782203519382538) rotate(112.1 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#188CF2"
-                    height="16"
-                    transform="translate(5.66194575958382 -1.2306431953956085) rotate(470.0 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F2AE02"
-                    height="16"
-                    transform="translate(2.167526701566883 -11.265379840592708) rotate(458.4 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0x5B38D...eddC4
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x5B38D...eddC4
-          </p>
         </div>
       </div>
     </div>
     <div
-      style="height: 1px; margin-left: -8px; margin-right: -8px;"
-    />
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
@@ -226,7 +193,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-9"
+              aria-describedby="tippy-tooltip-13"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -253,10 +220,10 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -266,64 +233,42 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
           >
             Interacting with
           </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-14"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#FB1891"
-                    height="16"
-                    transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F90901"
-                    height="16"
-                    transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26A02"
-                    height="16"
-                    transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0xCcCCc...ccccC
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0xCcCCc...ccccC
-          </p>
         </div>
       </div>
     </div>
@@ -333,7 +278,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
     data-testid="confirmation_message-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -358,7 +303,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -398,7 +343,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-10"
+              aria-describedby="tippy-tooltip-15"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -459,7 +404,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
                 style="min-width: 0;"
               >
                 <div
-                  aria-describedby="tippy-tooltip-11"
+                  aria-describedby="tippy-tooltip-16"
                   class=""
                   data-original-title="3,000"
                   data-tooltipped=""
@@ -526,64 +471,31 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 65);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#FB1851"
-                    height="16"
-                    transform="translate(4.039516030164602 1.5782203519382538) rotate(112.1 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#188CF2"
-                    height="16"
-                    transform="translate(5.66194575958382 -1.2306431953956085) rotate(470.0 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F2AE02"
-                    height="16"
-                    transform="translate(2.167526701566883 -11.265379840592708) rotate(458.4 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0x5B38D...eddC4
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x5B38D...eddC4
-          </p>
         </div>
       </div>
     </div>
     <div
-      style="height: 1px; margin-left: -8px; margin-right: -8px;"
-    />
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
@@ -601,7 +513,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-12"
+              aria-describedby="tippy-tooltip-17"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -628,10 +540,10 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -641,64 +553,42 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
           >
             Interacting with
           </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-18"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#FB1891"
-                    height="16"
-                    transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F90901"
-                    height="16"
-                    transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26A02"
-                    height="16"
-                    transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0xCcCCc...ccccC
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0xCcCCc...ccccC
-          </p>
         </div>
       </div>
     </div>
@@ -708,7 +598,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
     data-testid="confirmation_message-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -733,7 +623,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
         />
       </button>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -802,10 +692,10 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -815,64 +705,42 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
           >
             Interacting with
           </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-2"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#FB1891"
-                    height="16"
-                    transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F90901"
-                    height="16"
-                    transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26A02"
-                    height="16"
-                    transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0xCcCCc...ccccC
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0xCcCCc...ccccC
-          </p>
         </div>
       </div>
     </div>
@@ -882,7 +750,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
     data-testid="confirmation_message-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -896,7 +764,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1068,58 +936,21 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          class="mm-box mm-box--display-flex"
                         >
                           <div
-                            class=""
+                            class="name name__clickable name__missing"
                           >
-                            <div
-                              class="identicon"
-                              style="height: 16px; width: 16px; border-radius: 8px;"
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              <div
-                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
-                              >
-                                <svg
-                                  height="16"
-                                  width="16"
-                                  x="0"
-                                  y="0"
-                                >
-                                  <rect
-                                    fill="#FA7900"
-                                    height="16"
-                                    transform="translate(-0.1251869550000172 -0.18581992328639055) rotate(237.8 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#034F5E"
-                                    height="16"
-                                    transform="translate(5.484089776243406 -5.806818790918918) rotate(321.2 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#FB185C"
-                                    height="16"
-                                    transform="translate(4.337646399293827 10.83159092527544) rotate(190.8 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
+                              0xCD2a3...DD826
+                            </p>
                           </div>
-                          <p
-                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                            data-testid="confirm-info-row-display-name"
-                          >
-                            0xCD2a3...DD826
-                          </p>
                         </div>
                       </div>
                     </div>
@@ -1145,58 +976,21 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          class="mm-box mm-box--display-flex"
                         >
                           <div
-                            class=""
+                            class="name name__clickable name__missing"
                           >
-                            <div
-                              class="identicon"
-                              style="height: 16px; width: 16px; border-radius: 8px;"
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              <div
-                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 183, 242);"
-                              >
-                                <svg
-                                  height="16"
-                                  width="16"
-                                  x="0"
-                                  y="0"
-                                >
-                                  <rect
-                                    fill="#F91E01"
-                                    height="16"
-                                    transform="translate(-3.031601448459508 1.44638157917772) rotate(179.5 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#FA5300"
-                                    height="16"
-                                    transform="translate(0.001001577275992914 -7.592133809870717) rotate(370.7 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#F5A300"
-                                    height="16"
-                                    transform="translate(-9.667744843805323 10.267175012988094) rotate(298.9 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
+                              0xDeaDb...DbeeF
+                            </p>
                           </div>
-                          <p
-                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                            data-testid="confirm-info-row-display-name"
-                          >
-                            0xDeaDb...DbeeF
-                          </p>
                         </div>
                       </div>
                     </div>
@@ -1222,58 +1016,21 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          class="mm-box mm-box--display-flex"
                         >
                           <div
-                            class=""
+                            class="name name__clickable name__missing"
                           >
-                            <div
-                              class="identicon"
-                              style="height: 16px; width: 16px; border-radius: 8px;"
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              <div
-                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 143, 0);"
-                              >
-                                <svg
-                                  height="16"
-                                  width="16"
-                                  x="0"
-                                  y="0"
-                                >
-                                  <rect
-                                    fill="#FA3E00"
-                                    height="16"
-                                    transform="translate(2.1189727229825075 3.7201589705667972) rotate(163.6 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#018E74"
-                                    height="16"
-                                    transform="translate(-3.5064720430845115 9.598091001429925) rotate(205.4 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#238FE1"
-                                    height="16"
-                                    transform="translate(-5.001213401730692 12.04822844354251) rotate(286.5 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
+                              0x06195...43896
+                            </p>
                           </div>
-                          <p
-                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                            data-testid="confirm-info-row-display-name"
-                          >
-                            0x06195...43896
-                          </p>
                         </div>
                       </div>
                     </div>
@@ -1395,58 +1152,21 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              class="mm-box mm-box--display-flex"
                             >
                               <div
-                                class=""
+                                class="name name__clickable name__missing"
                               >
-                                <div
-                                  class="identicon"
-                                  style="height: 16px; width: 16px; border-radius: 8px;"
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  <div
-                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
-                                  >
-                                    <svg
-                                      height="16"
-                                      width="16"
-                                      x="0"
-                                      y="0"
-                                    >
-                                      <rect
-                                        fill="#C8144A"
-                                        height="16"
-                                        transform="translate(3.3716958087807476 -1.5355449411453455) rotate(359.3 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#01878E"
-                                        height="16"
-                                        transform="translate(-4.56026532072257 -4.118767169186573) rotate(335.8 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#1897F2"
-                                        height="16"
-                                        transform="translate(-12.66850392914138 2.191919563316492) rotate(275.0 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
+                                  0xbBbBB...bBBbB
+                                </p>
                               </div>
-                              <p
-                                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                data-testid="confirm-info-row-display-name"
-                              >
-                                0xbBbBB...bBBbB
-                              </p>
                             </div>
                           </div>
                         </div>
@@ -1472,58 +1192,21 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              class="mm-box mm-box--display-flex"
                             >
                               <div
-                                class=""
+                                class="name name__clickable name__missing"
                               >
-                                <div
-                                  class="identicon"
-                                  style="height: 16px; width: 16px; border-radius: 8px;"
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  <div
-                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 54, 0);"
-                                  >
-                                    <svg
-                                      height="16"
-                                      width="16"
-                                      x="0"
-                                      y="0"
-                                    >
-                                      <rect
-                                        fill="#2395E1"
-                                        height="16"
-                                        transform="translate(-1.7353143855136905 0.5115867848025443) rotate(191.9 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#F90101"
-                                        height="16"
-                                        transform="translate(1.7169232764557802 -9.276715881533601) rotate(319.8 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#F58700"
-                                        height="16"
-                                        transform="translate(9.91414735179574 5.139720751783702) rotate(180.7 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
+                                  0xB0Bda...bEa57
+                                </p>
                               </div>
-                              <p
-                                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                data-testid="confirm-info-row-display-name"
-                              >
-                                0xB0Bda...bEa57
-                              </p>
                             </div>
                           </div>
                         </div>
@@ -1549,58 +1232,21 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              class="mm-box mm-box--display-flex"
                             >
                               <div
-                                class=""
+                                class="name name__clickable name__missing"
                               >
-                                <div
-                                  class="identicon"
-                                  style="height: 16px; width: 16px; border-radius: 8px;"
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  <div
-                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 86);"
-                                  >
-                                    <svg
-                                      height="16"
-                                      width="16"
-                                      x="0"
-                                      y="0"
-                                    >
-                                      <rect
-                                        fill="#018E8C"
-                                        height="16"
-                                        transform="translate(3.988074950687866 0.3554940504644344) rotate(177.8 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#F29202"
-                                        height="16"
-                                        transform="translate(-7.220928666254465 -2.4813555582770794) rotate(334.6 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#236FE1"
-                                        height="16"
-                                        transform="translate(14.621768557060026 -6.282465882779628) rotate(456.1 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
+                                  0xB0B0b...00000
+                                </p>
                               </div>
-                              <p
-                                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                data-testid="confirm-info-row-display-name"
-                              >
-                                0xB0B0b...00000
-                              </p>
                             </div>
                           </div>
                         </div>
@@ -1641,7 +1287,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-2"
+              aria-describedby="tippy-tooltip-3"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -1668,10 +1314,10 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1681,64 +1327,42 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
           >
             Interacting with
           </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-4"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#FB1891"
-                    height="16"
-                    transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F90901"
-                    height="16"
-                    transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26A02"
-                    height="16"
-                    transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0xCcCCc...ccccC
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0xCcCCc...ccccC
-          </p>
         </div>
       </div>
     </div>
@@ -1748,7 +1372,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
     data-testid="confirmation_message-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -1762,7 +1386,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1884,58 +1508,21 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                   >
                     <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      class="mm-box mm-box--display-flex"
                     >
                       <div
-                        class=""
+                        class="name name__clickable name__missing"
                       >
-                        <div
-                          class="identicon"
-                          style="height: 16px; width: 16px; border-radius: 8px;"
+                        <span
+                          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                          style="mask-image: url('./images/icons/question.svg');"
+                        />
+                        <p
+                          class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                         >
-                          <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
-                          >
-                            <svg
-                              height="16"
-                              width="16"
-                              x="0"
-                              y="0"
-                            >
-                              <rect
-                                fill="#FA7900"
-                                height="16"
-                                transform="translate(-0.1251869550000172 -0.18581992328639055) rotate(237.8 8 8)"
-                                width="16"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#034F5E"
-                                height="16"
-                                transform="translate(5.484089776243406 -5.806818790918918) rotate(321.2 8 8)"
-                                width="16"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#FB185C"
-                                height="16"
-                                transform="translate(4.337646399293827 10.83159092527544) rotate(190.8 8 8)"
-                                width="16"
-                                x="0"
-                                y="0"
-                              />
-                            </svg>
-                          </div>
-                        </div>
+                          0xCD2a3...DD826
+                        </p>
                       </div>
-                      <p
-                        class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                        data-testid="confirm-info-row-display-name"
-                      >
-                        0xCD2a3...DD826
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -2013,58 +1600,21 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                   >
                     <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      class="mm-box mm-box--display-flex"
                     >
                       <div
-                        class=""
+                        class="name name__clickable name__missing"
                       >
-                        <div
-                          class="identicon"
-                          style="height: 16px; width: 16px; border-radius: 8px;"
+                        <span
+                          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                          style="mask-image: url('./images/icons/question.svg');"
+                        />
+                        <p
+                          class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                         >
-                          <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
-                          >
-                            <svg
-                              height="16"
-                              width="16"
-                              x="0"
-                              y="0"
-                            >
-                              <rect
-                                fill="#C8144A"
-                                height="16"
-                                transform="translate(3.3716958087807476 -1.5355449411453455) rotate(359.3 8 8)"
-                                width="16"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#01878E"
-                                height="16"
-                                transform="translate(-4.56026532072257 -4.118767169186573) rotate(335.8 8 8)"
-                                width="16"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#1897F2"
-                                height="16"
-                                transform="translate(-12.66850392914138 2.191919563316492) rotate(275.0 8 8)"
-                                width="16"
-                                x="0"
-                                y="0"
-                              />
-                            </svg>
-                          </div>
-                        </div>
+                          0xbBbBB...bBBbB
+                        </p>
                       </div>
-                      <p
-                        class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                        data-testid="confirm-info-row-display-name"
-                      >
-                        0xbBbBB...bBBbB
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -2130,7 +1680,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-3"
+              aria-describedby="tippy-tooltip-5"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -2157,10 +1707,10 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2170,64 +1720,42 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
           >
             Interacting with
           </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-6"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#FB1891"
-                    height="16"
-                    transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F90901"
-                    height="16"
-                    transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26A02"
-                    height="16"
-                    transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0xCcCCc...ccccC
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0xCcCCc...ccccC
-          </p>
         </div>
       </div>
     </div>
@@ -2237,7 +1765,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
     data-testid="confirmation_message-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -2251,7 +1779,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2423,58 +1951,21 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          class="mm-box mm-box--display-flex"
                         >
                           <div
-                            class=""
+                            class="name name__clickable name__missing"
                           >
-                            <div
-                              class="identicon"
-                              style="height: 16px; width: 16px; border-radius: 8px;"
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              <div
-                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
-                              >
-                                <svg
-                                  height="16"
-                                  width="16"
-                                  x="0"
-                                  y="0"
-                                >
-                                  <rect
-                                    fill="#FA7900"
-                                    height="16"
-                                    transform="translate(-0.1251869550000172 -0.18581992328639055) rotate(237.8 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#034F5E"
-                                    height="16"
-                                    transform="translate(5.484089776243406 -5.806818790918918) rotate(321.2 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#FB185C"
-                                    height="16"
-                                    transform="translate(4.337646399293827 10.83159092527544) rotate(190.8 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
+                              0xCD2a3...DD826
+                            </p>
                           </div>
-                          <p
-                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                            data-testid="confirm-info-row-display-name"
-                          >
-                            0xCD2a3...DD826
-                          </p>
                         </div>
                       </div>
                     </div>
@@ -2500,58 +1991,21 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          class="mm-box mm-box--display-flex"
                         >
                           <div
-                            class=""
+                            class="name name__clickable name__missing"
                           >
-                            <div
-                              class="identicon"
-                              style="height: 16px; width: 16px; border-radius: 8px;"
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              <div
-                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 183, 242);"
-                              >
-                                <svg
-                                  height="16"
-                                  width="16"
-                                  x="0"
-                                  y="0"
-                                >
-                                  <rect
-                                    fill="#F91E01"
-                                    height="16"
-                                    transform="translate(-3.031601448459508 1.44638157917772) rotate(179.5 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#FA5300"
-                                    height="16"
-                                    transform="translate(0.001001577275992914 -7.592133809870717) rotate(370.7 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#F5A300"
-                                    height="16"
-                                    transform="translate(-9.667744843805323 10.267175012988094) rotate(298.9 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
+                              0xDeaDb...DbeeF
+                            </p>
                           </div>
-                          <p
-                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                            data-testid="confirm-info-row-display-name"
-                          >
-                            0xDeaDb...DbeeF
-                          </p>
                         </div>
                       </div>
                     </div>
@@ -2577,58 +2031,21 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          class="mm-box mm-box--display-flex"
                         >
                           <div
-                            class=""
+                            class="name name__clickable name__missing"
                           >
-                            <div
-                              class="identicon"
-                              style="height: 16px; width: 16px; border-radius: 8px;"
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              <div
-                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 143, 0);"
-                              >
-                                <svg
-                                  height="16"
-                                  width="16"
-                                  x="0"
-                                  y="0"
-                                >
-                                  <rect
-                                    fill="#FA3E00"
-                                    height="16"
-                                    transform="translate(2.1189727229825075 3.7201589705667972) rotate(163.6 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#018E74"
-                                    height="16"
-                                    transform="translate(-3.5064720430845115 9.598091001429925) rotate(205.4 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#238FE1"
-                                    height="16"
-                                    transform="translate(-5.001213401730692 12.04822844354251) rotate(286.5 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
+                              0x06195...43896
+                            </p>
                           </div>
-                          <p
-                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                            data-testid="confirm-info-row-display-name"
-                          >
-                            0x06195...43896
-                          </p>
                         </div>
                       </div>
                     </div>
@@ -2750,58 +2167,21 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              class="mm-box mm-box--display-flex"
                             >
                               <div
-                                class=""
+                                class="name name__clickable name__missing"
                               >
-                                <div
-                                  class="identicon"
-                                  style="height: 16px; width: 16px; border-radius: 8px;"
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  <div
-                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
-                                  >
-                                    <svg
-                                      height="16"
-                                      width="16"
-                                      x="0"
-                                      y="0"
-                                    >
-                                      <rect
-                                        fill="#C8144A"
-                                        height="16"
-                                        transform="translate(3.3716958087807476 -1.5355449411453455) rotate(359.3 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#01878E"
-                                        height="16"
-                                        transform="translate(-4.56026532072257 -4.118767169186573) rotate(335.8 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#1897F2"
-                                        height="16"
-                                        transform="translate(-12.66850392914138 2.191919563316492) rotate(275.0 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
+                                  0xbBbBB...bBBbB
+                                </p>
                               </div>
-                              <p
-                                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                data-testid="confirm-info-row-display-name"
-                              >
-                                0xbBbBB...bBBbB
-                              </p>
                             </div>
                           </div>
                         </div>
@@ -2827,58 +2207,21 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              class="mm-box mm-box--display-flex"
                             >
                               <div
-                                class=""
+                                class="name name__clickable name__missing"
                               >
-                                <div
-                                  class="identicon"
-                                  style="height: 16px; width: 16px; border-radius: 8px;"
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  <div
-                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 54, 0);"
-                                  >
-                                    <svg
-                                      height="16"
-                                      width="16"
-                                      x="0"
-                                      y="0"
-                                    >
-                                      <rect
-                                        fill="#2395E1"
-                                        height="16"
-                                        transform="translate(-1.7353143855136905 0.5115867848025443) rotate(191.9 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#F90101"
-                                        height="16"
-                                        transform="translate(1.7169232764557802 -9.276715881533601) rotate(319.8 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#F58700"
-                                        height="16"
-                                        transform="translate(9.91414735179574 5.139720751783702) rotate(180.7 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
+                                  0xB0Bda...bEa57
+                                </p>
                               </div>
-                              <p
-                                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                data-testid="confirm-info-row-display-name"
-                              >
-                                0xB0Bda...bEa57
-                              </p>
                             </div>
                           </div>
                         </div>
@@ -2904,58 +2247,21 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              class="mm-box mm-box--display-flex"
                             >
                               <div
-                                class=""
+                                class="name name__clickable name__missing"
                               >
-                                <div
-                                  class="identicon"
-                                  style="height: 16px; width: 16px; border-radius: 8px;"
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  <div
-                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 86);"
-                                  >
-                                    <svg
-                                      height="16"
-                                      width="16"
-                                      x="0"
-                                      y="0"
-                                    >
-                                      <rect
-                                        fill="#018E8C"
-                                        height="16"
-                                        transform="translate(3.988074950687866 0.3554940504644344) rotate(177.8 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#F29202"
-                                        height="16"
-                                        transform="translate(-7.220928666254465 -2.4813555582770794) rotate(334.6 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#236FE1"
-                                        height="16"
-                                        transform="translate(14.621768557060026 -6.282465882779628) rotate(456.1 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
+                                  0xB0B0b...00000
+                                </p>
                               </div>
-                              <p
-                                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                data-testid="confirm-info-row-display-name"
-                              >
-                                0xB0B0b...00000
-                              </p>
                             </div>
                           </div>
                         </div>

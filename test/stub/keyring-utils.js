@@ -15,6 +15,7 @@ export class Common {
   constructor({ chain, hardfork }) {
     this.chain = chain;
     this.hardfork = hardfork;
+    this.customCrypto = {};
   }
 
   /**
@@ -67,6 +68,36 @@ export class Common {
    */
   chainId() {
     return BigInt(this.chain.chainId);
+  }
+
+  /**
+   * Checks if a specific EIP (Ethereum Improvement Proposal) is activated.
+   * In this simplified test version, it always returns true.
+   * This method is a stub for the actual `isActivatedEIP` method in `@ethereumjs/common`.
+   *
+   * @returns {boolean} Always returns true.
+   */
+  isActivatedEIP() {
+    return true;
+  }
+
+  /**
+   * Returns the value of a parameter for the current hardfork.
+   * This is a minimal implementation that returns default values for common parameters.
+   *
+   * @param {string} param - The parameter name.
+   * @returns {any} The parameter value.
+   */
+  param(param) {
+    // Return default values for common parameters that @ethereumjs/tx might request
+    const defaults = {
+      gasLimitBoundDivisor: 1024,
+      baseFeeChangeDenominator: 8,
+      elasticityMultiplier: 2,
+      maxPriorityFeePerGas: 0,
+      maxFeePerGas: 0,
+    };
+    return defaults[param] || 0;
   }
 }
 

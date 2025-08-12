@@ -26,10 +26,10 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
             />
             <div
               class="mm-box mm-badge-wrapper__badge-container"
-              style="top: -4px; right: -4px;"
+              style="bottom: 4px; right: 4px;"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network nft-item__network-badge mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network nft-item__network-badge mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                 data-testid="nft-network-badge"
               >
                 G
@@ -37,12 +37,6 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
             </div>
           </div>
         </button>
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-        />
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
-        />
       </div>
     </div>
     <h2
@@ -50,9 +44,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
     />
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-    >
-      #undefined
-    </p>
+    />
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -86,58 +78,21 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              class="mm-box mm-box--display-flex"
             >
               <div
-                class=""
+                class="name name__clickable name__missing"
               >
-                <div
-                  class="identicon"
-                  style="height: 16px; width: 16px; border-radius: 8px;"
+                <span
+                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+                <p
+                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
-                  >
-                    <svg
-                      height="16"
-                      width="16"
-                      x="0"
-                      y="0"
-                    >
-                      <rect
-                        fill="#C81420"
-                        height="16"
-                        transform="translate(-2.752618452452339 -2.6325616818687707) rotate(385.9 8 8)"
-                        width="16"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#E9F500"
-                        height="16"
-                        transform="translate(5.337234703363199 6.214964079596694) rotate(184.5 8 8)"
-                        width="16"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#FAB300"
-                        height="16"
-                        transform="translate(0.9077275996181156 -13.015140953188144) rotate(431.3 8 8)"
-                        width="16"
-                        x="0"
-                        y="0"
-                      />
-                    </svg>
-                  </div>
-                </div>
+                  0x2e0D7...5d09B
+                </p>
               </div>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                data-testid="confirm-info-row-display-name"
-              >
-                0x2e0D7...5d09B
-              </p>
             </div>
           </div>
         </div>
@@ -171,58 +126,21 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              class="mm-box mm-box--display-flex"
             >
               <div
-                class=""
+                class="name name__clickable name__missing"
               >
-                <div
-                  class="identicon"
-                  style="height: 16px; width: 16px; border-radius: 8px;"
+                <span
+                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+                <p
+                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
-                  >
-                    <svg
-                      height="16"
-                      width="16"
-                      x="0"
-                      y="0"
-                    >
-                      <rect
-                        fill="#C81420"
-                        height="16"
-                        transform="translate(-2.752618452452339 -2.6325616818687707) rotate(385.9 8 8)"
-                        width="16"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#E9F500"
-                        height="16"
-                        transform="translate(5.337234703363199 6.214964079596694) rotate(184.5 8 8)"
-                        width="16"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#FAB300"
-                        height="16"
-                        transform="translate(0.9077275996181156 -13.015140953188144) rotate(431.3 8 8)"
-                        width="16"
-                        x="0"
-                        y="0"
-                      />
-                    </svg>
-                  </div>
-                </div>
+                  0x2e0D7...5d09B
+                </p>
               </div>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                data-testid="confirm-info-row-display-name"
-              >
-                0x2e0D7...5d09B
-              </p>
             </div>
           </div>
         </div>
@@ -240,33 +158,37 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-          style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; padding-left: 0px; padding-right: 0px;"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; padding-left: 0px; padding-right: 0px;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Estimated changes
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-1"
-                  class=""
-                  data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Estimated changes
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-1"
+                    class=""
+                    data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -399,8 +321,12 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       </div>
     </div>
     <div
-      style="height: 1px; margin-left: -8px; margin-right: -8px;"
-    />
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -437,58 +363,21 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class=""
+            class="name name__clickable name__missing"
           >
-            <div
-              class="identicon"
-              style="height: 16px; width: 16px; border-radius: 8px;"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 119);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#FB188D"
-                    height="16"
-                    transform="translate(-0.03888059901998558 -0.3611719722869608) rotate(292.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F90E01"
-                    height="16"
-                    transform="translate(6.546320180202683 5.992209110554258) rotate(106.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26E02"
-                    height="16"
-                    transform="translate(8.96370841230271 -9.40372192765907) rotate(416.7 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0x07614...3ad68
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x07614...3ad68
-          </p>
         </div>
       </div>
     </div>
@@ -498,66 +387,95 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
     data-testid="gas-fee-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      data-testid="edit-gas-fees-row"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="edit-gas-fees-row"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Network fee
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-4"
-              class=""
-              data-original-title="Amount paid to process the transaction on network."
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                data-testid="edit-gas-fees-row-tooltip"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Network fee
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-4"
+                class=""
+                data-original-title="Amount paid to process the transaction on network."
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="edit-gas-fees-row-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            data-testid="edit-gas-fee-icon"
+            style="text-decoration: none;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/edit.svg');"
+            />
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+            />
+          </button>
+          <p
+            class="mm-box mm-text mm-text--body-md"
+            data-testid="native-currency"
+          >
+            $0.08
+          </p>
+          <div
+            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            data-testid="selected-gas-fee-token"
+            style="cursor: default; padding-inline-end: 6px;"
+          >
+            <div
+              class="mm-box"
+              data-testid="native-icon"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+              >
+                E
+              </div>
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              ETH
+            </p>
           </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+        class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-          data-testid="edit-gas-fee-icon"
-          style="text-decoration: none;"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/edit.svg');"
-          />
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
-          />
-        </button>
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
-          data-testid="first-gas-field"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          data-testid="gas-fee-token-fee"
         >
-          0.0001 ETH
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-          data-testid="native-currency"
-        >
-          $0.08
+           
         </p>
       </div>
     </div>

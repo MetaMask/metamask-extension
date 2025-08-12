@@ -1,27 +1,19 @@
 import FixtureBuilder from '../../../fixture-builder';
-import {
-  PRIVATE_KEY,
-  convertETHToHexGwei,
-  withFixtures,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import {
   TestSuiteArguments,
   openDAppWithContract,
 } from '../transactions/shared';
-import { Driver } from '../../../webdriver/driver';
+import AlertModal from '../../../page-objects/pages/confirmations/redesign/alert-modal';
+import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 
 describe('Alert for insufficient funds', function () {
   it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
     const nftSmartContract = SMART_CONTRACTS.NFTS;
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey: PRIVATE_KEY,
-          balance: convertETHToHexGwei(0.0053), // Low balance only to create the contract and then trigger the alert for insufficient funds
-        },
-      ],
+    const localNodeOptions = {
+      mnemonic: 'test test test test test test test test test test test junk',
     };
     await withFixtures(
       {
@@ -29,44 +21,23 @@ describe('Alert for insufficient funds', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: ganacheOptions,
+        localNodeOptions,
         smartContract: nftSmartContract,
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        const alertModal = new AlertModal(driver);
+
         await openDAppWithContract(driver, contractRegistry, nftSmartContract);
-
-        await mintNft(driver);
-
-        await verifyAlertForInsufficientBalance(driver);
+        await testDapp.checkPageIsLoaded();
+        await testDapp.clickERC721MintButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.clickInlineAlert();
+        await alertModal.checkInsufficientBalanceMessageIsDisplayed();
+        await alertModal.clickConfirmButton();
       },
     );
   });
 });
-
-async function verifyAlertForInsufficientBalance(driver: Driver) {
-  await driver.waitForSelector({
-    css: '[data-testid="inline-alert"]',
-    text: 'Alert',
-  });
-  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-  await driver.clickElement('[data-testid="inline-alert"]');
-
-  await displayAlertForInsufficientBalance(driver);
-  await driver.clickElement('[data-testid="alert-modal-button"]');
-}
-
-async function mintNft(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement(`#mintButton`);
-
-  await driver.waitUntilXWindowHandles(3);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-}
-
-async function displayAlertForInsufficientBalance(driver: Driver) {
-  await driver.waitForSelector({
-    css: '[data-testid="alert-modal__selected-alert"]',
-    text: 'You do not have enough ETH in your account to pay for network fees.',
-  });
-}

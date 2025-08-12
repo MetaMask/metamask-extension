@@ -20,7 +20,7 @@ describe('ActivityListItem', () => {
     rightContent: RIGHT_CONTENT,
     midContent: MID_CONTENT,
     topContent: TOP_CONTENT,
-    icon: <Icon name={IconName.Custody} size={IconSize.Xs} />,
+    icon: <Icon name={IconName.Accessibility} size={IconSize.Xs} />,
     onClick: jest.fn(),
   };
 

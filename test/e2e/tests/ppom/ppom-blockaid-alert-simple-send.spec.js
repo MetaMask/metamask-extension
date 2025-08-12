@@ -70,8 +70,18 @@ async function mockInfuraWithBenignResponses(mockServer) {
 
 async function mockInfuraWithMaliciousResponses(mockServer) {
   await mockInfura(mockServer);
+  const requestMock = {
+    method: 'eth_sendTransaction',
+    params: [
+      {
+        from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        to: '0x5fbdb2315678afecb367f032d93f642f64180aa3',
+        value: '0x9184e72a000',
+      },
+    ],
+  };
 
-  await mockRequest(mockServer, SEND_REQUEST_BASE_MOCK, {
+  await mockRequest(mockServer, requestMock, {
     block: 20733277,
     result_type: 'Malicious',
     reason: 'transfer_farming',
@@ -129,6 +139,11 @@ describe('Simple Send Security Alert - Blockaid', function () {
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         testSpecificMock: mockInfuraWithBenignResponses,
         title: this.test.fullTitle(),
@@ -136,7 +151,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
 
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        // We validate custom balance as it doesn't come from ganache but it's mocked
+        // We validate custom balance as it doesn't come from the local node but it's mocked
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
           text: '20 ETH',
@@ -169,6 +184,11 @@ describe('Simple Send Security Alert - Blockaid', function () {
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test.fullTitle(),
@@ -176,7 +196,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
 
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        // We validate custom balance as it doesn't come from ganache but it's mocked
+        // We validate custom balance as it doesn't come from the local node but it's mocked
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
           text: '20 ETH',
@@ -209,6 +229,11 @@ describe('Simple Send Security Alert - Blockaid', function () {
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         testSpecificMock: mockInfuraWithFailedResponses,
         title: this.test.fullTitle(),
@@ -217,7 +242,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
 
-        // We validate custom balance as it doesn't come from ganache but it's mocked
+        // We validate custom balance as it doesn't come from the local node but it's mocked
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
           text: '20 ETH',

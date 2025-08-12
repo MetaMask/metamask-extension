@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import {
@@ -22,16 +22,68 @@ import Tooltip from '../../ui/tooltip';
 
 import { BadgeStatusProps } from './badge-status.types';
 
+const TooltipStyle = { display: 'flex' };
+
 export const BadgeStatus: React.FC<BadgeStatusProps> = ({
   className = '',
   badgeBackgroundColor = BackgroundColor.backgroundAlternative,
   badgeBorderColor = BorderColor.borderMuted,
   address,
   isConnectedAndNotActive = false,
+  showConnectedStatus = true,
   text,
   ...props
 }): JSX.Element => {
   const useBlockie = useSelector(getUseBlockie);
+  const tooltipContents = useMemo(() => {
+    let positionObj;
+    if (showConnectedStatus) {
+      positionObj = isConnectedAndNotActive
+        ? { bottom: 2, right: 5 }
+        : { bottom: -1, right: 2 };
+    }
+
+    return (
+      <BadgeWrapper
+        positionObj={positionObj}
+        badge={
+          showConnectedStatus && (
+            <Box
+              className={classNames('multichain-badge-status__badge', {
+                'multichain-badge-status__badge-not-connected':
+                  isConnectedAndNotActive,
+              })}
+              backgroundColor={badgeBackgroundColor}
+              borderRadius={BorderRadius.full}
+              borderColor={badgeBorderColor}
+              borderWidth={2}
+            />
+          )
+        }
+      >
+        {
+          <AvatarAccount
+            borderColor={BorderColor.transparent}
+            size={AvatarAccountSize.Md}
+            address={address}
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
+            marginInlineEnd={2}
+          />
+        }
+      </BadgeWrapper>
+    );
+  }, [
+    address,
+    badgeBackgroundColor,
+    badgeBorderColor,
+    isConnectedAndNotActive,
+    useBlockie,
+    showConnectedStatus,
+  ]);
 
   return (
     <Box
@@ -44,48 +96,18 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
       backgroundColor={BackgroundColor.transparent}
       {...(props as BoxProps<'div'>)}
     >
-      <Tooltip
-        style={{ display: 'flex' }}
-        title={text}
-        data-testid="multichain-badge-status__tooltip"
-        position="bottom"
-      >
-        <BadgeWrapper
-          positionObj={
-            isConnectedAndNotActive
-              ? { bottom: 2, right: 5 }
-              : { bottom: -1, right: 2 }
-          }
-          badge={
-            <Box
-              className={classNames('multichain-badge-status__badge', {
-                'multichain-badge-status__badge-not-connected':
-                  isConnectedAndNotActive,
-              })}
-              backgroundColor={badgeBackgroundColor}
-              borderRadius={BorderRadius.full}
-              borderColor={badgeBorderColor}
-              borderWidth={2}
-            />
-          }
+      {showConnectedStatus ? (
+        <Tooltip
+          style={TooltipStyle}
+          title={text}
+          data-testid="multichain-badge-status__tooltip"
+          position="bottom"
         >
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            <AvatarAccount
-              borderColor={BorderColor.transparent}
-              size={AvatarAccountSize.Md}
-              address={address}
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
-              marginInlineEnd={2}
-            />
-            ///: END:ONLY_INCLUDE_IF
-          }
-        </BadgeWrapper>
-      </Tooltip>
+          {tooltipContents}
+        </Tooltip>
+      ) : (
+        tooltipContents
+      )}
     </Box>
   );
 };

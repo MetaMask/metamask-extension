@@ -4,7 +4,6 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import { deferredPromise } from '../../util';
 import * as Util from '../../util';
 import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import requestEthereumAccounts from './request-accounts';
@@ -106,7 +105,10 @@ describe('requestEthereumAccountsHandler', () => {
     it('blocks subsequent requests if there is currently a request waiting for the wallet to be unlocked', async () => {
       const { handler, getUnlockPromise, getAccounts, end, response } =
         createMockedHandler();
-      const { promise, resolve } = deferredPromise();
+      // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
+      // browser support.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const { promise, resolve } = Promise.withResolvers!<void>();
       getUnlockPromise.mockReturnValue(promise);
       getAccounts.mockReturnValue(['0xdead', '0xbeef']);
 
@@ -127,7 +129,7 @@ describe('requestEthereumAccountsHandler', () => {
         ),
       );
       expect(end).toHaveBeenCalledTimes(1);
-      resolve?.();
+      resolve();
     });
   });
 
@@ -187,18 +189,29 @@ describe('requestEthereumAccountsHandler', () => {
       MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
 
       await handler(baseRequest);
-      expect(sendMetrics).toHaveBeenCalledWith({
-        category: 'inpage_provider',
-        event: 'Dapp Viewed',
-        properties: {
-          is_first_visit: true,
-          number_of_accounts: 3,
-          number_of_accounts_connected: 2,
+      expect(sendMetrics).toHaveBeenCalledWith(
+        {
+          category: 'inpage_provider',
+          event: 'Dapp Viewed',
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_first_visit: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            number_of_accounts: 3,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            number_of_accounts_connected: 2,
+          },
+          referrer: {
+            url: 'http://test.com',
+          },
         },
-        referrer: {
-          url: 'http://test.com',
+        {
+          excludeMetaMetricsId: true,
         },
-      });
+      );
     });
 
     it('does not emit the dapp viewed metrics event when shouldEmitDappViewedEvent returns false', async () => {

@@ -249,7 +249,14 @@ describe(`Migration ${version}`, () => {
       meta: { version: 0 },
       data: {
         AccountsController: {
-          internalAccounts: { selectedAccount: '0x123' },
+          internalAccounts: {
+            selectedAccount: '0x123',
+            accounts: {
+              '0x123': {
+                address: '0x123',
+              },
+            },
+          },
         },
         NetworkController: {
           selectedNetworkClientId: 'mainnet',
@@ -270,7 +277,7 @@ describe(`Migration ${version}`, () => {
     };
 
     const result = await migrate(originalState);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalled();
+    expect(sentryCaptureExceptionMock).not.toHaveBeenCalled();
     expect(result.data).toEqual(originalState.data);
   });
 

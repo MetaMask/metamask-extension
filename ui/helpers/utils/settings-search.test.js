@@ -74,8 +74,6 @@ const t = (key) => {
       return 'Security & privacy';
     case 'revealSeedWords':
       return 'Reveal Secret Recovery Phrase';
-    case 'showIncomingTransactions':
-      return 'Show incoming transactions';
     case 'usePhishingDetection':
       return 'Use phishing detection';
     case 'usePhishingDetectionDescription':
@@ -138,6 +136,12 @@ const t = (key) => {
       return 'Show balance and token price checker';
     case 'currencyRateCheckToggleDescription':
       return 'We use Coingecko and CryptoCompare APIs to display your balance and token price. Privacy Policy';
+    case 'watch-only':
+      return 'Watch Ethereum Accounts (Beta)';
+    case 'bitcoin-support':
+      return 'Enable "Add a new Bitcoin account (Beta)"';
+    case 'backupAndSync':
+      return 'Backup and Sync';
     default:
       return '';
   }
@@ -164,6 +168,12 @@ describe('Settings Search Utils', () => {
 
     it('returns "Advanced" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(10);
+    });
+
+    it('returns "Backup And Sync" section count', () => {
+      expect(
+        getNumberOfSettingRoutesInTab(t, t('backupAndSync')),
+      ).toStrictEqual(3);
     });
 
     it('returns "Contact" section count', () => {

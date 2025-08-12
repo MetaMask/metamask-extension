@@ -1,12 +1,9 @@
+/* eslint-disable mocha/no-skipped-tests */
 import { Mockttp } from 'mockttp';
 import { withFixtures, unlockWallet } from '../../helpers';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../../data/mock-data';
-import {
-  withFixturesOptions,
-  buildQuote,
-  reviewQuote,
-  checkNotification,
-} from './shared';
+import FixtureBuilder from '../../fixture-builder';
+import { buildQuote, reviewQuote, checkNotification } from './shared';
 
 async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   return [
@@ -19,7 +16,8 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   ];
 }
 
-describe('Swaps - notifications', function () {
+// Skipped as this will be supported in the new swap flow in the future
+describe.skip('Swaps - notifications', function () {
   async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
@@ -70,8 +68,9 @@ describe('Swaps - notifications', function () {
   it('tests notifications for verified token on 1 source and price difference', async function () {
     await withFixtures(
       {
-        ...withFixturesOptions,
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockTradesApiPriceSlippageError,
+        localNodeOptions: 'ganache',
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -109,20 +108,14 @@ describe('Swaps - notifications', function () {
     );
   });
   it('tests a notification for not enough balance', async function () {
-    const lowBalanceGanacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 0,
-        },
-      ],
+    const localNodeOptions = {
+      mnemonic: 'test test test test test test test test test test test junk',
     };
 
     await withFixtures(
       {
-        ...withFixturesOptions,
-        localNodeOptions: lowBalanceGanacheOptions,
+        fixtures: new FixtureBuilder().build(),
+        localNodeOptions,
         testSpecificMock: mockSwapsTransactionQuote,
         title: this.test?.fullTitle(),
       },
@@ -153,7 +146,7 @@ describe('Swaps - notifications', function () {
   it('tests notifications for token import', async function () {
     await withFixtures(
       {
-        ...withFixturesOptions,
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -175,7 +168,8 @@ describe('Swaps - notifications', function () {
   it('tests notifications for slippage', async function () {
     await withFixtures(
       {
-        ...withFixturesOptions,
+        fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSwapsTransactionQuote,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

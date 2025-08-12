@@ -35,6 +35,8 @@ const isPlainObject = (obj: unknown) => {
 };
 
 export const SelectButton: SelectButtonComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       className = '',
@@ -72,6 +74,8 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       uncontrolledValue = '',
       defaultValue = '',
       placeholder = '',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     } = selectContext || {};
 
     const contentToRender =
@@ -138,6 +142,8 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
           className,
         )}
         ref={ref}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         disabled={isDisabled || isDisabledProp || disabled}
         as="button"
         onClick={isWithinSelectWrapper ? toggleUncontrolledOpen : undefined}
