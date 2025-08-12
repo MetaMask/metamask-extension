@@ -14,7 +14,7 @@ import {
   useDispatch,
   useSelector,
 } from 'react-redux';
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import { Route, Routes, useHistory, useLocation } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
@@ -516,7 +516,7 @@ export default function Routes() {
     const routes = (
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
-        <Switch>
+        <Routes>
           {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
           <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
           {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
@@ -637,7 +637,7 @@ export default function Routes() {
             exact
           />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
-        </Switch>
+        </Routes>
       </Suspense>
     );
 
