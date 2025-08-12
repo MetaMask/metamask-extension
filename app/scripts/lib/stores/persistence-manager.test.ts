@@ -255,4 +255,70 @@ describe('PersistenceManager', () => {
       expect(mockCallback).toHaveBeenCalledTimes(2);
     });
   });
+
+  describe('Broken indexedDb', () => {
+    const originalOpen = indexedDB.open.bind(indexedDB);
+    let brokenManager: PersistenceManager;
+
+    /**
+     * Breaks the indexedDB open request with a specific error.
+     *
+     * @param error - The error to throw when opening the database.
+     */
+    function breakIndexedDbWithError(error: Error) {
+      // make indexedDb throw the FF DOMException `InvalidStateError`:
+      // "A mutation operation was attempted on a database that did not allow mutations."
+      indexedDB.open = (name: string, version?: number) => {
+        const request = {} as unknown as IDBOpenDBRequest;
+        if (name === 'metamask-backup' && version === 1) {
+          // @ts-expect-error - we're intentionally mocking the error here
+          request.error = error;
+          setTimeout(() => {
+            request.onerror?.({ target: request } as unknown as Event);
+          }, 0);
+        }
+        return request;
+      };
+    }
+
+    afterEach(() => {
+      // restore indexedDB.open back to its original function
+      indexedDB.open = originalOpen;
+    });
+
+    it('Fails as expected', async () => {
+      // when we catch the DOMException here we log it. let's check that we log
+      // the right things
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      const domException = new DOMException(
+        'A mutation operation was attempted on a database that did not allow mutations.',
+        'InvalidStateError',
+      );
+      breakIndexedDbWithError(domException);
+      brokenManager = new PersistenceManager({
+        localStore: new ExtensionStore(),
+      });
+      await brokenManager.open();
+      // We don't have a valid indexedDB database to use, so `getBackup` now
+      // returns `undefined`
+      expect(await brokenManager.getBackup()).toBeUndefined();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Could not open backup database; automatic vault recovery will not be available.',
+      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(domException);
+      expect(mockedCaptureException).toHaveBeenCalledWith(domException);
+    });
+
+    it('Fails as expected', async () => {
+      const randomError = new Error('Random Error');
+      breakIndexedDbWithError(randomError);
+      brokenManager = new PersistenceManager({
+        localStore: new ExtensionStore(),
+      });
+      await expect(brokenManager.open()).rejects.toThrow(randomError);
+      expect(mockedCaptureException).toHaveBeenCalledWith(randomError);
+    });
+  });
 });

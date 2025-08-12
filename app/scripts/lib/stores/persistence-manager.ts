@@ -163,7 +163,7 @@ export class PersistenceManager {
         // cases we just won't have a backup vault.
         if (
           isObject(error) &&
-          error.type === 'DOMException' &&
+          error instanceof DOMException &&
           error.name === 'InvalidStateError' &&
           error.message ===
             'A mutation operation was attempted on a database that did not allow mutations.'

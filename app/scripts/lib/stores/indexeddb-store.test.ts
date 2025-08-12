@@ -17,151 +17,109 @@ describe('IndexedDBStore', () => {
       };
     });
   });
-
+  beforeEach(() => {
+    db = new IndexedDBStore();
+  });
   afterEach(() => {
     db?.close();
   });
 
-  describe('indexedDB Not Available', () => {
-    const originalOpen = indexedDB.open.bind(indexedDB);
-    beforeEach(() => {
-      // make indexedDb throw the FF DOMException `InvalidStateError`:
-      // "A mutation operation was attempted on a database that did not allow mutations."
-      indexedDB.open = (name: string, version?: number) => {
-        const request = {} as unknown as IDBOpenDBRequest;
-        if (name === dbName && version === dbVersion) {
-          const error = new DOMException(
-            'A mutation operation was attempted on a database that did not allow mutations.',
-            'InvalidStateError',
-          );
-          // @ts-expect-error - we're intentionally mocking the error here
-          request.error = error;
-          setTimeout(() => {
-            request.onerror?.({ target: request } as unknown as Event);
-          }, 0);
-        }
-        return request;
-      };
+  describe('open', () => {
+    it('opens the database successfully and creates store on first open', async () => {
+      await db.open(dbName, dbVersion);
+      // Verify the database is open by performing an operation
+      await db.set({ key: 'value' });
+      const values = await db.get(['key']);
+      expect(values).toEqual(['value']);
     });
 
-    afterEach(() => {
-      indexedDB.open = originalOpen;
+    it('rejects with TypeError for invalid version (0)', async () => {
+      await expect(db.open(dbName, 0)).rejects.toThrow(TypeError);
     });
 
-    it('Falls back to an in-memory database', async () => {
+    it('handles opening errors', async () => {
+      await db.open(dbName, dbVersion + 1);
+      db.close();
       db = new IndexedDBStore();
-      await expect(db.open(dbName, dbVersion)).rejects.toThrow(DOMException);
+      // trigger a "VersionError" by trying to open the database with a
+      // an _earlier_ different version number
+      await expect(db.open(dbName, dbVersion)).rejects.toThrow(Error);
+    });
+
+    it('handles database version upgrades', async () => {
+      await db.open(dbName, dbVersion);
+      await db.set({ key: 'value' });
+      db.close();
+      db = new IndexedDBStore();
+      await db.open(dbName, dbVersion + 1);
+      const [value] = (await db.get(['key'])) as string[];
+      expect(value).toBe('value');
+    });
+
+    it('does not reopen if already open', async () => {
+      const openSpy = jest.spyOn(indexedDB, 'open');
+      await db.open(dbName, dbVersion);
+      expect(openSpy).toHaveBeenCalled();
+      openSpy.mockRestore();
+      await db.open(dbName, dbVersion);
+      expect(openSpy).not.toHaveBeenCalled();
+      openSpy.mockRestore();
     });
   });
 
-  describe('indexedDB Available', () => {
-    beforeEach(() => {
-      db = new IndexedDBStore();
+  describe('set', () => {
+    it('sets multiple key-value pairs successfully', async () => {
+      await db.open(dbName, dbVersion);
+      const values = { key1: 'value1', key2: 42, key3: { nested: true } };
+      await db.set(values);
+      const retrieved = await db.get(['key1', 'key2', 'key3']);
+      expect(retrieved).toEqual(['value1', 42, { nested: true }]);
     });
 
-    afterEach(() => {
-      db?.close();
+    it('throws when database is not open', async () => {
+      await expect(db.set({ key: 'value' })).rejects.toThrow(
+        'Database is not open',
+      );
     });
 
-    describe('open', () => {
-      it('opens the database successfully and creates store on first open', async () => {
-        await db.open(dbName, dbVersion);
-        // Verify the database is open by performing an operation
-        await db.set({ key: 'value' });
-        const values = await db.get(['key']);
-        expect(values).toEqual(['value']);
-      });
+    it('rejects on transaction error with non-serializable value', async () => {
+      await db.open(dbName, dbVersion);
+      const values = {
+        // Functions are not serializable, so this will ensure an error:
+        key: () => {
+          return undefined;
+        },
+      };
+      // don't matter exactly what the error
+      // is, we just need to ensure that it does propagate errors.
+      await expect(db.set(values)).rejects.toThrow('could not be cloned');
+    });
+  });
 
-      it('rejects with TypeError for invalid version (0)', async () => {
-        await expect(db.open(dbName, 0)).rejects.toThrow(TypeError);
-      });
-
-      it('handles opening errors', async () => {
-        await db.open(dbName, dbVersion + 1);
-        db.close();
-        db = new IndexedDBStore();
-        // trigger a "VersionError" by trying to open the database with a
-        // an _earlier_ different version number
-        await expect(db.open(dbName, dbVersion)).rejects.toThrow(Error);
-      });
-
-      it('handles database version upgrades', async () => {
-        await db.open(dbName, dbVersion);
-        await db.set({ key: 'value' });
-        db.close();
-        db = new IndexedDBStore();
-        await db.open(dbName, dbVersion + 1);
-        const [value] = (await db.get(['key'])) as string[];
-        expect(value).toBe('value');
-      });
-
-      it('does not reopen if already open', async () => {
-        const openSpy = jest.spyOn(indexedDB, 'open');
-        await db.open(dbName, dbVersion);
-        expect(openSpy).toHaveBeenCalled();
-        openSpy.mockRestore();
-        await db.open(dbName, dbVersion);
-        expect(openSpy).not.toHaveBeenCalled();
-        openSpy.mockRestore();
-      });
+  describe('get', () => {
+    it('gets multiple keys, preserving order and duplicates, with undefined for missing keys', async () => {
+      await db.open(dbName, dbVersion);
+      await db.set({ key1: 'value1', key2: 'value2' });
+      const retrieved = await db.get(['key1', 'key3', 'key2', 'key1']);
+      expect(retrieved).toEqual(['value1', undefined, 'value2', 'value1']);
     });
 
-    describe('set', () => {
-      it('sets multiple key-value pairs successfully', async () => {
-        await db.open(dbName, dbVersion);
-        const values = { key1: 'value1', key2: 42, key3: { nested: true } };
-        await db.set(values);
-        const retrieved = await db.get(['key1', 'key2', 'key3']);
-        expect(retrieved).toEqual(['value1', 42, { nested: true }]);
-      });
+    it('throws when database is not open', async () => {
+      await expect(db.get(['key'])).rejects.toThrow('Database is not open');
+    });
+  });
 
-      it('throws when database is not open', async () => {
-        await expect(db.set({ key: 'value' })).rejects.toThrow(
-          'Database is not open',
-        );
-      });
-
-      it('rejects on transaction error with non-serializable value', async () => {
-        await db.open(dbName, dbVersion);
-        const values = {
-          // Functions are not serializable, so this will ensure an error:
-          key: () => {
-            return undefined;
-          },
-        };
-        // don't matter exactly what the error
-        // is, we just need to ensure that it does propagate errors.
-        await expect(db.set(values)).rejects.toThrow('could not be cloned');
-      });
+  describe('remove', () => {
+    it('removes multiple keys successfully', async () => {
+      await db.open(dbName, dbVersion);
+      await db.set({ key1: 'value1', key2: 'value2', key3: 'value3' });
+      await db.remove(['key1', 'key3']);
+      const retrieved = await db.get(['key1', 'key2', 'key3']);
+      expect(retrieved).toEqual([undefined, 'value2', undefined]);
     });
 
-    describe('get', () => {
-      it('gets multiple keys, preserving order and duplicates, with undefined for missing keys', async () => {
-        await db.open(dbName, dbVersion);
-        await db.set({ key1: 'value1', key2: 'value2' });
-        const retrieved = await db.get(['key1', 'key3', 'key2', 'key1']);
-        expect(retrieved).toEqual(['value1', undefined, 'value2', 'value1']);
-      });
-
-      it('throws when database is not open', async () => {
-        await expect(db.get(['key'])).rejects.toThrow('Database is not open');
-      });
-    });
-
-    describe('remove', () => {
-      it('removes multiple keys successfully', async () => {
-        await db.open(dbName, dbVersion);
-        await db.set({ key1: 'value1', key2: 'value2', key3: 'value3' });
-        await db.remove(['key1', 'key3']);
-        const retrieved = await db.get(['key1', 'key2', 'key3']);
-        expect(retrieved).toEqual([undefined, 'value2', undefined]);
-      });
-
-      it('throws when database is not open', async () => {
-        await expect(db.remove(['key'])).rejects.toThrow(
-          'Database is not open',
-        );
-      });
+    it('throws when database is not open', async () => {
+      await expect(db.remove(['key'])).rejects.toThrow('Database is not open');
     });
   });
 });
