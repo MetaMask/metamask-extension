@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ github.event.workflow_run.head_repository.full_name }} # Use the repository that triggered the workflow
           ref: ${{ github.event.workflow_run.head_branch }} # Use the branch that triggered the workflow

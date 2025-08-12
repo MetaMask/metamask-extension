@@ -17,7 +17,7 @@ jobs:
       # For a `push` event, the head commit hash is `github.sha`.
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           # By default, the checkout action checks out the last merge commit for pull requests.
           # Source: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request
