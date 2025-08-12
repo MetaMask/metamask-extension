@@ -8,7 +8,7 @@ import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { deflate } from 'node-zopfli';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { packLetterAndMask, packTermAndParent } from './bits';
+import { packLetterAndMask } from './bits';
 import { NOT_TERMINAL } from './constants';
 
 /**
@@ -19,10 +19,8 @@ import { NOT_TERMINAL } from './constants';
  * @param wordList - list of words to insert into the trie
  * @returns
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function buildTrie(wordList: string[]): {
+export function buildTrie(wordList: string[]): {
   trieNodes: Uint32Array;
-  wordEndNodes: Uint16Array;
 } {
   // Temporary node structure for building the trie
   type TempNode = {
@@ -78,17 +76,16 @@ function buildTrie(wordList: string[]): {
     }
   }
 
-  // Allocate arrays
-  const totalBytesForNodeArray = totalNodes * 3 * 4; // 4 bytes per Uint32
-  const totalBytesForEndNode = wordList.length * 2; // 2 bytes per Uint16
-  const totalBytes = totalBytesForNodeArray + totalBytesForEndNode;
-  const buffer = new ArrayBuffer(totalBytes);
-  const trieNodes = new Uint32Array(buffer, 0, totalNodes * 3);
-  const wordEndNodes = new Uint16Array(
-    buffer,
-    totalBytesForNodeArray,
-    wordList.length,
+  console.debug(`Total nodes in trie: ${totalNodes}`);
+  console.debug(
+    `Average nodes per word: ${(totalNodes / wordList.length).toFixed(2)}`,
   );
+  console.debug(`Expected uncompressed trie size: ${totalNodes * 8} bytes`);
+
+  // Allocate arrays
+  const totalBytes = totalNodes * 2 * 4; // 4 bytes per Uint32, 2 per node
+  const buffer = new ArrayBuffer(totalBytes);
+  const trieNodes = new Uint32Array(buffer, 0, totalNodes * 2);
 
   // Assign node IDs and populate arrays via BFS
   type BFSEntry = { node: TempNode; id: number };
@@ -97,20 +94,16 @@ function buildTrie(wordList: string[]): {
 
   while (bfsQueue.length > 0) {
     const { node, id } = bfsQueue.shift() as BFSEntry;
-    const baseOffset = id * 3;
+    const baseOffset = id * 2;
 
-    // Store terminalIndex and parentId
-    trieNodes[baseOffset] = packTermAndParent(
-      node.terminalIndex,
-      node.parentId,
-    );
-    if (node.terminalIndex !== NOT_TERMINAL) {
-      wordEndNodes[node.terminalIndex] = id;
-    }
+    // layout: 2 uint32s per node
+    // uint32[0]: terminalIndex(16) + childBase(16)
+    // uint32[1]: letterFromParent(6) + childMask(26)
 
-    // Build and store childMask and letterFromParent
+    // Build childMask and count children first
     let childMask = 0;
     let childCount = 0;
+    // Build and store childMask and letterFromParent
     for (let c = 0; c < 26; c++) {
       if (node.children[c]) {
         // there is another word with this same prefix, so we need to store it
@@ -119,20 +112,25 @@ function buildTrie(wordList: string[]): {
         childCount++;
       }
     }
+
+    // Set childBase
+    const childBase = childCount > 0 ? nextId : 0;
+
+    // Store terminalIndex and childBase in first uint32
+    trieNodes[baseOffset] =
+      (node.terminalIndex & 0xffff) | ((childBase & 0xffff) << 16);
+
+    // Store letterFromParent and childMask in second uint32
     trieNodes[baseOffset + 1] = packLetterAndMask(
       node.letterFromParent,
       childMask,
     );
 
-    // Set childBase and enqueue children
-    const childBase = childCount > 0 ? nextId : 0;
-    trieNodes[baseOffset + 2] = childBase;
     if (childCount > 0) {
       let assigned = 0;
       for (let c = 0; c < 26; c++) {
         const child = node.children[c];
         if (child) {
-          child.parentId = id;
           child.letterFromParent = c;
           bfsQueue.push({ node: child, id: childBase + assigned });
           assigned++;
@@ -142,77 +140,37 @@ function buildTrie(wordList: string[]): {
     }
   }
 
-  return { trieNodes, wordEndNodes };
+  return { trieNodes };
 }
 
 /**
  * Helper function to generate and save binary files for the trie data.
  * This can be used to regenerate the binary files if needed.
- * Uncomment the fs require and calls when running in a Node.js environment.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function generateBinaryWordList(): Promise<void> {
-  const { trieNodes, wordEndNodes } = buildTrie(wordlist);
+  const { trieNodes } = buildTrie(wordlist);
 
   // Debug information
-  console.debug(
-    `Trie nodes: ${trieNodes.length}, Word end nodes: ${wordEndNodes.length}`,
-  );
-  console.debug(
-    `Trie nodes size: ${trieNodes.byteLength} bytes, Word end nodes size: ${wordEndNodes.byteLength} bytes`,
-  );
-  console.debug(
-    `Total size: ${trieNodes.byteLength + wordEndNodes.byteLength} bytes`,
-  );
+  console.debug(`Trie nodes: ${trieNodes.length}`);
+  console.debug(`Trie nodes size: ${trieNodes.byteLength} bytes`);
+  console.debug(`Total size: ${trieNodes.byteLength} bytes`);
 
-  // combine the two buffers into a single ArrayBuffer with metadata header
-  const headerSize = 4; // 4 bytes for trieNodes size (wordEndNodes size is fixed at 4096 bytes)
-  const totalBytes =
-    headerSize + trieNodes.byteLength + wordEndNodes.byteLength;
-  const buffer = new ArrayBuffer(totalBytes);
-
-  // Write header with trieNodes size only (wordEndNodes size is always 4096 bytes)
-  const headerView = new Uint32Array(buffer, 0, 1);
-  headerView[0] = trieNodes.byteLength;
-
-  // Write the data buffers directly to the main buffer
-  const trieNodesView = new Uint8Array(
-    buffer,
-    headerSize,
-    trieNodes.byteLength,
-  );
-  const wordEndNodesView = new Uint8Array(
-    buffer,
-    headerSize + trieNodes.byteLength,
-    wordEndNodes.byteLength,
-  );
-
-  // Copy only the relevant portions of the source buffers
-  trieNodesView.set(
-    new Uint8Array(
-      trieNodes.buffer,
-      trieNodes.byteOffset,
-      trieNodes.byteLength,
-    ),
-  );
-  wordEndNodesView.set(
-    new Uint8Array(
-      wordEndNodes.buffer,
-      wordEndNodes.byteOffset,
-      wordEndNodes.byteLength,
-    ),
+  const buffer = trieNodes.buffer.slice(
+    trieNodes.byteOffset,
+    trieNodes.byteOffset + trieNodes.byteLength,
   );
 
   // Use Zopfli for maximum compression - it produces raw deflate directly
   const compressed = await deflate(Buffer.from(buffer), {
-    numiterations: 272,
+    numiterations: 850, // Optimal value found via multi-threaded mining
   });
 
   console.debug(`Zopfli compressed size: ${compressed.byteLength} bytes`);
 
   const filePath = join(__dirname, './wordList.bin');
   await writeFile(filePath, compressed);
-  console.debug('Trie nodes and word end nodes written to files.');
+  console.debug('Trie nodes written to wordList.bin');
 }
 
 generateBinaryWordList().then(() => {

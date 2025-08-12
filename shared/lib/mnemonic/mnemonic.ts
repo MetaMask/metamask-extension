@@ -1,11 +1,6 @@
 /* eslint-disable no-bitwise, no-plusplus */
 
-import {
-  unpackChildMask,
-  unpackLetterFromParent,
-  unpackParentId,
-  unpackTerminalIndex,
-} from './bits';
+import { unpackChildBase, unpackChildMask, unpackTerminalIndex } from './bits';
 import { ERROR_MESSAGE, NOT_TERMINAL } from './constants';
 
 /**
@@ -69,7 +64,10 @@ function findWordIndex(trieNodes: Uint32Array, word: Uint8Array): number {
     if (charCode < 0 || charCode >= 26) {
       throw new Error(ERROR_MESSAGE);
     }
-    const baseOffset = nodeId * 3;
+    // layout: 2 uint32s per node
+    // uint32[0]: terminalIndex(16) + childBase(16)
+    // uint32[1]: letterFromParent(6) + childMask(26)
+    const baseOffset = nodeId * 2;
     const childMask = unpackChildMask(trieNodes[baseOffset + 1]);
     // check if the next character is in the trie at this node
     // the childMask is a 26-bit integer where each bit represents the presence
@@ -80,9 +78,10 @@ function findWordIndex(trieNodes: Uint32Array, word: Uint8Array): number {
       throw new Error(ERROR_MESSAGE);
     }
     const rank = countSetBits(childMask & ((1 << charCode) - 1));
-    nodeId = trieNodes[baseOffset + 2] + rank;
+    const childBase = unpackChildBase(trieNodes[baseOffset]);
+    nodeId = childBase + rank;
   }
-  const terminalIndex = unpackTerminalIndex(trieNodes[nodeId * 3]);
+  const terminalIndex = unpackTerminalIndex(trieNodes[nodeId * 2]);
   if (terminalIndex === NOT_TERMINAL) {
     // the word was found, but it is only a prefix of a longer word, so it is
     // not a valid word in the wordlist.
@@ -92,47 +91,86 @@ function findWordIndex(trieNodes: Uint32Array, word: Uint8Array): number {
 }
 
 /**
- * Reconstructs a word’s UTF-8 bytes from its trie node ID.
+ * Reconstructs a word's UTF-8 bytes from its terminalIndex by searching the trie.
+ * Uses forward traversal to find the node with the matching terminalIndex.
  *
  * @param trieNodes - trie node data
- * @param nodeId - node ID of the word end
+ * @param targetTerminalIndex - the terminalIndex (word index) we're looking for
  * @param result - array to append the word to
  */
 function reconstructWord(
   trieNodes: Uint32Array,
-  nodeId: number,
+  targetTerminalIndex: number,
   result: number[],
 ) {
-  let currentId = nodeId;
-  while (currentId !== 0) {
-    const baseOffset = currentId * 3;
-    const letterFromParent = unpackLetterFromParent(trieNodes[baseOffset + 1]);
-    result.push(0x61 + letterFromParent);
-    currentId = unpackParentId(trieNodes[baseOffset]);
+  // Use BFS to find the node with the target terminalIndex
+  type QueueEntry = {
+    nodeId: number;
+    path: number[];
+  };
+
+  const queue: QueueEntry[] = [{ nodeId: 0, path: [] }];
+
+  while (queue.length > 0) {
+    // we've guaranteed that `queue.shift()` will not return null, typescript is
+    // just not smart enough to realize it.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { nodeId, path: currentPath } = queue.shift()!;
+
+    // Check if this node is a terminal with our target index
+    const baseOffset = nodeId * 2;
+    const terminalIndex = unpackTerminalIndex(trieNodes[baseOffset]);
+
+    if (terminalIndex === targetTerminalIndex) {
+      // Found it! Reconstruct the word from the path
+      for (let i = currentPath.length - 1; i >= 0; i--) {
+        result.push(0x61 + currentPath[i]); // Convert back to ASCII
+      }
+      return;
+    }
+
+    // Explore all children
+    const childBase = unpackChildBase(trieNodes[baseOffset]);
+
+    if (childBase === 0) {
+      continue; // No children
+    }
+
+    const childMask = unpackChildMask(trieNodes[baseOffset + 1]);
+
+    let childIndex = 0;
+    for (let letter = 0; letter < 26; letter++) {
+      if (childMask & (1 << letter)) {
+        const childNodeId = childBase + childIndex;
+        const newPath = [...currentPath, letter];
+        queue.push({ nodeId: childNodeId, path: newPath });
+        childIndex++;
+      }
+    }
   }
+
+  throw new Error(`Terminal index ${targetTerminalIndex} not found in trie`);
 }
 
 /**
  * Converts wordlist indices to a UTF-8 byte array mnemonic.
  *
  * @param trieNodes - trie node data
- * @param wordEndNodes - word end node IDs
  * @param indices - Uint16Array of wordlist indices
  * @returns UTF-8 byte array
  */
 function indicesToUtf8Array(
   trieNodes: Uint32Array,
-  wordEndNodes: Uint16Array,
   indices: Uint16Array,
 ): number[] {
   const result: number[] = [];
   for (let i = indices.length - 1; i >= 0; i--) {
-    const nodeId = wordEndNodes[indices[i]];
-    // nodeId 0 would be the root node, so it will never be a word end
-    if (!nodeId) {
+    const terminalIndex = indices[i];
+    // Validate word index
+    if (terminalIndex >= 2048) {
       throw new Error('Invalid word index');
     }
-    reconstructWord(trieNodes, nodeId, result);
+    reconstructWord(trieNodes, terminalIndex, result);
     // Space separator after each word except the last
     if (i > 0) {
       result.push(0x20);
@@ -148,11 +186,8 @@ function indicesToUtf8Array(
 class MnemonicUtil {
   private readonly trieNodes: Uint32Array;
 
-  private readonly wordEndNodes: Uint16Array;
-
-  private constructor(trieNodes: Uint32Array, wordEndNodes: Uint16Array) {
+  private constructor(trieNodes: Uint32Array) {
     this.trieNodes = trieNodes;
-    this.wordEndNodes = wordEndNodes;
   }
 
   static async create(
@@ -179,60 +214,40 @@ class MnemonicUtil {
     const decompressionStream = new DecompressionStream('deflate-raw');
     const decompressedStream = readableStream.pipeThrough(decompressionStream);
     const reader = decompressedStream.getReader();
-    // 1) Read exactly 4 bytes of header
-    const hdr = new Uint8Array(4);
-    let filled = 0;
-    let tail: Uint8Array | null = null;
 
-    while (filled < 4) {
+    // Read all data
+    const chunks: Uint8Array[] = [];
+    let totalLength = 0;
+
+    // `while (true)` this is just how you do this sort of thing yo
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
       const { value, done } = await reader.read();
-      if (done) throw new Error('Truncated stream: missing 4-byte header');
-      const take = Math.min(4 - filled, value.length);
-      hdr.set(value.subarray(0, take), filled);
-      filled += take;
-      if (take < value.length) {
-        tail = value.subarray(take); // remainder after header
+      if (done) {
         break;
       }
-    }
-
-    // 2) Parse sizes
-    const dv = new DataView(hdr.buffer, hdr.byteOffset, 4);
-    const trieBytes = dv.getUint32(0, true);
-    const endBytes = 4096; // Fixed size: 2048 words * 2 bytes each
-
-    const totalData = trieBytes + endBytes;
-
-    // 3) Single allocation
-    const data = new Uint8Array(totalData);
-    let off = 0;
-
-    if (tail) {
-      const n = Math.min(tail.length, totalData);
-      data.set(tail.subarray(0, n), 0);
-      off = n;
-    }
-
-    while (off < totalData) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      data.set(value, off);
-      off += value.length;
+      chunks.push(value);
+      totalLength += value.length;
     }
     reader.releaseLock();
 
-    // 4) Zero-copy views over the single backing buffer
+    // Combine all chunks into a single buffer
+    const data = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const chunk of chunks) {
+      data.set(chunk, offset);
+      offset += chunk.length;
+    }
+
+    // Create zero-copy view over the data
     const buf = data.buffer;
-    const trieNodes = new Uint32Array(buf, /*byteOffset*/ 0, trieBytes >>> 2);
-    const wordEndNodes = new Uint16Array(
+    const trieNodes = new Uint32Array(
       buf,
-      /*byteOffset*/ trieBytes,
-      endBytes >>> 1,
+      data.byteOffset,
+      data.byteLength >>> 2,
     );
 
-    console.timeEnd('MnemonicUtil.create');
-
-    return new MnemonicUtil(trieNodes, wordEndNodes);
+    return new MnemonicUtil(trieNodes);
   }
 
   /**
@@ -240,12 +255,13 @@ class MnemonicUtil {
    *
    * @param mnemonic - UTF-8 byte array (e.g., "hello world" as bytes).
    * @returns Uint8Array of 16-bit indices.
-   * @throws If a word isn’t in the wordlist or contains invalid characters.
+   * @throws If a word isn't in the wordlist or contains invalid characters.
    */
   convertMnemonicToWordlistIndices(mnemonic: Uint8Array): Uint8Array {
     const indices: number[] = [];
     let start = 0;
     for (let i = 0; i < mnemonic.length; i++) {
+      // split on spaces
       if (mnemonic[i] === 0x20) {
         if (i > start) {
           const word = mnemonic.subarray(start, i);
@@ -254,6 +270,7 @@ class MnemonicUtil {
         start = i + 1;
       }
     }
+    // Handle last word
     if (start < mnemonic.length) {
       const word = mnemonic.subarray(start);
       indices.push(findWordIndex(this.trieNodes, word));
@@ -276,7 +293,7 @@ class MnemonicUtil {
       wordlistIndices.byteOffset,
       wordlistIndices.byteLength / 2,
     );
-    return indicesToUtf8Array(this.trieNodes, this.wordEndNodes, indices);
+    return indicesToUtf8Array(this.trieNodes, indices);
   }
 
   isValidWord(word: string): boolean {

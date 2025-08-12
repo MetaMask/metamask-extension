@@ -5,20 +5,6 @@
  */
 
 /**
- * Packs a 16-bit terminalIndex and 16-bit parentId into a Uint32.
- *
- * @param terminalIndex - 0xffff if not terminal, else (wordIndex)
- * @param parentId - 0 if root, else node ID of parent
- * @returns 32-bit packed value
- */
-export function packTermAndParent(
-  terminalIndex: number,
-  parentId: number,
-): number {
-  return (parentId << 16) | terminalIndex;
-}
-
-/**
  * Unpacks a Uint32 into terminalIndex.
  *
  * @param value - packed value
@@ -26,16 +12,6 @@ export function packTermAndParent(
  */
 export function unpackTerminalIndex(value: number): number {
   return value & 0xffff;
-}
-
-/**
- * Unpacks a Uint32 into parentId.
- *
- * @param value - packed value
- * @returns 16-bit parentId
- */
-export function unpackParentId(value: number): number {
-  return value >>> 16;
 }
 
 /**
@@ -63,11 +39,11 @@ export function unpackChildMask(value: number): number {
 }
 
 /**
- * Unpacks a Uint32 into letterFromParent.
+ * Unpacks a Uint32 into childBase.
  *
  * @param value - packed value
- * @returns 6-bit letterFromParent
+ * @returns 16-bit childBase
  */
-export function unpackLetterFromParent(value: number): number {
-  return value >>> 26;
+export function unpackChildBase(value: number): number {
+  return value >>> 16;
 }
