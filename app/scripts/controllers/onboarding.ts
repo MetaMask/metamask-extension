@@ -226,4 +226,17 @@ export default class OnboardingController extends BaseController<
       firstTimeFlowType === FirstTimeFlowType.socialImport
     );
   }
+
+  /**
+   * Reset the onboarding state
+   */
+  resetOnboarding(): void {
+    const defaultState = getDefaultOnboardingControllerState();
+    this.update((state) => {
+      state.completedOnboarding = defaultState.completedOnboarding;
+      state.firstTimeFlowType = defaultState.firstTimeFlowType;
+      state.seedPhraseBackedUp = defaultState.seedPhraseBackedUp;
+      state.onboardingTabs = defaultTransientState.onboardingTabs;
+    });
+  }
 }

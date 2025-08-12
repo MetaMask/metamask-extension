@@ -3389,6 +3389,10 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  resetState() {
+    // TODO: Implement this
+  }
+
   /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
@@ -3437,6 +3441,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: this.getState.bind(this),
+      resetState: this.resetState.bind(this),
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
@@ -3920,6 +3925,8 @@ export default class MetamaskController extends EventEmitter {
         onboardingController.completeOnboarding.bind(onboardingController),
       setFirstTimeFlowType:
         onboardingController.setFirstTimeFlowType.bind(onboardingController),
+      resetOnboarding:
+        onboardingController.resetOnboarding.bind(onboardingController),
 
       // alert controller
       setAlertEnabledness:

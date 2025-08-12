@@ -3929,6 +3929,8 @@ export function resetOnboarding(): ThunkAction<
       const isSocialLoginFlow = getIsSocialLoginFlow(getState());
       dispatch(resetOnboardingAction());
 
+      await submitRequestToBackground('resetOnboarding');
+
       if (isSocialLoginFlow) {
         await dispatch(resetOAuthLoginState());
       }
@@ -3941,6 +3943,29 @@ export function resetOnboarding(): ThunkAction<
 export function resetOnboardingAction() {
   return {
     type: actionConstants.RESET_ONBOARDING,
+  };
+}
+
+/**
+ * Reset the app state
+ *
+ * @returns void
+ */
+export function resetApp() {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      dispatch(resetOnboarding());
+      dispatch(resetAppAction());
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+}
+
+export function resetAppAction() {
+  return {
+    type: actionConstants.RESET_APP,
   };
 }
 

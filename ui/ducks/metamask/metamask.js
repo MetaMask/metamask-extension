@@ -48,6 +48,12 @@ const initialState = {
     featureNotificationsEnabled: false,
     privacyMode: false,
     showMultiRpcModal: false,
+    tokenSortConfig: {
+      key: 'tokenFiatAmount',
+      order: 'dsc',
+      sortCallback: 'stringNumeric',
+    },
+    tokenNetworkFilter: {},
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -181,6 +187,13 @@ export default function reduceMetamask(state = initialState, action) {
         socialLoginEmail: undefined,
         authConnection: undefined,
         nodeAuthTokens: undefined,
+      };
+    }
+
+    case actionConstants.RESET_APP: {
+      return {
+        ...metamaskState,
+        ...initialState,
       };
     }
 

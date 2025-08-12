@@ -9,9 +9,8 @@ import {
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
-import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
-import { Text } from '../../components/component-library';
+import { Text, Button } from '../../components/component-library';
 import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
@@ -20,6 +19,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getIsSocialLoginFlow } from '../../selectors';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import ResetAppButton from '../../components/app/reset-app/reset-app';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -170,6 +170,8 @@ class RestoreVaultPage extends Component {
               onSubmit={this.handleImport}
               submitText={t('restore')}
             />
+            {/** TODO: Remove this button once we have a proper way to reset the app */}
+            <ResetAppButton />
           </Box>
         </Box>
       </Box>
