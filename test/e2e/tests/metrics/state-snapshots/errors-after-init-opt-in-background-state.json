@@ -4,7 +4,11 @@
     "hiddenAccountList": {}
   },
   "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
-  "AccountTreeController": { "accountTree": "object" },
+  "AccountTreeController": {
+    "accountTree": "object",
+    "accountGroupsMetadata": "object",
+    "accountWalletsMetadata": "object"
+  },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -34,7 +38,6 @@
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
-    "showDownloadMobileAppSlide": "boolean",
     "showPermissionsTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
@@ -46,20 +49,23 @@
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "surveyLinkLastClickedOrClosed": "object",
+    "showDownloadMobileAppSlide": "boolean",
     "slides": "object",
     "throttledOrigins": "object",
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": "object",
+    "enforcedSimulationsSlippage": "number",
+    "enforcedSimulationsSlippageForTransactions": "object",
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
-    "snapsInstallPrivacyWarningShown": true,
-    "enableEnforcedSimulations": true,
-    "enableEnforcedSimulationsForTransactions": "object"
+    "snapsInstallPrivacyWarningShown": true
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -177,10 +183,7 @@
   },
   "NetworkOrderController": {
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": {
-      "eip155": "object",
-      "solana": "object"
-    }
+    "enabledNetworkMap": { "eip155": "object", "solana": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -362,10 +365,10 @@
     "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
+    "isContactSyncingEnabled": true,
+    "isContactSyncingInProgress": "boolean",
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
-    "isAccountSyncingInProgress": "boolean",
-    "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean"
+    "isAccountSyncingInProgress": "boolean"
   }
 }

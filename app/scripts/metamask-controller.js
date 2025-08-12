@@ -14,7 +14,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, pick, uniq } from 'lodash';
+import { debounce, uniq } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -38,7 +38,6 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import { nanoid } from 'nanoid';
-import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
   ApprovalController,
@@ -166,10 +165,11 @@ import {
   getEthAccounts,
   getSessionScopes,
   setPermittedEthChainIds,
-  setEthAccounts,
   getPermittedAccountsForScopes,
   KnownSessionProperties,
   getAllScopesFromCaip25CaveatValue,
+  requestPermittedChainsPermissionIncremental,
+  getCaip25PermissionFromLegacyPermissions,
 } from '@metamask/chain-agnostic-permission';
 import {
   BridgeStatusController,
@@ -183,6 +183,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import { captureException } from '../../shared/lib/sentry';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -208,7 +209,6 @@ import {
   RestrictedMethods,
   ExcludedSnapPermissions,
   ExcludedSnapEndowments,
-  CaveatTypes,
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
@@ -335,7 +335,6 @@ import {
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
   unrestrictedMethods,
-  PermissionNames,
   getRemovedAuthorizations,
   getChangedAuthorizations,
   getAuthorizedScopesByOrigin,
@@ -428,10 +427,15 @@ import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
+import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
+import {
+  getSendBundleSupportedChains,
+  isSendBundleSupported,
+} from './lib/transaction/sentinel-api';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -987,6 +991,8 @@ export default class MetamaskController extends EventEmitter {
       includeUsdRate: true,
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
+      useExternalServices: () =>
+        this.preferencesController.state.useExternalServices,
     });
     const initialFetchMultiExchangeRate =
       this.currencyRateController.fetchMultiExchangeRate.bind(
@@ -1470,6 +1476,8 @@ export default class MetamaskController extends EventEmitter {
           'TokenListController:getState',
           'TokensController:getState',
           'TokensController:addDetectedTokens',
+          'TokensController:addTokens',
+          'NetworkController:findNetworkClientIdByChainId',
         ],
         allowedEvents: [
           'AccountsController:selectedEvmAccountChange',
@@ -1491,6 +1499,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       useAccountsAPI: true,
       platform: 'extension',
+      useTokenDetection: () =>
+        this.preferencesController.state.useTokenDetection,
+      useExternalServices: () =>
+        this.preferencesController.state.useExternalServices,
     });
 
     const addressBookControllerMessenger =
@@ -1954,6 +1966,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
+      MultichainAccountService: MultichainAccountServiceInit,
       ///: END:ONLY_INCLUDE_IF
       MultichainNetworkController: MultichainNetworkControllerInit,
       AuthenticationController: AuthenticationControllerInit,
@@ -2006,6 +2019,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainTransactionsController;
     this.multichainAssetsRatesController =
       controllersByName.MultichainAssetsRatesController;
+    this.multichainAccountService = controllersByName.MultichainAccountService;
     ///: END:ONLY_INCLUDE_IF
     this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
@@ -2018,7 +2032,7 @@ export default class MetamaskController extends EventEmitter {
     this.notificationServicesPushController =
       controllersByName.NotificationServicesPushController;
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
-    this.accountWalletController = controllersByName.AccountTreeController;
+    this.accountTreeController = controllersByName.AccountTreeController;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
 
@@ -2164,6 +2178,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
           isRelaySupported,
+          getSendBundleSupportedChains,
         },
         this.controllerMessenger,
       ),
@@ -3799,6 +3814,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setEnableEnforcedSimulationsForTransaction.bind(
           appStateController,
         ),
+      setEnforcedSimulationsSlippageForTransaction:
+        appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -3824,10 +3843,7 @@ export default class MetamaskController extends EventEmitter {
       restoreSocialBackupAndGetSeedPhrase:
         this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
-      socialSyncChangePassword:
-        this.seedlessOnboardingController.changePassword.bind(
-          this.seedlessOnboardingController,
-        ),
+      changePassword: this.changePassword.bind(this),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
@@ -3837,12 +3853,6 @@ export default class MetamaskController extends EventEmitter {
         this.generateNewMnemonicAndAddToVault.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
-      keyringChangePassword: this.keyringController.changePassword.bind(
-        this.keyringController,
-      ),
-      exportEncryptionKey: this.keyringController.exportEncryptionKey.bind(
-        this.keyringController,
-      ),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -4270,8 +4280,8 @@ export default class MetamaskController extends EventEmitter {
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,
       ),
-      getUserProfileMetaMetrics:
-        authenticationController.getUserProfileMetaMetrics.bind(
+      getUserProfileLineage:
+        authenticationController.getUserProfileLineage.bind(
           authenticationController,
         ),
 
@@ -4353,8 +4363,9 @@ export default class MetamaskController extends EventEmitter {
           notificationServicesController,
         ),
 
-      // E2E testing
+      // Testing
       throwTestError: this.throwTestError.bind(this),
+      captureTestError: this.captureTestError.bind(this),
 
       // NameController
       updateProposedNames: this.nameController.updateProposedNames.bind(
@@ -4403,6 +4414,7 @@ export default class MetamaskController extends EventEmitter {
       // Other
       endTrace,
       isRelaySupported,
+      isSendBundleSupported,
       openUpdateTabAndReload: () =>
         openUpdateTabAndReload(this.requestSafeReload.bind(this)),
       requestSafeReload: this.requestSafeReload.bind(this),
@@ -4809,11 +4821,18 @@ export default class MetamaskController extends EventEmitter {
     let isPasswordSynced = false;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     // check if the password is outdated
-    const isPasswordOutdated = isSocialLoginFlow
-      ? await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache: false,
-        })
-      : false;
+    let isPasswordOutdated = false;
+    if (isSocialLoginFlow) {
+      try {
+        isPasswordOutdated =
+          await this.seedlessOnboardingController.checkIsPasswordOutdated({
+            skipCache: false,
+          });
+      } catch (error) {
+        // we don't want to block the unlock flow if the password outdated check fails
+        log.error('error while checking if password is outdated', error);
+      }
+    }
 
     // if the flow is not social login or the password is not outdated,
     // we will proceed with the normal flow and use the password to unlock the vault
@@ -5111,6 +5130,51 @@ export default class MetamaskController extends EventEmitter {
         data: seedPhraseAsUint8Array,
         type: SecretType.Mnemonic,
       });
+    }
+  }
+
+  /**
+   * Changes the password for the wallet.
+   *
+   * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
+   *
+   * @param {string} newPassword - The new password.
+   * @param {string} oldPassword - The old password.
+   */
+  async changePassword(newPassword, oldPassword) {
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    try {
+      await this.keyringController.changePassword(newPassword);
+
+      if (isSocialLoginFlow) {
+        try {
+          await this.seedlessOnboardingController.changePassword(
+            newPassword,
+            oldPassword,
+          );
+          // store the new keyring encryption key in the seedless onboarding controller
+          const keyringEncKey =
+            await this.keyringController.exportEncryptionKey();
+          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
+            keyringEncKey,
+          );
+        } catch (err) {
+          log.error('error while changing seedless-onboarding password', err);
+          log.error('reverting keyring password change');
+          // revert the keyring password change by changing the password back to the old password
+          await this.keyringController.changePassword(oldPassword);
+          // store the old keyring encryption key in the seedless onboarding controller
+          const revertedKeyringEncKey =
+            await this.keyringController.exportEncryptionKey();
+          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
+            revertedKeyringEncKey,
+          );
+          throw err;
+        }
+      }
+    } catch (error) {
+      log.error('error while changing password', error);
+      throw error;
     }
   }
 
@@ -5428,19 +5492,10 @@ export default class MetamaskController extends EventEmitter {
       // newly created accounts.
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
-      this.accountWalletController.init();
+      this.accountTreeController.init();
 
       if (completedOnboarding) {
         await this._addAccountsWithBalance();
-
-        // This must be set as soon as possible to communicate to the
-        // keyring's iframe and have the setting initialized properly
-        // Optimistically called to not block MetaMask login due to
-        // Ledger Keyring GitHub downtime
-        this.#withKeyringForDevice(
-          { name: HardwareDeviceNames.ledger },
-          async (keyring) => this.setLedgerTransportPreference(keyring),
-        );
       }
 
       if (getIsSeedlessOnboardingFeatureEnabled()) {
@@ -5773,7 +5828,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} params.encryptionKey - The user's encryption key.
    */
   async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
-    const { completedOnboarding } = this.onboardingController.state;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
@@ -5796,19 +5850,12 @@ export default class MetamaskController extends EventEmitter {
     }
 
     await this.accountsController.updateAccounts();
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    // Init multichain accounts after creating internal accounts.
+    this.multichainAccountService.init();
+    ///: END:ONLY_INCLUDE_IF
     // Force account-tree refresh after all accounts have been updated.
-    this.accountWalletController.init();
-
-    if (completedOnboarding) {
-      // This must be set as soon as possible to communicate to the
-      // keyring's iframe and have the setting initialized properly
-      // Optimistically called to not block MetaMask login due to
-      // Ledger Keyring GitHub downtime
-      this.#withKeyringForDevice(
-        { name: HardwareDeviceNames.ledger },
-        async (keyring) => this.setLedgerTransportPreference(keyring),
-      );
-    }
+    this.accountTreeController.init();
   }
 
   async _loginUser(password) {
@@ -5934,10 +5981,6 @@ export default class MetamaskController extends EventEmitter {
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
-        if (deviceName === HardwareDeviceNames.ledger) {
-          await this.setLedgerTransportPreference(keyring);
-        }
-
         let accounts = [];
         switch (page) {
           case -1:
@@ -6577,138 +6620,6 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  /**
-   * Requests incremental permittedChains permission for the specified origin.
-   * and updates the existing CAIP-25 permission.
-   * Allows for granting without prompting for user approval which
-   * would be used as part of flows like `wallet_addEthereumChain`
-   * requests where the addition of the network and the permitting
-   * of the chain are combined into one approval.
-   *
-   * @param {object} options - The options object
-   * @param {string} options.origin - The origin to request approval for.
-   * @param {Hex} options.chainId - The chainId to add to the existing permittedChains.
-   * @param {boolean} options.autoApprove - If the chain should be granted without prompting for user approval.
-   * @param {object} options.metadata - Request data for the approval.
-   */
-  async requestPermittedChainsPermissionIncremental({
-    origin,
-    chainId,
-    autoApprove,
-    metadata,
-  }) {
-    const caveatValueWithChains = setPermittedEthChainIds(
-      {
-        requiredScopes: {},
-        optionalScopes: {},
-        sessionProperties: {},
-        isMultichainOrigin: false,
-      },
-      [chainId],
-    );
-
-    if (!autoApprove) {
-      let options;
-      if (metadata) {
-        options = { metadata };
-      }
-      await this.permissionController.requestPermissionsIncremental(
-        { origin },
-        {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: caveatValueWithChains,
-              },
-            ],
-          },
-        },
-        options,
-      );
-      return;
-    }
-
-    await this.permissionController.grantPermissionsIncremental({
-      subject: { origin },
-      approvedPermissions: {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: caveatValueWithChains,
-            },
-          ],
-        },
-      },
-    });
-  }
-
-  /**
-   * Requests user approval for the CAIP-25 permission for the specified origin
-   * and returns a granted permissions object.
-   *
-   * @param {string} _origin - The origin to request approval for.
-   * @param requestedPermissions - The legacy permissions to request approval for.
-   * @returns the approved permissions object.
-   */
-  getCaip25PermissionFromLegacyPermissions(_origin, requestedPermissions = {}) {
-    const permissions = pick(requestedPermissions, [
-      RestrictedMethods.eth_accounts,
-      PermissionNames.permittedChains,
-    ]);
-
-    if (!permissions[RestrictedMethods.eth_accounts]) {
-      permissions[RestrictedMethods.eth_accounts] = {};
-    }
-
-    if (!permissions[PermissionNames.permittedChains]) {
-      permissions[PermissionNames.permittedChains] = {};
-    }
-
-    const requestedAccounts =
-      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-      )?.value ?? [];
-
-    const requestedChains =
-      permissions[PermissionNames.permittedChains]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value ?? [];
-
-    const newCaveatValue = {
-      requiredScopes: {},
-      optionalScopes: {
-        'wallet:eip155': {
-          accounts: [],
-        },
-      },
-      sessionProperties: {},
-      isMultichainOrigin: false,
-    };
-
-    const caveatValueWithChains = setPermittedEthChainIds(
-      newCaveatValue,
-      requestedChains,
-    );
-
-    const caveatValueWithAccountsAndChains = setEthAccounts(
-      caveatValueWithChains,
-      requestedAccounts,
-    );
-
-    return {
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: caveatValueWithAccountsAndChains,
-          },
-        ],
-      },
-    };
-  }
-
   getNonEvmSupportedMethods(scope) {
     return this.controllerMessenger.call(
       'MultichainRouter:getSupportedMethods',
@@ -6737,8 +6648,16 @@ export default class MetamaskController extends EventEmitter {
     if (!caip25Caveat) {
       return;
     }
+
+    // The optional chain operator below shouldn't be needed as
+    // the existence of sessionProperties is enforced by the caveat
+    // validator, but we are still seeing some instances where it
+    // isn't defined in production:
+    // https://github.com/MetaMask/metamask-extension/issues/33412
+    // This suggests state corruption, but we can't find definitive proof that.
+    // For now we are using this patch which is harmless and silences the error in Sentry.
     const solanaAccountsChangedNotifications =
-      caip25Caveat.value.sessionProperties[
+      caip25Caveat.value.sessionProperties?.[
         KnownSessionProperties.SolanaAccountChangedNotifications
       ];
 
@@ -7443,9 +7362,19 @@ export default class MetamaskController extends EventEmitter {
         return undefined;
       },
       requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
-        this.requestPermittedChainsPermissionIncremental({
+        requestPermittedChainsPermissionIncremental({
           ...options,
           origin,
+          hooks: {
+            requestPermissionsIncremental:
+              this.permissionController.requestPermissionsIncremental.bind(
+                this.permissionController,
+              ),
+            grantPermissionsIncremental:
+              this.permissionController.grantPermissionsIncremental.bind(
+                this.permissionController,
+              ),
+          },
         }),
 
       // Network configuration-related
@@ -7705,8 +7634,9 @@ export default class MetamaskController extends EventEmitter {
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        getCaip25PermissionFromLegacyPermissionsForOrigin:
-          this.getCaip25PermissionFromLegacyPermissions.bind(this, origin),
+        getCaip25PermissionFromLegacyPermissionsForOrigin: (
+          requestedPermissions,
+        ) => getCaip25PermissionFromLegacyPermissions(requestedPermissions),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
@@ -7833,7 +7763,10 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:get',
         ),
         trackError: (error) => {
-          return captureException(error);
+          // `captureException` imported from `@sentry/browser` does not seem to
+          // work in E2E tests. This is a workaround which works in both E2E
+          // tests and production.
+          return global.sentry?.captureException?.(error);
         },
         trackEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
@@ -7925,7 +7858,12 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'NetworkController:getNetworkClientById',
         ),
-        startTrace: trace,
+        startTrace: (options) => {
+          // We intentionally strip out `_isStandaloneSpan` since it can be undefined
+          // eslint-disable-next-line no-unused-vars
+          const { _isStandaloneSpan, ...result } = trace(options);
+          return result;
+        },
         endTrace,
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         handleSnapRpcRequest: (args) =>
@@ -8482,7 +8420,7 @@ export default class MetamaskController extends EventEmitter {
    * Throw an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
    * use this for handling errors.
    */
   throwTestError(message) {
@@ -8490,6 +8428,21 @@ export default class MetamaskController extends EventEmitter {
       const error = new Error(message);
       error.name = 'TestError';
       throw error;
+    });
+  }
+
+  /**
+   * Capture an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
+   * use this for handling errors.
+   */
+  captureTestError(message) {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      captureException(error);
     });
   }
 
@@ -8679,6 +8632,9 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen(open) {
     this._isClientOpen = open;
+
+    // Notify Snaps that the client is open or closed.
+    this.controllerMessenger.call('SnapController:setClientActive', open);
   }
   /* eslint-enable accessor-pairs */
 
@@ -9373,6 +9329,10 @@ export default class MetamaskController extends EventEmitter {
 
         if (options.name === HardwareDeviceNames.lattice) {
           keyring.appName = 'MetaMask';
+        }
+
+        if (options.name === HardwareDeviceNames.ledger) {
+          await this.setLedgerTransportPreference(keyring);
         }
 
         if (

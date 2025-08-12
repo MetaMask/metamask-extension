@@ -29,6 +29,8 @@ export const CrosshairPlugin = {
         const y = yAxis.getPixelForValue(point.y);
 
         chart.ctx.lineWidth = 1;
+        // TODO: Replace with design token @MetaMask/metamask-assets - Chart crosshair color should use design system token
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex -- TODO: Needs design token replacement
         chart.ctx.strokeStyle = '#BBC0C5';
         chart.ctx.beginPath();
         chart.ctx.moveTo(x, 0);

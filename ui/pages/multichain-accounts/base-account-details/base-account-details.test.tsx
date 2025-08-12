@@ -10,6 +10,7 @@ import {
 } from '../../../../test/data/mock-accounts';
 import { ACCOUNT_DETAILS_QR_CODE_ROUTE } from '../../../helpers/constants/routes';
 import { KeyringType } from '../../../../shared/constants/keyring';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { BaseAccountDetails } from './base-account-details';
 
 const middleware = [thunk];
@@ -161,7 +162,7 @@ describe('BaseAccountDetails', () => {
       expect(screen.getByText('Wallet')).toBeInTheDocument();
 
       // Check if shortened address is displayed (short address stays as-is)
-      expect(screen.getByText('0x123')).toBeInTheDocument();
+      expect(screen.getByText('0xa0b86...f5e4b')).toBeInTheDocument();
 
       // Check if wallet name is displayed
       expect(screen.getByText('Mock Wallet')).toBeInTheDocument();
@@ -474,6 +475,42 @@ describe('BaseAccountDetails', () => {
 
       const solanaRemoveButton = screen.queryByText('Remove account');
       expect(solanaRemoveButton).not.toBeInTheDocument();
+    });
+
+    it('should not display remove account button for social login accounts', () => {
+      const hardwareAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: 'hardware-account',
+        metadata: {
+          ...MOCK_ACCOUNT_EOA.metadata,
+          name: 'Hardware Account',
+          keyring: {
+            type: KeyringType.trezor,
+          },
+        },
+      };
+
+      const state = createMockState(hardwareAccount.address, hardwareAccount);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+
+      renderWithProvider(
+        <MemoryRouter>
+          <BaseAccountDetails
+            address={hardwareAccount.address}
+            account={hardwareAccount}
+          />
+        </MemoryRouter>,
+        store,
+      );
+
+      const removeButton = screen.queryByText('Remove account');
+      expect(removeButton).not.toBeInTheDocument();
     });
   });
 });

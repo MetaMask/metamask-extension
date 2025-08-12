@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Aktifkan fungsionalitas dasar"
   },
-  "bestPrice": {
-    "message": "Harga terbaik"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Menukar $1 dengan $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Syarat"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 mnt",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask dirancang dan dibangun di seluruh dunia."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Sibuk"
@@ -2392,10 +2383,6 @@
   "floatAmountToken": {
     "message": "Jumlah token harus berupa bilangan bulat"
   },
-  "followUsOnX": {
-    "message": "Ikuti kami di $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Gateway IPFS Terlarang: Tentukan gateway CID"
   },
@@ -2668,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Estimasi biaya yang diperlukan untuk memproses transaksi. Biaya maksimumnya adalah $1."
   },
   "howQuotesWork": {
     "message": "Cara kerja kuotasi"
@@ -5444,12 +5428,6 @@
   "slideMultiSrpTitle": {
     "message": "Tambahkan beberapa Frasa Pemulihan Rahasia"
   },
-  "slideRemoteModeDescription": {
-    "message": "Gunakan dompet cold secara nirkabel"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold storage, akses cepat"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Alamat sama, fitur lebih cerdas"
   },
@@ -6828,9 +6806,6 @@
   "troubleConnectingToWallet": {
     "message": "Kami mengalami masalah saat mencoba terhubung ke $1 Anda, tinjau kembali $2 dan coba lagi.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
   },
   "tryAgain": {
     "message": "Coba lagi"

@@ -575,7 +575,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Sei Network logo"
+                          alt="Sei Mainnet logo"
                           class="mm-avatar-network__network-image"
                           src="./images/sei.svg"
                         />
@@ -586,7 +586,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Sei Network
+                          Sei Mainnet
                         </p>
                       </div>
                     </div>
@@ -658,7 +658,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
                   >
                     <div
-                      style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
+                      style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
                     >
                       <div
                         style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1582,7 +1582,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Sei Network logo"
+                          alt="Sei Mainnet logo"
                           class="mm-avatar-network__network-image"
                           src="./images/sei.svg"
                         />
@@ -1593,7 +1593,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Sei Network
+                          Sei Mainnet
                         </p>
                       </div>
                     </div>
@@ -1665,7 +1665,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
                   >
                     <div
-                      style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
+                      style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
                     >
                       <div
                         style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"

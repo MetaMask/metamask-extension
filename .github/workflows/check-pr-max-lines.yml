@@ -9,7 +9,13 @@ on:
     branches-ignore:
       # Do not count lines on PRs targeting master or releases
       - master
+      - stable
       - Version-v*
+      - release/*
+
+permissions:
+  contents: read
+  pull-requests: write # Required for the called workflow to manage labels
 
 jobs:
   check-pr-max-lines:
