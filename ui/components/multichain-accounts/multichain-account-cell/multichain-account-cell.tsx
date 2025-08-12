@@ -37,11 +37,7 @@ export const MultichainAccountCell = ({
   endAccessory,
   selected = false,
 }: MultichainAccountCellProps) => {
-  const handleClick = () => {
-    if (onClick) {
-      onClick(accountId);
-    }
-  };
+  const handleClick = () => onClick?.(accountId);
 
   return (
     <Box
