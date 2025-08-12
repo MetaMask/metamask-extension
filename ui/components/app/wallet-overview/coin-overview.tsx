@@ -63,6 +63,7 @@ import {
   AggregatedPercentageOverview,
 } from './aggregated-percentage-overview';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 
 export type CoinOverviewProps = {
   account: InternalAccount;
@@ -221,6 +222,9 @@ export const CoinOverview = ({
   const isEvm = useSelector(getMultichainIsEvm);
 
   const tokensMarketData = useSelector(getTokensMarketData);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
@@ -311,7 +315,13 @@ export const CoinOverview = ({
         >
           <div className={`${classPrefix}-overview__balance`}>
             <div className={`${classPrefix}-overview__primary-container`}>
-              {isEvm ? (
+              {isMultichainAccountsState2Enabled ? (
+                <AggregatedBalance
+                  classPrefix={classPrefix}
+                  balanceIsCached={balanceIsCached}
+                  handleSensitiveToggle={handleSensitiveToggle}
+                />
+              ) : isEvm ? (
                 <LegacyAggregatedBalance
                   classPrefix={classPrefix}
                   account={account}
