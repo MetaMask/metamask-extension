@@ -2,13 +2,7 @@
 /* eslint-disable import/no-useless-path-segments */
 /* eslint-disable import/extensions */
 import classnames from 'classnames';
-import React, {
-  ComponentType,
-  Suspense,
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import {
   type TypedUseSelectorHook,
   useDispatch,
@@ -139,7 +133,7 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
-import { mmLazy } from '../../helpers/utils/mm-lazy';
+import { type DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   isCorrectDeveloperTransactionType,
@@ -158,180 +152,142 @@ import {
   showAppHeader,
 } from './utils';
 
-// TODO: Update `mmLazy` to handle all React module types used below.
-// This is a temporary stand-in type.
-type DefaultExportComponent = {
-  default: ComponentType<unknown>;
-};
-
 // TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle all React module types used below.
 // Casting is preferable over `@ts-expect-error` annotations in this case,
 // because it doesn't suppress competing error messages e.g. "Cannot find module..."
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(
-  () =>
+  (() =>
     import(
       '../onboarding-flow/onboarding-flow.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const Lock = mmLazy(
-  () =>
-    import('../lock/index.js') as unknown as Promise<DefaultExportComponent>,
+  (() => import('../lock/index.js')) as unknown as DynamicImportType,
 );
 const UnlockPage = mmLazy(
-  () =>
-    import(
-      '../unlock-page/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+  (() => import('../unlock-page/index.js')) as unknown as DynamicImportType,
 );
 const RestoreVaultPage = mmLazy(
-  () =>
-    import(
-      '../keychains/restore-vault.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+  (() =>
+    import('../keychains/restore-vault.js')) as unknown as DynamicImportType,
 );
 const ImportSrpPage = mmLazy(
-  () =>
-    import(
-      '../multi-srp/import-srp/index.ts'
-    ) as unknown as Promise<DefaultExportComponent>,
+  (() =>
+    import('../multi-srp/import-srp/index.ts')) as unknown as DynamicImportType,
 );
 const RevealSeedConfirmation = mmLazy(
-  () =>
-    import(
-      '../keychains/reveal-seed.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+  (() => import('../keychains/reveal-seed.js')) as unknown as DynamicImportType,
 );
 const Settings = mmLazy(
-  () =>
-    import(
-      '../settings/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+  (() => import('../settings/index.js')) as unknown as DynamicImportType,
 );
 const NotificationsSettings = mmLazy(
-  () =>
+  (() =>
     import(
       '../notifications-settings/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const NotificationDetails = mmLazy(
-  () =>
-    import(
-      '../notification-details/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+  (() =>
+    import('../notification-details/index.js')) as unknown as DynamicImportType,
 );
 const Notifications = mmLazy(
-  () =>
-    import(
-      '../notifications/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+  (() => import('../notifications/index.js')) as unknown as DynamicImportType,
 );
 const SnapList = mmLazy(
-  () =>
-    import(
-      '../snaps/snaps-list/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+  (() =>
+    import('../snaps/snaps-list/index.js')) as unknown as DynamicImportType,
 );
 const SnapView = mmLazy(
-  () =>
-    import(
-      '../snaps/snap-view/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+  (() => import('../snaps/snap-view/index.js')) as unknown as DynamicImportType,
 );
 const ConfirmTransaction = mmLazy(
-  () =>
+  (() =>
     import(
       '../confirmations/confirm-transaction/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const SendPage = mmLazy(
-  () =>
+  (() =>
     import(
       '../../components/multichain/pages/send/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const Swaps = mmLazy(
-  () =>
-    import('../swaps/index.js') as unknown as Promise<DefaultExportComponent>,
+  (() => import('../swaps/index.js')) as unknown as DynamicImportType,
 );
 const CrossChainSwap = mmLazy(
-  () =>
-    import('../bridge/index.tsx') as unknown as Promise<DefaultExportComponent>,
+  (() => import('../bridge/index.tsx')) as unknown as DynamicImportType,
 );
 const ConfirmAddSuggestedTokenPage = mmLazy(
-  () =>
+  (() =>
     import(
       '../confirm-add-suggested-token/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const ConfirmAddSuggestedNftPage = mmLazy(
-  () =>
+  (() =>
     import(
       '../confirm-add-suggested-nft/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const ConfirmationPage = mmLazy(
-  () =>
+  (() =>
     import(
       '../confirmations/confirmation/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const CreateAccountPage = mmLazy(
-  () =>
+  (() =>
     import(
       '../create-account/create-account.component.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const NftFullImage = mmLazy(
-  () =>
+  (() =>
     import(
       '../../components/app/assets/nfts/nft-details/nft-full-image.tsx'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const Asset = mmLazy(
-  () =>
-    import('../asset/index.js') as unknown as Promise<DefaultExportComponent>,
+  (() => import('../asset/index.js')) as unknown as DynamicImportType,
 );
 const DeFiPage = mmLazy(
-  () =>
-    import('../defi/index.ts') as unknown as Promise<DefaultExportComponent>,
+  (() => import('../defi/index.ts')) as unknown as DynamicImportType,
 );
 const PermissionsPage = mmLazy(
-  () =>
+  (() =>
     import(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const Connections = mmLazy(
-  () =>
+  (() =>
     import(
       '../../components/multichain/pages/connections/index.js'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 const ReviewPermissions = mmLazy(
-  () =>
+  (() =>
     import(
       '../../components/multichain/pages/review-permissions-page/review-permissions-page.tsx'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 
 const Home = mmLazy(
-  () =>
-    import('../home/index.js') as unknown as Promise<DefaultExportComponent>,
+  (() => import('../home/index.js')) as unknown as DynamicImportType,
 );
 
 const DeepLink = mmLazy(
-  () =>
-    import(
-      '../deep-link/deep-link.tsx'
-    ) as unknown as Promise<DefaultExportComponent>,
+  (() => import('../deep-link/deep-link.tsx')) as unknown as DynamicImportType,
 );
 const WalletDetails = mmLazy(
-  () =>
+  (() =>
     import(
       '../multichain-accounts/wallet-details/index.ts'
-    ) as unknown as Promise<DefaultExportComponent>,
+    )) as unknown as DynamicImportType,
 );
 // End Lazy Routes
 
