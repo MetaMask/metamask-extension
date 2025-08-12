@@ -56,6 +56,7 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -63,7 +64,6 @@ import {
   AggregatedPercentageOverview,
 } from './aggregated-percentage-overview';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 
 export type CoinOverviewProps = {
   account: InternalAccount;
@@ -315,13 +315,14 @@ export const CoinOverview = ({
         >
           <div className={`${classPrefix}-overview__balance`}>
             <div className={`${classPrefix}-overview__primary-container`}>
-              {isMultichainAccountsState2Enabled ? (
+              {isMultichainAccountsState2Enabled && (
                 <AggregatedBalance
                   classPrefix={classPrefix}
                   balanceIsCached={balanceIsCached}
                   handleSensitiveToggle={handleSensitiveToggle}
                 />
-              ) : isEvm ? (
+              )}
+              {!isMultichainAccountsState2Enabled && isEvm && (
                 <LegacyAggregatedBalance
                   classPrefix={classPrefix}
                   account={account}
@@ -329,7 +330,8 @@ export const CoinOverview = ({
                   balanceIsCached={balanceIsCached}
                   handleSensitiveToggle={handleSensitiveToggle}
                 />
-              ) : (
+              )}
+              {!isMultichainAccountsState2Enabled && !isEvm && (
                 <AggregatedBalance
                   classPrefix={classPrefix}
                   balanceIsCached={balanceIsCached}
