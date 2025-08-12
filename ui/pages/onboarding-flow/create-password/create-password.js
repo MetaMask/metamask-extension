@@ -103,7 +103,7 @@ export default function CreatePassword({
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
-        navigate(ONBOARDING_METAMETRICS);
+        navigate(ONBOARDING_METAMETRICS, { replace: true });
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (isFirefox) {
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });

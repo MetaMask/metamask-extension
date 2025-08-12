@@ -72,21 +72,15 @@ const generateQuizWords = (secretRecoveryPhrase) => {
 };
 
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [matching, setMatching] = useState(false);
-  const [quizWords, setQuizWords] = useState(
-    generateQuizWords(
-      secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : [],
-    ),
-  );
-  const [answerSrp, setAnswerSrp] = useState('');
   const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const { search } = useLocation();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const { bufferedEndTrace } = trackEvent;
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+
   const splitSecretRecoveryPhrase = useMemo(
     () => (secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : []),
     [secretRecoveryPhrase],
@@ -103,6 +97,15 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
   }
   const nextRouteQueryString = queryParams.toString();
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [matching, setMatching] = useState(false);
+  const [quizWords, setQuizWords] = useState(
+    generateQuizWords(
+      secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : [],
+    ),
+  );
+  const [answerSrp, setAnswerSrp] = useState('');
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {

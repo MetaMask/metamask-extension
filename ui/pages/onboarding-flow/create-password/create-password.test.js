@@ -58,7 +58,9 @@ describe('Onboarding Create Password', () => {
       const mockStore = configureMockStore()(importFirstTimeFlowState);
 
       renderWithProvider(<CreatePassword />, mockStore);
-      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+        replace: true,
+      });
     });
   });
 

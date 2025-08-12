@@ -77,21 +77,22 @@ export default function OnboardingWelcome({
           isParticipateInMetaMetricsSet
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS,
+          { replace: true },
         );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (getBrowserName() === PLATFORM_FIREFOX) {
-          navigate(ONBOARDING_COMPLETION_ROUTE);
+          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
-          navigate(ONBOARDING_METAMETRICS);
+          navigate(ONBOARDING_METAMETRICS, { replace: true });
         }
       } else {
-        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
       }
     } else if (isSocialLoginFlowInitialized) {
       if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
+        navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
       } else {
-        navigate(ONBOARDING_UNLOCK_ROUTE);
+        navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
       }
     }
   }, [
@@ -227,9 +228,9 @@ export default function OnboardingWelcome({
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
-          navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
+          navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
         } else {
-          navigate(ONBOARDING_ACCOUNT_EXIST);
+          navigate(ONBOARDING_ACCOUNT_EXIST, { replace: true });
         }
       } catch (error) {
         handleSocialLoginError(error, socialConnectionType);
