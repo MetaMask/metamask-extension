@@ -1,5 +1,4 @@
 import {
-  BRIDGE_PREFERRED_GAS_ESTIMATE,
   getDefaultBridgeControllerState,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
