@@ -253,18 +253,12 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     return;
   }
 
-  let chain;
   try {
-    chain = mapChainIdToSupportedEVMChain(chainId);
-  } catch (error) {
-    return;
-  }
+    const chain = mapChainIdToSupportedEVMChain(chainId);
+    if (!chain) {
+      return;
+    }
 
-  if (!chain) {
-    return;
-  }
-
-  try {
     const appStateControllerProxy = {
       getAddressSecurityAlertResponse: getSecurityAlertResponse,
       addAddressSecurityAlertResponse: addSecurityAlertResponse,
