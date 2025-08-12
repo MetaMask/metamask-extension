@@ -152,7 +152,7 @@ import {
   showAppHeader,
 } from './utils';
 
-// TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle all React module types used below.
+// TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle named exports, wrapped components, and other React module types.
 // Casting is preferable over `@ts-expect-error` annotations in this case,
 // because it doesn't suppress competing error messages e.g. "Cannot find module..."
 
@@ -174,6 +174,7 @@ const RestoreVaultPage = mmLazy(
     import('../keychains/restore-vault.js')) as unknown as DynamicImportType,
 );
 const ImportSrpPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import('../multi-srp/import-srp/index.ts')) as unknown as DynamicImportType,
 );
@@ -210,6 +211,7 @@ const ConfirmTransaction = mmLazy(
     )) as unknown as DynamicImportType,
 );
 const SendPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
       '../../components/multichain/pages/send/index.js'
@@ -258,18 +260,21 @@ const DeFiPage = mmLazy(
   (() => import('../defi/index.ts')) as unknown as DynamicImportType,
 );
 const PermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
     )) as unknown as DynamicImportType,
 );
 const Connections = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
       '../../components/multichain/pages/connections/index.js'
     )) as unknown as DynamicImportType,
 );
 const ReviewPermissions = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
       '../../components/multichain/pages/review-permissions-page/review-permissions-page.tsx'
@@ -281,6 +286,7 @@ const Home = mmLazy(
 );
 
 const DeepLink = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() => import('../deep-link/deep-link.tsx')) as unknown as DynamicImportType,
 );
 const WalletDetails = mmLazy(
