@@ -115,6 +115,8 @@ export const BridgeQuotesModal = ({
                     trackUnifiedSwapBridgeEvent(
                       UnifiedSwapBridgeEventName.AllQuotesSorted,
                       {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         can_submit: !insufficientBal,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -231,6 +233,8 @@ export const BridgeQuotesModal = ({
                         trackUnifiedSwapBridgeEvent(
                           UnifiedSwapBridgeEventName.QuoteSelected,
                           {
+                            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             can_submit: !insufficientBal,
                             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -243,7 +247,7 @@ export const BridgeQuotesModal = ({
                             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                             // eslint-disable-next-line @typescript-eslint/naming-convention
                             usd_quoted_gas: Number(
-                              quote.gasFee?.effective?.usd,
+                              quote.gasFee?.effective?.usd ?? 0,
                             ),
                             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                             // eslint-disable-next-line @typescript-eslint/naming-convention
