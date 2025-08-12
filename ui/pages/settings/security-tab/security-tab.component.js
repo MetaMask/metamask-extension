@@ -251,9 +251,7 @@ export default class SecurityTab extends PureComponent {
                       location: 'Settings',
                     },
                   });
-                  this.props.navigate({
-                    pathname: REVEAL_SRP_LIST_ROUTE,
-                  });
+                  this.props.navigate(REVEAL_SRP_LIST_ROUTE);
                 }}
               >
                 {getButtonText()}

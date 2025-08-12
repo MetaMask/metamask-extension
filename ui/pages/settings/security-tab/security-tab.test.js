@@ -196,9 +196,7 @@ describe('Security Tab', () => {
 
     fireEvent.click(screen.getByTestId('reveal-seed-words'));
 
-    expect(mockNavigate).toHaveBeenCalledWith({
-      pathname: REVEAL_SRP_LIST_ROUTE,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE);
   });
 
   it('sets IPFS gateway', async () => {
