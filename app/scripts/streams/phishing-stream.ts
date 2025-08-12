@@ -7,7 +7,7 @@ import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { PortStream } from '../lib/extension-port-stream';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
-import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
+import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import {
   CONTENT_SCRIPT,
   LEGACY_PROVIDER,

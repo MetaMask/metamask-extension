@@ -1,4 +1,4 @@
-/* eslint-disable no-plusplus, no-bitwise, default-case */
+/* eslint-disable no-plusplus, no-bitwise, default-case, @metamask/design-tokens/color-no-hex */
 
 import type { Json } from '@metamask/utils';
 import { Duplex, type DuplexOptions } from 'readable-stream';
@@ -386,14 +386,14 @@ export class PortStream extends Duplex {
             }
             this.log(chunk, true);
             callback();
-          } catch (err) {
+          } catch (chunkErr) {
             if (this.debug) {
-              console.debug(TAG, STYLE_SYS, '⚠ write error', err);
+              console.debug(TAG, STYLE_SYS, '⚠ write error', chunkErr);
             }
-            console.error(err);
+            console.error(chunkErr);
             callback(
               new AggregateError(
-                [err],
+                [chunkErr],
                 'PortStream chunked postMessage failed',
               ),
             );

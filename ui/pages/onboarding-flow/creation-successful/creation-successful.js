@@ -18,14 +18,12 @@ import {
   FontWeight,
   TextColor,
   IconColor,
-  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
   Text,
   IconName,
   IconSize,
-  ButtonBase,
   Icon,
   ButtonLink,
   ButtonLinkSize,
@@ -33,9 +31,9 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getSocialLoginType } from '../../../selectors';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
@@ -131,7 +129,7 @@ export default function CreationSuccessful() {
       history.push(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
-    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+    history.push(ONBOARDING_DOWNLOAD_APP_ROUTE);
   }, [history, isFromReminder, isFromSettingsSecurity]);
 
   return (
@@ -199,11 +197,11 @@ export default function CreationSuccessful() {
             className="creation-successful__settings-actions"
             gap={4}
           >
-            <ButtonBase
+            <Button
+              variant={ButtonVariant.Secondary}
               data-testid="manage-default-settings"
               borderRadius={BorderRadius.LG}
               width={BlockSize.Full}
-              backgroundColor={BackgroundColor.backgroundMuted}
               onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
             >
               <Box display={Display.Flex} alignItems={AlignItems.center}>
@@ -224,7 +222,7 @@ export default function CreationSuccessful() {
                 color={IconColor.iconAlternative}
                 size={IconSize.Sm}
               />
-            </ButtonBase>
+            </Button>
           </Box>
         )}
       </Box>

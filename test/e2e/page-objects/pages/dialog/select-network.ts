@@ -58,9 +58,7 @@ class SelectNetwork {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.selectNetworkMessage,
@@ -76,9 +74,7 @@ class SelectNetwork {
     console.log('Select network dialog is loaded');
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_yourNetworksDialogIsLoaded(): Promise<void> {
+  async checkYourNetworksDialogIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.yourNetworksMessage);
     } catch (e) {
@@ -191,9 +187,7 @@ class SelectNetwork {
    * @param networkName - The name of the network to check.
    * @param shouldBeDisplayed - Whether the network should be displayed. Defaults to true.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkOptionIsDisplayed(
+  async checkNetworkOptionIsDisplayed(
     networkName: string,
     shouldBeDisplayed: boolean = true,
   ): Promise<void> {
@@ -210,9 +204,7 @@ class SelectNetwork {
     }
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkRPCNumber(expectedNumber: number): Promise<void> {
+  async checkNetworkRPCNumber(expectedNumber: number): Promise<void> {
     console.log(
       `Wait for ${expectedNumber} RPC URLs to be displayed in select network dialog`,
     );
@@ -223,9 +215,7 @@ class SelectNetwork {
     console.log(`${expectedNumber} RPC URLs found in select network dialog`);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_rpcIsSelected(rpcName: string): Promise<void> {
+  async checkRpcIsSelected(rpcName: string): Promise<void> {
     console.log(`Check RPC ${rpcName} is selected in network dialog`);
     await this.driver.waitForSelector({
       text: rpcName,
@@ -238,25 +228,19 @@ class SelectNetwork {
     await this.driver.clickElement(this.discoverButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_chainInformationIsDisplayed(information: string): Promise<void> {
+  async checkChainInformationIsDisplayed(information: string): Promise<void> {
     console.log(`Check chain information is displayed: ${information}`);
     await this.driver.waitForSelector({
       text: information,
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_discoverButtonIsVisible(): Promise<void> {
+  async checkDiscoverButtonIsVisible(): Promise<void> {
     console.log('Check Discover button is visible in network options');
     await this.driver.waitForSelector(this.discoverButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_popularNetworkIsDisplayed({
+  async checkPopularNetworkIsDisplayed({
     chainId,
     networkName,
   }: {

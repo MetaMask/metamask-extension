@@ -20,7 +20,7 @@ module.exports = {
   parser: '@babel/eslint-parser',
   plugins: ['@metamask/design-tokens'],
   rules: {
-    '@metamask/design-tokens/color-no-hex': 'warn',
+    '@metamask/design-tokens/color-no-hex': 'error',
     'import/no-restricted-paths': [
       'error',
       {

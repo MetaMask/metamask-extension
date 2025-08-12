@@ -85,7 +85,6 @@ describe('Carousel component e2e tests', function () {
           // component, which will impact to the slides count.
           // - If this flag is not set, the slides count will be 4.
           // - If this flag is set, the slides count will be 5.
-          remoteFeatureFlags: { vaultRemoteMode: false },
         },
       },
       async ({ driver }) => {

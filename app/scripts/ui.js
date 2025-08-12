@@ -20,6 +20,8 @@ import log from 'loglevel';
 import launchMetaMaskUi, {
   CriticalStartupErrorHandler,
   connectToBackground,
+  displayCriticalError,
+  CriticalErrorTranslationKey,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../ui';
@@ -30,8 +32,6 @@ import {
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
-import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import { PortStream } from './lib/extension-port-stream';
 import ExtensionPlatform from './platforms/extension';
@@ -241,8 +241,12 @@ async function initializeUiWithTab(
     if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
       global.platform.openExtensionInBrowser();
     }
-  } catch (err) {
-    displayCriticalError('troubleStarting', err);
+  } catch (error) {
+    await displayCriticalError(
+      container,
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+    );
   }
 }
 
@@ -295,21 +299,6 @@ async function initializeUi(activeTab, backgroundConnection, traceContext) {
     backgroundConnection,
     traceContext,
   });
-}
-
-async function displayCriticalError(errorKey, err, metamaskState) {
-  const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState);
-
-  container.innerHTML = html;
-
-  const button = document.getElementById('critical-error-button');
-
-  button?.addEventListener('click', (_) => {
-    browser.runtime.reload();
-  });
-
-  log.error(err.stack);
-  throw err;
 }
 
 /**

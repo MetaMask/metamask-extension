@@ -93,13 +93,13 @@ const CrossChainSwap = () => {
   useTxAlerts();
 
   const redirectToDefaultRoute = async () => {
+    await resetControllerAndInputStates();
     history.push({
       pathname: DEFAULT_ROUTE,
       state: { stayOnHomePage: true },
     });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
-    await resetControllerAndInputStates();
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -140,7 +140,9 @@ const CrossChainSwap = () => {
                 setIsSettingsModalOpen(false);
               }}
             />
-            <PrepareBridgePage />
+            <PrepareBridgePage
+              onOpenSettings={() => setIsSettingsModalOpen(true)}
+            />
           </Route>
           <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
             <Content>

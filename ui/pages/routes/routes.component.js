@@ -47,9 +47,6 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
-  REMOTE_ROUTE,
-  REMOTE_ROUTE_SETUP_SWAPS,
-  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
   IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
@@ -57,6 +54,7 @@ import {
   WALLET_DETAILS_ROUTE,
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
+  ACCOUNT_LIST_PAGE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -92,6 +90,7 @@ import { MultichainAccountListMenu } from '../../components/multichain-accounts/
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
+import { AccountList } from '../multichain-accounts/account-list';
 import {
   getConnectingLabel,
   isConfirmTransactionRoute,
@@ -152,13 +151,6 @@ const ReviewPermissions = mmLazy(
 );
 const Home = mmLazy(() => import('../home'));
 
-const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview'));
-const RemoteModeSetupSwaps = mmLazy(
-  () => import('../remote-mode/setup/setup-swaps'),
-);
-const RemoteModeSetupDailyAllowance = mmLazy(
-  () => import('../remote-mode/setup/setup-daily-allowance'),
-);
 const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
 const WalletDetails = mmLazy(
   () => import('../multichain-accounts/wallet-details'),
@@ -392,18 +384,8 @@ export default class Routes extends Component {
             exact
           />
           <Authenticated
-            path={REMOTE_ROUTE}
-            component={RemoteModeOverview}
-            exact
-          />
-          <Authenticated
-            path={REMOTE_ROUTE_SETUP_SWAPS}
-            component={RemoteModeSetupSwaps}
-            exact
-          />
-          <Authenticated
-            path={REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE}
-            component={RemoteModeSetupDailyAllowance}
+            path={ACCOUNT_LIST_PAGE_ROUTE}
+            component={AccountList}
             exact
           />
           <Authenticated

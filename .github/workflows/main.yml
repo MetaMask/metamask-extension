@@ -5,7 +5,9 @@ on:
     branches:
       - main
       - master
+      - stable
       - Version-v*
+      - release/*
       - trigger-ci*
   pull_request:
     types:
@@ -23,7 +25,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master')) }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master') || contains(github.ref, 'refs/heads/stable')) }}
 
 env:
   # For a `pull_request` event, the branch is `github.head_ref``.
@@ -48,6 +50,13 @@ jobs:
           cache-node-modules: true
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
+
+      # Need to cache `.metamask` folder for the anvil binary
+      - name: Cache .metamask folder
+        uses: actions/cache/save@v4
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
 
   lint-workflows:
     name: Lint workflows
@@ -99,14 +108,14 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build prod' || 'yarn build dist' }}
+      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build prod' || 'yarn build dist' }}
     secrets: inherit
 
   build-dist-mv2-browserify:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build prod' || 'yarn build dist' }}
+      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build prod' || 'yarn build dist' }}
       mozilla-lint: true
       enable-mv3: false
     secrets: inherit
@@ -131,14 +140,14 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
     secrets: inherit
 
   build-flask-mv2-browserify:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
       mozilla-lint: true
       enable-mv3: false
     secrets: inherit
@@ -186,6 +195,7 @@ jobs:
   run-benchmarks:
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
+      - prep-deps
       - build-test-browserify
       - build-test-webpack
 
@@ -304,6 +314,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      GOOGLE_PROD_CLIENT_ID: 00000000000
+      APPLE_PROD_CLIENT_ID: 00000000000
+      GOOGLE_BETA_CLIENT_ID: 00000000000
+      APPLE_BETA_CLIENT_ID: 00000000000
+      GOOGLE_FLASK_CLIENT_ID: 00000000000
+      APPLE_FLASK_CLIENT_ID: 00000000000
+
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -353,7 +370,7 @@ jobs:
 
   publish-release:
     name: Publish release
-    if: ${{ github.event_name == 'push' && github.ref_name == 'master' }}
+    if: ${{ github.event_name == 'push' && (github.ref_name == 'master' || github.ref_name == 'stable') }}
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify

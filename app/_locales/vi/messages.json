@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Bật chức năng cơ bản"
   },
-  "bestPrice": {
-    "message": "Giá tốt nhất"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Đang hoán đổi $1 thành $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Điều khoản"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 phút",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask được thiết kế và xây dựng trên khắp thế giới."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Đang bận"
@@ -2392,10 +2383,6 @@
   "floatAmountToken": {
     "message": "Số lượng Token phải là số nguyên"
   },
-  "followUsOnX": {
-    "message": "Theo dõi chúng tôi trên $1",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Cổng kết nối IPFS không được phép: Vui lòng chỉ định một cổng kết nối CID"
   },
@@ -2668,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot (Bẫy trong bẫy)"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Phí ước tính cần thiết để xử lý giao dịch. Phí tối đa là $1."
   },
   "howQuotesWork": {
     "message": "Cách báo giá hoạt động"
@@ -5444,12 +5428,6 @@
   "slideMultiSrpTitle": {
     "message": "Thêm nhiều Cụm từ khôi phục bí mật"
   },
-  "slideRemoteModeDescription": {
-    "message": "Sử dụng ví lạnh không dây"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Kho lạnh, truy cập nhanh"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Địa chỉ giữ nguyên, tính năng thông minh hơn"
   },
@@ -6828,9 +6806,6 @@
   "troubleConnectingToWallet": {
     "message": "Chúng tôi đã gặp phải sự cố khi kết nối với $1 của bạn, hãy thử xem lại $2 và thử lại.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask đã gặp sự cố khi khởi động. Lỗi này có thể xảy ra không liên tục, vì vậy hãy thử khởi động lại tiện ích."
   },
   "tryAgain": {
     "message": "Thử lại"

@@ -10,7 +10,7 @@ import MockedPage from '../../page-objects/pages/mocked-page';
 describe('Portfolio site', function () {
   async function mockPortfolioSite(mockServer: MockttpServer) {
     return await mockServer
-      .forGet('https://portfolio.metamask.io/')
+      .forGet('https://portfolio.metamask.io/explore/tokens')
       .withQuery({
         metamaskEntry: 'ext_portfolio_button',
         metametricsId: MOCK_META_METRICS_ID,
@@ -45,9 +45,9 @@ describe('Portfolio site', function () {
 
         // Verify site
         await driver.waitForUrl({
-          url: `https://portfolio.metamask.io/?metamaskEntry=ext_portfolio_button&metametricsId=${MOCK_META_METRICS_ID}&metricsEnabled=true&marketingEnabled=false`,
+          url: `https://portfolio.metamask.io/explore/tokens?metamaskEntry=ext_portfolio_button&metametricsId=${MOCK_META_METRICS_ID}&metricsEnabled=true&marketingEnabled=false`,
         });
-        await new MockedPage(driver).check_displayedMessage(
+        await new MockedPage(driver).checkDisplayedMessage(
           'Empty page by MetaMask',
         );
       },

@@ -74,7 +74,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // Switch to Arbitrum One to set it as the selected network
         // in the network-controller
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.goToTokensTab();
         await searchAndSwitchToNetworkFromSendFlow(driver, 'Arbitrum One');
         await homePage.goToActivityList();

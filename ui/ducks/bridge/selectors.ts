@@ -68,9 +68,10 @@ import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
+  getDefaultToToken,
+  toBridgeToken,
 } from './utils';
 import type { BridgeState } from './types';
-import { toBridgeToken } from './bridge';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -144,6 +145,11 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
   },
 );
 
+export const getPriceImpactThresholds = createDeepEqualSelector(
+  getBridgeFeatureFlags,
+  (bridgeFeatureFlags) => bridgeFeatureFlags?.priceImpactThreshold,
+);
+
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   getBridgeFeatureFlags,
@@ -196,16 +202,21 @@ export const getTopAssetsFromFeatureFlags = (
   return bridgeFeatureFlags?.chains[formatChainIdToCaip(chainId)]?.topAssets;
 };
 
+// If the user has selected a toChainId, return it as the destination chain
+// Otherwise, use the source chain as the destination chain (default to swap params)
 export const getToChain = createSelector(
-  getToChains,
-  (state: BridgeAppState) => state.bridge?.toChainId,
-  (toChains, toChainId) =>
+  [
+    getFromChain,
+    getToChains,
+    (state: BridgeAppState) => state.bridge?.toChainId,
+  ],
+  (fromChain, toChains, toChainId) =>
     toChainId
       ? toChains.find(
           ({ chainId }) =>
             chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
         )
-      : undefined,
+      : fromChain,
 );
 
 export const getFromToken = createSelector(
@@ -231,28 +242,18 @@ export const getFromToken = createSelector(
 );
 
 export const getToToken = createSelector(
-  [
-    getFromToken,
-    (state: BridgeAppState) => state.bridge.toChainId,
-    (state) => state.bridge.toToken,
-  ],
-  (fromToken, toChainId, toToken) => {
-    if (!toChainId) {
+  [getFromToken, getToChain, (state) => state.bridge.toToken],
+  (fromToken, toChain, toToken) => {
+    if (!toChain || !fromToken) {
       return null;
     }
-    const destNativeAsset = getNativeAssetForChainId(
-      toChainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
-    );
-    const newToToken = toToken ?? toBridgeToken(destNativeAsset);
-    // Return null if dest token is the same as the src token
-    if (
-      fromToken?.assetId &&
-      newToToken?.assetId &&
-      fromToken.assetId.toLowerCase() === newToToken.assetId.toLowerCase()
-    ) {
-      return null;
+    // If the user has selected a token, return it
+    if (toToken) {
+      return toToken;
     }
-    return newToToken;
+    // Otherwise, determine the default token to use based on fromToken and toChain
+    const defaultToken = getDefaultToToken(toChain, fromToken);
+    return defaultToken ? toBridgeToken(defaultToken) : null;
   },
 );
 
@@ -622,21 +623,6 @@ export const getValidationErrors = createDeepEqualSelector(
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
 };
-
-/**
- * Checks if Solana is enabled as either a fromChain or toChain for bridging
- */
-export const isBridgeSolanaEnabled = createDeepEqualSelector(
-  getBridgeFeatureFlags,
-  (bridgeFeatureFlags) => {
-    const solanaChainId = MultichainNetworks.SOLANA;
-    const solanaChainIdCaip = formatChainIdToCaip(solanaChainId);
-
-    // Directly check if Solana is enabled as a source or destination chain
-    const solanaConfig = bridgeFeatureFlags?.chains?.[solanaChainIdCaip];
-    return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
-  },
-);
 
 /**
  * Checks if the destination chain is Solana and the user has no Solana accounts

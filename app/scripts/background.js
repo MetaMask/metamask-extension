@@ -20,10 +20,10 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-  EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
+import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -34,22 +34,17 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
-import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
-import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
-import {
-  FakeLedgerBridge,
-  FakeTrezorBridge,
-} from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { PortStream } from './lib/extension-port-stream';
 import {
   CorruptionHandler,
@@ -77,7 +72,6 @@ import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
-import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
@@ -91,6 +85,7 @@ import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
+import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 
 /**
@@ -454,12 +449,13 @@ browser.runtime.onConnect.addListener(async (...args) => {
     connectWindowPostMessage(...args);
   } catch (error) {
     sentry?.captureException(error);
+    const port = args[0];
 
     // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
     // restore from a backup, if we have one.
     if (isStateCorruptionError(error)) {
       await corruptionHandler.handleStateCorruptionError({
-        port: args[0],
+        port,
         error,
         database: persistenceManager,
         repairCallback: async (backup) => {
@@ -483,6 +479,23 @@ browser.runtime.onConnect.addListener(async (...args) => {
             await initBackground(null);
           }
         },
+      });
+    } else {
+      const errorLike = isObject(error)
+        ? {
+            message: error.message ?? 'Unknown error',
+            name: error.name ?? 'UnknownError',
+            stack: error.stack,
+          }
+        : {
+            message: String(error),
+            name: 'UnknownError',
+            stack: '',
+          };
+      // general errors
+      tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
+        error: errorLike,
+        currentLocale: controller?.preferencesController?.state?.currentLocale,
       });
     }
   }
@@ -570,6 +583,10 @@ async function initialize(backup) {
   // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
   // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
   if (process.env.IN_TEST && window.navigator?.webdriver) {
+    const { getSocketBackgroundToMocha } =
+      // Use `require` to make it easier to exclude this test code from the Browserify build.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+      require('../../test/e2e/background-socket/socket-background-to-mocha');
     getSocketBackgroundToMocha();
   }
 
@@ -595,8 +612,14 @@ async function initialize(backup) {
   const overrides = inTest
     ? {
         keyrings: {
-          trezorBridge: FakeTrezorBridge,
-          ledgerBridge: FakeLedgerBridge,
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          trezorBridge: require('../../test/stub/keyring-bridge')
+            .FakeTrezorBridge,
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          ledgerBridge: require('../../test/stub/keyring-bridge')
+            .FakeLedgerBridge,
         },
       }
     : {};
@@ -750,7 +773,14 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence(backup) {
   if (process.env.WITH_STATE) {
-    const stateOverrides = await generateWalletState();
+    const withState = JSON.parse(process.env.WITH_STATE);
+
+    // Use `require` to make it easier to exclude this test code from the Browserify build.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+    const { generateWalletState } = require('./fixtures/generate-wallet-state');
+    const fixtureBuilder = await generateWalletState(withState, false);
+
+    const stateOverrides = fixtureBuilder.fixture.data;
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
@@ -789,7 +819,8 @@ export async function loadStateFromPersistence(backup) {
   const migrator = new Migrator({
     migrations,
     defaultVersion: process.env.WITH_STATE
-      ? FIXTURE_STATE_METADATA_VERSION
+      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
       : null,
   });
 
