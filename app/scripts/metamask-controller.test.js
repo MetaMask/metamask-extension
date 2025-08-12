@@ -234,13 +234,19 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
 }));
 
 const DEFAULT_LABEL = 'Account 1';
-const TEST_SEED =
-  'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+const TEST_SEED = [
+  ...new TextEncoder().encode(
+    'debris dizzy just program just float decrease vacant alarm reduce speak stadium',
+  ),
+];
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TEST_ADDRESS_2 = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
-const TEST_SEED_ALT =
-  'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
+const TEST_SEED_ALT = [
+  ...new TextEncoder().encode(
+    'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle',
+  ),
+];
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
 const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
@@ -376,6 +382,9 @@ describe('MetaMaskController', () => {
   });
 
   describe('MetaMaskController Behaviour', () => {
+    /**
+     * @type {MetaMaskController}
+     */
     let metamaskController;
 
     async function simulatePreferencesChange(preferences) {
@@ -745,17 +754,32 @@ describe('MetaMaskController', () => {
 
     describe('#createNewVaultAndRestore', () => {
       it('should be able to call newVaultAndRestore despite a mistake.', async () => {
+        expect.assertions(5);
+
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
-        await metamaskController
-          .createNewVaultAndRestore(password, TEST_SEED.slice(0, -1))
-          .catch(() => null);
-        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        // there should be no locks (tasks should be empty)
+        expect(metamaskController.createVaultMutex.tasks).toHaveLength(0);
 
-        expect(
-          metamaskController.keyringController.createNewVaultAndRestore,
-        ).toHaveBeenCalledTimes(2);
+        // invalid seed should throw
+        const createVault = metamaskController.createNewVaultAndRestore(
+          password,
+          TEST_SEED.slice(0, -1),
+        );
+        // a lock should be taken (tasks should not be empty)
+        expect(metamaskController.createVaultMutex.tasks).toHaveLength(1);
+
+        // eslint-disable-next-line jest/require-to-throw-message
+        await expect(createVault).rejects.toThrow();
+
+        // the lock should be released (tasks should be empty again)
+        expect(metamaskController.createVaultMutex.tasks).toHaveLength(0);
+
+        // and calling again should work
+        await expect(
+          metamaskController.createNewVaultAndRestore(password, TEST_SEED),
+        ).resolves.toBeUndefined(); // it doesn't return anything on success
       });
 
       it('should clear previous identities after vault restoration', async () => {
@@ -1852,6 +1876,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setUpCookieHandlerCommunication', () => {
+      /**
+       * @type {MetaMaskController}
+       */
       let localMetaMaskController;
       beforeEach(() => {
         localMetaMaskController = new MetaMaskController({
@@ -2167,6 +2194,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
+      /**
+       * @type {MetaMaskController}
+       */
       let localMetamaskController;
       beforeEach(() => {
         localMetamaskController = new MetaMaskController({
@@ -3255,6 +3285,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('RemoteFeatureFlagController', () => {
+      /**
+       * @type {MetaMaskController}
+       */
       let localMetamaskController;
 
       beforeEach(() => {
@@ -3467,7 +3500,9 @@ describe('MetaMaskController', () => {
           currentKeyrings.filter((kr) => kr.type === 'Snap Keyring'),
         ).toHaveLength(1);
         expect(currentKeyrings).toHaveLength(previousKeyrings.length + 2);
-        expect(newSRP).toStrictEqual(TEST_SEED_ALT);
+        expect(newSRP).toStrictEqual(
+          new TextDecoder().decode(Uint8Array.from(TEST_SEED_ALT)),
+        );
       });
 
       it('throws an error if a duplicate srp is added', async () => {
@@ -3763,10 +3798,6 @@ describe('MetaMaskController', () => {
           'getSecretDataBackupState',
         );
         jest.spyOn(metamaskController, 'importMnemonicToVault');
-        jest.spyOn(
-          metamaskController,
-          '_convertEnglishWordlistIndicesToCodepoints',
-        );
       });
 
       afterEach(() => {
@@ -3821,10 +3852,6 @@ describe('MetaMaskController', () => {
           }) // First SRP exists
           .mockReturnValueOnce(null); // Second SRP doesn't exist
 
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValueOnce(
-          Buffer.from(mockMnemonic, 'utf8'),
-        );
-
         await metamaskController.syncSeedPhrases();
 
         // Should only import the second SRP (the one that doesn't exist locally)
@@ -3875,8 +3902,6 @@ describe('MetaMaskController', () => {
         const mockOtherSRP2 = new Uint8Array([9, 10, 11, 12]);
         const mockMnemonic1 =
           'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
-        const mockMnemonic2 =
-          'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 
         metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
           true,
@@ -3892,26 +3917,6 @@ describe('MetaMaskController', () => {
         metamaskController.seedlessOnboardingController.getSecretDataBackupState
           .mockReturnValueOnce(null) // First other SRP doesn't exist
           .mockReturnValueOnce(null); // Second other SRP doesn't exist
-
-        function isEqualUint8Array(arr1, arr2) {
-          if (arr1.length !== arr2.length) {
-            return false;
-          }
-
-          return arr1.every((value, index) => value === arr2[index]);
-        }
-
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockImplementation(
-          (wordlistIndices) => {
-            if (isEqualUint8Array(wordlistIndices, mockOtherSRP1)) {
-              return Buffer.from(mockMnemonic1, 'utf8');
-            } else if (isEqualUint8Array(wordlistIndices, mockOtherSRP2)) {
-              return Buffer.from(mockMnemonic2, 'utf8');
-            }
-
-            return new Uint8Array(0);
-          },
-        );
 
         await metamaskController.syncSeedPhrases();
 
@@ -3948,10 +3953,6 @@ describe('MetaMaskController', () => {
           metamaskController.seedlessOnboardingController,
           'fetchAllSecretData',
         );
-        jest.spyOn(
-          metamaskController,
-          '_convertEnglishWordlistIndicesToCodepoints',
-        );
         jest.spyOn(metamaskController, 'createNewVaultAndRestore');
         jest.spyOn(metamaskController, 'restoreSeedPhrasesToVault');
       });
@@ -3980,10 +3981,6 @@ describe('MetaMaskController', () => {
           [mockFirstSecretData, ...mockRemainingSecretData],
         );
 
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
-          Buffer.from(mockMnemonic, 'utf8'),
-        );
-
         const result =
           await metamaskController.restoreSocialBackupAndGetSeedPhrase(
             mockPassword,
@@ -3992,9 +3989,6 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController.seedlessOnboardingController.fetchAllSecretData,
         ).toHaveBeenCalledWith(mockPassword);
-        expect(
-          metamaskController._convertEnglishWordlistIndicesToCodepoints,
-        ).toHaveBeenCalledWith(mockEncodedMnemonic);
         expect(
           metamaskController.createNewVaultAndRestore,
         ).toHaveBeenCalledWith(mockPassword, mockEncodedSeedPhrase);
@@ -4014,10 +4008,6 @@ describe('MetaMaskController', () => {
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
           [mockFirstSecretData],
-        );
-
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
-          Buffer.from(mockMnemonic, 'utf8'),
         );
 
         const result =
@@ -4066,10 +4056,6 @@ describe('MetaMaskController', () => {
           [mockFirstSecretData, ...mockRemainingSecretData],
         );
 
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
-          Buffer.from(mockMnemonic, 'utf8'),
-        );
-
         const result =
           await metamaskController.restoreSocialBackupAndGetSeedPhrase(
             mockPassword,
@@ -4104,10 +4090,6 @@ describe('MetaMaskController', () => {
           [mockFirstSecretData],
         );
 
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
-          Buffer.from(mockMnemonic, 'utf8'),
-        );
-
         const mockError = new Error('Failed to create vault');
         metamaskController.createNewVaultAndRestore.mockRejectedValue(
           mockError,
@@ -4136,10 +4118,6 @@ describe('MetaMaskController', () => {
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
           [mockFirstSecretData, ...mockRemainingSecretData],
-        );
-
-        metamaskController._convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
-          Buffer.from(mockMnemonic, 'utf8'),
         );
 
         const mockError = new Error('Failed to restore seed phrases');

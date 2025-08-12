@@ -18,6 +18,31 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+// Mock the getMnemonicUtil function to avoid network dependencies
+jest.mock('../../../../shared/lib/mnemonic/mnemonic', () => ({
+  getMnemonicUtil: jest.fn(() =>
+    Promise.resolve({
+      isValidWord: jest.fn((word) => {
+        // Simple mock that considers the test seed words as valid
+        const testSeedWords = [
+          'debris',
+          'dizzy',
+          'just',
+          'program',
+          'float',
+          'decrease',
+          'vacant',
+          'alarm',
+          'reduce',
+          'speak',
+          'stadium',
+        ];
+        return testSeedWords.includes(word.toLowerCase());
+      }),
+    }),
+  ),
+}));
+
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 

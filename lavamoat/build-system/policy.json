@@ -798,7 +798,7 @@
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
-        "process.env": true
+        "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
@@ -1925,7 +1925,7 @@
         "fs.Stats": true
       }
     },
-    "@metamask/jazzicon>color>clone": {
+    "node-zopfli>defaults>clone": {
       "globals": {
         "Buffer": true
       }
@@ -8456,7 +8456,7 @@
       },
       "packages": {
         "gulp-watch>vinyl-file>vinyl>clone-stats": true,
-        "@metamask/jazzicon>color>clone": true,
+        "node-zopfli>defaults>clone": true,
         "gulp-watch>vinyl-file>vinyl>replace-ext": true
       }
     },

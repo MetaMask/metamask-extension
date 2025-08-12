@@ -26,6 +26,17 @@ module.exports = function (api) {
           rootPath: '/snaps/',
         },
       ],
+      [
+        path.resolve(
+          __dirname,
+          'development/build/transforms/import-meta-url.js',
+        ),
+        {
+          pattern: /\.\/wordList\.bin$/u,
+          rootPath: '/',
+        },
+        'word list',
+      ],
     ],
     presets: [
       '@babel/preset-typescript',

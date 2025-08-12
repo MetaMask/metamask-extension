@@ -250,6 +250,10 @@ function getCopyTargets(
           },
         ]
       : []),
+    {
+      src: './shared/lib/mnemonic/wordList.bin',
+      dest: 'wordList.bin',
+    },
   ];
 
   const copyTargetsDev = [

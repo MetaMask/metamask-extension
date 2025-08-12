@@ -5,6 +5,15 @@ import * as browserRuntime from '../../../../shared/modules/browser-runtime.util
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import SrpInputImport from './srp-input-import';
 
+// Mock the getMnemonicUtil function to avoid network dependencies
+jest.mock('../../../../shared/lib/mnemonic/mnemonic', () => ({
+  getMnemonicUtil: jest.fn(() =>
+    Promise.resolve({
+      isValidWord: jest.fn(() => true), // Simple mock that accepts all words
+    }),
+  ),
+}));
+
 const mockClipboardReadText = jest.fn().mockResolvedValue('some mock text');
 
 Object.defineProperty(navigator, 'clipboard', {
