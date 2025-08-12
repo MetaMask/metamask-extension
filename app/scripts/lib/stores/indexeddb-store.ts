@@ -1,6 +1,3 @@
-import { indexedDB as fakeIndexedDB } from 'fake-indexeddb';
-import { captureException } from '../../../../shared/lib/sentry';
-
 /**
  * Wraps an IndexedDB transaction in a promise that resolves on completion or rejects on error/abort.
  *
@@ -19,19 +16,6 @@ function transactionPromise(tx: IDBTransaction): Promise<void> {
  */
 export class IndexedDBStore {
   #db: IDBDatabase | null = null;
-
-  #isPersistedBackingStore: boolean | null = null;
-
-  /**
-   * Indicates whether the store is backed by a persistent IndexedDB instance,
-   * or an in-memory store. Returns `null` if the database hasn't been opened.
-   *
-   * An instance might not be persisted in Firefox when the user is using
-   * private browsing mode: https://bugzilla.mozilla.org/show_bug.cgi?id=1982707
-   */
-  get isPersistedBackingStore() {
-    return this.#isPersistedBackingStore;
-  }
 
   /**
    * Opens the database, running migrations if necessary.
@@ -62,37 +46,9 @@ export class IndexedDBStore {
       };
       request.onsuccess = () => {
         this.#db = request.result;
-        this.#isPersistedBackingStore = true;
         resolve();
       };
       request.onerror = async () => {
-        if (request.error) {
-          captureException(request.error);
-
-          // `indexedDB` can't be used by addons in FF in some instances of
-          // private browsing mode due to this bug:
-          // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707
-          if (
-            request.error.name === 'InvalidStateError' &&
-            request.error.message ===
-              'A mutation operation was attempted on a database that did not allow mutations.'
-          ) {
-            console.error(request.error);
-            console.warn(
-              "Couldn't open IndexedDB, falling back to in-memory store.",
-            );
-            console.warn('Automatic vault recovery is not available.');
-            try {
-              // use an in-memory `fakeIndexedDB` for buggy Firefox
-              await this._open(name, version, fakeIndexedDB);
-              this.#isPersistedBackingStore = false;
-              resolve();
-            } catch (e) {
-              reject(e);
-            }
-            return;
-          }
-        }
         reject(request.error);
       };
     });
@@ -178,7 +134,6 @@ export class IndexedDBStore {
     if (this.#db) {
       this.#db.close();
       this.#db = null;
-      this.#isPersistedBackingStore = null;
     }
   }
 }

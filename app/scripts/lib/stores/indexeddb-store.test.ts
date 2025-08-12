@@ -30,9 +30,6 @@ describe('IndexedDBStore', () => {
       indexedDB.open = (name: string, version?: number) => {
         const request = {} as any;
         if (name === dbName && version === dbVersion) {
-          // restore the original way so it works the second time.
-          indexedDB.open = originalOpen;
-
           const error = new DOMException(
             'A mutation operation was attempted on a database that did not allow mutations.',
             'InvalidStateError',
@@ -52,13 +49,7 @@ describe('IndexedDBStore', () => {
 
     it('Falls back to an in-memory database', async () => {
       db = new IndexedDBStore();
-      expect(db.isPersistedBackingStore).toBe(null);
-      await db.open(dbName, dbVersion);
-      expect(db.isPersistedBackingStore).toBe(false);
-      // Verify the database is open by performing an operation
-      await db.set({ key: 'value' });
-      const values = await db.get(['key']);
-      expect(values).toEqual(['value']);
+      await expect(db.open(dbName, dbVersion)).rejects.toThrow(DOMException);
     });
   });
 
@@ -73,9 +64,7 @@ describe('IndexedDBStore', () => {
 
     describe('open', () => {
       it('opens the database successfully and creates store on first open', async () => {
-        expect(db.isPersistedBackingStore).toBe(null);
         await db.open(dbName, dbVersion);
-        expect(db.isPersistedBackingStore).toBe(true);
         // Verify the database is open by performing an operation
         await db.set({ key: 'value' });
         const values = await db.get(['key']);
