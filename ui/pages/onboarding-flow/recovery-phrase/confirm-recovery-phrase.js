@@ -101,9 +101,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [matching, setMatching] = useState(false);
   const [quizWords, setQuizWords] = useState(
-    generateQuizWords(
-      secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : [],
-    ),
+    generateQuizWords(splitSecretRecoveryPhrase),
   );
   const [answerSrp, setAnswerSrp] = useState('');
 
