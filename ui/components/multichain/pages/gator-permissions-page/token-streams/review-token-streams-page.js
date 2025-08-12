@@ -25,11 +25,7 @@ import {
 import { TOKEN_STREAMS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
-import {
-  extractNetworkName,
-  handleRevokeClick,
-  handleRevokeBatchClick,
-} from '../gator-permissions-page-helper';
+import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 
@@ -41,13 +37,10 @@ export const ReviewTokenStreamsPage = () => {
   const [networkName, setNetworkName] = useState('');
   const [totalTokenStreams, setTotalTokenStreams] = useState(0);
 
-  const {
-    revokeGatorPermission,
-    revokeGatorPermissionBatch,
-    findDelegatorFromInternalAccounts,
-  } = useRevokeGatorPermissions({
-    chainId,
-  });
+  const { revokeGatorPermission, revokeGatorPermissionBatch } =
+    useRevokeGatorPermissions({
+      chainId,
+    });
 
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const nativeTokenStreams = useSelector((state) =>
@@ -86,13 +79,7 @@ export const ReviewTokenStreamsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() =>
-            handleRevokeClick({
-              gatorPermission: stream,
-              findDelegatorFromInternalAccounts,
-              revokeGatorPermission,
-            })
-          }
+          onRevokeClick={async () => await revokeGatorPermission(stream)}
         />
       );
     });
@@ -133,15 +120,10 @@ export const ReviewTokenStreamsPage = () => {
 
             {/* Temporary button to revoke all token streams */}
             <Button
-              onClick={() => {
-                handleRevokeBatchClick({
-                  gatorPermissions: groupPermissions(
-                    nativeTokenStreams,
-                    erc20TokenStreams,
-                  ),
-                  findDelegatorFromInternalAccounts,
-                  revokeGatorPermissionBatch,
-                });
+              onClick={async () => {
+                await revokeGatorPermissionBatch(
+                  groupPermissions(nativeTokenStreams, erc20TokenStreams),
+                );
               }}
             >
               Revoke All

@@ -24,10 +24,7 @@ import {
 import { TOKEN_SUBSCRIPTIONS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
-import {
-  extractNetworkName,
-  handleRevokeClick,
-} from '../gator-permissions-page-helper';
+import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 
@@ -55,15 +52,22 @@ export const ReviewTokenSubscriptionsPage = () => {
     ),
   );
 
-  const { revokeGatorPermission, findDelegatorFromInternalAccounts } =
-    useRevokeGatorPermissions({
-      chainId,
-    });
+  const { revokeGatorPermission } = useRevokeGatorPermissions({
+    chainId,
+  });
 
   useEffect(() => {
     setNetworkName(extractNetworkName(networks, chainId));
-    setTotalTokenSubscriptions(nativeTokenPeriodicPermissions.length);
-  }, [chainId, nativeTokenPeriodicPermissions, networks]);
+    const totalSubscriptionsCount =
+      nativeTokenPeriodicPermissions.length +
+      erc20TokenPeriodicPermissions.length;
+    setTotalTokenSubscriptions(totalSubscriptionsCount);
+  }, [
+    chainId,
+    nativeTokenPeriodicPermissions,
+    erc20TokenPeriodicPermissions,
+    networks,
+  ]);
 
   const renderTokenSubscriptions = (subscriptions) =>
     subscriptions.map((subscription) => {
@@ -80,13 +84,7 @@ export const ReviewTokenSubscriptionsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() =>
-            handleRevokeClick({
-              gatorPermission: subscription,
-              findDelegatorFromInternalAccounts,
-              revokeGatorPermission,
-            })
-          }
+          onRevokeClick={async () => await revokeGatorPermission(subscription)}
         />
       );
     });

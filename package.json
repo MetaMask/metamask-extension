@@ -323,7 +323,7 @@
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "^22.1.0",
-    "@metamask/signature-controller": "file:./deps/signature-controller.tgz",
+    "@metamask/signature-controller": "^30.0.0",
     "@metamask/smart-transactions-controller": "^16.3.1",
     "@metamask/snaps-controllers": "^13.0.0",
     "@metamask/snaps-execution-environments": "^9.0.0",
