@@ -72,7 +72,7 @@ export default function SecureYourWallet() {
         hd_entropy_index: hdEntropyIndex ?? 0,
       },
     });
-    navigate(`${ONBOARDING_REVIEW_SRP_ROUTE}/${isFromReminderParam}`);
+    navigate(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
   };
 
   const handleClickNotRecommended = () => {

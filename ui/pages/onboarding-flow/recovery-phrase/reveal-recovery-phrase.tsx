@@ -64,7 +64,7 @@ export default function RevealRecoveryPhrase({
         const seedPhrase = await getSeedPhrase(_password);
         setSecretRecoveryPhrase(seedPhrase);
         navigate(
-          `${ONBOARDING_REVIEW_SRP_ROUTE}/${
+          `${ONBOARDING_REVIEW_SRP_ROUTE}${
             nextRouteQueryString ? `?${nextRouteQueryString}` : ''
           }`,
           { replace: true },

@@ -62,7 +62,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   useEffect(() => {
     if (!secretRecoveryPhrase) {
       navigate(
-        `${ONBOARDING_REVEAL_SRP_ROUTE}/${
+        `${ONBOARDING_REVEAL_SRP_ROUTE}${
           nextRouteQueryString ? `?${nextRouteQueryString}` : ''
         }`,
         { replace: true },
