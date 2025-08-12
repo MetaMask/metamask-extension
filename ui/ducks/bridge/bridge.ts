@@ -201,7 +201,7 @@ const bridgeSlice = createSlice({
         name: TraceName.BridgeBalancesUpdated,
       });
     });
-    builder.addCase(setEVMSrcTokenBalance.rejected, (state, action) => {
+    builder.addCase(setEVMSrcTokenBalance.rejected, (state) => {
       state.fromTokenBalance = null;
       endTrace({
         name: TraceName.BridgeBalancesUpdated,
@@ -213,7 +213,7 @@ const bridgeSlice = createSlice({
         name: TraceName.BridgeBalancesUpdated,
       });
     });
-    builder.addCase(setEVMSrcNativeBalance.rejected, (state, action) => {
+    builder.addCase(setEVMSrcNativeBalance.rejected, (state) => {
       state.fromNativeBalance = null;
       endTrace({
         name: TraceName.BridgeBalancesUpdated,
