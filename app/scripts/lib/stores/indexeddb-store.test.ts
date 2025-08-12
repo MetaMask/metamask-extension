@@ -28,15 +28,16 @@ describe('IndexedDBStore', () => {
       // make indexedDb throw the FF DOMException `InvalidStateError`:
       // "A mutation operation was attempted on a database that did not allow mutations."
       indexedDB.open = (name: string, version?: number) => {
-        const request = {} as any;
+        const request = {} as unknown as IDBOpenDBRequest;
         if (name === dbName && version === dbVersion) {
           const error = new DOMException(
             'A mutation operation was attempted on a database that did not allow mutations.',
             'InvalidStateError',
           );
+          // @ts-expect-error - we're intentionally mocking the error here
           request.error = error;
           setTimeout(() => {
-            request.onerror?.({ target: request });
+            request.onerror?.({ target: request } as unknown as Event);
           }, 0);
         }
         return request;

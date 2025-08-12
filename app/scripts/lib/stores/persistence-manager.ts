@@ -148,34 +148,34 @@ export class PersistenceManager {
 
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
-    this.#backupDb = new IndexedDBStore();
   }
 
   async open() {
     if (!this.#open) {
       try {
-        await this.#backupDb?.open('metamask-backup', 1);
+        const db = new IndexedDBStore();
+        await db.open('metamask-backup', 1);
+        this.#backupDb = db;
       } catch (error) {
-        if (error) {
+        // `indexedDB` can't be used by addons in FF in some instances of
+        // private browsing mode due to this bug:
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
+        // cases we just won't have a backup vault.
+        if (
+          isObject(error) &&
+          error.type === 'DOMException' &&
+          error.name === 'InvalidStateError' &&
+          error.message ===
+            'A mutation operation was attempted on a database that did not allow mutations.'
+        ) {
           captureException(error);
-          // `indexedDB` can't be used by addons in FF in some instances of
-          // private browsing mode due to this bug:
-          // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
-          // cases we just won't have a backup vault.
-          if (
-            isObject(error) &&
-            error.type === 'DOMException' &&
-            error.name === 'InvalidStateError' &&
-            error.message ===
-              'A mutation operation was attempted on a database that did not allow mutations.'
-          ) {
-            console.error(error);
-            console.warn('Automatic vault recovery is not available.');
-            this.#open = true;
-            return;
-          }
+          console.warn(
+            'Could not open backup database; automatic vault recovery will not be available.',
+          );
+          console.error(error);
+        } else {
+          throw error;
         }
-        throw error;
       }
       this.#open = true;
     }

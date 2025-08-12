@@ -24,19 +24,11 @@ export class IndexedDBStore {
    * @param version - The version of the database.
    */
   async open(name: string, version: number): Promise<void> {
-    return this._open(name, version, indexedDB);
-  }
-
-  private async _open(
-    name: string,
-    version: number,
-    database: IDBFactory,
-  ): Promise<void> {
     if (this.#db) {
       return;
     }
     await new Promise<void>((resolve, reject) => {
-      const request = database.open(name, version);
+      const request = indexedDB.open(name, version);
       request.onupgradeneeded = async () => {
         const db = request.result;
         // Default migration: create the 'store' object store if it doesn't exist
