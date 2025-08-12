@@ -40,7 +40,7 @@ export class IndexedDBStore {
         this.#db = request.result;
         resolve();
       };
-      request.onerror = async () => {
+      request.onerror = () => {
         reject(request.error);
       };
     });
