@@ -3,16 +3,12 @@
 /* eslint-disable import/extensions */
 import classnames from 'classnames';
 import React, { Suspense, useCallback, useEffect, useRef } from 'react';
-import {
-  type TypedUseSelectorHook,
-  useDispatch,
-  useSelector,
-} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
-import { type MetaMaskReduxState } from '../../store/store';
+import { useAppSelector } from '../../store/store';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
 import PermissionsConnect from '../permissions-connect';
@@ -296,9 +292,6 @@ const WalletDetails = mmLazy(
     )) as unknown as DynamicImportType,
 );
 // End Lazy Routes
-
-// TODO: Replace with same type in Redux store once react-redux v5 upgrade is completed.
-const useAppSelector: TypedUseSelectorHook<MetaMaskReduxState> = useSelector;
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
