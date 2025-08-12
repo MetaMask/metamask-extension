@@ -5,6 +5,7 @@ import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
@@ -32,6 +33,9 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
+import { formatWithThreshold } from '../util/formatWithThreshold';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -58,10 +62,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   });
 
   const accountGroupIdAssets = useSelector(getAllAssetsForSelectedAccountGroup);
-  console.log('accountGroupIdAssets', {
-    accountGroupIdAssets,
-    evmBalances,
-  });
 
   const multichainAssets = useMultiChainAssets();
 
@@ -70,6 +70,12 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const { networkFilter } = useNetworkFilter();
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const locale = useSelector(getIntlLocale);
+  const currentCurrency = useSelector(getCurrentCurrency);
+
   const networksToShow = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
       ? enabledNetworksByNamespace
@@ -77,6 +83,54 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   }, [enabledNetworksByNamespace, networkFilter]);
 
   const sortedFilteredTokens = useMemo(() => {
+    if (isMultichainAccountsState2Enabled) {
+      const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
+        ([chainId, assets]) => {
+          if (
+            isEvm &&
+            chainId.startsWith('0x') &&
+            !Object.entries(networksToShow)
+              .filter(([_, shouldShow]) => shouldShow)
+              .map(([networkKey]) => networkKey)
+              .includes(chainId)
+          ) {
+            return [];
+          }
+
+          return assets.map((asset) => ({
+            ...asset,
+            primary: formatWithThreshold(
+              Number(asset.balance),
+              0.00001,
+              locale,
+              {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 5,
+              },
+            ),
+            secondary: asset.tokenFiatAmount
+              ? formatWithThreshold(
+                  Number(asset.tokenFiatAmount),
+                  0.01,
+                  locale,
+                  {
+                    style: 'currency',
+                    currency: currentCurrency.toUpperCase(),
+                  },
+                )
+              : undefined,
+          }));
+        },
+      );
+
+      const accountAssets = sortAssets(
+        [...accountAssetsPreSort],
+        tokenSortConfig,
+      );
+
+      return accountAssets;
+    }
+
     const balances = isEvm ? evmBalances : multichainAssets;
     const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
       {
@@ -96,9 +150,18 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     networksToShow,
     currentNetwork.chainId,
     tokenSortConfig,
+    isMultichainAccountsState2Enabled,
+    accountGroupIdAssets,
     // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
   ]);
+
+  console.log('sdkjkjdsahkjsdaKJHSADhkjdsahjkSDAJK', {
+    XXXX: sortedFilteredTokens.find((token) =>
+      token.chainId.includes('solana'),
+    ),
+    multichainAssets,
+  });
 
   useEffect(() => {
     if (sortedFilteredTokens) {

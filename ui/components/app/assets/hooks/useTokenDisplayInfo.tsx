@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import {
+  getIsMultichainAccountsState2Enabled,
   getIsTestnet,
   getSelectedAccount,
   getShowFiatInTestnets,
@@ -48,6 +49,56 @@ export const useTokenDisplayInfo = ({
   const shouldShowFiat =
     showFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  if (isMultichainAccountsState2Enabled) {
+    if (isEvm) {
+      const isEvmMainnet = token.chainId
+        ? isChainIdMainnet(token.chainId)
+        : false;
+
+      const tokenData = Object.values(tokenList).find(
+        (tokenToFind) =>
+          isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&
+          isEqualCaseInsensitive(tokenToFind.address, token.address),
+      );
+
+      const title =
+        tokenData?.name ||
+        (token.chainId === '0x1' && token.symbol === 'ETH'
+          ? 'Ethereum'
+          : token.chainId &&
+            erc20TokensByChain?.[token.chainId]?.data?.[
+              token.address.toLowerCase()
+            ]?.name) ||
+        token.symbol;
+
+      const tokenImage =
+        tokenData?.iconUrl ||
+        (token.chainId &&
+          erc20TokensByChain?.[token.chainId]?.data?.[
+            token.address.toLowerCase()
+          ]?.iconUrl) ||
+        token.image;
+
+      return {
+        title,
+        tokenImage,
+        isStakeable: isEvmMainnet && token.isNative,
+        tokenChainImage: tokenChainImage as string,
+      } as TokenDisplayInfo;
+    }
+
+    return {
+      title: token.title,
+      tokenImage: token.image,
+      isStakeable: false,
+      tokenChainImage: token.image as string,
+    } as TokenDisplayInfo;
+  }
+
   const secondaryThreshold = 0.01;
 
   // Format for fiat balance with currency style
@@ -67,7 +118,7 @@ export const useTokenDisplayInfo = ({
       : undefined;
 
   const formattedPrimary = formatWithThreshold(
-    Number(isEvm ? token.string : token.primary),
+    Number((isEvm ? token.string : token.primary) ?? token.balance),
     0.00001,
     locale,
     {
