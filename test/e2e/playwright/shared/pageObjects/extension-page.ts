@@ -7,7 +7,14 @@ export class ChromeExtensionPage {
   async initExtension() {
     const launchOptions = {
       headless: false,
-      args: [`--disable-extensions-except=${extensionPath}`],
+      channel: 'chrome' as const,
+      ignoreDefaultArgs: ['--disable-extensions'],
+      args: [
+        `--disable-extensions-except=${extensionPath}`,
+        `--load-extension=${extensionPath}`,
+        '--no-first-run',
+        '--no-default-browser-check',
+      ],
     };
     if (process.env.HEADLESS === 'true') {
       launchOptions.args.push('--headless=new');
