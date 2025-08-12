@@ -108,17 +108,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
                 maximumFractionDigits: 5,
               },
             ),
-            secondary: asset.tokenFiatAmount
-              ? formatWithThreshold(
-                  Number(asset.tokenFiatAmount),
-                  0.01,
-                  locale,
-                  {
-                    style: 'currency',
-                    currency: currentCurrency.toUpperCase(),
-                  },
-                )
+            secondary: asset.fiatBalance
+              ? formatWithThreshold(Number(asset.fiatBalance), 0.01, locale, {
+                  style: 'currency',
+                  currency: currentCurrency.toUpperCase(),
+                })
               : undefined,
+            tokenFiatAmount: asset.fiatBalance,
           }));
         },
       );
