@@ -262,9 +262,9 @@ describe('MetaMaskController', function () {
       );
     });
 
-    it('should throw an error if the `changePasswordMutex` is locked', async function () {
+    it('should throw an error if the `seedlessOperationMutex` is locked', async function () {
       const checkIsLockedSpy = jest
-        .spyOn(metamaskController.changePasswordMutex, 'isLocked')
+        .spyOn(metamaskController.seedlessOperationMutex, 'isLocked')
         .mockReturnValue(true);
       const seedlessSetLockedSpy = jest
         .spyOn(metamaskController.seedlessOnboardingController, 'setLocked')
@@ -274,7 +274,7 @@ describe('MetaMaskController', function () {
         .mockResolvedValue();
 
       await expect(metamaskController.setLocked()).rejects.toThrow(
-        'changePasswordMutex is locked',
+        'seedlessOperationMutex is locked',
       );
       expect(checkIsLockedSpy).toHaveBeenCalled();
       expect(seedlessSetLockedSpy).not.toHaveBeenCalled();
@@ -532,7 +532,7 @@ describe('MetaMaskController', function () {
 
     beforeEach(function () {
       // Mock the mutex
-      metamaskController.syncSeedlessGlobalPasswordMutex = {
+      metamaskController.seedlessOperationMutex = {
         acquire: jest.fn().mockResolvedValue(() => undefined),
       };
     });
@@ -554,7 +554,7 @@ describe('MetaMaskController', function () {
 
         expect(submitPasswordSpy).toHaveBeenCalledWith(password);
         expect(
-          metamaskController.syncSeedlessGlobalPasswordMutex.acquire,
+          metamaskController.seedlessOperationMutex.acquire,
         ).not.toHaveBeenCalled();
       });
     });
@@ -582,7 +582,7 @@ describe('MetaMaskController', function () {
 
         expect(submitPasswordSpy).toHaveBeenCalledWith(password);
         expect(
-          metamaskController.syncSeedlessGlobalPasswordMutex.acquire,
+          metamaskController.seedlessOperationMutex.acquire,
         ).not.toHaveBeenCalled();
       });
     });
@@ -659,14 +659,14 @@ describe('MetaMaskController', function () {
           .spyOn(metamaskController, 'syncKeyringEncryptionKey')
           .mockResolvedValue();
 
-        metamaskController.syncSeedlessGlobalPasswordMutex.acquire.mockResolvedValue(
+        metamaskController.seedlessOperationMutex.acquire.mockResolvedValue(
           releaseLock,
         );
 
         await metamaskController.syncPasswordAndUnlockWallet(password);
 
         expect(
-          metamaskController.syncSeedlessGlobalPasswordMutex.acquire,
+          metamaskController.seedlessOperationMutex.acquire,
         ).toHaveBeenCalled();
         expect(
           metamaskController.keyringController.verifyPassword,
@@ -733,7 +733,7 @@ describe('MetaMaskController', function () {
           .mockRejectedValue(syncError);
         jest.spyOn(metamaskController, 'setLocked').mockResolvedValue();
 
-        metamaskController.syncSeedlessGlobalPasswordMutex.acquire.mockResolvedValue(
+        metamaskController.seedlessOperationMutex.acquire.mockResolvedValue(
           releaseLock,
         );
 
@@ -778,7 +778,7 @@ describe('MetaMaskController', function () {
           .mockRejectedValue(changePasswordError);
         jest.spyOn(metamaskController, 'setLocked').mockResolvedValue();
 
-        metamaskController.syncSeedlessGlobalPasswordMutex.acquire.mockResolvedValue(
+        metamaskController.seedlessOperationMutex.acquire.mockResolvedValue(
           releaseLock,
         );
 
@@ -828,7 +828,7 @@ describe('MetaMaskController', function () {
           )
           .mockRejectedValue(new Error('Recovery failed'));
 
-        metamaskController.syncSeedlessGlobalPasswordMutex.acquire.mockResolvedValue(
+        metamaskController.seedlessOperationMutex.acquire.mockResolvedValue(
           releaseLock,
         );
 
