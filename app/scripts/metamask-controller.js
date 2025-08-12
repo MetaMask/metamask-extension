@@ -545,10 +545,8 @@ export default class MetamaskController extends EventEmitter {
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex();
 
-    // lock to ensure only one seedless password sync is running at once
-    this.syncSeedlessGlobalPasswordMutex = new Mutex();
-
-    this.changePasswordMutex = new LockWithStatus();
+    // lock to ensure only one seedless onboarding operation is running at once
+    this.seedlessOperationMutex = new LockWithStatus();
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -4853,7 +4851,7 @@ export default class MetamaskController extends EventEmitter {
       isPasswordSynced = true;
       return isPasswordSynced;
     }
-    const releaseLock = await this.syncSeedlessGlobalPasswordMutex.acquire();
+    const releaseLock = await this.seedlessOperationMutex.acquire();
 
     try {
       const isKeyringPasswordValid = await this.keyringController
@@ -5093,6 +5091,7 @@ export default class MetamaskController extends EventEmitter {
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
     if (syncWithSocial) {
+      const releaseLock = await this.seedlessOperationMutex.acquire();
       let addNewSeedPhraseBackupSuccess = false;
       try {
         this.metaMetricsController.bufferedTrace?.({
@@ -5126,6 +5125,7 @@ export default class MetamaskController extends EventEmitter {
           name: TraceName.OnboardingAddSrp,
           data: { success: addNewSeedPhraseBackupSuccess },
         });
+        releaseLock();
       }
     } else {
       // Do not sync the seed phrase to the server, only update the local state
@@ -5146,7 +5146,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} oldPassword - The old password.
    */
   async changePassword(newPassword, oldPassword) {
-    const releaseLock = await this.changePasswordMutex.acquire();
+    const releaseLock = await this.seedlessOperationMutex.acquire();
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     try {
       await this.keyringController.changePassword(newPassword);
@@ -6554,13 +6554,18 @@ export default class MetamaskController extends EventEmitter {
     const bufferedPrivateKey = hexToBytes(add0x(privateKey));
 
     if (syncWithSocial) {
-      await this.seedlessOnboardingController.addNewSecretData(
-        bufferedPrivateKey,
-        SecretType.PrivateKey,
-        {
+      const releaseLock = await this.seedlessOperationMutex.acquire();
+      try {
+        await this.seedlessOnboardingController.addNewPrivateKeyBackup(
+          privateKey,
           keyringId,
-        },
-      );
+        );
+      } catch (error) {
+        log.error('Error adding new private key backup', error);
+        throw error;
+      } finally {
+        releaseLock();
+      }
     } else {
       // Do not sync the seed phrase to the server, only update the local state
       this.seedlessOnboardingController.updateBackupMetadataState({
@@ -8862,13 +8867,21 @@ export default class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   async setLocked() {
-    if (this.changePasswordMutex.isLocked()) {
-      log.error('changePasswordMutex is locked');
-      throw new Error('changePasswordMutex is locked');
+    if (this.seedlessOperationMutex.isLocked()) {
+      log.error('seedlessOperationMutex is locked');
+      throw new Error('seedlessOperationMutex is locked');
     }
 
-    await this.seedlessOnboardingController.setLocked();
-    await this.keyringController.setLocked();
+    const releaseLock = await this.seedlessOperationMutex.acquire();
+    try {
+      await this.seedlessOnboardingController.setLocked();
+      await this.keyringController.setLocked();
+    } catch (error) {
+      log.error('Error setting locked state', error);
+      throw error;
+    } finally {
+      releaseLock();
+    }
   }
 
   removePermissionsFor = (subjects) => {

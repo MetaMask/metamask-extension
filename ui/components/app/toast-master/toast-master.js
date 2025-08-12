@@ -377,7 +377,6 @@ function LockFailureToast() {
   const dispatch = useDispatch();
 
   const showLockFailureToast = useSelector(selectShowLockFailureToast);
-  console.log('showLockFailureToast', showLockFailureToast);
   const autoHideToastDelay = 5 * SECOND;
 
   return (
