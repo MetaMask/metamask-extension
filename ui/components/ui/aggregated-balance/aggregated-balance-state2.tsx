@@ -36,23 +36,25 @@ export const AggregatedBalanceState2: React.FC<
   const { privacyMode } = useSelector(getPreferences);
   const locale = useSelector(getIntlLocale);
 
+  const accountTreeState = useSelector((state) => {
+    const atc = (state as any)?.metamask?.AccountTreeController;
+    return atc?.accountTree;
+  });
+
+  console.log('accountTreeState', accountTreeState);
+
   const {
     selectBalanceForSelectedAccountGroup,
     selectBalanceForAllWallets,
     selectBalanceByAccountGroup,
   } = balanceSelectors;
   const selectedGroupBalance = useSelector((state) => {
-    const atc = (state as any)?.metamask?.AccountTreeController;
-    const selectedGroupId = atc?.accountTree?.selectedAccountGroup;
+    const uiAccountTree = (state as any)?.metamask?.accountTree;
+    const selectedGroupId = uiAccountTree?.selectedAccountGroup;
     if (!selectedGroupId) {
       return null;
     }
     return selectBalanceForSelectedAccountGroup()(state as any);
-  });
-
-  const accountTreeState = useSelector((state) => {
-    const atc = (state as any)?.metamask?.AccountTreeController;
-    return atc?.accountTree;
   });
 
   console.log('accountTreeState', accountTreeState);
@@ -63,8 +65,8 @@ export const AggregatedBalanceState2: React.FC<
   // Resolve group by membership of the selected account (mobile parity)
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const resolvedGroupId = useSelector((state) => {
-    const atc = (state as any)?.metamask?.AccountTreeController;
-    const wallets: Record<string, any> = atc?.accountTree?.wallets || {};
+    const uiAccountTree = (state as any)?.metamask?.accountTree;
+    const wallets: Record<string, any> = uiAccountTree?.wallets || {};
     const accountId = selectedAccount?.id;
     let fallbackFirstGroup: string | undefined;
     for (const [_walletId, wallet] of Object.entries(wallets || {})) {
