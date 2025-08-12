@@ -261,6 +261,41 @@ describe('MetaMaskController', function () {
         [],
       );
     });
+
+    it('should throw an error if the `changePasswordMutex` is locked', async function () {
+      const checkIsLockedSpy = jest
+        .spyOn(metamaskController.changePasswordMutex, 'isLocked')
+        .mockReturnValue(true);
+      const seedlessSetLockedSpy = jest
+        .spyOn(metamaskController.seedlessOnboardingController, 'setLocked')
+        .mockResolvedValue();
+      const keyringSetLockedSpy = jest
+        .spyOn(metamaskController.keyringController, 'setLocked')
+        .mockResolvedValue();
+
+      await expect(metamaskController.setLocked()).rejects.toThrow(
+        'changePasswordMutex is locked',
+      );
+      expect(checkIsLockedSpy).toHaveBeenCalled();
+      expect(seedlessSetLockedSpy).not.toHaveBeenCalled();
+      expect(keyringSetLockedSpy).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if the `seedlessOnboardingController.setLocked` fails', async function () {
+      const seedlessSetLockedSpy = jest
+        .spyOn(metamaskController.seedlessOnboardingController, 'setLocked')
+        .mockRejectedValue(new Error('error while setting seedless locked'));
+      const keyringSetLockedSpy = jest
+        .spyOn(metamaskController.keyringController, 'setLocked')
+        .mockResolvedValue();
+
+      await expect(metamaskController.setLocked()).rejects.toThrow(
+        'error while setting seedless locked',
+      );
+
+      expect(seedlessSetLockedSpy).toHaveBeenCalled();
+      expect(keyringSetLockedSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe('#addToken', function () {
