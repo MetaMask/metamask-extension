@@ -1,5 +1,6 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { deleteInterface } from '../../../../store/actions';
@@ -15,6 +16,7 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { Copyable } from '../copyable';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import { useSnapSettings } from '../../../../hooks/snaps/useSnapSettings';
+import { decodeSnapIdFromPathname } from '../../../../helpers/utils/snaps';
 
 type SnapSettingsRendererProps = {
   snapId: string;
@@ -22,9 +24,12 @@ type SnapSettingsRendererProps = {
 
 export const SnapSettingsRenderer: FunctionComponent<
   SnapSettingsRendererProps
-> = ({ snapId }) => {
+> = () => {
+  const { pathname } = useLocation();
   const dispatch = useDispatch();
   const t = useI18nContext();
+
+  const snapId = useMemo(() => decodeSnapIdFromPathname(pathname), [pathname]);
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
