@@ -352,9 +352,17 @@ class PageLoadBenchmark {
   }
 
   async saveResults(outputPath: string) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+    const { execSync } = require('child_process');
+    const gitSha = execSync('git rev-parse --short HEAD', {
+      cwd: __dirname,
+      encoding: 'utf8',
+    });
+
     const output = {
       timestamp: new Date().toISOString(),
       summary: this.calculateStatistics(),
+      commit: gitSha,
       rawResults: this.results,
     };
 
