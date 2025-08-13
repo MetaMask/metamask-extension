@@ -9,7 +9,6 @@ import {
 } from '@playwright/test';
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window {
     ethereum?: { isMetaMask: boolean };
   }
