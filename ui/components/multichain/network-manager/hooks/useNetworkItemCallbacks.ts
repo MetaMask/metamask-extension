@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { EthScope } from '@metamask/keyring-api';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { type Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
@@ -37,13 +38,13 @@ export const useNetworkItemCallbacks = () => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const isDiscoverBtnEnabled = useCallback(
-    (chainId: string): boolean => {
+    (chainId: Hex | `solana:${string}`): boolean => {
       // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
       // and in the constants `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`.
-      return (
-        (isNetworkDiscoverButtonEnabled as Record<string, boolean>)?.[
-          chainId
-        ] && CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
+      return Boolean(
+        isNetworkDiscoverButtonEnabled?.[
+          chainId as keyof typeof isNetworkDiscoverButtonEnabled
+        ] && CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined,
       );
     },
     [isNetworkDiscoverButtonEnabled],
@@ -71,7 +72,10 @@ export const useNetworkItemCallbacks = () => {
     (
       network: MultichainNetworkConfiguration,
     ): Record<string, (() => void) | undefined> => {
-      const { chainId, isEvm } = network;
+      const { chainId, isEvm } = network as {
+        chainId: Hex | `solana:${string}`;
+        isEvm: boolean;
+      };
 
       if (!isEvm) {
         return {
@@ -85,7 +89,9 @@ export const useNetworkItemCallbacks = () => {
             : undefined,
         };
       }
-      const hexChainId = convertCaipToHexChainId(chainId);
+      const hexChainId = convertCaipToHexChainId(
+        chainId as `${string}:${string}`,
+      );
       const isDeletable =
         isUnlocked &&
         network.chainId !== currentChainId &&
@@ -120,7 +126,9 @@ export const useNetworkItemCallbacks = () => {
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
               openWindow(
-                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
+                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[
+                  hexChainId as Hex | `solana:${string}`
+                ],
                 '_blank',
               );
             }

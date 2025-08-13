@@ -451,13 +451,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   };
 
   const isDiscoverBtnEnabled = useCallback(
-    (chainId: string): boolean => {
+    (chainId: Hex | `solana:${string}`): boolean => {
       // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
       // and in the constants `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`.
       return (
-        (isNetworkDiscoverButtonEnabled as Record<string, boolean>)?.[
-          chainId
-        ] && CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
+        Boolean(
+          isNetworkDiscoverButtonEnabled?.[
+            chainId as keyof typeof isNetworkDiscoverButtonEnabled
+          ],
+        ) && CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
       );
     },
     [isNetworkDiscoverButtonEnabled],
@@ -485,7 +487,10 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     (
       network: MultichainNetworkConfiguration,
     ): Record<string, (() => void) | undefined> => {
-      const { chainId, isEvm } = network;
+      const { chainId, isEvm } = network as {
+        chainId: Hex | `solana:${string}`;
+        isEvm: boolean;
+      };
 
       if (!isEvm) {
         return {
@@ -502,7 +507,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
       // Non-EVM networks cannot be deleted, edited or have
       // RPC endpoints so it's safe to call this conversion function here.
-      const hexChainId = convertCaipToHexChainId(chainId);
+      const hexChainId = convertCaipToHexChainId(
+        chainId as `${string}:${string}`,
+      );
       const isDeletable =
         isUnlocked &&
         network.chainId !== currentChainId &&

@@ -1146,7 +1146,10 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
 /**
  * A mapping for networks with enabled portfolio landing page to their URLs.
  */
-export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<string, string> = {
+export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
+  Hex | `solana:${string}`,
+  string
+> = {
   [CHAIN_IDS.LINEA_MAINNET]:
     'https://portfolio.metamask.io/explore/networks/linea',
   [CHAIN_IDS.SEI]: 'https://portfolio.metamask.io/explore/networks/sei',
