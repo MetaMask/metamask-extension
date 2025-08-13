@@ -8,7 +8,7 @@ import {
   Page,
   Browser,
 } from '@playwright/test';
-import { isHeadless } from '../../../helpers/env';
+// import { isHeadless } from '../../../helpers/env';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -67,7 +67,7 @@ class PageLoadBenchmark {
     await this.buildExtension();
 
     this.browser = await chromium.launch({
-      headless: isHeadless('PLAYWRIGHT'),
+      headless: true,
       args: [
         `--disable-extensions-except=${this.extensionPath}`,
         `--load-extension=${this.extensionPath}`,
