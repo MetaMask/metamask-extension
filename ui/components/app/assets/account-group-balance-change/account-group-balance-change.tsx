@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TextColor } from '../../../../../helpers/constants/design-system';
-import { getIntlLocale } from '../../../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
-import { getIsMultichainAccountsState2Enabled } from '../../../../../selectors';
+import { TextColor } from '../../../../helpers/constants/design-system';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 import {
   selectSelectedGroupPortfolioPercentChange,
   selectSelectedGroupPortfolioChange,
-} from '../../../../../selectors/assets';
-import { renderPercentageWithNumber } from './percentage-and-amount-change';
+} from '../../../../selectors/assets';
+import { renderPercentageWithNumber } from '../../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 
 // Simple inline implementations to avoid restricted imports
 const isValidAmount = (value: unknown): value is number =>
@@ -30,19 +30,28 @@ const formatValue = (
   return value.toFixed(2);
 };
 
-export type PercentAndChangeAmountProps = {
+export type AccountGroupBalanceChangeProps = {
   period: '1d' | '7d' | '30d';
 };
 
 // Self-contained component that fetches and formats portfolio change data
-export const PercentAndChangeAmount: React.FC<PercentAndChangeAmountProps> = ({
-  period,
-}) => {
+type AggregatedChange = {
+  period: '1d' | '7d' | '30d';
+  currentTotalInUserCurrency: number;
+  previousTotalInUserCurrency: number;
+  amountChangeInUserCurrency: number;
+  percentChange: number;
+  userCurrency: string;
+};
+
+export const AccountGroupBalanceChange: React.FC<
+  AccountGroupBalanceChangeProps
+> = ({ period }) => {
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
-  );
-  const fiatCurrency = useSelector(getCurrentCurrency);
-  const locale = useSelector(getIntlLocale);
+  ) as boolean;
+  const fiatCurrency = useSelector(getCurrentCurrency) as string;
+  const locale = useSelector(getIntlLocale) as string;
 
   // Memoized selectors for the specified period
   const percentSelector = useMemo(
@@ -57,7 +66,7 @@ export const PercentAndChangeAmount: React.FC<PercentAndChangeAmountProps> = ({
   // Get the data
   const portfolioPercent = useSelector(
     isMultichainAccountsState2Enabled ? percentSelector : () => 0,
-  );
+  ) as number;
   const portfolioChange = useSelector(
     isMultichainAccountsState2Enabled
       ? changeSelector
@@ -69,7 +78,7 @@ export const PercentAndChangeAmount: React.FC<PercentAndChangeAmountProps> = ({
           percentChange: 0,
           userCurrency: 'usd',
         }),
-  );
+  ) as AggregatedChange;
 
   // Early return if feature flag is off
   if (!isMultichainAccountsState2Enabled) {
@@ -93,7 +102,9 @@ export const PercentAndChangeAmount: React.FC<PercentAndChangeAmountProps> = ({
     }
   }
 
-  const formattedPercent = formatValue(portfolioPercent ?? null, true);
+  const percentNumber =
+    typeof portfolioPercent === 'number' ? portfolioPercent : 0;
+  const formattedPercent = formatValue(percentNumber, true);
 
   let formattedAmount = '';
   if (isValidAmount(portfolioChange.amountChangeInUserCurrency)) {

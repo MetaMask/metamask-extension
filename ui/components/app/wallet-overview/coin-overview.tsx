@@ -44,7 +44,7 @@ import {
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
-import { PercentAndChangeAmount } from '../../multichain/token-list-item/price/percentage-and-amount-change/percent-and-change-amount';
+import { AccountGroupBalanceChange } from '../assets/account-group-balance-change/account-group-balance-change';
 import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
@@ -264,7 +264,7 @@ export const CoinOverview = ({
     const renderAggregatedView = () => {
       let content: React.ReactNode;
       if (isMultichainAccountsState2Enabled) {
-        content = <PercentAndChangeAmount period="1d" />;
+        content = <AccountGroupBalanceChange period="1d" />;
       } else if (isTokenNetworkFilterEqualCurrentNetwork) {
         content = <AggregatedPercentageOverview />;
       } else {
@@ -290,7 +290,7 @@ export const CoinOverview = ({
       if (isMultichainAccountsState2Enabled) {
         return (
           <Box className="wallet-overview__currency-wrapper">
-            <PercentAndChangeAmount period="1d" />
+            <AccountGroupBalanceChange period="1d" />
             {renderPortfolioButton()}
           </Box>
         );
