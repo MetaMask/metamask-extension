@@ -186,9 +186,12 @@ const bridgeSlice = createSlice({
       state.txAlert = null;
     });
     builder.addCase(setEVMSrcTokenBalance.fulfilled, (state, action) => {
+      const isTokenInChain = !isCrossChain(
+        action.meta.arg.chainId,
+        state.fromToken?.chainId,
+      );
       if (
-        !isCrossChain(action.meta.arg.chainId, state.fromToken?.chainId) &&
-        state.fromToken?.address
+        isTokenInChain && state.fromToken?.address
           ? action.meta.arg.tokenAddress === state.fromToken.address
           : true
       ) {
