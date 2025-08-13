@@ -1,7 +1,7 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import {
   BackupState,
-  getIsSocialLoginAuthenticatedUser,
+  getIsSocialLoginUserAuthenticated,
   getSocialLoginEmail,
   getSocialLoginType,
 } from './social-sync';
@@ -63,7 +63,7 @@ describe('social-sync selectors', () => {
 
   describe('#getIsSocialLoginFlowInitialized', () => {
     it('returns true if the social login flow has been initialized and the user is authenticated', () => {
-      expect(getIsSocialLoginAuthenticatedUser(MOCK_STATE)).toBe(true);
+      expect(getIsSocialLoginUserAuthenticated(MOCK_STATE)).toBe(true);
     });
 
     it('returns false if user has not authenticated with social login', () => {
@@ -74,7 +74,29 @@ describe('social-sync selectors', () => {
           isSeedlessOnboardingUserAuthenticated: false,
         },
       };
-      expect(getIsSocialLoginAuthenticatedUser(state)).toBe(false);
+      expect(getIsSocialLoginUserAuthenticated(state)).toBe(false);
+    });
+
+    it('returns false if the social login type is not set', () => {
+      const state = {
+        ...MOCK_STATE,
+        metamask: {
+          ...MOCK_STATE.metamask,
+          authConnection: undefined,
+        },
+      };
+      expect(getIsSocialLoginUserAuthenticated(state)).toBe(false);
+    });
+
+    it('returns false if the social login email is not set', () => {
+      const state = {
+        ...MOCK_STATE,
+        metamask: {
+          ...MOCK_STATE.metamask,
+          socialLoginEmail: undefined,
+        },
+      };
+      expect(getIsSocialLoginUserAuthenticated(state)).toBe(false);
     });
   });
 });

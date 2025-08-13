@@ -23,6 +23,13 @@ export function getSocialLoginEmail(state: BackupState): string | undefined {
  * @param state - The backup state.
  * @returns True if the social login flow has been initialized and the user is authenticated, false otherwise.
  */
-export function getIsSocialLoginAuthenticatedUser(state: BackupState): boolean {
-  return state.metamask.isSeedlessOnboardingUserAuthenticated;
+export function getIsSocialLoginUserAuthenticated(state: BackupState): boolean {
+  const hasSocialLoginType = Boolean(getSocialLoginType(state));
+  const hasSocialLoginEmail = Boolean(getSocialLoginEmail(state));
+
+  return (
+    state.metamask.isSeedlessOnboardingUserAuthenticated &&
+    hasSocialLoginType &&
+    hasSocialLoginEmail
+  );
 }
