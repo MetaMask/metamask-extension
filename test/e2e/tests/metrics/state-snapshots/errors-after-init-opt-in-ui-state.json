@@ -380,8 +380,6 @@
     "accountTree": "object",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object",
-    "encryptionKey": "string",
-    "encryptionSalt": "string",
     "srpSessionData": "object"
   },
   "ramps": "object",
