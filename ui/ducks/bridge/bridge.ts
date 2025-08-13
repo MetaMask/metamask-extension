@@ -53,7 +53,7 @@ export const setTxAlerts = createAsyncThunk(
   fetchTxAlerts,
 );
 
-const getBalanceString = async ({
+const getBalanceAmount = async ({
   selectedAddress,
   tokenAddress,
   chainId,
@@ -80,8 +80,8 @@ export const setEVMSrcNativeBalance = createAsyncThunk(
   async ({
     selectedAddress,
     chainId,
-  }: Omit<Parameters<typeof getBalanceString>[0], 'tokenAddress'>) =>
-    await getBalanceString({
+  }: Omit<Parameters<typeof getBalanceAmount>[0], 'tokenAddress'>) =>
+    await getBalanceAmount({
       selectedAddress,
       tokenAddress: zeroAddress(),
       chainId,
@@ -90,7 +90,7 @@ export const setEVMSrcNativeBalance = createAsyncThunk(
 
 export const setEVMSrcTokenBalance = createAsyncThunk(
   'bridge/setEVMSrcTokenBalance',
-  getBalanceString,
+  getBalanceAmount,
 );
 
 const bridgeSlice = createSlice({
