@@ -3004,9 +3004,6 @@
   "learnMoreAboutPrivacy": {
     "message": "了解有关隐私最佳实践的更多信息。"
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "了解有关 Solana 账户的更多详情"
-  },
   "learnMoreKeystone": {
     "message": "了解更多"
   },
@@ -3765,9 +3762,6 @@
   },
   "notEnoughGas": {
     "message": "燃料不足"
-  },
-  "notNow": {
-    "message": "暂时不"
   },
   "notificationDetail": {
     "message": "详情"
@@ -5710,27 +5704,6 @@
   "solanaAccountRequired": {
     "message": "连接到此网站需要 Solana 账户。"
   },
-  "solanaImportAccounts": {
-    "message": "导入 Solana 账户"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "导入私钥助记词以将 Solana 账户从其他钱包迁移。"
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "即将推出更多功能"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFT、硬件钱包支持等功能即将上线。"
-  },
-  "solanaOnMetaMask": {
-    "message": "MetaMask 支持 Solana"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "发送、接收和兑换代币"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "使用 SOL、USDC 等代币进行转账和交易。"
-  },
   "someNetworks": {
     "message": "$1 网络"
   },
@@ -7054,9 +7027,6 @@
   },
   "viewOnOpensea": {
     "message": "在 Opensea 上查看"
-  },
-  "viewSolanaAccount": {
-    "message": "查看 Solana 账户"
   },
   "viewTransaction": {
     "message": "查看交易"
