@@ -2,8 +2,8 @@ import React from 'react';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
-type DynamicImportType = () => Promise<{ default: React.ComponentType }>;
-type ModuleWithDefaultType = {
+export type DynamicImportType = () => Promise<ModuleWithDefaultType>;
+export type ModuleWithDefaultType = {
   default: React.ComponentType;
 };
 

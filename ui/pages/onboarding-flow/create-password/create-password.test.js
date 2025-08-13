@@ -6,6 +6,7 @@ import initializedMockState from '../../../../test/data/mock-send-state.json';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import CreatePassword from './create-password';
@@ -47,12 +48,13 @@ describe('Onboarding Create Password', () => {
       );
     });
 
-    it('should route to completion when keyring is present and imported first time flow type', () => {
+    it('should route to metametrics when keyring is present and imported first time flow type', () => {
       const importFirstTimeFlowState = {
         ...initializedMockState,
         metamask: {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
+          participateInMetaMetrics: null,
         },
       };
       const mockStore = configureMockStore()(importFirstTimeFlowState);
@@ -61,6 +63,23 @@ describe('Onboarding Create Password', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
         replace: true,
       });
+    });
+
+    it('should redirect to onboarding completion when user has imported SRP and set participating in metametrics', () => {
+      const importFirstTimeFlowState = {
+        ...initializedMockState,
+        metamask: {
+          ...initializedMockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.import,
+          participateInMetaMetrics: true,
+        },
+      };
+      const mockStore = configureMockStore()(importFirstTimeFlowState);
+      renderWithProvider(<CreatePassword />, mockStore);
+
+      expect(mockHistoryReplace).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+      );
     });
   });
 

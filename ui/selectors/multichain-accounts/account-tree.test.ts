@@ -90,7 +90,7 @@ describe('Multichain Accounts Selectors', () => {
                 },
               ],
               metadata: {
-                name: 'Default',
+                name: 'Account 1',
                 entropy: {
                   groupIndex: 0,
                 },
@@ -143,7 +143,7 @@ describe('Multichain Accounts Selectors', () => {
                 },
               ],
               metadata: {
-                name: 'Default',
+                name: 'Account 2',
                 entropy: {
                   groupIndex: 0,
                 },
@@ -195,7 +195,7 @@ describe('Multichain Accounts Selectors', () => {
                   },
                 ],
                 metadata: {
-                  name: 'Default',
+                  name: 'Another Snap Account 1',
                   pinned: false,
                   hidden: false,
                 },
@@ -244,7 +244,7 @@ describe('Multichain Accounts Selectors', () => {
                   },
                 ],
                 metadata: {
-                  name: 'Default',
+                  name: 'Ledger Account 1',
                   pinned: false,
                   hidden: false,
                 },
@@ -297,7 +297,7 @@ describe('Multichain Accounts Selectors', () => {
                 },
               ],
               metadata: {
-                name: 'Default',
+                name: 'Snap Account 1',
                 pinned: false,
                 hidden: false,
               },
