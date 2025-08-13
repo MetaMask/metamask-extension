@@ -9,7 +9,6 @@ type BenchmarkMetrics = {
   largestContentfulPaint: number;
   contentScriptLoadTime: number;
   backgroundScriptInitTime: number;
-  totalExtensionLoadTime: number;
   memoryUsage?: {
     usedJSHeapSize: number;
     totalJSHeapSize: number;
@@ -32,6 +31,8 @@ type BenchmarkOutput = {
   timestamp: string;
   commit: string;
   summary: BenchmarkSummary[];
+  // FIXME: don't use any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rawResults: any[];
 };
 
@@ -43,7 +44,9 @@ function formatTime(ms: number): string {
 }
 
 function formatStandardDeviation(mean: number, stdDev: number): string {
-  if (!mean || !stdDev) return '';
+  if (!mean || !stdDev) {
+    return '';
+  }
   return ` (±${formatTime(stdDev)})`;
 }
 
@@ -52,14 +55,18 @@ function getEmojiForMetric(metric: string, value: number): string {
     pageLoadTime: { good: 1000, warning: 2000 },
     firstContentfulPaint: { good: 800, warning: 1500 },
     largestContentfulPaint: { good: 1200, warning: 2500 },
-    totalExtensionLoadTime: { good: 1950, warning: 2600 },
   };
 
   const threshold = thresholds[metric];
-  if (!threshold) return '📊';
-
-  if (value <= threshold.good) return '🟢';
-  if (value <= threshold.warning) return '🟡';
+  if (!threshold) {
+    return '📊';
+  }
+  if (value <= threshold.good) {
+    return '🟢';
+  }
+  if (value <= threshold.warning) {
+    return '🟡';
+  }
   return '🔴';
 }
 
@@ -67,7 +74,6 @@ function formatMetricRow(
   metricName: string,
   mean: number,
   stdDev: number,
-  samples: number,
 ): string {
   const emoji = getEmojiForMetric(metricName, mean);
   const formattedMean = formatTime(mean);
@@ -102,15 +108,18 @@ function generateBenchmarkComment(benchmarkData: BenchmarkOutput): string {
       'pageLoadTime',
       'firstContentfulPaint',
       'largestContentfulPaint',
-      'totalExtensionLoadTime'
     ];
 
     for (const metric of keyMetrics) {
-      const meanValue = mean[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
-      const stdDevValue = standardDeviation[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+      const meanValue =
+        mean[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+      const stdDevValue =
+        standardDeviation[
+          metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+        ];
 
       if (typeof meanValue === 'number') {
-        comment += formatMetricRow(metric, meanValue, stdDevValue || 0, samples) + '\n';
+        comment += `${formatMetricRow(metric, meanValue, stdDevValue || 0)}\n`;
       }
     }
 
@@ -121,12 +130,20 @@ function generateBenchmarkComment(benchmarkData: BenchmarkOutput): string {
 
     const allMetrics = Object.keys(mean);
     for (const metric of allMetrics) {
-      const meanValue = mean[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
-      const stdDevValue = standardDeviation[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
-      const minValue = pageSummary.min[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
-      const maxValue = pageSummary.max[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
-      const p95Value = pageSummary.p95[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
-      const p99Value = pageSummary.p99[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+      const meanValue =
+        mean[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+      const stdDevValue =
+        standardDeviation[
+          metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+        ];
+      const minValue =
+        pageSummary.min[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+      const maxValue =
+        pageSummary.max[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+      const p95Value =
+        pageSummary.p95[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+      const p99Value =
+        pageSummary.p99[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
 
       if (typeof meanValue === 'number') {
         comment += `| ${metric} | ${formatTime(meanValue)} | ${formatTime(stdDevValue || 0)} | ${formatTime(minValue || 0)} | ${formatTime(maxValue || 0)} | ${formatTime(p95Value || 0)} | ${formatTime(p99Value || 0)} |\n`;
@@ -143,13 +160,9 @@ function generateBenchmarkComment(benchmarkData: BenchmarkOutput): string {
 }
 
 async function main(): Promise<void> {
-  const {
-    PR_COMMENT_TOKEN,
-    OWNER,
-    REPOSITORY,
-    PR_NUMBER,
-    GITHUB_SHA,
-  } = process.env as Record<string, string>;
+  // TODO: [ffmcgee] retrieve `GITHUB_SHA` from `process.env` to use when saving historical data
+  const { PR_COMMENT_TOKEN, OWNER, REPOSITORY, PR_NUMBER } =
+    process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
     console.warn('No pull request detected, skipping benchmark comment');

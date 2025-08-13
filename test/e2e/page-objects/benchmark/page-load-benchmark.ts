@@ -1,14 +1,10 @@
 import { promises as fs } from 'fs';
 import { execSync } from 'child_process';
 import path from 'path';
-import {
-  chromium,
-  type BrowserContext,
-  Page,
-  Browser,
-} from '@playwright/test';
+import { chromium, type BrowserContext, Page, Browser } from '@playwright/test';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window {
     ethereum?: { isMetaMask: boolean };
   }
@@ -22,7 +18,6 @@ type BenchmarkMetrics = {
   largestContentfulPaint: number;
   contentScriptLoadTime: number;
   backgroundScriptInitTime: number;
-  totalExtensionLoadTime: number;
   memoryUsage?: {
     usedJSHeapSize: number;
     totalJSHeapSize: number;
@@ -130,8 +125,6 @@ export class PageLoadBenchmark {
       performance.now = () => originalNow() + (Date.now() - startTime);
     });
 
-    const extensionStartTime = Date.now();
-
     await page.goto(url, { waitUntil: 'networkidle' });
 
     // Wait for page to be fully loaded
@@ -149,7 +142,7 @@ export class PageLoadBenchmark {
       )[0] as PerformanceEntry;
 
       return {
-        pageLoadTime: navigation.loadEventEnd - navigation.loadEventStart,
+        pageLoadTime: navigation.loadEventEnd - navigation.startTime,
         domContentLoaded:
           navigation.domContentLoadedEventEnd -
           navigation.domContentLoadedEventStart,
@@ -158,18 +151,21 @@ export class PageLoadBenchmark {
           paint.find((p) => p.name === 'first-contentful-paint')?.startTime ||
           0,
         largestContentfulPaint: lcp?.startTime || 0,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         memoryUsage: (performance as any).memory
           ? {
-            usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
-            totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
-            jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
-          }
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
+            }
           : undefined,
+        totalLoadTime: performance.now(),
       };
     });
 
-    // Measure extension-specific metrics
-    const extensionEndTime = Date.now();
     const contentScriptLoadTime = await this.measureContentScriptLoad(page);
     const backgroundScriptInitTime = await this.measureBackgroundScriptInit();
 
@@ -177,7 +173,6 @@ export class PageLoadBenchmark {
       ...metrics,
       contentScriptLoadTime,
       backgroundScriptInitTime,
-      totalExtensionLoadTime: extensionEndTime - extensionStartTime,
     };
 
     const result: BenchmarkResult = {
