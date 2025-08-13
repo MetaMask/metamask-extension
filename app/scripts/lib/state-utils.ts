@@ -1,4 +1,5 @@
 import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
+import { AccessToken } from '@metamask/profile-sync-controller/sdk';
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 
@@ -73,12 +74,13 @@ function sanitizeAuthenticationControllerState(state: FlattenedUIState) {
 
   state.srpSessionData = Object.entries(srpSessionData).reduce(
     (acc, [key, value]) => {
+      const token: Partial<AccessToken> = {
+        ...value.token,
+      };
+      delete token.accessToken;
       acc[key] = {
         ...value,
-        token: {
-          ...value.token,
-          accessToken: 'redacted',
-        },
+        token: token as AccessToken, // Cast ignores missing accessToken field.
       };
       return acc;
     },
