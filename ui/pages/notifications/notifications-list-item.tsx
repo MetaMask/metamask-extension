@@ -29,7 +29,7 @@ export function NotificationsListItem({
 }: {
   notification: Notification;
 }) {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);
   const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
@@ -73,8 +73,8 @@ export function NotificationsListItem({
       return;
     }
 
-    history(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
-  }, [notification, markNotificationAsRead, history]);
+    navigate(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
+  }, [notification, markNotificationAsRead, navigate]);
 
   if (!hasNotificationComponents(notification.type)) {
     return null;
