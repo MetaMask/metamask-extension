@@ -3,7 +3,7 @@ import { EthScope } from '@metamask/keyring-api';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
   getRpcDataByChainId,
@@ -39,11 +39,11 @@ export const useNetworkItemCallbacks = () => {
   const isDiscoverBtnEnabled = useCallback(
     (chainId: string): boolean => {
       // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
-      // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      // and in the constants `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`.
       return (
         (isNetworkDiscoverButtonEnabled as Record<string, boolean>)?.[
           chainId
-        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
+        ] && CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
       );
     },
     [isNetworkDiscoverButtonEnabled],
@@ -78,7 +78,7 @@ export const useNetworkItemCallbacks = () => {
           onDiscoverClick: isDiscoverBtnEnabled(chainId)
             ? () => {
                 openWindow(
-                  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[chainId],
+                  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId],
                   '_blank',
                 );
               }
@@ -120,7 +120,7 @@ export const useNetworkItemCallbacks = () => {
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
               openWindow(
-                CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
+                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
                 '_blank',
               );
             }

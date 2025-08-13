@@ -53,7 +53,7 @@ import {
 import {
   FEATURED_RPCS,
   TEST_CHAINS,
-  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
+  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME } from '../../../../shared/constants/multichain/networks';
 import {
@@ -361,13 +361,10 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
       dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
     } else {
-      const allOpts = Object.keys(evmNetworks).reduce(
-        (acc, id) => {
-          acc[id] = true;
-          return acc;
-        },
-        {} as Record<string, boolean>,
-      );
+      const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
+        acc[id] = true;
+        return acc;
+      }, {} as Record<string, boolean>);
       dispatch(setTokenNetworkFilter(allOpts));
     }
 
@@ -456,11 +453,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const isDiscoverBtnEnabled = useCallback(
     (chainId: string): boolean => {
       // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
-      // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      // and in the constants `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`.
       return (
         (isNetworkDiscoverButtonEnabled as Record<string, boolean>)?.[
           chainId
-        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
+        ] && CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
       );
     },
     [isNetworkDiscoverButtonEnabled],
@@ -495,7 +492,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           onDiscoverClick: isDiscoverBtnEnabled(chainId)
             ? () => {
                 openWindow(
-                  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[chainId],
+                  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId],
                   '_blank',
                 );
               }
@@ -536,7 +533,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
               openWindow(
-                CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
+                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
                 '_blank',
               );
             }
