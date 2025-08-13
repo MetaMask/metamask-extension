@@ -1,5 +1,4 @@
 import React from 'react';
-import * as reactRouterDom from 'react-router-dom-v5-compat';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
@@ -13,11 +12,15 @@ import configureStore from '../../../store/store';
 import { TransactionGroup } from '../../../hooks/useTransactionDisplayData';
 import CrossChainSwapTxDetails from './transaction-details';
 
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+const mockUseParams = jest.fn();
+
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: jest.fn(),
-  useLocation: jest.fn(),
-  useParams: jest.fn(),
+  useNavigate: () => mockUseNavigate,
+  useLocation: () => mockUseLocation(),
+  useParams: () => mockUseParams(),
 }));
 
 const getMockStore = (
@@ -25,12 +28,16 @@ const getMockStore = (
   srcTxMetaId: string,
   txHistoryItem: BridgeHistoryItem,
 ) => {
-  jest.spyOn(reactRouterDom, 'useLocation').mockReturnValue({
+  mockUseLocation.mockReturnValue({
+    key: 'test-key',
+    pathname: '/bridge/transaction-details',
+    search: '',
+    hash: '',
     state: {
       transactionGroup,
     },
   });
-  jest.spyOn(reactRouterDom, 'useParams').mockReturnValue({
+  mockUseParams.mockReturnValue({
     srcTxMetaId,
   });
 
