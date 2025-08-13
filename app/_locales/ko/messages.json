@@ -3004,9 +3004,6 @@
   "learnMoreAboutPrivacy": {
     "message": "개인정보 보호 모범 사례에 대해 자세히 알아보세요."
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "솔라나 계정에 대해 더 자세히 알아보기"
-  },
   "learnMoreKeystone": {
     "message": "자세히 알아보기"
   },
@@ -3765,9 +3762,6 @@
   },
   "notEnoughGas": {
     "message": "가스 부족"
-  },
-  "notNow": {
-    "message": "나중에"
   },
   "notificationDetail": {
     "message": "세부 정보"
@@ -5710,27 +5704,6 @@
   "solanaAccountRequired": {
     "message": "이 사이트에 연결하려면 솔라나 계정이 필요합니다."
   },
-  "solanaImportAccounts": {
-    "message": "솔라나 계정 가져오기"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "다른 지갑에서 솔라나 계정을 가져오려면 비밀복구구문을 입력하세요."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "더 많은 기능이 곧 추가됩니다"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFT, 하드웨어 지갑 지원 등 여러 가지가 곧 추가됩니다."
-  },
-  "solanaOnMetaMask": {
-    "message": "MetaMask 플랫폼에서의 솔라나 이용"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "토큰 송금, 받기, 스왑"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "SOL, USDC 등의 토큰을 전송 및 트랜잭션하세요."
-  },
   "someNetworks": {
     "message": "네트워크 $1개"
   },
@@ -7054,9 +7027,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea에서 보기"
-  },
-  "viewSolanaAccount": {
-    "message": "솔라나 계정 보기"
   },
   "viewTransaction": {
     "message": "트랜잭션 보기"
