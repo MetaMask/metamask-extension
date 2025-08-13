@@ -1,5 +1,8 @@
 {
-  "ignorePaths": ["app/images", "package.json"],
+  "ignorePaths": [
+    "app/images",
+    "package.json"
+  ],
   "ignoreWords": [
     "BUNDLESIZE",
     "Brainstem",
@@ -85,6 +88,7 @@
     "pipefail",
     "quickstart",
     "recompiles",
+    "reentrancy",
     "retryable",
     "safener",
     "shellcheck",

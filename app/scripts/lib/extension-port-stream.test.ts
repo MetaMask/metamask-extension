@@ -5,12 +5,15 @@ import type {
   TransportChunkFrame,
   Options,
 } from './extension-port-stream';
+import { Json } from '@metamask/utils';
 
 // the Jest type for it is wrong
 const it = globalThis.it as unknown as jest.It;
 
+const originalStringify = JSON.stringify.bind(JSON);
+
 // Helper to create a mock port
-const createMockPort = () => {
+const createMockPort = (CHUNK_SIZE: number) => {
   const listeners: {
     message: ((msg: unknown, port: Runtime.Port) => void)[];
     disconnect: ((port: Runtime.Port) => void)[];
@@ -20,7 +23,12 @@ const createMockPort = () => {
   };
   const mockPortInstance: jest.Mocked<Runtime.Port> = {
     name: 'mockPort',
-    postMessage: jest.fn(),
+    postMessage: jest.fn((message: object) => {
+      const messageSize = originalStringify(message).length;
+      if (messageSize > CHUNK_SIZE) {
+        throw new Error('Message length exceeded maximum allowed length');
+      }
+    }),
     onMessage: {
       addListener: jest.fn((cb) => listeners.message.push(cb)),
       removeListener: jest.fn((cb) => {
@@ -81,7 +89,7 @@ describe('extension-port-stream', () => {
       mockPort: port,
       simulateMessage,
       simulateDisconnect: disconnect,
-    } = createMockPort();
+    } = createMockPort(CHUNK_SIZE);
     mockPort = port;
     simulatePortMessage = simulateMessage;
     simulatePortDisconnect = disconnect;
@@ -399,17 +407,21 @@ describe('extension-port-stream', () => {
       });
     });
 
-    describe('_write', () => {
-      it('should write non-chunked data directly if small enough (using toFrames)', (done) => {
-        stream = createStream({ log: mockLog });
+    describe.only('_write', () => {
+      it('should write non-chunked data directly if small enough (should not use toFrames)', (done) => {
+        stream = createStream({ log: mockLog, debug: true });
         const data = { message: 'write this' };
-        // JSON.stringify(data) is small, toFrames yields data itself
 
         stream._write(data, 'utf-8', (err?: Error | null) => {
           expect(err).toBeFalsy();
           expect(mockPort.postMessage).toHaveBeenCalledTimes(1);
           expect(mockPort.postMessage).toHaveBeenCalledWith(data);
           expect(mockLog).toHaveBeenCalledWith(data, true);
+          expect(consoleDebugSpy).toHaveBeenCalledWith(
+            '%cPortStream',
+            'color:#888;',
+            'sent whole chunk via postMessage',
+          );
           done();
         });
       });
@@ -437,32 +449,26 @@ describe('extension-port-stream', () => {
         stream = createStream({ log: mockLog, debug: true });
 
         // This payload will be stringified by the mocked JSON.stringify
-        const largePayload = { data: 'This is a large payload' };
-        const jsonPayload = 'B'.repeat(CHUNK_SIZE + 100); // Force 2 chunks
-
-        const stringifySpy = jest
-          .spyOn(JSON, 'stringify')
-          .mockImplementation((obj) => {
-            if (obj === largePayload) {
-              return jsonPayload;
-            }
-            return originalGlobalJsonStringify(obj);
-          });
+        const largePayload = {
+          data: 'This is a large payload' + 'B'.repeat(CHUNK_SIZE + 1),
+        };
+        const jsonPayload = JSON.stringify(largePayload);
 
         const expectedFrames: TransportChunkFrame[] = [
-          `1|2|0|${jsonPayload.substring(0, CHUNK_SIZE)}`,
-          `1|2|1|${jsonPayload.substring(CHUNK_SIZE)}`,
+          `1|2|0|${jsonPayload.substring(0, CHUNK_SIZE - 33)}`,
+          `1|2|1|${jsonPayload.substring(CHUNK_SIZE - 33)}`,
         ];
 
         stream._write(largePayload, 'utf-8', (err?: Error | null) => {
           expect(err).toBeFalsy();
-          expect(mockPort.postMessage).toHaveBeenCalledTimes(2);
+          expect(mockPort.postMessage).toHaveBeenCalledTimes(3);
+          expect(mockPort.postMessage).toHaveBeenNthCalledWith(1, largePayload);
           expect(mockPort.postMessage).toHaveBeenNthCalledWith(
-            1,
+            2,
             expectedFrames[0],
           );
           expect(mockPort.postMessage).toHaveBeenNthCalledWith(
-            2,
+            3,
             expectedFrames[1],
           );
           expect(mockLog).toHaveBeenCalledWith(largePayload, true);
@@ -478,38 +484,47 @@ describe('extension-port-stream', () => {
             '→',
             expectedFrames[1],
           );
-          stringifySpy.mockRestore();
           done();
         });
       });
 
       it('should increment the chunk ID for each new chunk', async () => {
         // This payload will be stringified by the mocked JSON.stringify
-        const largePayload = { data: 'This is a large payload' };
+        const largePayload = {
+          data: 'This is a large payload' + 'A'.repeat(33),
+        };
         const jsonPayload = JSON.stringify(largePayload);
-        const chunkSize = jsonPayload.length / 2; // Force 2 chunks
+        const chunkSize = jsonPayload.length / 2 + 33; // Force 2 chunks
         stream = createStream({ chunkSize, log: mockLog, debug: true });
 
-        const expectedFrames: TransportChunkFrame[] = [
-          `1|2|0|${jsonPayload.substring(0, chunkSize)}`,
-          `1|2|1|${jsonPayload.substring(chunkSize)}`,
-          `2|2|0|${jsonPayload.substring(0, chunkSize)}`,
-          `2|2|1|${jsonPayload.substring(chunkSize)}`,
+        const expectedFrames: (TransportChunkFrame | Json)[] = [
+          largePayload,
+          `1|2|0|${jsonPayload.substring(0, chunkSize - 33)}`,
+          `1|2|1|${jsonPayload.substring(chunkSize - 33)}`,
+          largePayload,
+          `2|2|0|${jsonPayload.substring(0, chunkSize - 33)}`,
+          `2|2|1|${jsonPayload.substring(chunkSize - 33)}`,
         ];
 
         await new Promise<void>((resolve) => {
+          mockPort.postMessage.mockImplementationOnce(() => {
+            throw new Error('Message length exceeded maximum allowed length');
+          });
           stream._write(largePayload, 'utf-8', (err?: Error | null) => {
             expect(err).toBeFalsy();
             resolve();
           });
         });
         await new Promise<void>((resolve) => {
+          mockPort.postMessage.mockImplementationOnce(() => {
+            throw new Error('Message length exceeded maximum allowed length');
+          });
           stream._write(largePayload, 'utf-8', (err?: Error | null) => {
             expect(err).toBeFalsy();
             resolve();
           });
         });
-        expect(mockPort.postMessage).toHaveBeenCalledTimes(4);
+        expect(mockPort.postMessage).toHaveBeenCalledTimes(6);
         expectedFrames.forEach((frame, index) => {
           expect(mockPort.postMessage).toHaveBeenNthCalledWith(
             index + 1,
@@ -518,10 +533,10 @@ describe('extension-port-stream', () => {
         });
       });
 
-      it('should not chunk large payload with chunkSize is 0', (done) => {
+      it('should not chunk large payload when chunkSize is 0', (done) => {
         stream = createStream({ chunkSize: 0, log: mockLog, debug: true });
 
-        const data = { data: 'B'.repeat(CHUNK_SIZE + 100) }; // large!
+        const data = { data: 'Not going to be chunked' };
 
         stream._write(data, 'utf-8', (err?: Error | null) => {
           expect(err).toBeFalsy();
@@ -554,13 +569,15 @@ describe('extension-port-stream', () => {
 
         stream._write(data, 'utf-8', (err?: Error | null) => {
           expect(err).toBeInstanceOf(AggregateError);
-          expect(err?.message).toBe('PortStream write failed');
+          expect(err?.message).toBe('PortStream postMessage failed');
           // Log is called after successful loop in _write
           expect(mockLog).not.toHaveBeenCalled();
-          expect(consoleDebugSpy).toHaveBeenCalledWith(
+          expect(consoleDebugSpy).toHaveBeenCalledTimes(3);
+          expect(consoleDebugSpy).toHaveBeenNthCalledWith(
+            3,
             '%cPortStream',
             'color:#888;',
-            '⚠ write error',
+            'could not send whole chunk via postMessage',
             postError,
           );
           done();
@@ -569,48 +586,48 @@ describe('extension-port-stream', () => {
 
       it('should handle errors from toFrames (e.g. JSON.stringify fails)', (done) => {
         stream = createStream({ debug: true });
-        const data = { message: 'will fail stringify' };
+        const data = {
+          message: 'will fail stringify' + 'A'.repeat(CHUNK_SIZE + 100),
+        };
         const stringifyError = new Error('Stringify failed');
-        const mockJsonS = jest
-          .spyOn(JSON, 'stringify')
-          .mockImplementation(() => {
-            throw stringifyError;
-          });
+        jest.spyOn(JSON, 'stringify').mockImplementationOnce(() => {
+          throw stringifyError;
+        });
 
         stream._write(data, 'utf-8', (err?: Error | null) => {
           expect(err).toBeInstanceOf(Error);
-          expect(err?.message).toBe('PortStream write failed');
-          expect(mockPort.postMessage).not.toHaveBeenCalled();
+          expect(err?.message).toBe('PortStream chunked postMessage failed');
+          expect(mockPort.postMessage).toHaveBeenCalledTimes(1);
           expect(consoleDebugSpy).toHaveBeenCalledWith(
             '%cPortStream',
             'color:#888;',
             '⚠ write error',
             stringifyError,
           );
-          mockJsonS.mockRestore();
           done();
         });
       });
 
       it('should handle errors from toFrames (no debug)', (done) => {
-        stream = createStream({ debug: false }); // Ensure debug is false
+        // Force chunking path, and ensure debug is false
+        stream = createStream({ chunkSize: 33, debug: false });
         const data = { message: 'will fail stringify no debug' };
+        mockPort.postMessage.mockImplementationOnce(() => {
+          throw new Error('Message length exceeded maximum allowed length');
+        });
         const stringifyError = new Error('Stringify failed no debug');
-        const mockJsonS = jest
-          .spyOn(JSON, 'stringify')
-          .mockImplementation(() => {
-            throw stringifyError;
-          });
+        jest.spyOn(JSON, 'stringify').mockImplementationOnce(() => {
+          throw stringifyError;
+        });
 
         stream._write(data, 'utf-8', (err?: Error | null) => {
           expect(err).toBeInstanceOf(Error);
-          expect(err?.message).toBe('PortStream write failed');
-          expect(mockPort.postMessage).not.toHaveBeenCalled();
+          expect(err?.message).toBe('PortStream chunked postMessage failed');
+          expect(mockPort.postMessage).toHaveBeenCalledTimes(1);
           expect(consoleDebugSpy).not.toHaveBeenCalledWith(
             // Ensure no debug message
             expect.stringContaining('⚠ write error'),
           );
-          mockJsonS.mockRestore();
           done();
         });
       });

@@ -93,6 +93,8 @@ export const CHUNK_SIZE = globalThis.navigator.userAgent
   ? 0
   : 64 * 1024 * 1024 - 1;
 
+export const MAX_HEADER_LENGTH = 33;
+
 enum S {
   Id,
   Total,
@@ -191,19 +193,21 @@ export function* toFrames<Payload extends Json>(
 ): Generator<TransportChunkFrame | Payload, void> {
   const json = JSON.stringify(payload);
   const len = json.length;
-  const total = Math.ceil(len / chunkSize);
 
-  if (total === 1) {
+  if (len <= chunkSize) {
     // no need to chunk if it fits within a single frame
     yield payload;
     return;
   }
 
+  const HEAD_ROOM_CHUNK_SIZE = Math.max(1, chunkSize - MAX_HEADER_LENGTH);
+  // we need to leave space for our header
+  const total = Math.ceil(len / HEAD_ROOM_CHUNK_SIZE);
   const id = getNextId();
   const header = `${id}|${total}` as const;
   // eslint-disable-next-line no-restricted-syntax
-  for (let pos = 0, seq = 0; pos < len; pos += chunkSize, seq++) {
-    const data = json.substring(pos, pos + chunkSize);
+  for (let pos = 0, seq = 0; pos < len; pos += HEAD_ROOM_CHUNK_SIZE, seq++) {
+    const data = json.substring(pos, pos + HEAD_ROOM_CHUNK_SIZE);
     const frame: TransportChunkFrame = `${header}|${seq}|${data}`;
     yield frame;
   }
@@ -229,10 +233,15 @@ export class PortStream extends Duplex {
     port: Runtime.Port,
     { chunkSize, debug, log, ...opts }: Options = {},
   ) {
+    if (chunkSize && chunkSize < MAX_HEADER_LENGTH) {
+      throw new Error(
+        `Cannot chunk messages smaller than the max header length, ${MAX_HEADER_LENGTH}`,
+      );
+    }
+
     super({ objectMode: true, highWaterMark: 256, ...opts });
 
     this.port = port;
-
     this.chunkSize = chunkSize ?? CHUNK_SIZE;
     this.debug = Boolean(debug);
     this.log = log ?? (() => undefined);
@@ -341,6 +350,18 @@ export class PortStream extends Duplex {
     // No-op, push happens in onMessage.
   }
 
+  /**
+   * Safely invokes a callback by scheduling it in the microtask queue.
+   * This prevents reentrancy issues where the callback might throw an exception
+   * and cause the calling code to execute the callback again before returning.
+   */
+  private safeCallback(
+    callback: (err?: Error | null) => void,
+    error?: Error | null,
+  ) {
+    queueMicrotask(() => callback(error));
+  }
+
   private postMessage(obj: unknown) {
     if (this.debug) {
       console.debug(TAG, STYLE_OUT, '→', obj);
@@ -361,19 +382,34 @@ export class PortStream extends Duplex {
     callback: (err?: Error | null) => void,
   ) {
     if (encoding && encoding !== 'utf8' && encoding !== 'utf-8') {
-      callback(new Error('PortStream only supports UTF-8 encoding'));
+      this.safeCallback(
+        callback,
+        new Error('PortStream only supports UTF-8 encoding'),
+      );
       return;
     }
 
     try {
       // try to send the chunk as is first, it is probably fine!
       this.postMessage(chunk);
-      callback();
+      if (this.debug) {
+        console.debug(TAG, STYLE_SYS, 'sent whole chunk via postMessage');
+      }
+      this.log(chunk, true);
+      this.safeCallback(callback);
     } catch (err) {
+      if (this.debug) {
+        console.debug(
+          TAG,
+          STYLE_SYS,
+          'could not send whole chunk via postMessage',
+          err,
+        );
+      }
       if (err instanceof Error) {
         const { chunkSize } = this;
         if (
-          // checking is enabled
+          // chunking is enabled
           chunkSize > 0 &&
           // and the error is about message size being too large
           // note: this message doesn't currently happen on firefox, as it doesn't
@@ -386,13 +422,14 @@ export class PortStream extends Duplex {
               this.postMessage(frame);
             }
             this.log(chunk, true);
-            callback();
+            this.safeCallback(callback);
           } catch (chunkErr) {
             if (this.debug) {
               console.debug(TAG, STYLE_SYS, '⚠ write error', chunkErr);
             }
             console.error(chunkErr);
-            callback(
+            this.safeCallback(
+              callback,
               new AggregateError(
                 [chunkErr],
                 'PortStream chunked postMessage failed',
@@ -400,12 +437,15 @@ export class PortStream extends Duplex {
             );
           }
         } else {
-          callback(new AggregateError([err], 'PortStream postMessage failed'));
+          this.safeCallback(
+            callback,
+            new AggregateError([err], 'PortStream postMessage failed'),
+          );
         }
       } else {
         // error is unknown.
         console.error(String(err));
-        callback(new Error('PortStream postMessage failed'));
+        this.safeCallback(callback, new Error('PortStream postMessage failed'));
       }
     }
   }
