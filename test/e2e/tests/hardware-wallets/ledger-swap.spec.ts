@@ -313,10 +313,10 @@ describe('Ledger Swap', function () {
           );
 
           // https://github.com/MetaMask/metamask-extension/issues/31427
-          // await homePage.check_expectedTokenBalanceIsDisplayed(
-          //   testCase.expectedEthBalance,
-          //   'ETH',
-          // );
+          await homePage.checkExpectedTokenBalanceIsDisplayed(
+            testCase.expectedEthBalance,
+            'ETH',
+          );
         },
       );
     });
