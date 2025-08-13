@@ -195,6 +195,7 @@ export const CHAIN_IDS = {
   ABSTRACT: '0xab5',
   OMNI: '0xa6',
   XRPLEVM: '0x15f900',
+  FRAX: '0xfc',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -346,6 +347,7 @@ export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
 export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
+export const FRAX_DISPLAY_NAME = 'Fraxtal';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -415,6 +417,7 @@ export const CURRENCY_SYMBOLS = {
   ABSTRACT: 'ETH',
   OMNI: 'OMNI',
   XRPLEVM: 'XRP',
+  FRAX: 'FRAX',
 } as const;
 
 // Non-EVM currency symbols
@@ -616,6 +619,8 @@ export const OMNI_IMAGE_URL = './images/omni.png';
 export const OMNI_NATIVE_TOKEN_IMAGE_URL = './images/omni-native.png';
 export const XRPLEVM_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_NATIVE_TOKEN_IMAGE_URL = './images/xrplevm-native.svg';
+export const FRAX_IMAGE_URL = './images/frax.svg';
+export const FRAX_NATIVE_TOKEN_IMAGE_URL = './images/frax-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -766,6 +771,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_DISPLAY_NAME,
   [CHAIN_IDS.OMNI]: OMNI_DISPLAY_NAME,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_DISPLAY_NAME,
+  [CHAIN_IDS.FRAX]: FRAX_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -914,6 +920,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.ABSTRACT]: CURRENCY_SYMBOLS.ABSTRACT,
   [CHAIN_IDS.OMNI]: CURRENCY_SYMBOLS.OMNI,
   [CHAIN_IDS.XRPLEVM]: CURRENCY_SYMBOLS.XRPLEVM,
+  [CHAIN_IDS.FRAX]: CURRENCY_SYMBOLS.FRAX,
 } as const;
 
 /**
@@ -1070,6 +1077,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_IMAGE_URL,
   [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_IMAGE_URL,
+  [CHAIN_IDS.FRAX]: FRAX_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1141,6 +1149,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_NATIVE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]:
     XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.FRAX]: FRAX_NATIVE_TOKEN_IMAGE_URL,
 } as const;
 
 /**
