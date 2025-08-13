@@ -14,7 +14,6 @@ const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
 
 export const SeedlessOnboardingControllerInit: ControllerInitFunction<
   SeedlessOnboardingController<EncryptionKey>,
-  // @ts-expect-error: BaseControllerMessenger version mismatch, 8.0.0 (extension) -> 8.1.0 (controller), should update to latest version
   SeedlessOnboardingControllerMessenger
 > = (request) => {
   const {

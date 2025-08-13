@@ -5586,17 +5586,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^8.0.0, @metamask/base-controller@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "@metamask/base-controller@npm:8.0.1"
-  dependencies:
-    "@metamask/utils": "npm:^11.2.0"
-    immer: "npm:^9.0.6"
-  checksum: 10/5ef02099ce2e2246c534a7742b45704417beebf2c21db70241d09c3ddbb549ff3375284ece00edf4051029facff181e5e05f135e97b943ec6c514eecce4fa37a
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^8.1.0":
+"@metamask/base-controller@npm:^8.0.0, @metamask/base-controller@npm:^8.0.1, @metamask/base-controller@npm:^8.1.0":
   version: 8.1.0
   resolution: "@metamask/base-controller@npm:8.1.0"
   dependencies:
