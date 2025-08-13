@@ -96,22 +96,13 @@ function sanitizeSeedlessOnboardingControllerState(state: FlattenedUIState) {
     'vaultEncryptionSalt',
     'encryptedSeedlessEncryptionKey',
     'encryptedKeyringEncryptionKey',
+    'accessToken',
     'metadataAccessToken',
+    'refreshToken',
     'revokeToken',
   ];
   for (const key of toDelete) {
     delete state[key];
-  }
-
-  // Can't delete these because a selector in `social-sync.ts` depends on them.
-  const toReplace = [
-    { key: 'refreshToken', value: 'redacted' },
-    { key: 'accessToken', value: 'redacted' },
-  ];
-  for (const { key, value } of toReplace) {
-    if (state[key]) {
-      state[key] = value;
-    }
   }
 
   // Manually sanitize the nodeAuthTokens.
