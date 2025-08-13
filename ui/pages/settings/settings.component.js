@@ -442,7 +442,7 @@ class SettingsPage extends PureComponent {
           ) {
             return true;
           }
-          return matchPath({ exact: true, path: key }, currentPath);
+          return matchPath(currentPath, { exact: true, path: key });
         }}
         onSelect={(key) =>
           navigate(key, {
