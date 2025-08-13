@@ -1,5 +1,5 @@
 import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
-import { AccessToken } from '@metamask/profile-sync-controller/sdk';
+import { SeedlessOnboardingControllerState } from '@metamask/seedless-onboarding-controller';
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 
@@ -74,13 +74,14 @@ function sanitizeAuthenticationControllerState(state: FlattenedUIState) {
 
   state.srpSessionData = Object.entries(srpSessionData).reduce(
     (acc, [key, value]) => {
-      const token: Partial<AccessToken> = {
+      const token = {
         ...value.token,
       };
+      // @ts-expect-error - Intentionally sanitizing a required field.
       delete token.accessToken;
       acc[key] = {
         ...value,
-        token: token as AccessToken, // Cast ignores missing accessToken field.
+        token,
       };
       return acc;
     },
@@ -106,11 +107,40 @@ function sanitizeSeedlessOnboardingControllerState(state: FlattenedUIState) {
   const toReplace = [
     { key: 'refreshToken', value: 'redacted' },
     { key: 'accessToken', value: 'redacted' },
-    { key: 'nodeAuthTokens', value: [] },
   ];
   for (const { key, value } of toReplace) {
     if (state[key]) {
       state[key] = value;
     }
+  }
+
+  // Manually sanitize the nodeAuthTokens.
+  const nodeAuthTokens =
+    state.nodeAuthTokens as SeedlessOnboardingControllerState['nodeAuthTokens'];
+
+  if (nodeAuthTokens) {
+    state.nodeAuthTokens = nodeAuthTokens.map((token) => {
+      const sanitizedToken = {
+        ...token,
+      };
+      // @ts-expect-error - Intentionally sanitizing a required field.
+      delete sanitizedToken.authToken;
+      return sanitizedToken;
+    });
+  }
+
+  // Manually sanitize the socialBackupsMetadata.
+  const socialBackupsMetadata =
+    state.socialBackupsMetadata as SeedlessOnboardingControllerState['socialBackupsMetadata'];
+
+  if (socialBackupsMetadata) {
+    state.socialBackupsMetadata = socialBackupsMetadata.map((backup) => {
+      const sanitizedBackup = {
+        ...backup,
+      };
+      // @ts-expect-error - Intentionally sanitizing a required field.
+      delete sanitizedBackup.hash;
+      return sanitizedBackup;
+    });
   }
 }
