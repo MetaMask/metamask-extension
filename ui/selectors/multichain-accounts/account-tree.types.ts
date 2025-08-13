@@ -64,9 +64,8 @@ export type MultichainAccountGroupScopeToCaipAccountId = Map<
   CaipAccountId
 >;
 
-export type AccountGroupWithInternalAccounts = Omit<
-  AccountGroupObject,
-  'accounts'
-> & {
-  accounts: InternalAccount[];
+export type AccountGroupWithInternalAccounts = {
+  [K in keyof AccountGroupObject]: K extends 'accounts'
+    ? InternalAccount[]
+    : AccountGroupObject[K];
 };

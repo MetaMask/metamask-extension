@@ -353,7 +353,9 @@ export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
             );
             return internalAccount;
           })
-          .filter((account) => account !== undefined),
+          .filter(
+            (account): account is InternalAccount => account !== undefined,
+          ),
       };
     });
   },
@@ -409,7 +411,10 @@ export const getCaip25IdByAccountGroupAndScope = createDeepEqualSelector(
   }),
   (
     multichainAccountsToScopesMap: MultichainAccountGroupToScopesMap,
-    { accountGroup, scope },
+    {
+      accountGroup,
+      scope,
+    }: { accountGroup: AccountGroupObject; scope: CaipChainId },
   ) => {
     const multichainAccountGroup = multichainAccountsToScopesMap.get(
       accountGroup.id,
@@ -454,7 +459,7 @@ export const getMultichainAccountGroupsByScopes = createDeepEqualSelector(
     cleanedScopes.forEach((scope) => {
       const accountGroupsWithScope = accountGroupsWithInternalAccounts.filter(
         (accountGroup) =>
-          accountGroup.accounts.some((internalAccount) =>
+          accountGroup.accounts.some((internalAccount: InternalAccount) =>
             internalAccount.scopes.includes(scope),
           ),
       );
