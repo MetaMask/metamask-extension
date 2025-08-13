@@ -241,6 +241,17 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-size
           path: test-artifacts/chrome
 
+  benchmark-pr:
+    needs:
+      - build-dist-browserify
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/benchmark-pr.yml
+    with:
+      browser-loads: '10'
+      page-loads: '10'
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+
   needs-e2e:
     needs:
       - prep-deps
