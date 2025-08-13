@@ -48,12 +48,11 @@ function formatStandardDeviation(mean: number, stdDev: number): string {
 }
 
 function getEmojiForMetric(metric: string, value: number): string {
-  // Define thresholds for different metrics
   const thresholds: Record<string, { good: number; warning: number }> = {
     pageLoadTime: { good: 1000, warning: 2000 },
     firstContentfulPaint: { good: 800, warning: 1500 },
     largestContentfulPaint: { good: 1200, warning: 2500 },
-    totalExtensionLoadTime: { good: 500, warning: 1000 },
+    totalExtensionLoadTime: { good: 1950, warning: 2600 },
   };
 
   const threshold = thresholds[metric];
@@ -170,13 +169,11 @@ async function main(): Promise<void> {
   ];
 
   let benchmarkData: BenchmarkOutput | null = null;
-  let resultsPath = '';
 
   for (const filePath of possiblePaths) {
     try {
       const fileContent = await fs.readFile(filePath, 'utf8');
       benchmarkData = JSON.parse(fileContent) as BenchmarkOutput;
-      resultsPath = filePath;
       console.log(`Found benchmark results at: ${filePath}`);
       break;
     } catch (error) {
