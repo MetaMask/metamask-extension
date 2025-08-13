@@ -29,7 +29,7 @@ import {
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
   getIsSocialLoginFlow,
-  getIsSocialLoginFlowInitialized,
+  getIsSocialLoginAuthenticatedUser,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
@@ -38,7 +38,7 @@ export default function OnboardingFlowSwitch() {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
   const isSocialLoginFlowInitialized = useSelector(
-    getIsSocialLoginFlowInitialized,
+    getIsSocialLoginAuthenticatedUser,
   );
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);

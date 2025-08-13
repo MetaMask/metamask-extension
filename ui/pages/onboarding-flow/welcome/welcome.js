@@ -17,7 +17,7 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
-  getIsSocialLoginFlowInitialized,
+  getIsSocialLoginAuthenticatedUser,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -54,7 +54,7 @@ export default function OnboardingWelcome({
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSocialLoginFlowInitialized = useSelector(
-    getIsSocialLoginFlowInitialized,
+    getIsSocialLoginAuthenticatedUser,
   );
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,

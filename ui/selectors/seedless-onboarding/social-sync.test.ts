@@ -1,7 +1,7 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import {
   BackupState,
-  getIsSocialLoginFlowInitialized,
+  getIsSocialLoginAuthenticatedUser,
   getSocialLoginEmail,
   getSocialLoginType,
 } from './social-sync';
@@ -33,6 +33,7 @@ const MOCK_STATE: BackupState = {
     socialBackupsMetadata: [],
     socialLoginEmail: 'mock-social-login-email',
     authConnection: AuthConnection.Google,
+    isSeedlessOnboardingUserAuthenticated: true,
   },
 };
 
@@ -62,40 +63,18 @@ describe('social-sync selectors', () => {
 
   describe('#getIsSocialLoginFlowInitialized', () => {
     it('returns true if the social login flow has been initialized and the user is authenticated', () => {
-      expect(getIsSocialLoginFlowInitialized(MOCK_STATE)).toBe(true);
+      expect(getIsSocialLoginAuthenticatedUser(MOCK_STATE)).toBe(true);
     });
 
-    it('returns false if the social login flow has not been initialized', () => {
+    it('returns false if user has not authenticated with social login', () => {
       const state = {
         ...MOCK_STATE,
         metamask: {
           ...MOCK_STATE.metamask,
-          socialLoginEmail: undefined,
+          isSeedlessOnboardingUserAuthenticated: false,
         },
       };
-      expect(getIsSocialLoginFlowInitialized(state)).toBe(false);
-    });
-
-    it('returns false if the user is not authenticated', () => {
-      const state = {
-        ...MOCK_STATE,
-        metamask: {
-          ...MOCK_STATE.metamask,
-          userId: undefined,
-        },
-      };
-      expect(getIsSocialLoginFlowInitialized(state)).toBe(false);
-    });
-
-    it('returns false if the `accessToken` is not set in the state', () => {
-      const state = {
-        ...MOCK_STATE,
-        metamask: {
-          ...MOCK_STATE.metamask,
-          accessToken: undefined,
-        },
-      };
-      expect(getIsSocialLoginFlowInitialized(state)).toBe(false);
+      expect(getIsSocialLoginAuthenticatedUser(state)).toBe(false);
     });
   });
 });
