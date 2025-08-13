@@ -6894,6 +6894,9 @@
   "transactionSettings": {
     "message": "Transaction settings"
   },
+  "transactionShield": {
+    "message": "Transaction Shield"
+  },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
   },

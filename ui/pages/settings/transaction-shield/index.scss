@@ -1,0 +1,18 @@
+.transaction-shield-page {
+  &__container {}
+
+  &__row {
+    margin-bottom: 1px;
+
+    &:first-of-type {
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+
+    &:last-of-type {
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      margin-bottom: 0;
+    }
+  }
+}

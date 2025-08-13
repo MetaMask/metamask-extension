@@ -13,6 +13,7 @@ import {
   DEVELOPER_OPTIONS_ROUTE,
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from './routes';
 
 /**
@@ -482,6 +483,13 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('betaTerms'),
     route: `${ABOUT_US_ROUTE}#beta-terms`,
     iconName: IconName.Info,
+  },
+  {
+    tabMessage: () => 'Transaction Shield',
+    sectionMessage: () => 'Transaction Shield',
+    descriptionMessage: () => 'Transaction Shield',
+    route: `${TRANSACTION_SHIELD_ROUTE}`,
+    icon: IconName.ShieldLock,
   },
   // experimental settingsRefs[0]
   {

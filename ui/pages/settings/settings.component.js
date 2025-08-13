@@ -25,6 +25,7 @@ import {
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -64,6 +65,7 @@ import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
+import TransactionShield from './transaction-shield/transaction-shield';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -81,6 +83,7 @@ class SettingsPage extends PureComponent {
     isPopup: PropTypes.bool,
     isRevealSrpListPage: PropTypes.bool,
     isSeedlessPasswordOutdated: PropTypes.bool,
+    isTransactionShieldPage: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
@@ -134,11 +137,13 @@ class SettingsPage extends PureComponent {
       isPasswordChangePage,
       isRevealSrpListPage,
       isSeedlessPasswordOutdated,
+      isTransactionShieldPage,
     } = this.props;
 
     const { t } = this.context;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-    const isSearchHidden = isRevealSrpListPage || isPasswordChangePage;
+    const isSearchHidden =
+      isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
     return (
       <div
@@ -241,9 +246,17 @@ class SettingsPage extends PureComponent {
 
   renderSearch() {
     const { isSearchList, searchText, searchResults } = this.state;
-    const { isRevealSrpListPage, isPasswordChangePage } = this.props;
+    const {
+      isRevealSrpListPage,
+      isPasswordChangePage,
+      isTransactionShieldPage,
+    } = this.props;
 
-    if (isRevealSrpListPage || isPasswordChangePage) {
+    if (
+      isRevealSrpListPage ||
+      isPasswordChangePage ||
+      isTransactionShieldPage
+    ) {
       return null;
     }
 
@@ -384,6 +397,11 @@ class SettingsPage extends PureComponent {
         key: SECURITY_ROUTE,
       },
       {
+        content: 'Transaction Shield',
+        icon: <Icon name={IconName.ShieldLock} />,
+        key: TRANSACTION_SHIELD_ROUTE,
+      },
+      {
         content: t('experimental'),
         icon: <Icon name={IconName.Flask} />,
         key: EXPERIMENTAL_ROUTE,
@@ -481,6 +499,11 @@ class SettingsPage extends PureComponent {
           }}
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
+        <Route
+          exact
+          path={TRANSACTION_SHIELD_ROUTE}
+          component={TransactionShield}
+        />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (

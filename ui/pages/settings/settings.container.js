@@ -37,6 +37,7 @@ import {
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -63,6 +64,7 @@ const ROUTES_TO_I18N_KEYS = {
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
+  [TRANSACTION_SHIELD_ROUTE]: 'transactionShield',
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -83,6 +85,9 @@ const mapStateToProps = (state, ownProps) => {
   const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
   const isPasswordChangePage = Boolean(
     pathname.match(SECURITY_PASSWORD_CHANGE_ROUTE),
+  );
+  const isTransactionShieldPage = Boolean(
+    pathname.match(TRANSACTION_SHIELD_ROUTE),
   );
   const isNetworksFormPage =
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
@@ -148,9 +153,10 @@ const mapStateToProps = (state, ownProps) => {
     initialBreadCrumbRoute,
     isAddressEntryPage,
     isPasswordChangePage,
-    isPopup,
+    isPopup: true,
     isRevealSrpListPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
+    isTransactionShieldPage,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
     settingsPageSnaps,
