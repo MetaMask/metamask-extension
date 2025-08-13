@@ -17,6 +17,7 @@ The benchmark measures page load performance with the MetaMask extension loaded,
 ## Metrics Collected
 
 ### Standard Web Performance
+
 - **Page Load Time**: Total time from navigation start to load event end
 - **DOM Content Loaded**: Time to DOM content loaded event
 - **First Paint**: Time to first paint
@@ -25,6 +26,7 @@ The benchmark measures page load performance with the MetaMask extension loaded,
 - **Memory Usage**: JavaScript heap usage statistics
 
 ### Extension-Specific Metrics
+
 - **Content Script Load Time**: Time for MetaMask content script to be available
 - **Background Script Init Time**: Time for background script initialization
 - **Total Extension Load Time**: Overall extension loading overhead
@@ -103,6 +105,7 @@ The benchmark generates a JSON file (`benchmark-results.json`) with the followin
 ### Extension Loading
 
 The benchmark automatically:
+
 1. Builds the MetaMask extension using `yarn build:test`
 2. Launches Chrome with the extension loaded
 3. Waits for the extension to be fully initialized
@@ -127,6 +130,7 @@ The benchmark automatically:
 ### Test Pages
 
 Currently configured to test:
+
 - `https://metamask.github.io/test-dapp/`
 
 Additional test pages can be added by modifying the `testUrls` array in `page-load-benchmark.spec.ts`.
@@ -134,6 +138,7 @@ Additional test pages can be added by modifying the `testUrls` array in `page-lo
 ### Browser Configuration
 
 The benchmark uses Chrome with the following optimizations:
+
 - Disabled background throttling
 - Disabled renderer backgrounding
 - Disabled IPC flooding protection

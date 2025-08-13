@@ -5,6 +5,7 @@ This document outlines the implementation plan for tracking page load benchmark 
 ## Overview
 
 The goal is to implement a CI pipeline that:
+
 1. **On main branch commits**: Runs page load benchmarks and saves results to a shared repository
 2. **On pull requests**: Runs benchmarks, compares against baseline, and posts results to PR comments
 3. **Fails PR checks**: If performance regressions exceed acceptable thresholds
@@ -14,22 +15,26 @@ The goal is to implement a CI pipeline that:
 The existing bundle size tracking system works as follows:
 
 ### 1. Bundle Size Measurement (`test/e2e/mv3-perf-stats/bundle-size.ts`)
+
 - Measures the size of background, UI, and common bundle files
 - Outputs JSON with bundle sizes and file lists
 - Can output to file or stdout
 
 ### 2. Main Branch Pipeline (`.github/workflows/main.yml`)
+
 - Runs on every commit to main
 - Executes: `yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome`
 - Calls: `./.github/scripts/bundle-stats-commit.sh` to save results
 
 ### 3. Bundle Stats Commit Script (`.github/scripts/bundle-stats-commit.sh`)
+
 - Clones the `MetaMask/extension_bundlesize_stats` repository
 - Appends new bundle size data to `stats/bundle_size_data.json`
 - Commits and pushes the updated data
 - Uses `EXTENSION_BUNDLESIZE_STATS_TOKEN` for authentication
 
 ### 4. PR Comparison (`.github/workflows/publish-prerelease.yml`)
+
 - Runs on PR creation/updates
 - Fetches baseline data from the shared repository
 - Compares current bundle sizes against merge base
@@ -40,6 +45,7 @@ The existing bundle size tracking system works as follows:
 ### 1. Benchmark Runner Script (`test/e2e/playwright/benchmark/run-benchmark.ts`)
 
 Create a new script that:
+
 - Runs the existing `page-load-benchmark.spec.ts` test
 - Outputs results in a standardized JSON format
 - Can be run from command line with configurable parameters
@@ -71,6 +77,7 @@ Add to `.github/workflows/main.yml`:
 ### 3. Benchmark Stats Commit Script (`.github/scripts/benchmark-stats-commit.sh`)
 
 Similar to `bundle-stats-commit.sh`:
+
 - Clone a new repository: `MetaMask/extension_benchmark_stats`
 - Save benchmark results to `stats/page_load_data.json`
 - Commit and push with commit SHA as key
@@ -102,6 +109,7 @@ jobs:
 #### B. PR Comment Script (`development/benchmark-pr-comment.ts`)
 
 Similar to `metamaskbot-build-announce.ts`:
+
 - Fetch baseline data from shared repository
 - Compare current results against merge base
 - Calculate percentage changes
@@ -121,22 +129,26 @@ stats/
 ## Implementation Steps
 
 ### Phase 1: Infrastructure Setup
+
 1. Create `MetaMask/extension_benchmark_stats` repository
 2. Set up `EXTENSION_BENCHMARK_STATS_TOKEN` secret
 3. Create `test/e2e/playwright/benchmark/run-benchmark.ts`
 4. Create `.github/scripts/benchmark-stats-commit.sh`
 
 ### Phase 2: Main Branch Integration
+
 1. Add benchmark step to main workflow
 2. Test the commit script with a test commit
 3. Verify data is being saved correctly
 
 ### Phase 3: PR Comparison
+
 1. Create `development/benchmark-pr-comment.ts`
 2. Create `.github/workflows/benchmark-pr.yml`
 3. Test PR comment functionality
 
 ### Phase 4: Threshold Enforcement
+
 1. Define performance thresholds in shared repository
 2. Implement failure logic in PR workflow
 3. Test threshold enforcement
@@ -147,10 +159,14 @@ stats/
 
 ```json
 {
+  "baseline": {
+    "commit": "latest_main_commit",
+    "date": "2024-01-01T00:00:00Z"
+  },
   "thresholds": {
     "pageLoadTime": {
-      "warning": 10,    // 10% increase triggers warning
-      "failure": 25     // 25% increase fails PR
+      "warning": 10, // 10% increase triggers warning
+      "failure": 25 // 25% increase fails PR
     },
     "firstContentfulPaint": {
       "warning": 15,
@@ -160,10 +176,6 @@ stats/
       "warning": 20,
       "failure": 40
     }
-  },
-  "baseline": {
-    "commit": "latest_main_commit",
-    "date": "2024-01-01T00:00:00Z"
   }
 }
 ```
@@ -171,6 +183,7 @@ stats/
 ### First Iteration Handling
 
 For the first iteration when no baseline exists:
+
 1. **Main branch**: Save results as baseline (no comparison)
 2. **PR workflow**:
    - If no baseline exists, post results without comparison
