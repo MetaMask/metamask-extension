@@ -70,7 +70,7 @@ const config: PlaywrightTestConfig = {
       testMatch: '/benchmark/**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
-        headless: true,
+        headless: Boolean(process.env.CI),
       },
       fullyParallel: false,
       timeout: 600 * 1000, // 10 minutes
