@@ -97,9 +97,7 @@ export default class SignTypedData extends Confirmation {
     await this.driver.waitForSelector(this.signatureHeadingTitle);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkIsDisplayed(network: string): Promise<void> {
+  async checkNetworkIsDisplayed(network: string): Promise<void> {
     console.log(
       `Check network ${network} is displayed on sign typed data confirmation page`,
     );

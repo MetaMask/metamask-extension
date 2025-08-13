@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Relaunch MetaMask if the problem persists.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "Loading is taking longer than usual.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -737,9 +745,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
   },
-  "bestPrice": {
-    "message": "Best price"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -905,6 +910,21 @@
   "bridgeNetCost": {
     "message": "Net cost"
   },
+  "bridgePriceImpact": {
+    "message": "Price Impact"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "Price impact reflects how your swap order affects the market price of the asset. If you do not hold enough funds for gas, part of your source token is automatically allocated to cover fees, which will reduce the amount swapped. MetaMask does not influence or control price impact."
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "Price impact reflects how your swap order affects the market price of the asset. It depends on the trade size and the available liquidity in the pool. MetaMask does not influence or control price impact."
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Price Impact"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "Price Impact Warning"
+  },
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
@@ -953,9 +973,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTerms": {
-    "message": "Terms"
   },
   "bridgeTimingMinutes": {
     "message": "$1 min",
@@ -1043,9 +1060,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Busy"
@@ -1961,6 +1975,12 @@
   "downArrow": {
     "message": "down arrow"
   },
+  "downloadAppDescription": {
+    "message": "Bring MetaMask with you everywhere you go with the mobile app. Plus, turn on Face ID so you always have access, even if you forget your password."
+  },
+  "downloadAppTitle": {
+    "message": "Scan QR code and download the app"
+  },
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
@@ -2701,9 +2721,6 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Estimated fee required to process the transaction. The max fee is $1."
   },
   "howQuotesWork": {
     "message": "How quotes work"
@@ -5564,6 +5581,15 @@
   },
   "slideSweepStakeTitle": {
     "message": "Enter the $5000 USDC Giveaway!"
+  },
+  "slippage": {
+    "message": "Slippage"
+  },
+  "slippageAuto": {
+    "message": "Auto"
+  },
+  "slippageEditAriaLabel": {
+    "message": "Edit slippage"
   },
   "smartAccountAccept": {
     "message": "Use smart account"

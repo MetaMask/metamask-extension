@@ -145,6 +145,11 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
   },
 );
 
+export const getPriceImpactThresholds = createDeepEqualSelector(
+  getBridgeFeatureFlags,
+  (bridgeFeatureFlags) => bridgeFeatureFlags?.priceImpactThreshold,
+);
+
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   getBridgeFeatureFlags,
@@ -618,21 +623,6 @@ export const getValidationErrors = createDeepEqualSelector(
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
 };
-
-/**
- * Checks if Solana is enabled as either a fromChain or toChain for bridging
- */
-export const isBridgeSolanaEnabled = createDeepEqualSelector(
-  getBridgeFeatureFlags,
-  (bridgeFeatureFlags) => {
-    const solanaChainId = MultichainNetworks.SOLANA;
-    const solanaChainIdCaip = formatChainIdToCaip(solanaChainId);
-
-    // Directly check if Solana is enabled as a source or destination chain
-    const solanaConfig = bridgeFeatureFlags?.chains?.[solanaChainIdCaip];
-    return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
-  },
-);
 
 /**
  * Checks if the destination chain is Solana and the user has no Solana accounts

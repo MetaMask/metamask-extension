@@ -52,7 +52,7 @@ describe('Bridge tests', function (this: Suite) {
         const bridgePage = new BridgeQuotePage(driver);
         await bridgePage.enterBridgeQuote(quote);
         await bridgePage.waitForQuote();
-        await bridgePage.check_expectedNetworkFeeIsDisplayed();
+        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
         await bridgePage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
