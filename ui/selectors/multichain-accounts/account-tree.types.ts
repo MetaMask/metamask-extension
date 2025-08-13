@@ -5,6 +5,7 @@ import type {
 } from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountId } from '@metamask/accounts-controller';
+import { CaipAccountId, CaipChainId } from '@metamask/keyring-api';
 import { MergedInternalAccount } from '../selectors.types';
 
 export type WalletMetadata = {
@@ -51,4 +52,21 @@ export type ConsolidatedAccountWallet = {
 
 export type ConsolidatedWallets = {
   [walletId: AccountWalletId]: ConsolidatedAccountWallet;
+};
+
+export type MultichainAccountId = AccountGroupObject['id'];
+export type MultichainAccountGroupToScopesMap = Map<
+  MultichainAccountId,
+  MultichainAccountGroupScopeToCaipAccountId
+>;
+export type MultichainAccountGroupScopeToCaipAccountId = Map<
+  CaipChainId,
+  CaipAccountId
+>;
+
+export type AccountGroupWithInternalAccounts = Omit<
+  AccountGroupObject,
+  'accounts'
+> & {
+  accounts: InternalAccount[];
 };
