@@ -1821,7 +1821,6 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
-        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -2373,7 +2372,7 @@
         "didYouMean": "write"
       }
     },
-    "ts-node>diff": {
+    "sinon>diff": {
       "globals": {
         "setTimeout": true
       }
@@ -3398,13 +3397,6 @@
       "packages": {
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
-    },
-    "tsx>fsevents": {
-      "globals": {
-        "console.assert": true,
-        "process.platform": true
-      },
-      "native": true
     },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": {
       "builtin": {
@@ -8088,7 +8080,7 @@
         "jsdom>acorn": true,
         "ts-node>arg": true,
         "ts-node>create-require": true,
-        "ts-node>diff": true,
+        "sinon>diff": true,
         "ts-node>make-error": true,
         "ts-node>v8-compile-cache-lib": true,
         "ts-node>yn": true
@@ -8241,7 +8233,7 @@
     },
     "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after": {
       "packages": {
-        "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after>unist-util-is": true
+        "react-markdown>unist-util-visit>unist-util-is": true
       }
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unist-util-remove-position": {
