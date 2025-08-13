@@ -48,9 +48,7 @@ try {
   });
 
   console.log('✅ Benchmark completed successfully!');
-  console.log(
-    '📄 Results saved to: test-artifacts/benchmarks/benchmark-results.json',
-  );
+  console.log('📄 Results saved to: benchmark-results.json');
 } catch (error) {
   console.error('❌ Benchmark failed:', error);
   process.exit(1);

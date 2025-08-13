@@ -167,7 +167,6 @@ async function main(): Promise<void> {
     'test-artifacts/benchmarks/benchmark-results.json',
     'benchmark-results.json',
     path.join(process.cwd(), 'benchmark-results.json'),
-    path.join(process.cwd(), 'test-artifacts/benchmarks/benchmark-results.json'),
   ];
 
   let benchmarkData: BenchmarkOutput | null = null;

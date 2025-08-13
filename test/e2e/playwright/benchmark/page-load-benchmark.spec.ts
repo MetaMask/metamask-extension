@@ -369,10 +369,7 @@ class PageLoadBenchmark {
 
 pwTest.describe('Page Load Benchmark', () => {
   let benchmark: PageLoadBenchmark;
-  const outputPath = path.join(
-    process.cwd(),
-    'test-artifacts/benchmarks/benchmark-results.json',
-  );
+  const outputPath = path.join(process.cwd(), 'benchmark-results.json');
 
   pwTest.beforeAll(async () => {
     const extensionPath = path.join(process.cwd(), 'dist', 'chrome');
