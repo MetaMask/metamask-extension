@@ -162,7 +162,6 @@ export class PageLoadBenchmark {
               jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
             }
           : undefined,
-        totalLoadTime: performance.now(),
       };
     });
 
