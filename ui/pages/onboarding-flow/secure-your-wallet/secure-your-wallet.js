@@ -46,7 +46,7 @@ export default function SecureYourWallet() {
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
   const searchParams = new URLSearchParams(search);
   const isFromReminderParam = searchParams.get('isFromReminder')
-    ? '/?isFromReminder=true'
+    ? '?isFromReminder=true'
     : '';
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const onboardingCompleted = useSelector(getCompletedOnboarding);
