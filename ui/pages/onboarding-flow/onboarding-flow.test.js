@@ -28,13 +28,12 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingFlow from './onboarding-flow';
 
-const mockNavigate = jest.fn();
-const mockUseNavigate = jest.fn(() => mockNavigate);
+const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockUseNavigate(),
+  useNavigate: () => mockUseNavigate,
   useLocation: () => mockUseLocation(),
 }));
 
@@ -129,7 +128,7 @@ describe('Onboarding Flow', () => {
 
     renderWithProvider(<OnboardingFlow />, completedOnboardingStore, '/other');
 
-    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   describe('Create Password', () => {
@@ -225,7 +224,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_REVIEW_SRP_ROUTE,
     );
 
-    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE);
   });
 
   it('should redirect to unlock route when going to confirm recovery phrase without srp and user is unlocked', () => {
@@ -250,7 +249,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_CONFIRM_SRP_ROUTE,
     );
 
-    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE);
   });
 
   it('should render import seed phrase', () => {
