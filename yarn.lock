@@ -5449,9 +5449,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^73.1.0":
+"@metamask/assets-controllers@file:../core/packages/assets-controllers::locator=metamask-crx%40workspace%3A.":
   version: 73.1.0
-  resolution: "@metamask/assets-controllers@npm:73.1.0"
+  resolution: "@metamask/assets-controllers@file:../core/packages/assets-controllers#../core/packages/assets-controllers::hash=5618b9&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5460,7 +5460,7 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/abi-utils": "npm:^2.0.3"
-    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/base-controller": "npm:^8.1.0"
     "@metamask/contract-metadata": "npm:^2.4.0"
     "@metamask/controller-utils": "npm:^11.11.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -5495,7 +5495,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^59.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/4e2f1686a709e17f4b702ae4946f5b3a3c82c45b1c09203a04ad16fa022c2891352879b9e327590f99cccd20825d9b731376e0d623c9064f0189160936f852b4
+  checksum: 10/7c4c02581c297101f129b1599e005510dba430cad55e029c1f57505e7582e0d11b2097239d606883614ca735e638984635aadae11e2a04d5b808982e9ee9e9ff
   languageName: node
   linkType: hard
 
@@ -5541,6 +5541,16 @@ __metadata:
   linkType: hard
 
 "@metamask/base-controller@npm:^8.0.0, @metamask/base-controller@npm:^8.0.1, @metamask/base-controller@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/base-controller@npm:8.1.0"
+  dependencies:
+    "@metamask/utils": "npm:^11.4.2"
+    immer: "npm:^9.0.6"
+  checksum: 10/3ae3dd5aff22b7826d6272b9966482b4ba86c40a4bfb68ad322c527b10f648fbfa286539af79b162614c663b3020dca49221d06ddf17d295350d7eb66eb717b3
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^8.1.0":
   version: 8.1.0
   resolution: "@metamask/base-controller@npm:8.1.0"
   dependencies:
@@ -31947,7 +31957,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "npm:^73.1.0"
+    "@metamask/assets-controllers": "file:../core/packages/assets-controllers"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.18.0"

@@ -2,6 +2,11 @@ import {
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
+  calculateBalanceForAllWallets,
+  calculateAggregatedChangeForAllWallets,
+  calculateAggregatedChangeForGroup,
+  type PortfolioChangePeriod,
+  type AggregatedChangeForAllWallets,
 } from '@metamask/assets-controllers';
 import { CaipAssetId } from '@metamask/keyring-api';
 import {
@@ -13,12 +18,25 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { createSelector } from 'reselect';
+import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type {
+  TokenBalancesControllerState,
+  TokenRatesControllerState,
+  MultichainBalancesControllerState,
+  TokensControllerState,
+  CurrencyRateState,
+} from '@metamask/assets-controllers';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
-import { getTokenBalances } from '../ducks/metamask/metamask';
+import {
+  getTokenBalances,
+  getCurrentCurrency,
+} from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances, getMultichainIsEvm } from './multichain';
@@ -31,6 +49,7 @@ import {
   getPreferences,
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
+  getEnabledNetworks,
 } from './selectors';
 import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
 
@@ -44,6 +63,20 @@ export type AssetsRatesState = {
 
 export type DefiState = {
   metamask: DeFiPositionsControllerState;
+};
+
+// Type for the main Redux state that includes all controller states needed for balance calculations
+export type BalanceCalculationState = {
+  metamask: Partial<AccountTreeControllerState> &
+    Partial<AccountsControllerState> &
+    Partial<TokenBalancesControllerState> &
+    Partial<TokenRatesControllerState> &
+    Partial<MultichainBalancesControllerState> &
+    Partial<TokensControllerState> &
+    Partial<CurrencyRateState> & {
+      conversionRates?: Record<string, unknown>;
+      historicalPrices?: Record<string, unknown>;
+    };
 };
 
 /**
@@ -509,3 +542,342 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
     return balances[nativeAssetType];
   },
 );
+
+// Aggregated balance selectors using core pure function
+const getMetamaskState = (state: BalanceCalculationState) =>
+  state.metamask ?? {};
+
+const EMPTY_OBJ = Object.freeze({});
+const EMPTY_ACCOUNT_TREE = Object.freeze({
+  wallets: {},
+  selectedAccountGroup: '',
+});
+
+// Renamed for clarity
+const selectAccountTreeStateForBalances = createSelector(
+  [
+    (state: BalanceCalculationState) => getMetamaskState(state).accountTree,
+    (state: BalanceCalculationState) =>
+      getMetamaskState(state).accountGroupsMetadata,
+    (state: BalanceCalculationState) =>
+      getMetamaskState(state).accountWalletsMetadata,
+  ],
+  (accountTree, accountGroupsMetadata, accountWalletsMetadata) => ({
+    accountTree: accountTree ?? EMPTY_ACCOUNT_TREE,
+    accountGroupsMetadata: accountGroupsMetadata ?? EMPTY_OBJ,
+    accountWalletsMetadata: accountWalletsMetadata ?? EMPTY_OBJ,
+  }),
+);
+
+const selectAccountsStateForBalances = createSelector(
+  [
+    (state: BalanceCalculationState) =>
+      getMetamaskState(state).internalAccounts,
+  ],
+  (internalAccounts) => ({
+    internalAccounts: internalAccounts ?? { accounts: {}, selectedAccount: '' },
+  }),
+);
+
+const selectTokenBalancesStateForBalances = createSelector(
+  [getTokenBalances],
+  (tokenBalances) => ({ tokenBalances }),
+);
+
+const selectTokenRatesStateForBalances = createSelector(
+  [getMarketData],
+  (marketData) => ({
+    marketData,
+  }),
+);
+
+const selectMultichainRatesStateForBalances = createSelector(
+  [getAssetsRates, getHistoricalPrices],
+  (conversionRates, historicalPrices) => ({
+    conversionRates: conversionRates ?? EMPTY_OBJ,
+    historicalPrices: historicalPrices ?? EMPTY_OBJ,
+  }),
+);
+
+const selectMultichainBalancesStateForBalances = createSelector(
+  [getMultichainBalances],
+  (balances) => ({ balances }),
+);
+
+const selectTokensStateForBalances = createSelector(
+  [(state: BalanceCalculationState) => getMetamaskState(state).allTokens],
+  (allTokens) => ({
+    allTokens: allTokens ?? EMPTY_OBJ,
+    allIgnoredTokens: EMPTY_OBJ,
+    allDetectedTokens: EMPTY_OBJ,
+  }),
+);
+
+const selectCurrencyRateStateForBalances = createSelector(
+  [getCurrentCurrency, getCurrencyRates],
+  (currentCurrency, currencyRates) => ({
+    currentCurrency: currentCurrency ?? 'usd',
+    currencyRates: currencyRates ?? {},
+  }),
+);
+
+const selectEnabledNetworkMapForBalances = createSelector(
+  [getEnabledNetworks],
+  (map) => map,
+);
+
+export const selectBalanceForAllWallets = createSelector(
+  [
+    selectAccountTreeStateForBalances,
+    selectAccountsStateForBalances,
+    selectTokenBalancesStateForBalances,
+    selectTokenRatesStateForBalances,
+    selectMultichainRatesStateForBalances,
+    selectMultichainBalancesStateForBalances,
+    selectTokensStateForBalances,
+    selectCurrencyRateStateForBalances,
+    selectEnabledNetworkMapForBalances,
+  ],
+  (
+    accountTreeState,
+    accountsState,
+    tokenBalancesState,
+    tokenRatesState,
+    multichainRatesState,
+    multichainBalancesState,
+    tokensState,
+    currencyRateState,
+    enabledNetworkMap,
+  ) =>
+    calculateBalanceForAllWallets(
+      accountTreeState,
+      accountsState,
+      tokenBalancesState,
+      tokenRatesState,
+      multichainRatesState,
+      multichainBalancesState,
+      tokensState,
+      currencyRateState,
+      enabledNetworkMap,
+    ),
+);
+
+// Portfolio change selectors (period: '1d' | '7d' | '30d')
+export const selectPortfolioChangeForAllWallets = (
+  period: PortfolioChangePeriod,
+) =>
+  createSelector(
+    [
+      selectAccountTreeStateForBalances,
+      selectAccountsStateForBalances,
+      selectTokenBalancesStateForBalances,
+      selectTokenRatesStateForBalances,
+      selectMultichainRatesStateForBalances,
+      selectMultichainBalancesStateForBalances,
+      selectTokensStateForBalances,
+      selectCurrencyRateStateForBalances,
+      selectEnabledNetworkMapForBalances,
+    ],
+    (
+      accountTreeState,
+      accountsState,
+      tokenBalancesState,
+      tokenRatesState,
+      multichainRatesState,
+      multichainBalancesState,
+      tokensState,
+      currencyRateState,
+      enabledNetworkMap,
+    ): AggregatedChangeForAllWallets =>
+      calculateAggregatedChangeForAllWallets(
+        accountTreeState,
+        accountsState,
+        tokenBalancesState,
+        tokenRatesState,
+        multichainRatesState,
+        multichainBalancesState,
+        tokensState,
+        currencyRateState,
+        enabledNetworkMap,
+        period,
+      ),
+  );
+
+export const selectPortfolioPercentChange = (period: PortfolioChangePeriod) =>
+  createSelector(
+    [selectPortfolioChangeForAllWallets(period)],
+    (change) => change.percentChange,
+  );
+
+// Per-account-group portfolio change selectors using core helper
+export const selectPortfolioChangeByAccountGroup = (
+  groupId: string,
+  period: PortfolioChangePeriod,
+) =>
+  createSelector(
+    [
+      selectAccountTreeStateForBalances,
+      selectAccountsStateForBalances,
+      selectTokenBalancesStateForBalances,
+      selectTokenRatesStateForBalances,
+      selectMultichainRatesStateForBalances,
+      selectMultichainBalancesStateForBalances,
+      selectTokensStateForBalances,
+      selectCurrencyRateStateForBalances,
+      selectEnabledNetworkMapForBalances,
+    ],
+    (
+      accountTreeState,
+      accountsState,
+      tokenBalancesState,
+      tokenRatesState,
+      multichainRatesState,
+      multichainBalancesState,
+      tokensState,
+      currencyRateState,
+      enabledNetworkMap,
+    ): AggregatedChangeForAllWallets =>
+      calculateAggregatedChangeForGroup(
+        accountTreeState,
+        accountsState,
+        tokenBalancesState,
+        tokenRatesState,
+        multichainRatesState,
+        multichainBalancesState,
+        tokensState,
+        currencyRateState,
+        enabledNetworkMap,
+        groupId,
+        period,
+      ),
+  );
+
+export const selectPortfolioPercentChangeByAccountGroup = (
+  groupId: string,
+  period: PortfolioChangePeriod,
+) =>
+  createSelector(
+    [selectPortfolioChangeByAccountGroup(groupId, period)],
+    (change) => change.percentChange,
+  );
+
+export const selectSelectedGroupPortfolioChange = (
+  period: PortfolioChangePeriod,
+) =>
+  createSelector(
+    [
+      selectAccountTreeStateForBalances,
+      selectAccountsStateForBalances,
+      selectTokenBalancesStateForBalances,
+      selectTokenRatesStateForBalances,
+      selectMultichainRatesStateForBalances,
+      selectMultichainBalancesStateForBalances,
+      selectTokensStateForBalances,
+      selectCurrencyRateStateForBalances,
+      selectEnabledNetworkMapForBalances,
+    ],
+    (
+      accountTreeState,
+      accountsState,
+      tokenBalancesState,
+      tokenRatesState,
+      multichainRatesState,
+      multichainBalancesState,
+      tokensState,
+      currencyRateState,
+      enabledNetworkMap,
+    ): AggregatedChangeForAllWallets => {
+      const groupId = accountTreeState?.accountTree?.selectedAccountGroup;
+      if (!groupId) {
+        return {
+          period,
+          currentTotalInUserCurrency: 0,
+          previousTotalInUserCurrency: 0,
+          amountChangeInUserCurrency: 0,
+          percentChange: 0,
+          userCurrency: currencyRateState.currentCurrency,
+        };
+      }
+      return calculateAggregatedChangeForGroup(
+        accountTreeState,
+        accountsState,
+        tokenBalancesState,
+        tokenRatesState,
+        multichainRatesState,
+        multichainBalancesState,
+        tokensState,
+        currencyRateState,
+        enabledNetworkMap,
+        groupId,
+        period,
+      );
+    },
+  );
+
+export const selectSelectedGroupPortfolioPercentChange = (
+  period: PortfolioChangePeriod,
+) =>
+  createSelector(
+    [selectSelectedGroupPortfolioChange(period)],
+    (change) => change.percentChange,
+  );
+
+export const selectSelectedGroupAggregatedBalance = createSelector(
+  [selectAccountTreeStateForBalances, selectBalanceForAllWallets],
+  (accountTreeState, allBalances) => {
+    const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
+    if (!selectedGroupId) {
+      return null;
+    }
+    const walletId = selectedGroupId.split('/')[0];
+    const wallet = allBalances.wallets[walletId] ?? null;
+    const { userCurrency } = allBalances;
+    if (!wallet?.groups[selectedGroupId]) {
+      return {
+        walletId,
+        groupId: selectedGroupId,
+        totalBalanceInUserCurrency: 0,
+        userCurrency,
+      };
+    }
+    return wallet.groups[selectedGroupId];
+  },
+);
+
+export const selectAggregatedBalanceByAccountGroup = (groupId: string) =>
+  createSelector([selectBalanceForAllWallets], (allBalances) => {
+    const walletId = groupId.split('/')[0];
+    const wallet = allBalances.wallets[walletId] ?? null;
+    const { userCurrency } = allBalances;
+    if (!wallet?.groups[groupId]) {
+      return {
+        walletId,
+        groupId,
+        totalBalanceInUserCurrency: 0,
+        userCurrency,
+      };
+    }
+    return wallet.groups[groupId];
+  });
+
+export const selectBalanceByWallet = (walletId: string) =>
+  createSelector([selectBalanceForAllWallets], (allBalances) => {
+    const wallet = allBalances.wallets[walletId] ?? null;
+    const { userCurrency } = allBalances;
+
+    if (!wallet) {
+      return {
+        walletId,
+        totalBalanceInUserCurrency: 0,
+        userCurrency,
+        groups: {},
+      };
+    }
+
+    return {
+      walletId,
+      totalBalanceInUserCurrency: wallet.totalBalanceInUserCurrency,
+      userCurrency,
+      groups: wallet.groups,
+    };
+  });

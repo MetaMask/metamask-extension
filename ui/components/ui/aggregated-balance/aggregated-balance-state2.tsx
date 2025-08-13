@@ -1,7 +1,12 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { balanceSelectors } from '@metamask/assets-controllers';
+import {
+  selectSelectedGroupAggregatedBalance,
+  selectBalanceForAllWallets,
+  selectAggregatedBalanceByAccountGroup,
+  type BalanceCalculationState,
+} from '../../../selectors/assets';
 
 import {
   AlignItems,
@@ -36,41 +41,26 @@ export const AggregatedBalanceState2: React.FC<
   const { privacyMode } = useSelector(getPreferences);
   const locale = useSelector(getIntlLocale);
 
-  const accountTreeState = useSelector((state) => {
-    const atc = (state as any)?.metamask?.AccountTreeController;
-    return atc?.accountTree;
-  });
-
-  console.log('accountTreeState', accountTreeState);
-
-  const {
-    selectBalanceForSelectedAccountGroup,
-    selectBalanceForAllWallets,
-    selectBalanceByAccountGroup,
-  } = balanceSelectors;
-  const selectedGroupBalance = useSelector((state) => {
-    const uiAccountTree = (state as any)?.metamask?.accountTree;
-    const selectedGroupId = uiAccountTree?.selectedAccountGroup;
-    if (!selectedGroupId) {
-      return null;
-    }
-    return selectBalanceForSelectedAccountGroup()(state as any);
-  });
-
-  console.log('accountTreeState', accountTreeState);
+  const selectedGroupBalance = useSelector(
+    selectSelectedGroupAggregatedBalance,
+  );
 
   // Portfolio-level totals are safe to compute without ATC
-  const allWalletsBalance = useSelector(selectBalanceForAllWallets());
+  const allWalletsBalance = useSelector(selectBalanceForAllWallets);
 
   // Resolve group by membership of the selected account (mobile parity)
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const resolvedGroupId = useSelector((state) => {
-    const uiAccountTree = (state as any)?.metamask?.accountTree;
-    const wallets: Record<string, any> = uiAccountTree?.wallets || {};
+  const resolvedGroupId = useSelector((state: BalanceCalculationState) => {
+    const wallets =
+      (state.metamask?.accountTree?.wallets as Record<
+        string,
+        { groups?: Record<string, { accounts?: string[] }> }
+      >) || {};
     const accountId = selectedAccount?.id;
     let fallbackFirstGroup: string | undefined;
-    for (const [_walletId, wallet] of Object.entries(wallets || {})) {
-      const groups: Record<string, any> = wallet?.groups || {};
+    for (const wallet of Object.values(wallets || {})) {
+      const groups: Record<string, { accounts?: string[] }> =
+        wallet?.groups || {};
       const firstGroupId = Object.keys(groups)[0];
       if (!fallbackFirstGroup && firstGroupId) {
         fallbackFirstGroup = firstGroupId;
@@ -92,13 +82,13 @@ export const AggregatedBalanceState2: React.FC<
 
   const selectBalanceForResolvedGroup = useMemo(
     () =>
-      resolvedGroupId ? selectBalanceByAccountGroup(resolvedGroupId) : null,
-    [resolvedGroupId, selectBalanceByAccountGroup],
+      resolvedGroupId
+        ? selectAggregatedBalanceByAccountGroup(resolvedGroupId)
+        : null,
+    [resolvedGroupId],
   );
-  const resolvedGroupBalance = useSelector((state) =>
-    selectBalanceForResolvedGroup
-      ? selectBalanceForResolvedGroup(state as any)
-      : null,
+  const resolvedGroupBalance = useSelector((state: BalanceCalculationState) =>
+    selectBalanceForResolvedGroup ? selectBalanceForResolvedGroup(state) : null,
   );
 
   const total =

@@ -5,7 +5,6 @@ import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import {
   Box,
   ButtonIcon,
@@ -32,7 +31,6 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   getPreferences,
   getShouldHideZeroBalanceTokens,
-  getTokensMarketData,
   getIsTestnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
@@ -42,10 +40,11 @@ import {
   getEnabledNetworksByNamespace,
   isGlobalNetworkSelectorRemoved,
   getIsMultichainAccountsState2Enabled,
+  getTokensMarketData,
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
-import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
+import { PercentAndChangeAmount } from '../../multichain/token-list-item/price/percentage-and-amount-change/percent-and-change-amount';
 import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
@@ -116,6 +115,7 @@ export const LegacyAggregatedBalance = ({
     allChainIDs,
   );
 
+  console.log(getTokensMarketData);
   const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
     account,
     formattedTokensWithBalancesPerChain,
@@ -201,8 +201,6 @@ export const CoinOverview = ({
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
-  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
-
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -213,8 +211,7 @@ export const CoinOverview = ({
 
   const dispatch = useDispatch();
 
-  const { privacyMode, showNativeTokenAsMainBalance } =
-    useSelector(getPreferences);
+  const { privacyMode } = useSelector(getPreferences);
 
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -222,7 +219,6 @@ export const CoinOverview = ({
 
   const isEvm = useSelector(getMultichainIsEvm);
 
-  const tokensMarketData = useSelector(getTokensMarketData);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
@@ -231,10 +227,6 @@ export const CoinOverview = ({
     dispatch(setPrivacyMode(!privacyMode));
   };
 
-  console.log(
-    'isMultichainAccountsState2Enabled',
-    isMultichainAccountsState2Enabled,
-  );
   const handlePortfolioOnClick = useCallback(() => {
     const url = getPortfolioUrl(
       'explore/tokens',
@@ -269,28 +261,22 @@ export const CoinOverview = ({
       );
     };
 
-    const renderNativeTokenView = () => (
-      <Box className="wallet-overview__currency-wrapper">
-        <PercentageAndAmountChange
-          value={
-            tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
-              ?.pricePercentChange1d
-          }
-        />
-        {renderPortfolioButton()}
-      </Box>
-    );
-
-    const renderAggregatedView = () => (
-      <Box className="wallet-overview__currency-wrapper">
-        {isTokenNetworkFilterEqualCurrentNetwork ? (
-          <AggregatedPercentageOverview />
-        ) : (
-          <AggregatedPercentageOverviewCrossChains />
-        )}
-        {renderPortfolioButton()}
-      </Box>
-    );
+    const renderAggregatedView = () => {
+      let content: React.ReactNode;
+      if (isMultichainAccountsState2Enabled) {
+        content = <PercentAndChangeAmount period="1d" />;
+      } else if (isTokenNetworkFilterEqualCurrentNetwork) {
+        content = <AggregatedPercentageOverview />;
+      } else {
+        content = <AggregatedPercentageOverviewCrossChains />;
+      }
+      return (
+        <Box className="wallet-overview__currency-wrapper">
+          {content}
+          {renderPortfolioButton()}
+        </Box>
+      );
+    };
 
     const renderNonEvmView = () => (
       <Box className="wallet-overview__currency-wrapper">
@@ -300,13 +286,23 @@ export const CoinOverview = ({
     );
 
     if (!isEvm) {
+      // Under state2 flag, show unified portfolio percent regardless of EVM
+      if (isMultichainAccountsState2Enabled) {
+        return (
+          <Box className="wallet-overview__currency-wrapper">
+            <PercentAndChangeAmount period="1d" />
+            {renderPortfolioButton()}
+          </Box>
+        );
+      }
       return renderNonEvmView();
     }
 
-    return showNativeTokenAsMainBalance &&
-      Object.keys(enabledNetworks).length === 1
-      ? renderNativeTokenView()
-      : renderAggregatedView();
+    if (isTokenNetworkFilterEqualCurrentNetwork) {
+      return renderAggregatedView();
+    }
+
+    return renderAggregatedView();
   };
 
   return (
