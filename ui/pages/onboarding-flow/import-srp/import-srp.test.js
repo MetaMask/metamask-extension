@@ -7,12 +7,12 @@ import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/rou
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import ImportSrp from './import-srp';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockNavigate,
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -43,7 +43,7 @@ describe('Import SRP', () => {
     const mockStore = configureMockStore()(initializedMockState);
     renderWithProvider(<ImportSrp />, mockStore);
 
-    expect(mockNavigate).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       ONBOARDING_CREATE_PASSWORD_ROUTE,
       {
         replace: true,
@@ -86,7 +86,9 @@ describe('Import SRP', () => {
     fireEvent.click(confirmSrpButton);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
-    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      ONBOARDING_CREATE_PASSWORD_ROUTE,
+    );
   });
 
   it('should input and submit srp', async () => {
@@ -113,6 +115,8 @@ describe('Import SRP', () => {
     fireEvent.click(confirmSrpButton);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
-    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      ONBOARDING_CREATE_PASSWORD_ROUTE,
+    );
   });
 });

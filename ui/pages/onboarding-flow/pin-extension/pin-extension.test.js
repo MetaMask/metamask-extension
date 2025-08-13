@@ -32,12 +32,12 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockNavigate,
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -104,8 +104,8 @@ describe('Creation Successful Onboarding View', () => {
       await Promise.all(mockPromises);
       expect(toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(setCompletedOnboarding).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 
@@ -131,8 +131,8 @@ describe('Creation Successful Onboarding View', () => {
       const store = arrangeMocks(mockState);
       renderWithProvider(<PinExtension />, store);
 
-      expect(mockNavigate).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
         replace: true,
       });
     });

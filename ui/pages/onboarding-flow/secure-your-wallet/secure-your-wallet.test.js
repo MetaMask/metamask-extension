@@ -12,12 +12,12 @@ import * as BrowserRuntimeUtils from '../../../../shared/modules/browser-runtime
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import SecureYourWallet from './secure-your-wallet';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockNavigate,
+    useNavigate: () => mockUseNavigate,
     useLocation: () => ({ search: '' }),
   };
 });
@@ -78,7 +78,7 @@ describe('Secure Your Wallet Onboarding View', () => {
     fireEvent.click(remindMeLaterButton);
     const skipButton = getByText('Skip');
     fireEvent.click(skipButton);
-    expect(mockNavigate).toHaveBeenCalledTimes(0);
+    expect(mockUseNavigate).toHaveBeenCalledTimes(0);
     const checkbox = getByTestId('skip-srp-backup-checkbox');
     fireEvent.click(checkbox);
     const confirmSkip = getByTestId('skip-srp-backup-button');
@@ -86,7 +86,7 @@ describe('Secure Your Wallet Onboarding View', () => {
 
     await waitFor(() => {
       expect(setSeedPhraseBackedUpSpy).toHaveBeenCalledWith(false);
-      expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
     });
   });
 
@@ -116,7 +116,7 @@ describe('Secure Your Wallet Onboarding View', () => {
 
     await waitFor(() => {
       expect(setSeedPhraseBackedUpSpy).toHaveBeenCalledWith(false);
-      expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
     });
   });
 });

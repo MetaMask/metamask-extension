@@ -5,12 +5,12 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
 import RecoveryPhrase from './review-recovery-phrase';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockNavigate,
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -98,7 +98,7 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(nextButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_CONFIRM_SRP_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_CONFIRM_SRP_ROUTE);
   });
 
   it('should route to url with reminder parameter', () => {
@@ -117,7 +117,7 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(nextButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       `${ONBOARDING_CONFIRM_SRP_ROUTE}${isReminderParam}`,
     );
   });

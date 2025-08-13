@@ -10,12 +10,12 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import DownloadApp from './download-app';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockNavigate,
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -108,8 +108,10 @@ describe('Download App Onboarding View', () => {
 
       fireEvent.click(continueButton);
 
-      expect(mockNavigate).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_PIN_EXTENSION_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_PIN_EXTENSION_ROUTE,
+      );
     });
   });
 
@@ -135,8 +137,8 @@ describe('Download App Onboarding View', () => {
       const store = arrangeMocks(mockState);
       renderWithProvider(<DownloadApp />, store);
 
-      expect(mockNavigate).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
         replace: true,
       });
     });

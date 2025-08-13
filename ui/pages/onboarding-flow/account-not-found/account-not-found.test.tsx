@@ -12,12 +12,12 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import * as Actions from '../../../store/actions';
 import AccountNotFound from './account-not-found';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockNavigate,
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -69,7 +69,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
       expect(setFirstTimeFlowTypeSpy).toHaveBeenCalledWith(
         FirstTimeFlowType.socialCreate,
       );
-      expect(mockNavigate).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
         {
           replace: true,
@@ -89,7 +89,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
 
     renderWithProvider(<AccountNotFound />, store);
 
-    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
       replace: true,
     });
   });
@@ -109,7 +109,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
         replace: true,
       });
       expect(resetOnboardingSpy).toHaveBeenCalled();

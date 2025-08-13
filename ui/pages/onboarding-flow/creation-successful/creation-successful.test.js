@@ -10,12 +10,12 @@ import {
 } from '../../../helpers/constants/routes';
 import CreationSuccessful from './creation-successful';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockNavigate,
+    useNavigate: () => mockUseNavigate,
     useLocation: () => ({ search: '' }),
   };
 });
@@ -84,7 +84,7 @@ describe('Wallet Ready Page', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
     const privacySettingsButton = getByText('Manage default settings');
     fireEvent.click(privacySettingsButton);
-    expect(mockNavigate).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
     );
   });
@@ -98,7 +98,9 @@ describe('Wallet Ready Page', () => {
     const doneButton = getByTestId('onboarding-complete-done');
     fireEvent.click(doneButton);
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_DOWNLOAD_APP_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_DOWNLOAD_APP_ROUTE,
+      );
     });
   });
 });

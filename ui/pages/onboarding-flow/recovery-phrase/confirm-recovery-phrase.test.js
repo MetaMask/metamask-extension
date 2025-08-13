@@ -17,12 +17,12 @@ jest.mock('../../../store/actions.ts', () => ({
   setSeedPhraseBackedUp: jest.fn().mockReturnValue(jest.fn()),
 }));
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockNavigate,
+    useNavigate: () => mockUseNavigate,
     useLocation: () => ({ search: '' }),
   };
 });
@@ -194,7 +194,7 @@ describe('Confirm Recovery Phrase Component', () => {
     fireEvent.click(gotItButton);
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
       replace: true,
     });
   });
@@ -229,7 +229,7 @@ describe('Confirm Recovery Phrase Component', () => {
     fireEvent.click(getByText('Got it'));
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE, {
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE, {
       replace: true,
     });
   });

@@ -12,12 +12,12 @@ import {
 import * as Actions from '../../../store/actions';
 import AccountExist from './account-exist';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockNavigate,
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -55,7 +55,7 @@ describe('Account Exist Seedless Onboarding View', () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE, {
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE, {
         replace: true,
       });
       expect(setFirstTimeFlowTypeSpy).toHaveBeenCalledWith(
@@ -75,7 +75,7 @@ describe('Account Exist Seedless Onboarding View', () => {
 
     renderWithProvider(<AccountExist />, store);
 
-    expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
       replace: true,
     });
   });
@@ -95,7 +95,7 @@ describe('Account Exist Seedless Onboarding View', () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
         replace: true,
       });
       expect(resetOnboardingSpy).toHaveBeenCalled();
