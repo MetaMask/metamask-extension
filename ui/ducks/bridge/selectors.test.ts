@@ -622,12 +622,21 @@ describe('Bridge selectors', () => {
           amount: '13.98428',
         },
         gasFee: {
-          amount: '7.141025952e-8',
-          amountMax: '9.933761952e-8',
-          usd: '7.141025952e-8',
-          usdMax: '9.933761952e-8',
-          valueInCurrency: '7.141025952e-8',
-          valueInCurrencyMax: '9.933761952e-8',
+          effective: {
+            amount: '7.141025952e-8',
+            usd: '7.141025952e-8',
+            valueInCurrency: '7.141025952e-8',
+          },
+          total: {
+            amount: '7.141025952e-8',
+            usd: '7.141025952e-8',
+            valueInCurrency: '7.141025952e-8',
+          },
+          max: {
+            amount: '9.933761952e-8',
+            usd: '9.933761952e-8',
+            valueInCurrency: '9.933761952e-8',
+          },
         },
         totalMaxNetworkFee: {
           amount: '0.00100009933761952',
@@ -739,12 +748,21 @@ describe('Bridge selectors', () => {
           usd: '39.100516560144370997564',
         },
         gasFee: {
-          amount: '7.141025952e-8',
-          amountMax: '9.933761952e-8',
-          valueInCurrency: '7.141025952e-8',
-          valueInCurrencyMax: '9.933761952e-8',
-          usd: '0.0000014282051904',
-          usdMax: '0.0000019867523904',
+          effective: {
+            amount: '7.141025952e-8',
+            usd: '0.0000014282051904',
+            valueInCurrency: '7.141025952e-8',
+          },
+          total: {
+            amount: '7.141025952e-8',
+            usd: '0.0000014282051904',
+            valueInCurrency: '7.141025952e-8',
+          },
+          max: {
+            amount: '9.933761952e-8',
+            usd: '0.0000019867523904',
+            valueInCurrency: '9.933761952e-8',
+          },
         },
         totalNetworkFee: {
           valueInCurrency: '0.00100007141025952',
@@ -870,12 +888,21 @@ describe('Bridge selectors', () => {
           usd: '13.8444372',
         },
         gasFee: {
-          amount: '7.141025952e-8',
-          amountMax: '9.933761952e-8',
-          valueInCurrency: '7.141025952e-8',
-          valueInCurrencyMax: '9.933761952e-8',
-          usd: '0.0000014282051904',
-          usdMax: '0.0000019867523904',
+          effective: {
+            amount: '7.141025952e-8',
+            usd: '0.0000014282051904',
+            valueInCurrency: '7.141025952e-8',
+          },
+          total: {
+            amount: '7.141025952e-8',
+            usd: '0.0000014282051904',
+            valueInCurrency: '7.141025952e-8',
+          },
+          max: {
+            amount: '9.933761952e-8',
+            usd: '0.0000019867523904',
+            valueInCurrency: '9.933761952e-8',
+          },
         },
         totalNetworkFee: {
           valueInCurrency: '0.00100007141025952',
