@@ -4238,7 +4238,10 @@
     "message": "OneKey needs to exit bootloader mode to use this feature."
   },
   "onekeyDeviceCheckPassphraseStateError": {
-    "message": "Pin or passphrase does not match the current account"
+    "message": "Account does not match the current device unlock address, please confirm that the device and account address are consistent and try again"
+  },
+  "onekeyDeviceOnlyOneError": {
+    "message": "Only one device can be connected at a time, please disconnect other devices first and try again"
   },
   "onekeyForceUpdate": {
     "message": "OneKey firmware needs to be updated. $1"
@@ -6177,7 +6180,7 @@
     "message": "Connect your OneKey"
   },
   "step1OnekeyWalletMsg": {
-    "message": "Plug your OneKey directly into your computer and unlock it. Make sure you are using the correct passphrase. For more detailed information about using your hardware wallet, $1",
+    "message": "Plug your OneKey directly into your computer and unlock it, only one device can be connected at a time. Make sure you are using the correct passphrase. For more detailed information about using your hardware wallet, $1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {

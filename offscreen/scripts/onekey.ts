@@ -34,6 +34,7 @@ function handleBlockErrorEvent(payload: Unsuccessful) {
     HardwareErrorCode.CallMethodNeedUpgradeFirmware,
     HardwareErrorCode.DeviceCheckPassphraseStateError,
     HardwareErrorCode.DeviceCheckUnlockTypeError,
+    HardwareErrorCode.SelectDevice,
   ];
 
   if (code && typeof code === 'number' && errorCodes.includes(code)) {
@@ -75,7 +76,7 @@ export default function init() {
           const settings: Partial<ConnectSettings> = {
             debug: true,
             fetchConfig: false,
-            connectSrc: 'https://jssdk.onekey.so/1.1.0/',
+            connectSrc: 'https://jssdk.onekey.so/1.1.5/',
             env: msg.params.env,
           };
 
