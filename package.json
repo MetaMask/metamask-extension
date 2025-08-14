@@ -274,7 +274,7 @@
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^1.1.0",
     "@metamask/contract-metadata": "^2.5.0",
-    "@metamask/controller-utils": "^11.11.0",
+    "@metamask/controller-utils": "^11.12.0",
     "@metamask/delegation-controller": "^0.6.0",
     "@metamask/delegation-deployments": "^0.11.0",
     "@metamask/design-system-react": "^0.1.0",
