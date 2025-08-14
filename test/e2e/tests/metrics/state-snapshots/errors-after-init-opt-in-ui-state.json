@@ -145,6 +145,7 @@
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
     "isRampCardClosed": false,
+    "isSeedlessOnboardingUserAuthenticated": "boolean",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -380,8 +381,6 @@
     "accountTree": "object",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object",
-    "encryptionKey": "string",
-    "encryptionSalt": "string",
     "srpSessionData": "object"
   },
   "ramps": "object",

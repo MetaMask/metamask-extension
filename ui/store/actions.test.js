@@ -1321,6 +1321,73 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setSelectedMultichainAccount', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('#setSelectedMultichainAccount', async () => {
+      const store = mockStore({
+        activeTab: {},
+        metamask: {
+          accountTree: {},
+        },
+      });
+
+      const setSelectedMultichainAccountSpy = sinon.stub().resolves();
+
+      background.getApi.returns({
+        setSelectedMultichainAccount: setSelectedMultichainAccountSpy,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.setSelectedMultichainAccount(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      );
+      expect(setSelectedMultichainAccountSpy.callCount).toStrictEqual(1);
+      expect(
+        setSelectedMultichainAccountSpy.calledWith(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      ).toBe(true);
+    });
+
+    it('handles gracefully when setSelectedMultichainAccount throws', async () => {
+      const store = mockStore({
+        activeTab: {},
+        metamask: {
+          alertEnabledness: {},
+          accountTree: {},
+        },
+      });
+
+      const setSelectedMultichainAccountSpy = sinon
+        .stub()
+        .rejects(new Error('error'));
+
+      background.getApi.returns({
+        setSelectedMultichainAccount: setSelectedMultichainAccountSpy,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(
+        actions.setSelectedMultichainAccount(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      );
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
   describe('#addToken', () => {
     afterEach(() => {
       sinon.restore();
