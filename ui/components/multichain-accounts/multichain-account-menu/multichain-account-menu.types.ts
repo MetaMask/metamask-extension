@@ -17,22 +17,27 @@ export type MultichainAccountMenuProps = {
 
 export type MenuItemConfig = {
   /**
-   * Translation key for the menu item text
+   * Translation key for the menu item text.
    */
   textKey: string;
 
   /**
-   * Icon to display for the menu item
+   * Icon to display for the menu item.
    */
   iconName: IconName;
 
   /**
-   * Function to execute when the menu item is clicked
+   * Function to execute when the menu item is clicked.
    */
   onClick: (mouseEvent: React.MouseEvent) => void;
 
   /**
-   * Optional color for the menu item text
+   * Optional color for the menu item text.
    */
   textColor?: TextColor;
+
+  /**
+   * Whether the menu item is disabled.
+   */
+  disabled?: boolean;
 };

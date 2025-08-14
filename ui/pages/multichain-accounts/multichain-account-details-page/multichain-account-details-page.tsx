@@ -29,7 +29,7 @@ export const MultichainAccountDetailsPage = () => {
   const decodedAccountGroupId = decodeURIComponent(id as string);
 
   return (
-    <Page className="multichain-account-details-page">
+    <Page className="multichain-account-details-page-wrapper">
       <Header
         textProps={{
           variant: TextVariant.headingSm,

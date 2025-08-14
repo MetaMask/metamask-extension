@@ -53,36 +53,31 @@ export const MultichainAccountMenu = ({
     const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {
       // TODO: Implement account rename click handling
       mouseEvent.stopPropagation();
-      setIsPopoverOpen(false);
-      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+      mouseEvent.preventDefault();
     };
 
     const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
       // TODO: Implement account addresses click handling
       mouseEvent.stopPropagation();
-      setIsPopoverOpen(false);
-      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+      mouseEvent.preventDefault();
     };
 
     const handleAccountPinClick = (mouseEvent: React.MouseEvent) => {
       // TODO: Implement account pin click handling
       mouseEvent.stopPropagation();
-      setIsPopoverOpen(false);
-      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+      mouseEvent.preventDefault();
     };
 
     const handleAccountHideClick = (mouseEvent: React.MouseEvent) => {
       // TODO: Implement account hide click handling
       mouseEvent.stopPropagation();
-      setIsPopoverOpen(false);
-      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+      mouseEvent.preventDefault();
     };
 
     const handleAccountRemoveClick = (mouseEvent: React.MouseEvent) => {
       // TODO: Implement account remove click handling
       mouseEvent.stopPropagation();
-      setIsPopoverOpen(false);
-      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+      mouseEvent.preventDefault();
     };
 
     const baseMenuItems: MenuItemConfig[] = [
@@ -95,21 +90,25 @@ export const MultichainAccountMenu = ({
         textKey: 'rename',
         iconName: IconName.Edit,
         onClick: handleAccountRenameClick,
+        disabled: true,
       },
       {
         textKey: 'addresses',
         iconName: IconName.QrCode,
         onClick: handleAccountAddressesClick,
+        disabled: true,
       },
       {
         textKey: 'pin',
         iconName: IconName.Pin,
         onClick: handleAccountPinClick,
+        disabled: true,
       },
       {
         textKey: 'hide',
         iconName: IconName.EyeSlash,
         onClick: handleAccountHideClick,
+        disabled: true,
       },
     ];
 
@@ -146,7 +145,8 @@ export const MultichainAccountMenu = ({
             ...(isLast
               ? {}
               : { borderBottom: '1px solid var(--color-border-muted)' }),
-            cursor: 'pointer',
+            cursor: item.disabled ? 'not-allowed' : 'pointer',
+            opacity: item.disabled ? 0.5 : 1,
           }}
         >
           <Text
