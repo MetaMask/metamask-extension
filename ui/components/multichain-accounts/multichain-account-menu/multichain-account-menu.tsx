@@ -20,10 +20,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  ACCOUNT_LIST_PAGE_ROUTE,
-  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
-} from '../../../helpers/constants/routes';
+import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import {
   MenuItemConfig,
   MultichainAccountMenuProps,
