@@ -17,6 +17,7 @@ type OriginPillProps = {
   origin: string;
   dataTestId: string;
   style?: React.CSSProperties;
+  textStyle?: React.CSSProperties;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -25,6 +26,7 @@ export default function OriginPill({
   origin,
   dataTestId,
   style,
+  textStyle,
 }: OriginPillProps) {
   const subjectMetadata = useSelector(getSubjectMetadata);
 
@@ -57,6 +59,8 @@ export default function OriginPill({
         color={TextColor.textAlternative}
         marginLeft={1}
         data-testid={`${dataTestId}-text`}
+        style={textStyle}
+        className="origin-pill-text"
       >
         {origin}
       </Text>

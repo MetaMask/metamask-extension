@@ -2992,9 +2992,6 @@
   "learnMoreAboutPrivacy": {
     "message": "En savoir plus sur les bonnes pratiques en matière de protection des données personnelles."
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "En savoir plus sur les comptes Solana"
-  },
   "learnMoreKeystone": {
     "message": "En savoir plus"
   },
@@ -3753,9 +3750,6 @@
   },
   "notEnoughGas": {
     "message": "Pas assez de gaz"
-  },
-  "notNow": {
-    "message": "Pas maintenant"
   },
   "notificationDetail": {
     "message": "Détails"
@@ -5698,27 +5692,6 @@
   "solanaAccountRequired": {
     "message": "Un compte Solana est nécessaire pour se connecter à ce site."
   },
-  "solanaImportAccounts": {
-    "message": "Importer des comptes Solana"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Importez une phrase secrète de récupération pour faire migrer votre compte Solana depuis un autre portefeuille."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "D’autres fonctionnalités seront bientôt disponibles"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Les NFT, la prise en charge des portefeuilles matériels, etc., seront bientôt disponibles."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana sur MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Envoyez, recevez et échangez des jetons"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Transférez et effectuez des transactions avec des jetons tels que SOL, USDC, etc."
-  },
   "someNetworks": {
     "message": "$1 réseaux"
   },
@@ -7042,9 +7015,6 @@
   },
   "viewOnOpensea": {
     "message": "Afficher sur Opensea"
-  },
-  "viewSolanaAccount": {
-    "message": "Voir le compte Solana"
   },
   "viewTransaction": {
     "message": "Voir la transaction"
