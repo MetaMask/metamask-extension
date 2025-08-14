@@ -1,4 +1,5 @@
 import React from 'react';
+import { AccountGroupId } from '@metamask/account-api';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -20,9 +21,9 @@ import {
 } from '../../../helpers/constants/design-system';
 
 export type MultichainAccountCellProps = {
-  accountId: string;
+  accountId: AccountGroupId;
   accountName: string;
-  onClick?: () => void;
+  onClick?: (accountGroupId: AccountGroupId) => void;
   balance: string;
   endAccessory?: React.ReactNode;
   selected?: boolean;
@@ -36,6 +37,8 @@ export const MultichainAccountCell = ({
   endAccessory,
   selected = false,
 }: MultichainAccountCellProps) => {
+  const handleClick = () => onClick?.(accountId);
+
   return (
     <Box
       backgroundColor={BackgroundColor.backgroundDefault}
@@ -46,7 +49,7 @@ export const MultichainAccountCell = ({
         cursor: onClick ? 'pointer' : 'default',
       }}
       padding={4}
-      onClick={onClick}
+      onClick={handleClick}
       className="multichain-account-cell"
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}

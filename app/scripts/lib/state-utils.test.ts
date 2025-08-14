@@ -1,3 +1,9 @@
+import {
+  SecretType,
+  SeedlessOnboardingControllerState,
+} from '@metamask/seedless-onboarding-controller';
+import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
+import { KeyringControllerState } from '@metamask/keyring-controller';
 import { sanitizeUIState } from './state-utils';
 
 describe('State Utils', () => {
@@ -55,6 +61,102 @@ describe('State Utils', () => {
           },
         },
       });
+    });
+  });
+
+  it('sanitizes keyring controller state', () => {
+    const state: Partial<KeyringControllerState> = {
+      vault: 'vault',
+      encryptionKey: 'encryptionKey',
+      encryptionSalt: 'encryptionSalt',
+    };
+
+    const sanitizedState = sanitizeUIState(state);
+
+    expect(sanitizedState).toStrictEqual({});
+  });
+
+  it('sanitizes authentication controller state', () => {
+    const state: Partial<AuthenticationControllerState> = {
+      srpSessionData: {
+        test1: {
+          token: {
+            accessToken: 'accessToken', // to be sanitized
+            expiresIn: 0,
+            obtainedAt: 0,
+          },
+          profile: {
+            identifierId: '',
+            profileId: '',
+            metaMetricsId: '',
+          },
+        },
+      },
+    };
+
+    const sanitizedState = sanitizeUIState(state);
+
+    expect(sanitizedState).toStrictEqual({
+      srpSessionData: {
+        test1: {
+          token: {
+            expiresIn: 0,
+            obtainedAt: 0,
+          },
+          profile: {
+            identifierId: '',
+            profileId: '',
+            metaMetricsId: '',
+          },
+        },
+      },
+    });
+  });
+
+  it('sanitizes seedless onboarding controller state', () => {
+    const state: Partial<SeedlessOnboardingControllerState> = {
+      vault: 'vault',
+      vaultEncryptionKey: 'vaultEncryptionKey',
+      vaultEncryptionSalt: 'vaultEncryptionSalt',
+      encryptedSeedlessEncryptionKey: 'encryptedSeedlessEncryptionKey',
+      encryptedKeyringEncryptionKey: 'encryptedKeyringEncryptionKey',
+      accessToken: 'accessToken',
+      metadataAccessToken: 'metadataAccessToken',
+      refreshToken: 'refreshToken',
+      revokeToken: 'revokeToken',
+      socialLoginEmail: 'socialLoginEmail',
+      nodeAuthTokens: [
+        {
+          authToken: 'authToken', // to be sanitized
+          nodeIndex: 1,
+          nodePubKey: 'nodeUrl',
+        },
+      ],
+      socialBackupsMetadata: [
+        {
+          hash: 'hash', // to be sanitized
+          type: SecretType.Mnemonic,
+          keyringId: 'keyringId',
+        },
+      ],
+    };
+
+    const sanitizedState = sanitizeUIState(state);
+
+    expect(sanitizedState).toStrictEqual({
+      socialLoginEmail: '********',
+      nodeAuthTokens: [
+        {
+          nodeIndex: 1,
+          nodePubKey: 'nodeUrl',
+        },
+      ],
+      socialBackupsMetadata: [
+        {
+          type: SecretType.Mnemonic,
+          keyringId: 'keyringId',
+        },
+      ],
     });
   });
 });
