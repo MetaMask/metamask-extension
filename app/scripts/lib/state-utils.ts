@@ -100,6 +100,7 @@ function sanitizeSeedlessOnboardingControllerState(state: FlattenedUIState) {
     'metadataAccessToken',
     'refreshToken',
     'revokeToken',
+    'socialLoginEmail',
   ];
   for (const key of toDelete) {
     delete state[key];
