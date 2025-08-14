@@ -24249,10 +24249,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fake-indexeddb@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "fake-indexeddb@npm:6.0.0"
-  checksum: 10/b4098f050ae1f18e23edd5e87da17aee1b6a199e1d3dec0c35346db73416ffac59bd595e2011b9cd70f36fe25eb852d122d2a05c74f75754869f300d84159414
+"fake-indexeddb@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "fake-indexeddb@npm:6.1.0"
+  checksum: 10/89064dcf823179db27e4ecd680fc52aa791af093f40c4065a8cc1e2393663403de19a0e261d185727a9b7b3ce2dff38a245f0bb8c0db57c098e2205d486a4cad
   languageName: node
   linkType: hard
 
@@ -32341,7 +32341,7 @@ __metadata:
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:^5.7.0"
     extension-port-stream: "npm:^3.0.0"
-    fake-indexeddb: "npm:^6.0.0"
+    fake-indexeddb: "npm:^6.1.0"
     fancy-log: "npm:^1.3.3"
     fast-glob: "npm:^3.2.2"
     fast-json-patch: "npm:^3.1.1"
