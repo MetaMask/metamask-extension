@@ -399,4 +399,4 @@ env:
   - FORCE_PREINSTALLED_SNAPS: 'false'
 
   # Enable new send implementation
-  - SEND_REDESIGN_ENABLED: 'false'
+  - SEND_REDESIGN_ENABLED: false
