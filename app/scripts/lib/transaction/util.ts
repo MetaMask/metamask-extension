@@ -31,7 +31,10 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
 import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-util';
-import { AppStateController } from '../../controllers/app-state-controller';
+import {
+  GetAddressSecurityAlertResponse,
+  AddAddressSecurityAlertResponse,
+} from '../trust-signals/types';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -259,15 +262,10 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
       return;
     }
 
-    const appStateControllerProxy = {
-      getAddressSecurityAlertResponse: getSecurityAlertResponse,
-      addAddressSecurityAlertResponse: addSecurityAlertResponse,
-    } as unknown as AppStateController;
-
     scanAddressAndAddToCache(
       to,
-      appStateControllerProxy,
-      undefined,
+      getSecurityAlertResponse as unknown as GetAddressSecurityAlertResponse,
+      addSecurityAlertResponse as unknown as AddAddressSecurityAlertResponse,
       chain,
     ).catch((error) => {
       console.error(
