@@ -4105,7 +4105,10 @@
     "message": "OneKey 需要退出引导模式才能使用该功能。"
   },
   "onekeyDeviceCheckPassphraseStateError": {
-    "message": "PIN 或 passphrase 不匹配当前账户"
+    "message": "账户与当前设备解锁地址不匹配，请确认设备与账户地址一致后重试"
+  },
+  "onekeyDeviceOnlyOneError": {
+    "message": "只能同时连接一台设备，请先断开其他设备连接后重试"
   },
   "onekeyForceUpdate": {
     "message": "OneKey 固件需要更新。$1"
@@ -6028,7 +6031,7 @@
     "message": "关联您的 OneKey"
   },
   "step1OnekeyWalletMsg": {
-    "message": "将您的 OneKey 直接插入电脑并解锁。确保使用正确的密语。关于更多使用您的硬件钱包的详细信息，$1",
+    "message": "将您的 OneKey 直接插入电脑并解锁，同时只能连接一台设备。确保使用正确的密语。关于更多使用您的硬件钱包的详细信息，$1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {

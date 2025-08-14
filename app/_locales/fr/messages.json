@@ -4105,7 +4105,10 @@
     "message": "OneKey doit quitter le mode bootloader pour utiliser cette fonctionnalité."
   },
   "onekeyDeviceCheckPassphraseStateError": {
-    "message": "Le PIN ou la phrase secrète ne correspond pas au compte actuel"
+    "message": "Le compte ne correspond pas à l'adresse de déverrouillage actuelle de l'appareil, veuillez confirmer que l'appareil et l'adresse du compte sont cohérents et réessayer"
+  },
+  "onekeyDeviceOnlyOneError": {
+    "message": "Un seul appareil peut être connecté à la fois, veuillez déconnecter d'abord les autres appareils et réessayer"
   },
   "onekeyForceUpdate": {
     "message": "Le firmware OneKey doit être mis à jour. $1"
@@ -6028,7 +6031,7 @@
     "message": "Connectez votre OneKey"
   },
   "step1OnekeyWalletMsg": {
-    "message": "Branchez votre OneKey directement sur votre ordinateur et déverrouillez-le. Assurez-vous d'utiliser la bonne phrase secrète. Pour plus d'informations détaillées sur l'utilisation de votre portefeuille matériel, $1",
+    "message": "Branchez votre OneKey directement sur votre ordinateur et déverrouillez-le, un seul appareil peut être connecté à la fois. Assurez-vous d'utiliser la bonne phrase secrète. Pour plus d'informations détaillées sur l'utilisation de votre portefeuille matériel, $1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {

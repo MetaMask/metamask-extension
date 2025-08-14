@@ -68,6 +68,8 @@ export default function OneKeyErrors() {
             error={t('onekeyDeviceCheckPassphraseStateError')}
           />
         );
+      case HardwareErrorCode.SelectDevice.toString():
+        return <OneKeyCommonError error={t('onekeyDeviceOnlyOneError')} />;
       default:
         return null;
     }

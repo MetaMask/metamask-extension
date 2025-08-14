@@ -4105,7 +4105,10 @@
     "message": "OneKeyはこの機能を使用するためにブートローダーモードを終了する必要があります。"
   },
   "onekeyDeviceCheckPassphraseStateError": {
-    "message": "PINまたはパスフレーズが現在のアカウントと一致しません"
+    "message": "アカウントが現在のデバイスのアンロックアドレスと一致しません。デバイスとアカウントアドレスが一致していることを確認して再試行してください"
+  },
+  "onekeyDeviceOnlyOneError": {
+    "message": "同時に接続できるのは1台のデバイスのみです。まず他のデバイスの接続を切断してから再試行してください"
   },
   "onekeyForceUpdate": {
     "message": "OneKeyファームウェアの更新が必要です。$1"
@@ -6028,7 +6031,7 @@
     "message": "OneKeyを接続する"
   },
   "step1OnekeyWalletMsg": {
-    "message": "OneKeyをコンピューターに直接差し込み、ロックを解除してください。正しいパスフレーズを使用していることを確認してください。ハードウェアウォレットの使用に関する詳細情報については、$1",
+    "message": "OneKeyをコンピューターに直接差し込みロックを解除してください。同時に接続できるのは1台のデバイスのみです。正しいパスフレーズを使用していることを確認してください。ハードウェアウォレットの使用に関する詳細情報については、$1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
