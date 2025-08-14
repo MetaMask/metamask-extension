@@ -1,18 +1,14 @@
 /* eslint-disable camelcase */
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   getBridgeQuotes,
   getFromAmount,
-  getFromChain,
-  getFromToken,
   getQuoteRequest,
   getValidationErrors,
 } from '../../ducks/bridge/selectors';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
-import useLatestBalance from './useLatestBalance';
 import { useRequestMetadataProperties } from './events/useRequestMetadataProperties';
 import { useRequestProperties } from './events/useRequestProperties';
 import { useTradeProperties } from './events/useTradeProperties';
@@ -45,17 +41,6 @@ export const useQuoteFetchEvents = () => {
   const quoteListProperties = useQuoteProperties();
   const tradeProperties = useTradeProperties();
 
-  const fromToken = useSelector(getFromToken);
-  const fromChain = useSelector(getFromChain);
-
-  const balanceAmount = useLatestBalance(fromToken);
-  const nativeAsset = useMemo(
-    () =>
-      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
-    [fromChain?.chainId],
-  );
-  const nativeAssetBalance = useLatestBalance(nativeAsset);
-
   const warnings = useMemo(() => {
     const {
       isEstimatedReturnLow,
@@ -69,12 +54,10 @@ export const useQuoteFetchEvents = () => {
 
     isEstimatedReturnLow && latestWarnings.push('low_return');
     isNoQuotesAvailable && latestWarnings.push('no_quotes');
-    isInsufficientGasBalance(nativeAssetBalance) &&
-      latestWarnings.push('insufficient_gas_balance');
-    isInsufficientGasForQuote(nativeAssetBalance) &&
+    isInsufficientGasBalance && latestWarnings.push('insufficient_gas_balance');
+    isInsufficientGasForQuote &&
       latestWarnings.push('insufficient_gas_for_selected_quote');
-    isInsufficientBalance(balanceAmount) &&
-      latestWarnings.push('insufficient_balance');
+    isInsufficientBalance && latestWarnings.push('insufficient_balance');
 
     return latestWarnings;
   }, [validationErrors]);
