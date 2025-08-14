@@ -31,7 +31,6 @@ import {
   setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
   setEVMSrcNativeBalance,
 } from './bridge';
-import { isNetworkAdded } from './utils';
 import type { TokenPayload } from './types';
 
 const {
@@ -145,33 +144,27 @@ export const setEVMSrcTokenBalance = (
 
 export const setFromChain = ({
   networkConfig,
-  selectedSolanaAccount,
-  selectedEvmAccount,
+  selectedAccount,
   token = null,
 }: {
   networkConfig?:
     | NetworkConfiguration
     | AddNetworkFields
     | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
-  selectedSolanaAccount?: InternalAccount;
-  selectedEvmAccount?: InternalAccount;
+  selectedAccount: InternalAccount;
   token?: TokenPayload['payload'];
 }) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    if (
-      networkConfig &&
-      isSolanaChainId(networkConfig.chainId) &&
-      selectedSolanaAccount
-    ) {
-      await dispatch(setSelectedAccount(selectedSolanaAccount.address));
-    } else if (isNetworkAdded(networkConfig) && selectedEvmAccount) {
-      await dispatch(setSelectedAccount(selectedEvmAccount.address));
-      await dispatch(
-        setActiveNetworkWithError(
-          networkConfig.rpcEndpoints[networkConfig.defaultRpcEndpointIndex]
-            .networkClientId || networkConfig.chainId,
-        ),
-      );
+    if (networkConfig) {
+      dispatch(setActiveNetworkWithError(networkConfig.chainId));
+      if (token) {
+        dispatch(setFromToken(token));
+      }
+      // If the chain is non-EVM, return early
+      if (isSolanaChainId(networkConfig.chainId)) {
+        return;
+      }
+      // Otherwise fetch the native balance
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {
@@ -182,13 +175,10 @@ export const setFromChain = ({
       });
       await dispatch(
         setEVMSrcNativeBalance({
-          selectedAddress: selectedEvmAccount.address,
+          selectedAddress: selectedAccount.address,
           chainId: networkConfig.chainId,
         }),
       );
-    }
-    if (token) {
-      dispatch(setFromToken(token));
     }
   };
 };

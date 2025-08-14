@@ -33,6 +33,7 @@ import {
   getFromChains,
   getFromToken,
 } from '../../ducks/bridge/selectors';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -76,18 +77,13 @@ const fetchAssetMetadata = async (
  * This hook is used to set the bridge fromChain, fromToken, fromTokenInputValue,
  * toChainId, and toToken from the URL search params.
  * It also clear the search params after setting the values.
- *
- * @param selectedSolanaAccount - The selected Solana account
- * @param selectedEvmAccount - The selected EVM account
  */
-export const useBridgeQueryParams = (
-  selectedSolanaAccount?: InternalAccount,
-  selectedEvmAccount?: InternalAccount,
-) => {
+export const useBridgeQueryParams = () => {
   const dispatch = useDispatch();
   const fromChains = useSelector(getFromChains);
   const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const abortController = useRef<AbortController>(new AbortController());
 
@@ -172,8 +168,7 @@ export const useBridgeQueryParams = (
       fromAsset,
       network: NetworkConfiguration,
       networks: NetworkConfiguration[],
-      solanaAccount?: InternalAccount,
-      evmAccount?: InternalAccount,
+      selectedAccount?: InternalAccount,
     ) => {
       const { chainId: fromChainId } = fromAsset;
 
@@ -203,8 +198,7 @@ export const useBridgeQueryParams = (
             dispatch(
               setFromChain({
                 networkConfig: targetChain,
-                selectedSolanaAccount: solanaAccount,
-                selectedEvmAccount: evmAccount,
+                selectedAccount,
                 token,
               }),
             );
@@ -256,16 +250,14 @@ export const useBridgeQueryParams = (
       parsedFromAssetId,
       fromChain,
       fromChains,
-      selectedSolanaAccount,
-      selectedEvmAccount,
+      selectedAccount,
     );
   }, [
     assetMetadataByAssetId,
     parsedFromAssetId,
     fromChains,
     fromChain,
-    selectedSolanaAccount,
-    selectedEvmAccount,
+    selectedAccount,
   ]);
 
   // Set toChainId and toToken
@@ -315,21 +307,15 @@ export const useBridgeQueryParams = (
       fromToken &&
       // Wait for network to be changed if needed
       !isCrossChain(fromToken.chainId, fromChain?.chainId) &&
-      selectedEvmAccount
+      selectedAccount
     ) {
-      dispatch(setEVMSrcTokenBalance(fromToken, selectedEvmAccount.address));
+      dispatch(setEVMSrcTokenBalance(fromToken, selectedAccount.address));
       dispatch(
         setEVMSrcNativeBalance({
-          selectedAddress: selectedEvmAccount.address,
+          selectedAddress: selectedAccount.address,
           chainId: fromToken.chainId,
         }),
       );
     }
-  }, [
-    parsedFromAssetId,
-    selectedEvmAccount,
-    fromToken,
-    fromChain,
-    searchParams,
-  ]);
+  }, [parsedFromAssetId, selectedAccount, fromToken, fromChain, searchParams]);
 };
