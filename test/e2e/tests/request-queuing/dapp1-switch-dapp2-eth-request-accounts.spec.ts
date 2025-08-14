@@ -40,14 +40,14 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         // Open Dapp One
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // Dapp Send Button
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.check_pageIsLoaded();
+        await transactionConfirmation.checkPageIsLoaded();
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -56,10 +56,10 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         // Leave the confirmation pending
         const secondTestDapp = new TestDapp(driver);
         await secondTestDapp.openTestDappPage({ url: DAPP_ONE_URL });
-        await secondTestDapp.check_pageIsLoaded();
+        await secondTestDapp.checkPageIsLoaded();
 
         // Verify the account is not connected initially
-        await secondTestDapp.check_connectedAccounts(
+        await secondTestDapp.checkConnectedAccounts(
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
           false,
         );
@@ -67,7 +67,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         await secondTestDapp.clickConnectAccountButton();
 
         // Verify account is still not connected before confirmation
-        await secondTestDapp.check_connectedAccounts(
+        await secondTestDapp.checkConnectedAccounts(
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
           false,
         );
@@ -83,12 +83,12 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
-        await secondTestDapp.check_connectedAccounts(
+        await secondTestDapp.checkConnectedAccounts(
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
       },
@@ -126,7 +126,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         // Open Dapp One
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // Dapp Send Button
         await testDapp.clickSimpleSendButton();
@@ -134,7 +134,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         // Leave the confirmation pending
         const secondTestDapp = new TestDapp(driver);
         await secondTestDapp.openTestDappPage({ url: DAPP_ONE_URL });
-        await secondTestDapp.check_pageIsLoaded();
+        await secondTestDapp.checkPageIsLoaded();
 
         const ethRequestAccounts = JSON.stringify({
           jsonrpc: '2.0',
