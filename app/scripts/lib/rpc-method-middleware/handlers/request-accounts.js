@@ -36,7 +36,6 @@ const locks = new Set();
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
- * @param options.getUnlockPromise - A hook that resolves when the wallet is unlocked.
  * @param options.sendMetrics - A hook that helps track metric events.
  * @param options.metamaskState - The MetaMask app state.
  * @param options.getCaip25PermissionFromLegacyPermissionsForOrigin - A hook that returns a CAIP-25 permission from a legacy `eth_accounts` and `endowment:permitted-chains` permission.
@@ -50,7 +49,6 @@ async function requestEthereumAccountsHandler(
   end,
   {
     getAccounts,
-    getUnlockPromise,
     sendMetrics,
     metamaskState,
     getCaip25PermissionFromLegacyPermissionsForOrigin,
@@ -72,7 +70,6 @@ async function requestEthereumAccountsHandler(
     // lock state when they were received.
     try {
       locks.add(origin);
-      await getUnlockPromise(true);
       res.result = ethAccounts;
       end();
     } catch (error) {
