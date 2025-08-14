@@ -1,5 +1,3 @@
-import { NetworkController } from '@metamask/network-controller';
-import type { AppStateController } from '../../controllers/app-state-controller';
 import { SECOND } from '../../../../shared/constants/time';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
@@ -9,7 +7,6 @@ import {
   ScanAddressResponse,
   SupportedEVMChain,
 } from './types';
-import { getChainId } from './trust-signals-util';
 
 const TIMEOUT = 5 * SECOND;
 const ENDPOINT_ADDRESS_SCAN = 'address/evm/scan';
