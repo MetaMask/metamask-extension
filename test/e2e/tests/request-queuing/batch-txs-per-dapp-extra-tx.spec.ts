@@ -114,18 +114,14 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await transactionConfirmation.checkPageNumbers(1, 5);
 
         // Verify we're on Localhost 8545 network
-        await transactionConfirmation.checkNetworkIsDisplayed(
-          'Localhost 8545',
-        );
+        await transactionConfirmation.checkNetworkIsDisplayed('Localhost 8545');
 
         // Navigate to next confirmation
         await transactionConfirmation.clickNextPage();
         await transactionConfirmation.clickNextPage();
 
         // Verify we're now on Localhost 8546 network
-        await transactionConfirmation.checkNetworkIsDisplayed(
-          'Localhost 8546',
-        );
+        await transactionConfirmation.checkNetworkIsDisplayed('Localhost 8546');
 
         // Reject All Transactions
         if (isManifestV3) {
