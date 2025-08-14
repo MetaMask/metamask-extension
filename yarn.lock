@@ -6433,6 +6433,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-api@npm:19.1.0, @metamask/keyring-api@npm:^19.0.0, @metamask/keyring-api@npm:^19.1.0":
+  version: 19.1.0
+  resolution: "@metamask/keyring-api@npm:19.1.0"
+  dependencies:
+    "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+  checksum: 10/2db4e6e1c0d7c6299b1bb74a5bef6a4b66111556b069dcf23d3dd9a328024da2c0b14ac350d606bc09cb677eb235a43f4a841d5cce850daba2526b4a44b00b3b
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-api@npm:^17.4.0":
   version: 17.6.0
   resolution: "@metamask/keyring-api@npm:17.6.0"
@@ -6454,30 +6466,6 @@ __metadata:
     "@metamask/utils": "npm:^11.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/11b4680399e9c3677637084b87d0da755bf3ceb35a060e7b4e8e697489d4ef117d97d80df6d9ca9fb75ee61f9cd225bc901028f6e43775e1ee683e4369ed4fdb
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-api@npm:^19.0.0, @metamask/keyring-api@npm:^19.1.0":
-  version: 19.1.0
-  resolution: "@metamask/keyring-api@npm:19.1.0"
-  dependencies:
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/2db4e6e1c0d7c6299b1bb74a5bef6a4b66111556b069dcf23d3dd9a328024da2c0b14ac350d606bc09cb677eb235a43f4a841d5cce850daba2526b4a44b00b3b
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-api@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@metamask/keyring-api@npm:20.0.0"
-  dependencies:
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/d912d388b7706a25a7369e6cb4777660b2c5810544f0a61b58374a0c8bcf0bc396e29033bca18c5e388bac3a6c1d49ef553bd042ab631ce22edc1da070d0f338
   languageName: node
   linkType: hard
 
@@ -6523,17 +6511,6 @@ __metadata:
     "@metamask/keyring-utils": "npm:^3.1.0"
     "@metamask/superstruct": "npm:^3.1.0"
   checksum: 10/9e479fb4657596a8314efa1ec83da845eab716e4990afc6f3dffe855589d63e05adc50221cf7cd745af39f30abac82d43f608f35bbb7a1ee3b3e0508c16a5e1c
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-internal-api@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/keyring-internal-api@npm:8.0.0"
-  dependencies:
-    "@metamask/keyring-api": "npm:^20.0.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-  checksum: 10/6aedd45fe1a9d5e058cc098feafe68734a70c81f722d9249c2252a121dcff19442b4b92e4ebe435190a4e63770cf9ea18cd985662070849382956a988106c30b
   languageName: node
   linkType: hard
 
@@ -6714,14 +6691,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@npm:^0.11.0, @metamask/multichain-network-controller@npm:^0.11.1":
-  version: 0.11.1
-  resolution: "@metamask/multichain-network-controller@npm:0.11.1"
+"@metamask/multichain-network-controller@npm:0.11.0, @metamask/multichain-network-controller@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "@metamask/multichain-network-controller@npm:0.11.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/controller-utils": "npm:^11.11.0"
-    "@metamask/keyring-api": "npm:^20.0.0"
-    "@metamask/keyring-internal-api": "npm:^8.0.0"
+    "@metamask/keyring-api": "npm:^19.0.0"
+    "@metamask/keyring-internal-api": "npm:^7.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.4.2"
     "@solana/addresses": "npm:^2.0.0"
@@ -6729,7 +6706,7 @@ __metadata:
   peerDependencies:
     "@metamask/accounts-controller": ^32.0.0
     "@metamask/network-controller": ^24.0.0
-  checksum: 10/69d965cd8d7951eb1ff4f12108d5dbc363f4bab2020b9ed387070a1d57802109a725bb831fc3c15b95533fd4ff2a5cbf1bec2e133df8e6d63d4eebc400608d27
+  checksum: 10/aabce7fca2be645fbeb476b4776d5beb9c32ef59aae6cea51dfc96da33d0a0706bf90586e39bb1831335ee24f6304ac7578cc711e5d413bceae8f6a59d5ddc0e
   languageName: node
   linkType: hard
 
