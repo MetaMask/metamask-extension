@@ -5,7 +5,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
-import { NetworkManagerRouter } from './network-manager';
+import { NetworkManager } from './network-manager';
 
 // Mock the store actions
 jest.mock('../../../store/actions', () => ({
@@ -122,7 +122,7 @@ describe('NetworkManager Component', () => {
         },
       },
     });
-    return renderWithProvider(<NetworkManagerRouter />, store);
+    return renderWithProvider(<NetworkManager />, store);
   };
 
   const renderNetworkManagerWithNonEvmNetworkSelected = () => {
@@ -163,7 +163,7 @@ describe('NetworkManager Component', () => {
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
     });
-    return renderWithProvider(<NetworkManagerRouter />, store);
+    return renderWithProvider(<NetworkManager />, store);
   };
   beforeEach(() => {
     jest.clearAllMocks();
