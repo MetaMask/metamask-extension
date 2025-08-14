@@ -4,11 +4,8 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
-  Box,
-  Icon,
-  IconName,
-  Text,
-} from '../../component-library';
+} from '@metamask/design-system-react';
+import { Box, Icon, IconName, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
