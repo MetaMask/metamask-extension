@@ -18,6 +18,8 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_REVEAL_SRP_ROUTE,
+  ONBOARDING_ROUTE,
 } from '../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
@@ -46,14 +48,6 @@ jest.mock('../../store/actions', () => ({
 }));
 
 describe('Onboarding Flow', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockUseLocation.mockReturnValue({
-      pathname: '/onboarding',
-      search: '',
-    });
-  });
-
   const mockState = {
     metamask: {
       internalAccounts: {
@@ -94,6 +88,20 @@ describe('Onboarding Flow', () => {
 
   const store = configureMockStore()(mockState);
 
+  beforeEach(() => {
+    mockUseLocation.mockReturnValue({
+      key: 'test-key',
+      pathname: ONBOARDING_ROUTE,
+      search: '',
+      hash: '',
+      state: null,
+    });
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', () => {
     const completedOnboardingState = {
       metamask: {
@@ -133,11 +141,6 @@ describe('Onboarding Flow', () => {
 
   describe('Create Password', () => {
     it('should render create password', () => {
-      mockUseLocation.mockReturnValue({
-        pathname: ONBOARDING_CREATE_PASSWORD_ROUTE,
-        search: '',
-      });
-
       const { queryByTestId } = renderWithProvider(
         <OnboardingFlow />,
         store,
@@ -149,11 +152,6 @@ describe('Onboarding Flow', () => {
     });
 
     it('should call createNewVaultAndGetSeedPhrase when creating a new wallet password', async () => {
-      mockUseLocation.mockReturnValue({
-        pathname: ONBOARDING_CREATE_PASSWORD_ROUTE,
-        search: '',
-      });
-
       const { queryByTestId, queryByText } = renderWithProvider(
         <OnboardingFlow />,
         configureMockStore()({
@@ -187,11 +185,6 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render secure your wallet component', () => {
-    mockUseLocation.mockReturnValue({
-      pathname: ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-      search: '',
-    });
-
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlow />,
       store,
@@ -202,62 +195,25 @@ describe('Onboarding Flow', () => {
     expect(secureYourWallet).toBeInTheDocument();
   });
 
-  it('should redirect to unlock route when going to review recovery phrase without srp and user is unlocked', () => {
-    mockUseLocation.mockReturnValue({
-      pathname: ONBOARDING_REVIEW_SRP_ROUTE,
-      search: '',
-    });
+  it('should redirect to reveal recovery phrase when going to review recovery phrase without srp', () => {
+    renderWithProvider(<OnboardingFlow />, store, ONBOARDING_REVIEW_SRP_ROUTE);
 
-    const unlockedState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        isUnlocked: true,
-        completedOnboarding: false,
-      },
-    };
-
-    const unlockedStore = configureMockStore()(unlockedState);
-    renderWithProvider(
-      <OnboardingFlow />,
-      unlockedStore,
-      ONBOARDING_REVIEW_SRP_ROUTE,
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${ONBOARDING_REVEAL_SRP_ROUTE}`,
+      { replace: true },
     );
-
-    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE);
   });
 
-  it('should redirect to unlock route when going to confirm recovery phrase without srp and user is unlocked', () => {
-    mockUseLocation.mockReturnValue({
-      pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
-      search: '',
-    });
+  it('should redirect to reveal recovery phrase when going to confirm recovery phrase without srp', () => {
+    renderWithProvider(<OnboardingFlow />, store, ONBOARDING_CONFIRM_SRP_ROUTE);
 
-    const unlockedState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        isUnlocked: true,
-        completedOnboarding: false,
-      },
-    };
-
-    const unlockedStore = configureMockStore()(unlockedState);
-    renderWithProvider(
-      <OnboardingFlow />,
-      unlockedStore,
-      ONBOARDING_CONFIRM_SRP_ROUTE,
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${ONBOARDING_REVEAL_SRP_ROUTE}`,
+      { replace: true },
     );
-
-    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE);
   });
 
   it('should render import seed phrase', () => {
-    mockUseLocation.mockReturnValue({
-      pathname: ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-      search: '',
-    });
-
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlow />,
       store,
@@ -270,11 +226,6 @@ describe('Onboarding Flow', () => {
 
   describe('Unlock Screen', () => {
     it('should render unlock page', () => {
-      mockUseLocation.mockReturnValue({
-        pathname: ONBOARDING_UNLOCK_ROUTE,
-        search: '',
-      });
-
       const { queryByTestId } = renderWithProvider(
         <OnboardingFlow />,
         store,
@@ -286,11 +237,6 @@ describe('Onboarding Flow', () => {
     });
 
     it('should call unlockAndGetSeedPhrase when unlocking with a password', async () => {
-      mockUseLocation.mockReturnValue({
-        pathname: ONBOARDING_UNLOCK_ROUTE,
-        search: '',
-      });
-
       const { getByLabelText, getByText } = renderWithProvider(
         <OnboardingFlow />,
         configureMockStore()({
@@ -337,10 +283,12 @@ describe('Onboarding Flow', () => {
 
   it('should render onboarding welcome screen', () => {
     mockUseLocation.mockReturnValue({
+      key: 'test-key',
       pathname: ONBOARDING_WELCOME_ROUTE,
       search: '',
+      hash: '',
+      state: null,
     });
-
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlow />,
       store,
