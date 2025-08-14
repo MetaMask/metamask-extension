@@ -5,7 +5,7 @@ class NotificationsListPage {
 
   private readonly notificationsListPageTitle = {
     text: 'Notifications',
-    dataTestId: 'notifications-settings-title',
+    tag: 'p',
   };
 
   private readonly notificationsSettingsButton =
