@@ -375,8 +375,6 @@
     "submitHistory": "object",
     "delegations": "object",
     "accountTree": "object",
-    "encryptionKey": "string",
-    "encryptionSalt": "string",
     "socialBackupsMetadata": "object",
     "srpSessionData": "object",
     "enableEnforcedSimulations": true,
