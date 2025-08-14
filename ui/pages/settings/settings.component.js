@@ -303,7 +303,6 @@ class SettingsPage extends PureComponent {
       navigate,
       initialBreadCrumbKey,
     } = this.props;
-
     let subheaderText;
 
     if (isPopup && isAddressEntryPage) {
@@ -442,7 +441,7 @@ class SettingsPage extends PureComponent {
           ) {
             return true;
           }
-          return matchPath(currentPath, { exact: true, path: key });
+          return matchPath(key, currentPath);
         }}
         onSelect={(key) =>
           navigate(key, {
