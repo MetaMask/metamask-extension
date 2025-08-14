@@ -34,13 +34,11 @@ import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
-import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 
 const useBridging = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
@@ -120,7 +118,6 @@ const useBridging = () => {
       history,
       metaMetricsId,
       trackEvent,
-      trackCrossChainSwapsEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
       providerConfig,
