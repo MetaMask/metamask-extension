@@ -46,10 +46,9 @@ export const useQuoteFetchEvents = () => {
     return latestWarnings;
   }, [validationErrors]);
 
-  // TODO fix error where this is published on every load
   // Emitted each time quotes are fetched successfully
   useEffect(() => {
-    if (!isLoading && quotesRefreshCount >= 0 && !quoteFetchError) {
+    if (!isLoading && quotesRefreshCount > 0 && !quoteFetchError) {
       dispatch(
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.QuotesReceived, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -82,5 +81,5 @@ export const useQuoteFetchEvents = () => {
         }),
       );
     }
-  }, [activeQuote]);
+  }, [quotesRefreshCount]);
 };
