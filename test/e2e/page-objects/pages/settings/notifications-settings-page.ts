@@ -7,7 +7,7 @@ class NotificationsSettingsPage {
 
   private readonly notificationsSettingsPageTitle = {
     text: 'Notifications',
-    tag: 'p',
+    dataTestId: 'notifications-settings-title',
   };
 
   private readonly allowNotificationsToggle =

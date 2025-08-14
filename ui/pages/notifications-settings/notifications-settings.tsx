@@ -108,6 +108,7 @@ export default function NotificationsSettings() {
         alignItems={AlignItems.center}
         textProps={{
           variant: TextVariant.headingMd,
+          'data-testid': 'notifications-settings-title',
         }}
       >
         {t('notifications')}
