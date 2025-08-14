@@ -5350,6 +5350,31 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
   },
+  "shieldEntryModalTitle": {
+    "message": "Trade assets without fear"
+  },
+  "shieldEntryModalSubtitle": {
+    "message": "Transaction Shield, free for 14 days."
+  },
+  "shieldEntryModalDescription": {
+    "message": "Renews at $1/month, cancel anytime. $2",
+    "description": "The $1 is the price of the shield and $2 is a link to the learn more page"
+  },
+  "shieldEntryModalAssetCoverage": {
+    "message": "$10,000 asset coverage per transaction"
+  },
+  "shieldEntryModalProtection": {
+    "message": "Protection across all your accounts"
+  },
+  "shieldEntryModalSupport": {
+    "message": "Priority customer support"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "Get started"
+  },
+  "shieldEntryModalSkip": {
+    "message": "Skip"
+  },
   "show": {
     "message": "Show"
   },
