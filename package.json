@@ -348,7 +348,7 @@
     "@metamask/streams": "^0.2.0",
     "@metamask/transaction-controller": "^59.1.0",
     "@metamask/user-operation-controller": "^38.0.0",
-    "@metamask/utils": "^11.1.0",
+    "@metamask/utils": "^11.4.2",
     "@ngraveio/bc-ur": "^1.1.13",
     "@noble/hashes": "^1.3.3",
     "@popperjs/core": "^2.4.0",
