@@ -11,7 +11,7 @@ import { getSelectedAccount } from '../../../../selectors';
 import { Asset } from '../../../asset/types/asset';
 import { SendPages } from '../../constants/send';
 
-export interface SendContextType {
+export type SendContextType = {
   asset?: Asset;
   currentPage: SendPages;
   fromAccount: InternalAccount;
@@ -22,7 +22,7 @@ export interface SendContextType {
   updateTo: (to: string) => void;
   updateValue: (value: string) => void;
   value?: string;
-}
+};
 
 export const SendContext = createContext<SendContextType>({
   asset: undefined,

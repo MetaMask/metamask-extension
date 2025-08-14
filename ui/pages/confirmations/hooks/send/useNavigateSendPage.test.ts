@@ -1,8 +1,8 @@
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as SendContext from '../../context/send';
-import { useNavigateSendPage } from './useNavigateSendPage';
 import { SendPages } from '../../constants/send';
+import { useNavigateSendPage } from './useNavigateSendPage';
 
 const mockHistory = {
   goBack: jest.fn(),

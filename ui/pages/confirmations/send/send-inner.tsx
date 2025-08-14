@@ -8,10 +8,10 @@ import { useSendContext } from '../context/send';
 
 export const SendInner = () => {
   const { currentPage } = useSendContext();
-  if (currentPage == SendPages.ASSET) {
+  if (currentPage === SendPages.ASSET) {
     return <Asset />;
   }
-  if (currentPage == SendPages.AMOUNT) {
+  if (currentPage === SendPages.AMOUNT) {
     return <Amount />;
   }
   return <SendTo />;
