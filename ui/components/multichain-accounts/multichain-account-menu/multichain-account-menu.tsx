@@ -198,5 +198,3 @@ export const MultichainAccountMenu = ({
     </>
   );
 };
-
-export default MultichainAccountMenu;
