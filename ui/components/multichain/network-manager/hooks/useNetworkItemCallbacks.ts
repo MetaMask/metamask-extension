@@ -86,9 +86,7 @@ export const useNetworkItemCallbacks = () => {
             : undefined,
         };
       }
-      const hexChainId = convertCaipToHexChainId(
-        chainId as `${string}:${string}`,
-      );
+      const hexChainId = convertCaipToHexChainId(chainId);
       const isDeletable =
         isUnlocked &&
         network.chainId !== currentChainId &&
