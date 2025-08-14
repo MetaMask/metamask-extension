@@ -426,7 +426,7 @@ export const getCaip25IdByAccountGroupAndScope = createDeepEqualSelector(
   },
 );
 
-export const getMultichainAccountGroupsByScopes = createDeepEqualSelector(
+export const getAccountGroupsByScopes = createDeepEqualSelector(
   getAccountGroupWithInternalAccounts,
   (_, scopes: string[]) => scopes,
   (
