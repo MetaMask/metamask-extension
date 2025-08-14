@@ -949,7 +949,16 @@ describe('MetaMaskController', () => {
       it('gets the CAIP-25 caveat value for the origin', async () => {
         jest
           .spyOn(metamaskController.permissionController, 'getCaveat')
-          .mockReturnValue();
+          .mockReturnValue({
+            value: {
+              requiredScopes: {},
+              optionalScopes: {
+                'eip155:1': {
+                  accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
+                },
+              },
+            },
+          });
 
         metamaskController.getPermittedAccounts('test.com');
 
@@ -991,28 +1000,7 @@ describe('MetaMaskController', () => {
           jest.spyOn(metamaskController, 'isUnlocked').mockReturnValue(false);
         });
 
-        it('returns empty array if there is a CAIP-25 permission for the origin and ignoreLock is false', async () => {
-          jest
-            .spyOn(metamaskController.permissionController, 'getCaveat')
-            .mockReturnValue({
-              value: {
-                requiredScopes: {},
-                optionalScopes: {
-                  'eip155:1': {
-                    accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
-                  },
-                },
-              },
-            });
-
-          expect(
-            metamaskController.getPermittedAccounts('test.com', {
-              ignoreLock: false,
-            }),
-          ).toStrictEqual([]);
-        });
-
-        it('returns accounts if there is a CAIP-25 permission for the origin and ignoreLock is true', async () => {
+        it('returns accounts if there is a CAIP-25 permission for the origin', async () => {
           jest
             .spyOn(metamaskController.permissionController, 'getCaveat')
             .mockReturnValue({
@@ -1030,9 +1018,7 @@ describe('MetaMaskController', () => {
             .mockReturnValue(['not_empty']);
 
           expect(
-            metamaskController.getPermittedAccounts('test.com', {
-              ignoreLock: true,
-            }),
+            metamaskController.getPermittedAccounts('test.com'),
           ).toStrictEqual(['not_empty']);
         });
       });
