@@ -20,7 +20,10 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   MenuItemConfig,
   MultichainAccountMenuProps,
@@ -41,38 +44,43 @@ export const MultichainAccountMenu = ({
   };
 
   const menuConfig = useMemo(() => {
-    const handleAccountDetailsClick = () => {
-      // TODO: Implement account details click handling
-      setIsPopoverOpen(false);
-      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+    const handleAccountDetailsClick = (mouseEvent: React.MouseEvent) => {
+      mouseEvent.stopPropagation();
+      const multichainAccountDetailsPageRoute = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
+      history.push(multichainAccountDetailsPageRoute);
     };
 
-    const handleAccountRenameClick = () => {
+    const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {
       // TODO: Implement account rename click handling
+      mouseEvent.stopPropagation();
       setIsPopoverOpen(false);
       history.push(ACCOUNT_LIST_PAGE_ROUTE);
     };
 
-    const handleAccountAddressesClick = () => {
+    const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
       // TODO: Implement account addresses click handling
+      mouseEvent.stopPropagation();
       setIsPopoverOpen(false);
       history.push(ACCOUNT_LIST_PAGE_ROUTE);
     };
 
-    const handleAccountPinClick = () => {
+    const handleAccountPinClick = (mouseEvent: React.MouseEvent) => {
       // TODO: Implement account pin click handling
+      mouseEvent.stopPropagation();
       setIsPopoverOpen(false);
       history.push(ACCOUNT_LIST_PAGE_ROUTE);
     };
 
-    const handleAccountHideClick = () => {
+    const handleAccountHideClick = (mouseEvent: React.MouseEvent) => {
       // TODO: Implement account hide click handling
+      mouseEvent.stopPropagation();
       setIsPopoverOpen(false);
       history.push(ACCOUNT_LIST_PAGE_ROUTE);
     };
 
-    const handleAccountRemoveClick = () => {
+    const handleAccountRemoveClick = (mouseEvent: React.MouseEvent) => {
       // TODO: Implement account remove click handling
+      mouseEvent.stopPropagation();
       setIsPopoverOpen(false);
       history.push(ACCOUNT_LIST_PAGE_ROUTE);
     };
@@ -115,7 +123,7 @@ export const MultichainAccountMenu = ({
     }
 
     return Object.freeze(baseMenuItems);
-  }, [history, isRemovable]);
+  }, [accountGroupId, history, isRemovable]);
 
   const menuItems = useMemo(() => {
     return menuConfig.map((item, index, menuConfigurations) => {

@@ -1,4 +1,5 @@
 import { AccountGroupId } from '@metamask/account-api';
+import React from 'react';
 import { IconName } from '../../component-library';
 import { TextColor } from '../../../helpers/constants/design-system';
 
@@ -28,7 +29,7 @@ export type MenuItemConfig = {
   /**
    * Function to execute when the menu item is clicked
    */
-  onClick: () => void;
+  onClick: (mouseEvent: React.MouseEvent) => void;
 
   /**
    * Optional color for the menu item text

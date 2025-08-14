@@ -60,6 +60,7 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -289,6 +290,13 @@ const WalletDetails = mmLazy(
   (() =>
     import(
       '../multichain-accounts/wallet-details/index.ts'
+    )) as unknown as DynamicImportType,
+);
+
+const MultichainAccountDetailsPage = mmLazy(
+  (() =>
+    import(
+      '../multichain-accounts/multichain-account-details-page/index.ts'
     )) as unknown as DynamicImportType,
 );
 // End Lazy Routes
@@ -574,6 +582,11 @@ export default function Routes() {
           <Authenticated
             path={ACCOUNT_LIST_PAGE_ROUTE}
             component={AccountList}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
+            component={MultichainAccountDetailsPage}
             exact
           />
           <Authenticated
