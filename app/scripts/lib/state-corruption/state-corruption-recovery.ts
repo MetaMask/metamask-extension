@@ -70,7 +70,7 @@ async function maybeGetBackup(
       : null;
   if (!backup) {
     try {
-      backup = await database.getBackup();
+      backup = (await database.getBackup()) ?? null;
     } catch {
       // ignore errors here since we're already in an error state, we really
       // only care about the error that got us here.

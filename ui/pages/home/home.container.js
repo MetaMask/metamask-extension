@@ -24,9 +24,6 @@ import {
   getSelectedInternalAccount,
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  getIsSolanaSupportEnabled,
-  ///: END:ONLY_INCLUDE_IF
   getShowUpdateModal,
   getShowConnectionsRemovedModal,
 } from '../../selectors';
@@ -127,17 +124,7 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  let TEMPORARY_DISABLE_WHATS_NEW = true;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  const solanaSupportEnabled = getIsSolanaSupportEnabled(state);
-
-  // TODO: Remove this once the feature flag is enabled by default
-  // If the feature flag is enabled, we should show the whats new modal
-  if (solanaSupportEnabled) {
-    TEMPORARY_DISABLE_WHATS_NEW = false;
-  }
-  ///: END:ONLY_INCLUDE_IF
+  const TEMPORARY_DISABLE_WHATS_NEW = true;
 
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
     ? false

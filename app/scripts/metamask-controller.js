@@ -3684,6 +3684,11 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setAccountName(account.id, label);
       },
 
+      // AccountTreeController
+      setSelectedMultichainAccount: (accountGroupId) => {
+        this.accountTreeController.setSelectedAccountGroup(accountGroupId);
+      },
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTokenSymbol: this.getTokenSymbol.bind(this),
