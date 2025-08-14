@@ -38,7 +38,7 @@ export const useNetworkItemCallbacks = () => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const isDiscoverBtnEnabled = useCallback(
-    (chainId: Hex | `solana:${string}`): boolean => {
+    (chainId: Hex | `${string}:${string}`): boolean => {
       // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
       // and in the constants `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`.
       return Boolean(
@@ -72,10 +72,7 @@ export const useNetworkItemCallbacks = () => {
     (
       network: MultichainNetworkConfiguration,
     ): Record<string, (() => void) | undefined> => {
-      const { chainId, isEvm } = network as {
-        chainId: Hex | `solana:${string}`;
-        isEvm: boolean;
-      };
+      const { chainId, isEvm } = network;
 
       if (!isEvm) {
         return {
@@ -126,9 +123,7 @@ export const useNetworkItemCallbacks = () => {
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
               openWindow(
-                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[
-                  hexChainId as Hex | `solana:${string}`
-                ],
+                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
                 '_blank',
               );
             }
