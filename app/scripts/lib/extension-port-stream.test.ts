@@ -1,11 +1,11 @@
 import { DuplexOptions } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
+import { Json } from '@metamask/utils';
 import type {
   PortStream,
   TransportChunkFrame,
   Options,
 } from './extension-port-stream';
-import { Json } from '@metamask/utils';
 
 // the Jest type for it is wrong
 const it = globalThis.it as unknown as jest.It;
@@ -13,7 +13,7 @@ const it = globalThis.it as unknown as jest.It;
 const originalStringify = JSON.stringify.bind(JSON);
 
 // Helper to create a mock port
-const createMockPort = (CHUNK_SIZE: number) => {
+const createMockPort = (chunkSize: number) => {
   const listeners: {
     message: ((msg: unknown, port: Runtime.Port) => void)[];
     disconnect: ((port: Runtime.Port) => void)[];
@@ -23,9 +23,12 @@ const createMockPort = (CHUNK_SIZE: number) => {
   };
   const mockPortInstance: jest.Mocked<Runtime.Port> = {
     name: 'mockPort',
-    postMessage: jest.fn((message: object) => {
-      const messageSize = originalStringify(message).length;
-      if (messageSize > CHUNK_SIZE) {
+    postMessage: jest.fn((message: string | Json) => {
+      const messageSize =
+        typeof message === 'string'
+          ? message.length
+          : originalStringify(message).length;
+      if (messageSize > chunkSize) {
         throw new Error('Message length exceeded maximum allowed length');
       }
     }),
@@ -62,7 +65,7 @@ const createMockPort = (CHUNK_SIZE: number) => {
   };
 };
 
-const originalGlobalJsonStringify = JSON.stringify; // Define at a higher scope
+const originalGlobalJsonStringify = JSON.stringify;
 
 describe('extension-port-stream', () => {
   let consoleDebugSpy: jest.SpyInstance;
@@ -150,24 +153,18 @@ describe('extension-port-stream', () => {
       expect(frames.length).toBe(3);
 
       const expectedId = 1;
-      const expectedTotal = 3;
-
+      const length = CHUNK_SIZE - 5;
       expect(frames[0]).toBe(
-        `${expectedId}|${expectedTotal}|0|${largeJsonString.substring(
-          0,
-          CHUNK_SIZE,
-        )}`,
+        `${expectedId}|0|0${largeJsonString.substring(0, length)}`,
       );
       expect(frames[1]).toBe(
-        `${expectedId}|${expectedTotal}|1|${largeJsonString.substring(
-          CHUNK_SIZE,
-          CHUNK_SIZE * 2,
+        `${expectedId}|1|0${largeJsonString.substring(
+          CHUNK_SIZE - 5,
+          CHUNK_SIZE - 5 + length,
         )}`,
       );
       expect(frames[2]).toBe(
-        `${expectedId}|${expectedTotal}|2|${largeJsonString.substring(
-          CHUNK_SIZE * 2,
-        )}`,
+        `${expectedId}|2|1${largeJsonString.substring((CHUNK_SIZE - 5) * 2)}`,
       );
     });
   });
@@ -206,7 +203,7 @@ describe('extension-port-stream', () => {
       stream = createStream({ log: mockLog });
       const testData = { test: 'data' };
       simulatePortMessage(testData);
-      expect(mockLog).toHaveBeenCalledWith(testData, false);
+      expect(mockLog).toHaveBeenCalledWith('received unchunked message', false);
     });
 
     it('should pass DuplexOptions to super constructor', () => {
@@ -223,7 +220,10 @@ describe('extension-port-stream', () => {
 
         stream.on('data', (data) => {
           expect(data).toEqual(message);
-          expect(mockLog).toHaveBeenCalledWith(message, false);
+          expect(mockLog).toHaveBeenCalledWith(
+            'received unchunked message',
+            false,
+          );
           expect(consoleDebugSpy).not.toHaveBeenCalledWith(
             expect.stringContaining('← raw'),
           );
@@ -236,11 +236,14 @@ describe('extension-port-stream', () => {
         stream = createStream({ log: mockLog });
         const message = '|chunked message containing the `|` delimiter!';
         const json = originalGlobalJsonStringify(message);
-        const chunk = `1|1|0|${json}`;
+        const chunk = `1|0|1${json}`;
 
         stream.on('data', (data) => {
           expect(data).toEqual(message);
-          expect(mockLog).toHaveBeenCalledWith(message, false);
+          expect(mockLog).toHaveBeenCalledWith(
+            'received chunked message',
+            false,
+          );
           expect(consoleDebugSpy).not.toHaveBeenCalledWith(
             expect.stringContaining('← raw'),
           );
@@ -275,12 +278,15 @@ describe('extension-port-stream', () => {
         const part2 = jsonOriginalPayload.substring(10);
         const chunk1Seq = 0;
         const chunk2Seq = 1;
-        const chunk1: TransportChunkFrame = `${id}|2|${chunk1Seq}|${part1}`;
-        const chunk2: TransportChunkFrame = `${id}|2|${chunk2Seq}|${part2}`;
+        const chunk1: TransportChunkFrame = `${id}|${chunk1Seq}|0${part1}`;
+        const chunk2: TransportChunkFrame = `${id}|${chunk2Seq}|1${part2}`;
 
         stream.on('data', (data) => {
           expect(data).toEqual(originalPayload);
-          expect(mockLog).toHaveBeenCalledWith(originalPayload, false);
+          expect(mockLog).toHaveBeenCalledWith(
+            'received chunked message',
+            false,
+          );
           expect(consoleDebugSpy).toHaveBeenCalledWith(
             '%cPortStream',
             'color:#888;',
@@ -296,7 +302,7 @@ describe('extension-port-stream', () => {
           expect(consoleDebugSpy).toHaveBeenCalledWith(
             '%cPortStream',
             'color:#0b8;',
-            `← frame #${chunk1Seq + 1}/2 id=${id} (${part1.length} bytes)`,
+            `← frame #${chunk1Seq + 1}/? id=${id} (${part1.length} bytes)`,
           );
           expect(consoleDebugSpy).toHaveBeenCalledWith(
             '%cPortStream',
@@ -307,7 +313,7 @@ describe('extension-port-stream', () => {
           expect(consoleDebugSpy).toHaveBeenCalledWith(
             '%cPortStream',
             'color:#0b8;',
-            `← frame #${chunk2Seq + 1}/2 id=${id} (${part2.length} bytes)`,
+            `← frame #${chunk2Seq + 1}/? id=${id} (${part2.length} bytes)`,
           );
           expect(consoleDebugSpy).toHaveBeenCalledWith(
             '%cPortStream',
@@ -326,12 +332,16 @@ describe('extension-port-stream', () => {
         const payload = { a: '1', b: '2', c: '3' };
         const jsonPayload = JSON.stringify(payload);
         const id = 1002;
-        const chunk1: TransportChunkFrame = `${id}|3|0|${jsonPayload.slice(0, 5)}`;
-        const chunk2: TransportChunkFrame = `${id}|3|1|${jsonPayload.slice(5, 10)}`;
-        const chunk3: TransportChunkFrame = `${id}|3|2|${jsonPayload.slice(10)}`;
+        const chunk1: TransportChunkFrame = `${id}|0|0${jsonPayload.slice(0, 5)}`;
+        const chunk2: TransportChunkFrame = `${id}|1|0${jsonPayload.slice(5, 10)}`;
+        const chunk3: TransportChunkFrame = `${id}|2|1${jsonPayload.slice(10)}`;
 
         stream.on('data', (data) => {
           expect(data).toEqual(payload);
+          expect(mockLog).toHaveBeenCalledWith(
+            'received chunked message',
+            false,
+          );
           done();
         });
 
@@ -343,21 +353,26 @@ describe('extension-port-stream', () => {
       describe('Invalid chunks frames', () => {
         const invalidFrames = [
           '0x1|chunk|frame', // hex instead of integer
-          ' 1234|2|0|valid data', // Leading space
-          '1234|2|1', // Missing `data`
-          '123trickedYa|2|1|data', // id starts with a number, then has letters
-          'id|total|0|data', // id is not an integer
-          '1234|total|0|data', // total is not an integer
-          '0|1|seq|data', // seq is not an integer
-          '-1234|2|0|data', // negative numbers don't count
+          ' 1234|2|0valid data', // Leading space
+          '1234|2data', // Missing `fin`
+          '1234|2|', // Missing `fin`
+          '123trickedYa|2|1data', // id starts with a number, then has letters
+          'id|total|0data', // id is not an integer
+          '1234|total|0data', // total is not an integer
+          '0|1|seqdata', // seq is not an integer
+          '-1234|2|0data', // negative numbers don't count
+          '0|0|2data', // 2 is not a valid `Final` flag
         ];
         it.each(invalidFrames)(
-          'should ignore invalid chunk frames',
+          'should ignore invalid chunk frame: %s',
           (invalidChunk, done) => {
             stream = createStream({ log: mockLog });
             stream.on('data', (data) => {
               expect(data).toEqual(invalidChunk);
-              expect(mockLog).toHaveBeenCalledWith(invalidChunk, false);
+              expect(mockLog).toHaveBeenCalledWith(
+                'received unchunked message',
+                false,
+              );
               done();
             });
             simulatePortMessage(invalidChunk);
@@ -369,7 +384,7 @@ describe('extension-port-stream', () => {
     describe('onDisconnect', () => {
       it('should destroy the stream and clear the queue', (done) => {
         stream = createStream({ debug: true });
-        const chunk: TransportChunkFrame = `4001|2|0|data`;
+        const chunk: TransportChunkFrame = `4001|1|0data`;
         simulatePortMessage(chunk); // Add to queue
 
         stream.on('error', (err: Error) => {
@@ -386,7 +401,7 @@ describe('extension-port-stream', () => {
 
       it('should destroy the stream and clear the queue (no debug)', (done) => {
         stream = createStream({ debug: false }); // Ensure debug is false
-        const chunk: TransportChunkFrame = `4002|2|0|data`;
+        const chunk: TransportChunkFrame = `4002|1|0data`;
         simulatePortMessage(chunk);
 
         stream.on('error', (err: Error) => {
@@ -407,7 +422,7 @@ describe('extension-port-stream', () => {
       });
     });
 
-    describe.only('_write', () => {
+    describe('_write', () => {
       it('should write non-chunked data directly if small enough (should not use toFrames)', (done) => {
         stream = createStream({ log: mockLog, debug: true });
         const data = { message: 'write this' };
@@ -416,7 +431,10 @@ describe('extension-port-stream', () => {
           expect(err).toBeFalsy();
           expect(mockPort.postMessage).toHaveBeenCalledTimes(1);
           expect(mockPort.postMessage).toHaveBeenCalledWith(data);
-          expect(mockLog).toHaveBeenCalledWith(data, true);
+          expect(mockLog).toHaveBeenCalledWith(
+            'sent payload without chunking',
+            true,
+          );
           expect(consoleDebugSpy).toHaveBeenCalledWith(
             '%cPortStream',
             'color:#888;',
@@ -428,13 +446,16 @@ describe('extension-port-stream', () => {
 
       it('should write pre-chunked data directly', (done) => {
         stream = createStream({ log: mockLog, debug: true });
-        const frame: TransportChunkFrame = '2001|1|0|mydata';
+        const frame: TransportChunkFrame = '2001|1|0mydata';
 
         stream._write(frame, 'utf-8', (err?: Error | null) => {
           expect(err).toBeFalsy();
           expect(mockPort.postMessage).toHaveBeenCalledTimes(1);
           expect(mockPort.postMessage).toHaveBeenCalledWith(frame);
-          expect(mockLog).toHaveBeenCalledWith(frame, true);
+          expect(mockLog).toHaveBeenCalledWith(
+            'sent payload without chunking',
+            true,
+          );
           expect(consoleDebugSpy).toHaveBeenCalledWith(
             '%cPortStream',
             'color:#08f;',
@@ -448,15 +469,14 @@ describe('extension-port-stream', () => {
       it('should chunk and write large data using toFrames', (done) => {
         stream = createStream({ log: mockLog, debug: true });
 
-        // This payload will be stringified by the mocked JSON.stringify
         const largePayload = {
-          data: 'This is a large payload' + 'B'.repeat(CHUNK_SIZE + 1),
+          data: `This is a large payload${'B'.repeat(CHUNK_SIZE)}`,
         };
         const jsonPayload = JSON.stringify(largePayload);
 
         const expectedFrames: TransportChunkFrame[] = [
-          `1|2|0|${jsonPayload.substring(0, CHUNK_SIZE - 33)}`,
-          `1|2|1|${jsonPayload.substring(CHUNK_SIZE - 33)}`,
+          `1|0|0${jsonPayload.substring(0, CHUNK_SIZE - 5)}`,
+          `1|1|1${jsonPayload.substring(CHUNK_SIZE - 5)}`,
         ];
 
         stream._write(largePayload, 'utf-8', (err?: Error | null) => {
@@ -471,7 +491,10 @@ describe('extension-port-stream', () => {
             3,
             expectedFrames[1],
           );
-          expect(mockLog).toHaveBeenCalledWith(largePayload, true);
+          expect(mockLog).toHaveBeenCalledWith(
+            'sent payload with chunking',
+            true,
+          );
           expect(consoleDebugSpy).toHaveBeenCalledWith(
             '%cPortStream',
             'color:#08f;',
@@ -489,21 +512,19 @@ describe('extension-port-stream', () => {
       });
 
       it('should increment the chunk ID for each new chunk', async () => {
-        // This payload will be stringified by the mocked JSON.stringify
         const largePayload = {
-          data: 'This is a large payload' + 'A'.repeat(33),
+          data: `This is a large payload${'A'.repeat(CHUNK_SIZE)}`,
         };
         const jsonPayload = JSON.stringify(largePayload);
-        const chunkSize = jsonPayload.length / 2 + 33; // Force 2 chunks
-        stream = createStream({ chunkSize, log: mockLog, debug: true });
+        stream = createStream({ log: mockLog, debug: true });
 
         const expectedFrames: (TransportChunkFrame | Json)[] = [
           largePayload,
-          `1|2|0|${jsonPayload.substring(0, chunkSize - 33)}`,
-          `1|2|1|${jsonPayload.substring(chunkSize - 33)}`,
+          `1|0|0${jsonPayload.substring(0, CHUNK_SIZE - 5)}`,
+          `1|1|1${jsonPayload.substring(CHUNK_SIZE - 5)}`,
           largePayload,
-          `2|2|0|${jsonPayload.substring(0, chunkSize - 33)}`,
-          `2|2|1|${jsonPayload.substring(chunkSize - 33)}`,
+          `2|0|0${jsonPayload.substring(0, CHUNK_SIZE - 5)}`,
+          `2|1|1${jsonPayload.substring(CHUNK_SIZE - 5)}`,
         ];
 
         await new Promise<void>((resolve) => {
@@ -543,7 +564,10 @@ describe('extension-port-stream', () => {
           expect(mockPort.postMessage).toHaveBeenCalledTimes(1);
           // data has been untouched!
           expect(mockPort.postMessage).toHaveBeenCalledWith(data);
-          expect(mockLog).toHaveBeenCalledWith(data, true);
+          expect(mockLog).toHaveBeenCalledWith(
+            'sent payload without chunking',
+            true,
+          );
           done();
         });
       });
@@ -587,7 +611,7 @@ describe('extension-port-stream', () => {
       it('should handle errors from toFrames (e.g. JSON.stringify fails)', (done) => {
         stream = createStream({ debug: true });
         const data = {
-          message: 'will fail stringify' + 'A'.repeat(CHUNK_SIZE + 100),
+          message: `will fail stringify${'A'.repeat(CHUNK_SIZE + 100)}`,
         };
         const stringifyError = new Error('Stringify failed');
         jest.spyOn(JSON, 'stringify').mockImplementationOnce(() => {

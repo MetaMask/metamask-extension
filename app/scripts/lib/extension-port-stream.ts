@@ -24,13 +24,13 @@ type QueuedEntry = {
 
 type Id = number;
 type Seq = number;
-type Total = number;
+type Final = 0 | 1;
 type Data = string;
 
 export type ChunkFrame = {
   id: Id;
-  total: Total;
   seq: Seq;
+  fin: Final;
   data: Data;
 };
 
@@ -38,11 +38,11 @@ export type ChunkFrame = {
  * A transport frame that represents a chunked message.
  *
  * @property id - a unique identifier for the chunked message
- * @property total - the total number of chunks in the message
  * @property seq - the sequence number of this chunk
+ * @property final - if this is the last packet
  * @property data - the actual data of this chunk
  */
-export type TransportChunkFrame = `${Id}|${Total}|${Seq}|${Data}`;
+export type TransportChunkFrame = `${Id}|${Seq}|${Final}${Data}`;
 
 /**
  * Options for the PortStream.
@@ -95,17 +95,16 @@ export const CHUNK_SIZE = globalThis.navigator.userAgent
 
 export const MAX_HEADER_LENGTH = 33;
 
-enum S {
+enum State {
   Id,
-  Total,
   Seq,
-  Data,
+  Fin,
 }
 
 /**
  * Parses a chunk frame from a string.
  *
- * a chunk frame is in the form: `<id>|<total>|<seq>|<data>`, where:
+ * a chunk frame is in the form: `<id>|<seq>|<fin><data>`, where:
  * - `<id>` is a unique number identifier for the chunked message
  * - `<total>` is the total number of chunks in the message
  * - `<seq>` is the sequence number of this chunk (0-based)
@@ -114,67 +113,70 @@ enum S {
  * @param input - the value to parse
  * @returns a ChunkFrame if the value is a valid chunk frame, otherwise false
  */
-const maybeParseChunkFrame = (input: unknown): ChunkFrame | false => {
+const maybeParseChunkFrame = (input: unknown): ChunkFrame | null => {
   if (typeof input !== 'string') {
-    return false;
+    return null;
   }
   const { length } = input;
-  // shortest legal message is: "0|1|0|" (6 characters)
-  if (length < 6) {
-    return false;
+  // shortest legal message is: "0|0|1" (5 characters)
+  if (length < 5) {
+    return null;
   }
 
-  let state = S.Id;
+  let state = State.Id;
   let value = 0;
   let hasDigit = false;
 
   let id = 0;
-  let total = 0;
   let seq = 0;
 
   for (let i = 0; i < length; ++i) {
-    if (state === S.Data) {
+    // shift down by 48 to make the characters "0..9" the _digits_ `0..9`
+    const shifted = input.charCodeAt(i) ^ 48;
+
+    if (state === State.Fin) {
+      // Fin is always one character: either 0 or 1
+      if (shifted > 1) {
+        // character is not 0 or 1, so we are not a valid chunk
+        return null;
+      }
       // first byte of data → grab remainder and exit
-      return { id, total, seq, data: input.slice(i) };
+      return { id, seq, fin: shifted as Final, data: input.slice(i + 1) };
     }
 
-    const cc = input.charCodeAt(i);
-    if (cc >= 48 && cc <= 57) {
-      // '0'..'9'
-      const digit = cc ^ 48; // character "0" is actually `0`
-      value = ((value << 3) + (value << 1) + digit) | 0;
+    if (shifted <= 9) {
+      // we have a character '0'..'9'
+      // shift current value and add digit
+      value = ((value << 3) + (value << 1) + shifted) | 0;
       hasDigit = true;
       continue;
     }
-    if (cc === 124) {
-      // '|'
+    if (shifted === 76) {
+      // we have a '|'
       if (!hasDigit) {
-        // we didn't find any digits before a delimiter, so this is invalid
-        return false;
+        // we didn't find any digits before a delimiter, so this is not a valid chunk
+        return null;
       }
       switch (state) {
-        case S.Id:
+        case State.Id:
           id = value;
+          state = State.Seq;
           break;
-        case S.Total:
-          total = value;
-          break;
-        case S.Seq:
+        case State.Seq:
           seq = value;
-          break;
+          state = State.Fin;
+          continue;
       }
-      state++;
       value = 0;
       hasDigit = false;
       continue;
     }
 
     // invalid character
-    return false;
+    return null;
   }
 
-  // must have ended in Data state (allows empty data)
-  return state === S.Data ? { id, total, seq, data: '' } : false;
+  return null;
 };
 
 /**
@@ -192,23 +194,25 @@ export function* toFrames<Payload extends Json>(
   chunkSize: number = CHUNK_SIZE,
 ): Generator<TransportChunkFrame | Payload, void> {
   const json = JSON.stringify(payload);
-  const len = json.length;
+  const payloadLength = json.length;
 
-  if (len <= chunkSize) {
+  if (payloadLength <= chunkSize) {
     // no need to chunk if it fits within a single frame
     yield payload;
     return;
   }
 
-  const HEAD_ROOM_CHUNK_SIZE = Math.max(1, chunkSize - MAX_HEADER_LENGTH);
   // we need to leave space for our header
-  const total = Math.ceil(len / HEAD_ROOM_CHUNK_SIZE);
   const id = getNextId();
-  const header = `${id}|${total}` as const;
-  // eslint-disable-next-line no-restricted-syntax
-  for (let pos = 0, seq = 0; pos < len; pos += HEAD_ROOM_CHUNK_SIZE, seq++) {
-    const data = json.substring(pos, pos + HEAD_ROOM_CHUNK_SIZE);
-    const frame: TransportChunkFrame = `${header}|${seq}|${data}`;
+  for (let index = 0, seq = 0; index < payloadLength; seq++) {
+    const header = `${id}|${seq}|` as const;
+    const headerSize = header.length + 1; // (`+ 1` for the `fin` flag, which hasn't been computed yet)
+    // how much data can we send with this specific header?
+    const partialDataLength = chunkSize - headerSize;
+    // compute next `pos` to determine if this is the final frame
+    const data = json.substring(index, (index += partialDataLength));
+    const fin = index >= payloadLength ? 1 : 0;
+    const frame: TransportChunkFrame = `${header}${fin}${data}`;
     yield frame;
   }
 }
@@ -270,14 +274,14 @@ export class PortStream extends Duplex {
 
     if (this.chunkSize > 0) {
       const frame = maybeParseChunkFrame(msg);
-      if (frame !== false) {
+      if (frame !== null) {
         this.handleChunk(frame);
         return;
       }
     }
 
     // handle smaller, un‑framed messages
-    this.log(msg, false);
+    this.log('received unchunked message', false);
     this.push(msg);
   };
 
@@ -287,13 +291,13 @@ export class PortStream extends Duplex {
    * @param chunk - the chunk frame received from the port
    */
   private handleChunk(chunk: ChunkFrame) {
-    const { id, total, seq, data } = chunk;
+    const { id, seq, fin, data } = chunk;
 
     if (this.debug) {
       console.debug(
         TAG,
         STYLE_IN,
-        `← frame #${seq + 1}/${total} id=${id} (${data.length} bytes)`,
+        `← frame #${seq + 1}/? id=${id} (${data.length} bytes)`,
       );
     }
 
@@ -302,15 +306,18 @@ export class PortStream extends Duplex {
       entry.received += 1;
     } else {
       entry = {
-        parts: new Array(total),
-        total,
+        parts: [],
+        total: 0,
         received: 1,
       };
       this.queue.set(id, entry);
     }
+    if (fin === 1) {
+      entry.total = seq + 1;
+    }
     entry.parts[seq] = data;
 
-    if (entry.received === total) {
+    if (entry.received === entry.total) {
       this.queue.delete(id);
 
       const merged = entry.parts.join('');
@@ -324,7 +331,7 @@ export class PortStream extends Duplex {
         );
       }
 
-      this.log(value, false);
+      this.log('received chunked message', false);
       this.push(value);
     }
   }
@@ -354,6 +361,9 @@ export class PortStream extends Duplex {
    * Safely invokes a callback by scheduling it in the microtask queue.
    * This prevents reentrancy issues where the callback might throw an exception
    * and cause the calling code to execute the callback again before returning.
+   *
+   * @param callback
+   * @param error
    */
   private safeCallback(
     callback: (err?: Error | null) => void,
@@ -395,7 +405,7 @@ export class PortStream extends Duplex {
       if (this.debug) {
         console.debug(TAG, STYLE_SYS, 'sent whole chunk via postMessage');
       }
-      this.log(chunk, true);
+      this.log('sent payload without chunking', true);
       this.safeCallback(callback);
     } catch (err) {
       if (this.debug) {
@@ -421,7 +431,7 @@ export class PortStream extends Duplex {
             for (const frame of toFrames(chunk, chunkSize)) {
               this.postMessage(frame);
             }
-            this.log(chunk, true);
+            this.log('sent payload with chunking', true);
             this.safeCallback(callback);
           } catch (chunkErr) {
             if (this.debug) {
