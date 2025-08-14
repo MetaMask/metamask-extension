@@ -39,6 +39,16 @@ export async function scanAddress(
   return data;
 }
 
+/**
+ * Scans an address for security alerts, using cached response if available,
+ * otherwise making a new API call and caching the result.
+ *
+ * @param address - The address to scan for security alerts
+ * @param getAddressSecurityAlertResponse - Function to retrieve cached security alert response for an address
+ * @param addAddressSecurityAlertResponse - Function to add a new security alert response to the cache
+ * @param chainId - The chainId that the address exists on
+ * @returns Promise that resolves to the security scan response containing result type and label
+ */
 export async function scanAddressAndAddToCache(
   address: string,
   getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse,
