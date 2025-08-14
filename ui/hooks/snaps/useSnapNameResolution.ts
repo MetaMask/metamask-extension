@@ -24,10 +24,8 @@ export function useSnapNameResolution({
   chainId: string;
   domain: string;
 }) {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [results, setResults] = useState<AddressResolution[] | undefined>(
-    undefined,
-  );
+  const [loading, setLoading] = useState<boolean>(false);
+  const [results, setResults] = useState<AddressResolution[]>([]);
 
   const snaps = useSelector(getNameLookupSnaps);
 
