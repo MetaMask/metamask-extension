@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Включить базовый функционал"
   },
-  "bestPrice": {
-    "message": "Лучшая цена"
-  },
   "beta": {
     "message": "Бета-версия"
   },
@@ -936,9 +933,6 @@
     "message": "Обменивается $1 на $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Условия"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 мин.",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask разработан и создан с учетом потребностей мира."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Занят"
@@ -2665,9 +2656,6 @@
   "honeypotTitle": {
     "message": "Ловушка"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Расчетная комиссия, необходимая для обработки транзакции. Максимальная комиссия составляет $1."
-  },
   "howQuotesWork": {
     "message": "Как работают котировки"
   },
@@ -3003,9 +2991,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Узнайте больше о лучших методах обеспечения конфиденциальности."
-  },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Узнайте больше о счетах Solana"
   },
   "learnMoreKeystone": {
     "message": "Подробнее"
@@ -3765,9 +3750,6 @@
   },
   "notEnoughGas": {
     "message": "Недостаточно газа"
-  },
-  "notNow": {
-    "message": "Не сейчас"
   },
   "notificationDetail": {
     "message": "Подробности"
@@ -5710,27 +5692,6 @@
   "solanaAccountRequired": {
     "message": "Для подключения к этому сайту необходим счет Solana."
   },
-  "solanaImportAccounts": {
-    "message": "Импортировать счета Solana"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Импортируйте секретную фразу для восстановления, чтобы перенести свой счет Solana из другого кошелька."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Скоро появятся другие функции"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Скоро появятся dapps Solana, NFT, поддержка аппаратного кошелька и многое другое."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana в MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Отправляйте, получайте и обменивайте токены"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Выполняйте пеерводы и совершайте транзакции с помощью токенов, таких как SOL, USDC и другие."
-  },
   "someNetworks": {
     "message": "Сети $1"
   },
@@ -7054,9 +7015,6 @@
   },
   "viewOnOpensea": {
     "message": "Смотреть на OpenSea"
-  },
-  "viewSolanaAccount": {
-    "message": "Смотреть счет Solana"
   },
   "viewTransaction": {
     "message": "Смотреть транзакцию"

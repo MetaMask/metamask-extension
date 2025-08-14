@@ -87,10 +87,6 @@ describe('Actions', () => {
 
   let originalNavigator;
 
-  beforeAll(() => {
-    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
-  });
-
   beforeEach(async () => {
     // Save original navigator for restoring after tests
     originalNavigator = global.navigator;
@@ -109,6 +105,7 @@ describe('Actions', () => {
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
+    background.changePassword = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {
@@ -224,66 +221,13 @@ describe('Actions', () => {
       const oldPassword = 'old-password';
       const newPassword = 'new-password';
 
-      const socialSyncChangePasswordStub = sinon.stub().resolves();
-      const keyringChangePasswordStub = sinon.stub().resolves();
-      const exportEncryptionKeyStub = sinon.stub().resolves('encryption-key');
-      const storeKeyringEncryptionKeyStub = sinon.stub().resolves();
-
-      background.getApi.returns({
-        socialSyncChangePassword: socialSyncChangePasswordStub,
-        keyringChangePassword: keyringChangePasswordStub,
-        exportEncryptionKey: exportEncryptionKeyStub,
-        storeKeyringEncryptionKey: storeKeyringEncryptionKeyStub,
-      });
-      setBackgroundConnection(background.getApi());
+      background.changePassword.resolves();
+      setBackgroundConnection(background);
 
       await store.dispatch(actions.changePassword(newPassword, oldPassword));
 
       expect(
-        socialSyncChangePasswordStub.calledOnceWith(newPassword, oldPassword),
-      ).toStrictEqual(true);
-      expect(
-        keyringChangePasswordStub.calledOnceWith(newPassword),
-      ).toStrictEqual(true);
-      expect(exportEncryptionKeyStub.callCount).toStrictEqual(1);
-      expect(
-        storeKeyringEncryptionKeyStub.calledOnceWith('encryption-key'),
-      ).toStrictEqual(true);
-    });
-
-    it('should revert the keyring password change if socialSyncChangePassword fails', async () => {
-      const store = mockStore({
-        metamask: {
-          ...defaultState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.socialCreate,
-        },
-      });
-      const oldPassword = 'old-password';
-      const newPassword = 'new-password';
-
-      const socialSyncChangePasswordStub = sinon
-        .stub()
-        .rejects(new Error('error'));
-      const keyringChangePasswordStub = sinon.stub().resolves();
-      const exportEncryptionKeyStub = sinon.stub().resolves('encryption-key');
-      const storeKeyringEncryptionKeyStub = sinon.stub().resolves();
-
-      background.getApi.returns({
-        socialSyncChangePassword: socialSyncChangePasswordStub,
-        keyringChangePassword: keyringChangePasswordStub,
-        exportEncryptionKey: exportEncryptionKeyStub,
-        storeKeyringEncryptionKey: storeKeyringEncryptionKeyStub,
-      });
-
-      await setBackgroundConnection(background.getApi());
-
-      await expect(
-        store.dispatch(actions.changePassword(newPassword, oldPassword)),
-      ).rejects.toThrow('error');
-      expect(keyringChangePasswordStub.callCount).toStrictEqual(2);
-      expect(exportEncryptionKeyStub.callCount).toStrictEqual(1);
-      expect(
-        storeKeyringEncryptionKeyStub.calledOnceWith('encryption-key'),
+        background.changePassword.calledOnceWith(newPassword, oldPassword),
       ).toStrictEqual(true);
     });
   });
@@ -1373,6 +1317,73 @@ describe('Actions', () => {
       ];
 
       await store.dispatch(actions.setSelectedAccount('0x123'));
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setSelectedMultichainAccount', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('#setSelectedMultichainAccount', async () => {
+      const store = mockStore({
+        activeTab: {},
+        metamask: {
+          accountTree: {},
+        },
+      });
+
+      const setSelectedMultichainAccountSpy = sinon.stub().resolves();
+
+      background.getApi.returns({
+        setSelectedMultichainAccount: setSelectedMultichainAccountSpy,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.setSelectedMultichainAccount(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      );
+      expect(setSelectedMultichainAccountSpy.callCount).toStrictEqual(1);
+      expect(
+        setSelectedMultichainAccountSpy.calledWith(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      ).toBe(true);
+    });
+
+    it('handles gracefully when setSelectedMultichainAccount throws', async () => {
+      const store = mockStore({
+        activeTab: {},
+        metamask: {
+          alertEnabledness: {},
+          accountTree: {},
+        },
+      });
+
+      const setSelectedMultichainAccountSpy = sinon
+        .stub()
+        .rejects(new Error('error'));
+
+      background.getApi.returns({
+        setSelectedMultichainAccount: setSelectedMultichainAccountSpy,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(
+        actions.setSelectedMultichainAccount(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      );
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -2520,17 +2531,17 @@ describe('Actions', () => {
     });
   });
 
-  describe('#getUserProfileMetaMetrics', () => {
-    it('calls getUserProfileMetaMetrics in the background', async () => {
-      const getUserProfileMetaMetricsStub = sinon.stub().resolves();
+  describe('#getUserProfileLineage', () => {
+    it('calls getUserProfileLineage in the background', async () => {
+      const getUserProfileLineageStub = sinon.stub().resolves();
 
       background.getApi.returns({
-        getUserProfileMetaMetrics: getUserProfileMetaMetricsStub,
+        getUserProfileLineage: getUserProfileLineageStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await actions.getUserProfileMetaMetrics();
-      expect(getUserProfileMetaMetricsStub.calledOnceWith()).toBe(true);
+      await actions.getUserProfileLineage();
+      expect(getUserProfileLineageStub.calledOnceWith()).toBe(true);
     });
   });
 

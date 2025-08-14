@@ -77,11 +77,8 @@ describe('Account Exist Seedless Onboarding View', () => {
   });
 
   it('should reset login state and navigate to the welcome page when the button is clicked', async () => {
-    const resetOAuthLoginStateSpy = jest
-      .spyOn(Actions, 'resetOAuthLoginState')
-      .mockReturnValue(jest.fn().mockResolvedValueOnce(null));
-    const setFirstTimeFlowTypeSpy = jest
-      .spyOn(Actions, 'setFirstTimeFlowType')
+    const resetOnboardingSpy = jest
+      .spyOn(Actions, 'resetOnboarding')
       .mockReturnValue(jest.fn().mockResolvedValueOnce(null));
 
     const { getByTestId } = renderWithProvider(
@@ -95,8 +92,7 @@ describe('Account Exist Seedless Onboarding View', () => {
 
     await waitFor(() => {
       expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
-      expect(resetOAuthLoginStateSpy).toHaveBeenCalled();
-      expect(setFirstTimeFlowTypeSpy).toHaveBeenCalledWith(null);
+      expect(resetOnboardingSpy).toHaveBeenCalled();
     });
   });
 });

@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Ativar funcionalidade básica"
   },
-  "bestPrice": {
-    "message": "Melhor preço"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Realizando swap de $1 para $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Termos"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 mín",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "A MetaMask é concebida e desenvolvida em todo o mundo."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Ocupado"
@@ -2665,9 +2656,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Taxa estimada necessária para processar a transação. A taxa máxima é $1."
-  },
   "howQuotesWork": {
     "message": "Como as cotações funcionam"
   },
@@ -3003,9 +2991,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Saiba mais sobre as melhores práticas de privacidade."
-  },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Saiba mais sobre contas Solana"
   },
   "learnMoreKeystone": {
     "message": "Saiba mais"
@@ -3765,9 +3750,6 @@
   },
   "notEnoughGas": {
     "message": "Não há gás suficiente"
-  },
-  "notNow": {
-    "message": "Agora não"
   },
   "notificationDetail": {
     "message": "Detalhes"
@@ -5710,27 +5692,6 @@
   "solanaAccountRequired": {
     "message": "É necessária uma conta Solana para se conectar a este site."
   },
-  "solanaImportAccounts": {
-    "message": "Importar contas Solana"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Importe uma Frase de Recuperação Secreta para migrar sua conta Solana a partir de outra carteira."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Mais recursos em breve"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFTs, suporte a carteira de hardware e muito mais em breve."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana na MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Envie, receba e troque tokens"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Faça transferências e transações com tokens como SOL, USDC e muitos outros."
-  },
   "someNetworks": {
     "message": "Redes de $1"
   },
@@ -7054,9 +7015,6 @@
   },
   "viewOnOpensea": {
     "message": "Ver na OpenSea"
-  },
-  "viewSolanaAccount": {
-    "message": "Ver conta Solana"
   },
   "viewTransaction": {
     "message": "Ver transação"

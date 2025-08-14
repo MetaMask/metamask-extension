@@ -47,7 +47,7 @@ describe('Portfolio site', function () {
         await driver.waitForUrl({
           url: `https://portfolio.metamask.io/explore/tokens?metamaskEntry=ext_portfolio_button&metametricsId=${MOCK_META_METRICS_ID}&metricsEnabled=true&marketingEnabled=false`,
         });
-        await new MockedPage(driver).check_displayedMessage(
+        await new MockedPage(driver).checkDisplayedMessage(
           'Empty page by MetaMask',
         );
       },

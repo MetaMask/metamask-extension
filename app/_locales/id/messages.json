@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Aktifkan fungsionalitas dasar"
   },
-  "bestPrice": {
-    "message": "Harga terbaik"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Menukar $1 dengan $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Syarat"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 mnt",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask dirancang dan dibangun di seluruh dunia."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Sibuk"
@@ -2665,9 +2656,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Estimasi biaya yang diperlukan untuk memproses transaksi. Biaya maksimumnya adalah $1."
-  },
   "howQuotesWork": {
     "message": "Cara kerja kuotasi"
   },
@@ -3003,9 +2991,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Selengkapnya seputar praktik terbaik privasi."
-  },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Pelajari selengkapnya tentang akun Solana"
   },
   "learnMoreKeystone": {
     "message": "Pelajari Selengkapnya"
@@ -3765,9 +3750,6 @@
   },
   "notEnoughGas": {
     "message": "Gas tidak cukup"
-  },
-  "notNow": {
-    "message": "Nanti"
   },
   "notificationDetail": {
     "message": "Detail"
@@ -5710,27 +5692,6 @@
   "solanaAccountRequired": {
     "message": "Akun Solana diperlukan untuk terhubung ke situs ini."
   },
-  "solanaImportAccounts": {
-    "message": "Impor akun Solana"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Impor Frasa Pemulihan Rahasia untuk memindahkan akun Solana dari dompet lain."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Fitur lainnya segera hadir"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFT, dukungan dompet perangkat keras, dan yang lainnya akan segera hadir."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana di MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Kirim, terima, dan tukar token"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Transfer dan bertransaksi dengan token seperti SOL, USDC, dan lainnya."
-  },
   "someNetworks": {
     "message": "$1 jaringan"
   },
@@ -7054,9 +7015,6 @@
   },
   "viewOnOpensea": {
     "message": "Lihat di Opensea"
-  },
-  "viewSolanaAccount": {
-    "message": "Lihat akun Solana"
   },
   "viewTransaction": {
     "message": "Lihat transaksi"

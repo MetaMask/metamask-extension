@@ -34,13 +34,13 @@ describe('Multiple ERC20 Watch Asset', function () {
           // Confirm token creation
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const createContractModal = new CreateContractModal(driver);
-          await createContractModal.check_pageIsLoaded();
+          await createContractModal.checkPageIsLoaded();
           await createContractModal.clickConfirm();
 
           // Wait for token address to populate in dapp
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-          await testDapp.check_pageIsLoaded();
-          await testDapp.check_TokenAddressesCount(i + 1);
+          await testDapp.checkPageIsLoaded();
+          await testDapp.checkTokenAddressesCount(i + 1);
         }
 
         // Watch all 3 tokens
@@ -48,8 +48,8 @@ describe('Multiple ERC20 Watch Asset', function () {
         await testDapp.clickAddTokenToWallet();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addTokensPopupModal = new AddTokensModal(driver);
-        await addTokensPopupModal.check_pageIsLoaded();
-        await addTokensPopupModal.check_SuggestedTokensCount(3);
+        await addTokensPopupModal.checkPageIsLoaded();
+        await addTokensPopupModal.checkSuggestedTokensCount(3);
         await addTokensPopupModal.confirmAddTokens();
 
         // Switch to fullscreen extension
@@ -59,9 +59,9 @@ describe('Multiple ERC20 Watch Asset', function () {
 
         // Check all three tokens have been added to the token list.
         const tokenList = new AssetListPage(driver);
-        await tokenList.check_tokenItemNumber(4); // 3 tokens plus ETH
-        await tokenList.check_tokenExistsInList('Ethereum');
-        await tokenList.check_tokenExistsInList('TST');
+        await tokenList.checkTokenItemNumber(4); // 3 tokens plus ETH
+        await tokenList.checkTokenExistsInList('Ethereum');
+        await tokenList.checkTokenExistsInList('TST');
       },
     );
   });
