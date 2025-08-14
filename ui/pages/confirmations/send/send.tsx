@@ -1,3 +1,10 @@
 import React from 'react';
 
-export const Send = () => <div>new send implementation</div>;
+import { SendContextProvider } from '../context/send';
+import { SendInner } from './send-inner';
+
+export const Send = () => (
+  <SendContextProvider>
+    <SendInner />
+  </SendContextProvider>
+);
