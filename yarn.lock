@@ -5550,16 +5550,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "@metamask/base-controller@npm:8.1.0"
-  dependencies:
-    "@metamask/utils": "npm:^11.4.2"
-    immer: "npm:^9.0.6"
-  checksum: 10/3ae3dd5aff22b7826d6272b9966482b4ba86c40a4bfb68ad322c527b10f648fbfa286539af79b162614c663b3020dca49221d06ddf17d295350d7eb66eb717b3
-  languageName: node
-  linkType: hard
-
 "@metamask/bitcoin-wallet-snap@npm:^0.18.0":
   version: 0.18.0
   resolution: "@metamask/bitcoin-wallet-snap@npm:0.18.0"
