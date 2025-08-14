@@ -45,7 +45,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         // Open Dapp One
         const firstTestDapp = new TestDapp(driver);
         await firstTestDapp.openTestDappPage();
-        await firstTestDapp.check_pageIsLoaded();
+        await firstTestDapp.checkPageIsLoaded();
 
         // Connect to dapp 1
         await firstTestDapp.clickConnectAccountButton();
@@ -53,7 +53,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const firstConnectConfirmation = new ConnectAccountConfirmation(driver);
-        await firstConnectConfirmation.check_pageIsLoaded();
+        await firstConnectConfirmation.checkPageIsLoaded();
         await firstConnectConfirmation.confirmConnect();
 
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -61,7 +61,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         // Open Dapp Two
         const secondTestDapp = new TestDapp(driver);
         await secondTestDapp.openTestDappPage({ url: DAPP_ONE_URL });
-        await secondTestDapp.check_pageIsLoaded();
+        await secondTestDapp.checkPageIsLoaded();
 
         // Connect to dapp 2
         await secondTestDapp.clickConnectAccountButton();
@@ -71,7 +71,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         const secondConnectConfirmation = new ConnectAccountConfirmation(
           driver,
         );
-        await secondConnectConfirmation.check_pageIsLoaded();
+        await secondConnectConfirmation.checkPageIsLoaded();
         await secondConnectConfirmation.confirmConnect();
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -89,7 +89,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         // Dapp 1 send 2 tx
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await firstTestDapp.check_networkIsConnected('0x539');
+        await firstTestDapp.checkNetworkIsConnected('0x539');
         await firstTestDapp.clickSimpleSendButton();
         await firstTestDapp.clickSimpleSendButton();
 
@@ -97,24 +97,24 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         // Dapp 2 send 2 tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        await secondTestDapp.check_networkIsConnected('0x53a');
+        await secondTestDapp.checkNetworkIsConnected('0x53a');
         await secondTestDapp.clickSimpleSendButton();
         await secondTestDapp.clickSimpleSendButton();
 
         // Dapp 1 send 1 tx
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await firstTestDapp.check_networkIsConnected('0x539');
+        await firstTestDapp.checkNetworkIsConnected('0x539');
         await firstTestDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.check_pageIsLoaded();
+        await transactionConfirmation.checkPageIsLoaded();
 
         // Verify we're on the first confirmation of 5
-        await transactionConfirmation.check_pageNumbers(1, 5);
+        await transactionConfirmation.checkPageNumbers(1, 5);
 
         // Verify we're on Localhost 8545 network
-        await transactionConfirmation.check_networkIsDisplayed(
+        await transactionConfirmation.checkNetworkIsDisplayed(
           'Localhost 8545',
         );
 
@@ -123,7 +123,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await transactionConfirmation.clickNextPage();
 
         // Verify we're now on Localhost 8546 network
-        await transactionConfirmation.check_networkIsDisplayed(
+        await transactionConfirmation.checkNetworkIsDisplayed(
           'Localhost 8546',
         );
 
