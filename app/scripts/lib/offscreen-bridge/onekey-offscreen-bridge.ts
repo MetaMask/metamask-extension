@@ -69,7 +69,7 @@ export class OneKeyOffscreenBridge implements OneKeyBridge {
           action: OneKeyAction.init,
           params: {
             ...settings,
-            env: window.navigator.usb ? 'webusb' : 'webextension',
+            env: window.navigator.usb ? 'webusb' : 'web',
           },
         },
         () => {

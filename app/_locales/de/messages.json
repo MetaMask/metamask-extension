@@ -4209,7 +4209,10 @@
     "message": "Benutzerautorisierung ist erforderlich, um das OneKey-Gerät zu verbinden. Wenn Sie Ihr OneKey verbinden möchten, klicken Sie auf \"Gerät verbinden\" und genehmigen Sie die USB-Verbindung"
   },
   "onekeyDeviceCheckPassphraseStateError": {
-    "message": "Pin oder Passphrase stimmt nicht mit dem aktuellen Konto überein"
+    "message": "Das Konto stimmt nicht mit der aktuellen Geräte-Entsperradresse überein. Bitte bestätigen Sie, dass Gerät und Kontoadresse übereinstimmen und versuchen Sie es erneut"
+  },
+  "onekeyDeviceOnlyOneError": {
+    "message": "Es kann nur ein Gerät gleichzeitig verbunden werden, bitte trennen Sie zuerst andere Geräte und versuchen Sie es erneut"
   },
   "only": {
     "message": "nur"
@@ -6122,7 +6125,7 @@
     "message": "Verbinden Sie Ihren OneKey"
   },
   "step1OnekeyWalletMsg": {
-    "message": "Schließen Sie Ihren OneKey direkt an Ihren Computer an und entsperren Sie ihn. Stellen Sie sicher, dass Sie die richtige Passphrase verwenden. Für weitere detaillierte Informationen zur Verwendung Ihrer Hardware-Wallet, $1",
+    "message": "Schließen Sie Ihren OneKey direkt an Ihren Computer an und entsperren Sie ihn, es kann nur ein Gerät gleichzeitig verbunden werden. Stellen Sie sicher, dass Sie die richtige Passphrase verwenden. Für weitere detaillierte Informationen zur Verwendung Ihrer Hardware-Wallet, $1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
