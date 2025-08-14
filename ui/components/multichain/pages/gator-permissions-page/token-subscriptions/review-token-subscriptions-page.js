@@ -26,6 +26,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modu
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
+import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 
 export const ReviewTokenSubscriptionsPage = () => {
   const t = useI18nContext();
@@ -43,15 +44,33 @@ export const ReviewTokenSubscriptionsPage = () => {
       chainId,
     ),
   );
+  const erc20TokenPeriodicPermissions = useSelector((state) =>
+    getGatorPermissionByPermissionTypeAndChainId(
+      state,
+      'erc20-token-periodic',
+      chainId,
+    ),
+  );
+
+  const { revokeGatorPermission } = useRevokeGatorPermissions({
+    chainId,
+  });
 
   useEffect(() => {
     setNetworkName(extractNetworkName(networks, chainId));
-    setTotalTokenSubscriptions(nativeTokenPeriodicPermissions.length);
-  }, [chainId, nativeTokenPeriodicPermissions, networks]);
+    const totalSubscriptionsCount =
+      nativeTokenPeriodicPermissions.length +
+      erc20TokenPeriodicPermissions.length;
+    setTotalTokenSubscriptions(totalSubscriptionsCount);
+  }, [
+    chainId,
+    nativeTokenPeriodicPermissions,
+    erc20TokenPeriodicPermissions,
+    networks,
+  ]);
 
-  const handleRevokeClick = (subscription) => {
-    // TODO: Implement revoke logic
-    console.log('subscription to revoke:', subscription);
+  const handleRevokeClick = async (stream) => {
+    await revokeGatorPermission(stream);
   };
 
   const renderTokenSubscriptions = (subscriptions) =>
@@ -103,7 +122,10 @@ export const ReviewTokenSubscriptionsPage = () => {
       <Content padding={0}>
         <Box ref={headerRef}></Box>
         {totalTokenSubscriptions > 0 ? (
-          renderTokenSubscriptions(nativeTokenPeriodicPermissions)
+          <>
+            {renderTokenSubscriptions(nativeTokenPeriodicPermissions)}
+            {renderTokenSubscriptions(erc20TokenPeriodicPermissions)}
+          </>
         ) : (
           <Box
             data-testid="no-connections"
