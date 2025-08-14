@@ -16,6 +16,8 @@ on:
     secrets:
       PR_COMMENT_TOKEN:
         required: true
+      EXTENSION_BENCHMARK_STATS_TOKEN:
+        required: false
 
 jobs:
   benchmark-pr:
@@ -59,9 +61,10 @@ jobs:
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: benchmark-results
-          path: test-artifacts/benchmarks/
-          retention-days: 30
+        # TODO: [ffmcgee] For testing, trigger this on pull_request (steps on benchmark-stats-commit.sh)
+        if: github.ref == 'refs/heads/main' && secrets.EXTENSION_BENCHMARK_STATS_TOKEN
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}

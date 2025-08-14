@@ -1,12 +1,19 @@
 import path from 'path';
+import { promises as fs } from 'fs';
 import { test as pwTest, expect } from '@playwright/test';
 import { PageLoadBenchmark } from '../../page-objects/benchmark/page-load-benchmark';
 
 pwTest.describe('Page Load Benchmark', () => {
   let benchmark: PageLoadBenchmark;
-  const outputPath = path.join(process.cwd(), 'benchmark-results.json');
+  const outputPath = path.join(
+    process.cwd(),
+    '/test-artifacts/benchmarks/benchmark-results.json',
+  );
 
   pwTest.beforeAll(async () => {
+    await fs.mkdir(`${process.cwd()}/test-artifacts/benchmarks`, {
+      recursive: true,
+    });
     const extensionPath = path.join(process.cwd(), 'dist', 'chrome');
     benchmark = new PageLoadBenchmark(extensionPath);
     await benchmark.setup();

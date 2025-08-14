@@ -174,24 +174,19 @@ async function main(): Promise<void> {
     return;
   }
 
-  // Try to find benchmark results file
-  const possiblePaths = [
+  const filePath = path.join(
+    process.cwd(),
     'test-artifacts/benchmarks/benchmark-results.json',
-    'benchmark-results.json',
-    path.join(process.cwd(), 'benchmark-results.json'),
-  ];
+  );
 
   let benchmarkData: BenchmarkOutput | null = null;
 
-  for (const filePath of possiblePaths) {
-    try {
-      const fileContent = await fs.readFile(filePath, 'utf8');
-      benchmarkData = JSON.parse(fileContent) as BenchmarkOutput;
-      console.log(`Found benchmark results at: ${filePath}`);
-      break;
-    } catch (error) {
-      console.log(`Could not read benchmark results from: ${filePath}`);
-    }
+  try {
+    const fileContent = await fs.readFile(filePath, 'utf8');
+    benchmarkData = JSON.parse(fileContent) as BenchmarkOutput;
+    console.log(`Found benchmark results at: ${filePath}`);
+  } catch (error) {
+    console.log(`Could not read benchmark results from: ${filePath}`);
   }
 
   if (!benchmarkData) {
