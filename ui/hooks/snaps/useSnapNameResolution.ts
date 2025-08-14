@@ -34,11 +34,12 @@ export function useSnapNameResolution({
       snaps
         .filter(({ permission }) => {
           const chainIdCaveat = getChainIdsCaveat(permission);
-          const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
 
           if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
             return false;
           }
+
+          const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
 
           if (lookupMatchersCaveat) {
             const { tlds, schemes } = lookupMatchersCaveat;
