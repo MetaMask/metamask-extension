@@ -1,8 +1,9 @@
 import React from 'react';
 import type { FC } from 'react';
+import { AvatarAccount } from '@metamask/design-system-react';
 import { NotificationDetail } from '../notification-detail';
 import { NotificationDetailCopyButton } from '../notification-detail-copy-button';
-import { AvatarAccount, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import {
   FontWeight,
   TextVariant,

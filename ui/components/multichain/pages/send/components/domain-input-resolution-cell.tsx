@@ -1,9 +1,9 @@
 import React, { useContext, useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { AvatarAccount } from '@metamask/design-system-react';
 import { I18nContext } from '../../../../../contexts/i18n';
 import Confusable from '../../../../ui/confusable';
 import {
-  AvatarAccount,
   Box,
   AvatarIcon,
   AvatarIconSize,

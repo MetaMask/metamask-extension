@@ -1,6 +1,7 @@
 import React from 'react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { AvatarAccount, Box, Text } from '../../component-library';
+import { AvatarAccount } from '@metamask/design-system-react';
+import { Box, Text } from '../../component-library';
 import {
   BlockSize,
   Display,
