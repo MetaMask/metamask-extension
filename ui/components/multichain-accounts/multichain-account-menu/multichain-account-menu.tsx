@@ -179,7 +179,7 @@ export const MultichainAccountMenu = ({
       </Box>
       <Popover
         isOpen={isPopoverOpen}
-        position={PopoverPosition.Bottom}
+        position={PopoverPosition.LeftStart}
         referenceElement={popoverRef.current}
         matchWidth={false}
         style={{
