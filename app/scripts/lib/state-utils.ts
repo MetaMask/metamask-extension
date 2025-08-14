@@ -100,7 +100,6 @@ function sanitizeSeedlessOnboardingControllerState(state: FlattenedUIState) {
     'metadataAccessToken',
     'refreshToken',
     'revokeToken',
-    'socialLoginEmail',
   ];
   for (const key of toDelete) {
     delete state[key];
@@ -119,6 +118,13 @@ function sanitizeSeedlessOnboardingControllerState(state: FlattenedUIState) {
       delete sanitizedToken.authToken;
       return sanitizedToken;
     });
+  }
+
+  const socialLoginEmail =
+    state.socialLoginEmail as SeedlessOnboardingControllerState['socialLoginEmail'];
+
+  if (socialLoginEmail) {
+    state.socialLoginEmail = '********';
   }
 
   // Manually sanitize the socialBackupsMetadata.
