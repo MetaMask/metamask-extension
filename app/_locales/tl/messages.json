@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "I-on ang batayang kapakinabangan"
   },
-  "bestPrice": {
-    "message": "Pinakasulit na presyo"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Nagsa-swap ng $1 para sa $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Mga Tuntunin"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 min",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "Ang MetaMask ay dinisenyo at itinatag sa buong mundo."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Busy"
@@ -2665,9 +2656,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Tinatayang bayad na kinakailangan para maproseso ang transaksyon. Ang max na bayad ay $1."
-  },
   "howQuotesWork": {
     "message": "Paano gumagana ang mga quote"
   },
@@ -3003,9 +2991,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Matuto pa tungkol sa pinakamahusay na mga kasanayan sa pagkapribado."
-  },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Matuto pa tungkol sa mga Solana account"
   },
   "learnMoreKeystone": {
     "message": "Matuto Pa"
@@ -3765,9 +3750,6 @@
   },
   "notEnoughGas": {
     "message": "Hindi Sapat ang Gas"
-  },
-  "notNow": {
-    "message": "Hindi ngayon"
   },
   "notificationDetail": {
     "message": "Mga detalye"
@@ -5440,12 +5422,6 @@
   "slideMultiSrpTitle": {
     "message": "Magdagdag ng maraming Lihim na Parirala sa Pagbawi"
   },
-  "slideRemoteModeDescription": {
-    "message": "Gamitin ang cold wallet mo nang wireless"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold storage, mabilis na access"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Parehong address, mas matalinong mga feature"
   },
@@ -5715,27 +5691,6 @@
   },
   "solanaAccountRequired": {
     "message": "Kinakailangan ng Solana account para kumonekta sa site na ito."
-  },
-  "solanaImportAccounts": {
-    "message": "Mag-import ng mga Solana account"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Mag-import ng Lihim na Parirala sa Pagbawi para ilipat ang Solana account mo mula sa ibang wallet."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Parating na ang mas maraming feature"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Parating na ang mga NFT, suporta sa hardware wallet, at iba pa."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana sa MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Magpadala, tumanggap, at mag-swap ng mga token"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Maglipat at makipagtransaksyon gamit ang mga token gaya ng SOL, USDC, at iba pa."
   },
   "someNetworks": {
     "message": "Mga network ng $1"
@@ -7060,9 +7015,6 @@
   },
   "viewOnOpensea": {
     "message": "Tingnan sa Opensea"
-  },
-  "viewSolanaAccount": {
-    "message": "Tingnan ang Solana account"
   },
   "viewTransaction": {
     "message": "Tingnan ang transaksyon"

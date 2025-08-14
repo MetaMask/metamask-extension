@@ -27,7 +27,8 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  resetOAuthLoginState,
+  forceUpdateMetamaskState,
+  resetOnboarding,
   setFirstTimeFlowType,
 } from '../../../store/actions';
 import {
@@ -52,9 +53,8 @@ export default function AccountNotFound() {
     trackEvent;
 
   const onLoginWithDifferentMethod = async () => {
-    // clear the social login state
-    await dispatch(resetOAuthLoginState());
-    await dispatch(setFirstTimeFlowType(null));
+    await dispatch(resetOnboarding());
+    await forceUpdateMetamaskState(dispatch);
     history.replace(ONBOARDING_WELCOME_ROUTE);
   };
 

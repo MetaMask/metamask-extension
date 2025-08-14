@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Activar la funcionalidad básica"
   },
-  "bestPrice": {
-    "message": "Mejor precio"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Intercambiando $1 por $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Términos"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 min",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Ocupado"
@@ -2665,9 +2656,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Tarifa estimada necesaria para procesar la transacción. La tarifa máxima es $1."
-  },
   "howQuotesWork": {
     "message": "Cómo funcionan las cotizaciones"
   },
@@ -3003,9 +2991,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Obtenga más información sobre las mejores prácticas de privacidad."
-  },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Obtenga más información sobre las cuentas de Solana"
   },
   "learnMoreKeystone": {
     "message": "Más información"
@@ -3765,9 +3750,6 @@
   },
   "notEnoughGas": {
     "message": "No hay gas suficiente"
-  },
-  "notNow": {
-    "message": "Ahora no"
   },
   "notificationDetail": {
     "message": "Detalles"
@@ -5440,12 +5422,6 @@
   "slideMultiSrpTitle": {
     "message": "Agregar varias frases secretas de recuperación"
   },
-  "slideRemoteModeDescription": {
-    "message": "Use su monedero frío de forma inalámbrica"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Almacenamiento en frío, acceso rápido"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "La misma dirección, funciones más inteligentes"
   },
@@ -5715,27 +5691,6 @@
   },
   "solanaAccountRequired": {
     "message": "Se requiere una cuenta de Solana para conectarse a este sitio."
-  },
-  "solanaImportAccounts": {
-    "message": "Importar cuentas de Solana"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Importe una frase secreta de recuperación para migrar su cuenta de Solana desde otro monedero."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Próximamente habrá más funciones"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Próximamente, compatibilidad con NFT, monederos físicos y más."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana en MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Envíe, reciba e intercambie tokens"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Transfiera y realice transacciones con tokens como SOL, USDC y más."
   },
   "someNetworks": {
     "message": "$1 redes"
@@ -7060,9 +7015,6 @@
   },
   "viewOnOpensea": {
     "message": "Ver en Opensea"
-  },
-  "viewSolanaAccount": {
-    "message": "Ver cuenta de Solana"
   },
   "viewTransaction": {
     "message": "Ver transacción"

@@ -8,11 +8,7 @@ import {
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
-import {
-  getChainSupportsSmartTransactions,
-  getIsSmartTransaction,
-  getSmartTransactionsPreferenceEnabled,
-} from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   SmartTransactionHookMessenger,
   publishSmartTransactionHook,
@@ -38,7 +34,6 @@ import {
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
-import { updateRemoteModeTransaction } from '../../lib/remote-mode';
 import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
 
 export const TransactionControllerInit: ControllerInitFunction<
@@ -108,25 +103,13 @@ export const TransactionControllerInit: ControllerInitFunction<
       preferencesController().state.useTransactionSimulations,
     messenger: controllerMessenger,
     pendingTransactions: {
-      isResubmitEnabled: () => {
-        const uiState = getUIState(getFlatState());
-        return !(
-          getSmartTransactionsPreferenceEnabled(uiState) &&
-          getChainSupportsSmartTransactions(uiState)
-        );
-      },
+      isResubmitEnabled: () => false,
     },
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      afterAdd: async ({ transactionMeta }) => {
-        return updateRemoteModeTransaction({
-          transactionMeta,
-          state: getFlatState(),
-        });
-      },
       afterSimulate: new EnforceSimulationHook({
         messenger: initMessenger,
       }).getAfterSimulateHook(),

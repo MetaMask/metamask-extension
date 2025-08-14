@@ -17,6 +17,7 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
+  getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -52,6 +53,9 @@ export default function OnboardingWelcome({
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isUserAuthenticatedWithSocialLogin = useSelector(
+    getIsSocialLoginUserAuthenticated,
+  );
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
@@ -83,6 +87,12 @@ export default function OnboardingWelcome({
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
+    } else if (isUserAuthenticatedWithSocialLogin) {
+      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+      } else {
+        history.replace(ONBOARDING_UNLOCK_ROUTE);
+      }
     }
   }, [
     currentKeyring,
@@ -90,6 +100,7 @@ export default function OnboardingWelcome({
     firstTimeFlowType,
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
+    isUserAuthenticatedWithSocialLogin,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);

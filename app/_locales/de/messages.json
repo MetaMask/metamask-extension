@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Grundfunktionalität einschalten"
   },
-  "bestPrice": {
-    "message": "Bester Preis"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Swapping von $1 für $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Bedingungen"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 Min.",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask ist weltweit konzipiert und aufgebaut."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Ausgelastet"
@@ -2665,9 +2656,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Geschätzte Gebühr für die Abwicklung der Transaktion. Die maximale Gebühr ist $1."
-  },
   "howQuotesWork": {
     "message": "Funktionsweise von Angeboten"
   },
@@ -3003,9 +2991,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Erfahren Sie mehr über bewährte Datenschutzpraktiken."
-  },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Erfahren Sie mehr über Solana-Konten"
   },
   "learnMoreKeystone": {
     "message": "Mehr erfahren"
@@ -3765,9 +3750,6 @@
   },
   "notEnoughGas": {
     "message": "Nicht genügend Gas"
-  },
-  "notNow": {
-    "message": "Nicht jetzt"
   },
   "notificationDetail": {
     "message": "Details"
@@ -5440,12 +5422,6 @@
   "slideMultiSrpTitle": {
     "message": "Mehrere geheime Wiederherstellungsphrasen hinzufügen"
   },
-  "slideRemoteModeDescription": {
-    "message": "Verwenden Sie Ihr Cold Wallet kabellos"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Cold Storage, schneller Zugriff"
-  },
   "slideSmartAccountUpgradeDescription": {
     "message": "Dieselbe Adresse, intelligentere Funktionen"
   },
@@ -5715,27 +5691,6 @@
   },
   "solanaAccountRequired": {
     "message": "Für die Verbindung mit dieser Website ist ein Solana-Konto erforderlich."
-  },
-  "solanaImportAccounts": {
-    "message": "Solana-Konten importieren"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Importieren Sie eine geheime Wiederherstellungsphrase, um Ihr Solana-Konto von einer anderen Wallet zu migrieren."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Mehr Funktionen in Kürze"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFTs, Unterstützung für Hardware-Wallets und bald noch viel mehr."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana auf MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Token senden, empfangen und swappen"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Übertragen Sie Token wie SOL, USDC usw. und tätigen Sie damit Transaktionen."
   },
   "someNetworks": {
     "message": "$1 Netzwerke"
@@ -7060,9 +7015,6 @@
   },
   "viewOnOpensea": {
     "message": "Auf Opensea ansehen"
-  },
-  "viewSolanaAccount": {
-    "message": "Solana-Konto anzeigen"
   },
   "viewTransaction": {
     "message": "Transaktion einsehen"
