@@ -53,7 +53,7 @@ const useBridging = () => {
   );
   const openBridgeExperience = useCallback(
     (
-      location: MetaMetricsSwapsEventSource,
+      location: MetaMetricsSwapsEventSource | 'Carousel',
       srcToken?: Pick<BridgeAsset, 'symbol' | 'address'> & {
         chainId: GenericQuoteRequest['srcChainId'];
       },
@@ -94,7 +94,7 @@ const useBridging = () => {
       });
       dispatch(
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
-          location,
+          location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_source: token.symbol,
