@@ -309,14 +309,35 @@ describe('Selectors', () => {
     );
 
     jestIt(
-      'returns false if feature flag is enabled, not a HW and is Linea network',
+      'returns true if feature flag is enabled, not a HW and is Linea network with a default RPC URL',
       () => {
         const state = createSwapsMockStore();
         const newState = {
           ...state,
           metamask: {
             ...state.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.LINEA_MAINNET,
+              rpcUrl: 'https://linea-mainnet.infura.io/v3/test-project-id',
+            }),
+          },
+        };
+        expect(getSmartTransactionsEnabled(newState)).toBe(true);
+      },
+    );
+
+    jestIt(
+      'returns false if feature flag is enabled, not a HW and is Linea network with a non-default RPC URL',
+      () => {
+        const state = createSwapsMockStore();
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.LINEA_MAINNET,
+              rpcUrl: 'https://rpc.linea.build/',
+            }),
           },
         };
         expect(getSmartTransactionsEnabled(newState)).toBe(false);
