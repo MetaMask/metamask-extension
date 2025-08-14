@@ -67,6 +67,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: move password change operations to the background script, to ensure they can continue even when the wallet/browser window closes (#34852)
 - fix: make the slippage editable and visible in the quote card to reduce the risk of submitting transactions with unintended slippage (#34916)
 - fix: trigger Solana UI refreshes only when the client is active and the UI is open, to enhance performance and fix Solana asset removal logic (#34887)
+- fix: handle the case where the refresh token changes during onboarding (e.g. cubist) (#35053)
+- fix: handle issue with Firefox's private browsing mode that was causing the extension to fail during initialization (#35040)
+- fix: show effective gas fees instead of max gas fees when displaying swap quotes (#35038)
 
 ## [13.0.1]
 ### Fixed
