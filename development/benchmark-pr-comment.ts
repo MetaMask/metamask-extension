@@ -1,31 +1,9 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-
-type BenchmarkMetrics = {
-  pageLoadTime: number;
-  domContentLoaded: number;
-  firstPaint: number;
-  firstContentfulPaint: number;
-  largestContentfulPaint: number;
-  contentScriptLoadTime: number;
-  backgroundScriptInitTime: number;
-  memoryUsage?: {
-    usedJSHeapSize: number;
-    totalJSHeapSize: number;
-    jsHeapSizeLimit: number;
-  };
-};
-
-type BenchmarkSummary = {
-  page: string;
-  samples: number;
-  mean: Partial<BenchmarkMetrics>;
-  p95: Partial<BenchmarkMetrics>;
-  p99: Partial<BenchmarkMetrics>;
-  min: Partial<BenchmarkMetrics>;
-  max: Partial<BenchmarkMetrics>;
-  standardDeviation: Partial<BenchmarkMetrics>;
-};
+import {
+  BenchmarkMetrics,
+  BenchmarkSummary,
+} from '../test/e2e/page-objects/benchmark/page-load-benchmark';
 
 type BenchmarkOutput = {
   timestamp: string;

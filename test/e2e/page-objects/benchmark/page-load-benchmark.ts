@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-type BenchmarkMetrics = {
+export type BenchmarkMetrics = {
   pageLoadTime: number;
   domContentLoaded: number;
   firstPaint: number;
@@ -25,14 +25,14 @@ type BenchmarkMetrics = {
   };
 };
 
-type BenchmarkResult = {
+export type BenchmarkResult = {
   page: string;
   run: number;
   metrics: BenchmarkMetrics;
   timestamp: string;
 };
 
-type BenchmarkSummary = {
+export type BenchmarkSummary = {
   page: string;
   samples: number;
   mean: Partial<BenchmarkMetrics>;
