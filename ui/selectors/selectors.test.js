@@ -2406,6 +2406,185 @@ describe('#getConnectedSitesList', () => {
     });
   });
 
+  describe('getAllEnabledNetworksUsed', () => {
+    it('returns an empty array when enabled networks map is empty', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {},
+        },
+      };
+
+      expect(selectors.getAllEnabledNetworksUsed(state)).toStrictEqual([]);
+    });
+
+    it('returns chain IDs from a single namespace', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.GOERLI]: true,
+              [CHAIN_IDS.SEPOLIA]: true,
+            },
+          },
+        },
+      };
+
+      const result = selectors.getAllEnabledNetworksUsed(state);
+      expect(result).toHaveLength(3);
+      expect(result).toContain(CHAIN_IDS.MAINNET);
+      expect(result).toContain(CHAIN_IDS.GOERLI);
+      expect(result).toContain(CHAIN_IDS.SEPOLIA);
+    });
+
+    it('returns chain IDs from multiple namespaces', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.POLYGON]: true,
+            },
+            bip122: {
+              'bitcoin-mainnet': true,
+              'bitcoin-testnet': true,
+            },
+            cosmos: {
+              'cosmoshub-4': true,
+            },
+          },
+        },
+      };
+
+      const result = selectors.getAllEnabledNetworksUsed(state);
+      expect(result).toHaveLength(5);
+      expect(result).toContain(CHAIN_IDS.MAINNET);
+      expect(result).toContain(CHAIN_IDS.POLYGON);
+      expect(result).toContain('bitcoin-mainnet');
+      expect(result).toContain('bitcoin-testnet');
+      expect(result).toContain('cosmoshub-4');
+    });
+
+    it('returns all popular network chain IDs when all are enabled', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+        },
+      };
+
+      const result = selectors.getAllEnabledNetworksUsed(state);
+      expect(result).toHaveLength(9);
+      expect(result).toContain(CHAIN_IDS.MAINNET);
+      expect(result).toContain(CHAIN_IDS.LINEA_MAINNET);
+      expect(result).toContain(CHAIN_IDS.ARBITRUM);
+      expect(result).toContain(CHAIN_IDS.AVALANCHE);
+      expect(result).toContain(CHAIN_IDS.BSC);
+      expect(result).toContain(CHAIN_IDS.OPTIMISM);
+      expect(result).toContain(CHAIN_IDS.POLYGON);
+      expect(result).toContain(CHAIN_IDS.ZKSYNC_ERA);
+      expect(result).toContain(CHAIN_IDS.BASE);
+    });
+
+    it('handles namespace with empty object', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {},
+            bip122: {
+              'bitcoin-mainnet': true,
+            },
+          },
+        },
+      };
+
+      const result = selectors.getAllEnabledNetworksUsed(state);
+      expect(result).toStrictEqual(['bitcoin-mainnet']);
+    });
+
+    it('preserves order from Object.keys when flattening', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.POLYGON]: true,
+            },
+            bip122: {
+              'bitcoin-mainnet': true,
+            },
+          },
+        },
+      };
+
+      const result = selectors.getAllEnabledNetworksUsed(state);
+      // The function should return chain IDs in the order they appear in the objects
+      expect(result).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.POLYGON,
+        'bitcoin-mainnet',
+      ]);
+    });
+
+    it('returns the same reference for identical state (memoization)', () => {
+      const state = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.POLYGON]: true,
+            },
+          },
+        },
+      };
+
+      const result1 = selectors.getAllEnabledNetworksUsed(state);
+      const result2 = selectors.getAllEnabledNetworksUsed(state);
+
+      expect(result1 === result2).toBe(true);
+    });
+
+    it('returns different reference for different state', () => {
+      const state1 = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          },
+        },
+      };
+
+      const state2 = {
+        metamask: {
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.POLYGON]: true,
+            },
+          },
+        },
+      };
+
+      const result1 = selectors.getAllEnabledNetworksUsed(state1);
+      const result2 = selectors.getAllEnabledNetworksUsed(state2);
+
+      expect(result1 === result2).toBe(false);
+      expect(result1).toStrictEqual([CHAIN_IDS.MAINNET]);
+      expect(result2).toStrictEqual([CHAIN_IDS.POLYGON]);
+    });
+  });
+
   describe('getMetaMaskAccounts', () => {
     it('return balance from cachedBalances if chainId passed is different from currentChainId', () => {
       const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
