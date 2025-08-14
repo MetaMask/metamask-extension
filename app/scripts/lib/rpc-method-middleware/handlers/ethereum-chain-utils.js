@@ -230,7 +230,11 @@ export async function switchChain(
           autoApprove,
           metadata,
         });
-      } else if (hasApprovalRequestsForOrigin?.() && !isAddFlow && !autoApprove) {
+      } else if (
+        hasApprovalRequestsForOrigin?.() &&
+        !isAddFlow &&
+        !autoApprove
+      ) {
         await requestUserApproval({
           origin,
           type: ApprovalType.SwitchEthereumChain,
