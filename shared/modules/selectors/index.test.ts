@@ -320,6 +320,19 @@ describe('Selectors', () => {
               chainId: CHAIN_IDS.LINEA_MAINNET,
               rpcUrl: 'https://linea-mainnet.infura.io/v3/test-project-id',
             }),
+            swapsState: {
+              ...state.metamask.swapsState,
+              swapsFeatureFlags: {
+                ...state.metamask.swapsState.swapsFeatureFlags,
+                linea: {
+                  extensionActive: true,
+                  mobileActive: false,
+                  smartTransactions: {
+                    extensionActive: true,
+                  },
+                },
+              },
+            },
           },
         };
         expect(getSmartTransactionsEnabled(newState)).toBe(true);
@@ -338,6 +351,19 @@ describe('Selectors', () => {
               chainId: CHAIN_IDS.LINEA_MAINNET,
               rpcUrl: 'https://rpc.linea.build/',
             }),
+            swapsState: {
+              ...state.metamask.swapsState,
+              swapsFeatureFlags: {
+                ...state.metamask.swapsState.swapsFeatureFlags,
+                linea: {
+                  extensionActive: true,
+                  mobileActive: false,
+                  smartTransactions: {
+                    extensionActive: true,
+                  },
+                },
+              },
+            },
           },
         };
         expect(getSmartTransactionsEnabled(newState)).toBe(false);
