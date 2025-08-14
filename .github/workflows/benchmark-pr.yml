@@ -16,8 +16,9 @@ on:
     secrets:
       PR_COMMENT_TOKEN:
         required: true
-      EXTENSION_BENCHMARK_STATS_TOKEN:
-        required: false
+      # TODO: [ffmcgee] Uncomment secrets
+      # EXTENSION_BENCHMARK_STATS_TOKEN:
+      #   required: false
 
 jobs:
   benchmark-pr:
@@ -62,9 +63,10 @@ jobs:
 
       - name: Upload benchmark results
         # TODO: [ffmcgee] For testing, trigger this on pull_request (steps on benchmark-stats-commit.sh)
-        if: github.ref == 'refs/heads/main' && secrets.EXTENSION_BENCHMARK_STATS_TOKEN
+        if: github.ref == 'refs/heads/main' # && secrets.EXTENSION_BENCHMARK_STATS_TOKEN
         run: .github/scripts/benchmark-stats-commit.sh
         env:
-          EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+          # TODO: [ffmcgee] Uncomment secrets
+          # EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
