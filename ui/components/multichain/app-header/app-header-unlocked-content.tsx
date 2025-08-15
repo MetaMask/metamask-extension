@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import browser from 'webextension-polyfill';
 
-import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -23,9 +22,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -50,7 +46,6 @@ import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
-  getUseBlockie,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
@@ -73,12 +68,9 @@ import {
   getShowSupportDataConsentModal,
   setShowCopyAddressToast,
 } from '../../../ducks/app/app';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 
 type AppHeaderUnlockedContentProps = {
-  popupStatus: boolean;
-  currentNetwork: MultichainNetworkConfiguration;
-  networkOpenCallback: () => void;
-  disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
   menuRef: React.RefObject<HTMLButtonElement>;
 };
@@ -93,7 +85,6 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const useBlockie = useSelector(getUseBlockie);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
@@ -205,15 +196,7 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
-          <AvatarAccount
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            address={internalAccount.address}
-            size={AvatarAccountSize.Md}
-          />
+          <PreferredAvatar address={internalAccount.address} />
         )}
         {internalAccount && (
           <Text
@@ -251,11 +234,8 @@ export const AppHeaderUnlockedContent = ({
     disableAccountPicker,
     dispatch,
     internalAccount,
-    t,
     trackEvent,
-    useBlockie,
     CopyButton,
-    copied,
     history,
     isMultichainAccountsState2Enabled,
   ]);

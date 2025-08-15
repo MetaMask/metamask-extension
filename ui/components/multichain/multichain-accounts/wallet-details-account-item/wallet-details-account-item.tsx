@@ -1,10 +1,7 @@
 import React, { useEffect, memo } from 'react';
-import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   BoxProps,
   Icon,
@@ -21,9 +18,9 @@ import {
   BlockSize,
   TextAlign,
 } from '../../../../helpers/constants/design-system';
-import { getUseBlockie } from '../../../../selectors';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
+import { PreferredAvatar } from '../../../app/preferred-avatar';
 
 export type WalletDetailsAccountItemProps = {
   account: InternalAccount;
@@ -40,7 +37,6 @@ const WalletDetailsAccountItem = ({
   className,
   ...rowStylesProps
 }: WalletDetailsAccountItemProps) => {
-  const useBlockie = useSelector(getUseBlockie);
   const { totalFiatBalance } = useMultichainAccountTotalFiatBalance(account);
 
   useEffect(() => {
@@ -61,14 +57,9 @@ const WalletDetailsAccountItem = ({
       {...rowStylesProps}
     >
       <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-        <AvatarAccount
+        <PreferredAvatar
           address={account.address}
           size={AvatarAccountSize.Sm}
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
-          }
         />
         <Box>
           <Text

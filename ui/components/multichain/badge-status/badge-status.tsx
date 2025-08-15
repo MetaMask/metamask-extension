@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -9,15 +8,8 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  BadgeWrapper,
-  Box,
-  BoxProps,
-} from '../../component-library';
-import { getUseBlockie } from '../../../selectors';
+import { BadgeWrapper, Box, BoxProps } from '../../component-library';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import Tooltip from '../../ui/tooltip';
 
 import { BadgeStatusProps } from './badge-status.types';
@@ -34,13 +26,12 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
   text,
   ...props
 }): JSX.Element => {
-  const useBlockie = useSelector(getUseBlockie);
   const tooltipContents = useMemo(() => {
     let positionObj;
     if (showConnectedStatus) {
       positionObj = isConnectedAndNotActive
-        ? { bottom: 2, right: 5 }
-        : { bottom: -1, right: 2 };
+        ? { bottom: '-4%', right: '-12%' }
+        : { bottom: '-10%', right: '-20%' };
     }
 
     return (
@@ -61,19 +52,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
           )
         }
       >
-        {
-          <AvatarAccount
-            borderColor={BorderColor.transparent}
-            size={AvatarAccountSize.Md}
-            address={address}
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            marginInlineEnd={2}
-          />
-        }
+        {<PreferredAvatar address={address} className="flex" />}
       </BadgeWrapper>
     );
   }, [
@@ -81,7 +60,6 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
     badgeBackgroundColor,
     badgeBorderColor,
     isConnectedAndNotActive,
-    useBlockie,
     showConnectedStatus,
   ]);
 

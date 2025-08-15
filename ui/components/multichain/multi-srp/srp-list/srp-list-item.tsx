@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import { InternalAccountWithBalance } from '../../../../selectors';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
 import {
@@ -13,12 +14,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
-import {
-  Text,
-  AvatarAccount,
-  AvatarAccountSize,
-  Box,
-} from '../../../component-library';
+import { Text, Box } from '../../../component-library';
+import { PreferredAvatar } from '../../../app/preferred-avatar';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { getMultichainAggregatedBalance } from '../../../../selectors/assets';
@@ -54,7 +51,10 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
       >
-        <AvatarAccount address={account.address} size={AvatarAccountSize.Xs} />
+        <PreferredAvatar
+          address={account.address}
+          size={AvatarAccountSize.Xs}
+        />
         <Text
           className="srp-list__account-name"
           variant={TextVariant.bodySm}
