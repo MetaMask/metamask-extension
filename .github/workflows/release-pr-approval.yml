@@ -14,4 +14,4 @@ jobs:
         uses: op5dev/require-team-approval@dfd7b8b9a88bf82a955c103f7e19642b0411aecd
         with:
           team: release-team
-          token: ${{ secrets.METAMASK_EXTENSION_READ_TOKEN }}
+          token: ${{ secrets.METAMASK_EXTENSION_ORG_READ_TOKEN }}
