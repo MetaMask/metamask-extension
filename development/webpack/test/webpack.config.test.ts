@@ -75,7 +75,7 @@ ${Object.entries(env)
       }
       return originalReadFileSync.call(fs, path, options);
     });
-    return require('../webpack.config.ts').default;
+    return require('../webpack.config.ts').default[0];
   }
 
   it('should have the correct defaults', () => {
