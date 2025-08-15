@@ -397,6 +397,7 @@ const PrepareBridgePage = ({
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
       gasIncluded: smartTransactionsEnabled && isSwap,
+      gasless7702: true,
     }),
     [
       fromToken?.address,
