@@ -4,9 +4,9 @@ import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichai
 import { cloneDeep } from 'lodash';
 import {
   calculateBalanceForAllWallets,
-  calculateAggregatedChangeForAllWallets,
+  calculateBalanceChangeForAllWallets,
 } from '@metamask/assets-controllers';
-import type { AggregatedChangeForAllWallets } from '@metamask/assets-controllers';
+import type { BalanceChangeResult } from '@metamask/assets-controllers';
 import {
   AssetsRatesState,
   AssetsState,
@@ -22,8 +22,8 @@ import {
   selectAggregatedBalanceByAccountGroup,
   selectBalanceByWallet,
   type BalanceCalculationState,
-  selectPortfolioChangeForAllWallets,
-  selectPortfolioPercentChange,
+  selectBalanceChangeForAllWallets,
+  selectBalancePercentChange,
 } from './assets';
 
 jest.mock('@metamask/assets-controllers', () => {
@@ -35,7 +35,7 @@ jest.mock('@metamask/assets-controllers', () => {
       wallets: {},
       userCurrency: 'usd',
     })),
-    calculateAggregatedChangeForAllWallets: jest.fn(() => ({
+    calculateBalanceChangeForAllWallets: jest.fn(() => ({
       period: '1d',
       currentTotalInUserCurrency: 0,
       previousTotalInUserCurrency: 0,
@@ -834,7 +834,7 @@ describe('Aggregated balance recomputation behavior', () => {
   });
 });
 
-describe('Portfolio change selectors', () => {
+describe('Balance change selectors', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -843,8 +843,8 @@ describe('Portfolio change selectors', () => {
     metamask: {} as BalanceCalculationState['metamask'],
   };
 
-  it('selectPortfolioChangeForAllWallets adapts shapes and calls core with period', () => {
-    const mockReturn: AggregatedChangeForAllWallets = {
+  it('selectBalanceChangeForAllWallets adapts shapes and calls core with period', () => {
+    const mockReturn: BalanceChangeResult = {
       period: '1d',
       currentTotalInUserCurrency: 123,
       previousTotalInUserCurrency: 100,
@@ -852,16 +852,16 @@ describe('Portfolio change selectors', () => {
       percentChange: 23,
       userCurrency: 'usd',
     };
-    (calculateAggregatedChangeForAllWallets as jest.Mock).mockReturnValueOnce(
+    (calculateBalanceChangeForAllWallets as jest.Mock).mockReturnValueOnce(
       mockReturn,
     );
 
-    const selectChange1d = selectPortfolioChangeForAllWallets('1d');
+    const selectChange1d = selectBalanceChangeForAllWallets('1d');
     const out = selectChange1d(baseState);
     expect(out).toEqual(mockReturn);
 
-    expect(calculateAggregatedChangeForAllWallets).toHaveBeenCalledTimes(1);
-    const args = (calculateAggregatedChangeForAllWallets as jest.Mock).mock
+    expect(calculateBalanceChangeForAllWallets).toHaveBeenCalledTimes(1);
+    const args = (calculateBalanceChangeForAllWallets as jest.Mock).mock
       .calls[0];
     expect(args[0]).toHaveProperty('accountTree');
     expect(args[1]).toHaveProperty('internalAccounts');
@@ -874,15 +874,15 @@ describe('Portfolio change selectors', () => {
     expect(args[9]).toBe('1d');
   });
 
-  it('memoizes portfolio change output for identical state', () => {
-    const selectChange7d = selectPortfolioChangeForAllWallets('7d');
+  it('memoizes balance change output for identical state', () => {
+    const selectChange7d = selectBalanceChangeForAllWallets('7d');
     const a = selectChange7d(baseState);
     const b = selectChange7d(baseState);
     expect(a).toBe(b);
   });
 
-  it('selectPortfolioPercentChange returns percent only', () => {
-    (calculateAggregatedChangeForAllWallets as jest.Mock).mockReturnValueOnce({
+  it('selectBalancePercentChange returns percent only', () => {
+    (calculateBalanceChangeForAllWallets as jest.Mock).mockReturnValueOnce({
       period: '30d',
       currentTotalInUserCurrency: 0,
       previousTotalInUserCurrency: 0,
@@ -890,7 +890,7 @@ describe('Portfolio change selectors', () => {
       percentChange: 42.5,
       userCurrency: 'usd',
     });
-    const selectPct = selectPortfolioPercentChange('30d');
+    const selectPct = selectBalancePercentChange('30d');
     const pct = selectPct(baseState);
     expect(pct).toBe(42.5);
   });

@@ -5,8 +5,8 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 import {
-  selectSelectedGroupPortfolioPercentChange,
-  selectSelectedGroupPortfolioChange,
+  selectSelectedGroupBalancePercentChange,
+  selectSelectedGroupBalanceChange,
 } from '../../../../selectors/assets';
 import { renderPercentageWithNumber } from '../../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 
@@ -55,11 +55,11 @@ export const AccountGroupBalanceChange: React.FC<
 
   // Memoized selectors for the specified period
   const percentSelector = useMemo(
-    () => selectSelectedGroupPortfolioPercentChange(period),
+    () => selectSelectedGroupBalancePercentChange(period),
     [period],
   );
   const changeSelector = useMemo(
-    () => selectSelectedGroupPortfolioChange(period),
+    () => selectSelectedGroupBalanceChange(period),
     [period],
   );
 

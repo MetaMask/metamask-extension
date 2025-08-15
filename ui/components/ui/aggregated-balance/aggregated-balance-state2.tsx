@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
-  selectSelectedGroupAggregatedBalance,
+  selectSelectedGroupBalance,
   selectBalanceForAllWallets,
   selectAggregatedBalanceByAccountGroup,
   type BalanceCalculationState,
@@ -41,9 +41,7 @@ export const AggregatedBalanceState2: React.FC<
   const { privacyMode } = useSelector(getPreferences);
   const locale = useSelector(getIntlLocale);
 
-  const selectedGroupBalance = useSelector(
-    selectSelectedGroupAggregatedBalance,
-  );
+  const selectedGroupBalance = useSelector(selectSelectedGroupBalance);
 
   // Portfolio-level totals are safe to compute without ATC
   const allWalletsBalance = useSelector(selectBalanceForAllWallets);
