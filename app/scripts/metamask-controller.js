@@ -2645,6 +2645,9 @@ export default class MetamaskController extends EventEmitter {
               throw new Error(`Entropy source with ID "${source}" not found.`);
             }
           },
+          getUnlockPromise: this.appStateController.getUnlockPromise.bind(
+            this.appStateController,
+          ),
           getSnap: this.controllerMessenger.call.bind(
             this.controllerMessenger,
             'SnapController:get',
@@ -7615,10 +7618,6 @@ export default class MetamaskController extends EventEmitter {
 
         // Miscellaneous
         metamaskState: this.getState(),
-        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
-          this.appStateController,
-        ),
-
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -7673,6 +7672,9 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:clearSnapState',
           origin,
+        ),
+        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
+          this.appStateController,
         ),
         getSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
