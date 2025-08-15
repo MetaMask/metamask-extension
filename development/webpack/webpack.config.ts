@@ -448,4 +448,60 @@ const config = {
   },
 } as const satisfies Configuration;
 
-export default config;
+// Transpile a bootstrap script that runs before LavaMoat
+// Emits dist/<browser>/bootstrap.js so HTML can reference it as /bootstrap.js.
+const bootstrapConfig = {
+  name: 'bootstrap',
+  dependencies: [config.name],
+  mode: args.env,
+  context,
+  entry: { bootstrap: './scripts/load/bootstrap.ts' },
+  target: `browserslist:${browsersListPath}:defaults`,
+  devtool: args.devtool === 'none' ? false : args.devtool,
+  output: {
+    // TODO: Add support for args.browser
+    path: join(context, '..', 'dist', 'chrome'),
+    publicPath: '',
+    filename: 'bootstrap.js',
+    clean: false,
+    crossOriginLoading: 'anonymous',
+    pathinfo: false,
+  },
+  resolve: {
+    symlinks: false,
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      fs: false,
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      path: require.resolve('path-browserify'),
+      stream: require.resolve('stream-browserify'),
+      vm: false,
+      zlib: false,
+    },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(?:ts|mts|tsx)$/u,
+        exclude: NODE_MODULES_RE,
+        use: [tsxLoader],
+      },
+      {
+        test: /\.(?:js|mjs|jsx)$/u,
+        exclude: NODE_MODULES_RE,
+        use: [jsxLoader],
+      },
+    ],
+  },
+  performance: { maxAssetSize: 1 << 22 },
+  cache: false,
+  stats: args.stats ? 'normal' : 'none',
+  watch: args.watch,
+  watchOptions: { aggregateTimeout: 5, ignored: NODE_MODULES_RE },
+} as const satisfies Configuration;
+
+const configs = [config, bootstrapConfig];
+
+export default configs;
