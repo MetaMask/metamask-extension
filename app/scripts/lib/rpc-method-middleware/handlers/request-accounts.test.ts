@@ -1,11 +1,9 @@
-import { rpcErrors } from '@metamask/rpc-errors';
 import {
   JsonRpcParams,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import * as Util from '../../util';
-import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import requestEthereumAccounts from './request-accounts';
 
 jest.mock('../../util', () => ({
@@ -90,6 +88,7 @@ describe('requestEthereumAccountsHandler', () => {
       await handler(baseRequest);
       expect(response.result).toStrictEqual(['0xdead', '0xbeef']);
     });
+  });
 
   describe('eip155 account permissions do not exist', () => {
     it('gets the CAIP-25 permission object to request approval for', async () => {
