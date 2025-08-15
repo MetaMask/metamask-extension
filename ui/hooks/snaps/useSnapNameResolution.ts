@@ -52,7 +52,7 @@ export function useSnapNameResolution({
           return true;
         })
         .map(({ id }) => id),
-    [snaps, chainId],
+    [snaps, chainId, domain],
   );
 
   useEffect(() => {
