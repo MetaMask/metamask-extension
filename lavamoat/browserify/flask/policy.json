@@ -1065,6 +1065,22 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/design-system-react": {
+      "globals": {
+        "__import__": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/jazzicon": true,
+        "@metamask/utils": true,
+        "@metamask/design-system-react>@radix-ui/react-slot": true,
+        "@solana/addresses": true,
+        "@metamask/design-system-react>blo": true,
+        "@metamask/design-system-react>dompurify": true,
+        "react": true,
+        "@metamask/design-system-react>tailwind-merge": true
+      }
+    },
     "@metamask/ens-controller": {
       "packages": {
         "@ethersproject/providers": true,
@@ -2245,6 +2261,17 @@
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
       }
     },
+    "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": {
+      "packages": {
+        "react": true
+      }
+    },
+    "@metamask/design-system-react>@radix-ui/react-slot": {
+      "packages": {
+        "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": true,
+        "react": true
+      }
+    },
     "@reduxjs/toolkit": {
       "globals": {
         "AbortController": true,
@@ -2847,6 +2874,11 @@
         "btoa": true
       }
     },
+    "@metamask/design-system-react>blo": {
+      "globals": {
+        "btoa": true
+      }
+    },
     "bn.js": {
       "globals": {
         "Buffer": true
@@ -3308,6 +3340,12 @@
       }
     },
     "dompurify": {
+      "globals": {
+        "console.warn": true,
+        "define": true
+      }
+    },
+    "@metamask/design-system-react>dompurify": {
       "globals": {
         "console.warn": true,
         "define": true
