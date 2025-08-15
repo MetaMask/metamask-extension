@@ -1,8 +1,5 @@
 {
-  "ignorePaths": [
-    "app/images",
-    "package.json"
-  ],
+  "ignorePaths": ["app/images", "package.json"],
   "ignoreWords": [
     "BUNDLESIZE",
     "Brainstem",

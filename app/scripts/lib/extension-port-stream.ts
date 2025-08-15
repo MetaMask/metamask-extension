@@ -114,30 +114,6 @@ const XOR_ZERO = 48 as const; // Shifts characters codes down by 48 so "0" is  0
 const PIPE_XZ = 76 as const; // Shifted "|"'s character code
 
 /**
- * Maybe parses a chunk frame.
- *
- * a chunk frame is a string in the form: `<id>|<seq>|<fin><data>`, where:
- * - `<id>` is a unique number identifier for the chunked message
- * - `<total>` is the total number of chunks in the message
- * - `<seq>` is the sequence number of this chunk (0-based)
- * - `<data>` is the actual data of this chunk
- *
- * @param input - the value to try to parse
- * @returns a ChunkFrame if the value is a valid chunk frame, otherwise null
- */
-const maybeParseAsChunkFrame = (input: unknown): ChunkFrame | null => {
-  if (typeof input !== 'string') {
-    return null;
-  }
-  const { length } = input;
-  // shortest legal message is: "0|0|1D" (6 characters)
-  if (length < 6) {
-    return null;
-  }
-  return maybeParseStringAsChunkFrame(input, length);
-};
-
-/**
  * Maybe parses a chunk frame *from a string*.
  *
  * a chunk frame is in the form: `<id>|<seq>|<fin><data>`, where:
@@ -152,18 +128,22 @@ const maybeParseAsChunkFrame = (input: unknown): ChunkFrame | null => {
  * @param length - must be greater than 6, it is not validated within this function.
  * @returns a ChunkFrame if the value is a valid chunk frame, otherwise null
  */
-const maybeParseStringAsChunkFrame = (
+function maybeParseStringAsChunkFrame(
   input: string,
   length: number,
-): ChunkFrame | null => {
+): ChunkFrame | null {
   // parse id
   let code = input.charCodeAt(0);
   let id = (code ^ XOR_ZERO) | 0;
   // first must be a digit
-  if (id > 9) return null;
+  if (id > 9) {
+    return null;
+  }
   let i = 1 | 0;
   for (;;) {
-    if (i === length) return null;
+    if (i === length) {
+      return null;
+    }
     const d = (input.charCodeAt(i) ^ XOR_ZERO) | 0;
     if (d > 9) {
       // d isn't a digit (0-9)
@@ -178,14 +158,20 @@ const maybeParseStringAsChunkFrame = (
     id = id * 10 + d;
   }
 
-  if (i === length) return null;
+  if (i === length) {
+    return null;
+  }
   // parse seq
   code = input.charCodeAt(i);
   let seq = (code ^ XOR_ZERO) | 0;
-  if (seq > 9) return null;
+  if (seq > 9) {
+    return null;
+  }
   i++;
   for (;;) {
-    if (i >= length) return null;
+    if (i >= length) {
+      return null;
+    }
     const d = (input.charCodeAt(i) ^ XOR_ZERO) | 0;
     if (d > 9) {
       if (d === PIPE_XZ) {
@@ -199,13 +185,41 @@ const maybeParseStringAsChunkFrame = (
     seq = seq * 10 + d;
   }
 
-  if (i === length) return null;
+  if (i === length) {
+    return null;
+  }
   // parse fin
   const fin = ((input.charCodeAt(i) ^ XOR_ZERO) | 0) as Final;
-  if (fin >>> 1 !== 0) return null;
+  if (fin >>> 1 !== 0) {
+    return null;
+  }
 
   return { id, seq, fin, source: input, dataIndex: i + 1 };
-};
+}
+
+/**
+ * Maybe parses a chunk frame.
+ *
+ * a chunk frame is a string in the form: `<id>|<seq>|<fin><data>`, where:
+ * - `<id>` is a unique number identifier for the chunked message
+ * - `<total>` is the total number of chunks in the message
+ * - `<seq>` is the sequence number of this chunk (0-based)
+ * - `<data>` is the actual data of this chunk
+ *
+ * @param input - the value to try to parse
+ * @returns a ChunkFrame if the value is a valid chunk frame, otherwise null
+ */
+function maybeParseAsChunkFrame(input: unknown): ChunkFrame | null {
+  if (typeof input !== 'string') {
+    return null;
+  }
+  const { length } = input;
+  // shortest legal message is: "0|0|1D" (6 characters)
+  if (length < 6) {
+    return null;
+  }
+  return maybeParseStringAsChunkFrame(input, length);
+}
 
 /**
  * Converts a JSON object into a generator of chunk frames.
@@ -355,12 +369,12 @@ export class PortStream extends Duplex {
     if (entry.received === entry.expected) {
       this.inFlight.delete(id);
       this.log('received chunked message', false);
-      const parts = entry.parts;
-      const length = parts.length;
+      const { parts } = entry;
+      const { length } = parts;
       // use an array and then a single `join()` to avoid creating large
       // intermediary strings if we used string concatenation via something like
       // `raw += src.slice(idx)`.
-      let segments = new Array(length);
+      const segments = new Array(length);
       for (let i = 0; i < length; i++) {
         const [src, idx] = parts[i];
         segments[i] = src.slice(idx);
