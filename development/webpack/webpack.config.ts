@@ -458,7 +458,7 @@ const bootstrapConfig = {
   context,
   entry: args.browser.reduce(
     (acc, browser) => {
-      acc[browser] = `./scripts/load/bootstrap.ts`;
+      acc[browser] = './scripts/load/bootstrap.ts';
       return acc;
     },
     {} as Record<Browser, './scripts/load/bootstrap.ts'>,

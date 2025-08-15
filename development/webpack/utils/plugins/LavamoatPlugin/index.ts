@@ -45,8 +45,6 @@ export const lavamoatPlugin = new LavamoatPlugin({
       'Image', // Used by browser to generate notifications
       'fetch', // Used by browser to generate notifications
       'OffscreenCanvas', // Used by browser to generate notifications
-      'setTimeout',
-      'clearTimeout',
       // globals chromedriver needs to function
       // @ts-expect-error - regex is not included in the types for some reason
       /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
@@ -74,6 +72,8 @@ export const lavamoatPlugin = new LavamoatPlugin({
       'stateHooks',
       'sentryHooks',
       'sentry',
+      'setTimeout',
+      'clearTimeout',
       // e2e
       'HTMLFormElement',
       'getSelection',

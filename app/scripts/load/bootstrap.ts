@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+// currently only used in webpack build.
+
 // The root compartment will populate this with hooks
 global.stateHooks = {} as typeof stateHooks;
 
@@ -10,3 +13,5 @@ if (process.env.ENABLE_SENTRY === 'true') {
 }
 
 require('../init-globals');
+
+export {};
