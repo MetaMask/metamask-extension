@@ -69,6 +69,7 @@ const originalGlobalJsonStringify = JSON.stringify;
 
 describe('extension-port-stream', () => {
   let consoleDebugSpy: jest.SpyInstance;
+  let consoleErrorSpy: jest.SpyInstance;
   let mockPort: jest.Mocked<Runtime.Port>;
   let simulatePortMessage: (msg: unknown) => void;
   let simulatePortDisconnect: () => void;
@@ -100,10 +101,15 @@ describe('extension-port-stream', () => {
     consoleDebugSpy = jest
       .spyOn(console, 'debug')
       .mockImplementation(() => undefined);
+    consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      // this is just to silence the expected errors in tests
+      .mockImplementation(() => undefined);
   });
 
   afterEach(() => {
     consoleDebugSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
     jest.clearAllMocks();
     // resets the ./extension-port-stream.ts import
     jest.resetModules();

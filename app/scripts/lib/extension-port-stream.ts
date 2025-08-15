@@ -16,9 +16,21 @@ function getNextId(): number {
   return _randomCounter;
 }
 
+/**
+ * Represents a queued chunked message.
+ */
 type QueuedEntry = {
-  parts: string[];
-  total: number;
+  /**
+   * The parts of the chunked message.
+   */
+  parts: [source: string, dataIndex: number][];
+  /**
+   * The total number of chunks in the message.
+   */
+  expected: number;
+  /**
+   * The number of chunks that have been received.
+   */
   received: number;
 };
 
@@ -27,11 +39,12 @@ type Seq = number;
 type Final = 0 | 1;
 type Data = string;
 
-export type ChunkFrame = {
+type ChunkFrame = {
   id: Id;
   seq: Seq;
   fin: Final;
-  data: Data;
+  source: string;
+  dataIndex: number;
 };
 
 /**
@@ -84,22 +97,48 @@ export type Options = {
  *
  * So we can just send messages on FireFox without chunking.
  *
- * Chrome limit: 64 * 1024 * 1024 - 1 (64 MB - 1 byte)
+ * Chrome limit: 1 << 26 (64 MB)
  * Firefox limit: 0 (no chunking, send as is)
  */
-export const CHUNK_SIZE = globalThis.navigator.userAgent
-  .toLowerCase()
-  .includes('firefox')
+export const CHUNK_SIZE = globalThis.navigator.userAgent.includes('Firefox')
   ? 0
-  : 64 * 1024 * 1024 - 1;
+  : 1 << 26;
 
-export const MAX_HEADER_LENGTH = 33;
+// `2147483647|2147483647|1` is 23, then add 1 because we require 1 character of
+// data. `2147483647` is the max Int32 we allow for the `id`. A seq of
+// 2147483647 is impossible at a realistic CHUNK_SIZE, as it would consume way
+// more memory than V8 will allow in a single string or ArrayBuffer.
+export const MIN_CHUNK_SIZE = 24 as const;
 
-const XOR_ZERO = 48 | 0; // '0'
-const PIPE_XZ = 76 | 0; // '|' ^ 48
+const XOR_ZERO = 48 as const; // Shifts characters codes down by 48 so "0" is  0
+const PIPE_XZ = 76 as const; // Shifted "|"'s character code
 
 /**
- * Parses a chunk frame from a string.
+ * Maybe parses a chunk frame.
+ *
+ * a chunk frame is a string in the form: `<id>|<seq>|<fin><data>`, where:
+ * - `<id>` is a unique number identifier for the chunked message
+ * - `<total>` is the total number of chunks in the message
+ * - `<seq>` is the sequence number of this chunk (0-based)
+ * - `<data>` is the actual data of this chunk
+ *
+ * @param input - the value to try to parse
+ * @returns a ChunkFrame if the value is a valid chunk frame, otherwise null
+ */
+const maybeParseAsChunkFrame = (input: unknown): ChunkFrame | null => {
+  if (typeof input !== 'string') {
+    return null;
+  }
+  const { length } = input;
+  // shortest legal message is: "0|0|1D" (6 characters)
+  if (length < 6) {
+    return null;
+  }
+  return maybeParseStringAsChunkFrame(input, length);
+};
+
+/**
+ * Maybe parses a chunk frame *from a string*.
  *
  * a chunk frame is in the form: `<id>|<seq>|<fin><data>`, where:
  * - `<id>` is a unique number identifier for the chunked message
@@ -107,68 +146,65 @@ const PIPE_XZ = 76 | 0; // '|' ^ 48
  * - `<seq>` is the sequence number of this chunk (0-based)
  * - `<data>` is the actual data of this chunk
  *
- * @param input - the value to parse
- * @returns a ChunkFrame if the value is a valid chunk frame, otherwise false
+ * This has been benchmarked and highly optimized, modify carefully.
+ *
+ * @param input - the string to parse
+ * @param length - must be greater than 6, it is not validated within this function.
+ * @returns a ChunkFrame if the value is a valid chunk frame, otherwise null
  */
-const maybeParseChunkFrame = (input: unknown): ChunkFrame | null => {
-  if (typeof input !== 'string') {
-    return null;
-  }
-  const { length } = input;
-  // shortest legal message is: "0|0|1" (5 characters)
-  if (length < 5) {
-    return null;
-  }
-
-  let i = 0 | 0;
-
+const maybeParseStringAsChunkFrame = (
+  input: string,
+  length: number,
+): ChunkFrame | null => {
   // parse id
-  let v = 0 | 0,
-    digits = 0 | 0;
+  let code = input.charCodeAt(0);
+  let id = (code ^ XOR_ZERO) | 0;
+  // first must be a digit
+  if (id > 9) return null;
+  let i = 1 | 0;
   for (;;) {
-    if (i >= length) return null;
+    if (i === length) return null;
     const d = (input.charCodeAt(i) ^ XOR_ZERO) | 0;
     if (d > 9) {
-      if (d === PIPE_XZ) break;
-      else return null;
+      // d isn't a digit (0-9)
+      if (d === PIPE_XZ) {
+        i++; // it's a "|"! We're done; skip the '|'.
+        break;
+      }
+      return null;
     }
     i++;
-    digits++;
-    v = v * 10 + d;
+    // we compute the id as we parse it from left to right.
+    id = id * 10 + d;
   }
-  if (digits === 0) return null;
-  const id = v;
-  if (i >= length || ((input.charCodeAt(i) ^ XOR_ZERO) | 0) !== PIPE_XZ)
-    return null;
-  i++; // skip '|'
 
+  if (i === length) return null;
   // parse seq
-  v = 0 | 0;
-  digits = 0 | 0;
+  code = input.charCodeAt(i);
+  let seq = (code ^ XOR_ZERO) | 0;
+  if (seq > 9) return null;
+  i++;
   for (;;) {
     if (i >= length) return null;
     const d = (input.charCodeAt(i) ^ XOR_ZERO) | 0;
     if (d > 9) {
-      if (d === PIPE_XZ) break;
-      else return null;
+      if (d === PIPE_XZ) {
+        i++; // it's a "|"! We're done; skip the '|'.
+        break;
+      }
+      return null;
     }
     i++;
-    digits++;
-    v = v * 10 + d;
+    // we compute the seq as we parse it from left to right.
+    seq = seq * 10 + d;
   }
-  if (digits === 0) return null;
-  const seq = v;
-  if (i >= length || ((input.charCodeAt(i) ^ XOR_ZERO) | 0) !== PIPE_XZ)
-    return null;
-  i++; // skip '|'
 
+  if (i === length) return null;
   // parse fin
-  if (i >= length) return null;
   const fin = ((input.charCodeAt(i) ^ XOR_ZERO) | 0) as Final;
-  if ((fin & ~1) !== 0) return null;
-  i++; // first data char
+  if (fin >>> 1 !== 0) return null;
 
-  return { id, seq, fin, data: input.slice(i) };
+  return { id, seq, fin, source: input, dataIndex: i + 1 };
 };
 
 /**
@@ -188,7 +224,7 @@ export function* toFrames<Payload extends Json>(
   const json = JSON.stringify(payload);
   const payloadLength = json.length;
 
-  if (payloadLength <= chunkSize) {
+  if (payloadLength < chunkSize) {
     // no need to chunk if it fits within a single frame
     yield payload;
     return;
@@ -196,16 +232,23 @@ export function* toFrames<Payload extends Json>(
 
   // we need to leave space for our header
   const id = getNextId();
-  for (let index = 0, seq = 0; index < payloadLength; seq++) {
+  let index = 0;
+  let seq = 0;
+  while (index < payloadLength) {
     const header = `${id}|${seq}|` as const;
-    const headerSize = header.length + 1; // (`+ 1` for the `fin` flag, which hasn't been computed yet)
+    const headerSize = header.length + 1; // +1 for fin
     // how much data can we send with this specific header?
     const partialDataLength = chunkSize - headerSize;
     // compute next `pos` to determine if this is the final frame
-    const data = json.substring(index, (index += partialDataLength));
-    const fin = index >= payloadLength ? 1 : 0;
+    const start = index;
+    const end = Math.min(start + partialDataLength, payloadLength);
+    const fin = end >= payloadLength ? 1 : 0;
+    const data = json.substring(start, end);
     const frame: TransportChunkFrame = `${header}${fin}${data}`;
     yield frame;
+
+    index = end;
+    seq++;
   }
 }
 
@@ -217,7 +260,7 @@ const STYLE_SYS = 'color:#888;'; // system
 export class PortStream extends Duplex {
   private readonly port: Runtime.Port;
 
-  private readonly queue = new Map<Id, QueuedEntry>();
+  private readonly inFlight = new Map<Id, QueuedEntry>();
 
   private chunkSize: number;
 
@@ -229,9 +272,9 @@ export class PortStream extends Duplex {
     port: Runtime.Port,
     { chunkSize, debug, log, ...opts }: Options = {},
   ) {
-    if (chunkSize && chunkSize < MAX_HEADER_LENGTH) {
+    if (chunkSize && chunkSize < MIN_CHUNK_SIZE) {
       throw new Error(
-        `Cannot chunk messages smaller than the max header length, ${MAX_HEADER_LENGTH}`,
+        `Cannot chunk messages smaller than the min chunk size, ${MIN_CHUNK_SIZE}`,
       );
     }
 
@@ -265,7 +308,7 @@ export class PortStream extends Duplex {
     }
 
     if (this.chunkSize > 0) {
-      const frame = maybeParseChunkFrame(msg);
+      const frame = maybeParseAsChunkFrame(msg);
       if (frame !== null) {
         this.handleChunk(frame);
         return;
@@ -283,48 +326,56 @@ export class PortStream extends Duplex {
    * @param chunk - the chunk frame received from the port
    */
   private handleChunk(chunk: ChunkFrame) {
-    const { id, seq, fin, data } = chunk;
+    const { id, seq, fin, source, dataIndex } = chunk;
 
     if (this.debug) {
       console.debug(
         TAG,
         STYLE_IN,
-        `← frame #${seq + 1}/? id=${id} (${data.length} bytes)`,
+        `← frame #${seq + 1}/? id=${id} (${source.length - dataIndex} bytes)`,
       );
     }
 
-    let entry = this.queue.get(id);
+    let entry = this.inFlight.get(id);
     if (entry) {
       entry.received += 1;
     } else {
       entry = {
         parts: [],
-        total: 0,
+        expected: 0,
         received: 1,
       };
-      this.queue.set(id, entry);
+      this.inFlight.set(id, entry);
     }
     if (fin === 1) {
-      entry.total = seq + 1;
+      entry.expected = seq + 1;
     }
-    entry.parts[seq] = data;
+    entry.parts[seq] = [source, dataIndex];
 
-    if (entry.received === entry.total) {
-      this.queue.delete(id);
+    if (entry.received === entry.expected) {
+      this.inFlight.delete(id);
+      this.log('received chunked message', false);
+      const parts = entry.parts;
+      const length = parts.length;
+      // use an array and then a single `join()` to avoid creating large
+      // intermediary strings if we used string concatenation via something like
+      // `raw += src.slice(idx)`.
+      let segments = new Array(length);
+      for (let i = 0; i < length; i++) {
+        const [src, idx] = parts[i];
+        segments[i] = src.slice(idx);
+      }
 
-      const merged = entry.parts.join('');
-      const value = JSON.parse(merged);
-
+      // only one final, engine-optimized, large string allocation
+      const raw = segments.join('');
+      this.push(JSON.parse(raw));
       if (this.debug) {
         console.debug(
           TAG,
           STYLE_IN,
-          `✔ re-assembled id=${id} (${merged.length} bytes)`,
+          `✔ re-assembled id=${id} (${raw.length} bytes)`,
         );
       }
-
-      this.log('received chunked message', false);
-      this.push(value);
     }
   }
 
@@ -338,7 +389,7 @@ export class PortStream extends Duplex {
       console.debug(TAG, STYLE_SYS, '✖ port disconnected');
     }
     // clean up, as we aren't going to receive any more messages
-    this.queue.clear();
+    this.inFlight.clear();
     this.destroy(new Error('Port disconnected'));
   };
 
@@ -354,8 +405,8 @@ export class PortStream extends Duplex {
    * This prevents reentrancy issues where the callback might throw an exception
    * and cause the calling code to execute the callback again before returning.
    *
-   * @param callback
-   * @param error
+   * @param callback - the callback to invoke
+   * @param error - the error to pass to the callback
    */
   private safeCallback(
     callback: (err?: Error | null) => void,
@@ -364,11 +415,19 @@ export class PortStream extends Duplex {
     queueMicrotask(() => callback(error));
   }
 
-  private postMessage(obj: unknown) {
+  /**
+   * Send a message to the other end. This takes one argument, which is a JSON
+   * object representing the message to send. It will be delivered to any script
+   * listening to the port's onMessage event, or to the native application if
+   * this port is connected to a native application.
+   *
+   * @param message - the message to send
+   */
+  private postMessage(message: unknown) {
     if (this.debug) {
-      console.debug(TAG, STYLE_OUT, '→', obj);
+      console.debug(TAG, STYLE_OUT, '→', message);
     }
-    this.port.postMessage(obj);
+    this.port.postMessage(message);
   }
 
   /**
