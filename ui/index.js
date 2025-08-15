@@ -6,6 +6,7 @@ import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 import { captureException } from '../shared/lib/sentry';
+import { withResolvers } from '../shared/lib/promise-with-resolvers';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
@@ -53,7 +54,7 @@ log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
  */
-const reduxStore = Promise.withResolvers();
+const reduxStore = withResolvers();
 
 /**
  * Method to update backgroundConnection object use by UI
