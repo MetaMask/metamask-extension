@@ -5451,7 +5451,7 @@ __metadata:
 
 "@metamask/assets-controllers@file:/Users/bergarces/repos/consensys/metamask-core/packages/assets-controllers::locator=metamask-crx%40workspace%3A.":
   version: 73.1.0
-  resolution: "@metamask/assets-controllers@file:/Users/bergarces/repos/consensys/metamask-core/packages/assets-controllers#/Users/bergarces/repos/consensys/metamask-core/packages/assets-controllers::hash=77833b&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/assets-controllers@file:/Users/bergarces/repos/consensys/metamask-core/packages/assets-controllers#/Users/bergarces/repos/consensys/metamask-core/packages/assets-controllers::hash=e42846&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5495,7 +5495,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^59.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/05857b617c9bb59994ac3ecf4492d8e48c227fe590b0bdfd1df11ea8fc116f2ccf4373c91b5d844fb5c3682cf8c952fb1231ff4073b3c0d1095688c8c20ba96c
+  checksum: 10/3a6916e0ed0c49a7f4254a8c0d360c0558b7551c5a69b8e6372c1f93c7eb9b98c88086c3bf98b4aef560a139052c2212e4777a1567dbc116ab7073f91c5ac6ca
   languageName: node
   linkType: hard
 

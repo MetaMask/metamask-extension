@@ -1,9 +1,9 @@
 import {
+  AssetListState,
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
   selectAssetsBySelectedAccountGroup,
-  TokensControllerState,
 } from '@metamask/assets-controllers';
 import { CaipAssetId } from '@metamask/keyring-api';
 import {
@@ -15,8 +15,6 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { AccountTreeControllerState } from '@metamask/account-tree-controller';
-import { AccountsControllerState } from '@metamask/accounts-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
@@ -513,10 +511,23 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
   },
 );
 
-// TODO: Review if this is the best way to use a controller level selector
-export const getAllAssetsForSelectedAccountGroup = (state: {
-  metamask: TokensControllerState &
-    MultichainAssetsControllerState &
-    AccountTreeControllerState &
-    AccountsControllerState;
-}) => selectAssetsBySelectedAccountGroup(state.metamask);
+// TODO: Find a better way to narrow the state needed to make better use of memoization
+export const getAllAssetsForSelectedAccountGroup = createDeepEqualSelector(
+  ({ metamask }: { metamask: AssetListState }) => ({
+    accountTree: metamask.accountTree,
+    internalAccounts: metamask.internalAccounts,
+    allTokens: metamask.allTokens,
+    allIgnoredTokens: metamask.allIgnoredTokens,
+    tokenBalances: metamask.tokenBalances,
+    marketData: metamask.marketData,
+    currencyRates: metamask.currencyRates,
+    accountsAssets: metamask.accountsAssets,
+    assetsMetadata: metamask.assetsMetadata,
+    balances: metamask.balances,
+    conversionRates: metamask.conversionRates,
+    currentCurrency: metamask.currentCurrency,
+    accountsByChainId: metamask.accountsByChainId,
+  }),
+  (assetListState: AssetListState) =>
+    selectAssetsBySelectedAccountGroup(assetListState),
+);
