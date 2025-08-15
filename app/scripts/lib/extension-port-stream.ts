@@ -95,11 +95,8 @@ export const CHUNK_SIZE = globalThis.navigator.userAgent
 
 export const MAX_HEADER_LENGTH = 33;
 
-enum State {
-  Id,
-  Seq,
-  Fin,
-}
+const XOR_ZERO = 48 | 0; // '0'
+const PIPE_XZ = 76 | 0; // '|' ^ 48
 
 /**
  * Parses a chunk frame from a string.
@@ -123,60 +120,55 @@ const maybeParseChunkFrame = (input: unknown): ChunkFrame | null => {
     return null;
   }
 
-  let state = State.Id;
-  let value = 0;
-  let hasDigit = false;
+  let i = 0 | 0;
 
-  let id = 0;
-  let seq = 0;
-
-  for (let i = 0; i < length; ++i) {
-    // shift down by 48 to make the characters "0..9" the _digits_ `0..9`
-    const shifted = input.charCodeAt(i) ^ 48;
-
-    if (state === State.Fin) {
-      // Fin is always one character: either 0 or 1
-      if (shifted > 1) {
-        // character is not 0 or 1, so we are not a valid chunk
-        return null;
-      }
-      // first byte of data → grab remainder and exit
-      return { id, seq, fin: shifted as Final, data: input.slice(i + 1) };
+  // parse id
+  let v = 0 | 0,
+    digits = 0 | 0;
+  for (;;) {
+    if (i >= length) return null;
+    const d = (input.charCodeAt(i) ^ XOR_ZERO) | 0;
+    if (d > 9) {
+      if (d === PIPE_XZ) break;
+      else return null;
     }
-
-    if (shifted <= 9) {
-      // we have a character '0'..'9'
-      // shift current value and add digit
-      value = ((value << 3) + (value << 1) + shifted) | 0;
-      hasDigit = true;
-      continue;
-    }
-    if (shifted === 76) {
-      // we have a '|'
-      if (!hasDigit) {
-        // we didn't find any digits before a delimiter, so this is not a valid chunk
-        return null;
-      }
-      switch (state) {
-        case State.Id:
-          id = value;
-          state = State.Seq;
-          break;
-        case State.Seq:
-          seq = value;
-          state = State.Fin;
-          continue;
-      }
-      value = 0;
-      hasDigit = false;
-      continue;
-    }
-
-    // invalid character
-    return null;
+    i++;
+    digits++;
+    v = v * 10 + d;
   }
+  if (digits === 0) return null;
+  const id = v;
+  if (i >= length || ((input.charCodeAt(i) ^ XOR_ZERO) | 0) !== PIPE_XZ)
+    return null;
+  i++; // skip '|'
 
-  return null;
+  // parse seq
+  v = 0 | 0;
+  digits = 0 | 0;
+  for (;;) {
+    if (i >= length) return null;
+    const d = (input.charCodeAt(i) ^ XOR_ZERO) | 0;
+    if (d > 9) {
+      if (d === PIPE_XZ) break;
+      else return null;
+    }
+    i++;
+    digits++;
+    v = v * 10 + d;
+  }
+  if (digits === 0) return null;
+  const seq = v;
+  if (i >= length || ((input.charCodeAt(i) ^ XOR_ZERO) | 0) !== PIPE_XZ)
+    return null;
+  i++; // skip '|'
+
+  // parse fin
+  if (i >= length) return null;
+  const fin = ((input.charCodeAt(i) ^ XOR_ZERO) | 0) as Final;
+  if ((fin & ~1) !== 0) return null;
+  i++; // first data char
+
+  return { id, seq, fin, data: input.slice(i) };
 };
 
 /**
