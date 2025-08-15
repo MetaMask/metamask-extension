@@ -1,3 +1,5 @@
+import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
+import { SeedlessOnboardingControllerState } from '@metamask/seedless-onboarding-controller';
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 
@@ -8,12 +10,16 @@ type FlattenedUIState = Record<string, any>;
 const REMOVE_KEYS = [
   'snapStates',
   'unencryptedSnapStates',
-  'vault',
   'phishingLists',
   'whitelist',
   'hotlistLastFetched',
   'stalelistLastFetched',
   'c2DomainBlocklistLastFetched',
+
+  // Keyring controller
+  'vault',
+  'encryptionKey',
+  'encryptionSalt',
 ];
 
 export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
@@ -24,6 +30,8 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   }
 
   sanitizeSnapData(newState);
+  sanitizeAuthenticationControllerState(newState);
+  sanitizeSeedlessOnboardingControllerState(newState);
 
   return newState;
 }
@@ -53,4 +61,84 @@ function stripLargeSnapData(snapData: Snap): Partial<Snap> {
   delete newData.auxiliaryFiles;
 
   return newData;
+}
+
+function sanitizeAuthenticationControllerState(state: FlattenedUIState) {
+  const srpSessionData = state.srpSessionData as
+    | AuthenticationControllerState['srpSessionData']
+    | undefined;
+
+  if (!srpSessionData) {
+    return;
+  }
+
+  state.srpSessionData = Object.entries(srpSessionData).reduce(
+    (acc, [key, value]) => {
+      const token = {
+        ...value.token,
+      };
+      // @ts-expect-error - Intentionally sanitizing a required field.
+      delete token.accessToken;
+      acc[key] = {
+        ...value,
+        token,
+      };
+      return acc;
+    },
+    {} as NonNullable<AuthenticationControllerState['srpSessionData']>,
+  );
+}
+
+function sanitizeSeedlessOnboardingControllerState(state: FlattenedUIState) {
+  const toDelete = [
+    'vault',
+    'vaultEncryptionKey',
+    'vaultEncryptionSalt',
+    'encryptedSeedlessEncryptionKey',
+    'encryptedKeyringEncryptionKey',
+    'accessToken',
+    'metadataAccessToken',
+    'refreshToken',
+    'revokeToken',
+  ];
+  for (const key of toDelete) {
+    delete state[key];
+  }
+
+  // Manually sanitize the nodeAuthTokens.
+  const nodeAuthTokens =
+    state.nodeAuthTokens as SeedlessOnboardingControllerState['nodeAuthTokens'];
+
+  if (nodeAuthTokens) {
+    state.nodeAuthTokens = nodeAuthTokens.map((token) => {
+      const sanitizedToken = {
+        ...token,
+      };
+      // @ts-expect-error - Intentionally sanitizing a required field.
+      delete sanitizedToken.authToken;
+      return sanitizedToken;
+    });
+  }
+
+  const socialLoginEmail =
+    state.socialLoginEmail as SeedlessOnboardingControllerState['socialLoginEmail'];
+
+  if (socialLoginEmail) {
+    state.socialLoginEmail = '********';
+  }
+
+  // Manually sanitize the socialBackupsMetadata.
+  const socialBackupsMetadata =
+    state.socialBackupsMetadata as SeedlessOnboardingControllerState['socialBackupsMetadata'];
+
+  if (socialBackupsMetadata) {
+    state.socialBackupsMetadata = socialBackupsMetadata.map((backup) => {
+      const sanitizedBackup = {
+        ...backup,
+      };
+      // @ts-expect-error - Intentionally sanitizing a required field.
+      delete sanitizedBackup.hash;
+      return sanitizedBackup;
+    });
+  }
 }

@@ -13,6 +13,7 @@ import {
 import { setSelectedInternalAccountWithoutLoading } from '../../../../store/actions';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import AccountListItem from '../../../multichain/account-list-item/account-list-item';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type SnapUIAccountSelectorProps = {
   name: string;
@@ -48,6 +49,7 @@ export const SnapUIAccountSelector: FunctionComponent<
   disabled,
   ...props
 }) => {
+  const t = useI18nContext();
   const { snapId } = useSnapInterfaceContext();
   const dispatch = useDispatch();
   const internalAccounts: InternalAccountWithBalance[] = useSelector(
@@ -106,7 +108,7 @@ export const SnapUIAccountSelector: FunctionComponent<
   return (
     <SnapUISelector
       className="snap-ui-renderer__account-selector"
-      title={'Select account'}
+      title={t('snapUIAccountSelectorTitle')}
       options={options}
       {...props}
       optionComponents={optionComponents}

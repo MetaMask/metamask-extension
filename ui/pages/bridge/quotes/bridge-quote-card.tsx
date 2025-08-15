@@ -11,6 +11,8 @@ import {
   PopoverPosition,
   IconName,
   ButtonLink,
+  ButtonIcon,
+  ButtonIconSize,
   Icon,
   IconSize,
   AvatarNetwork,
@@ -23,6 +25,8 @@ import {
   getToChain,
   getToToken,
   getValidationErrors,
+  getSlippage,
+  getIsSolanaSwap,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -53,7 +57,11 @@ import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
-export const BridgeQuoteCard = () => {
+export const BridgeQuoteCard = ({
+  onOpenSlippageModal,
+}: {
+  onOpenSlippageModal?: () => void;
+}) => {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
@@ -68,6 +76,8 @@ export const BridgeQuoteCard = () => {
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
   const locale = useSelector(getIntlLocale);
+  const slippage = useSelector(getSlippage);
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
   const [shouldShowNetworkFeesInGasToken, setShouldShowNetworkFeesInGasToken] =
@@ -115,6 +125,9 @@ export const BridgeQuoteCard = () => {
                       trackUnifiedSwapBridgeEvent(
                         UnifiedSwapBridgeEventName.AllQuotesOpened,
                         {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          can_submit: true,
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
                           stx_enabled: isStxEnabled,
@@ -297,6 +310,31 @@ export const BridgeQuoteCard = () => {
                   }
                 />
               </Row>
+            </Row>
+
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Row gap={1} alignItems={AlignItems.center}>
+                <Text
+                  style={{ whiteSpace: 'nowrap' }}
+                  variant={TextVariant.bodyMdMedium}
+                  color={TextColor.textAlternativeSoft}
+                >
+                  {t('slippage')}
+                </Text>
+                <ButtonIcon
+                  iconName={IconName.Edit}
+                  size={ButtonIconSize.Sm}
+                  color={IconColor.iconAlternativeSoft}
+                  onClick={onOpenSlippageModal}
+                  ariaLabel={t('slippageEditAriaLabel')}
+                  data-testid="slippage-edit-button"
+                />
+              </Row>
+              <Text variant={TextVariant.bodyMd}>
+                {slippage === undefined && isSolanaSwap
+                  ? t('slippageAuto')
+                  : `${slippage}%`}
+              </Text>
             </Row>
 
             <Row>

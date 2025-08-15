@@ -23,7 +23,6 @@ import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
-  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
@@ -1021,7 +1020,6 @@ const slice = createSlice({
         slice.caseReducers.updateAmountToMax(state);
       }
       slice.caseReducers.validateAmountField(state);
-      slice.caseReducers.validateGasField(state);
       // validate send state
       slice.caseReducers.validateSendState(state);
     },
@@ -1424,13 +1422,6 @@ const slice = createSlice({
       draftTransaction.amount.value = addHexPrefix(action.payload);
       // Once amount has changed, validate the field
       slice.caseReducers.validateAmountField(state);
-      if (draftTransaction.sendAsset.type === AssetType.native) {
-        // if sending the native asset the amount being sent will impact the
-        // gas field as well because the gas validation takes into
-        // consideration the available balance minus amount sent before
-        // checking if there is enough left to cover the gas fee.
-        slice.caseReducers.validateGasField(state);
-      }
     },
     /**
      * updates the userInputHexData state key
@@ -1534,8 +1525,6 @@ const slice = createSlice({
             slice.caseReducers.validateSendState(state);
           }
           break;
-        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
-        // than the total price of the transaction inclusive of gas fees.
         case !isBalanceSufficient({
           amount:
             draftTransaction.sendAsset.type === AssetType.native
@@ -1545,19 +1534,8 @@ const slice = createSlice({
             draftTransaction.sendAsset.type === AssetType.native
               ? draftTransaction.sendAsset.balance
               : state.selectedAccount.balance,
-          gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
         }): {
-          const isInsufficientWithoutGas =
-            draftTransaction.sendAsset.type === AssetType.native &&
-            !isBalanceSufficient({
-              amount: draftTransaction.amount.value,
-              balance: draftTransaction.sendAsset.balance,
-              gasTotal: '0x0', // assume gas is free
-            });
-
-          draftTransaction.amount.error = isInsufficientWithoutGas
-            ? INSUFFICIENT_FUNDS_ERROR
-            : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+          draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
           if (draftTransaction.status !== SEND_STATUSES.INVALID) {
             slice.caseReducers.validateSendState(state);
           }
@@ -1570,39 +1548,6 @@ const slice = createSlice({
             slice.caseReducers.validateSendState(state);
           }
       }
-    },
-    /**
-     * Checks if the user has enough funds to cover the cost of gas, always
-     * uses the native currency and does not take into account the amount
-     * being sent. If the user has enough to cover cost of gas but not gas
-     * + amount then the error will be displayed on the amount field.
-     *
-     * @param {SendStateDraft} state - A writable draft of the send state to be
-     *  updated.
-     * @returns {void}
-     */
-    validateGasField: (state) => {
-      const draftTransaction =
-        state.draftTransactions[state.currentTransactionUUID];
-
-      if (!draftTransaction) {
-        return;
-      }
-
-      const insufficientFunds = !isBalanceSufficient({
-        amount:
-          draftTransaction.sendAsset.type === AssetType.native
-            ? draftTransaction.amount.value
-            : '0x0',
-        balance:
-          draftTransaction.fromAccount?.balance ??
-          state.selectedAccount.balance,
-        gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
-      });
-
-      draftTransaction.gas.error = insufficientFunds
-        ? INSUFFICIENT_FUNDS_ERROR
-        : null;
     },
     validateRecipientUserInput: (state, action) => {
       const draftTransaction =
@@ -1688,21 +1633,12 @@ const slice = createSlice({
         const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
         const getIsIgnorableAmountError = () =>
-          [
-            INSUFFICIENT_TOKENS_ERROR,
-            INSUFFICIENT_FUNDS_ERROR,
-            INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
-          ].includes(draftTransaction.amount.error) &&
-          !draftTransaction.sendAsset.balance;
+          [INSUFFICIENT_TOKENS_ERROR, INSUFFICIENT_FUNDS_ERROR].includes(
+            draftTransaction.amount.error,
+          ) && !draftTransaction.sendAsset.balance;
 
-        const { quotes, gas } = draftTransaction;
+        const { quotes } = draftTransaction;
         const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
-
-        const derivedGasPrice =
-          hexToDecimal(gas?.gasTotal || '0x0') > 0 &&
-          hexToDecimal(gas?.gasLimit || '0x0') > 0
-            ? new Numeric(gas.gasTotal, 16).divide(gas.gasLimit, 16).toString()
-            : undefined;
 
         switch (true) {
           case Boolean(
@@ -1835,27 +1771,6 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
-          case bestQuote &&
-            !isBalanceSufficient({
-              amount:
-                draftTransaction.sendAsset.type === AssetType.native
-                  ? draftTransaction.amount.value
-                  : undefined,
-              balance: state.selectedAccount.balance,
-              gasTotal: calcGasTotal(
-                new Numeric(
-                  bestQuote?.gasParams?.maxGas || 0,
-                  10,
-                ).toPrefixedHexString(),
-                derivedGasPrice ?? '0x0',
-              ),
-            }): {
-            if (!draftTransaction.amount.error) {
-              draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
-            }
-            draftTransaction.status = SEND_STATUSES.INVALID;
-            break;
-          }
           case isSwapAndSend && !bestQuote:
             slice.caseReducers.addHistoryEntry(state, {
               payload: `No swap and send quote available`,
@@ -1896,7 +1811,6 @@ const slice = createSlice({
                 action.payload.account.balance;
             }
             slice.caseReducers.validateAmountField(state);
-            slice.caseReducers.validateGasField(state);
             slice.caseReducers.validateSendState(state);
           }
         }
@@ -2011,7 +1925,6 @@ const slice = createSlice({
           slice.caseReducers.updateAmountToMax(state);
         }
         slice.caseReducers.validateAmountField(state);
-        slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
       })
       .addCase(initializeSendState.rejected, (state) => {
@@ -2111,7 +2024,6 @@ const slice = createSlice({
             }
 
             slice.caseReducers.validateAmountField(state);
-            slice.caseReducers.validateGasField(state);
             slice.caseReducers.validateSendState(state);
           }
         }

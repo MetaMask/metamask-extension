@@ -18,7 +18,6 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   UnifiedSwapBridgeEventName,
-  BRIDGE_DEFAULT_SLIPPAGE,
   GenericQuoteRequest,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
@@ -30,7 +29,6 @@ import {
   setToToken,
   updateQuoteRequestParams,
   resetBridgeState,
-  setSlippage,
   trackUnifiedSwapBridgeEvent,
   setFromChain,
 } from '../../../ducks/bridge/actions';
@@ -49,7 +47,6 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getIsToOrFromSolana,
-  getIsSolanaSwap,
   getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
@@ -133,6 +130,7 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
+import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -179,7 +177,11 @@ export const useEnableMissingNetwork = () => {
   return enableMissingNetwork;
 };
 
-const PrepareBridgePage = () => {
+const PrepareBridgePage = ({
+  onOpenSettings,
+}: {
+  onOpenSettings?: () => void;
+}) => {
   const dispatch = useDispatch();
   const enableMissingNetwork = useEnableMissingNetwork();
 
@@ -385,7 +387,6 @@ const PrepareBridgePage = () => {
   ]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
-  const isSolanaSwap = useSelector(getIsSolanaSwap);
 
   const isDestinationSolana = useMemo(() => {
     if (!toChain?.chainId) {
@@ -510,16 +511,14 @@ const PrepareBridgePage = () => {
     [],
   );
 
-  // Set slippage based on swap type
-  const slippageInitializedRef = useRef(false);
-  useEffect(() => {
-    if (isSwap && fromChain && toChain && !slippageInitializedRef.current) {
-      slippageInitializedRef.current = true;
-      // For Solana swaps, use undefined (AUTO), otherwise use default 0.5%
-      const targetSlippage = isSolanaSwap ? undefined : BRIDGE_DEFAULT_SLIPPAGE;
-      dispatch(setSlippage(targetSlippage));
-    }
-  }, [isSwap, isSolanaSwap, fromChain, toChain, dispatch]);
+  // Use smart slippage defaults
+  useSmartSlippage({
+    fromChain,
+    toChain,
+    fromToken,
+    toToken,
+    isSwap,
+  });
 
   // Trace swap/bridge view loaded
   useEffect(() => {
@@ -584,7 +583,7 @@ const PrepareBridgePage = () => {
 
   return (
     <>
-      <Column className="prepare-bridge-page" gap={8}>
+      <Column className="prepare-bridge-page" gap={isToOrFromSolana ? 2 : 8}>
         <BridgeInputGroup
           header={getFromInputHeader()}
           token={fromToken}
@@ -664,7 +663,7 @@ const PrepareBridgePage = () => {
 
         <Column
           height={BlockSize.Full}
-          paddingTop={8}
+          paddingTop={isToOrFromSolana ? 4 : 8}
           backgroundColor={BackgroundColor.backgroundAlternativeSoft}
           style={{
             position: 'relative',
@@ -911,9 +910,11 @@ const PrepareBridgePage = () => {
               {!wasTxDeclined &&
                 activeQuote &&
                 (isSolanaBridgeEnabled ? (
-                  <MultichainBridgeQuoteCard />
+                  <MultichainBridgeQuoteCard
+                    onOpenSlippageModal={onOpenSettings}
+                  />
                 ) : (
-                  <BridgeQuoteCard />
+                  <BridgeQuoteCard onOpenSlippageModal={onOpenSettings} />
                 ))}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
