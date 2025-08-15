@@ -17,7 +17,7 @@ class SendTokenConfirmPage {
     this.driver = driver;
   }
 
-  async check_nftTransfer(options: {
+  async checkNftTransfer(options: {
     sender: string;
     recipient: string;
     nftName: string;
@@ -46,7 +46,7 @@ class SendTokenConfirmPage {
     console.log('NFT transfer details are displayed correctly');
   }
 
-  async check_tokenTransfer(options: {
+  async checkTokenTransfer(options: {
     sender: string;
     recipient: string;
     amount: string;
@@ -83,7 +83,7 @@ class SendTokenConfirmPage {
     console.log('Token transfer details are correct');
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     console.log('Checking if Send Token Confirmation page is loaded');
     await this.driver.waitForSelector(this.recipientAddress, {
       timeout: 10000,

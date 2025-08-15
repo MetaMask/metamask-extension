@@ -37,7 +37,7 @@ export class TestDappSolana {
     await this.driver.openNewPage(url);
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.solanaChainDisplay);
     } catch (e) {
@@ -55,7 +55,7 @@ export class TestDappSolana {
    */
   async switchTo() {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-    await this.check_pageIsLoaded();
+    await this.checkPageIsLoaded();
   }
 
   async clickUpdateEndpointButton() {

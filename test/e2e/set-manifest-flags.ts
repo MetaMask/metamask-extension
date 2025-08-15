@@ -11,6 +11,8 @@ export const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
 type ManifestType = {
   _flags?: ManifestFlags;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   manifest_version: string;
   /**
    * The public key assigned to the extension's manifest to get consistent id. (For OAuth2 WAF redirect)
@@ -23,18 +25,16 @@ function parseIntOrUndefined(value: string | undefined): number | undefined {
   return value ? parseInt(value, 10) : undefined;
 }
 
-// Alter the manifest with CircleCI environment variables and custom flags
+// Alter the manifest with CI environment variables and custom flags
 export async function setManifestFlags(flags: ManifestFlags = {}) {
-  if (process.env.CIRCLECI) {
-    flags.circleci = {
+  if (process.env.CI) {
+    flags.ci = {
       enabled: true,
-      branch: process.env.CIRCLE_BRANCH,
-      buildNum: parseIntOrUndefined(process.env.CIRCLE_BUILD_NUM),
-      job: process.env.CIRCLE_JOB,
-      nodeIndex: parseIntOrUndefined(process.env.CIRCLE_NODE_INDEX),
-      prNumber: parseIntOrUndefined(
-        process.env.CIRCLE_PULL_REQUEST?.split('/').pop(), // The CIRCLE_PR_NUMBER variable is only available on forked Pull Requests
-      ),
+      branch: process.env.BRANCH,
+      commitHash: process.env.HEAD_COMMIT_HASH,
+      job: process.env.JOB_NAME,
+      matrixIndex: parseIntOrUndefined(process.env.MATRIX_INDEX),
+      prNumber: parseIntOrUndefined(process.env.PR_NUMBER),
     };
 
     const additionalManifestFlags = await fetchManifestFlagsFromPRAndGit();
@@ -60,7 +60,10 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
     delete manifest.key;
   }
 
-  fs.writeFileSync(`${folder}/manifest.json`, JSON.stringify(manifest));
+  fs.writeFileSync(
+    `${folder}/manifest.json`,
+    JSON.stringify(manifest, null, 2),
+  );
 }
 
 export function getManifestVersion(): number {

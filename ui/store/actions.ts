@@ -6,7 +6,6 @@
 import { ReactFragment } from 'react';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
@@ -36,6 +35,8 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  TransactionContainerType,
+  TransactionController,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -46,15 +47,21 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
-import { KeyringTypes } from '@metamask/keyring-controller';
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import {
+  USER_STORAGE_FEATURE_NAMES,
+  UserProfileLineage,
+} from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { AccountGroupId } from '@metamask/account-api';
+import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -78,6 +85,7 @@ import {
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
+  getIsSocialLoginFlow,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -131,7 +139,13 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
-import { EndTraceRequest, trace, TraceName } from '../../shared/lib/trace';
+import {
+  EndTraceRequest,
+  trace,
+  TraceName,
+  TraceOperation,
+  TraceRequest,
+} from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import {
@@ -166,6 +180,223 @@ export function goHome() {
 }
 // async actions
 
+/**
+ * Starts the OAuth2 login process for the given Social Login type
+ * and authenticate the user with the Seedless Onboarding Services.
+ *
+ * @param authConnection - The authentication connection to use (google | apple).
+ * @param bufferedTrace - The buffered trace function from MetaMetrics context.
+ * @param bufferedEndTrace - The buffered end trace function from MetaMetrics context.
+ * @returns The social login result.
+ */
+export function startOAuthLogin(
+  authConnection: AuthConnection,
+  bufferedTrace?: (request: TraceRequest) => void,
+  bufferedEndTrace?: (request: EndTraceRequest) => void,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      const oauth2LoginResult = await submitRequestToBackground(
+        'startOAuthLogin',
+        [authConnection],
+      );
+
+      let seedlessAuthSuccess = false;
+      let isNewUser = false;
+      try {
+        bufferedTrace?.({
+          name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+          op: TraceOperation.OnboardingSecurityOp,
+        });
+        ({ isNewUser } = await submitRequestToBackground('authenticate', [
+          oauth2LoginResult,
+        ]));
+        seedlessAuthSuccess = true;
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Unknown error';
+
+        bufferedTrace?.({
+          name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
+          op: TraceOperation.OnboardingError,
+          tags: { errorMessage },
+        });
+        bufferedEndTrace?.({
+          name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
+        });
+
+        throw error;
+      } finally {
+        bufferedEndTrace?.({
+          name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+          data: { success: seedlessAuthSuccess },
+        });
+      }
+
+      return isNewUser;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        throw new Error(getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Resets the social login state.
+ *
+ * This function is used to reset the social login state when the user
+ * wants to login with a different method after the successful social login.
+ */
+export function resetOAuthLoginState() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground('resetOAuthLoginState');
+
+      dispatch({
+        type: actionConstants.RESET_SOCIAL_LOGIN_ONBOARDING,
+      });
+    } catch (error) {
+      dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        throw new Error(getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Creates a new vault and backups/syncs the seed phrase with social login.
+ *
+ * @param password - The password.
+ * @returns The seed phrase.
+ */
+export function createNewVaultAndSyncWithSocial(
+  password: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      const primaryKeyring = await createNewVault(password);
+      if (!primaryKeyring) {
+        throw new Error('No keyring found');
+      }
+
+      const seedPhrase = await getSeedPhrase(password);
+      await createSeedPhraseBackup(
+        password,
+        seedPhrase,
+        primaryKeyring.metadata.id,
+      );
+      dispatch(hideWarning());
+      return seedPhrase;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        throw new Error(getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    }
+  };
+}
+
+/**
+ * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
+ *
+ * @param password - The password.
+ * @returns The seed phrase.
+ */
+export function restoreSocialBackupAndGetSeedPhrase(
+  password: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      // restore the vault using the seed phrase
+      const mnemonic = await submitRequestToBackground(
+        'restoreSocialBackupAndGetSeedPhrase',
+        [password],
+      );
+
+      dispatch(hideWarning());
+      await forceUpdateMetamaskState(dispatch);
+      return mnemonic;
+    } catch (error) {
+      log.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    }
+  };
+}
+
+export function syncSeedPhrases(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('syncSeedPhrases');
+      dispatch(hideWarning());
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('[syncSeedPhrases] error', error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    }
+  };
+}
+
+/**
+ * Changes the password of the currently unlocked account.
+ *
+ * This function changes the password of the currently unlocked account (Keyring Vault) and
+ * also change the wallet password of the social login account.
+ *
+ * This changes affects the multiple devices sync, i.e. users will have to unlock the account
+ * using new password on any other devices where the account is unlocked.
+ *
+ * @param newPassword - The new password.
+ * @param oldPassword - The old password.
+ */
+export function changePassword(
+  newPassword: string,
+  oldPassword: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('changePassword', [
+        newPassword,
+        oldPassword,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+export function storeKeyringEncryptionKey(
+  encryptionKey: string,
+): Promise<void> {
+  return submitRequestToBackground('storeKeyringEncryptionKey', [
+    encryptionKey,
+  ]);
+}
+
 export function tryUnlockMetamask(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -174,17 +405,25 @@ export function tryUnlockMetamask(
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     dispatch(unlockInProgress());
-    log.debug(`background.submitPassword`);
+    log.debug(`background.syncPasswordAndUnlockWallet`);
 
     return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('submitPassword', [password], (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+      callBackgroundMethod(
+        'syncPasswordAndUnlockWallet',
+        [password],
+        (error, isPasswordSynced) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          // if password is not synced show connections removal warning to user.
+          if (!isPasswordSynced) {
+            dispatch(setShowConnectionsRemovedModal(true));
+          }
 
-        resolve();
-      });
+          resolve();
+        },
+      );
     })
       .then(() => {
         dispatch(unlockSucceeded());
@@ -192,12 +431,34 @@ export function tryUnlockMetamask(
       })
       .then(() => {
         dispatch(hideLoadingIndication());
+        dispatch(hideWarning());
       })
       .catch((err) => {
         dispatch(unlockFailed(getErrorMessage(err)));
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
+  };
+}
+
+export function checkIsSeedlessPasswordOutdated(
+  skipCache = true,
+): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    let isPasswordOutdated = false;
+    try {
+      isPasswordOutdated = await submitRequestToBackground<boolean>(
+        'checkIsSeedlessPasswordOutdated',
+        [skipCache],
+      );
+      if (isPasswordOutdated) {
+        await forceUpdateMetamaskState(dispatch);
+      }
+    } catch (error) {
+      log.warn('checkIsSeedlessPasswordOutdated error', error);
+    }
+
+    return isPasswordOutdated;
   };
 }
 
@@ -251,27 +512,40 @@ export function createNewVaultAndRestore(
   };
 }
 
-export function importMnemonicToVault(
-  mnemonic: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return (dispatch: MetaMaskReduxDispatch) => {
+export function importMnemonicToVault(mnemonic: string): ThunkAction<
+  Promise<{
+    newAccountAddress: string;
+    discoveredAccounts: { bitcoin: number; solana: number };
+  }>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.importMnemonicToVault`);
 
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('importMnemonicToVault', [mnemonic], (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve();
-      });
+    return new Promise<{
+      newAccountAddress: string;
+      discoveredAccounts: { bitcoin: number; solana: number };
+    }>((resolve, reject) => {
+      callBackgroundMethod(
+        'importMnemonicToVault',
+        [mnemonic],
+        (err, result) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(result);
+        },
+      );
     })
-      .then(async () => {
+      .then(async (result) => {
         dispatch(hideLoadingIndication());
+        dispatch(hideWarning());
         dispatch(setShowNewSrpAddedToast(true));
+        return result;
       })
       .catch((err) => {
         dispatch(displayWarning(err));
@@ -318,8 +592,6 @@ export function createNewVaultAndGetSeedPhrase(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       await createNewVault(password);
       const seedPhrase = await getSeedPhrase(password);
@@ -331,8 +603,6 @@ export function createNewVaultAndGetSeedPhrase(
       } else {
         throw error;
       }
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -343,8 +613,6 @@ export function unlockAndGetSeedPhrase(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       await submitPassword(password);
       const seedPhrase = await getSeedPhrase(password);
@@ -357,8 +625,6 @@ export function unlockAndGetSeedPhrase(
       } else {
         throw error;
       }
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -376,16 +642,42 @@ export function submitPassword(password: string): Promise<void> {
   });
 }
 
-export function createNewVault(password: string): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    callBackgroundMethod('createNewVaultAndKeychain', [password], (error) => {
-      if (error) {
-        reject(error);
-        return;
-      }
+/**
+ * Creates a seed phrase backup in the metadata store for seedless onboarding flow.
+ *
+ * @param password - The password.
+ * @param seedPhrase - The seed phrase.
+ * @param keyringId - The keyring id of the backup seed phrase.
+ */
+export async function createSeedPhraseBackup(
+  password: string,
+  seedPhrase: string,
+  keyringId: string,
+): Promise<void> {
+  const encodedSeedPhrase = Array.from(
+    Buffer.from(seedPhrase, 'utf8').values(),
+  );
+  await submitRequestToBackground('createSeedPhraseBackup', [
+    password,
+    encodedSeedPhrase,
+    keyringId,
+  ]);
+}
 
-      resolve(true);
-    });
+export function createNewVault(password: string): Promise<KeyringObject> {
+  return new Promise((resolve, reject) => {
+    callBackgroundMethod(
+      'createNewVaultAndKeychain',
+      [password],
+      (error, keyring) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        resolve(keyring);
+      },
+    );
   });
 }
 
@@ -402,7 +694,7 @@ export function verifyPassword(password: string): Promise<boolean> {
   });
 }
 
-export async function getSeedPhrase(password: string, keyringId: string) {
+export async function getSeedPhrase(password: string, keyringId?: string) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
     'getSeedPhrase',
     [password, keyringId],
@@ -538,6 +830,7 @@ export function importNewAccount(
 
 export function addNewAccount(
   keyringId?: string,
+  showLoading: boolean = true,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
@@ -553,12 +846,14 @@ export function addNewAccount(
     }
     // Fail-safe in case we could not find the associated HD keyring.
     if (!hdKeyring) {
-      console.error('Should never reach this. There is always a keyring');
+      log.error('Should never reach this. There is always a keyring');
       throw new Error('Keyring not found');
     }
     const oldAccounts = hdKeyring.accounts;
 
-    dispatch(showLoadingIndication());
+    if (showLoading) {
+      dispatch(showLoadingIndication());
+    }
 
     let newAccount;
     try {
@@ -573,7 +868,9 @@ export function addNewAccount(
       dispatch(displayWarning(error));
       throw error;
     } finally {
-      dispatch(hideLoadingIndication());
+      if (showLoading) {
+        dispatch(hideLoadingIndication());
+      }
     }
 
     return newAccount;
@@ -918,8 +1215,7 @@ export function updatePreviousGasParams(
 }
 
 export function updateEditableParams(
-  txId: string,
-  editableParams: Partial<TransactionParams>,
+  ...args: Parameters<TransactionController['updateEditableParams']>
 ): ThunkAction<
   Promise<TransactionMeta>,
   MetaMaskReduxState,
@@ -928,15 +1224,17 @@ export function updateEditableParams(
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     let updatedTransaction: TransactionMeta;
+
     try {
       updatedTransaction = await submitRequestToBackground(
         'updateEditableParams',
-        [txId, editableParams],
+        args,
       );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
     }
+
     await forceUpdateMetamaskState(dispatch);
     return updatedTransaction;
   };
@@ -1035,9 +1333,30 @@ export function removeSlide(
   };
 }
 
-export function setSmartAccountOptInForAccounts(accounts: Hex[]): void {
+export async function setEnableEnforcedSimulationsForTransaction(
+  transactionId: string,
+  enable: boolean,
+): void {
   try {
-    submitRequestToBackground('setSmartAccountOptInForAccounts', [accounts]);
+    await submitRequestToBackground(
+      'setEnableEnforcedSimulationsForTransaction',
+      [transactionId, enable],
+    );
+  } catch (error) {
+    logErrorWithMessage(error);
+    throw error;
+  }
+}
+
+export async function setEnforcedSimulationsSlippageForTransaction(
+  transactionId: string,
+  value: number,
+): void {
+  try {
+    await submitRequestToBackground(
+      'setEnforcedSimulationsSlippageForTransaction',
+      [transactionId, value],
+    );
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
@@ -1721,6 +2040,15 @@ export function unlockSucceeded(message?: string) {
   };
 }
 
+export function setShowConnectionsRemovedModal(
+  showConnectionsRemovedModal: boolean,
+) {
+  return {
+    type: actionConstants.SET_SHOW_CONNECTIONS_REMOVED,
+    value: showConnectionsRemovedModal,
+  };
+}
+
 export function updateMetamaskState(
   patches: Patch[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1873,6 +2201,32 @@ export function lockMetamask(): ThunkAction<
 async function _setSelectedInternalAccount(accountId: string): Promise<void> {
   log.debug(`background.setSelectedInternalAccount`);
   await submitRequestToBackground('setSelectedInternalAccount', [accountId]);
+}
+
+/**
+ * Update the selected multichain account.
+ *
+ * @param accountGroupId - ID of an account group representing the multichain account.
+ */
+export function setSelectedMultichainAccount(
+  accountGroupId: AccountGroupId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch, _getState) => {
+    log.debug(`background.setSelectedMultichainAccount`);
+    try {
+      dispatch(showLoadingIndication());
+      await submitRequestToBackground('setSelectedMultichainAccount', [
+        accountGroupId,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
 }
 
 /**
@@ -2157,6 +2511,12 @@ export function showConfTxPage({ id }: Partial<TransactionMeta> = {}) {
   };
 }
 
+export function setShowSupportDataConsentModal(show: boolean) {
+  return {
+    type: actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL,
+    payload: show,
+  };
+}
 export function addToken(
   {
     address,
@@ -2487,6 +2847,8 @@ export async function getNFTContractInfo(
 // When we upgrade to TypeScript 4.5 this is part of the language. It will get
 // the underlying type of a Promise generic type. So Awaited<Promise<void>> is
 // void.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
 
 export async function getTokenStandardAndDetails(
@@ -2538,11 +2900,9 @@ export function clearPendingTokens(): Action {
  * for the purpose of displaying the user a toast about the network change
  *
  * @param networkClientIdForThisDomain - Thet network client ID last used by the origin
- * @param selectedTabOrigin - Origin of the current tab
  */
 export function automaticallySwitchNetwork(
   networkClientIdForThisDomain: string,
-  selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -2550,50 +2910,6 @@ export function automaticallySwitchNetwork(
     await dispatch(
       setActiveNetworkConfigurationId(networkClientIdForThisDomain),
     );
-    await dispatch(
-      setSwitchedNetworkDetails({
-        networkClientId: networkClientIdForThisDomain,
-        origin: selectedTabOrigin,
-      }),
-    );
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-/**
- * Action to store details about the switched-to network in the background state
- *
- * @param switchedNetworkDetails - Object containing networkClientId and origin
- * @param switchedNetworkDetails.networkClientId
- * @param switchedNetworkDetails.selectedTabOrigin
- */
-export function setSwitchedNetworkDetails(switchedNetworkDetails: {
-  networkClientId: string;
-  selectedTabOrigin?: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setSwitchedNetworkDetails', [
-      switchedNetworkDetails,
-    ]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-/**
- * Action to clear details about the switched-to network in the background state
- */
-export function clearSwitchedNetworkDetails(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('clearSwitchedNetworkDetails', []);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2734,6 +3050,23 @@ export function createSpeedUpTransaction(
     })
       .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => newTx);
+  };
+}
+
+export function updateIncomingTransactions(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch) => {
+    log.debug(`background.updateIncomingTransactions`);
+    try {
+      await submitRequestToBackground('updateIncomingTransactions');
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem updating incoming transactions!'));
+    }
   };
 }
 
@@ -3233,6 +3566,8 @@ export function displayWarning(payload: unknown): PayloadAction<string> {
   }
   return {
     type: actionConstants.DISPLAY_WARNING,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     payload: `${payload}`,
   };
 }
@@ -3495,7 +3830,11 @@ export function setDismissSmartAccountSuggestionEnabled(
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         dismiss_smt_acc_suggestion_enabled: value,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         prev_dismiss_smt_acc_suggestion_enabled:
           prevDismissSmartAccountSuggestionEnabled,
       },
@@ -3518,7 +3857,11 @@ export function setSmartAccountOptIn(
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         use_smart_account: value,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         prev_use_smart_account: prevUseSmartAccount,
       },
     });
@@ -3547,7 +3890,11 @@ export function setSmartTransactionsPreferenceEnabled(
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         stx_opt_in: value,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         prev_stx_opt_in: smartTransactionsOptInStatus,
       },
     });
@@ -3601,10 +3948,17 @@ export function resetOnboarding(): ThunkAction<
 > {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     try {
-      await dispatch(setSeedPhraseBackedUp(false));
+      const isSocialLoginFlow = getIsSocialLoginFlow(getState());
       dispatch(resetOnboardingAction());
+
+      if (isSocialLoginFlow) {
+        await dispatch(resetOAuthLoginState());
+      }
     } catch (err) {
       console.error(err);
     }
@@ -3643,9 +3997,8 @@ export async function forceUpdateMetamaskState(
   let pendingPatches: Patch[] | undefined;
 
   try {
-    pendingPatches = await submitRequestToBackground<Patch[]>(
-      'getStatePatches',
-    );
+    pendingPatches =
+      await submitRequestToBackground<Patch[]>('getStatePatches');
   } catch (error) {
     dispatch(displayWarning(error));
     throw error;
@@ -4607,7 +4960,7 @@ export function updateThrottledOriginState(
 }
 
 export function setFirstTimeFlowType(
-  type: FirstTimeFlowType,
+  type: FirstTimeFlowType | null,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -5906,11 +6259,24 @@ export async function updateDataDeletionTaskStatus() {
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not use
  * this for handling errors.
  */
 export async function throwTestBackgroundError(message: string): Promise<void> {
   await submitRequestToBackground('throwTestError', [message]);
+}
+
+/**
+ * Capture an error in the background for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not use
+ * this for handling errors.
+ */
+export async function captureTestBackgroundError(
+  message: string,
+): Promise<void> {
+  await submitRequestToBackground('captureTestError', [message]);
 }
 
 /**
@@ -6066,6 +6432,25 @@ export function setIsBackupAndSyncFeatureEnabled(
       throw error;
     }
   };
+}
+
+/**
+ * Fetches the user profile lineage from the authentication API.
+ *
+ * @returns A thunk action that, when dispatched, attempts to fetch the user profile lineage.
+ */
+export async function getUserProfileLineage(): Promise<
+  UserProfileLineage | undefined
+> {
+  try {
+    const userProfileLineage = await submitRequestToBackground(
+      'getUserProfileLineage',
+    );
+    return userProfileLineage;
+  } catch (error) {
+    logErrorWithMessage(error);
+    return undefined;
+  }
 }
 
 /**
@@ -6669,6 +7054,12 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
   ]);
 }
 
+export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
+  return await submitRequestToBackground<boolean>('isSendBundleSupported', [
+    chainId,
+  ]);
+}
+
 /**
  * Sets the preference for skipping the interstitial page when opening a deep link.
  *
@@ -6689,4 +7080,25 @@ export function setSkipDeepLinkInterstitial(value: boolean) {
  */
 export async function requestSafeReload() {
   return await submitRequestToBackground('requestSafeReload');
+}
+
+/**
+ * Opens the "Updating" page in a new tab and then triggers a safe extension reload.
+ *
+ * Used when an update is available to reload the extension.
+ *
+ * If opening the tab fails, the error is logged, and the reload proceeds anyway.
+ */
+export async function openUpdateTabAndReload() {
+  return await submitRequestToBackground('openUpdateTabAndReload');
+}
+
+export async function applyTransactionContainersExisting(
+  transactionId: string,
+  containerTypes: TransactionContainerType[],
+) {
+  return await submitRequestToBackground<void>(
+    'applyTransactionContainersExisting',
+    [transactionId, containerTypes],
+  );
 }

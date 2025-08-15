@@ -6,7 +6,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { pipeline } from 'readable-stream';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import PortStream from 'extension-port-stream';
-import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
+import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 import {
@@ -163,6 +163,8 @@ const onDisconnectDestroyCookieStreams = () => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.warn(`${err} Resetting the cookie streams.`);
     setTimeout(setupCookieHandlerExtStreams, 1000);
   }

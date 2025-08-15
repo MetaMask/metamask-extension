@@ -2,9 +2,10 @@ import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
-import IconButton from '../../../../../components/ui/icon-button/icon-button-round';
 import {
   Box,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonLink,
   ButtonLinkSize,
   Icon,
@@ -19,11 +20,14 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SmartAccountUpdateSuccess() {
   const t = useI18nContext();
   const history = useHistory();
@@ -40,11 +44,12 @@ export function SmartAccountUpdateSuccess() {
       justifyContent={JustifyContent.center}
       height={BlockSize.TenTwelfths}
     >
-      <IconButton
-        Icon={<Icon name={IconName.Close} />}
+      <ButtonIcon
+        iconName={IconName.Close}
         onClick={closeAccountUpdatePage}
-        className="smart-account-update__close"
-        label=""
+        size={ButtonIconSize.Sm}
+        ariaLabel="close"
+        className="smart-account-update__close-btn"
       />
       <Icon
         name={IconName.CheckBold}
@@ -59,7 +64,11 @@ export function SmartAccountUpdateSuccess() {
       >
         {t('smartAccountUpdateSuccessTitle')}
       </Text>
-      <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
+      <Text
+        color={TextColor.textDefault}
+        textAlign={TextAlign.Center}
+        variant={TextVariant.bodyMd}
+      >
         {t('smartAccountUpdateSuccessMessage')}
       </Text>
       <ButtonLink

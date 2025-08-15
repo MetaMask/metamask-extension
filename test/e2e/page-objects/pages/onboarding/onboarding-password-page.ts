@@ -30,7 +30,7 @@ class OnboardingPasswordPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.createPasswordMessage,
@@ -76,7 +76,7 @@ class OnboardingPasswordPage {
     await this.driver.clickElement(this.passwordTerms);
   }
 
-  async check_confirmPasswordButtonIsDisabled(): Promise<void> {
+  async checkConfirmPasswordButtonIsDisabled(): Promise<void> {
     console.log('Check the confirm password button is disabled');
     const confirmPasswordButton = await this.driver.findElement(
       this.createPasswordButton,
@@ -84,7 +84,7 @@ class OnboardingPasswordPage {
     assert.equal(await confirmPasswordButton.isEnabled(), false);
   }
 
-  async check_incorrectPasswordWarningMessageIsDisplayed(): Promise<void> {
+  async checkIncorrectPasswordWarningMessageIsDisplayed(): Promise<void> {
     console.log('Check the incorrect password warning message is displayed');
     await this.driver.waitForSelector(this.incorrectPasswordWarningMessage);
   }

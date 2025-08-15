@@ -58,8 +58,10 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
 const defaultState = {
   metamask: {
     ...mockState.metamask,
-    eip155: {
-      [CHAIN_IDS.GOERLI]: true,
+    enabledNetworkMap: {
+      eip155: {
+        [CHAIN_IDS.GOERLI]: true,
+      },
     },
     transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
     internalAccounts: {

@@ -17,12 +17,12 @@ export const loginWithoutBalanceValidation = async (
   console.log('Navigate to unlock page and try to login with password');
   await driver.navigate();
   const loginPage = new LoginPage(driver);
-  await loginPage.check_pageIsLoaded();
+  await loginPage.checkPageIsLoaded();
   await loginPage.loginToHomepage(password);
 
   // user should land on homepage after successfully logging in with password
   const homePage = new HomePage(driver);
-  await homePage.check_pageIsLoaded();
+  await homePage.checkPageIsLoaded();
 };
 
 /**
@@ -31,19 +31,21 @@ export const loginWithoutBalanceValidation = async (
  * @param driver - The webdriver instance.
  * @param localNode - The local node server instance
  * @param password - The password used to unlock the wallet.
+ * @param value - The balance value to be checked
  */
 export const loginWithBalanceValidation = async (
   driver: Driver,
   localNode?: Ganache | Anvil,
   password?: string,
+  value?: string,
 ) => {
   await loginWithoutBalanceValidation(driver, password);
   const homePage = new HomePage(driver);
 
   // Verify the expected balance on the homepage
   if (localNode) {
-    await homePage.check_localNodeBalanceIsDisplayed(localNode);
+    await homePage.checkLocalNodeBalanceIsDisplayed(localNode);
   } else {
-    await homePage.check_expectedBalanceIsDisplayed();
+    await homePage.checkExpectedBalanceIsDisplayed(value);
   }
 };

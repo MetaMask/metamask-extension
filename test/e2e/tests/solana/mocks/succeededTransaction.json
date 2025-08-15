@@ -26,8 +26,8 @@
     "transaction": {
       "message": {
         "accountKeys": [
-          "HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq",
           "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
+          "HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq",
           "11111111111111111111111111111111"
         ],
         "addressTableLookups": [],

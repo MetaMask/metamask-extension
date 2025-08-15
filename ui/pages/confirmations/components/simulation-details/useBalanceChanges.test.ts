@@ -23,6 +23,7 @@ jest.mock('../../../../ducks/metamask/metamask', () => ({
 
 jest.mock('../../../../selectors', () => ({
   selectConversionRateByChainId: jest.fn(),
+  getUSDConversionRateByChainId: jest.fn(() => () => 4),
 }));
 
 jest.mock('../../../../helpers/utils/util', () => ({
@@ -36,6 +37,7 @@ jest.mock('../../../../store/actions', () => ({
 const mockSelectConversionRateByChainId = jest.mocked(
   selectConversionRateByChainId,
 );
+
 const mockGetTokenStandardAndDetails = getTokenStandardAndDetails as jest.Mock;
 const mockFetchTokenExchangeRates = fetchTokenExchangeRates as jest.Mock;
 
@@ -49,6 +51,8 @@ const ERC20_DECIMALS_2_MOCK = 4;
 const ERC20_DECIMALS_INVALID_MOCK = 'xyz';
 const ERC20_TO_FIAT_RATE_1_MOCK = 1.5;
 const ERC20_TO_FIAT_RATE_2_MOCK = 6;
+const ERC20_TO_USD_RATE_1_MOCK = 3;
+const ERC20_TO_USD_RATE_2_MOCK = 12;
 
 const NFT_TOKEN_ADDRESS_MOCK: Hex = '0x0nft';
 
@@ -87,9 +91,18 @@ describe('useBalanceChanges', () => {
       return Promise.reject(new Error('Unable to determine token standard'));
     });
     mockSelectConversionRateByChainId.mockReturnValue(ETH_TO_FIAT_RATE);
-    mockFetchTokenExchangeRates.mockResolvedValue({
-      [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_TO_FIAT_RATE_1_MOCK,
-      [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_TO_FIAT_RATE_2_MOCK,
+    mockFetchTokenExchangeRates.mockImplementation(async (currency) => {
+      if (currency === 'usd') {
+        return {
+          [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_TO_USD_RATE_1_MOCK,
+          [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_TO_USD_RATE_2_MOCK,
+        };
+      }
+
+      return {
+        [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_TO_FIAT_RATE_1_MOCK,
+        [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_TO_FIAT_RATE_2_MOCK,
+      };
     });
   });
 
@@ -196,6 +209,7 @@ describe('useBalanceChanges', () => {
           },
           amount: new BigNumber('-0.017'),
           fiatAmount: -0.0255,
+          usdAmount: -0.051,
         },
       ]);
       expect(changes[0].amount.toString()).toBe('-0.017');
@@ -253,6 +267,7 @@ describe('useBalanceChanges', () => {
           },
           amount: new BigNumber('-1'),
           fiatAmount: FIAT_UNAVAILABLE,
+          usdAmount: FIAT_UNAVAILABLE,
         },
       ]);
     });
@@ -340,6 +355,7 @@ describe('useBalanceChanges', () => {
           },
           amount: new BigNumber('-5373.003641998677469065'),
           fiatAmount: Number('-16119.010925996032'),
+          usdAmount: Number('-21492.01456799471'),
         },
       ]);
     });

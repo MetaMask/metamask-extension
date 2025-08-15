@@ -65,7 +65,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('0', 'SOL');
+        await homePage.checkGetBalance('0', 'SOL');
       },
     );
   });
@@ -79,7 +79,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('$0.00', 'USD');
+        await homePage.checkGetBalance('$0.00', 'USD');
       },
     );
   });
@@ -88,10 +88,12 @@ describe('Check balance', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: false,
+        mockZeroBalance: false,
+        withCustomMocks: mockPrices,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('$5,643.50', 'USD');
+        await homePage.checkGetBalance('$5,643.50', 'USD');
       },
     );
   });
@@ -103,7 +105,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('50', 'SOL');
+        await homePage.checkGetBalance('50', 'SOL');
       },
     );
   });

@@ -170,7 +170,9 @@ const render = ({
         [CHAIN_IDS.GOERLI]: {},
       },
       enabledNetworkMap: {
-        [chainId]: true,
+        eip155: {
+          [chainId]: true,
+        },
       },
       ...mockNetworkState({ chainId }),
       currencyRates: {},

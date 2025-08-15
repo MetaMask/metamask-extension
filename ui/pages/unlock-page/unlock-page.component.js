@@ -1,6 +1,8 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
+import log from 'loglevel';
 import {
   Text,
   FormTextField,
@@ -26,7 +28,10 @@ import {
   FontWeight,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -34,12 +39,17 @@ import {
 } from '../../../shared/constants/metametrics';
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import { withMetaMetrics } from '../../contexts/metametrics';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
+import FormattedCounter from './formatted-counter';
 
-export default class UnlockPage extends Component {
+class UnlockPage extends Component {
   static contextTypes = {
     trackEvent: PropTypes.func,
+    bufferedTrace: PropTypes.func,
+    bufferedEndTrace: PropTypes.func,
     t: PropTypes.func,
   };
 
@@ -57,6 +67,11 @@ export default class UnlockPage extends Component {
      */
     isUnlocked: PropTypes.bool,
     /**
+     * If isOnboardingCompleted is true, `Use a different login method` button
+     * will be shown instead of `Forgot password?`
+     */
+    isOnboardingCompleted: PropTypes.bool,
+    /**
      * onClick handler for "Forgot password?" link
      */
     onRestore: PropTypes.func,
@@ -65,9 +80,25 @@ export default class UnlockPage extends Component {
      */
     onSubmit: PropTypes.func,
     /**
+     * check password is outdated for social login flow
+     */
+    checkIsSeedlessPasswordOutdated: PropTypes.func,
+    /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
+    /**
+     * isSocialLoginFlow. True if the user is on a social login flow
+     */
+    isSocialLoginFlow: PropTypes.bool,
+    /**
+     * Sentry trace context ref for onboarding journey tracing
+     */
+    onboardingParentContext: PropTypes.object,
+    /**
+     * Reset Onboarding and OAuth login state
+     */
+    loginWithDifferentMethod: PropTypes.func,
   };
 
   state = {
@@ -75,13 +106,15 @@ export default class UnlockPage extends Component {
     error: null,
     showResetPasswordModal: false,
     isLocked: false,
+    isSubmitting: false,
+    unlockDelayPeriod: 0,
   };
-
-  submitting = false;
 
   failed_attempts = 0;
 
   animationEventEmitter = new EventEmitter();
+
+  passwordLoginAttemptTraceCtx = null;
 
   UNSAFE_componentWillMount() {
     const { isUnlocked, history, location } = this.props;
@@ -97,22 +130,61 @@ export default class UnlockPage extends Component {
     }
   }
 
+  async componentDidMount() {
+    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
+      name: TraceName.OnboardingPasswordLoginAttempt,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: this.props.onboardingParentContext?.current,
+    });
+
+    try {
+      await this.props.checkIsSeedlessPasswordOutdated();
+    } catch (error) {
+      log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+    }
+  }
+
   handleSubmit = async (event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    const { password } = this.state;
-    const { onSubmit, forceUpdateMetamaskState } = this.props;
+    const { password, isSubmitting } = this.state;
+    const { onSubmit } = this.props;
 
-    if (password === '' || this.submitting) {
+    if (password === '' || isSubmitting) {
       return;
     }
 
-    this.setState({ error: null });
-    this.submitting = true;
+    this.setState({ error: null, isSubmitting: true });
+
+    // Track wallet rehydration attempted for social login users
+    if (this.props.isSocialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.RehydrationPasswordAttempted,
+        properties: {
+          account_type: 'social',
+          biometrics: false,
+        },
+      });
+    }
 
     try {
       await onSubmit(password);
+
+      // Track wallet rehydration completed for social login users
+      if (this.props.isSocialLoginFlow) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.RehydrationCompleted,
+          properties: {
+            account_type: 'social',
+            biometrics: false,
+            failed_attempts: this.failed_attempts,
+          },
+        });
+      }
+
       this.context.trackEvent(
         {
           category: MetaMetricsEventCategory.Navigation,
@@ -125,25 +197,100 @@ export default class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-    } catch (error) {
-      this.failed_attempts += 1;
-      const errorMessage = error instanceof Error ? error.message : error;
-
-      if (errorMessage === 'Incorrect password') {
-        await forceUpdateMetamaskState();
-        this.context.trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.AppUnlockedFailed,
-          properties: {
-            reason: 'incorrect_password',
-            failed_attempts: this.failed_attempts,
-          },
+      if (this.passwordLoginAttemptTraceCtx) {
+        this.context.bufferedEndTrace?.({
+          name: TraceName.OnboardingPasswordLoginAttempt,
         });
+        this.passwordLoginAttemptTraceCtx = null;
       }
-
-      this.setState({ error: errorMessage });
-      this.submitting = false;
+      this.context.bufferedEndTrace?.({
+        name: TraceName.OnboardingExistingSocialLogin,
+      });
+      this.context.bufferedEndTrace?.({
+        name: TraceName.OnboardingJourneyOverall,
+      });
+    } catch (error) {
+      await this.handleLoginError(error);
+    } finally {
+      this.setState({ isSubmitting: false });
     }
+  };
+
+  handleLoginError = async (error) => {
+    const { t } = this.context;
+    const { message, data } = error;
+
+    // Sync failed_attempts with numberOfAttempts from error data
+    if (data?.numberOfAttempts !== undefined) {
+      this.failed_attempts = data.numberOfAttempts;
+    }
+
+    let finalErrorMessage = message;
+    let finalUnlockDelayPeriod = 0;
+    let errorReason;
+
+    // Track wallet rehydration failed for social login users
+    if (this.props.isSocialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.RehydrationPasswordFailed,
+        properties: {
+          account_type: 'social',
+          failed_attempts: this.failed_attempts,
+        },
+      });
+    }
+
+    // Check if we are in the onboarding flow
+    if (this.props.onboardingParentContext?.current) {
+      this.context.bufferedTrace?.({
+        name: TraceName.OnboardingPasswordLoginError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage: message },
+        parentContext: this.props.onboardingParentContext.current,
+      });
+      this.context.bufferedEndTrace?.({
+        name: TraceName.OnboardingPasswordLoginError,
+      });
+    }
+
+    switch (message) {
+      case 'Incorrect password':
+      case SeedlessOnboardingControllerErrorMessage.IncorrectPassword:
+        finalErrorMessage = t('unlockPageIncorrectPassword');
+        errorReason = 'incorrect_password';
+        break;
+      case SeedlessOnboardingControllerErrorMessage.TooManyLoginAttempts:
+        this.setState({ isLocked: true });
+
+        finalErrorMessage = t('unlockPageTooManyFailedAttempts');
+        errorReason = 'too_many_login_attempts';
+        finalUnlockDelayPeriod = data.remainingTime;
+        break;
+      case SeedlessOnboardingControllerErrorMessage.OutdatedPassword:
+        finalErrorMessage = t('passwordChangedRecently');
+        errorReason = 'outdated_password';
+        break;
+      default:
+        finalErrorMessage = message;
+        break;
+    }
+
+    if (errorReason) {
+      await this.props.forceUpdateMetamaskState();
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.AppUnlockedFailed,
+        properties: {
+          reason: errorReason,
+          failed_attempts: this.failed_attempts,
+        },
+      });
+    }
+    this.setState({
+      error: finalErrorMessage,
+      unlockDelayPeriod: finalUnlockDelayPeriod,
+    });
   };
 
   handleInputChange(event) {
@@ -180,7 +327,7 @@ export default class UnlockPage extends Component {
   };
 
   renderHelpText = () => {
-    const { error } = this.state;
+    const { error, unlockDelayPeriod } = this.state;
 
     if (!error) {
       return null;
@@ -200,26 +347,63 @@ export default class UnlockPage extends Component {
             color={TextColor.errorDefault}
           >
             {error}
+            {unlockDelayPeriod > 0 && (
+              <FormattedCounter
+                startFrom={unlockDelayPeriod}
+                onCountdownEnd={() =>
+                  this.setState({
+                    isLocked: false,
+                    error: null,
+                    unlockDelayPeriod: 0,
+                  })
+                }
+              />
+            )}
           </Text>
         )}
       </Box>
     );
   };
 
-  onForgotPassword = () => {
+  onForgotPasswordOrLoginWithDiffMethods = async () => {
+    const { isSocialLoginFlow, history, isOnboardingCompleted } = this.props;
+
+    // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
+    // we can redirect to `onboarding_welcome` route to select a different login method
+    if (!isOnboardingCompleted && isSocialLoginFlow) {
+      await this.props.loginWithDifferentMethod();
+      await this.props.forceUpdateMetamaskState();
+      history.replace(ONBOARDING_WELCOME_ROUTE);
+      return;
+    }
+
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ForgotPasswordClicked,
+      properties: {
+        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      },
+    });
+
     this.setState({ showResetPasswordModal: true });
   };
 
   onRestoreWallet = () => {
+    const { isSocialLoginFlow } = this.props;
+
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.ResetWallet,
+      properties: {
+        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      },
     });
     this.props.onRestore();
   };
 
   render() {
     const { password, error, isLocked, showResetPasswordModal } = this.state;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
@@ -290,11 +474,18 @@ export default class UnlockPage extends Component {
             </Text>
             <FormTextField
               id="password"
-              placeholder={t('enterYourPassword')}
+              placeholder={
+                this.props.isSocialLoginFlow
+                  ? t('enterYourPasswordSocialLoginFlow')
+                  : t('enterYourPassword')
+              }
               size={FormTextFieldSize.Lg}
               inputProps={{
                 'data-testid': 'unlock-password',
                 'aria-label': t('password'),
+              }}
+              textFieldProps={{
+                disabled: isLocked,
               }}
               onChange={(event) => this.handleInputChange(event)}
               type={TextFieldType.Password}
@@ -303,7 +494,6 @@ export default class UnlockPage extends Component {
               helpText={this.renderHelpText()}
               autoComplete
               autoFocus
-              disabled={isLocked}
               width={BlockSize.Full}
               marginBottom={4}
             />
@@ -323,10 +513,13 @@ export default class UnlockPage extends Component {
               variant={ButtonVariant.Link}
               data-testid="unlock-forgot-password-button"
               key="import-account"
-              onClick={() => this.onForgotPassword()}
+              type="button"
+              onClick={this.onForgotPasswordOrLoginWithDiffMethods}
               marginBottom={6}
             >
-              {t('forgotPassword')}
+              {isSocialLoginFlow && !isOnboardingCompleted
+                ? t('useDifferentLoginMethod')
+                : t('forgotPassword')}
             </Button>
 
             <Text>
@@ -334,6 +527,7 @@ export default class UnlockPage extends Component {
                 <Button
                   variant={ButtonVariant.Link}
                   href={SUPPORT_LINK}
+                  type="button"
                   target="_blank"
                   rel="noopener noreferrer"
                   key="need-help-link"
@@ -364,3 +558,5 @@ export default class UnlockPage extends Component {
     );
   }
 }
+
+export default withMetaMetrics(UnlockPage);

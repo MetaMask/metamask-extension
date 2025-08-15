@@ -19,6 +19,7 @@ import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametric
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -104,6 +105,7 @@ describe('Actions', () => {
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
+    background.changePassword = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {
@@ -127,15 +129,170 @@ describe('Actions', () => {
     sinon.restore();
   });
 
+  describe('createAndBackupSeedPhrase', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should create KeyChain, vault and Backup in the background', async () => {
+      const store = mockStore();
+      const mockKeyrings = [{ metadata: { id: 'mock-keyring-id' } }];
+      const mockSeedPhrase = 'mock seed phrase';
+      const mockEncodedSeedPhrase = Array.from(
+        Buffer.from(mockSeedPhrase).values(),
+      );
+
+      const createSeedPhraseBackupStub =
+        background.createSeedPhraseBackup.resolves();
+      const createNewVaultAndKeychainStub =
+        background.createNewVaultAndKeychain.resolves(mockKeyrings[0]);
+      const getSeedPhraseStub = background.getSeedPhrase.resolves(
+        mockEncodedSeedPhrase,
+      );
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
+
+      expect(getSeedPhraseStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndKeychainStub.callCount).toStrictEqual(1);
+      expect(
+        createSeedPhraseBackupStub.calledOnceWith(
+          'password',
+          mockEncodedSeedPhrase,
+          mockKeyrings[0].metadata.id,
+        ),
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('#restoreAndGetSeedPhrase', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('fetches all seed phrases from the metadata store, restores the vault and updates the SocialbackupMetadata state', async () => {
+      const store = mockStore();
+
+      const restoreSocialBackupAndGetSeedPhraseStub =
+        background.restoreSocialBackupAndGetSeedPhrase.resolves();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.restoreSocialBackupAndGetSeedPhrase('password'),
+      );
+
+      expect(restoreSocialBackupAndGetSeedPhraseStub.callCount).toStrictEqual(
+        1,
+      );
+    });
+
+    it('errors when fetchAndRestoreSeedPhrase throws', async () => {
+      const store = mockStore();
+
+      background.restoreSocialBackupAndGetSeedPhrase.rejects(
+        new Error('error'),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];
+
+      await expect(
+        store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
+      ).rejects.toThrow('error');
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#changePassword', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should change the password for both seedless onboarding and keyring controller', async () => {
+      const store = mockStore({
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const oldPassword = 'old-password';
+      const newPassword = 'new-password';
+
+      background.changePassword.resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.changePassword(newPassword, oldPassword));
+
+      expect(
+        background.changePassword.calledOnceWith(newPassword, oldPassword),
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('#checkIsSeedlessPasswordOutdated', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should return true if the password is outdated', async () => {
+      const store = mockStore();
+
+      const checkIsSeedlessPasswordOutdated =
+        background.checkIsSeedlessPasswordOutdated.resolves(true);
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.checkIsSeedlessPasswordOutdated(),
+      );
+      expect(result).toStrictEqual(true);
+      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+    });
+
+    it('should return false if the password is not outdated', async () => {
+      const store = mockStore();
+
+      const checkIsSeedlessPasswordOutdated =
+        background.checkIsSeedlessPasswordOutdated.resolves(false);
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.checkIsSeedlessPasswordOutdated(),
+      );
+      expect(result).toStrictEqual(false);
+      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+    });
+
+    it('should not throw an error if the checkIsSeedlessPasswordOutdated fails', async () => {
+      const store = mockStore();
+
+      const checkIsSeedlessPasswordOutdated =
+        background.checkIsSeedlessPasswordOutdated.rejects(new Error('error'));
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.checkIsSeedlessPasswordOutdated(),
+      );
+      expect(result).toStrictEqual(false);
+      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+    });
+  });
+
   describe('#tryUnlockMetamask', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls submitPassword', async () => {
+    it('calls syncPasswordAndUnlockWallet', async () => {
       const store = mockStore();
 
-      const submitPassword = background.submitPassword.resolves();
+      const syncPasswordAndUnlockWallet =
+        background.syncPasswordAndUnlockWallet.resolves(true);
 
       setBackgroundConnection(background);
 
@@ -144,19 +301,20 @@ describe('Actions', () => {
         { type: 'UNLOCK_IN_PROGRESS' },
         { type: 'UNLOCK_SUCCEEDED', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'HIDE_WARNING' },
       ];
 
       await store.dispatch(actions.tryUnlockMetamask());
 
-      expect(submitPassword.callCount).toStrictEqual(1);
+      expect(syncPasswordAndUnlockWallet.callCount).toStrictEqual(1);
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('errors on submitPassword will fail', async () => {
+    it('errors on syncPasswordAndUnlockWallet will fail', async () => {
       const store = mockStore();
 
-      background.submitPassword.rejects(new Error('error'));
+      background.syncPasswordAndUnlockWallet.rejects(new Error('error'));
 
       setBackgroundConnection(background);
 
@@ -1159,6 +1317,73 @@ describe('Actions', () => {
       ];
 
       await store.dispatch(actions.setSelectedAccount('0x123'));
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setSelectedMultichainAccount', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('#setSelectedMultichainAccount', async () => {
+      const store = mockStore({
+        activeTab: {},
+        metamask: {
+          accountTree: {},
+        },
+      });
+
+      const setSelectedMultichainAccountSpy = sinon.stub().resolves();
+
+      background.getApi.returns({
+        setSelectedMultichainAccount: setSelectedMultichainAccountSpy,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.setSelectedMultichainAccount(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      );
+      expect(setSelectedMultichainAccountSpy.callCount).toStrictEqual(1);
+      expect(
+        setSelectedMultichainAccountSpy.calledWith(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      ).toBe(true);
+    });
+
+    it('handles gracefully when setSelectedMultichainAccount throws', async () => {
+      const store = mockStore({
+        activeTab: {},
+        metamask: {
+          alertEnabledness: {},
+          accountTree: {},
+        },
+      });
+
+      const setSelectedMultichainAccountSpy = sinon
+        .stub()
+        .rejects(new Error('error'));
+
+      background.getApi.returns({
+        setSelectedMultichainAccount: setSelectedMultichainAccountSpy,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(
+        actions.setSelectedMultichainAccount(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      );
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -2306,6 +2531,20 @@ describe('Actions', () => {
     });
   });
 
+  describe('#getUserProfileLineage', () => {
+    it('calls getUserProfileLineage in the background', async () => {
+      const getUserProfileLineageStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getUserProfileLineage: getUserProfileLineageStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await actions.getUserProfileLineage();
+      expect(getUserProfileLineageStub.calledOnceWith()).toBe(true);
+    });
+  });
+
   describe('#createOnChainTriggers', () => {
     afterEach(() => {
       sinon.restore();
@@ -2904,6 +3143,7 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'HIDE_WARNING' },
         { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
@@ -2913,6 +3153,27 @@ describe('Actions', () => {
       expect(importMnemonicToVaultStub.calledOnceWith(mnemonic)).toStrictEqual(
         true,
       );
+    });
+
+    it('returns discovered accounts from background', async () => {
+      const store = mockStore();
+      const mockResult = {
+        newAccountAddress: '9fE6zKgca6K2EEa3yjbcq7zGMusUNqSQeWQNL2YDZ2Yi',
+        discoveredAccounts: { bitcoin: 2, solana: 1 },
+      };
+
+      const importMnemonicToVaultStub = sinon.stub().resolves(mockResult);
+
+      background.getApi.returns({
+        importMnemonicToVault: importMnemonicToVaultStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const result = await store.dispatch(
+        actions.importMnemonicToVault('mnemonic'),
+      );
+
+      expect(result).toStrictEqual(mockResult);
     });
   });
 
@@ -2953,6 +3214,61 @@ describe('Actions', () => {
 
       await store.dispatch(actions.setManageInstitutionalWallets(true));
       expect(setManageInstitutionalWalletsStub.calledOnceWith(true)).toBe(true);
+    });
+  });
+
+  describe('syncSeedPhrases', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should call syncSeedPhrases in the background and show/hide loading indication', async () => {
+      const store = mockStore();
+
+      background.syncSeedPhrases.resolves();
+      setBackgroundConnection(background);
+
+      const expectedActions = [{ type: 'HIDE_WARNING' }];
+
+      await store.dispatch(actions.syncSeedPhrases());
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(background.syncSeedPhrases.calledOnceWith()).toBe(true);
+    });
+
+    it('should handle error and display warning', async () => {
+      const store = mockStore();
+      const errorMessage = 'Failed to sync seed phrases';
+
+      background.syncSeedPhrases.rejects(new Error(errorMessage));
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', payload: errorMessage },
+      ];
+
+      await expect(store.dispatch(actions.syncSeedPhrases())).rejects.toThrow(
+        errorMessage,
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(background.syncSeedPhrases.calledOnceWith()).toBe(true);
+    });
+
+    it('should always hide loading indication even when error occurs', async () => {
+      const store = mockStore();
+      const errorMessage = 'Network error';
+
+      background.syncSeedPhrases.rejects(new Error(errorMessage));
+      setBackgroundConnection(background);
+
+      try {
+        await store.dispatch(actions.syncSeedPhrases());
+      } catch (error) {
+        // Expected to throw
+      }
+
+      expect(background.syncSeedPhrases.calledOnceWith()).toBe(true);
     });
   });
 });

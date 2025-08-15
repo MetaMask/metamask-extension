@@ -9,12 +9,15 @@ import {
   ButtonPrimary,
   FormTextField,
   Box,
+  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountLabel } from '../../../store/actions';
 import {
   Display,
   FlexDirection,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 type EditAccountNameModalProps = {
@@ -54,17 +57,29 @@ export const EditAccountNameModal = ({
             flexDirection={FlexDirection.Column}
             gap={4}
           >
-            <FormTextField
-              label={t('name')}
-              value={accountName}
-              onChange={(e) => setAccountName(e.target.value)}
-              placeholder={currentAccountName}
-              autoFocus
-              helpText={address}
-            />
+            <Box>
+              <FormTextField
+                label={t('name')}
+                value={accountName}
+                onChange={(e) => setAccountName(e.target.value)}
+                placeholder={currentAccountName}
+                autoFocus
+              />
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                style={{
+                  wordBreak: 'break-all',
+                }}
+                paddingTop={1}
+              >
+                {address}
+              </Text>
+            </Box>
             <ButtonPrimary
               onClick={handleSave}
               disabled={!accountName.trim()}
+              aria-label={t('save')}
               block
               marginTop={4}
             >

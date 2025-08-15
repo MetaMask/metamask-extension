@@ -14,8 +14,11 @@ import {
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
@@ -37,6 +40,8 @@ export function NestedTransactionData() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NestedTransaction({
   index,
   nestedTransaction,
@@ -44,6 +49,7 @@ function NestedTransaction({
   index: number;
   nestedTransaction: BatchTransactionParams;
 }) {
+  const t = useI18nContext();
   const { data, to, value } = nestedTransaction;
 
   const label = useNestedTransactionLabels({
@@ -59,7 +65,7 @@ function NestedTransaction({
           <>
             {to && <RecipientRow recipient={to} />}
             {value && (
-              <ConfirmInfoRow label="Amount">
+              <ConfirmInfoRow label={t('amount')}>
                 <ConfirmInfoRowCurrency value={value} />
               </ConfirmInfoRow>
             )}
@@ -70,7 +76,7 @@ function NestedTransaction({
                 noPadding
                 nestedTransactionIndex={index}
               />
-            )}{' '}
+            )}
           </>
         }
       >

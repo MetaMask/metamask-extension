@@ -14,7 +14,7 @@ import {
 import type { TransactionParams } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
 
-import { Hex } from '@metamask/utils';
+import { Hex, JsonRpcParams } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import {
   APPROVAL_METHOD_NAMES,
@@ -53,6 +53,8 @@ type InferTransactionTypeResult = {
   // The contract code, in hex format if it exists. '0x0' or '0x' are also indicators of non-existent contract code
   getCodeResponse: string | null | undefined;
 };
+
+type DataMessageParam = object | string | number | boolean | JsonRpcParams;
 
 const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
@@ -325,10 +327,14 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
  * @param dataToParse
  * @returns
  */
-export const parseTypedDataMessage = (dataToParse: string) => {
-  const result = JSON.parse(dataToParse);
+export const parseTypedDataMessage = (dataToParse: DataMessageParam) => {
+  const result =
+    typeof dataToParse === 'object'
+      ? dataToParse
+      : JSON.parse(String(dataToParse));
 
-  const messageValue = extractLargeMessageValue(dataToParse);
+  const messageValue = extractLargeMessageValue(String(dataToParse));
+
   if (result.message?.value) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

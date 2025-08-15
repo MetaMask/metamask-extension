@@ -10,7 +10,13 @@ import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import * as actions from '../../../store/actions';
+import {
+  hideWarning,
+  checkIsSeedlessPasswordOutdated,
+  importMnemonicToVault,
+  lockAccountSyncing,
+  unlockAccountSyncing,
+} from '../../../store/actions';
 import {
   Text,
   Box,
@@ -41,8 +47,14 @@ import { Header, Page } from '../../../components/multichain/pages/page';
 import ShowHideToggle from '../../../components/ui/show-hide-toggle';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { getMetaMaskHdKeyrings } from '../../../selectors';
+import {
+  getMetaMaskHdKeyrings,
+  getIsSocialLoginFlow,
+} from '../../../selectors';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
+import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
+import { MetaMaskReduxDispatch } from '../../../store/store';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -54,7 +66,7 @@ export const ImportSrp = () => {
   const t = useI18nContext();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState(
@@ -67,6 +79,8 @@ export const ImportSrp = () => {
   const [showSrp, setShowSrp] = useState(
     new Array(defaultNumberOfWords).fill(false),
   );
+  const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
+  const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
   const newHdEntropyIndex = hdKeyrings.length;
 
@@ -76,17 +90,51 @@ export const ImportSrp = () => {
   // We want to hide the warning when the component unmounts
   useEffect(() => {
     return () => {
-      dispatch(actions.hideWarning());
+      dispatch(hideWarning());
     };
   }, [dispatch]);
 
   async function importWallet() {
+    if (isSocialLoginEnabled) {
+      const isPasswordOutdated = await dispatch(
+        checkIsSeedlessPasswordOutdated(true),
+      );
+      if (isPasswordOutdated) {
+        return;
+      }
+    }
+
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
-      await dispatch(actions.importMnemonicToVault(joinedSrp));
+      const result = (await dispatch(
+        importMnemonicToVault(joinedSrp),
+      )) as unknown as {
+        newAccountAddress: string;
+        discoveredAccounts: { bitcoin: number; solana: number };
+      };
+
+      const { discoveredAccounts } = result;
+
       // Clear the secret recovery phrase after importing
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
+
+      // Track the event with the discovered accounts
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      trackEvent({
+        event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: newHdEntropyIndex,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_solana_accounts_discovered: discoveredAccounts?.solana,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_bitcoin_accounts_discovered: discoveredAccounts?.bitcoin,
+        },
+      });
     }
+
+    history.push(DEFAULT_ROUTE);
+    dispatch(setShowNewSrpAddedToast(true));
   }
 
   const isValidSrp = useMemo(() => {
@@ -260,6 +308,12 @@ export const ImportSrp = () => {
     [secretRecoveryPhrase, onSrpChange, pasteFailed],
   );
 
+  useEffect(() => {
+    if (isSeedlessPasswordOutdated) {
+      setLoading(false);
+    }
+  }, [isSeedlessPasswordOutdated]);
+
   return (
     <Page className="import-srp__multi-srp">
       <Header
@@ -286,6 +340,7 @@ export const ImportSrp = () => {
       >
         {t('importSecretRecoveryPhrase')}
       </Header>
+      {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -415,17 +470,8 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
-                await dispatch(actions.lockAccountSyncing());
+                await dispatch(lockAccountSyncing());
                 await importWallet();
-                history.push(DEFAULT_ROUTE);
-                dispatch(setShowNewSrpAddedToast(true));
-                trackEvent({
-                  event:
-                    MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
-                  properties: {
-                    hd_entropy_index: newHdEntropyIndex,
-                  },
-                });
               } catch (e) {
                 setSrpError(
                   e instanceof Error
@@ -435,7 +481,7 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
-                await dispatch(actions.unlockAccountSyncing());
+                await dispatch(unlockAccountSyncing());
               }
             }}
           >

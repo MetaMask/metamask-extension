@@ -1,5 +1,8 @@
 import log from 'loglevel';
-import { getTokenStandardAndDetails } from '../../store/actions';
+import {
+  getTokenStandardAndDetails,
+  getTokenStandardAndDetailsByChain,
+} from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { TokenStandard } from '../../../shared/constants/transaction';
@@ -261,10 +264,13 @@ export async function getAssetDetails(
   currentUserAddress,
   transactionData,
   existingNfts,
+  chainId,
 ) {
   const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
-    throw new Error('Unable to detect valid token data');
+    throw new Error(
+      `Unable to detect valid token data for token: ${tokenAddress}`,
+    );
   }
 
   // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
@@ -294,11 +300,18 @@ export async function getAssetDetails(
   }
 
   try {
-    tokenDetails = await getTokenStandardAndDetails(
-      tokenAddress,
-      currentUserAddress,
-      tokenId,
-    );
+    tokenDetails = chainId
+      ? await getTokenStandardAndDetailsByChain(
+          tokenAddress,
+          currentUserAddress,
+          tokenId,
+          chainId,
+        )
+      : await getTokenStandardAndDetails(
+          tokenAddress,
+          currentUserAddress,
+          tokenId,
+        );
   } catch (error) {
     log.warn(error);
     // if we can't determine any token standard or details return the data we can extract purely from the parsed transaction data

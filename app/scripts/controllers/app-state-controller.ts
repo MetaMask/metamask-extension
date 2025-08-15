@@ -24,6 +24,7 @@ import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
+  DOWNLOAD_MOBILE_APP_SLIDE_ID,
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
@@ -60,6 +61,7 @@ export type AppStateControllerState = {
   showPermissionsTour: boolean;
   showNetworkBanner: boolean;
   showAccountBanner: boolean;
+  showDownloadMobileAppSlide: boolean;
   trezorModel: string | null;
   currentPopupId?: number;
   onboardingDate: number | null;
@@ -70,6 +72,8 @@ export type AppStateControllerState = {
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
   // multiple networks.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   qrHardware: Json;
   nftsDropdownState: Json;
@@ -77,8 +81,6 @@ export type AppStateControllerState = {
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
   addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
   // States used for displaying the changed network toast
-  switchedNetworkDetails: Record<string, string> | null;
-  switchedNetworkNeverShowMessage: boolean;
   currentExtensionPopupId: number;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   termsOfUseLastAgreed?: number;
@@ -88,6 +90,10 @@ export type AppStateControllerState = {
   isUpdateAvailable: boolean;
   updateModalLastDismissedAt: number | null;
   lastUpdatedAt: number | null;
+  enableEnforcedSimulations: boolean;
+  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
+  enforcedSimulationsSlippage: number;
+  enforcedSimulationsSlippageForTransactions: Record<string, number>;
 };
 
 const controllerName = 'AppStateController';
@@ -160,7 +166,6 @@ type AppStateControllerInitState = Partial<
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
-    | 'switchedNetworkDetails'
     | 'currentExtensionPopupId'
   >
 >;
@@ -197,14 +202,20 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isRampCardClosed: false,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
-  switchedNetworkNeverShowMessage: false,
+  showDownloadMobileAppSlide: true,
   slides: [],
   throttledOrigins: {},
   isUpdateAvailable: false,
   updateModalLastDismissedAt: null,
   lastUpdatedAt: null,
+  enableEnforcedSimulations: true,
+  enableEnforcedSimulationsForTransactions: {},
+  enforcedSimulationsSlippage: 10,
+  enforcedSimulationsSlippageForTransactions: {},
   ...getInitialStateOverrides(),
 });
 
@@ -214,7 +225,6 @@ function getInitialStateOverrides() {
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
     addressSecurityAlertResponses: {},
-    switchedNetworkDetails: null,
     currentExtensionPopupId: 0,
   };
 }
@@ -312,6 +322,8 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: {
     persist: true,
     anonymous: true,
@@ -336,14 +348,6 @@ const controllerMetadata = {
     persist: false,
     anonymous: true,
   },
-  switchedNetworkDetails: {
-    persist: false,
-    anonymous: true,
-  },
-  switchedNetworkNeverShowMessage: {
-    persist: true,
-    anonymous: true,
-  },
   currentExtensionPopupId: {
     persist: false,
     anonymous: true,
@@ -357,6 +361,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   snapsInstallPrivacyWarningShown: {
+    persist: true,
+    anonymous: true,
+  },
+  showDownloadMobileAppSlide: {
     persist: true,
     anonymous: true,
   },
@@ -378,6 +386,22 @@ const controllerMetadata = {
   },
   lastUpdatedAt: {
     persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulations: {
+    persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulationsForTransactions: {
+    persist: false,
+    anonymous: true,
+  },
+  enforcedSimulationsSlippage: {
+    persist: true,
+    anonymous: true,
+  },
+  enforcedSimulationsSlippageForTransactions: {
+    persist: false,
     anonymous: true,
   },
 };
@@ -614,6 +638,10 @@ export class AppStateController extends BaseController<
         }
         return slide;
       });
+
+      if (id === DOWNLOAD_MOBILE_APP_SLIDE_ID) {
+        state.showDownloadMobileAppSlide = false;
+      }
     });
   }
 
@@ -931,44 +959,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets an object with networkName and appName
-   * or `null` if the message is meant to be cleared
-   *
-   * @param switchedNetworkDetails - Details about the network that MetaMask just switched to.
-   */
-  setSwitchedNetworkDetails(
-    switchedNetworkDetails: { origin: string; networkClientId: string } | null,
-  ): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = switchedNetworkDetails;
-    });
-  }
-
-  /**
-   * Clears the switched network details in state
-   */
-  clearSwitchedNetworkDetails(): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = null;
-    });
-  }
-
-  /**
-   * Remembers if the user prefers to never see the
-   * network switched message again
-   *
-   * @param switchedNetworkNeverShowMessage
-   */
-  setSwitchedNetworkNeverShowMessage(
-    switchedNetworkNeverShowMessage: boolean,
-  ): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = null;
-      state.switchedNetworkNeverShowMessage = switchedNetworkNeverShowMessage;
-    });
-  }
-
-  /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
    *
    * @param trezorModel - The Trezor model.
@@ -1113,6 +1103,36 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
+    });
+  }
+
+  setEnableEnforcedSimulations(enabled: boolean): void {
+    this.update((state) => {
+      state.enableEnforcedSimulations = enabled;
+    });
+  }
+
+  setEnableEnforcedSimulationsForTransaction(
+    transactionId: string,
+    enabled: boolean,
+  ): void {
+    this.update((state) => {
+      state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
+    });
+  }
+
+  setEnforcedSimulationsSlippage(value: number): void {
+    this.update((state) => {
+      state.enforcedSimulationsSlippage = value;
+    });
+  }
+
+  setEnforcedSimulationsSlippageForTransaction(
+    transactionId: string,
+    value: number,
+  ): void {
+    this.update((state) => {
+      state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
     });
   }
 }

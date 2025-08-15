@@ -16,7 +16,7 @@ class TokenList {
     this.driver = driver;
   }
 
-  async check_tokenBalanceWithName(tokenListItemValue: string) {
+  async checkTokenBalanceWithName(tokenListItemValue: string) {
     console.log(
       'Check if token balance is displayed on token list item',
       tokenListItemValue,
@@ -27,7 +27,7 @@ class TokenList {
     });
   }
 
-  async check_tokenMarketValue(tokenListItemSecondaryValue: string) {
+  async checkTokenMarketValue(tokenListItemSecondaryValue: string) {
     console.log(
       'Check if token market value is displayed on token list item',
       tokenListItemSecondaryValue,
@@ -38,7 +38,7 @@ class TokenList {
     });
   }
 
-  async check_tokenName(tokenName: string) {
+  async checkTokenName(tokenName: string) {
     console.log(
       'Check if token name is displayed on token list item',
       tokenName,

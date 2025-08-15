@@ -6,8 +6,8 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
@@ -40,17 +40,16 @@ describe('Linea Network Discover Button', function (this: Suite) {
         await loginWithBalanceValidation(driver);
 
         // Open network dropdown
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         // Search for Linea Mainnet
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.fillNetworkSearchInput('Linea Mainnet');
         await selectNetworkDialog.openNetworkListOptions('eip155:59144');
 
         // Verify Discover button is visible
-        await selectNetworkDialog.check_discoverButtonIsVisible();
+        await selectNetworkDialog.checkDiscoverButtonIsVisible();
 
         // Click Discover button
         await selectNetworkDialog.clickDiscoverButton();

@@ -37,7 +37,7 @@ class EditConnectedAccountsModal {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.editAccountsModalTitle,
@@ -91,7 +91,7 @@ class EditConnectedAccountsModal {
    * @param accountIndex - The index of the account to check (1-based)
    * @returns boolean indicating if the account is selected
    */
-  async check_isAccountSelected(accountIndex: number): Promise<boolean> {
+  async checkIsAccountSelected(accountIndex: number): Promise<boolean> {
     console.log(`Checking if account number ${accountIndex} is selected`);
     const checkboxes = await this.driver.findElements(this.accountCheckbox);
     const accountCheckbox = checkboxes[accountIndex];

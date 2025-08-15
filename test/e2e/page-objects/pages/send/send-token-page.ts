@@ -10,6 +10,9 @@ class SendTokenPage {
 
   private readonly assetPickerButton = '[data-testid="asset-picker-button"]';
 
+  private readonly multichainAssetPickerNetwork =
+    '[data-testid="multichain-asset-picker__network"]';
+
   private readonly backButton =
     '[data-testid="wallet-initiated-header-back-button"]';
 
@@ -19,6 +22,11 @@ class SendTokenPage {
 
   private readonly continueButton = {
     text: 'Continue',
+    tag: 'button',
+  };
+
+  private readonly confirmButton = {
+    text: 'Confirm',
     tag: 'button',
   };
 
@@ -70,6 +78,17 @@ class SendTokenPage {
 
   private readonly fiatFeeField = '[data-testid="native-currency"]';
 
+  private readonly sendFlowBackButton = '[aria-label="Back"]';
+
+  private readonly tokenGasFeeDropdown =
+    '[data-testid="selected-gas-fee-token-arrow"]';
+
+  private readonly tokenGasFeeSymbol =
+    '[data-testid="gas-fee-token-list-item-symbol"]';
+
+  private readonly viewActivityButton =
+    '[data-testid="smart-transaction-status-page-footer-close-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -79,7 +98,7 @@ class SendTokenPage {
     return this.driver.findElements(this.tokenListButton);
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.scanButton,
@@ -99,6 +118,20 @@ class SendTokenPage {
     await this.driver.clickElement(this.assetPickerButton);
   }
 
+  async clickMultichainAssetPickerNetwork() {
+    await this.driver.clickElement(this.multichainAssetPickerNetwork);
+  }
+
+  async clickSendFlowBackButton() {
+    await this.driver.clickElement(this.sendFlowBackButton);
+    await this.driver.delay(2000); // Delay to ensure that the send page has cleared up
+  }
+
+  async clickFirstTokenListButton() {
+    const elements = await this.driver.findElements(this.tokenListButton);
+    await elements[0].click();
+  }
+
   async clickAccountPickerButton() {
     console.log('Clicking on account picker button on send token screen');
     await this.driver.clickElement(this.accountPickerButton);
@@ -109,16 +142,23 @@ class SendTokenPage {
     await elements[1].click();
   }
 
+  async clickOnAssetPicker(
+    driver: Driver,
+    location: 'src' | 'dest' = 'src',
+  ): Promise<void> {
+    console.log('Clicking on asset picker button');
+    const isDest = location === 'dest';
+    const buttons = await driver.findElements(this.assetPickerButton);
+    const indexOfButtonToClick = isDest ? 1 : 0;
+    await buttons[indexOfButtonToClick].click();
+  }
+
   async checkAccountValueAndSuffix(value: string): Promise<void> {
     console.log(`Checking if account value and suffix is ${value}`);
-    const element = await this.driver.waitForSelector(this.assetValue);
-    const text = await element.getText();
-    assert.equal(
-      text,
-      value,
-      `Expected account value and suffix to be ${value}, got ${text}`,
-    );
-    console.log(`Account value and suffix is ${value}`);
+    await this.driver.waitForSelector({
+      css: this.assetValue,
+      text: value,
+    });
   }
 
   async clickCancelButton(): Promise<void> {
@@ -129,6 +169,14 @@ class SendTokenPage {
     console.log('Clicking on Continue button on send token screen');
     await this.driver.clickElement(this.continueButton, 3);
     console.log('Continue button clicked successfully');
+  }
+
+  async clickConfirmButton(): Promise<void> {
+    await this.driver.clickElement(this.confirmButton);
+  }
+
+  async clickViewActivity(): Promise<void> {
+    await this.driver.clickElement(this.viewActivityButton);
   }
 
   async fillAmount(amount: string): Promise<void> {
@@ -145,14 +193,13 @@ class SendTokenPage {
     );
   }
 
-  async check_networkChange(networkName: string): Promise<void> {
-    const toastTextElement = await this.driver.findElement(this.toastText);
-    const toastText = await toastTextElement.getText();
-    assert.equal(
-      toastText,
-      `You're now using ${networkName}`,
-      'Toast text is correct',
-    );
+  async selectTokenFee(tokenSymbol: string): Promise<void> {
+    console.log(`Select token ${tokenSymbol} to pay for the fees`);
+    await this.driver.clickElement(this.tokenGasFeeDropdown);
+    await this.driver.clickElement({
+      css: this.tokenGasFeeSymbol,
+      text: tokenSymbol,
+    });
   }
 
   async chooseNFTToSend(index = 0, timeout = 10000): Promise<void> {
@@ -278,7 +325,7 @@ class SendTokenPage {
    * @param address - The Ethereum address to which the ENS domain is expected to resolve.
    * @returns A promise that resolves if the ENS domain can be successfully used as a recipient address on the send token screen.
    */
-  async check_ensAddressAsRecipient(
+  async checkEnsAddressAsRecipient(
     ensDomain: string,
     address: string,
   ): Promise<void> {
@@ -304,7 +351,7 @@ class SendTokenPage {
    * @param address - The Ethereum address to which the ENS domain is expected to resolve.
    * @returns A promise that resolves if the ENS domain successfully resolves to the specified address on send token screen.
    */
-  async check_ensAddressResolution(
+  async checkEnsAddressResolution(
     ensDomain: string,
     address: string,
   ): Promise<void> {
@@ -328,7 +375,7 @@ class SendTokenPage {
    * @returns A promise that resolves if the warning message matches the expected text.
    * @throws Assertion error if the warning message does not match the expected text.
    */
-  async check_warningMessage(warningText: string): Promise<void> {
+  async checkWarningMessage(warningText: string): Promise<void> {
     console.log(`Checking if warning message "${warningText}" is displayed`);
     await this.driver.waitForSelector({
       css: this.warning,
@@ -346,7 +393,7 @@ class SendTokenPage {
    * @returns A promise that resolves when the check is complete.
    * @throws AssertionError if the displayed token symbol does not match the expected value.
    */
-  async check_tokenSymbolInAssetPicker(
+  async checkTokenSymbolInAssetPicker(
     tokenSymbol: string,
     tokenId?: string,
   ): Promise<void> {

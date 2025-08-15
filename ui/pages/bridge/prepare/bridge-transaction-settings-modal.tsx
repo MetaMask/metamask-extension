@@ -38,7 +38,7 @@ import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossCh
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Column, Row, Tooltip } from '../layout';
 
-const HARDCODED_SLIPPAGE_OPTIONS = [BRIDGE_DEFAULT_SLIPPAGE, 3];
+const HARDCODED_SLIPPAGE_OPTIONS = [BRIDGE_DEFAULT_SLIPPAGE, 2];
 
 export const BridgeTransactionSettingsModal = ({
   onClose,
@@ -73,16 +73,17 @@ export const BridgeTransactionSettingsModal = ({
         setCustomSlippage(undefined);
       } else {
         setIsAutoSelected(false);
-        if (slippage && HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
-          setLocalSlippage(slippage);
-          setCustomSlippage(undefined);
-        } else if (slippage) {
-          setLocalSlippage(undefined);
-          setCustomSlippage(slippage.toString());
-        } else {
-          // Default to first option if no slippage set and not showing AUTO
+        if (!slippage || slippage === 0) {
+          // Default to first option if no slippage set, null, or 0
+          // This handles undefined, null, 0, and other falsy values
           setLocalSlippage(BRIDGE_DEFAULT_SLIPPAGE);
           setCustomSlippage(undefined);
+        } else if (HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
+          setLocalSlippage(slippage);
+          setCustomSlippage(undefined);
+        } else {
+          setLocalSlippage(undefined);
+          setCustomSlippage(slippage.toString());
         }
       }
     }
@@ -279,10 +280,10 @@ export const BridgeTransactionSettingsModal = ({
               // Calculate what the new slippage would be
               const newSlippage = isAutoSelected
                 ? undefined
-                : localSlippage ??
+                : (localSlippage ??
                   (customSlippage
                     ? Number(customSlippage.replace(',', '.'))
-                    : undefined);
+                    : undefined));
 
               // Button is disabled if nothing has changed
               return newSlippage === slippage;
@@ -290,7 +291,7 @@ export const BridgeTransactionSettingsModal = ({
             onClick={() => {
               const newSlippage = isAutoSelected
                 ? undefined
-                : localSlippage ?? Number(customSlippage?.replace(',', '.'));
+                : (localSlippage ?? Number(customSlippage?.replace(',', '.')));
 
               if (newSlippage !== slippage) {
                 trackCrossChainSwapsEvent({

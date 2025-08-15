@@ -39,7 +39,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         await switchAndApproveDialogSwitchToTestSnap(driver);
 
         // check the results of the message signature
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'entropySignResultSpan',
           publicKeyGenerated,
         );
@@ -52,7 +52,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         await testSnaps.fillMessage('entropyMessageInput', '5678');
         await testSnaps.clickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'entropySignResultSpan',
           publicKeyGeneratedWithEntropySourceSRP1,
         );
@@ -64,7 +64,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
         await testSnaps.scrollAndClickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'entropySignResultSpan',
           publicKeyGeneratedWithEntropySourceSRP2,
         );

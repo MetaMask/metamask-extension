@@ -110,28 +110,29 @@ describe('Test Snap Management', function () {
 
         // click the back arrow to return to the main extension page
         await driver.clickElement('[aria-label="Back"]');
-
-        // click account options menu button
+        await driver.clickElement('[aria-label="Back"]');
 
         // we click on the notification icon on top of the account menu button
         // because the notification overlays the icon and this can cause ElementClickInterceptedError
+
         await driver.clickElement(
-          '.notification-list-item__unread-dot__wrapper',
+          '[data-testid="account-options-menu-button"]',
         );
+
         await driver.findElement({
           css: '[data-testid="global-menu-notification-count"]',
           text: '1',
         });
 
-        // this click will close the menu
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await driver.clickElement({
+          css: '[data-testid="global-menu-notification-count"]',
+          text: '1',
+        });
 
         // go into the notifications snap page
         await driver.clickElement({
           text: 'Notifications Example Snap',
-          tag: 'p',
+          tag: 'span',
         });
 
         // try to remove snap

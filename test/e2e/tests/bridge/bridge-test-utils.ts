@@ -32,6 +32,7 @@ import {
   TOP_ASSETS_API_LINEA_MOCK_RESULT,
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
+  MOCK_SWAP_API_AGGREGATOR_LINEA,
 } from './constants';
 
 export class BridgePage {
@@ -79,26 +80,13 @@ export class BridgePage {
       url: 'asset',
     });
   };
-
-  verifyPortfolioTab = async () => {
-    await this.driver.switchToWindowWithTitle('E2E Test Page');
-    await this.driver.waitForUrlContaining({
-      url: 'portfolio.metamask.io/bridge',
-    });
-  };
-
-  verifySwapPage = async () => {
-    await this.driver.waitForUrlContaining({
-      url: 'cross-chain/swaps',
-    });
-  };
 }
 
 export async function bridgeTransaction(
   driver: Driver,
   quote: BridgeQuote,
   transactionsCount: number,
-  expectedWalletBalance: string,
+  expectedWalletBalance?: string,
 ) {
   // Navigate to Bridge page
   const homePage = new HomePage(driver);
@@ -107,35 +95,35 @@ export async function bridgeTransaction(
   const bridgePage = new BridgeQuotePage(driver);
   await bridgePage.enterBridgeQuote(quote);
   await bridgePage.waitForQuote();
-  await bridgePage.check_expectedNetworkFeeIsDisplayed();
+  await bridgePage.checkExpectedNetworkFeeIsDisplayed();
   await bridgePage.submitQuote();
 
   await homePage.goToActivityList();
 
   const activityList = new ActivityListPage(driver);
-  await activityList.check_completedBridgeTransactionActivity(
-    transactionsCount,
-  );
+  await activityList.checkCompletedBridgeTransactionActivity(transactionsCount);
 
   if (quote.unapproved) {
-    await activityList.check_txAction(`Bridged to ${quote.toChain}`);
-    await activityList.check_txAction(
+    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
+    await activityList.checkTxAction(
       `Approve ${quote.tokenFrom} for bridge`,
       2,
     );
   } else {
-    await activityList.check_txAction(`Bridged to ${quote.toChain}`);
+    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
   }
   // Check the amount of ETH deducted in the activity is correct
-  await activityList.check_txAmountInActivity(
+  await activityList.checkTxAmountInActivity(
     `-${quote.amount} ${quote.tokenFrom}`,
   );
 
   // Check the wallet ETH balance is correct
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.check_accountValueAndSuffixDisplayed(
-    expectedWalletBalance,
-  );
+  if (expectedWalletBalance) {
+    await accountListPage.checkAccountValueAndSuffixDisplayed(
+      expectedWalletBalance,
+    );
+  }
 }
 
 async function mockPortfolioPage(mockServer: Mockttp) {
@@ -162,11 +150,11 @@ async function mockGetTxStatus(mockServer: Mockttp) {
         isExpectedToken: true,
         bridge: 'across',
         srcChain: {
-          chainId: srcChainId,
+          chainId: Number(srcChainId),
           txHash,
         },
         destChain: {
-          chainId: destChainId,
+          chainId: Number(destChainId),
           txHash,
         },
       },
@@ -183,7 +171,7 @@ async function mockTopAssetsLinea(mockServer: Mockttp) {
   });
 }
 
-async function mockTopAssetsArbitrum(mockServer: Mockttp) {
+export async function mockTopAssetsArbitrum(mockServer: Mockttp) {
   return await mockServer.forGet(/42161\/topAssets/u).thenCallback(() => {
     return {
       statusCode: 200,
@@ -470,10 +458,14 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
           data: {
             '0x0000000000000000000000000000000000000000': {
               usd: 2000.0,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               usd_24h_change: 2.5,
             },
             '0x6b175474e89094c44da98b954eedeac495271d0f': {
               usd: 1.0,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               usd_24h_change: 0.1,
             },
           },
@@ -491,11 +483,131 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
         json: {
           'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
             usd: 1.0,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_24h_change: 0.1,
           },
           'eip155:1/slip44:60': {
             usd: 2000.0,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_24h_change: 2.5,
+          },
+        },
+      };
+    });
+}
+
+async function mockSwapAggregatorLinea(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_SWAP_API_AGGREGATOR_LINEA,
+      };
+    });
+}
+
+export async function mockGasPricesArbitrum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://gas.api.cx.metamask.io/networks/42161/gasPrices')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          SafeGasPrice: '30',
+          ProposeGasPrice: '30',
+          FastGasPrice: '30',
+        },
+      };
+    });
+}
+
+export async function mockGasPricesMainnet(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://gas.api.cx.metamask.io/networks/1/gasPrices')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          SafeGasPrice: '30',
+          ProposeGasPrice: '30',
+          FastGasPrice: '30',
+        },
+      };
+    });
+}
+
+export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_SWAP_API_AGGREGATOR_LINEA,
+      };
+    });
+}
+
+export async function mockSwapTokensLinea(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://swap.api.cx.metamask.io/networks/59144/tokens')
+    .withQuery({ includeBlockedTokens: 'true' })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_LINEA,
+      };
+    });
+}
+
+export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://swap.api.cx.metamask.io/networks/42161/tokens')
+    .withQuery({ includeBlockedTokens: 'true' })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_GET_TOKEN_ARBITRUM,
+      };
+    });
+}
+
+export async function mockSwapAggregatorMetadataArbitrum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://swap.api.cx.metamask.io/networks/42161/aggregatorMetadata')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          airswapLight: {
+            // Legitimate hex color value in test
+            // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+            color: '#2B71FF',
+            title: 'AirSwap',
+            icon: "data:image/svg+xml,%3csvg width='75' height='31' viewBox='0 0 75 31' fill='none' xmlns='http://www.w3.org/2000/svg'%3e %3cpath fill-rule='evenodd' clip-rule='evenodd' d='M31.4038 12.231H30.1152V19.3099H31.4038V12.231Z' fill='%23FDFDFD'/%3e %3cpath fill-rule='evenodd' clip-rule='evenodd' d='M42.8265 15.1959C44.1549 15.5074 44.9217 15.9477 45.1053 16.8178C45.1368 16.9625 45.1513 17.1103 45.1485 17.2582C45.1485 18.5793 44.2197 19.4171 42.7077 19.4171C41.5541 19.4075 40.4409 18.9929 39.5649 18.2463L40.3317 17.3548C41.0229 17.9456 41.8437 18.3215 42.7401 18.3215C43.6365 18.3215 43.8849 17.9241 43.8849 17.3763C43.8849 16.8285 43.5933 16.5922 42.2541 16.2915C40.7205 15.937 39.8349 15.4322 39.8349 14.1218C39.8349 12.8114 40.7529 12.1239 42.1785 12.1239C43.1717 12.1129 44.1403 12.4303 44.9325 13.0262L44.2521 13.9607C43.6041 13.488 42.8697 13.1658 42.2109 13.1658C41.5521 13.1658 41.0985 13.5418 41.0985 14.0144C41.0985 14.487 41.4549 14.8736 42.8265 15.1959Z' fill='%23FDFDFD'/%3e %3c/svg%3e",
+          },
+          bancor: {
+            // Legitimate hex color value in test
+            // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+            color: '#c9c9c9',
+            title: 'Bancor',
+            icon: "data:image/svg+xml,%3csvg width='117' height='29' viewBox='0 0 117 29' fill='none' xmlns='http://www.w3.org/2000/svg'%3e %3cpath fill-rule='evenodd' clip-rule='evenodd' d='M9.15211 0.0550469L16.2358 3.98013C16.5117 4.1333 16.5117 4.51305 16.2358 4.66622L9.15211 8.5913C9.02579 8.66151 8.86623 8.66151 8.73992 8.5913L1.65627 4.66622C1.38037 4.51305 1.38037 4.1333 1.65627 3.98013L8.73992 0.0550469C8.86956 -0.018349 9.02579 -0.018349 9.15211 0.0550469Z' fill='%230A2540'/%3e %3c/svg%3e",
+          },
+          curve: {
+            // Legitimate hex color value in test
+            // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+            color: '#24292E',
+            title: 'Curve',
+            icon: "data:image/svg+xml,%3csvg width='74' height='30' viewBox='0 0 74 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3e %3cpath d='M38.1738 15.9546C38.0552 16.9697 37.6794 17.7542 37.0466 18.3079C36.4182 18.8572 35.5811 19.1318 34.5352 19.1318C33.4014 19.1318 32.4917 18.7253 31.8062 17.9124C31.125 17.0994 30.7844 16.0117 30.7844 14.6494V13.7266C30.7844 12.8345 30.9426 12.05 31.259 11.3733C31.5798 10.6965 32.0325 10.178 32.6169 9.81763C33.2014 9.45288 33.8782 9.27051 34.6472 9.27051C35.6667 9.27051 36.4841 9.55615 37.0994 10.1274C37.7146 10.6943 38.0728 11.481 38.1738 12.4873H36.9016C36.7917 11.7227 36.5522 11.1689 36.1831 10.8262C35.8184 10.4834 35.3064 10.312 34.6472 10.312C33.8386 10.312 33.2036 10.6108 32.7422 11.2085C32.2852 11.8062 32.0566 12.6565 32.0566 13.7595V14.689C32.0566 15.7305 32.2742 16.5588 32.7092 17.1741C33.1443 17.7893 33.7529 18.0969 34.5352 18.0969C35.2383 18.0969 35.7766 17.9387 36.1501 17.6223C36.5281 17.3015 36.7786 16.7456 36.9016 15.9546H38.1738Z' fill='%23E6E6E6'/%3e %3c/svg%3e",
           },
         },
       };
@@ -606,6 +718,13 @@ export const getBridgeFixtures = (
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),
         await mockPriceSpotPricesV3(mockServer),
+        await mockSwapAggregatorLinea(mockServer),
+        await mockGasPricesArbitrum(mockServer),
+        await mockGasPricesMainnet(mockServer),
+        await mockSwapAggregatorMetadataLinea(mockServer),
+        await mockSwapTokensLinea(mockServer),
+        await mockSwapTokensArbitrum(mockServer),
+        await mockSwapAggregatorMetadataArbitrum(mockServer),
       ];
 
       if (withMockedSegment) {
@@ -837,6 +956,12 @@ export const getBridgeL2Fixtures = (
       await mockNativeL2toL2(mockServer),
       await mockDAIL2toL2(mockServer),
       await mockDAIL2toMainnet(mockServer),
+      await mockGasPricesArbitrum(mockServer),
+      await mockGasPricesMainnet(mockServer),
+      await mockSwapAggregatorMetadataLinea(mockServer),
+      await mockSwapTokensLinea(mockServer),
+      await mockSwapTokensArbitrum(mockServer),
+      await mockSwapAggregatorMetadataArbitrum(mockServer),
       await mockPriceSpotPrices(mockServer),
       await mockPriceSpotPricesV3(mockServer),
     ],

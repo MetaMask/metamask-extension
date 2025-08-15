@@ -320,8 +320,9 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
   getAccountAssets,
   getAssetsRates,
   (selectedAccountAddress, multichainBalances, accountAssets, assetRates) => {
-    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
-    const balances = multichainBalances?.[selectedAccountAddress.id];
+    const { id } = selectedAccountAddress ?? {};
+    const assetIds = id ? accountAssets?.[id] || [] : [];
+    const balances = id ? multichainBalances?.[id] : {};
 
     let aggregatedBalance = new BigNumber(0);
 
@@ -344,12 +345,26 @@ export type HistoricalBalanceData = {
 };
 
 export type HistoricalBalances = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   PT1H: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   P1D: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   P7D: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   P14D: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   P30D: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   P200D: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   P1Y: HistoricalBalanceData;
 };
 

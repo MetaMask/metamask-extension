@@ -9,6 +9,8 @@ import type { PolymorphicRef } from '../box';
 import { IconSize, IconProps, IconComponent } from './icon.types';
 
 export const Icon: IconComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'span'>(
     {
       name,

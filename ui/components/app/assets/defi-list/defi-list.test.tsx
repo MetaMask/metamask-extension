@@ -109,7 +109,8 @@ const render = (
   allDeFiPositions:
     | DeFiPositionsControllerState['allDeFiPositions']
     | null
-    | Record<string, undefined>,
+    | Record<string, undefined>
+    | Record<string, []>,
 ) => {
   const mockStore = {
     ...mockState,
@@ -117,7 +118,9 @@ const render = (
       ...mockState.metamask,
       allDeFiPositions,
       enabledNetworkMap: {
-        '0x5': true,
+        eip155: {
+          '0x5': true,
+        },
       },
     },
   };
@@ -181,6 +184,22 @@ describe('DeFiDetailsPage', () => {
       expect(marketValueElement).toBeInTheDocument();
       expect(marketValueElement).toHaveTextContent('<$0.01');
       expect(screen.getByText('USDC only')).toBeInTheDocument();
+    });
+  });
+  it('renders no positions message', async () => {
+    await act(async () => {
+      render({
+        [mockState.metamask.selectedAddress]: [],
+      });
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('We may not support your protocol yet.'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("Can't find what you're looking for?"),
+      ).toBeInTheDocument();
     });
   });
 });

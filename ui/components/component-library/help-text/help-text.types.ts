@@ -33,9 +33,13 @@ export interface HelpTextStyleUtilityProps extends TextStyleUtilityProps {
   'data-testid'?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type HelpTextProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, HelpTextStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type HelpTextComponent = <C extends React.ElementType = 'span'>(
   props: HelpTextProps<C>,
 ) => React.ReactElement | null;

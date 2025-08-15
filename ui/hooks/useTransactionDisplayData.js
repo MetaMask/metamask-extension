@@ -43,6 +43,7 @@ import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenD
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
+import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -52,7 +53,6 @@ import { useTokenData } from './useTokenData';
 import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
 import useBridgeChainInfo from './bridge/useBridgeChainInfo';
-import { useRemoteModeTransaction } from './useRemoteModeTransaction';
 
 /**
  *  There are seven types of transaction entries that are currently differentiated in the design:
@@ -135,7 +135,7 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { type, txParamsOriginal } = initialTransaction;
+  const { transferInformation, type } = initialTransaction;
   const { from, to } = initialTransaction.txParams || {};
 
   const isUnifiedSwapTx =
@@ -156,24 +156,12 @@ export function useTransactionDisplayData(transactionGroup) {
   const primaryValue = primaryTransaction.txParams?.value;
   const date = formatDateWithYearContext(initialTransaction.time);
 
-  const { isRemoteModeActivity } = useRemoteModeTransaction({
-    transaction: initialTransaction,
-  });
-
   let prefix = '-';
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
-  let senderAddress = from;
-  let transactionData = initialTransaction?.txParams?.data;
-  let remoteSignerAddress = null;
-
-  if (isRemoteModeActivity) {
-    recipientAddress = txParamsOriginal?.to;
-    senderAddress = txParamsOriginal?.from;
-    remoteSignerAddress = initialTransaction?.txParams?.from;
-    transactionData = txParamsOriginal?.data;
-  }
+  const senderAddress = from;
+  const transactionData = initialTransaction?.txParams?.data;
 
   // This value is used to determine whether we should look inside txParams.data
   // to pull out and render token related information
@@ -256,11 +244,19 @@ export function useTransactionDisplayData(transactionGroup) {
         tokenId === transactionDataTokenId,
     );
 
-  const tokenDisplayValue = useTokenDisplayValue(
+  let tokenDisplayValue = useTokenDisplayValue(
     transactionData,
     token,
     isTokenCategory,
   );
+
+  if (transferInformation?.decimals) {
+    tokenDisplayValue = calcTokenAmount(
+      transferInformation.amount,
+      transferInformation.decimals,
+    ).toString(10);
+  }
+
   const tokenFiatAmount = useTokenFiatAmount(
     token?.address,
     tokenDisplayValue,
@@ -308,12 +304,17 @@ export function useTransactionDisplayData(transactionGroup) {
     ]);
     subtitle = origin;
     subtitleContainsOrigin = true;
+    const symbolFromTx =
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+      initialTransaction.sourceTokenSymbol;
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
-      : bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol;
-    primaryDisplayValue =
+      : symbolFromTx;
+    const value =
       bridgeTokenDisplayData.sourceTokenAmountSent ?? swapTokenValue;
+    primaryDisplayValue = value
+      ? formatAmount(locale, new BigNumber(value))
+      : undefined;
     secondaryDisplayValue =
       bridgeTokenDisplayData.displayCurrencyAmount ?? swapTokenFiatAmount;
     if (isNegative) {
@@ -451,7 +452,7 @@ export function useTransactionDisplayData(transactionGroup) {
     );
   }
 
-  const detailsTitle = isRemoteModeActivity ? `Remote ${title}` : title;
+  const detailsTitle = title;
 
   const primaryCurrencyPreferences = useUserPreferencedCurrency(
     PRIMARY,
@@ -484,6 +485,10 @@ export function useTransactionDisplayData(transactionGroup) {
     transactionGroup?.initialTransaction?.chainId,
   );
 
+  if (!recipientAddress && transferInformation) {
+    recipientAddress = to;
+  }
+
   return {
     title,
     category,
@@ -506,6 +511,5 @@ export function useTransactionDisplayData(transactionGroup) {
     isPending,
     isSubmitted,
     detailsTitle,
-    remoteSignerAddress,
   };
 }

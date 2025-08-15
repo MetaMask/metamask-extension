@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - Version-v*
+      - release/*
 
 jobs:
   auto-update:

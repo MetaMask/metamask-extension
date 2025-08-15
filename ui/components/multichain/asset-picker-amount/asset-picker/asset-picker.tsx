@@ -91,6 +91,8 @@ export type AssetPickerProps = {
 >;
 
 // A component that lets the user pick from a list of assets.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPicker({
   header,
   asset,
@@ -139,9 +141,9 @@ export function AssetPicker({
   // This is used to determine which tokens to display when isMultiselectEnabled=true
   const [selectedChainIds, setSelectedChainIds] = useState<string[]>(
     isMultiselectEnabled
-      ? allNetworksToUse
+      ? (allNetworksToUse
           ?.map(({ chainId }) => chainId)
-          .sort((a, b) => balanceByChainId[b] - balanceByChainId[a]) ?? []
+          .sort((a, b) => balanceByChainId[b] - balanceByChainId[a]) ?? [])
       : [],
   );
   const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
