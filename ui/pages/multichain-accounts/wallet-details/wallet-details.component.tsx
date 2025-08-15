@@ -1,56 +1,63 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { AccountWalletId } from '@metamask/account-api';
+import { useDispatch, useSelector } from 'react-redux';
+import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import {
-  SolScope,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
+  SolScope,
 } from '@metamask/keyring-api';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   ButtonIcon,
   ButtonIconSize,
   Icon,
   IconName,
   IconSize,
-  Text,
-  BannerAlert,
-  BannerAlertSeverity,
   Modal,
   ModalOverlay,
+  Text,
 } from '../../../components/component-library';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import {
   AlignItems,
-  BlockSize,
-  IconColor,
-  Display,
-  TextVariant,
-  TextColor,
-  TextAlign,
-  JustifyContent,
   BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  Display,
   FlexDirection,
+  IconColor,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Content,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { getMetaMaskHdKeyrings } from '../../../selectors';
+import {
+  getIsMultichainAccountsState2Enabled,
+  getMetaMaskHdKeyrings,
+} from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getMultichainAccountsByWalletId,
+  getWalletsWithAccounts,
+} from '../../../selectors/multichain-accounts/account-tree';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import WalletDetailsAccountItem from '../../../components/multichain/multichain-accounts/wallet-details-account-item/wallet-details-account-item';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import SRPQuiz from '../../../components/app/srp-quiz-modal';
 import { WalletDetailsAccountTypeSelection } from '../../../components/multichain/multichain-accounts/wallet-details-account-type-selection';
 import {
-  setAccountDetailsAddress,
   addNewAccount,
+  setAccountDetailsAddress,
 } from '../../../store/actions';
 import {
   ACCOUNT_DETAILS_ROUTE,
@@ -59,9 +66,12 @@ import {
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   EVM_WALLET_TYPE,
-  WalletClientType,
   useMultichainWalletSnapClient,
+  WalletClientType,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
+import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
+import { MultichainAccountMenu } from '../../../components/multichain-accounts/multichain-account-menu';
 
 type AccountBalance = {
   [key: string]: string | number;
@@ -72,7 +82,7 @@ const WalletDetails = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const decodedId = decodeURIComponent(id as string);
+  const decodedId = decodeURIComponent(id as string) as AccountWalletId;
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
   const seedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
@@ -80,6 +90,14 @@ const WalletDetails = () => {
   const wallet = walletsWithAccounts[decodedId as AccountWalletId];
   const [accountBalances, setAccountBalances] = useState<AccountBalance>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const multichainAccounts = useSelector((state: MultichainAccountsState) =>
+    getMultichainAccountsByWalletId(state, decodedId),
+  );
+
+  console.log('multichainAccounts', multichainAccounts);
 
   // Initialize wallet snap clients
   const solanaClient = useMultichainWalletSnapClient(WalletClientType.Solana);
@@ -258,6 +276,29 @@ const WalletDetails = () => {
     backgroundColor: BackgroundColor.backgroundAlternative,
   };
 
+  const multichainAccountCells = Object.entries(
+    multichainAccounts || {},
+  ).flatMap(([groupId, groupData]) => {
+    // TODO: Implement logic for removable accounts
+    const isRemovable = false;
+
+    return [
+      <MultichainAccountCell
+        key={`multichain-account-cell-${groupId}`}
+        accountId={groupId as AccountGroupId}
+        accountName={groupData.metadata.name}
+        balance="$ n/a"
+        disableHoverEffect={true}
+        endAccessory={
+          <MultichainAccountMenu
+            accountGroupId={groupId as AccountGroupId}
+            isRemovable={isRemovable}
+          />
+        }
+      />,
+    ];
+  });
+
   return (
     <Page className="wallet-details-page">
       <Header
@@ -373,7 +414,7 @@ const WalletDetails = () => {
           </Box>
         ) : null}
 
-        {accounts.length > 0 && (
+        {!isMultichainAccountsState2Enabled && accounts.length > 0 && (
           <Box className="wallet-details-page__rows-container">
             {accounts.map((account) => (
               <WalletDetailsAccountItem
@@ -414,6 +455,16 @@ const WalletDetails = () => {
                 </Box>
               </Box>
             ) : null}
+          </Box>
+        )}
+        {isMultichainAccountsState2Enabled && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            backgroundColor={BackgroundColor.backgroundMuted}
+            borderRadius={BorderRadius.XL}
+          >
+            {multichainAccountCells}
           </Box>
         )}
       </Content>
