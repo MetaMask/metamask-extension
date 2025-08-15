@@ -1076,7 +1076,7 @@
         "@metamask/design-system-react>@radix-ui/react-slot": true,
         "@solana/addresses": true,
         "@metamask/design-system-react>blo": true,
-        "@metamask/design-system-react>dompurify": true,
+        "dompurify": true,
         "react": true,
         "@metamask/design-system-react>tailwind-merge": true
       }
@@ -3340,12 +3340,6 @@
       }
     },
     "dompurify": {
-      "globals": {
-        "console.warn": true,
-        "define": true
-      }
-    },
-    "@metamask/design-system-react>dompurify": {
       "globals": {
         "console.warn": true,
         "define": true
