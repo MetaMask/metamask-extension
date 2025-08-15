@@ -104,12 +104,12 @@ export default function NotificationsSettings() {
             }
           />
         }
-        endAccessory={<Box style={{ height: '48px' }} />}
+        // endAccessory={<Box style={{ height: '48px' }} />}
         alignItems={AlignItems.center}
-        textProps={{
-          // variant: TextVariant.headingMd,
-          'data-testid': 'notifications-settings-title',
-        }}
+        // textProps={{
+        // variant: TextVariant.headingMd,
+        // 'data-testid': 'notifications-settings-title',
+        // }}
       >
         {t('notifications')}
       </Header>
