@@ -3,7 +3,10 @@ import { generateDeterministicRandomNumber } from '@metamask/remote-feature-flag
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME } from '../../../../shared/constants/network';
 import {
+  KNOWN_CUSTOM_ENDPOINTS,
+  PRODUCTION_LIKE_ENVIRONMENTS,
   getIsQuicknodeEndpointUrl,
+  getIsMetaMaskInfuraEndpointUrl,
   shouldCreateRpcServiceEvents,
 } from './utils';
 
@@ -17,12 +20,55 @@ jest.mock('@metamask/remote-feature-flag-controller', () => {
   };
 });
 
+jest.mock('../../../../shared/constants/network', () => {
+  // The network constants file relies on INFURA_PROJECT_ID already being set.
+  // If we set it in a test, then it's already too late.
+  // Therefore, we have to set it to a known value before loading the file.
+  const previousInfuraProjectId = process.env.INFURA_PROJECT_ID;
+  // NOTE: This must match MOCK_METAMASK_INFURA_PROJECT_ID below.
+  process.env.INFURA_PROJECT_ID = 'metamask-infura-project-id';
+  const module = jest.requireActual('../../../../shared/constants/network');
+  process.env.INFURA_PROJECT_ID = previousInfuraProjectId;
+  return module;
+});
+
 const generateDeterministicRandomNumberMock = jest.mocked(
   generateDeterministicRandomNumber,
 );
 
+const MOCK_METAMASK_INFURA_PROJECT_ID = 'metamask-infura-project-id';
+
 const MOCK_METAMETRICS_ID =
   '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420';
+
+describe('getIsMetaMaskInfuraEndpointUrl', () => {
+  it('returns true if the URL has an Infura hostname with some subdomain whose path starts with the MetaMask API key', () => {
+    expect(
+      getIsMetaMaskInfuraEndpointUrl(
+        'https://some-subdomain.infura.io/v3/the-infura-project-id',
+        'the-infura-project-id',
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false if the URL has an Infura hostname with some subdomain whose path does not start with the MetaMask API key', () => {
+    expect(
+      getIsMetaMaskInfuraEndpointUrl(
+        'https://some-subdomain.infura.io/v3/a-different-infura-project-id',
+        'the-infura-project-id',
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false if the URL does match an Infura URL', () => {
+    expect(
+      getIsMetaMaskInfuraEndpointUrl(
+        'https://a-different-url.com',
+        'the-infura-project-id',
+      ),
+    ).toBe(false);
+  });
+});
 
 describe('getIsQuicknodeEndpointUrl', () => {
   for (const [infuraNetwork, getQuicknodeEndpointUrl] of Object.entries(
@@ -59,78 +105,317 @@ describe('getIsQuicknodeEndpointUrl', () => {
   });
 });
 
+const ENDPOINTS_TO_TEST = [
+  [
+    'an Infura endpoint using the MetaMask API key',
+    () => `https://mainnet.infura.io/v3/${MOCK_METAMASK_INFURA_PROJECT_ID}`,
+  ],
+  ...Object.entries(QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME).map(
+    ([infuraNetworkName, getUrl]) => [
+      `the Quicknode endpoint URL for ${infuraNetworkName}`,
+      getUrl,
+    ],
+  ),
+  ...KNOWN_CUSTOM_ENDPOINTS.map(({ name, url }) => [
+    `the known custom network ${name} (${url})`,
+    () => url,
+  ]),
+];
+
 describe('shouldCreateRpcServiceEvents', () => {
-  // @ts-expect-error The Mocha types are incorrect.
-  it.each([ENVIRONMENT.PRODUCTION, ENVIRONMENT.RELEASE_CANDIDATE])(
-    'returns false given a connection error, even when given a non-null metametricsId, METAMASK_ENVIRONMENT is "%s", and the user is in the sample',
-    async (metamaskEnvironment: string | undefined) => {
-      await withChangesToEnvironmentVariables(() => {
-        process.env.METAMASK_ENVIRONMENT = metamaskEnvironment;
-        generateDeterministicRandomNumberMock.mockReturnValue(0.009999);
-        const error = new TypeError('Failed to fetch');
-        expect(shouldCreateRpcServiceEvents(error, MOCK_METAMETRICS_ID)).toBe(
-          false,
+  describe('if not given an error', () => {
+    const error = undefined;
+
+    describe('if given a MetaMetrics ID', () => {
+      // @ts-expect-error The Mocha types are incorrect.
+      describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
+        'if the environment is %s',
+        (environment: string) => {
+          describe('if the user is in the MetaMetrics sample', () => {
+            const sampleUserRanking = 0.009999;
+
+            // @ts-expect-error The Mocha types are incorrect.
+            describe.each(ENDPOINTS_TO_TEST)(
+              'if the endpoint URL is %s',
+              (_description: string, getEndpointUrl: () => string) => {
+                it('returns true', async () => {
+                  await withChangesToEnvironmentVariables(() => {
+                    process.env.METAMASK_ENVIRONMENT = environment;
+                    generateDeterministicRandomNumberMock.mockReturnValue(
+                      sampleUserRanking,
+                    );
+
+                    expect(
+                      shouldCreateRpcServiceEvents({
+                        endpointUrl: getEndpointUrl(),
+                        error,
+                        infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+                        metaMetricsId: MOCK_METAMETRICS_ID,
+                      }),
+                    ).toBe(true);
+                  });
+                });
+              },
+            );
+          });
+
+          describe('if the user is not in the MetaMetrics sample', () => {
+            const sampleUserRanking = 0.2;
+
+            // @ts-expect-error The Mocha types are incorrect.
+            describe.each(ENDPOINTS_TO_TEST)(
+              'if the endpoint URL is %s',
+              (_description: string, getEndpointUrl: () => string) => {
+                it('returns false', async () => {
+                  await withChangesToEnvironmentVariables(() => {
+                    process.env.METAMASK_ENVIRONMENT = environment;
+                    generateDeterministicRandomNumberMock.mockReturnValue(
+                      sampleUserRanking,
+                    );
+
+                    expect(
+                      shouldCreateRpcServiceEvents({
+                        endpointUrl: getEndpointUrl(),
+                        error,
+                        infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+                        metaMetricsId: MOCK_METAMETRICS_ID,
+                      }),
+                    ).toBe(false);
+                  });
+                });
+              },
+            );
+          });
+        },
+      );
+
+      describe('if the environment is non-production', () => {
+        const environment = ENVIRONMENT.DEVELOPMENT;
+
+        // @ts-expect-error The Mocha types are incorrect.
+        describe.each(ENDPOINTS_TO_TEST)(
+          'if the endpoint URL is %s',
+          (_description: string, getEndpointUrl: () => string) => {
+            it('returns true', async () => {
+              await withChangesToEnvironmentVariables(() => {
+                process.env.METAMASK_ENVIRONMENT = environment;
+
+                expect(
+                  shouldCreateRpcServiceEvents({
+                    endpointUrl: getEndpointUrl(),
+                    error,
+                    infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+                    metaMetricsId: MOCK_METAMETRICS_ID,
+                  }),
+                ).toBe(true);
+              });
+            });
+          },
         );
       });
-    },
-  );
 
-  // @ts-expect-error The Mocha types are incorrect.
-  describe.each([
-    ['a non-connection error', new Error('some error')],
-    ['no error', undefined],
-  ])('given %s', (_description: string, error: unknown) => {
-    it('returns false given a null metaMetricsId', () => {
-      expect(shouldCreateRpcServiceEvents(error, null)).toBe(false);
-    });
-
-    it('returns false given a non-null metaMetricsId, but METAMASK_ENVIRONMENT is not set', async () => {
-      await withChangesToEnvironmentVariables(() => {
-        delete process.env.METAMASK_ENVIRONMENT;
-
-        expect(shouldCreateRpcServiceEvents(error, MOCK_METAMETRICS_ID)).toBe(
-          false,
-        );
-      });
-    });
-
-    it('returns true when METAMASK_ENVIRONMENT is not "production" or "release-candidate"', async () => {
-      await withChangesToEnvironmentVariables(() => {
-        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
-
-        expect(shouldCreateRpcServiceEvents(error, MOCK_METAMETRICS_ID)).toBe(
-          true,
-        );
-      });
-    });
-
-    // @ts-expect-error The Mocha types are incorrect.
-    describe.each([ENVIRONMENT.PRODUCTION, ENVIRONMENT.RELEASE_CANDIDATE])(
-      'if METAMASK_ENVIRONMENT is "%s"',
-      (metamaskEnvironment: string) => {
-        it('returns false when the MetaMetrics user is not within the sample', async () => {
+      describe('if the environment is not set', () => {
+        it('returns false', async () => {
           await withChangesToEnvironmentVariables(() => {
-            process.env.METAMASK_ENVIRONMENT = metamaskEnvironment;
-            generateDeterministicRandomNumberMock.mockReturnValue(0.2);
+            delete process.env.METAMASK_ENVIRONMENT;
 
             expect(
-              shouldCreateRpcServiceEvents(error, MOCK_METAMETRICS_ID),
+              shouldCreateRpcServiceEvents({
+                endpointUrl: 'https://example.com',
+                error,
+                infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+                metaMetricsId: MOCK_METAMETRICS_ID,
+              }),
             ).toBe(false);
           });
         });
+      });
+    });
 
-        it('returns true when the MetaMetrics user is within the sample', async () => {
+    describe('if the MetaMetrics ID is undefined', () => {
+      const metaMetricsId = undefined;
+
+      it('returns false', async () => {
+        expect(
+          shouldCreateRpcServiceEvents({
+            endpointUrl: 'https://example.com',
+            error: undefined,
+            infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+            metaMetricsId,
+          }),
+        ).toBe(false);
+      });
+    });
+
+    describe('if the MetaMetrics ID is null', () => {
+      const metaMetricsId = null;
+
+      it('returns false', async () => {
+        expect(
+          shouldCreateRpcServiceEvents({
+            endpointUrl: 'https://example.com',
+            error: undefined,
+            infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+            metaMetricsId,
+          }),
+        ).toBe(false);
+      });
+    });
+  });
+
+  describe('if given a non-connection error', () => {
+    const error = new Error('some error');
+
+    describe('if given a MetaMetrics ID', () => {
+      // @ts-expect-error The Mocha types are incorrect.
+      describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
+        'if the environment is %s',
+        (environment: string) => {
+          describe('if the user is in the MetaMetrics sample', () => {
+            const sampleUserRanking = 0.009999;
+
+            // @ts-expect-error The Mocha types are incorrect.
+            describe.each(ENDPOINTS_TO_TEST)(
+              'if the endpoint URL is %s',
+              (_description: string, getEndpointUrl: () => string) => {
+                it('returns true', async () => {
+                  await withChangesToEnvironmentVariables(() => {
+                    process.env.METAMASK_ENVIRONMENT = environment;
+                    generateDeterministicRandomNumberMock.mockReturnValue(
+                      sampleUserRanking,
+                    );
+
+                    expect(
+                      shouldCreateRpcServiceEvents({
+                        endpointUrl: getEndpointUrl(),
+                        error,
+                        infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+                        metaMetricsId: MOCK_METAMETRICS_ID,
+                      }),
+                    ).toBe(true);
+                  });
+                });
+              },
+            );
+          });
+
+          describe('if the user is not in the MetaMetrics sample', () => {
+            const sampleUserRanking = 0.2;
+
+            // @ts-expect-error The Mocha types are incorrect.
+            describe.each(ENDPOINTS_TO_TEST)(
+              'if the endpoint URL is %s',
+              (_description: string, getEndpointUrl: () => string) => {
+                it('returns false', async () => {
+                  await withChangesToEnvironmentVariables(() => {
+                    process.env.METAMASK_ENVIRONMENT = environment;
+                    generateDeterministicRandomNumberMock.mockReturnValue(
+                      sampleUserRanking,
+                    );
+
+                    expect(
+                      shouldCreateRpcServiceEvents({
+                        endpointUrl: getEndpointUrl(),
+                        error,
+                        infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+                        metaMetricsId: MOCK_METAMETRICS_ID,
+                      }),
+                    ).toBe(false);
+                  });
+                });
+              },
+            );
+          });
+        },
+      );
+
+      describe('if the environment is non-production', () => {
+        const environment = ENVIRONMENT.DEVELOPMENT;
+
+        // @ts-expect-error The Mocha types are incorrect.
+        describe.each(ENDPOINTS_TO_TEST)(
+          'if the endpoint URL is %s',
+          (_description: string, getEndpointUrl: () => string) => {
+            it('returns true', async () => {
+              await withChangesToEnvironmentVariables(() => {
+                process.env.METAMASK_ENVIRONMENT = environment;
+
+                expect(
+                  shouldCreateRpcServiceEvents({
+                    endpointUrl: getEndpointUrl(),
+                    error,
+                    infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+                    metaMetricsId: MOCK_METAMETRICS_ID,
+                  }),
+                ).toBe(true);
+              });
+            });
+          },
+        );
+      });
+
+      describe('if the environment is not set', () => {
+        it('returns false', async () => {
           await withChangesToEnvironmentVariables(() => {
-            process.env.METAMASK_ENVIRONMENT = metamaskEnvironment;
-            generateDeterministicRandomNumberMock.mockReturnValue(0.009999);
+            delete process.env.METAMASK_ENVIRONMENT;
 
             expect(
-              shouldCreateRpcServiceEvents(error, MOCK_METAMETRICS_ID),
-            ).toBe(true);
+              shouldCreateRpcServiceEvents({
+                endpointUrl: 'https://example.com',
+                error,
+                infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+                metaMetricsId: MOCK_METAMETRICS_ID,
+              }),
+            ).toBe(false);
           });
         });
-      },
-    );
+      });
+    });
+
+    describe('if the MetaMetrics ID is undefined', () => {
+      const metaMetricsId = undefined;
+
+      it('returns false', async () => {
+        expect(
+          shouldCreateRpcServiceEvents({
+            endpointUrl: 'https://example.com',
+            error: undefined,
+            infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+            metaMetricsId,
+          }),
+        ).toBe(false);
+      });
+    });
+
+    describe('if the MetaMetrics ID is null', () => {
+      const metaMetricsId = null;
+
+      it('returns false', async () => {
+        expect(
+          shouldCreateRpcServiceEvents({
+            endpointUrl: 'https://example.com',
+            error: undefined,
+            infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+            metaMetricsId,
+          }),
+        ).toBe(false);
+      });
+    });
+  });
+
+  describe('if given a connection error', () => {
+    const error = new TypeError('Failed to fetch');
+
+    it('returns false', async () => {
+      expect(
+        shouldCreateRpcServiceEvents({
+          endpointUrl: 'https://example.com',
+          error,
+          infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+          metaMetricsId: MOCK_METAMETRICS_ID,
+        }),
+      ).toBe(false);
+    });
   });
 });
 

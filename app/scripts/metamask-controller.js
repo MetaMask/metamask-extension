@@ -756,6 +756,7 @@ export default class MetamaskController extends EventEmitter {
           chainId,
           endpointUrl,
           error,
+          infuraProjectId: opts.infuraProjectId,
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
@@ -770,6 +771,7 @@ export default class MetamaskController extends EventEmitter {
           chainId,
           endpointUrl,
           error,
+          infuraProjectId: opts.infuraProjectId,
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),

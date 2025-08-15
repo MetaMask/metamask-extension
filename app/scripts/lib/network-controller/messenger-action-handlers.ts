@@ -29,29 +29,32 @@ import { shouldCreateRpcServiceEvents } from './utils';
  * @param args.endpointUrl - The URL of the endpoint.
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
- * @param args.trackEvent - The function that will create the Segment event.
+ * @param args.infuraProjectId - Our Infura project ID.
  * @param args.metaMetricsId - The MetaMetrics ID of the user.
+ * @param args.trackEvent - The function that will create the Segment event.
  */
 export function onRpcEndpointUnavailable({
   chainId,
   endpointUrl,
   error,
-  trackEvent,
+  infuraProjectId,
   metaMetricsId,
+  trackEvent,
 }: {
   chainId: Hex;
   endpointUrl: string;
   error: unknown;
-  trackEvent: MetaMetricsController['trackEvent'];
+  infuraProjectId: string;
   metaMetricsId: string | null;
+  trackEvent: MetaMetricsController['trackEvent'];
 }): void {
-  trackRpcEndpointEvent({
-    event: MetaMetricsEventName.RpcServiceUnavailable,
+  trackRpcEndpointEvent(MetaMetricsEventName.RpcServiceUnavailable, {
     chainId,
     endpointUrl,
     error,
-    trackEvent,
+    infuraProjectId,
     metaMetricsId,
+    trackEvent,
   });
 }
 
@@ -69,29 +72,32 @@ export function onRpcEndpointUnavailable({
  * @param args.endpointUrl - The URL of the endpoint.
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
- * @param args.trackEvent - The function that will create the Segment event.
+ * @param args.infuraProjectId - Our Infura project ID.
  * @param args.metaMetricsId - The MetaMetrics ID of the user.
+ * @param args.trackEvent - The function that will create the Segment event.
  */
 export function onRpcEndpointDegraded({
   chainId,
   endpointUrl,
   error,
-  trackEvent,
+  infuraProjectId,
   metaMetricsId,
+  trackEvent,
 }: {
   chainId: Hex;
   endpointUrl: string;
   error: unknown;
-  trackEvent: MetaMetricsController['trackEvent'];
+  infuraProjectId: string;
   metaMetricsId: string | null;
+  trackEvent: MetaMetricsController['trackEvent'];
 }): void {
-  trackRpcEndpointEvent({
-    event: MetaMetricsEventName.RpcServiceDegraded,
+  trackRpcEndpointEvent(MetaMetricsEventName.RpcServiceDegraded, {
     chainId,
     endpointUrl,
     error,
-    trackEvent,
+    infuraProjectId,
     metaMetricsId,
+    trackEvent,
   });
 }
 
@@ -99,31 +105,42 @@ export function onRpcEndpointDegraded({
  * Creates a Segment event when an RPC endpoint is determined to be degraded or
  * unavailable.
  *
- * @param args - The arguments.
- * @param args.event - The Segment event to create.
+ * @param event - The Segment event to create.
+ * @param args - The remaining arguments.
  * @param args.chainId - The chain ID that the endpoint represents.
+ * @param args.endpointUrl - The URL of the endpoint.
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
- * @param args.endpointUrl - The URL of the endpoint.
- * @param args.trackEvent - The function that will create the Segment event.
+ * @param args.infuraProjectId - Our Infura project ID.
  * @param args.metaMetricsId - The MetaMetrics ID of the user.
+ * @param args.trackEvent - The function that will create the Segment event.
  */
-export function trackRpcEndpointEvent({
-  event,
-  chainId,
-  endpointUrl,
-  error,
-  trackEvent,
-  metaMetricsId,
-}: {
-  event: string;
-  chainId: Hex;
-  endpointUrl: string;
-  error: unknown;
-  trackEvent: MetaMetricsController['trackEvent'];
-  metaMetricsId: string | null;
-}): void {
-  if (!shouldCreateRpcServiceEvents(error, metaMetricsId)) {
+export function trackRpcEndpointEvent(
+  event: string,
+  {
+    chainId,
+    endpointUrl,
+    error,
+    infuraProjectId,
+    trackEvent,
+    metaMetricsId,
+  }: {
+    chainId: Hex;
+    endpointUrl: string;
+    error: unknown;
+    infuraProjectId: string;
+    trackEvent: MetaMetricsController['trackEvent'];
+    metaMetricsId: string | null;
+  },
+): void {
+  if (
+    !shouldCreateRpcServiceEvents({
+      endpointUrl,
+      error,
+      infuraProjectId,
+      metaMetricsId,
+    })
+  ) {
     return;
   }
 
