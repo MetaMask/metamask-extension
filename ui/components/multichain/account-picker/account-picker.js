@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+import { AvatarAccountSize } from '@metamask/design-system-react';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
-  AvatarAccount,
-  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -26,10 +26,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { trace, TraceName } from '../../../../shared/lib/trace';
-import {
-  getIsMultichainAccountsState2Enabled,
-  getUseBlockie,
-} from '../../../selectors';
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors';
 
 const AccountMenuStyle = { height: 'auto' };
 
@@ -49,7 +46,6 @@ export const AccountPicker = ({
   AccountPicker.propTypes = {
     showAvatarAccount: PropTypes.bool,
   };
-  const useBlockie = useSelector(getUseBlockie);
   const shortenedAddress = address
     ? shortenAddress(toChecksumHexAddress(address))
     : '';
@@ -112,18 +108,12 @@ export const AccountPicker = ({
             showAvatarAccount ? FlexDirection.Row : FlexDirection.Column
           }
           alignItems={AlignItems.center}
-          gap={showAvatarAccount ? 2 : 0}
+          gap={showAvatarAccount ? 4 : 0}
         >
           {showAvatarAccount ? (
-            <AvatarAccount
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
+            <PreferredAvatar
               address={address}
-              size={showAddress ? Size.MD : Size.XS}
-              borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+              size={showAddress ? AvatarAccountSize.Md : AvatarAccountSize.Xs}
             />
           ) : null}
           <Text

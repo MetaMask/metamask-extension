@@ -3,11 +3,8 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import Confusable from '../../ui/confusable';
 import {
-  AvatarAccount,
   Box,
-  AvatarAccountVariant,
   Text,
-  AvatarAccountSize,
   Icon,
   IconName,
   BadgeWrapper,
@@ -18,7 +15,6 @@ import {
   TextAlign,
   TextVariant,
   FlexDirection,
-  BorderColor,
   Display,
   BlockSize,
   BackgroundColor,
@@ -26,7 +22,7 @@ import {
   AlignItems,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { getUseBlockie } from '../../../selectors';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
 import { I18nContext } from '../../../contexts/i18n';
@@ -53,7 +49,6 @@ export const AddressListItem = ({
   const t = useContext(I18nContext);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
-  const useBlockie = useSelector(getUseBlockie);
   let displayName: string | React.ReactNode = shortenAddress(address);
   if (label) {
     displayName = label;
@@ -73,7 +68,7 @@ export const AddressListItem = ({
       }}
       width={BlockSize.Full}
       backgroundColor={BackgroundColor.transparent}
-      className="address-list-item"
+      className="address-list-item gap-4"
       alignItems={AlignItems.center}
     >
       <BadgeWrapper
@@ -86,20 +81,10 @@ export const AddressListItem = ({
             borderWidth={2}
           />
         }
-        marginRight={4}
+        className="!self-center !flex"
       >
-        <AvatarAccount
-          borderColor={BorderColor.transparent}
-          size={AvatarAccountSize.Md}
-          address={address}
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
-          }
-        />
+        <PreferredAvatar address={address} className="flex" />
       </BadgeWrapper>
-
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

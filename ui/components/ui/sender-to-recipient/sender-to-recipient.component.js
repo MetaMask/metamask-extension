@@ -3,6 +3,8 @@ import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { AvatarAccountSize } from '@metamask/design-system-react';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -10,7 +12,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Name from '../../app/name/name';
 import { Icon, IconName } from '../../component-library';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
-import Identicon from '../identicon';
 import Tooltip from '../tooltip';
 import {
   CARDS_VARIANT,
@@ -59,10 +60,10 @@ function SenderAddress({
         }
       }}
     >
-      <div className="sender-to-recipient__sender-icon">
-        <Identicon
+      <div className="sender-to-recipient__sender-icon inline-flex">
+        <PreferredAvatar
           address={toChecksumHexAddress(senderAddress)}
-          diameter={24}
+          size={AvatarAccountSize.xs}
         />
       </div>
       <Tooltip

@@ -1,8 +1,7 @@
 import React from 'react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { AvatarAccount, Box, Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import {
-  BlockSize,
   Display,
   JustifyContent,
   FlexDirection,
@@ -12,6 +11,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 
 export type NotificationsSettingsAccountProps = {
   address: string;
@@ -32,13 +32,12 @@ export function NotificationsSettingsAccount({
       alignItems={AlignItems.center}
       gap={4}
     >
-      <AvatarAccount address={checksumAddress} />
+      <PreferredAvatar address={checksumAddress} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexStart}
         justifyContent={JustifyContent.spaceBetween}
-        width={BlockSize.Full}
       >
         <Text variant={TextVariant.bodyLgMedium} textAlign={TextAlign.Left}>
           {name ?? checksumAddress}

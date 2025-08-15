@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import { Tooltip } from 'react-tippy';
 import { useSelector } from 'react-redux';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BorderStyle,
@@ -15,9 +20,6 @@ import {
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
 import { AvatarGroup } from '../../..';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -71,7 +73,6 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
                     size={AvatarAccountSize.Xs}
                     address={acc.address}
                     variant={avatarAccountVariant}
-                    borderStyle={BorderStyle.none}
                   />
                   <Text
                     color={TextColor.overlayInverse}
