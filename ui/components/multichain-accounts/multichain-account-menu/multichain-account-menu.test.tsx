@@ -4,6 +4,12 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
+const popoverOpenSelector = '.mm-popover--open';
+const menuButtonSelector = '.multichain-account-menu-button';
+const menuIconSelector = '.multichain-account-menu-button-icon';
+const menuItemSelector = '.multichain-account-menu-item';
+const errorColorSelector = '.mm-box--color-error-default';
+
 const mockHistoryPush = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -30,26 +36,20 @@ describe('MultichainAccountMenu', () => {
   it('renders the menu button and popover is initially closed', () => {
     renderComponent();
 
-    const menuButton = document.querySelector(
-      '.multichain-account-menu-button',
-    );
+    const menuButton = document.querySelector(menuButtonSelector);
 
     expect(menuButton).toBeInTheDocument();
 
-    const menuIcon = document.querySelector(
-      '.multichain-account-menu-button-icon',
-    );
+    const menuIcon = document.querySelector(menuIconSelector);
 
     expect(menuIcon).toBeInTheDocument();
-    expect(document.querySelector('.mm-popover--open')).not.toBeInTheDocument();
+    expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
   });
 
   it('opens the popover menu when clicking the menu button', async () => {
     renderComponent();
 
-    const menuButton = document.querySelector(
-      '.multichain-account-menu-button',
-    );
+    const menuButton = document.querySelector(menuButtonSelector);
 
     expect(menuButton).not.toBeNull();
 
@@ -58,19 +58,17 @@ describe('MultichainAccountMenu', () => {
         fireEvent.click(menuButton);
         await waitFor(() => {
           expect(
-            document.querySelector('.mm-popover--open'),
+            document.querySelector(popoverOpenSelector),
           ).toBeInTheDocument();
         });
       });
     }
 
-    const popover = document.querySelector('.mm-popover--open');
+    const popover = document.querySelector(popoverOpenSelector);
 
     expect(popover).toBeInTheDocument();
 
-    const menuItems = document.querySelectorAll(
-      '.multichain-account-menu-item',
-    );
+    const menuItems = document.querySelectorAll(menuItemSelector);
 
     expect(menuItems.length).toBe(5);
   });
@@ -81,9 +79,7 @@ describe('MultichainAccountMenu', () => {
       isRemovable: true,
     });
 
-    const menuButton = document.querySelector(
-      '.multichain-account-menu-button',
-    );
+    const menuButton = document.querySelector(menuButtonSelector);
 
     expect(menuButton).not.toBeNull();
 
@@ -92,19 +88,17 @@ describe('MultichainAccountMenu', () => {
         fireEvent.click(menuButton);
         await waitFor(() => {
           expect(
-            document.querySelector('.mm-popover--open'),
+            document.querySelector(popoverOpenSelector),
           ).toBeInTheDocument();
         });
       });
     }
 
-    const menuItems = document.querySelectorAll(
-      '.multichain-account-menu-item',
-    );
+    const menuItems = document.querySelectorAll(menuItemSelector);
 
     expect(menuItems.length).toBe(6);
 
-    const removeOption = document.querySelector('.mm-box--color-error-default');
+    const removeOption = document.querySelector(errorColorSelector);
 
     expect(removeOption).toBeInTheDocument();
   });
@@ -112,9 +106,7 @@ describe('MultichainAccountMenu', () => {
   it('navigates to account details page when clicking the account details option', async () => {
     renderComponent();
 
-    const menuButton = document.querySelector(
-      '.multichain-account-menu-button',
-    );
+    const menuButton = document.querySelector(menuButtonSelector);
 
     expect(menuButton).not.toBeNull();
 
@@ -123,15 +115,13 @@ describe('MultichainAccountMenu', () => {
         fireEvent.click(menuButton);
         await waitFor(() => {
           expect(
-            document.querySelector('.mm-popover--open'),
+            document.querySelector(popoverOpenSelector),
           ).toBeInTheDocument();
         });
       });
     }
 
-    const accountDetailsOption = document.querySelector(
-      '.multichain-account-menu-item',
-    );
+    const accountDetailsOption = document.querySelector(menuItemSelector);
 
     expect(accountDetailsOption).not.toBeNull();
 
@@ -149,9 +139,7 @@ describe('MultichainAccountMenu', () => {
   it('toggles the popover state when clicking the menu button multiple times', async () => {
     renderComponent();
 
-    const menuButton = document.querySelector(
-      '.multichain-account-menu-button',
-    );
+    const menuButton = document.querySelector(menuButtonSelector);
 
     expect(menuButton).not.toBeNull();
 
@@ -161,7 +149,7 @@ describe('MultichainAccountMenu', () => {
         fireEvent.click(menuButton);
         await waitFor(() => {
           expect(
-            document.querySelector('.mm-popover--open'),
+            document.querySelector(popoverOpenSelector),
           ).toBeInTheDocument();
         });
       });
@@ -171,7 +159,7 @@ describe('MultichainAccountMenu', () => {
         fireEvent.click(menuButton);
         await waitFor(() => {
           expect(
-            document.querySelector('.mm-popover--open'),
+            document.querySelector(popoverOpenSelector),
           ).not.toBeInTheDocument();
         });
       });
@@ -181,7 +169,7 @@ describe('MultichainAccountMenu', () => {
         fireEvent.click(menuButton);
         await waitFor(() => {
           expect(
-            document.querySelector('.mm-popover--open'),
+            document.querySelector(popoverOpenSelector),
           ).toBeInTheDocument();
         });
       });
