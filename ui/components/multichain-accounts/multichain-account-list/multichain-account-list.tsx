@@ -30,6 +30,7 @@ import {
   getHDEntropyIndex,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MultichainAccountMenu } from '../multichain-account-menu';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -103,6 +104,9 @@ export const MultichainAccountList = ({
 
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
+            // TODO: Implement logic for removable accounts
+            const isRemovable = false;
+
             return [
               <MultichainAccountCell
                 key={`multichain-account-cell-${groupId}`}
@@ -111,6 +115,12 @@ export const MultichainAccountList = ({
                 balance="$ n/a"
                 selected={selectedAccountGroup === groupId}
                 onClick={handleAccountClick}
+                endAccessory={
+                  <MultichainAccountMenu
+                    accountGroupId={groupId as AccountGroupId}
+                    isRemovable={isRemovable}
+                  />
+                }
               />,
             ];
           },
