@@ -19,7 +19,7 @@
     flex-shrink: 0;
   }
 
-  &:hover {
+  &:hover:not(.multichain-account-cell--no-hover) {
     background: var(--color-background-default-hover);
 
     .multichain-account-cell__account-avatar {
