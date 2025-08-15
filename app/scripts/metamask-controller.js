@@ -2645,9 +2645,6 @@ export default class MetamaskController extends EventEmitter {
               throw new Error(`Entropy source with ID "${source}" not found.`);
             }
           },
-          getUnlockPromise: this.appStateController.getUnlockPromise.bind(
-            this.appStateController,
-          ),
           getSnap: this.controllerMessenger.call.bind(
             this.controllerMessenger,
             'SnapController:get',
