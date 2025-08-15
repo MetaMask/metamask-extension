@@ -51,11 +51,8 @@ type BaseAddTransactionRequest = {
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
   userOperationController: UserOperationController;
   internalAccounts: InternalAccount[];
-  getSecurityAlertResponse: (address: string) => SecurityAlertResponse;
-  addSecurityAlertResponse: (
-    address: string,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void;
+  getSecurityAlertResponse: GetAddressSecurityAlertResponse;
+  addSecurityAlertResponse: AddAddressSecurityAlertResponse;
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
@@ -276,6 +273,7 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
   } catch (error) {
     console.error('[scanAddressForTrustSignals] error:', error);
   }
+  });
 }
 
 async function validateSecurity(request: AddTransactionRequest) {
