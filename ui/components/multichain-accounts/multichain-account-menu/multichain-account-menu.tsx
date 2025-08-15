@@ -171,7 +171,6 @@ export const MultichainAccountMenu = ({
         borderRadius={BorderRadius.LG}
         padding={1}
         onClick={togglePopover}
-        style={{ cursor: 'pointer', width: '28px', height: '28px' }}
       >
         <Icon
           className="multichain-account-menu-button-icon"
@@ -179,18 +178,11 @@ export const MultichainAccountMenu = ({
         />
       </Box>
       <Popover
+        className="multichain-account-menu-popover"
         isOpen={isPopoverOpen}
         position={PopoverPosition.LeftStart}
         referenceElement={popoverRef.current}
         matchWidth={false}
-        style={{
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          cursor: 'pointer',
-          overflow: 'hidden',
-        }}
         borderRadius={BorderRadius.LG}
       >
         {menuItems}

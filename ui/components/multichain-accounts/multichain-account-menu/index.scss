@@ -1,5 +1,20 @@
+.multichain-account-menu-button {
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+}
+
 .multichain-account-menu-item {
   &:hover {
     background: var(--color-background-default-hover);
   }
+}
+
+.multichain-account-menu-popover {
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
 }
