@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
@@ -80,7 +80,7 @@ const ANIMATION_TIME = 500;
 export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [showDetail, setShowDetail] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -172,7 +172,7 @@ export default function PrivacySettings() {
       },
     });
 
-    history.push(ONBOARDING_COMPLETION_ROUTE);
+    navigate(ONBOARDING_COMPLETION_ROUTE);
   };
 
   const handleIPFSChange = (url) => {

@@ -1,5 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import PropTypes from 'prop-types';
+import { useLocation } from 'react-router-dom-v5-compat';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -7,10 +9,25 @@ import {
   LOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import OnboardingFlowSwitch from './onboarding-flow-switch';
 
+// Test component to capture the current location
+function LocationCapture({ onLocationChange }) {
+  const location = useLocation();
+  React.useEffect(() => {
+    onLocationChange(location.pathname);
+  }, [location.pathname, onLocationChange]);
+  return null;
+}
+
+LocationCapture.propTypes = {
+  onLocationChange: PropTypes.func.isRequired,
+};
+
 describe('Onboaring Flow Switch Component', () => {
+  let currentPath;
+
   it('should route to default route when completed onboarding', () => {
     const mockState = {
       metamask: {
@@ -19,9 +36,19 @@ describe('Onboaring Flow Switch Component', () => {
     };
 
     const mockStore = configureMockStore()(mockState);
-    const { history } = renderWithProvider(<OnboardingFlowSwitch />, mockStore);
+    renderWithProvider(
+      <>
+        <OnboardingFlowSwitch />
+        <LocationCapture
+          onLocationChange={(path) => {
+            currentPath = path;
+          }}
+        />
+      </>,
+      mockStore,
+    );
 
-    expect(history.location.pathname).toStrictEqual(DEFAULT_ROUTE);
+    expect(currentPath).toStrictEqual(DEFAULT_ROUTE);
   });
 
   it('should route to completed onboarding route when seed phrase is other than null', () => {
@@ -32,11 +59,19 @@ describe('Onboaring Flow Switch Component', () => {
     };
 
     const mockStore = configureMockStore()(mockState);
-    const { history } = renderWithProvider(<OnboardingFlowSwitch />, mockStore);
-
-    expect(history.location.pathname).toStrictEqual(
-      ONBOARDING_COMPLETION_ROUTE,
+    renderWithProvider(
+      <>
+        <OnboardingFlowSwitch />
+        <LocationCapture
+          onLocationChange={(path) => {
+            currentPath = path;
+          }}
+        />
+      </>,
+      mockStore,
     );
+
+    expect(currentPath).toStrictEqual(ONBOARDING_COMPLETION_ROUTE);
   });
 
   it('should route to lock when seedPhrase is not backed up and unlocked', () => {
@@ -48,9 +83,19 @@ describe('Onboaring Flow Switch Component', () => {
     };
 
     const mockStore = configureMockStore()(mockState);
-    const { history } = renderWithProvider(<OnboardingFlowSwitch />, mockStore);
+    renderWithProvider(
+      <>
+        <OnboardingFlowSwitch />
+        <LocationCapture
+          onLocationChange={(path) => {
+            currentPath = path;
+          }}
+        />
+      </>,
+      mockStore,
+    );
 
-    expect(history.location.pathname).toStrictEqual(LOCK_ROUTE);
+    expect(currentPath).toStrictEqual(LOCK_ROUTE);
   });
 
   it('should route to unlock when with appropriate state', () => {
@@ -63,9 +108,19 @@ describe('Onboaring Flow Switch Component', () => {
     };
 
     const mockStore = configureMockStore()(mockState);
-    const { history } = renderWithProvider(<OnboardingFlowSwitch />, mockStore);
+    renderWithProvider(
+      <>
+        <OnboardingFlowSwitch />
+        <LocationCapture
+          onLocationChange={(path) => {
+            currentPath = path;
+          }}
+        />
+      </>,
+      mockStore,
+    );
 
-    expect(history.location.pathname).toStrictEqual(ONBOARDING_UNLOCK_ROUTE);
+    expect(currentPath).toStrictEqual(ONBOARDING_UNLOCK_ROUTE);
   });
 
   it('should route to welcome route when not initialized', () => {
@@ -78,8 +133,18 @@ describe('Onboaring Flow Switch Component', () => {
     };
 
     const mockStore = configureMockStore()(mockState);
-    const { history } = renderWithProvider(<OnboardingFlowSwitch />, mockStore);
+    renderWithProvider(
+      <>
+        <OnboardingFlowSwitch />
+        <LocationCapture
+          onLocationChange={(path) => {
+            currentPath = path;
+          }}
+        />
+      </>,
+      mockStore,
+    );
 
-    expect(history.location.pathname).toStrictEqual(ONBOARDING_WELCOME_ROUTE);
+    expect(currentPath).toStrictEqual(ONBOARDING_WELCOME_ROUTE);
   });
 });
