@@ -4,28 +4,6 @@
   height: 28px;
 }
 
-.multichain-account-menu-item {
-  width: 250px;
-
-  &:hover {
-    background: var(--color-background-default-hover);
-  }
-
-  &--with-border {
-    border-bottom: 1px solid var(--color-border-muted);
-  }
-
-  &--disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-
-  &--enabled {
-    cursor: pointer;
-    opacity: 1;
-  }
-}
-
 .multichain-account-menu-popover {
   z-index: 10;
   display: flex;

@@ -1,37 +1,29 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import classnames from 'classnames';
 import {
   Box,
   Icon,
   IconName,
-  IconSize,
   Popover,
   PopoverPosition,
-  Text,
 } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
   Display,
-  FontWeight,
   JustifyContent,
   TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
-import {
-  MenuItemConfig,
-  MultichainAccountMenuProps,
-} from './multichain-account-menu.types';
+import { MultichainAccountMenuItems } from '../multichain-account-menu-items/multichain-account-menu-items';
+import { MenuItemConfig } from '../multichain-account-menu-items/multichain-account-menu-items.types';
+import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
 export const MultichainAccountMenu = ({
   accountGroupId,
   isRemovable,
 }: MultichainAccountMenuProps) => {
-  const t = useI18nContext();
   const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -119,43 +111,8 @@ export const MultichainAccountMenu = ({
       });
     }
 
-    return Object.freeze(baseMenuItems);
+    return baseMenuItems;
   }, [accountGroupId, history, isRemovable]);
-
-  const menuItems = useMemo(() => {
-    return menuConfig.map((item, index, menuConfigurations) => {
-      const isLast = index === menuConfigurations.length - 1;
-      const isDisabled = Boolean(item.disabled);
-
-      return (
-        <Box
-          key={item.textKey}
-          className={classnames('multichain-account-menu-item', {
-            'multichain-account-menu-item--with-border': !isLast,
-            'multichain-account-menu-item--disabled': isDisabled,
-            'multichain-account-menu-item--enabled': !isDisabled,
-          })}
-          paddingLeft={8}
-          paddingRight={4}
-          paddingTop={3}
-          paddingBottom={3}
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-          onClick={item.onClick}
-        >
-          <Text
-            fontWeight={FontWeight.Medium}
-            variant={TextVariant.bodyMdMedium}
-            color={item.textColor}
-          >
-            {t(item.textKey)}
-          </Text>
-          <Icon name={item.iconName} size={IconSize.Md} />
-        </Box>
-      );
-    });
-  }, [menuConfig, t]);
 
   return (
     <>
@@ -183,7 +140,7 @@ export const MultichainAccountMenu = ({
         matchWidth={false}
         borderRadius={BorderRadius.LG}
       >
-        {menuItems}
+        <MultichainAccountMenuItems menuConfig={menuConfig} />
       </Popover>
     </>
   );
