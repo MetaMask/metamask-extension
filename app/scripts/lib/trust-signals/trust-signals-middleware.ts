@@ -78,7 +78,7 @@ function handleEthSendTransaction(
   }
 
   const { to } = req.params[0];
-  let chainId: SupportedEVMChain;
+  let chainId: SupportedEVMChain | undefined;
   try {
     chainId = getChainId(networkController);
   } catch (error) {
@@ -86,6 +86,10 @@ function handleEthSendTransaction(
       '[createTrustSignalsMiddleware] error getting chainId:',
       error,
     );
+    return;
+  }
+
+  if (!chainId) {
     return;
   }
 
@@ -121,7 +125,7 @@ function handleEthSignTypedData(
     return;
   }
 
-  let chainId: SupportedEVMChain;
+  let chainId: SupportedEVMChain | undefined;
   try {
     chainId = getChainId(networkController);
   } catch (error) {
@@ -129,6 +133,10 @@ function handleEthSignTypedData(
       '[createTrustSignalsMiddleware] error getting chainId:',
       error,
     );
+    return;
+  }
+
+  if (!chainId) {
     return;
   }
 

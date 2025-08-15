@@ -90,7 +90,7 @@ export function hasValidTypedDataParams(
 
 export function getChainId(
   networkController: NetworkController,
-): SupportedEVMChain {
+): SupportedEVMChain | undefined {
   const chainId = getProviderConfig({
     metamask: networkController.state,
   })?.chainId;
@@ -141,6 +141,10 @@ const CHAIN_IDS_LOWERCASED: Record<string, SupportedEVMChain> = {
 
 export function mapChainIdToSupportedEVMChain(
   chainId: string,
-): SupportedEVMChain {
+): SupportedEVMChain | undefined {
+  if (typeof chainId !== 'string' || !chainId) {
+    return undefined;
+  }
+
   return CHAIN_IDS_LOWERCASED[chainId.toLowerCase()];
 }

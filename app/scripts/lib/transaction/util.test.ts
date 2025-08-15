@@ -21,7 +21,12 @@ import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
 import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-util';
-import { SupportedEVMChain, ResultType } from '../trust-signals/types';
+import {
+  SupportedEVMChain,
+  ResultType,
+  AddAddressSecurityAlertResponse,
+  GetAddressSecurityAlertResponse,
+} from '../trust-signals/types';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -32,7 +37,6 @@ import {
 
 jest.mock('../ppom/ppom-util');
 jest.mock('../trust-signals/security-alerts-api');
-jest.mock('../trust-signals/trust-signals-util');
 
 jest.mock('uuid', () => {
   const actual = jest.requireActual('uuid');
@@ -109,9 +113,6 @@ describe('Transaction Utils', () => {
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const scanAddressAndAddToCacheMock = jest.mocked(scanAddressAndAddToCache);
-  const mapChainIdToSupportedEVMChainMock = jest.mocked(
-    mapChainIdToSupportedEVMChain,
-  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -534,9 +535,10 @@ describe('Transaction Utils', () => {
         request.transactionOptions.origin = ORIGIN_METAMASK;
         request.transactionParams.to =
           '0x1234567890123456789012345678901234567890';
-        mapChainIdToSupportedEVMChainMock.mockReturnValue(
-          SupportedEVMChain.Ethereum,
-        );
+        request.addSecurityAlertResponse =
+          jest.fn() as AddAddressSecurityAlertResponse;
+        request.getSecurityAlertResponse =
+          jest.fn() as GetAddressSecurityAlertResponse;
       });
 
       it('calls scanAddressAndAddToCache', async () => {
@@ -549,8 +551,8 @@ describe('Transaction Utils', () => {
         expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
         expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
           '0x1234567890123456789012345678901234567890',
-          getAddressSecurityAlertResponseMock,
-          addAddressSecurityAlertResponseMock,
+          request.getSecurityAlertResponse,
+          request.addSecurityAlertResponse,
           SupportedEVMChain.Ethereum,
         );
       });
@@ -590,35 +592,15 @@ describe('Transaction Utils', () => {
       });
 
       it('does not call scanAddressAndAddToCache when chain is not supported', async () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        mapChainIdToSupportedEVMChainMock.mockReturnValue(undefined as any);
-
-        let transactionMeta = await addTransaction({
+        // Test with a chain ID that the real function doesn't support
+        const transactionMeta = await addTransaction({
           ...request,
           securityAlertsEnabled: true,
-          chainId: '0xfake-chain-id',
+          chainId: '0xfake-chain-id', // This will return undefined from the real function
         });
 
-        expect(mapChainIdToSupportedEVMChainMock).toHaveBeenCalledWith(
-          '0xfake-chain-id',
-        );
         expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
         expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
-
-        // Test that addTransaction continues even if mapChainIdToSupportedEVMChain throws an error
-        mapChainIdToSupportedEVMChainMock.mockImplementation(() => {
-          throw new Error('Invalid chain ID');
-        });
-
-        transactionMeta = await addTransaction({
-          ...request,
-          securityAlertsEnabled: true,
-          chainId: CHAIN_IDS.MAINNET,
-        });
-
-        expect(mapChainIdToSupportedEVMChainMock).toHaveBeenCalledTimes(2);
-        expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
-        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
       });
     });
   });

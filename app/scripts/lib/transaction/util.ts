@@ -254,13 +254,8 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     return;
   }
 
-  let supportedEVMChain: SupportedEVMChain;
-  try {
-    supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
-    if (!supportedEVMChain) {
-      return;
-    }
-  } catch (error) {
+  const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
+  if (!supportedEVMChain) {
     return;
   }
 
