@@ -947,6 +947,40 @@ describe('MetaMaskController', () => {
 
     describe('#getPermittedAccounts', () => {
       it('gets the CAIP-25 caveat value for the origin', async () => {
+        const internalAccounts = [
+          {
+            address: '0xdead',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: 1,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+          {
+            address: '0xbeef',
+            id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: 3,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+        ];
+        jest
+          .spyOn(metamaskController.accountsController, 'listAccounts')
+          .mockReturnValueOnce(internalAccounts);
+
         jest
           .spyOn(metamaskController.permissionController, 'getCaveat')
           .mockReturnValue({
