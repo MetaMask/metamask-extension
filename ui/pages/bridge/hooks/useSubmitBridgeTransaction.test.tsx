@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
-import { MemoryRouter, useNavigate } from 'react-router-dom-v5-compat';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import {
@@ -12,11 +12,12 @@ import {
 } from '../../../../test/data/bridge/dummy-quotes';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
+const mockUseNavigate = jest.fn();
+
 jest.mock('react-router-dom-v5-compat', () => {
-  const original = jest.requireActual('react-router-dom-v5-compat');
   return {
-    ...original,
-    useNavigate: jest.fn().mockImplementation(original.useNavigate),
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -170,8 +171,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
     it('routes to activity tab', async () => {
       const store = makeMockStore();
 
-      const mockHistory = jest.fn();
-      (useNavigate as jest.Mock).mockImplementationOnce(() => mockHistory);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
@@ -184,7 +183,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockHistory).toHaveBeenCalledWith('/', {
+      expect(mockUseNavigate).toHaveBeenCalledWith('/', {
         state: { stayOnHomePage: true },
       });
     });

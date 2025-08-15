@@ -133,7 +133,7 @@ const CrossChainSwap = () => {
       <Content padding={0}>
         <Routes>
           <Route
-            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
+            path={`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`}
             element={
               <>
                 <BridgeTransactionSettingsModal
@@ -149,7 +149,7 @@ const CrossChainSwap = () => {
             }
           />
           <Route
-            path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}
+            path={`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`}
             element={
               <>
                 <Content>

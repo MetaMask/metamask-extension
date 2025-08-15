@@ -1,16 +1,20 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../store/store';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-
-import CrossChainSwap from '../index';
-import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import { RequestStatus } from '@metamask/bridge-controller';
+import configureStore from '../../store/store';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import CrossChainSwap from './index';
+import mockBridgeQuotesErc20Erc20 from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import { PREPARE_SWAP_ROUTE, CROSS_CHAIN_SWAP_ROUTE } from "../../helpers/constants/routes";
+
 
 const storybook = {
   title: 'Pages/Bridge/CrossChainSwapPage',
   component: CrossChainSwap,
+  parameters: {
+    initialRoute: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`
+  },
 };
 
 const Wrapper = ({ children }) => (

@@ -48,7 +48,7 @@ export const useIsMultichainSwap = () => {
     isQuoteRequestSwap,
     isSolana,
     isUnifiedUIEnabled,
-    history,
+    navigate,
     search,
     pathname,
   ]);

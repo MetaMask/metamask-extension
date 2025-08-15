@@ -24,7 +24,6 @@ jest.mock('react-router-dom-v5-compat', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
-
 describe('PrepareBridgePage', () => {
   beforeAll(() => {
     const { provider } = createTestProviderTools({
@@ -40,7 +39,6 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should render the component, with initial state', async () => {
-    mockUseNavigate.mockReturnValue(jest.fn());
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         extensionConfig: {
@@ -93,7 +91,6 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should render the component, with inputs set', async () => {
-    mockUseNavigate.mockReturnValue(jest.fn());
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         extensionConfig: {
@@ -207,7 +204,6 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should validate src amount on change', async () => {
-    mockUseNavigate.mockReturnValue(jest.fn());
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         extensionConfig: {
