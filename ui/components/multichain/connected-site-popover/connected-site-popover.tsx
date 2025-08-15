@@ -130,6 +130,7 @@ export const ConnectedSitePopover = ({
                     }),
                   )
                 }
+                data-testid="connected-site-popover-network-button"
               >
                 {currentNetwork?.name}
               </ButtonLink>
