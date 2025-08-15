@@ -7677,9 +7677,6 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:clearSnapState',
           origin,
         ),
-        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
-          this.appStateController,
-        ),
         getSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:getPermitted',

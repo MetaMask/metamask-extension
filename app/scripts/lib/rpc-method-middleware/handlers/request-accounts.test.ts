@@ -27,7 +27,6 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const getAccounts = jest.fn().mockReturnValue([]);
-  const getUnlockPromise = jest.fn();
   const sendMetrics = jest.fn();
   const metamaskState = {
     permissionHistory: {},
@@ -52,7 +51,6 @@ const createMockedHandler = () => {
   ) =>
     requestEthereumAccounts.implementation(request, response, next, end, {
       getAccounts,
-      getUnlockPromise,
       sendMetrics,
       metamaskState,
       getCaip25PermissionFromLegacyPermissionsForOrigin,
@@ -64,7 +62,6 @@ const createMockedHandler = () => {
     next,
     end,
     getAccounts,
-    getUnlockPromise,
     sendMetrics,
     metamaskState,
     getCaip25PermissionFromLegacyPermissionsForOrigin,
@@ -86,14 +83,6 @@ describe('requestEthereumAccountsHandler', () => {
   });
 
   describe('eip155 account permissions exist', () => {
-    it('waits for the wallet to unlock', async () => {
-      const { handler, getUnlockPromise, getAccounts } = createMockedHandler();
-      getAccounts.mockReturnValue(['0xdead', '0xbeef']);
-
-      await handler(baseRequest);
-      expect(getUnlockPromise).toHaveBeenCalledWith(true);
-    });
-
     it('returns the accounts', async () => {
       const { handler, response, getAccounts } = createMockedHandler();
       getAccounts.mockReturnValue(['0xdead', '0xbeef']);
@@ -101,37 +90,6 @@ describe('requestEthereumAccountsHandler', () => {
       await handler(baseRequest);
       expect(response.result).toStrictEqual(['0xdead', '0xbeef']);
     });
-
-    it('blocks subsequent requests if there is currently a request waiting for the wallet to be unlocked', async () => {
-      const { handler, getUnlockPromise, getAccounts, end, response } =
-        createMockedHandler();
-      // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
-      // browser support.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const { promise, resolve } = Promise.withResolvers!<void>();
-      getUnlockPromise.mockReturnValue(promise);
-      getAccounts.mockReturnValue(['0xdead', '0xbeef']);
-
-      handler(baseRequest);
-      expect(response).toStrictEqual({
-        id: 0,
-        jsonrpc: '2.0',
-        result: undefined,
-      });
-      expect(end).not.toHaveBeenCalled();
-
-      await flushPromises();
-
-      await handler(baseRequest);
-      expect(response.error).toStrictEqual(
-        rpcErrors.resourceUnavailable(
-          `Already processing eth_requestAccounts. Please wait.`,
-        ),
-      );
-      expect(end).toHaveBeenCalledTimes(1);
-      resolve();
-    });
-  });
 
   describe('eip155 account permissions do not exist', () => {
     it('gets the CAIP-25 permission object to request approval for', async () => {
