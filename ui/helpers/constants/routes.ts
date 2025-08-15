@@ -42,6 +42,8 @@ export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
+export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
+  '/multichain-account-details';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 export const ACCOUNT_DETAILS_ROUTE = '/account-details';
 export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
@@ -131,6 +133,11 @@ export const ROUTES = [
   {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`,
+    label: 'Account Details Page',
     trackInAnalytics: true,
   },
   {
