@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { type BigNumber } from 'bignumber.js';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -37,11 +36,7 @@ import { Row } from '../layout';
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
-  nativeAssetBalance,
-  srcTokenBalance,
 }: {
-  nativeAssetBalance?: BigNumber;
-  srcTokenBalance?: BigNumber;
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
 }) => {
@@ -61,35 +56,19 @@ export const BridgeCTAButton = ({
 
   const {
     isNoQuotesAvailable,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    isInsufficientBalance: isInsufficientBalance_,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    isInsufficientGasBalance: isInsufficientGasBalance_,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    isInsufficientGasForQuote: isInsufficientGasForQuote_,
+    isInsufficientBalance,
+    isInsufficientGasBalance,
+    isInsufficientGasForQuote,
     isTxAlertPresent,
   } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const isTxSubmittable = useIsTxSubmittable(
-    nativeAssetBalance,
-    srcTokenBalance,
-  );
+  const isTxSubmittable = useIsTxSubmittable();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
   const tradeProperties = useTradeProperties();
-
-  const isInsufficientBalance = isInsufficientBalance_(srcTokenBalance);
-
-  const isInsufficientGasBalance =
-    isInsufficientGasBalance_(nativeAssetBalance);
-  const isInsufficientGasForQuote =
-    isInsufficientGasForQuote_(nativeAssetBalance);
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
