@@ -20,5 +20,8 @@ export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
 };
 
 export const isGatorPermissionsFeatureEnabled = (): boolean => {
-  return process.env.GATOR_PERMISSIONS_ENABLED?.toString() === 'true';
+  return (
+    process.env.GATOR_PERMISSIONS_ENABLED?.toString() === 'true' &&
+    Boolean(process.env.PERMISSIONS_KERNEL_SNAP_ID)
+  );
 };

@@ -270,7 +270,10 @@ import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
+import {
+  getIsSeedlessOnboardingFeatureEnabled,
+  isGatorPermissionsFeatureEnabled,
+} from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
@@ -435,6 +438,8 @@ import {
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
+
+import { processRequestExecutionPermissions } from './lib/transaction/eip7715';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2185,6 +2190,14 @@ export default class MetamaskController extends EventEmitter {
         },
         this.controllerMessenger,
       ),
+      processRequestExecutionPermissions: isGatorPermissionsFeatureEnabled()
+        ? processRequestExecutionPermissions.bind(null, {
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
+          })
+        : undefined,
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
