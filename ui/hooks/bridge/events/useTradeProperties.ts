@@ -20,7 +20,7 @@ export const useTradeProperties = () => {
   return {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    gas_included: false, // TODO check if trade has gas included
+    gas_included: Boolean(activeQuote?.quote?.gasIncluded),
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     quoted_time_minutes,
