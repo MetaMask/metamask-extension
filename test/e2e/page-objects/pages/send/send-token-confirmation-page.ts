@@ -226,6 +226,11 @@ class SendTokenConfirmPage {
     console.log('Confirm button clicked');
   }
 
+  async clickMetaMaskDialogConfirm(): Promise<void> {
+    console.log('Clicking on Confirm button');
+    await this.driver.clickElement(this.confirmButton);
+  }
+
   async clickOnSave(): Promise<void> {
     console.log('Clicking on Save button');
     await this.driver.clickElementAndWaitToDisappear(this.saveButton);

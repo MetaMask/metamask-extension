@@ -125,7 +125,7 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it.only('should use dapp suggested estimates for transaction coming from dapp', async function () {
+  it('should use dapp suggested estimates for transaction coming from dapp', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -166,7 +166,7 @@ describe('Editing Confirm Transaction', function () {
         await sendTokenConfirmationPage.checkNativeCurrency('$3.15');
 
         // confirms the transaction
-        await sendTokenConfirmationPage.clickOnConfirm();
+        await sendTokenConfirmationPage.clickMetaMaskDialogConfirm();
 
         // transaction should correct values in activity tab
         await driver.switchToWindowWithTitle(
