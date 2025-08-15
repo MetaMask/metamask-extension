@@ -549,13 +549,8 @@ describe('Transaction Utils', () => {
         expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
         expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
           '0x1234567890123456789012345678901234567890',
-          expect.objectContaining({
-            getAddressSecurityAlertResponse:
-              getAddressSecurityAlertResponseMock,
-            addAddressSecurityAlertResponse:
-              addAddressSecurityAlertResponseMock,
-          }),
-          undefined,
+          getAddressSecurityAlertResponseMock,
+          addAddressSecurityAlertResponseMock,
           SupportedEVMChain.Ethereum,
         );
       });
