@@ -71,6 +71,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: handle issue with Firefox's private browsing mode that was causing the extension to fail during initialization (#35040)
 - fix: show effective gas fees instead of max gas fees when displaying swap quotes (#35038)
 - fix: prevent undesired dapp selected network change when enabled network check boxes are clicked (#35126)
+- fix: ensures that sensitive items are removed from the state logs, which are downloadable from advanced settings page (#35003)
+- fix: ensures that user's email is removed from the state logs, which are downloadable from advanced settings page (#35119)
 
 ## [13.0.1]
 ### Fixed
