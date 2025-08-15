@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import classnames from 'classnames';
 import {
   Box,
   Icon,
@@ -124,11 +125,16 @@ export const MultichainAccountMenu = ({
   const menuItems = useMemo(() => {
     return menuConfig.map((item, index, menuConfigurations) => {
       const isLast = index === menuConfigurations.length - 1;
+      const isDisabled = Boolean(item.disabled);
 
       return (
         <Box
           key={item.textKey}
-          className="multichain-account-menu-item"
+          className={classnames('multichain-account-menu-item', {
+            'multichain-account-menu-item--with-border': !isLast,
+            'multichain-account-menu-item--disabled': isDisabled,
+            'multichain-account-menu-item--enabled': !isDisabled,
+          })}
           paddingLeft={8}
           paddingRight={4}
           paddingTop={3}
@@ -137,14 +143,6 @@ export const MultichainAccountMenu = ({
           justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
           onClick={item.onClick}
-          style={{
-            width: '250px',
-            ...(isLast
-              ? {}
-              : { borderBottom: '1px solid var(--color-border-muted)' }),
-            cursor: item.disabled ? 'not-allowed' : 'pointer',
-            opacity: item.disabled ? 0.5 : 1,
-          }}
         >
           <Text
             fontWeight={FontWeight.Medium}
