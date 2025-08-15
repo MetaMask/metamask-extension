@@ -367,14 +367,10 @@ describe('createTrustSignalsMiddleware', () => {
       });
 
       it('handles missing chain ID gracefully', async () => {
-        const {
-          middleware,
-          appStateController,
-          networkController,
-          phishingController,
-        } = createMiddleware({
-          chainId: null,
-        });
+        const { middleware, appStateController, phishingController } =
+          createMiddleware({
+            chainId: null,
+          });
         appStateController.getAddressSecurityAlertResponse.mockReturnValue(
           undefined,
         );
