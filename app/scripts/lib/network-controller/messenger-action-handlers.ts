@@ -1,5 +1,11 @@
 import log from 'loglevel';
-import { Hex, Json, hexToNumber, isObject, isValidJson } from '@metamask/utils';
+import {
+  type Hex,
+  type Json,
+  hexToNumber,
+  isObject,
+  isValidJson,
+} from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

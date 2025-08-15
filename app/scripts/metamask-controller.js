@@ -751,9 +751,11 @@ export default class MetamaskController extends EventEmitter {
     });
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointUnavailable',
-      async (data) => {
+      async ({ chainId, endpointUrl, error }) => {
         onRpcEndpointUnavailable({
-          ...data,
+          chainId,
+          endpointUrl,
+          error,
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
@@ -763,9 +765,11 @@ export default class MetamaskController extends EventEmitter {
     );
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointDegraded',
-      async (data) => {
+      async ({ chainId, endpointUrl, error }) => {
         onRpcEndpointDegraded({
-          ...data,
+          chainId,
+          endpointUrl,
+          error,
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
