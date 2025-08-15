@@ -24,10 +24,10 @@ export const MultichainAccountMenuItems = ({
       return (
         <Box
           key={item.textKey}
-          className={classnames('multichain-account-menu-item', {
-            'multichain-account-menu-item--with-border': !isLast,
-            'multichain-account-menu-item--disabled': isDisabled,
-            'multichain-account-menu-item--enabled': !isDisabled,
+          className={classnames('multichain-account-cell-menu-item', {
+            'multichain-account-cell-menu-item--with-border': !isLast,
+            'multichain-account-cell-menu-item--disabled': isDisabled,
+            'multichain-account-cell-menu-item--enabled': !isDisabled,
           })}
           paddingLeft={8}
           paddingRight={4}

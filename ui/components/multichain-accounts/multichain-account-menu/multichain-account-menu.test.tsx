@@ -5,9 +5,9 @@ import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
 const popoverOpenSelector = '.mm-popover--open';
-const menuButtonSelector = '.multichain-account-menu-button';
-const menuIconSelector = '.multichain-account-menu-button-icon';
-const menuItemSelector = '.multichain-account-menu-item';
+const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
+const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
+const menuItemSelector = '.multichain-account-cell-menu-item';
 const errorColorSelector = '.mm-box--color-error-default';
 
 const mockHistoryPush = jest.fn();

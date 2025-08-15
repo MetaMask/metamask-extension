@@ -5,7 +5,7 @@ import { TextColor } from '../../../helpers/constants/design-system';
 import { IconName } from '../../component-library';
 import { MultichainAccountMenuItems } from './multichain-account-menu-items';
 
-const menuItemSelector = '.multichain-account-menu-item';
+const menuItemSelector = '.multichain-account-cell-menu-item';
 
 describe('MultichainAccountMenuItems', () => {
   const mockOnClick = jest.fn();
@@ -45,17 +45,23 @@ describe('MultichainAccountMenuItems', () => {
 
     expect(menuItems).toHaveLength(3);
     expect(menuItems[0]).toHaveClass(
-      'multichain-account-menu-item--with-border',
+      'multichain-account-cell-menu-item--with-border',
     );
-    expect(menuItems[0]).toHaveClass('multichain-account-menu-item--enabled');
+    expect(menuItems[0]).toHaveClass(
+      'multichain-account-cell-menu-item--enabled',
+    );
     expect(menuItems[1]).toHaveClass(
-      'multichain-account-menu-item--with-border',
+      'multichain-account-cell-menu-item--with-border',
     );
-    expect(menuItems[1]).toHaveClass('multichain-account-menu-item--disabled');
+    expect(menuItems[1]).toHaveClass(
+      'multichain-account-cell-menu-item--disabled',
+    );
     expect(menuItems[2]).not.toHaveClass(
-      'multichain-account-menu-item--with-border',
+      'multichain-account-cell-menu-item--with-border',
     );
-    expect(menuItems[2]).toHaveClass('multichain-account-menu-item--enabled');
+    expect(menuItems[2]).toHaveClass(
+      'multichain-account-cell-menu-item--enabled',
+    );
   });
 
   it('triggers onClick handlers when menu items are clicked', () => {

@@ -117,7 +117,7 @@ export const MultichainAccountMenu = ({
   return (
     <>
       <Box
-        className="multichain-account-menu-button"
+        className="multichain-account-cell-popover-menu-button"
         ref={popoverRef}
         display={Display.Flex}
         alignItems={AlignItems.center}
@@ -128,12 +128,12 @@ export const MultichainAccountMenu = ({
         onClick={togglePopover}
       >
         <Icon
-          className="multichain-account-menu-button-icon"
+          className="multichain-account-cell-popover-menu-button-icon"
           name={IconName.MoreVertical}
         />
       </Box>
       <Popover
-        className="multichain-account-menu-popover"
+        className="multichain-account-cell-popover-menu"
         isOpen={isPopoverOpen}
         position={PopoverPosition.LeftStart}
         referenceElement={popoverRef.current}
