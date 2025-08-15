@@ -128,7 +128,10 @@ export function AssetPickerModalNftTab({
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    history.push(SEND_ROUTE);
+    const queryParams = new URLSearchParams();
+    queryParams.append('address', nft.address);
+    queryParams.append('tokenId', nft.tokenId.toString());
+    history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
     onClose && onClose();
   };
 

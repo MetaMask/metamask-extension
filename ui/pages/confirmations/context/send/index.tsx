@@ -8,12 +8,12 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useSelector } from 'react-redux';
 
 import { getSelectedAccount } from '../../../../selectors';
-import { Asset } from '../../../asset/types/asset';
+import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 
 export type SendContextType = {
   asset?: Asset;
-  currentPage: SendPages;
+  currentPage?: SendPages;
   fromAccount: InternalAccount;
   from: string;
   to?: string;
@@ -26,7 +26,7 @@ export type SendContextType = {
 
 export const SendContext = createContext<SendContextType>({
   asset: undefined,
-  currentPage: SendPages.ASSET,
+  currentPage: undefined,
   fromAccount: {} as InternalAccount,
   from: '',
   to: undefined,
@@ -44,7 +44,7 @@ export const SendContextProvider: React.FC<{
   const from = useSelector(getSelectedAccount);
   const [to, updateTo] = useState<string>();
   const [value, updateValue] = useState<string>();
-  const [currentPage, updateCurrentPage] = useState<SendPages>(SendPages.ASSET);
+  const [currentPage, updateCurrentPage] = useState<SendPages>();
 
   return (
     <SendContext.Provider

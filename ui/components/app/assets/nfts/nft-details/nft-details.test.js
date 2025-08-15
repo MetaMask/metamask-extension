@@ -8,10 +8,7 @@ import { toHex } from '@metamask/controller-utils';
 import { startNewDraftTransaction } from '../../../../../ducks/send';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
-import {
-  DEFAULT_ROUTE,
-  SEND_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../../../shared/constants/copy';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import {
@@ -185,7 +182,9 @@ describe('NFT Details', () => {
         details: { ...nfts[5], tokenId: '1' },
       });
 
-      expect(mockHistoryPush).toHaveBeenCalledWith(SEND_ROUTE);
+      expect(mockHistoryPush).toHaveBeenCalledWith(
+        '/send/amount?address=0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414&tokenId=1',
+      );
     });
   });
 

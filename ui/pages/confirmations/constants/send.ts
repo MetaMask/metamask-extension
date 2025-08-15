@@ -1,5 +1,5 @@
 export enum SendPages {
-  ASSET = 'Asset',
-  AMOUNT = 'Amount',
-  RECIPIENT = 'Recipient',
+  ASSET = 'asset',
+  AMOUNT = 'amount',
+  RECIPIENT = 'recipient',
 }

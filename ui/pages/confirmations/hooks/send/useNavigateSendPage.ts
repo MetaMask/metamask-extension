@@ -1,30 +1,23 @@
 import { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { useSendContext } from '../../context/send';
+import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { SendPages } from '../../constants/send';
 
 export const useNavigateSendPage = () => {
   const history = useHistory();
-  const { currentPage, updateCurrentPage } = useSendContext();
 
   const goToAmountPage = useCallback(() => {
-    updateCurrentPage(SendPages.AMOUNT);
-  }, [updateCurrentPage]);
+    history.push(`${SEND_ROUTE}/${SendPages.AMOUNT}`);
+  }, [history]);
 
   const goToSendToPage = useCallback(() => {
-    updateCurrentPage(SendPages.RECIPIENT);
-  }, [updateCurrentPage]);
+    history.push(`${SEND_ROUTE}/${SendPages.RECIPIENT}`);
+  }, [history]);
 
   const goToPreviousPage = useCallback(() => {
-    if (currentPage === SendPages.RECIPIENT) {
-      updateCurrentPage(SendPages.AMOUNT);
-    } else if (currentPage === SendPages.AMOUNT) {
-      updateCurrentPage(SendPages.ASSET);
-    } else {
-      history.goBack();
-    }
-  }, [currentPage, history, updateCurrentPage]);
+    history.goBack();
+  }, [history]);
 
   return { goToAmountPage, goToPreviousPage, goToSendToPage };
 };
