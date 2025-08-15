@@ -42,6 +42,7 @@ import {
   getIsMultichainAccountsState2Enabled,
   getTokensMarketData,
 } from '../../../selectors';
+import { AggregatedBalanceState2 } from '../../ui/aggregated-balance/aggregated-balance-state2';
 import Spinner from '../../ui/spinner';
 
 import { AccountGroupBalanceChange } from '../assets/account-group-balance-change/account-group-balance-change';
@@ -52,11 +53,11 @@ import {
 import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { AggregatedBalanceState2 } from '../../ui/aggregated-balance/aggregated-balance-state2';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+// removed state2 inline render experiment; use dedicated component
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -222,6 +223,8 @@ export const CoinOverview = ({
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
+
+  // State2 balance is rendered via dedicated component
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));

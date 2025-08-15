@@ -1,12 +1,7 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import {
-  selectSelectedGroupBalance,
-  selectBalanceForAllWallets,
-  selectAggregatedBalanceByAccountGroup,
-  type BalanceCalculationState,
-} from '../../../selectors/assets';
+import { selectSelectedGroupBalance } from '../../../selectors/assets';
 
 import {
   AlignItems,
@@ -23,7 +18,7 @@ import {
   IconName,
   SensitiveText,
 } from '../../component-library';
-import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
+import { getPreferences } from '../../../selectors';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import Spinner from '../spinner';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
@@ -42,64 +37,15 @@ export const AggregatedBalanceState2: React.FC<
   const locale = useSelector(getIntlLocale);
 
   const selectedGroupBalance = useSelector(selectSelectedGroupBalance);
-
-  // Portfolio-level totals are safe to compute without ATC
-  const allWalletsBalance = useSelector(selectBalanceForAllWallets);
-
-  // Resolve group by membership of the selected account (mobile parity)
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const resolvedGroupId = useSelector((state: BalanceCalculationState) => {
-    const wallets =
-      (state.metamask?.accountTree?.wallets as Record<
-        string,
-        { groups?: Record<string, { accounts?: string[] }> }
-      >) || {};
-    const accountId = selectedAccount?.id;
-    let fallbackFirstGroup: string | undefined;
-    for (const wallet of Object.values(wallets || {})) {
-      const groups: Record<string, { accounts?: string[] }> =
-        wallet?.groups || {};
-      const firstGroupId = Object.keys(groups)[0];
-      if (!fallbackFirstGroup && firstGroupId) {
-        fallbackFirstGroup = firstGroupId;
-      }
-      if (!accountId) {
-        continue;
-      }
-      for (const [groupId, group] of Object.entries(groups || {})) {
-        const accounts: string[] = Array.isArray(group?.accounts)
-          ? (group.accounts as string[])
-          : [];
-        if (accounts.includes(accountId)) {
-          return groupId;
-        }
-      }
-    }
-    return fallbackFirstGroup;
-  });
-
-  const selectBalanceForResolvedGroup = useMemo(
-    () =>
-      resolvedGroupId
-        ? selectAggregatedBalanceByAccountGroup(resolvedGroupId)
-        : null,
-    [resolvedGroupId],
-  );
-  const resolvedGroupBalance = useSelector((state: BalanceCalculationState) =>
-    selectBalanceForResolvedGroup ? selectBalanceForResolvedGroup(state) : null,
-  );
-
-  const total =
-    selectedGroupBalance?.totalBalanceInUserCurrency ??
-    resolvedGroupBalance?.totalBalanceInUserCurrency ??
-    allWalletsBalance?.totalBalanceInUserCurrency;
-
   const fallbackCurrency = useSelector(getCurrentCurrency);
-  const currency =
-    selectedGroupBalance?.userCurrency ??
-    resolvedGroupBalance?.userCurrency ??
-    allWalletsBalance?.userCurrency ??
-    fallbackCurrency;
+
+  // Only depend on selected group balance; show loader while not available
+  if (!selectedGroupBalance) {
+    return <Spinner className="loading-overlay__spinner" />;
+  }
+
+  const total = selectedGroupBalance.totalBalanceInUserCurrency;
+  const currency = selectedGroupBalance.userCurrency ?? fallbackCurrency;
 
   if (typeof total !== 'number' || !currency) {
     return <Spinner className="loading-overlay__spinner" />;

@@ -19,7 +19,7 @@ import {
   getTokenByAccountAndAddressAndChainId,
   getHistoricalMultichainAggregatedBalance,
   selectBalanceForAllWallets,
-  selectAggregatedBalanceByAccountGroup,
+  selectBalanceByAccountGroup,
   selectBalanceByWallet,
   type BalanceCalculationState,
   selectBalanceChangeForAllWallets,
@@ -706,7 +706,7 @@ describe('Aggregated balance adapters/selectors', () => {
     // Prime aggregate with the new mock result
     selectBalanceForAllWallets(nextState);
 
-    const groupSel = selectAggregatedBalanceByAccountGroup('w1/g1');
+    const groupSel = selectBalanceByAccountGroup('w1/g1');
     const group = groupSel(nextState);
 
     const walletSel = selectBalanceByWallet('w1');

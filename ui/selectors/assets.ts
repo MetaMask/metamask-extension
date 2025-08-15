@@ -840,7 +840,7 @@ export const selectSelectedGroupBalance = createSelector(
   },
 );
 
-export const selectAggregatedBalanceByAccountGroup = (groupId: string) =>
+export const selectBalanceByAccountGroup = (groupId: string) =>
   createSelector([selectBalanceForAllWallets], (allBalances) => {
     const walletId = groupId.split('/')[0];
     const wallet = allBalances.wallets[walletId] ?? null;
