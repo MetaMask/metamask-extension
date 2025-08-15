@@ -115,6 +115,7 @@ export function useAsyncCallback<T>(
         setResult(createErrorResult(error as Error));
       }
     }
+    // eslint-disable-next-line react-compiler/react-compiler
   }, deps);
 
   return [execute, result];
