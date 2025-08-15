@@ -124,6 +124,18 @@ const PIPE_XZ = 76 as const; // Shifted "|"'s character code
  *
  * This has been benchmarked and highly optimized, modify carefully.
  *
+ * A Note:
+ * The resulting *magnitudes* of the `id` and `seq` values aren't validated; we
+ * are only checking that the *shape* of the message matches: `<digits>|<digits>|<0|1>|<data>`
+ * and we _assume_ that the digits represent a number in the range <0, 2^31-1>,
+ * per the design.
+ *
+ * While we could "fix" this with some checks, but it's not worth fixing, since
+ * the problem at this point is really that something is spamming messages that
+ * are in the *format* of a Chunk Frame, but... aren't actually Chunk Frames.
+ * Since no message will contain this format on accident, I don't think it's
+ * worth chasing.
+ *
  * @param input - the string to parse
  * @param length - must be greater than 6, it is not validated within this function.
  * @returns a ChunkFrame if the value is a valid chunk frame, otherwise null
