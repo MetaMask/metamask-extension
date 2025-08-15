@@ -3,6 +3,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { CaipChainId } from '@metamask/utils';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
+import { createSelector } from 'reselect';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
@@ -362,3 +363,23 @@ export const getInternalAccountBySelectedAccountGroupAndCaip =
       return getInternalAccountFromGroup(group, caipChainId, internalAccounts);
     },
   );
+
+/**
+ * Returns all account groups that belong to a specific wallet ID.
+ *
+ * @param state - Redux state.
+ * @param walletId - The wallet ID to filter account groups by.
+ * @returns Object containing all account groups for the specified wallet.
+ */
+export const getMultichainAccountsByWalletId = createSelector(
+  getAccountTree,
+  (_: MultichainAccountsState, walletId: AccountWalletId) => walletId,
+  (
+    accountTree,
+    walletId,
+  ): Record<AccountGroupId, AccountGroupObject> | undefined => {
+    const wallet = accountTree.wallets[walletId];
+
+    return wallet?.groups;
+  },
+);
