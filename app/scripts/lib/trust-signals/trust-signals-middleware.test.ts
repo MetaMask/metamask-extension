@@ -5,6 +5,7 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import { ResultType } from './types';
+import { getChainId } from './trust-signals-util';
 
 jest.mock('./security-alerts-api');
 process.env.SECURITY_ALERTS_API_ENABLED = 'true';
@@ -175,8 +176,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
       expect(next).toHaveBeenCalled();
@@ -205,8 +207,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -234,8 +237,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -271,8 +275,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -304,8 +309,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
     });
@@ -361,16 +367,10 @@ describe('createTrustSignalsMiddleware', () => {
       });
 
       it('handles missing chain ID gracefully', async () => {
-        const error = new Error('Chain ID not found');
-        scanAddressMockAndAddToCache.mockRejectedValue(error);
-        const {
-          middleware,
-          appStateController,
-          networkController,
-          phishingController,
-        } = createMiddleware({
-          chainId: null,
-        });
+        const { middleware, appStateController, phishingController } =
+          createMiddleware({
+            chainId: null,
+          });
         appStateController.getAddressSecurityAlertResponse.mockReturnValue(
           undefined,
         );
@@ -383,11 +383,9 @@ describe('createTrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
-          TEST_ADDRESSES.TO,
-          appStateController,
-          networkController,
-        );
+        // When chain ID is missing, scanAddressAndAddToCache should not be called
+        // because getChainId throws an error before the call
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
@@ -431,8 +429,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -472,8 +471,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -526,8 +526,9 @@ describe('createTrustSignalsMiddleware', () => {
 
         expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
           TEST_ADDRESSES.TO,
-          appStateController,
-          networkController,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
         );
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
