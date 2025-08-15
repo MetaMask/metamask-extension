@@ -26509,7 +26509,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/base-controller
-8.0.1 <https://github.com/MetaMask/core>
+8.1.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -26542,7 +26542,7 @@ authors: undefined
 ******************************
 
 @metamask/bridge-controller
-37.0.0 <https://github.com/MetaMask/core>
+39.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -26568,7 +26568,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/bridge-status-controller
-37.0.0 <https://github.com/MetaMask/core>
+38.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
