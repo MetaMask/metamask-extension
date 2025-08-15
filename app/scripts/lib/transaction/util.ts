@@ -34,6 +34,7 @@ import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-ut
 import {
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
+  SupportedEVMChain,
 } from '../trust-signals/types';
 
 export type AddTransactionOptions = NonNullable<
@@ -253,26 +254,26 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     return;
   }
 
+  let supportedEVMChain: SupportedEVMChain;
   try {
-    const chain = mapChainIdToSupportedEVMChain(chainId);
-    if (!chain) {
+    supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
+    if (!supportedEVMChain) {
       return;
     }
-
-    scanAddressAndAddToCache(
-      to,
-      getSecurityAlertResponse as unknown as GetAddressSecurityAlertResponse,
-      addSecurityAlertResponse as unknown as AddAddressSecurityAlertResponse,
-      chain,
-    ).catch((error) => {
-      console.error(
-        '[scanAddressForTrustSignals] error scanning address for trust signals:',
-        error,
-      );
-    });
   } catch (error) {
-    console.error('[scanAddressForTrustSignals] error:', error);
+    return;
   }
+
+  scanAddressAndAddToCache(
+    to,
+    getSecurityAlertResponse,
+    addSecurityAlertResponse,
+    supportedEVMChain,
+  ).catch((error) => {
+    console.error(
+      '[scanAddressForTrustSignals] error scanning address for trust signals:',
+      error,
+    );
   });
 }
 
