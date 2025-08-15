@@ -128,7 +128,9 @@ export const BridgeQuotesModal = ({
                         ),
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        gas_included: false,
+                        gas_included: Boolean(
+                          recommendedQuote?.quote?.gasIncluded,
+                        ),
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_source:
@@ -264,7 +266,7 @@ export const BridgeQuotesModal = ({
                             ),
                             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                             // eslint-disable-next-line @typescript-eslint/naming-convention
-                            gas_included: false,
+                            gas_included: Boolean(quote.quote?.gasIncluded),
                           },
                         ),
                       );
