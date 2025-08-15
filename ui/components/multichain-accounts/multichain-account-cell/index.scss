@@ -29,5 +29,13 @@
     .multichain-account-cell__account-name {
       color: var(--color-primary-default);
     }
+
+    .multichain-account-cell__end_accessory .multichain-account-cell-popover-menu-button {
+      background: var(--color-primary-muted);
+    }
+
+    .multichain-account-cell__end_accessory .multichain-account-cell-popover-menu-button-icon {
+      background-color: var(--color-primary-default);
+    }
   }
 }
