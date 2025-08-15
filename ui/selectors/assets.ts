@@ -1,7 +1,9 @@
 import {
+  AssetListState,
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
+  selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
 import { CaipAssetId } from '@metamask/keyring-api';
 import {
@@ -508,4 +510,25 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
 
     return balances[nativeAssetType];
   },
+);
+
+// TODO: Find a better way to narrow the state needed to make better use of memoization
+export const getAllAssetsForSelectedAccountGroup = createDeepEqualSelector(
+  ({ metamask }: { metamask: AssetListState }) => ({
+    accountTree: metamask.accountTree,
+    internalAccounts: metamask.internalAccounts,
+    allTokens: metamask.allTokens,
+    allIgnoredTokens: metamask.allIgnoredTokens,
+    tokenBalances: metamask.tokenBalances,
+    marketData: metamask.marketData,
+    currencyRates: metamask.currencyRates,
+    accountsAssets: metamask.accountsAssets,
+    assetsMetadata: metamask.assetsMetadata,
+    balances: metamask.balances,
+    conversionRates: metamask.conversionRates,
+    currentCurrency: metamask.currentCurrency,
+    accountsByChainId: metamask.accountsByChainId,
+  }),
+  (assetListState: AssetListState) =>
+    selectAssetsBySelectedAccountGroup(assetListState),
 );
