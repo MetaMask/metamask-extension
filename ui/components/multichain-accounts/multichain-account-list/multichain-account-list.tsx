@@ -34,11 +34,16 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
   selectedAccountGroup: AccountGroupId;
+  formattedAccountGroupBalancesByWallet?: Record<
+    string,
+    Record<string, string>
+  >;
 };
 
 export const MultichainAccountList = ({
   wallets,
   selectedAccountGroup,
+  formattedAccountGroupBalancesByWallet,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -103,12 +108,16 @@ export const MultichainAccountList = ({
 
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
+            const balanceText =
+              formattedAccountGroupBalancesByWallet?.[walletId]?.[groupId] ??
+              '$ n/a';
+
             return [
               <MultichainAccountCell
                 key={`multichain-account-cell-${groupId}`}
                 accountId={groupId as AccountGroupId}
                 accountName={groupData.metadata.name}
-                balance="$ n/a"
+                balance={balanceText}
                 selected={selectedAccountGroup === groupId}
                 onClick={handleAccountClick}
               />,
@@ -128,6 +137,7 @@ export const MultichainAccountList = ({
     dispatch,
     history,
     selectedAccountGroup,
+    formattedAccountGroupBalancesByWallet,
   ]);
 
   return <>{walletTree}</>;
