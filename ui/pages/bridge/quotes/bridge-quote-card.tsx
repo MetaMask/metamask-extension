@@ -127,6 +127,9 @@ export const BridgeQuoteCard = ({
                         {
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
+                          can_submit: true,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           stx_enabled: isStxEnabled,
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
