@@ -107,7 +107,7 @@ export default function NotificationsSettings() {
         endAccessory={<Box style={{ height: '48px' }} />}
         alignItems={AlignItems.center}
         textProps={{
-          variant: TextVariant.headingMd,
+          // variant: TextVariant.headingMd,
           'data-testid': 'notifications-settings-title',
         }}
       >
