@@ -5,7 +5,7 @@ import { Substream } from '@metamask/object-multiplex/dist/Substream';
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
-import PortStream from 'extension-port-stream';
+import { PortStream } from '../lib/extension-port-stream';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import {
@@ -78,7 +78,7 @@ export const setupPhishingExtStreams = (): void => {
   phishingExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
-  phishingExtStream = new PortStream(phishingExtPort);
+  phishingExtStream = new PortStream(phishingExtPort, { chunkSize: 0 });
 
   // create and connect channel muxers so we can handle the channels individually
   phishingExtMux = new ObjectMultiplex();

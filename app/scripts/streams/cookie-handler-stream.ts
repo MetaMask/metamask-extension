@@ -5,7 +5,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline } from 'readable-stream';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
-import PortStream from 'extension-port-stream';
+import { PortStream } from '../lib/extension-port-stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
@@ -72,7 +72,9 @@ export const setupCookieHandlerExtStreams = (): void => {
   cookieHandlerExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
-  cookieHandlerExtStream = new PortStream(cookieHandlerExtPort);
+  cookieHandlerExtStream = new PortStream(cookieHandlerExtPort, {
+    chunkSize: 0,
+  });
 
   // create and connect channel muxers
   // so we can handle the channels individually

@@ -12,7 +12,6 @@ import '../../development/wdyr';
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
 
-import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
 import { StreamProvider } from '@metamask/providers';
@@ -34,6 +33,7 @@ import {
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import { PortStream } from './lib/extension-port-stream';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';

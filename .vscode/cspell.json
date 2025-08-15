@@ -85,6 +85,7 @@
     "pipefail",
     "quickstart",
     "recompiles",
+    "reentrancy",
     "retryable",
     "safener",
     "shellcheck",
