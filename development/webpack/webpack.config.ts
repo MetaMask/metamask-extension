@@ -29,6 +29,7 @@ import {
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
+  type Browser,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -455,14 +456,19 @@ const bootstrapConfig = {
   dependencies: [config.name],
   mode: args.env,
   context,
-  entry: { bootstrap: './scripts/load/bootstrap.ts' },
+  entry: args.browser.reduce(
+    (acc, browser) => {
+      acc[browser] = `./scripts/load/bootstrap.ts`;
+      return acc;
+    },
+    {} as Record<Browser, './scripts/load/bootstrap.ts'>,
+  ),
   target: `browserslist:${browsersListPath}:defaults`,
   devtool: args.devtool === 'none' ? false : args.devtool,
   output: {
-    // TODO: Add support for args.browser
-    path: join(context, '..', 'dist', 'chrome'),
+    path: join(context, '..', 'dist'),
     publicPath: '',
-    filename: 'bootstrap.js',
+    filename: '[name]/bootstrap.js',
     clean: false,
     crossOriginLoading: 'anonymous',
     pathinfo: false,
