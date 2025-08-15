@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../components/component-library';
 import {
@@ -26,11 +26,11 @@ import { NotificationDetailsBody } from './notification-details-body/notificatio
 import { NotificationDetailsFooter } from './notification-details-footer/notification-details-footer';
 
 function useModalNavigation() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const redirectToNotifications = useCallback(() => {
-    history.push(NOTIFICATIONS_ROUTE);
-  }, [history]);
+    navigate(NOTIFICATIONS_ROUTE);
+  }, [navigate]);
 
   return {
     redirectToNotifications,
