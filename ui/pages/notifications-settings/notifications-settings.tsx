@@ -104,8 +104,9 @@ export default function NotificationsSettings() {
             }
           />
         }
+        endAccessory={null}
         // endAccessory={<Box style={{ height: '48px' }} />}
-        alignItems={AlignItems.center}
+        // alignItems={AlignItems.center}
         // textProps={{
         // variant: TextVariant.headingMd,
         // 'data-testid': 'notifications-settings-title',
