@@ -1562,6 +1562,14 @@
   "create": {
     "message": "Create"
   },
+  "createMultichainAccountButton": {
+    "message": "Create account",
+    "description": "Name of a button used on multichain account related pages for triggering the account creation process."
+  },
+  "createMultichainAccountButtonLoading": {
+    "message": "Creating account...",
+    "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
+  },
   "createNewAccountHeader": {
     "message": "Create a new account"
   },

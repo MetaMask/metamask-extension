@@ -60,7 +60,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import { AccountGroupId } from '@metamask/account-api';
+import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -2225,6 +2225,45 @@ export function setSelectedMultichainAccount(
       logErrorWithMessage(error);
     } finally {
       dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Strips the type prefix from a wallet ID
+ * Examples:
+ * - "entropy:01JKAF3DSGM3AB87EM9N0K41AJ" -> "01JKAF3DSGM3AB87EM9N0K41AJ"
+ *
+ * @param id - The wallet ID with a type prefix
+ * @returns The wallet ID without the type prefix
+ */
+export function stripWalletTypePrefix(id: AccountWalletId): string {
+  const firstColonIndex = id.indexOf(':');
+
+  if (firstColonIndex !== -1) {
+    return id.slice(firstColonIndex + 1);
+  }
+
+  return id;
+}
+
+/**
+ * Create a new multichain account.
+ *
+ * @param walletId - ID of a wallet.
+ */
+export function createMultichainAccount(
+  walletId: AccountWalletId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    log.debug(`background.createNextMultichainAccountGroup`);
+    try {
+      const walletIdWithoutTypePrefix = stripWalletTypePrefix(walletId);
+      await submitRequestToBackground('createNextMultichainAccountGroup', [
+        walletIdWithoutTypePrefix,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
     }
   };
 }
