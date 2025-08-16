@@ -81,6 +81,7 @@ export const lavamoatPlugin = new LavamoatPlugin({
       'EventTarget',
       'browser',
       'chrome',
+      'indexedDB',
       // webpack
       'webpackChunk',
     ],
