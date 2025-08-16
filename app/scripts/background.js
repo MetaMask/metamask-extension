@@ -1053,6 +1053,13 @@ export function setupController(
     getUseAddressBarEnsResolution: () =>
       controller.preferencesController.state.useAddressBarEnsResolution,
     provider: controller.provider,
+    getPreferencesState: () => controller.preferencesController.state,
+    getSelectedAddress: () =>
+      controller.preferencesController.state.selectedAddress,
+    addReferralPassedAccount:
+      controller.preferencesController.addReferralPassedAccount.bind(
+        controller.preferencesController,
+      ),
   });
 
   setupSentryGetStateGlobal(controller);

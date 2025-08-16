@@ -147,6 +147,9 @@ export type PreferencesControllerState = Omit<
   useExternalServices: boolean;
   textDirection?: string;
   manageInstitutionalWallets: boolean;
+  referralApprovedAccounts: string[];
+  referralPassedAccounts: string[];
+  referralDeclinedAccounts: string[];
 };
 
 /**
@@ -251,6 +254,9 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
     manageInstitutionalWallets: false,
+    referralApprovedAccounts: [],
+    referralPassedAccounts: [],
+    referralDeclinedAccounts: [],
   });
 
 /**
@@ -414,6 +420,9 @@ const controllerMetadata = {
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
   manageInstitutionalWallets: { persist: true, anonymous: false },
+  referralApprovedAccounts: { persist: true, anonymous: false },
+  referralPassedAccounts: { persist: true, anonymous: false },
+  referralDeclinedAccounts: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -971,6 +980,53 @@ export class PreferencesController extends BaseController<
       state.identities = updatedIdentities;
       state.lostIdentities = updatedLostIdentities;
       state.selectedAddress = selectedAccount?.address || ''; // it will be an empty string during onboarding
+    });
+  }
+
+  addReferralApprovedAccount(accountAddress: string) {
+    this.update((state) => {
+      if (!state.referralApprovedAccounts.includes(accountAddress)) {
+        state.referralApprovedAccounts.push(accountAddress);
+      }
+    });
+  }
+
+  addReferralPassedAccount(accountAddress: string) {
+    this.update((state) => {
+      if (!state.referralPassedAccounts.includes(accountAddress)) {
+        state.referralPassedAccounts.push(accountAddress);
+      }
+    });
+  }
+
+  addReferralDeclinedAccount(accountAddress: string) {
+    this.update((state) => {
+      if (!state.referralDeclinedAccounts.includes(accountAddress)) {
+        state.referralDeclinedAccounts.push(accountAddress);
+      }
+    });
+  }
+
+  removeReferralDeclinedAccount(accountAddress: string) {
+    this.update((state) => {
+      const index = state.referralDeclinedAccounts.indexOf(accountAddress);
+      if (index > -1) {
+        state.referralDeclinedAccounts.splice(index, 1);
+      }
+    });
+  }
+
+  getReferralConsentState() {
+    return {
+      referralApprovedAccounts: this.state.referralApprovedAccounts,
+      referralPassedAccounts: this.state.referralPassedAccounts,
+      referralDeclinedAccounts: this.state.referralDeclinedAccounts,
+    };
+  }
+
+  setAllAccountsReferralApproved(accountAddresses: string[]) {
+    this.update((state) => {
+      state.referralApprovedAccounts = [...accountAddresses];
     });
   }
 }
