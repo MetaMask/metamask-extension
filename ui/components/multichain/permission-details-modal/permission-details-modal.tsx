@@ -1,6 +1,7 @@
 import React from 'react';
 import { flatten } from 'lodash';
 import { useSelector } from 'react-redux';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   ModalOverlay,
   ModalContent,
@@ -8,17 +9,13 @@ import {
   Modal,
   Box,
   Text,
-  AvatarAccount,
   ModalFooter,
   Button,
   IconName,
   ButtonVariant,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   ModalBody,
   ButtonSize,
 } from '../../component-library';
-import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissionDescription } from '../../../helpers/utils/permission';
@@ -33,6 +30,7 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 
 export const PermissionDetailsModal = ({
   onClose,
@@ -48,7 +46,6 @@ export const PermissionDetailsModal = ({
   permissions: Permission[];
 }) => {
   const t = useI18nContext();
-  const useBlockie = useSelector(getUseBlockie);
 
   const permissionLabels = flatten(
     permissions.map(({ key, value }) =>
@@ -77,14 +74,9 @@ export const PermissionDetailsModal = ({
             justifyContent={JustifyContent.center}
             gap={2}
           >
-            <AvatarAccount
+            <PreferredAvatar
               size={AvatarAccountSize.Sm}
               address={account.address}
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
             />
             <Text variant={TextVariant.headingSm}>
               {account.metadata.name

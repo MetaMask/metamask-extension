@@ -1,7 +1,6 @@
 import * as React from 'react';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
-import { getUseBlockie } from '../../../selectors';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import { Text } from '../../component-library/text';
 import {
   AlignItems,
@@ -17,11 +16,7 @@ import {
   AvatarToken,
 } from '../../component-library/avatar-token';
 import { Box } from '../../component-library/box';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-} from '../../component-library/avatar-account';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -44,7 +39,6 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
   const showTag = membersCount > limit;
-  const useBlockie = useSelector(getUseBlockie);
 
   let marginLeftValue = '';
   if (AvatarTokenSize.Xs) {
@@ -80,15 +74,9 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
                 />
               )}
               {avatarType === AvatarType.ACCOUNT && (
-                <AvatarAccount
+                <PreferredAvatar
                   size={AvatarAccountSize.Xs}
                   address={member.avatarValue}
-                  variant={
-                    useBlockie
-                      ? AvatarAccountVariant.Blockies
-                      : AvatarAccountVariant.Jazzicon
-                  }
-                  borderColor={borderColor}
                 />
               )}
               {avatarType === AvatarType.NETWORK && (
