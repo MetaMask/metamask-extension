@@ -27,7 +27,7 @@ import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
+import { ellipsify } from '../../../../pages/confirmations/send-legacy/send.utils';
 import {
   AssetWithDisplayData,
   ERC20Asset,

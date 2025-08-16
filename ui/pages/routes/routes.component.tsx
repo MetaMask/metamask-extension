@@ -209,10 +209,12 @@ const ConfirmTransaction = mmLazy(
 );
 const SendPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/send/index.js'
-    )) as unknown as DynamicImportType,
+  (() => {
+    if (process.env.SEND_REDESIGN_ENABLED) {
+      return import('../confirmations/send/index.ts');
+    }
+    return import('../../components/multichain/pages/send/index.js');
+  }) as unknown as DynamicImportType,
 );
 const Swaps = mmLazy(
   (() => import('../swaps/index.js')) as unknown as DynamicImportType,

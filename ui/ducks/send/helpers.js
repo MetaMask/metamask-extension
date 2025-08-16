@@ -16,7 +16,7 @@ import {
   generateERC721TransferData,
   generateERC1155TransferData,
   getAssetTransferData,
-} from '../../pages/confirmations/send/send.utils';
+} from '../../pages/confirmations/send-legacy/send.utils';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,

@@ -4,7 +4,7 @@ import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { TextVariant } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { MAX_GAS_LIMIT_DEC } from '../../../send/send.constants';
+import { MAX_GAS_LIMIT_DEC } from '../../../send-legacy/send.constants';
 import FormField from '../../../../../components/ui/form-field';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
