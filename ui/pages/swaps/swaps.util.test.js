@@ -311,7 +311,7 @@ describe('Swaps Util', () => {
       expect(getNetworkNameByChainId(CHAIN_IDS.ARBITRUM)).toBe(ARBITRUM);
     });
 
-    it('returns "zksync" for zkSync Era chain ID', () => {
+    it('returns "zksync" for ZKsync Era chain ID', () => {
       expect(getNetworkNameByChainId(CHAIN_IDS.ZKSYNC_ERA)).toBe(ZKSYNC_ERA);
     });
 
