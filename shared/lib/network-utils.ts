@@ -1,5 +1,5 @@
 import { CHAIN_SPEC_URL } from '../constants/network';
-import { getStorageItem } from './storage-helpers';
+import { getDbCacheEntry } from './fetch-with-cache';
 
 const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
 
@@ -17,8 +17,8 @@ type ChainInfo = {
  */
 export async function getSafeChainsListFromCacheOnly(): Promise<ChainInfo[]> {
   try {
-    const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
-    return cachedResponse || [];
+    const cached = await getDbCacheEntry(cacheKey);
+    return cached?.data ?? [];
   } catch (error) {
     console.error('Error retrieving chains list from cache', error);
     return [];
