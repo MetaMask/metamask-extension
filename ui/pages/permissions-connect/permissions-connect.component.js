@@ -24,6 +24,7 @@ import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 import { ConnectPage } from './connect-page/connect-page';
 import { getCaip25CaveatValueFromPermissions } from './connect-page/utils';
+import { MultichainAccountConnectPage } from './multchain-accounts/multichain-account-connect-page';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
@@ -107,6 +108,7 @@ export default class PermissionConnect extends Component {
       subjectType: PropTypes.string,
     }),
     isRequestingAccounts: PropTypes.bool.isRequired,
+    isMultichainAccountState2Enabled: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -321,6 +323,7 @@ export default class PermissionConnect extends Component {
       setSnapsInstallPrivacyWarningShownStatus,
       approvePermissionsRequest,
       history,
+      isMultichainAccountState2Enabled,
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -341,30 +344,47 @@ export default class PermissionConnect extends Component {
             <Route
               path={connectPath}
               exact
-              render={() =>
-                isRequestingSnap ? (
-                  <ChooseAccount
-                    accounts={accounts}
-                    nativeCurrency={nativeCurrency}
-                    selectAccounts={(addresses) =>
-                      this.selectAccounts(addresses)
-                    }
-                    selectNewAccountViaModal={(handleAccountClick) => {
-                      showNewAccountModal({
-                        onCreateNewAccount: (address) =>
-                          handleAccountClick(address),
-                        newAccountNumber,
-                      });
-                    }}
-                    addressLastConnectedMap={addressLastConnectedMap}
-                    cancelPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    permissionsRequestId={permissionsRequestId}
-                    selectedAccountAddresses={selectedAccountAddresses}
-                    targetSubjectMetadata={targetSubjectMetadata}
-                  />
-                ) : (
+              render={() => {
+                if (isRequestingSnap) {
+                  return (
+                    <ChooseAccount
+                      accounts={accounts}
+                      nativeCurrency={nativeCurrency}
+                      selectAccounts={(addresses) =>
+                        this.selectAccounts(addresses)
+                      }
+                      selectNewAccountViaModal={(handleAccountClick) => {
+                        showNewAccountModal({
+                          onCreateNewAccount: (address) =>
+                            handleAccountClick(address),
+                          newAccountNumber,
+                        });
+                      }}
+                      addressLastConnectedMap={addressLastConnectedMap}
+                      cancelPermissionsRequest={(requestId) =>
+                        this.cancelPermissionsRequest(requestId)
+                      }
+                      permissionsRequestId={permissionsRequestId}
+                      selectedAccountAddresses={selectedAccountAddresses}
+                      targetSubjectMetadata={targetSubjectMetadata}
+                    />
+                  );
+                }
+                if (isMultichainAccountState2Enabled) {
+                  return (
+                    <MultichainAccountConnectPage
+                      rejectPermissionsRequest={(requestId) =>
+                        this.cancelPermissionsRequest(requestId)
+                      }
+                      activeTabOrigin={this.state.origin}
+                      request={permissionsRequest || {}}
+                      permissionsRequestId={permissionsRequestId}
+                      approveConnection={this.approveConnection}
+                      targetSubjectMetadata={targetSubjectMetadata}
+                    />
+                  );
+                }
+                return (
                   <ConnectPage
                     rejectPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
@@ -375,8 +395,8 @@ export default class PermissionConnect extends Component {
                     approveConnection={this.approveConnection}
                     targetSubjectMetadata={targetSubjectMetadata}
                   />
-                )
-              }
+                );
+              }}
             />
             <Route
               path={confirmPermissionPath}
