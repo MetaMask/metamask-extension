@@ -8,7 +8,7 @@ import { SWAP_TEST_GAS_INCLUDED_TRADES_MOCK } from '../smart-transactions/mocks'
 export async function mockEthDaiTrade(mockServer: MockttpServer) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -21,7 +21,7 @@ export async function mockEthDaiTrade(mockServer: MockttpServer) {
 export async function mockEthUsdcGasIncludedTrade(mockServer: MockttpServer) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .withQuery({ enableGasIncludedQuotes: 'true' })
       .thenCallback(() => {
         return {

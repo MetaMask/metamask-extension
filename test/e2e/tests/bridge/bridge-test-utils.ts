@@ -33,6 +33,7 @@ import {
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
+  TOP_ASSETS_API_ETHEREUM_MOCK_RESULT,
 } from './constants';
 
 export class BridgePage {
@@ -167,6 +168,15 @@ async function mockTopAssetsLinea(mockServer: Mockttp) {
     return {
       statusCode: 200,
       json: TOP_ASSETS_API_LINEA_MOCK_RESULT,
+    };
+  });
+}
+
+async function mockTopAssetsEthereum(mockServer: Mockttp) {
+  return await mockServer.forGet(/1\/topAssets/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: TOP_ASSETS_API_ETHEREUM_MOCK_RESULT,
     };
   });
 }
@@ -500,7 +510,9 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
 
 async function mockSwapAggregatorLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {
@@ -544,7 +556,9 @@ export async function mockGasPricesMainnet(mockServer: Mockttp) {
 
 export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {
@@ -556,7 +570,7 @@ export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
 
 export async function mockSwapTokensLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/59144/tokens')
     .withQuery({ includeBlockedTokens: 'true' })
     .always()
     .thenCallback(() => {
@@ -569,7 +583,7 @@ export async function mockSwapTokensLinea(mockServer: Mockttp) {
 
 export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/42161/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/42161/tokens')
     .withQuery({ includeBlockedTokens: 'true' })
     .always()
     .thenCallback(() => {
@@ -582,7 +596,9 @@ export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
 
 export async function mockSwapAggregatorMetadataArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/42161/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/42161/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {
@@ -705,6 +721,7 @@ export const getBridgeFixtures = (
       const standardMocks = [
         await mockPortfolioPage(mockServer),
         await mockGetTxStatus(mockServer),
+        await mockTopAssetsEthereum(mockServer),
         await mockTopAssetsLinea(mockServer),
         await mockTopAssetsArbitrum(mockServer),
         await mockTokensEthereum(mockServer),
@@ -804,6 +821,7 @@ export const getQuoteNegativeCasesFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
+      await mockTopAssetsEthereum(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockGetQuoteInvalid(mockServer, options),
       await mockTokensLinea(mockServer),
@@ -849,6 +867,7 @@ export const getBridgeNegativeCasesFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
+      await mockTopAssetsEthereum(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockTokensLinea(mockServer),
       await mockETHtoETH(mockServer),
@@ -895,6 +914,7 @@ export const getInsufficientFundsFixtures = (
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockTokensLinea(mockServer),
+      await mockTopAssetsEthereum(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockETHtoWETH(mockServer),
     ],
@@ -946,6 +966,7 @@ export const getBridgeL2Fixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
+      await mockTopAssetsEthereum(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockTopAssetsArbitrum(mockServer),
       await mockTokensArbitrum(mockServer),
