@@ -5,10 +5,12 @@
 
       .dot {
         background: var(--color-icon-muted);
+        opacity: 1 !important;
         box-shadow: none;
 
         &.selected {
           background: var(--color-icon-default);
+          opacity: 1 !important;
         }
       }
     }
