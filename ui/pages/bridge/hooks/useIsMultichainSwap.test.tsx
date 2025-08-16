@@ -1,5 +1,5 @@
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useIsMultichainSwap } from './useIsMultichainSwap';
 
 jest.mock('../../../selectors/multichain', () => ({
@@ -7,13 +7,13 @@ jest.mock('../../../selectors/multichain', () => ({
   getMultichainIsSolana: jest.fn(),
 }));
 
-const mockHistoryReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const renderUseIsMultichainSwap = (
   initialPath: string,
@@ -27,7 +27,7 @@ const renderUseIsMultichainSwap = (
 };
 
 describe('useIsMultichainSwap', () => {
-  beforeEach(() => {
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -73,10 +73,9 @@ describe('useIsMultichainSwap', () => {
     });
 
     expect(result.current).toBe(false);
-    // Check if URL was updated
-    expect(mockHistoryReplace).toHaveBeenCalledWith({
-      pathname: '/bridge',
-      search: 'swaps=true',
+    // Check if URL was updated with correct v6 navigate syntax
+    expect(mockUseNavigate).toHaveBeenCalledWith('/bridge?swaps=true', {
+      replace: true,
     });
   });
 
@@ -113,10 +112,12 @@ describe('useIsMultichainSwap', () => {
     });
 
     expect(result.current).toBe(false);
-    expect(mockHistoryReplace).toHaveBeenCalledWith({
-      pathname: '/bridge',
-      search: 'existing=param&swaps=true',
-    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/bridge?existing=param&swaps=true',
+      {
+        replace: true,
+      },
+    );
   });
 
   it('returns true when there are other query params and swaps=true is added', () => {
@@ -137,6 +138,6 @@ describe('useIsMultichainSwap', () => {
     );
 
     expect(result.current).toBe(true);
-    expect(mockHistoryReplace).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 });
