@@ -21,11 +21,7 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-actions',
     '@storybook/addon-a11y',
-    '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
-    'storybook-dark-mode',
-    '@storybook/addon-mdx-gfm',
-    '@storybook/addon-designs',
   ],
   staticDirs: ['../app', './images'],
   env: (config) => ({
