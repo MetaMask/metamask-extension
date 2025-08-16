@@ -98,6 +98,7 @@ class FixtureServer {
 
     await new Promise((resolve, reject) => {
       this._server.close();
+      this._server.closeAllConnections();
       this._server.once('error', reject);
       this._server.once('close', resolve);
     });
