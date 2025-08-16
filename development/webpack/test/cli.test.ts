@@ -22,7 +22,6 @@ describe('./utils/cli.ts', () => {
     manifest_version: 2,
     type: 'main',
     lavamoat: false,
-    lockdown: false,
     snow: false,
     dryRun: false,
     stats: false,

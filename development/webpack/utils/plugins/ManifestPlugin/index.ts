@@ -255,6 +255,14 @@ export class ManifestPlugin<Z extends boolean> {
       : baseManifest.description;
     const { version } = this.options;
 
+    // scripts/disable-console.js is only relevant for the browserify build
+    // console is disabled by the lavamoat webpack plugin automatically
+    // TODO: clean up after browserify builds are removed
+    baseManifest.content_scripts = baseManifest.content_scripts?.map((s) => ({
+      ...s,
+      js: s.js?.filter((filename) => filename !== 'scripts/disable-console.js'),
+    }));
+
     this.options.browsers.forEach((browser) => {
       let manifest: Manifest = { ...baseManifest, description, version };
 

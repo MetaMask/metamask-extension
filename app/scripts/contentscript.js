@@ -52,4 +52,22 @@ const start = () => {
   }
 };
 
+(function () {
+  let once = false;
+  // TODO: "document" because LavaMoat blocks props
+  // TODO: definitions against the globalThis (window)
+  Object.defineProperty(document, 'INJECT_ONCE', {
+    value: (textContent) => {
+      if (once) {
+        return;
+      }
+      once = true;
+      const d = document;
+      const s = d.createElement('script');
+      s.textContent = textContent;
+      d.documentElement.appendChild(s).remove();
+    },
+  });
+})();
+
 start();
