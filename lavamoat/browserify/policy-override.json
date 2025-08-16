@@ -68,6 +68,22 @@
       "globals": {
         "crypto": true
       }
+    },
+    "@metamask/design-system-react": {
+      "globals": {
+        "__import__": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/jazzicon": true,
+        "@metamask/utils": true,
+        "@metamask/design-system-react>@radix-ui/react-slot": true,
+        "@solana/addresses": true,
+        "@metamask/design-system-react>blo": true,
+        "dompurify": true,
+        "react": true,
+        "@metamask/design-system-react>tailwind-merge": true
+      }
     }
   }
 }
