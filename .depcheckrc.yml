@@ -58,7 +58,6 @@ ignores:
   - '@storybook/manager-webpack5'
   - '@storybook/react-webpack5'
   - 'storybook-dark-mode'
-  - '@whitespace/storybook-addon-html'
   - 'react-syntax-highlighter'
   - 'style-loader'
   - 'css-loader'
