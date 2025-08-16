@@ -4,11 +4,13 @@ const {
 
 const FixtureBuilder = require('../../fixture-builder');
 const {
+  DAPP_URL,
+  DAPP_ONE_URL,
+} = require('../../constants');
+const {
   withFixtures,
   openDapp,
   unlockWallet,
-  DAPP_URL,
-  DAPP_ONE_URL,
   WINDOW_TITLES,
 } = require('../../helpers');
 
