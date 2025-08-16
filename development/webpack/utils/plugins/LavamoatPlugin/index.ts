@@ -17,6 +17,7 @@ export const lavamoatPlugin = new LavamoatPlugin({
     overrideTaming: 'severe',
     localeTaming: 'unsafe',
     errorTrapping: 'none',
+    reporting: 'none',
   },
   scuttleGlobalThis: {
     enabled: true,
