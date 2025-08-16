@@ -7,17 +7,10 @@ import {
 } from '@metamask/design-system-react';
 import { getUseBlockie } from '../../../selectors';
 
-export function PreferredAvatar(props: Omit<AvatarAccountProps, 'ref'>) {
-  const useBlockie = useSelector(getUseBlockie);
+export const PreferredAvatar = (props: Omit<AvatarAccountProps, 'ref'>) => {
+  const variant = useSelector(getUseBlockie)
+    ? AvatarAccountVariant.Blockies
+    : AvatarAccountVariant.Jazzicon;
 
-  return (
-    <AvatarAccount
-      variant={
-        useBlockie
-          ? AvatarAccountVariant.Blockies
-          : AvatarAccountVariant.Jazzicon
-      }
-      {...props}
-    />
-  );
-}
+  return <AvatarAccount variant={variant} {...props} />;
+};

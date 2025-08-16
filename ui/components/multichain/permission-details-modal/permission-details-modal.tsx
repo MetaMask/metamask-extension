@@ -1,6 +1,5 @@
 import React from 'react';
 import { flatten } from 'lodash';
-import { useSelector } from 'react-redux';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   ModalOverlay,
