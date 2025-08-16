@@ -63,7 +63,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
         class="mm-box mm-text mm-box--color-text-alternative-soft mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         data-testid="defi-details-page-market-value"
       >
-        $20,000.00
+        US$20,000.00
       </span>
     </div>
     <div
