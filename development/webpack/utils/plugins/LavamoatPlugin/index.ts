@@ -65,6 +65,9 @@ export const lavamoatPlugin = new LavamoatPlugin({
       'Promise',
       'JSON',
       'Date',
+      'setTimeout',
+      'clearTimeout',
+      'ret_nodes',
       // globals sentry needs to function
       '__SENTRY__',
       'appState',
@@ -72,12 +75,12 @@ export const lavamoatPlugin = new LavamoatPlugin({
       'stateHooks',
       'sentryHooks',
       'sentry',
-      'setTimeout',
-      'clearTimeout',
       // e2e
       'HTMLFormElement',
       'getSelection',
       'EventTarget',
+      'browser',
+      'chrome',
       // webpack
       'webpackChunk',
     ],
