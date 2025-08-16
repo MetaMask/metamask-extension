@@ -6,16 +6,7 @@ import { MAX_SLIDES } from '../../../../ui/components/multichain/carousel/consta
 
 describe('Carousel component e2e tests', function () {
   const MAX_VISIBLE_SLIDES = MAX_SLIDES;
-  const SLIDE_IDS = [
-    'solana',
-    'smartAccountUpgrade',
-    'bridge',
-    'fund',
-    'card',
-    'cash',
-    'multiSrp',
-    'backupAndSync',
-  ];
+  const SLIDE_IDS = ['solana', 'fund', 'card'];
 
   it('should display correct slides with expected content', async function () {
     await withFixtures(

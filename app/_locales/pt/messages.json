@@ -654,12 +654,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Saiba como protegemos sua privacidade"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Faça backup de suas contas e configurações de sincronização."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Apresentando o backup e a sincronização"
-  },
   "backupApprovalInfo": {
     "message": "Esse código secreto é obrigatório para recuperar sua carteira caso você perca seu dispositivo, esqueça sua senha, precise reinstalar a MetaMask ou queira acessar sua carteira em outro dispositivo."
   },
@@ -5392,18 +5386,6 @@
   "skipDeepLinkInterstitialDescription": {
     "message": "Ativar esta opção fará com que a tela intersticial seja ignorada ao abrir links profundos (deep links) na MetaMask. Um link profundo é um link como https://link.metamask.io/home, que abre a MetaMask automaticamente. Esses links podem ser ocultados ou manipulados por terceiros. A tela intersticial existe para proteger você contra o acesso acidental a páginas dentro da MetaMask que possam exibir informações sensíveis, como suas contas, tokens, histórico, saldos ou configurações. Essa configuração se aplica apenas a links assinados pela própria MetaMask."
   },
-  "slideBridgeDescription": {
-    "message": "Transite por 9 cadeias, tudo dentro da sua carteira"
-  },
-  "slideBridgeTitle": {
-    "message": "Pronto para fazer a ponte?"
-  },
-  "slideCashOutDescription": {
-    "message": "Venda suas criptodivisas por dinheiro"
-  },
-  "slideCashOutTitle": {
-    "message": "Saque com a MetaMask"
-  },
   "slideDebitCardDescription": {
     "message": "Disponível em regiões selecionadas"
   },
@@ -5416,29 +5398,11 @@
   "slideFundWalletTitle": {
     "message": "Adicione valores à sua carteira"
   },
-  "slideMultiSrpDescription": {
-    "message": "Importe e use múltiplas carteiras na MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Adicione múltiplas Frases de Recuperação Secretas"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Mesmo endereço, recursos mais inteligentes"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Comece a usar contas inteligentes"
-  },
   "slideSolanaDescription": {
     "message": "Crie uma conta Solana para começar"
   },
   "slideSolanaTitle": {
     "message": "Agora compatível com Solana"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Cunhe um NFT agora para concorrer"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Participe do sorteio de $5000 em USDC!"
   },
   "smartAccountAccept": {
     "message": "Usar conta inteligente"

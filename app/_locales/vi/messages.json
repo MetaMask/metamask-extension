@@ -654,12 +654,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Sao lưu tài khoản và đồng bộ các chế độ cài đặt của bạn."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Giới thiệu về sao lưu và đồng bộ"
-  },
   "backupApprovalInfo": {
     "message": "Đây là mã bí mật bắt buộc phải dùng để khôi phục ví trong trường hợp bạn bị mất thiết bị, quên mật khẩu, phải cài đặt lại MetaMask hoặc muốn truy cập ví của mình trên một thiết bị khác."
   },
@@ -5392,18 +5386,6 @@
   "skipDeepLinkInterstitialDescription": {
     "message": "Khi bạn bật tùy chọn này, màn hình xen giữa khi mở liên kết sâu trong MetaMask sẽ bị bỏ qua. \"Liên kết sâu\" là một liên kết như https://link.metamask.io/home sẽ khiến MetaMask mở và khởi chạy; những liên kết này có thể bị che giấu bởi những liên kết khác. Màn hình xen giữa được thiết kế để bảo vệ bạn khỏi việc vô tình mở các trang trong MetaMask có thể hiển thị tài khoản, token, lịch sử, số dư, chế độ cài đặt hoặc các thông tin nhạy cảm khác. Chế độ cài đặt này chỉ áp dụng cho các liên kết được MetaMask ký."
   },
-  "slideBridgeDescription": {
-    "message": "Di chuyển qua 9 chuỗi, tất cả trong ví của bạn"
-  },
-  "slideBridgeTitle": {
-    "message": "Sẵn sàng để thực hiện cầu nối?"
-  },
-  "slideCashOutDescription": {
-    "message": "Bán tiền mã hóa để lấy tiền mặt"
-  },
-  "slideCashOutTitle": {
-    "message": "Rút tiền với MetaMask"
-  },
   "slideDebitCardDescription": {
     "message": "Có sẵn ở một số khu vực được chọn"
   },
@@ -5416,29 +5398,11 @@
   "slideFundWalletTitle": {
     "message": "Nạp tiền vào ví của bạn"
   },
-  "slideMultiSrpDescription": {
-    "message": "Nhập và sử dụng nhiều ví trong MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Thêm nhiều Cụm từ khôi phục bí mật"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Địa chỉ giữ nguyên, tính năng thông minh hơn"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Bắt đầu sử dụng tài khoản thông minh"
-  },
   "slideSolanaDescription": {
     "message": "Tạo tài khoản Solana để bắt đầu"
   },
   "slideSolanaTitle": {
     "message": "Solana hiện đã được hỗ trợ"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Đúc NFT ngay để có cơ hội trúng thưởng"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Tham gia chương trình Tặng thưởng $5000 USDC!"
   },
   "smartAccountAccept": {
     "message": "Sử dụng tài khoản thông minh"

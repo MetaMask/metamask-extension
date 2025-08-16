@@ -654,12 +654,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Pelajari cara kami melindungi privasi Anda"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Cadangkan akun Anda dan sinkronkan pengaturan."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Memperkenalkan pencadangan dan sinkronisasi"
-  },
   "backupApprovalInfo": {
     "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
   },
@@ -5392,18 +5386,6 @@
   "skipDeepLinkInterstitialDescription": {
     "message": "Mengaktifkan opsi ini akan melewati layar interstisial yang ditampilkan saat membuka deep link di MetaMask. \"Deep link\" merupakan tautan seperti https://link.metamask.io/home yang akan menyebabkan MetaMask terbuka; tautan ini dapat dikaburkan oleh orang lain. Layar interstisial dirancang untuk melindungi Anda dari membuka halaman secara tidak sengaja di dalam MetaMask yang mungkin menampilkan akun, token, riwayat, saldo, pengaturan, atau informasi sensitif lainnya. Pengaturan ini hanya berlaku untuk tautan yang ditandatangani oleh MetaMask."
   },
-  "slideBridgeDescription": {
-    "message": "Berpindah antara 9 chain, semuanya di dalam dompet Anda"
-  },
-  "slideBridgeTitle": {
-    "message": "Siap untuk bridge?"
-  },
-  "slideCashOutDescription": {
-    "message": "Jual kripto dan dapatkan uang tunai"
-  },
-  "slideCashOutTitle": {
-    "message": "Cairkan uang tunai dengan MetaMask"
-  },
   "slideDebitCardDescription": {
     "message": "Tersedia di wilayah tertentu"
   },
@@ -5416,29 +5398,11 @@
   "slideFundWalletTitle": {
     "message": "Danai dompet Anda"
   },
-  "slideMultiSrpDescription": {
-    "message": "Impor dan gunakan beberapa dompet di MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Tambahkan beberapa Frasa Pemulihan Rahasia"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Alamat sama, fitur lebih cerdas"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Mulai menggunakan akun cerdas"
-  },
   "slideSolanaDescription": {
     "message": "Buat akun Solana untuk memulai"
   },
   "slideSolanaTitle": {
     "message": "Kini mendukung Solana"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Cetak NFT sekarang dan raih peluang untuk menang"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Ikuti Giveaway USDC senilai $5000!"
   },
   "smartAccountAccept": {
     "message": "Gunakan akun cerdas"

@@ -24,7 +24,6 @@ import { getSelectedAccount, getUseExternalServices } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   BASIC_FUNCTIONALITY_SLIDE,
-  getSweepstakesCampaignActive,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
@@ -99,18 +98,6 @@ export const Carousel = React.forwardRef(
           return 1;
         }
         ///: END:ONLY_INCLUDE_IF
-
-        const isSweepstakesActive = getSweepstakesCampaignActive(
-          new Date(new Date().toISOString()),
-        );
-        if (isSweepstakesActive) {
-          if (a.id === 'sweepStake') {
-            return -1;
-          }
-          if (b.id === 'sweepStake') {
-            return 1;
-          }
-        }
 
         if (a.undismissable && !b.undismissable) {
           return -1;

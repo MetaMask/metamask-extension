@@ -13,23 +13,12 @@ import {
 } from '../../selectors';
 import { CarouselSlide } from '../../../shared/constants/app-state';
 import * as AccountUtils from '../../../shared/lib/multichain/accounts';
-import {
-  getSweepstakesCampaignActive,
-  useCarouselManagement,
-} from './useCarouselManagement';
+import { useCarouselManagement } from './useCarouselManagement';
 import {
   FUND_SLIDE,
-  BRIDGE_SLIDE,
   CARD_SLIDE,
-  CASH_SLIDE,
-  SWEEPSTAKES_SLIDE,
-  SWEEPSTAKES_START,
-  SWEEPSTAKES_END,
   ZERO_BALANCE,
-  MULTI_SRP_SLIDE,
-  BACKUPANDSYNC_SLIDE,
   SOLANA_SLIDE,
-  SMART_ACCOUNT_UPGRADE_SLIDE,
   BASIC_FUNCTIONALITY_SLIDE,
   DOWNLOAD_MOBILE_APP_SLIDE,
 } from './constants';
@@ -40,132 +29,36 @@ jest
   .mocked(fetchCarouselSlidesFromContentful)
   .mockResolvedValue({ prioritySlides: [], regularSlides: [] });
 
-const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
+const SLIDES_ZERO_FUNDS_REMOTE_OFF = [
   { ...FUND_SLIDE, undismissable: true },
-  SMART_ACCOUNT_UPGRADE_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
   CARD_SLIDE,
-  CASH_SLIDE,
-  MULTI_SRP_SLIDE,
-  BACKUPANDSYNC_SLIDE,
   BASIC_FUNCTIONALITY_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
 ];
 
-const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
-  SMART_ACCOUNT_UPGRADE_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
+const SLIDES_ZERO_FUNDS_REMOTE_ON = [
+  { ...FUND_SLIDE, undismissable: true },
+  CARD_SLIDE,
+  BASIC_FUNCTIONALITY_SLIDE,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
+];
+
+const SLIDES_POSITIVE_FUNDS_REMOTE_OFF = [
   { ...FUND_SLIDE, undismissable: false },
   CARD_SLIDE,
-  CASH_SLIDE,
-  MULTI_SRP_SLIDE,
-  BACKUPANDSYNC_SLIDE,
   BASIC_FUNCTIONALITY_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
 ];
 
-const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
-  { ...FUND_SLIDE, undismissable: true },
-  SMART_ACCOUNT_UPGRADE_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-  CARD_SLIDE,
-  CASH_SLIDE,
-  MULTI_SRP_SLIDE,
-  BACKUPANDSYNC_SLIDE,
-  BASIC_FUNCTIONALITY_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  SOLANA_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-];
-
-const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF = [
-  SMART_ACCOUNT_UPGRADE_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
+const SLIDES_POSITIVE_FUNDS_REMOTE_ON = [
   { ...FUND_SLIDE, undismissable: false },
   CARD_SLIDE,
-  CASH_SLIDE,
-  MULTI_SRP_SLIDE,
-  BACKUPANDSYNC_SLIDE,
-  BASIC_FUNCTIONALITY_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  SOLANA_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-];
-
-const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
-  { ...SWEEPSTAKES_SLIDE, dismissed: false },
-  { ...FUND_SLIDE, undismissable: true },
-  SMART_ACCOUNT_UPGRADE_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-  CARD_SLIDE,
-  CASH_SLIDE,
-  MULTI_SRP_SLIDE,
-  BACKUPANDSYNC_SLIDE,
-  BASIC_FUNCTIONALITY_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  SOLANA_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-];
-
-const SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON = [
-  { ...SWEEPSTAKES_SLIDE, dismissed: false },
-  SMART_ACCOUNT_UPGRADE_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-  { ...FUND_SLIDE, undismissable: false },
-  CARD_SLIDE,
-  CASH_SLIDE,
-  MULTI_SRP_SLIDE,
-  BACKUPANDSYNC_SLIDE,
-  BASIC_FUNCTIONALITY_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  SOLANA_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-];
-
-const SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
-  { ...SWEEPSTAKES_SLIDE, dismissed: false },
-  { ...FUND_SLIDE, undismissable: true },
-  SMART_ACCOUNT_UPGRADE_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-  CARD_SLIDE,
-  CASH_SLIDE,
-  MULTI_SRP_SLIDE,
-  BACKUPANDSYNC_SLIDE,
-  BASIC_FUNCTIONALITY_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  SOLANA_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-];
-
-const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
-  { ...SWEEPSTAKES_SLIDE, dismissed: false },
-  SMART_ACCOUNT_UPGRADE_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-  { ...FUND_SLIDE, undismissable: false },
-  CARD_SLIDE,
-  CASH_SLIDE,
-  MULTI_SRP_SLIDE,
-  BACKUPANDSYNC_SLIDE,
   BASIC_FUNCTIONALITY_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
@@ -235,16 +128,8 @@ const mockGetSelectedInternalAccount = jest
 const mockGetShowDownloadMobileAppSlide = jest.fn().mockReturnValue(true);
 
 describe('useCarouselManagement', () => {
-  let validTestDate: string;
-  let invalidTestDate: string;
-
   beforeEach(() => {
     delete process.env.IN_TEST;
-    // Test dates
-    validTestDate = new Date(SWEEPSTAKES_START.getTime() + 1000).toISOString(); // 1 day after
-    invalidTestDate = new Date(
-      SWEEPSTAKES_START.getTime() - 1000,
-    ).toISOString(); // 1 day before
     // Mocks
     mockUseDispatch.mockReturnValue(jest.fn());
     mockUseSelector.mockImplementation((selector) => {
@@ -277,37 +162,18 @@ describe('useCarouselManagement', () => {
     process.env.IN_TEST = 'true';
   });
 
-  describe('getSweepstakesCampaignActive', () => {
-    it('returns true when date is within the sweepstakes period', () => {
-      const testDate = new Date(SWEEPSTAKES_START.getTime() + 1000); // 1 second after start
-      expect(getSweepstakesCampaignActive(testDate)).toBe(true);
-    });
-
-    it('returns false when date is before the sweepstakes period', () => {
-      const testDate = new Date(SWEEPSTAKES_START.getTime() - 1000); // 1 second before start
-      expect(getSweepstakesCampaignActive(testDate)).toBe(false);
-    });
-
-    it('returns false when date is after the sweepstakes period', () => {
-      const testDate = new Date(SWEEPSTAKES_END.getTime() + 1000); // 1 second after end
-      expect(getSweepstakesCampaignActive(testDate)).toBe(false);
-    });
-  });
-
-  describe('zero funds, remote off, sweepstakes off', () => {
+  describe('zero funds, remote off', () => {
     it('should have correct slide order', async () => {
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
-      );
+      expect(updatedSlides).toStrictEqual(SLIDES_ZERO_FUNDS_REMOTE_OFF);
     });
 
     it('should mark fund slide as undismissable', async () => {
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
@@ -317,7 +183,7 @@ describe('useCarouselManagement', () => {
 
     it('should mark fund slide as undismissable when using the hex 0x00 for zero balance', async () => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x00');
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+      renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides: CarouselSlide[] = mockUpdateSlides.mock.calls[0][0];
@@ -328,111 +194,51 @@ describe('useCarouselManagement', () => {
     });
   });
 
-  describe('zero funds, remote on, sweepstakes off', () => {
+  describe('zero funds, remote on', () => {
     it('should have correct slide order', async () => {
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF,
-      );
+      expect(updatedSlides).toStrictEqual(SLIDES_ZERO_FUNDS_REMOTE_ON);
     });
   });
 
-  describe('zero funds, remote off, sweepstakes on', () => {
-    it('should have correct slide order', async () => {
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
-
-      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
-
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON,
-      );
-    });
-  });
-
-  describe('zero funds, remote on, sweepstakes on', () => {
-    it('should have correct slide order', async () => {
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
-
-      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
-
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_ZERO_FUNDS_REMOTE_ON_SWEEPSTAKES_ON,
-      );
-    });
-  });
-
-  describe('positive funds, remote off, sweepstakes off', () => {
+  describe('positive funds, remote off', () => {
     beforeEach(() => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
     });
 
     it('should have correct slide order', async () => {
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
-      );
+      expect(updatedSlides).toStrictEqual(SLIDES_POSITIVE_FUNDS_REMOTE_OFF);
     });
   });
 
-  describe('positive funds, remote on, sweepstakes off', () => {
+  describe('positive funds, remote on', () => {
     beforeEach(() => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
       mockGetUseExternalServices.mockReturnValue(false);
     });
 
     it('should have correct slide order', async () => {
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_OFF,
-      );
+      expect(updatedSlides).toStrictEqual(SLIDES_POSITIVE_FUNDS_REMOTE_ON);
     });
   });
 
-  describe('positive funds, remote off, sweepstakes on', () => {
+  describe('positive funds, remote off', () => {
     beforeEach(() => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
-    });
-
-    it('should have correct slide order', async () => {
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
-
-      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
-
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON,
-      );
-    });
-  });
-
-  describe('positive funds, remote on, sweepstakes on', () => {
-    beforeEach(() => {
-      mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
-    });
-
-    it('should have correct slide order', async () => {
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
-
-      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
-
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_ON,
-      );
     });
   });
 
@@ -440,97 +246,39 @@ describe('useCarouselManagement', () => {
     it('should update slides when balance changes', async () => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
 
-      const { rerender } = renderHook((props) => useCarouselManagement(props), {
-        initialProps: { testDate: invalidTestDate },
-      });
+      const { rerender } = renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       let updatedSlides = mockUpdateSlides.mock.calls[0][0];
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
-      );
+      expect(updatedSlides).toStrictEqual(SLIDES_POSITIVE_FUNDS_REMOTE_OFF);
 
       mockGetSelectedAccountCachedBalance.mockReturnValue(ZERO_BALANCE);
       mockUpdateSlides.mockClear();
 
-      rerender({ testDate: invalidTestDate });
+      rerender();
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
 
       updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
-      );
+      expect(updatedSlides).toStrictEqual(SLIDES_ZERO_FUNDS_REMOTE_OFF);
     });
 
     it('should update slides when testDate changes', async () => {
-      const { rerender } = renderHook((props) => useCarouselManagement(props), {
-        initialProps: { hasZeroBalance: false, testDate: invalidTestDate },
-      });
+      const { rerender } = renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       let updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
-      );
+      expect(updatedSlides).toStrictEqual(SLIDES_ZERO_FUNDS_REMOTE_OFF);
 
       mockUpdateSlides.mockClear();
 
-      rerender({ hasZeroBalance: false, testDate: validTestDate });
+      rerender({ hasZeroBalance: false });
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       updatedSlides = mockUpdateSlides.mock.calls[0][0];
-      expect(updatedSlides).toStrictEqual(
-        SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON,
-      );
-    });
-  });
-
-  describe('edge cases', () => {
-    it('should handle exactly at SWEEPSTAKES_START time', async () => {
-      const testDate = SWEEPSTAKES_START.toISOString();
-
-      renderHook(() =>
-        useCarouselManagement({
-          testDate,
-        }),
-      );
-
-      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-      const updatedSlides = mockUpdateSlides.mock
-        .calls[0][0] as CarouselSlide[];
-      expect(updatedSlides[0].id).toBe(SWEEPSTAKES_SLIDE.id);
-    });
-
-    it('should handle exactly at SWEEPSTAKES_END time', async () => {
-      const testDate = SWEEPSTAKES_END.toISOString();
-
-      renderHook(() =>
-        useCarouselManagement({
-          testDate,
-        }),
-      );
-
-      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
-      const updatedSlides = mockUpdateSlides.mock
-        .calls[0][0] as CarouselSlide[];
-      expect(updatedSlides[0].id).toBe(SWEEPSTAKES_SLIDE.id);
-    });
-
-    it('should handle invalid testDate for sweepstakes gracefully', async () => {
-      const testDate = 'invalid-date';
-
-      expect(() =>
-        renderHook(() =>
-          useCarouselManagement({
-            testDate,
-          }),
-        ),
-      ).not.toThrow();
-
-      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+      expect(updatedSlides).toStrictEqual(SLIDES_ZERO_FUNDS_REMOTE_OFF);
     });
   });
 
@@ -540,21 +288,16 @@ describe('useCarouselManagement', () => {
     });
     it('should not be displayed if solana address is selected', async () => {
       jest.spyOn(AccountUtils, 'isSolanaAddress').mockReturnValue(true);
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+      renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual([
-        { ...SWEEPSTAKES_SLIDE, dismissed: false },
         { ...FUND_SLIDE, undismissable: true },
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        BRIDGE_SLIDE,
         ///: END:ONLY_INCLUDE_IF
         CARD_SLIDE,
-        CASH_SLIDE,
-        MULTI_SRP_SLIDE,
-        BACKUPANDSYNC_SLIDE,
         BASIC_FUNCTIONALITY_SLIDE,
         SOLANA_SLIDE,
       ]);
@@ -579,7 +322,7 @@ describe('useCarouselManagement', () => {
         profile_id: '0deaba86-4b9d-4137-87d7-18bc5bf7708d',
       });
 
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
@@ -587,14 +330,7 @@ describe('useCarouselManagement', () => {
       expect(updatedSlides).toStrictEqual([
         DOWNLOAD_MOBILE_APP_SLIDE,
         { ...FUND_SLIDE, undismissable: true },
-        SMART_ACCOUNT_UPGRADE_SLIDE,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        BRIDGE_SLIDE,
-        ///: END:ONLY_INCLUDE_IF
         CARD_SLIDE,
-        CASH_SLIDE,
-        MULTI_SRP_SLIDE,
-        BACKUPANDSYNC_SLIDE,
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
         SOLANA_SLIDE,
         ///: END:ONLY_INCLUDE_IF
@@ -618,21 +354,14 @@ describe('useCarouselManagement', () => {
         profile_id: '0deaba86-4b9d-4137-87d7-18bc5bf7708d',
       });
 
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement());
 
       await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual([
         { ...FUND_SLIDE, undismissable: true },
-        SMART_ACCOUNT_UPGRADE_SLIDE,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        BRIDGE_SLIDE,
-        ///: END:ONLY_INCLUDE_IF
         CARD_SLIDE,
-        CASH_SLIDE,
-        MULTI_SRP_SLIDE,
-        BACKUPANDSYNC_SLIDE,
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
         SOLANA_SLIDE,
         ///: END:ONLY_INCLUDE_IF
