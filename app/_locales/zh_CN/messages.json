@@ -408,9 +408,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "您的账户中没有足够的 $1 来支付网络费用。"
   },
-  "alertMessageNetworkBusy": {
-    "message": "燃料价格很高，估算不太准确。"
-  },
   "alertMessageNoGasPrice": {
     "message": "您手动更新费用后，我们才能继续进行此交易。"
   },
@@ -449,9 +446,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "非必要权限"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "网络繁忙"
   },
   "alertReasonNoGasPrice": {
     "message": "无法使用费用估算"

@@ -408,9 +408,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga bayarin sa network."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Ang mga presyo ng gas ay mataas at ang pagtantiya ay hindi gaanong tumpak."
-  },
   "alertMessageNoGasPrice": {
     "message": "Hindi tayo makakapagpatuloy sa transaksyong ito hanggang sa manwal mong i-update ang bayad."
   },
@@ -449,9 +446,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Hindi kinakailangang pahintulot"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Busy ang network"
   },
   "alertReasonNoGasPrice": {
     "message": "Hindi available ang pagtantiya sa bayad"
