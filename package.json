@@ -310,7 +310,7 @@
     "@metamask/logging-controller": "^6.0.4",
     "@metamask/logo": "^4.0.0",
     "@metamask/message-manager": "^12.0.1",
-    "@metamask/message-signing-snap": "1.1.2",
+    "@metamask/message-signing-snap": "1.1.3",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-account-service": "^0.4.0",
     "@metamask/multichain-api-client": "^0.6.5",
