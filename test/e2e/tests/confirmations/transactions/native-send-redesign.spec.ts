@@ -72,16 +72,16 @@ async function createWalletInitiatedTransactionAndAssertDetails(
   const homePage = new HomePage(driver);
   await homePage.startSendFlow();
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient(TOKEN_RECIPIENT_ADDRESS);
   await sendToPage.fillAmount('1');
   await sendToPage.goToNextScreen();
 
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
 }
@@ -101,9 +101,9 @@ async function createDAppInitiatedTransactionAndAssertDetails(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_dappInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkDappInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickScrollToBottomButton();
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();

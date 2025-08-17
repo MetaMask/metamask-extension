@@ -5,29 +5,19 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { convertCaipToHexChainId } from '../../../../../shared/modules/network.utils';
 import {
-  convertCaipToHexChainId,
-  getRpcDataByChainId,
-} from '../../../../../shared/modules/network.utils';
-import {
-  addPermittedChain,
   detectNfts,
   setActiveNetwork,
   setEnabledNetworks,
-  setNetworkClientIdForDomain,
   setNextNonce,
-  showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../../store/actions';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 import {
   getAllChainsToPoll,
-  getAllDomains,
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
-  getOriginOfCurrentTab,
-  getPermittedEVMAccountsForSelectedTab,
-  getPermittedEVMChainsForSelectedTab,
   getSelectedMultichainNetworkChainId,
 } from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -63,18 +53,10 @@ export const useNetworkChangeHandlers = () => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const domains = useSelector(getAllDomains);
-  const [multichainNetworks, evmNetworks] = useSelector(
+  const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
-  const permittedChainIds = useSelector((state) =>
-    getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
-  );
-  const permittedAccountAddresses = useSelector((state) =>
-    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
-  );
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -104,8 +86,6 @@ export const useNetworkChangeHandlers = () => {
     (chainId: CaipChainId) => {
       const { namespace } = parseCaipChainId(chainId);
       const hexChainId = convertCaipToHexChainId(chainId);
-      const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
-      const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
@@ -140,34 +120,8 @@ export const useNetworkChangeHandlers = () => {
           ),
         );
       }
-
-      // If presently on a dapp, communicate a change to
-      // the dapp via silent switchEthereumChain that the
-      // network has changed due to user action
-      if (selectedTabOrigin && domains[selectedTabOrigin]) {
-        // setActiveNetwork should be called before setNetworkClientIdForDomain
-        // to ensure that the isConnected value can be accurately inferred from
-        // NetworkController.state.networksMetadata in return value of
-        // `metamask_getProviderState` requests and `metamask_chainChanged` events.
-        setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId);
-      }
-
-      if (permittedAccountAddresses.length > 0) {
-        dispatch(addPermittedChain(selectedTabOrigin, chainId));
-        if (!permittedChainIds.includes(hexChainId)) {
-          dispatch(showPermittedNetworkToast());
-        }
-      }
     },
-    [
-      evmNetworks,
-      dispatch,
-      enabledNetworksByNamespace,
-      selectedTabOrigin,
-      domains,
-      permittedAccountAddresses.length,
-      permittedChainIds,
-    ],
+    [dispatch, enabledNetworksByNamespace],
   );
 
   const handleNonEvmNetworkChange = useCallback(

@@ -8,19 +8,19 @@ describe('BTC Account - Overview', function (this: Suite) {
   it('has balance displayed and has portfolio button enabled for BTC accounts', async function () {
     await withBtcAccountSnap(async (driver) => {
       const homePage = new BitcoinHomepage(driver);
-      await homePage.check_pageIsLoaded();
-      await homePage.headerNavbar.check_accountLabel(DEFAULT_BTC_ACCOUNT_NAME);
+      await homePage.checkPageIsLoaded();
+      await homePage.headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
 
-      assert.equal(await homePage.check_isBridgeButtonEnabled(), false);
-      assert.equal(await homePage.check_isBuySellButtonEnabled(), true);
-      assert.equal(await homePage.check_isReceiveButtonEnabled(), true);
-      await homePage.check_portfolioLinkIsDisplayed();
+      assert.equal(await homePage.checkIsBridgeButtonEnabled(), false);
+      assert.equal(await homePage.checkIsBuySellButtonEnabled(), true);
+      assert.equal(await homePage.checkIsReceiveButtonEnabled(), true);
+      await homePage.checkPortfolioLinkIsDisplayed();
 
       /* To be reactivated once we use a regtest network instead of mocked data
-      await homePage.check_isExpectedBitcoinBalanceDisplayed(
+      await homePage.checkIsExpectedBitcoinBalanceDisplayed(
         DEFAULT_BTC_BALANCE,
       );
-      await new AssetListPage(driver).check_tokenAmountIsDisplayed(
+      await new AssetListPage(driver).checkTokenAmountIsDisplayed(
         `${DEFAULT_BTC_BALANCE} BTC`,
       );
       */

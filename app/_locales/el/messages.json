@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Ενεργοποίηση βασικών λειτουργιών"
   },
-  "bestPrice": {
-    "message": "Καλύτερη τιμή"
-  },
   "beta": {
     "message": "Δοκιμαστική έκδοση"
   },
@@ -936,9 +933,6 @@
     "message": "Ανταλλαγή $1 για $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Όροι"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 ελαχ",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "Το MetaMask έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Απασχολημένο"
@@ -2665,9 +2656,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Εκτιμώμενα τέλη που απαιτούνται για τη διεκπεραίωση της συναλλαγής. Η μέγιστη χρέωση είναι $1."
-  },
   "howQuotesWork": {
     "message": "Πώς λειτουργει η παράθεση προσφοράς"
   },
@@ -3003,9 +2991,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": " Μάθετε περισσότερα για τις βέλτιστες πρακτικές απορρήτου."
-  },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Μάθετε περισσότερα για τους λογαριασμούς στη Solana"
   },
   "learnMoreKeystone": {
     "message": "Μάθετε περισσότερα"
@@ -3765,9 +3750,6 @@
   },
   "notEnoughGas": {
     "message": "Δεν υπάρχει αρκετό τέλος συναλλαγής"
-  },
-  "notNow": {
-    "message": "Όχι τώρα"
   },
   "notificationDetail": {
     "message": "Λεπτομέρειες"
@@ -5710,27 +5692,6 @@
   "solanaAccountRequired": {
     "message": "Απαιτείται λογαριασμός στο Solana για να συνδεθείτε σε αυτόν τον ιστότοπο."
   },
-  "solanaImportAccounts": {
-    "message": "Εισαγωγή λογαριασμών στο Solana"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Εισάγετε μια Μυστική Φράση Ανάκτησης για να μεταφέρετε τον λογαριασμό σας στη Solana από άλλο πορτοφόλι."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Περισσότερες λειτουργίες έρχονται σύντομα"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFT, υποστήριξη πορτοφολιού υλικού και πολλά άλλα σύντομα."
-  },
-  "solanaOnMetaMask": {
-    "message": "Το Solana στο MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Αποστολή, λήψη και ανταλλαγή tokens"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Μεταφέρετε και κάντε συναλλαγές με tokens όπως SOL, USDC και άλλα."
-  },
   "someNetworks": {
     "message": "$1 δίκτυα"
   },
@@ -7054,9 +7015,6 @@
   },
   "viewOnOpensea": {
     "message": "Προβολή στο Opensea"
-  },
-  "viewSolanaAccount": {
-    "message": "Προβολή λογαριασμού στη Solana"
   },
   "viewTransaction": {
     "message": "Προβολή συναλλαγών"

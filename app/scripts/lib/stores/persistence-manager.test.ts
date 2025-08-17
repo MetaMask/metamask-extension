@@ -255,4 +255,79 @@ describe('PersistenceManager', () => {
       expect(mockCallback).toHaveBeenCalledTimes(2);
     });
   });
+
+  describe('Broken indexedDb', () => {
+    const originalOpen = indexedDB.open.bind(indexedDB);
+    let brokenManager: PersistenceManager;
+
+    /**
+     * Breaks the indexedDB open request with a specific error.
+     *
+     * @param error - The error to throw when opening the database.
+     */
+    function breakIndexedDbWithError(error: Error) {
+      // make indexedDb throw the FF DOMException `InvalidStateError`:
+      // "A mutation operation was attempted on a database that did not allow mutations."
+      indexedDB.open = (name: string, version?: number) => {
+        const request = {} as unknown as IDBOpenDBRequest;
+        if (name === 'metamask-backup' && version === 1) {
+          // @ts-expect-error - we're intentionally mocking the error here
+          request.error = error;
+          setTimeout(() => {
+            request.onerror?.({ target: request } as unknown as Event);
+          }, 0);
+        }
+        return request;
+      };
+    }
+
+    afterEach(() => {
+      // restore indexedDB.open back to its original function
+      indexedDB.open = originalOpen;
+    });
+
+    it('Handles DOMException InvalidStateError: A mutation operation was attempted on a database that did not allow mutations.', async () => {
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      const domException = new DOMException(
+        'A mutation operation was attempted on a database that did not allow mutations.',
+        'InvalidStateError',
+      );
+      breakIndexedDbWithError(domException);
+
+      brokenManager = new PersistenceManager({
+        localStore: new ExtensionStore(),
+      });
+      await brokenManager.open();
+
+      // We don't have a valid indexedDB database to use, so `getBackup` now
+      // returns `undefined`
+      expect(await brokenManager.getBackup()).toBeUndefined();
+
+      expect(mockedCaptureException).toHaveBeenCalledWith(domException);
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Could not open backup database; automatic vault recovery will not be available.',
+      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(domException);
+    });
+
+    it('Bubbles up IndexedDB error on initialization', async () => {
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      const randomError = new Error('Random Error');
+      breakIndexedDbWithError(randomError);
+
+      brokenManager = new PersistenceManager({
+        localStore: new ExtensionStore(),
+      });
+      await expect(brokenManager.open()).rejects.toThrow(randomError);
+      // in the application any other start up errors would be handled
+      // further up the stack. Logging them here would be redundant.
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
+    });
+  });
 });
