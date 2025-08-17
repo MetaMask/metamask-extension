@@ -9,7 +9,6 @@ import {
   setShowNativeTokenAsMainBalancePreference,
 } from '../../../store/actions';
 import {
-  getTokenList,
   getPreferences,
   getTheme,
   getSelectedInternalAccount,
@@ -25,8 +24,6 @@ const mapStateToProps = (state) => {
   const { hideZeroBalanceTokens, showNativeTokenAsMainBalance } =
     getPreferences(state);
 
-  const tokenList = getTokenList(state);
-
   return {
     currentLocale,
     currentCurrency,
@@ -35,7 +32,6 @@ const mapStateToProps = (state) => {
     showNativeTokenAsMainBalance,
     hideZeroBalanceTokens,
     selectedAddress,
-    tokenList,
     theme: getTheme(state),
   };
 };

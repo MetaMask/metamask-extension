@@ -10,7 +10,7 @@ import { getUseBlockie } from '../../../selectors';
 export const PreferredAvatar = (props: Omit<AvatarAccountProps, 'ref'>) => {
   const variant = useSelector(getUseBlockie)
     ? AvatarAccountVariant.Blockies
-    : AvatarAccountVariant.Jazzicon;
+    : AvatarAccountVariant.Maskicon;
 
   return <AvatarAccount variant={variant} {...props} />;
 };

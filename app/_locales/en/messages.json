@@ -3290,6 +3290,12 @@
   "marketDetails": {
     "message": "Market details"
   },
+  "maskAndBlockies": {
+    "message": "Maskicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
+  },
+  "maskicons": {
+    "message": "Maskicons"
+  },
   "max": {
     "message": "Max"
   },
