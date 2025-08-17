@@ -12,10 +12,10 @@ import useDeFiPolling from '../hooks/defi/useDeFiPolling';
 export const AssetPollingProvider = ({ children }: { children: ReactNode }) => {
   useCurrencyRatePolling();
   useTokenRatesPolling();
-  useAccountTrackerPolling();
+  // useAccountTrackerPolling();
   useTokenDetectionPolling();
   useTokenListPolling();
-  useDeFiPolling();
+  // useDeFiPolling();
 
   return <>{children}</>;
 };

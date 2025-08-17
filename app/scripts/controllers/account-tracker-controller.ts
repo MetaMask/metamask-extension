@@ -48,9 +48,12 @@ import { PreferencesControllerGetStateAction } from './preferences-controller';
 // Unique name for the controller
 const controllerName = 'AccountTrackerController';
 
+export type StakedBalance = string | undefined;
+
 type Account = {
   address: string;
   balance: string | null;
+  stakedBalance?: StakedBalance;
 };
 
 /**
@@ -114,10 +117,28 @@ export type AccountTrackerControllerGetStateAction = ControllerGetStateAction<
 >;
 
 /**
+ * Action to update native balances.
+ */
+export type AccountTrackerUpdateNativeBalancesAction = {
+  type: `${typeof controllerName}:updateNativeBalances`;
+  handler: AccountTrackerController['updateNativeBalances'];
+};
+
+/**
+ * Action to update staked balances.
+ */
+export type AccountTrackerUpdateStakedBalancesAction = {
+  type: `${typeof controllerName}:updateStakedBalances`;
+  handler: AccountTrackerController['updateStakedBalances'];
+};
+
+/**
  * Actions exposed by the {@link AccountTrackerController}.
  */
 export type AccountTrackerControllerActions =
-  AccountTrackerControllerGetStateAction;
+  | AccountTrackerControllerGetStateAction
+  | AccountTrackerUpdateNativeBalancesAction
+  | AccountTrackerUpdateStakedBalancesAction;
 
 /**
  * Event emitted when the state of the {@link AccountTrackerController} changes.
@@ -264,6 +285,9 @@ export default class AccountTrackerController extends BaseController<
         }
       },
     );
+
+    // Register message handlers
+    this._registerMessageHandlers();
   }
 
   resetState(): void {
@@ -870,5 +894,83 @@ export default class AccountTrackerController extends BaseController<
         ),
       );
     }
+  }
+
+  /**
+   * Updates the balances of multiple native tokens in a single batch operation.
+   * This is more efficient than calling updateNativeToken multiple times as it
+   * triggers only one state update.
+   *
+   * @param balances - Array of balance updates, each containing address, chainId, and balance.
+   */
+  updateNativeBalances(
+    balances: { address: string; chainId: Hex; balance: string }[],
+  ) {
+    this.update((state) => {
+      balances.forEach(({ address, chainId, balance }) => {
+        // Ensure the chainId exists in the state
+        if (!state.accountsByChainId[chainId]) {
+          state.accountsByChainId[chainId] = {};
+        }
+
+        // Ensure the address exists for this chain
+        if (!state.accountsByChainId[chainId][address]) {
+          state.accountsByChainId[chainId][address] = {
+            address,
+            balance: '0x0',
+          };
+        }
+
+        // Update the balance
+        state.accountsByChainId[chainId][address].balance = balance;
+      });
+    });
+  }
+
+  /**
+   * Updates the staked balances of multiple accounts in a single batch operation.
+   * This is more efficient than updating staked balances individually as it
+   * triggers only one state update.
+   *
+   * @param stakedBalances - Array of staked balance updates, each containing address, chainId, and stakedBalance.
+   */
+  updateStakedBalances(
+    stakedBalances: {
+      address: string;
+      chainId: Hex;
+      stakedBalance: StakedBalance;
+    }[],
+  ) {
+    this.update((state) => {
+      stakedBalances.forEach(({ address, chainId, stakedBalance }) => {
+        // Ensure the chainId exists in the state
+        if (!state.accountsByChainId[chainId]) {
+          state.accountsByChainId[chainId] = {};
+        }
+
+        // Ensure the address exists for this chain
+        if (!state.accountsByChainId[chainId][address]) {
+          state.accountsByChainId[chainId][address] = {
+            address,
+            balance: '0x0',
+          };
+        }
+
+        // Update the staked balance
+        state.accountsByChainId[chainId][address].stakedBalance = stakedBalance;
+      });
+    });
+  }
+
+  _registerMessageHandlers() {
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:updateNativeBalances` as const,
+      this.updateNativeBalances.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:updateStakedBalances` as const,
+      this.updateStakedBalances.bind(this),
+    );
   }
 }

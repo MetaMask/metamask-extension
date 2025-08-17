@@ -1017,6 +1017,8 @@ export default class MetamaskController extends EventEmitter {
         'PreferencesController:getState',
         'AccountsController:getSelectedAccount',
         'AccountsController:listAccounts',
+        'AccountTrackerController:updateNativeBalances',
+        'AccountTrackerController:updateStakedBalances',
       ],
       allowedEvents: [
         'PreferencesController:stateChange',
@@ -1029,7 +1031,10 @@ export default class MetamaskController extends EventEmitter {
     this.tokenBalancesController = new TokenBalancesController({
       messenger: tokenBalancesMessenger,
       state: initState.TokenBalancesController,
-      interval: 30000,
+      useAccountsAPI: true,
+      queryMultipleAccounts:
+        this.preferencesController.state.useMultiAccountBalanceChecker,
+      interval: 15000,
     });
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
