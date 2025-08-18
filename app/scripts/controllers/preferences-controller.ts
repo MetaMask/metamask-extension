@@ -18,6 +18,12 @@ import {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
   type PreferencesState,
 } from '@metamask/preferences-controller';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
+type MultichainAccountServiceAlignWalletsAction = {
+  type: 'MultichainAccountService:alignWallets';
+  handler: () => Promise<void>;
+};
+///: END:ONLY_INCLUDE_IF
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -64,7 +70,11 @@ export type AllowedActions =
   | AccountsControllerSetAccountNameAction
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerSetSelectedAccountAction
-  | NetworkControllerGetStateAction;
+  | NetworkControllerGetStateAction
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  | MultichainAccountServiceAlignWalletsAction
+  ///: END:ONLY_INCLUDE_IF
+  ;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -515,6 +525,16 @@ export class PreferencesController extends BaseController<
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
     this.setUseSafeChainsListValidation(useExternalServices);
+
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    // When basic functionality is enabled, align all multichain account groups
+    // to ensure they have accounts for all available providers
+    if (useExternalServices) {
+      this.messagingSystem.call('MultichainAccountService:alignWallets');
+    }
+    // TODO: When basic functionality is disabled, we might want different behavior
+    // (e.g., hide non-EVM accounts, restrict to EVM-only, etc.)
+    ///: END:ONLY_INCLUDE_IF
   }
 
   /**
