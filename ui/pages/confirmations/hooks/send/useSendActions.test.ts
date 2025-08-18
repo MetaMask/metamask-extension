@@ -22,7 +22,11 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: async (fn: () => Promise<unknown>) => await fn(),
+  useDispatch: () => async (fn: () => Promise<unknown>) => {
+    if (fn) {
+      await fn();
+    }
+  },
 }));
 
 function renderHook() {
