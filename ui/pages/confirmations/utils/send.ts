@@ -19,7 +19,9 @@ import {
 } from '../send-legacy/send.utils';
 
 export const toTokenMinimalUnit = (value: string, decimals: number) => {
-  if (!decimals) return value;
+  if (!decimals) {
+    return value;
+  }
   const multiplier = Math.pow(10, Number(decimals));
   return new Numeric(value, 16).times(multiplier, 10).toBase(16).toString();
 };
@@ -35,7 +37,7 @@ export const prepareEVMTransaction = (
     ? value
     : toTokenMinimalUnit(
         value ?? '0',
-        parseInt(asset.decimals?.toString() ?? '0'),
+        parseInt(asset.decimals?.toString(10) ?? '0'),
       );
 
   // Native token
