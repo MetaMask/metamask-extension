@@ -91,7 +91,7 @@ describe('useSendQueryParams', () => {
           return param === 'address' ? EVM_ASSET.address : undefined;
         },
       },
-    ] as any);
+    ] as unknown as [URLSearchParams, SetURLSearchParams]);
     renderHook();
     expect(getTokenStandardAndDetails).toHaveBeenCalledWith(
       EVM_ASSET.address,
@@ -114,7 +114,7 @@ describe('useSendQueryParams', () => {
           return param === 'address' ? SOLANA_ASSET.address : undefined;
         },
       },
-    ] as any);
+    ] as unknown as [URLSearchParams, SetURLSearchParams]);
     renderHook();
     expect(mockUpdateAsset).toHaveBeenCalledWith(SOLANA_ASSET);
   });
