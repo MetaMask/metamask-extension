@@ -30,7 +30,7 @@ export const useSendQueryParams = () => {
         ({ address: assetAddress }) => assetAddress === address,
       );
       if (!asset) {
-        asset = asset = await getTokenStandardAndDetails(
+        asset = await getTokenStandardAndDetails(
           address,
           undefined,
           tokenId ?? undefined,

@@ -1,18 +1,17 @@
 import * as BridgeCtrl from '@metamask/bridge-controller';
+import { useSearchParams } from 'react-router-dom-v5-compat';
 
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
-import { getTokenStandardAndDetails } from '../../../../store/actions';
-import { SendPages } from '../../constants/send';
-import * as SendContext from '../../context/send';
-import { useSendQueryParams } from './useSendQueryParams';
 import {
   EVM_ASSET,
   EVM_NATIVE_ASSET,
   SOLANA_ASSET,
 } from '../../../../../test/data/send/assets';
-import { Asset } from '../../types/send';
-import { useSearchParams } from 'react-router-dom-v5-compat';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { getTokenStandardAndDetails } from '../../../../store/actions';
+import { SendPages } from '../../constants/send';
+import * as SendContext from '../../context/send';
+import { useSendQueryParams } from './useSendQueryParams';
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
