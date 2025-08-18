@@ -1,7 +1,6 @@
 /* eslint-disable no-plusplus, no-bitwise, default-case, @metamask/design-tokens/color-no-hex */
 
 import type { Json } from '@metamask/utils';
-import { scheduler } from 'node:timers/promises';
 import { Duplex, type DuplexOptions } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
 
@@ -252,9 +251,10 @@ function maybeParseAsChunkFrame(input: unknown): ChunkFrame | null {
 const FRAME_BUDGET = 1000 / 60 / 2;
 
 const tick =
-  // modern browsers have scheduler.yield() built in.
+  // @ts-expect-error modern browsers have scheduler.yield() built in.
   scheduler && typeof scheduler['yield'] === 'function'
-    ? scheduler.yield.bind(scheduler)
+    ? // @ts-expect-error modern browsers have scheduler.yield() built in.
+      globalThis.scheduler.yield.bind(globalThis.scheduler)
     : async () => await new Promise<void>((r) => setTimeout(r, 0));
 
 /**
