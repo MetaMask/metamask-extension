@@ -10,7 +10,7 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
 describe('Ledger Hardware', function (this: Suite) {
-  it.only('send ETH using an EIP1559 transaction', async function () {
+  it('send ETH using an EIP1559 transaction', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withLedgerAccount().build(),
