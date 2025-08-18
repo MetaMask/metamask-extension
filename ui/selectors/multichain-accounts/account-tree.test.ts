@@ -11,7 +11,7 @@ import { createMockInternalAccount } from '../../../test/jest/mocks';
 
 import {
   getAccountTree,
-  getAccountGroups,
+  getAllAccountGroups,
   getAccountGroupWithInternalAccounts,
   getCaip25AccountIdToMultichainAccountGroupMap,
   getCaip25IdByAccountGroupAndScope,
@@ -627,9 +627,9 @@ describe('Multichain Accounts Selectors', () => {
     });
   });
 
-  describe('getAccountGroups', () => {
+  describe('getAllAccountGroups', () => {
     it('returns all account groups from all wallets', () => {
-      const result = getAccountGroups(typedMockState);
+      const result = getAllAccountGroups(typedMockState);
 
       expect(result).toHaveLength(5);
       expect(result.map((group) => group.id)).toEqual([
@@ -642,7 +642,7 @@ describe('Multichain Accounts Selectors', () => {
     });
 
     it('returns groups with correct types', () => {
-      const result = getAccountGroups(typedMockState);
+      const result = getAllAccountGroups(typedMockState);
 
       const groupTypes = result.map((group) => group.type);
       expect(groupTypes).toContain('multichain-account');
@@ -651,7 +651,7 @@ describe('Multichain Accounts Selectors', () => {
 
     it('returns empty array when no wallets exist', () => {
       const emptyState = createEmptyState();
-      const result = getAccountGroups(emptyState);
+      const result = getAllAccountGroups(emptyState);
 
       expect(result).toEqual([]);
     });
@@ -709,7 +709,7 @@ describe('Multichain Accounts Selectors', () => {
     });
   });
 
-  describe('getNonMultichainAccountGroups', () => {
+  describe('getSingleAccountGroups', () => {
     it('returns only non-entropy account groups', () => {
       const result = getSingleAccountGroups(typedMockState);
 
