@@ -37,7 +37,7 @@ export const prepareEVMTransaction = (
     ? value
     : toTokenMinimalUnit(
         value ?? '0',
-        parseInt(asset.decimals?.toString(10) ?? '0'),
+        parseInt(asset.decimals?.toString() ?? '0', 10),
       );
 
   // Native token
