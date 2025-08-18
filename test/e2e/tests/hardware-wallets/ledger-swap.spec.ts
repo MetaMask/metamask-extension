@@ -232,7 +232,9 @@ describe('Ledger Swap', function () {
             .withLedgerAccount()
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              '0x1': true,
+              eip155: {
+                '0x1': true,
+              },
             })
             .withTokensController({
               allTokens: {
@@ -272,10 +274,11 @@ describe('Ledger Swap', function () {
           await loginWithoutBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
+
           await homePage.checkPageIsLoaded();
-          await homePage.checkExpectedTokenBalanceIsDisplayed('50', 'WETH');
+
           await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
-          // await driver.delay(100000000);
+          await homePage.checkExpectedTokenBalanceIsDisplayed('50', 'WETH');
 
           // disable smart transactions
           const headerNavbar = new HeaderNavbar(driver);
