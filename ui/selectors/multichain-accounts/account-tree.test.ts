@@ -20,13 +20,16 @@ import {
   getMultichainAccountGroupById,
   getMultichainAccountGroups,
   getMultichainAccountsToScopesMap,
-  getNonMultichainAccountGroups,
+  getSingleAccountGroups,
   getSelectedAccountGroup,
   getWalletIdAndNameByAccountAddress,
   getWalletsWithAccounts,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
-import { createMockMultichainAccountsState, createEmptyState } from './utils';
+import {
+  createMockMultichainAccountsState,
+  createEmptyState,
+} from './test-utils';
 
 describe('Multichain Accounts Selectors', () => {
   // Test data constants
@@ -708,7 +711,7 @@ describe('Multichain Accounts Selectors', () => {
 
   describe('getNonMultichainAccountGroups', () => {
     it('returns only non-entropy account groups', () => {
-      const result = getNonMultichainAccountGroups(typedMockState);
+      const result = getSingleAccountGroups(typedMockState);
 
       expect(result).toHaveLength(3);
       expect(
@@ -755,7 +758,7 @@ describe('Multichain Accounts Selectors', () => {
           selectedAccount: '',
         },
       );
-      const result = getNonMultichainAccountGroups(stateWithoutEntropy);
+      const result = getSingleAccountGroups(stateWithoutEntropy);
 
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe('keyring:Test/address');

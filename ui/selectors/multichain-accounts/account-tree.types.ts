@@ -54,9 +54,8 @@ export type ConsolidatedWallets = {
   [walletId: AccountWalletId]: ConsolidatedAccountWallet;
 };
 
-export type MultichainAccountId = AccountGroupObject['id'];
 export type MultichainAccountGroupToScopesMap = Map<
-  MultichainAccountId,
+  AccountGroupId,
   MultichainAccountGroupScopeToCaipAccountId
 >;
 export type MultichainAccountGroupScopeToCaipAccountId = Map<
