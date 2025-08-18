@@ -19,9 +19,9 @@ import {
   type PreferencesState,
 } from '@metamask/preferences-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-type MultichainAccountServiceAlignWalletsAction = {
-  type: 'MultichainAccountService:alignWallets';
-  handler: () => Promise<void>;
+type MultichainAccountServiceSetBasicFunctionalityAction = {
+  type: 'MultichainAccountService:setBasicFunctionality';
+  handler: ({ enabled }: { enabled: boolean }) => Promise<void>;
 };
 ///: END:ONLY_INCLUDE_IF
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
@@ -72,7 +72,7 @@ export type AllowedActions =
   | AccountsControllerSetSelectedAccountAction
   | NetworkControllerGetStateAction
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  | MultichainAccountServiceAlignWalletsAction
+  | MultichainAccountServiceSetBasicFunctionalityAction
   ///: END:ONLY_INCLUDE_IF
   ;
 
@@ -527,13 +527,11 @@ export class PreferencesController extends BaseController<
     this.setUseSafeChainsListValidation(useExternalServices);
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    // When basic functionality is enabled, align all multichain account groups
-    // to ensure they have accounts for all available providers
-    if (useExternalServices) {
-      this.messagingSystem.call('MultichainAccountService:alignWallets');
-    }
-    // TODO: When basic functionality is disabled, we might want different behavior
-    // (e.g., hide non-EVM accounts, restrict to EVM-only, etc.)
+    // Set basic functionality and trigger alignment if enabled
+    // This single call handles both provider disable/enable and alignment
+    this.messagingSystem.call('MultichainAccountService:setBasicFunctionality', {
+      enabled: useExternalServices,
+    });
     ///: END:ONLY_INCLUDE_IF
   }
 
