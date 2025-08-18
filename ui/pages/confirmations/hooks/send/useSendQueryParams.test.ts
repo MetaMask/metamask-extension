@@ -1,5 +1,6 @@
 import * as BridgeCtrl from '@metamask/bridge-controller';
 import { useSearchParams } from 'react-router-dom-v5-compat';
+import { SetURLSearchParams } from 'react-router-dom-v5-compat/dist/react-router-dom';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import {
@@ -74,7 +75,7 @@ describe('useSendQueryParams', () => {
           return param === 'chainId' ? '0x1' : undefined;
         },
       },
-    ] as any);
+    ] as unknown as [URLSearchParams, SetURLSearchParams]);
     const mockGetNativeAssetForChainId = jest
       .spyOn(BridgeCtrl, 'getNativeAssetForChainId')
       .mockReturnValue(EVM_NATIVE_ASSET as BridgeCtrl.BridgeAsset);
