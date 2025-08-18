@@ -292,6 +292,7 @@ const WalletDetails = () => {
           <MultichainAccountMenu
             accountGroupId={groupId as AccountGroupId}
             isRemovable={isRemovable}
+            buttonBackgroundColor={BackgroundColor.transparent}
           />
         }
       />,
