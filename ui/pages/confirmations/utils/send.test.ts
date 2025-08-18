@@ -1,11 +1,7 @@
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { EVM_NATIVE_ASSET } from '../../../../test/data/send/assets';
-import {
-  addTransactionAndRouteToConfirmationPage,
-  findNetworkClientIdByChainId,
-} from '../../../store/actions';
+import { findNetworkClientIdByChainId } from '../../../store/actions';
 import { Asset } from '../types/send';
 import {
   prepareEVMTransaction,

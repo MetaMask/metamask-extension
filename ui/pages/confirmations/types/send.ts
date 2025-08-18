@@ -4,7 +4,7 @@ export type Asset = {
   address?: string;
   balance?: BN | string | undefined;
   chainId?: string | number;
-  decimals?: any;
+  decimals?: string | number | undefined;
   name?: string | undefined;
   standard?: string;
   symbol?: string | undefined;

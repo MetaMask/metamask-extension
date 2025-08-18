@@ -33,7 +33,10 @@ export const prepareEVMTransaction = (
 
   const tokenValue = asset.tokenId
     ? value
-    : toTokenMinimalUnit(value ?? '0', asset.decimals);
+    : toTokenMinimalUnit(
+        value ?? '0',
+        parseInt(asset.decimals?.toString() ?? '0'),
+      );
 
   // Native token
   if (isNativeAddress(asset.address)) {

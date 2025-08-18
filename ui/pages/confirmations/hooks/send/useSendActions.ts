@@ -27,7 +27,7 @@ export const useSendActions = () => {
       const toAddress = recipientAddress || to;
 
       if (isEvmSendType) {
-        await dispatch(
+        dispatch(
           await submitEvmTransaction({
             asset,
             chainId: toHex(asset.chainId),
