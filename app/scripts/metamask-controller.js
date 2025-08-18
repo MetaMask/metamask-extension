@@ -827,6 +827,9 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
         'NetworkController:getState',
+        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+        'MultichainAccountService:alignWallets',
+        ///: END:ONLY_INCLUDE_IF
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
