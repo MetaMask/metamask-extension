@@ -72,6 +72,7 @@ import {
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
 import { MultichainAccountMenu } from '../../../components/multichain-accounts/multichain-account-menu';
+import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
 
 type AccountBalance = {
   [key: string]: string | number;
@@ -96,8 +97,6 @@ const WalletDetails = () => {
   const multichainAccounts = useSelector((state: MultichainAccountsState) =>
     getMultichainAccountsByWalletId(state, decodedId),
   );
-
-  console.log('multichainAccounts', multichainAccounts);
 
   // Initialize wallet snap clients
   const solanaClient = useMultichainWalletSnapClient(WalletClientType.Solana);
@@ -273,7 +272,7 @@ const WalletDetails = () => {
     display: Display.Flex,
     justifyContent: JustifyContent.spaceBetween,
     alignItems: AlignItems.center,
-    backgroundColor: BackgroundColor.backgroundAlternative,
+    backgroundColor: BackgroundColor.backgroundMuted,
   };
 
   const multichainAccountCells = Object.entries(
@@ -465,6 +464,7 @@ const WalletDetails = () => {
             borderRadius={BorderRadius.XL}
           >
             {multichainAccountCells}
+            <AddMultichainAccount walletId={decodedId} />
           </Box>
         )}
       </Content>

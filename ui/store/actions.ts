@@ -60,7 +60,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import { AccountGroupId } from '@metamask/account-api';
+import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -2225,6 +2225,26 @@ export function setSelectedMultichainAccount(
       logErrorWithMessage(error);
     } finally {
       dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Create a new multichain account.
+ *
+ * @param walletId - ID of a wallet.
+ */
+export function createMultichainAccount(
+  walletId: AccountWalletId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    log.debug(`background.createNextMultichainAccountGroup`);
+    try {
+      await submitRequestToBackground('createNextMultichainAccountGroup', [
+        walletId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
     }
   };
 }

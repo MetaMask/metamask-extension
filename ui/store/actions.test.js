@@ -1388,6 +1388,31 @@ describe('Actions', () => {
     });
   });
 
+  describe('#createMultichainAccount', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createNextMultichainAccountGroup in background', () => {
+      const store = mockStore();
+      const walletId = 'test-wallet-id';
+      const createNextMultichainAccountGroup = sinon.stub().resolves();
+
+      background.getApi = sinon.stub().returns({
+        createNextMultichainAccountGroup,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      store.dispatch(actions.createMultichainAccount(walletId));
+
+      expect(createNextMultichainAccountGroup.callCount).toStrictEqual(1);
+      expect(
+        createNextMultichainAccountGroup.calledWith(walletId),
+      ).toStrictEqual(true);
+    });
+  });
+
   describe('#addToken', () => {
     afterEach(() => {
       sinon.restore();
