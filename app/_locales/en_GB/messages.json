@@ -331,6 +331,10 @@
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
   },
+  "addresses": {
+    "message": "Addresses",
+    "description": "Multichain account menu item for linking to addresses page"
+  },
   "advanced": {
     "message": "Advanced"
   },
@@ -3065,9 +3069,6 @@
   "learnMoreAboutPrivacy": {
     "message": "Learn more about privacy best practices."
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Learn more about Solana accounts"
-  },
   "learnMoreKeystone": {
     "message": "Learn More"
   },
@@ -3851,9 +3852,6 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
-  "notNow": {
-    "message": "Not now"
-  },
   "notificationDetail": {
     "message": "Details"
   },
@@ -4609,6 +4607,10 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "pin": {
+    "message": "Pin",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "Pin to top"
   },
@@ -4901,6 +4903,10 @@
   },
   "removeSnapDescription": {
     "message": "This action will delete the snap, its data and revoke your given permissions."
+  },
+  "rename": {
+    "message": "Rename",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "replace"
@@ -5848,27 +5854,6 @@
   },
   "solanaAccountRequired": {
     "message": "A Solana account is required to connect to this site."
-  },
-  "solanaImportAccounts": {
-    "message": "Import Solana accounts"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Import a Secret Recovery Phrase to migrate your Solana account from another wallet."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "More features coming soon"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFTs, hardware wallet support, and more coming soon."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana on MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Send, receive, and swap tokens"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Transfer and transact with tokens such as SOL, USDC, and more."
   },
   "someNetworks": {
     "message": "$1 networks"
@@ -7203,9 +7188,6 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
-  },
-  "viewSolanaAccount": {
-    "message": "View Solana account"
   },
   "viewTransaction": {
     "message": "View transaction"
