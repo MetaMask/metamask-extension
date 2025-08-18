@@ -1,6 +1,7 @@
 /* eslint-disable no-plusplus, no-bitwise, default-case, @metamask/design-tokens/color-no-hex */
 
 import type { Json } from '@metamask/utils';
+import { scheduler } from 'node:timers/promises';
 import { Duplex, type DuplexOptions } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
 
@@ -39,6 +40,9 @@ type Seq = number;
 type Final = 0 | 1;
 type Data = string;
 
+/**
+ * A parsed chunk of a {@link TransportChunkFrame} message.
+ */
 type ChunkFrame = {
   id: Id;
   seq: Seq;
@@ -114,7 +118,7 @@ const XOR_ZERO = 48 as const; // Shifts characters codes down by 48 so "0" is  0
 const PIPE_XZ = 76 as const; // Shifted "|"'s character code
 
 /**
- * Maybe parses a chunk frame *from a string*.
+ * Maybe parses a {@link ChunkFrame} *from a string*.
  *
  * a chunk frame is in the form: `<id>|<seq>|<fin><data>`, where:
  * - `<id>` is a unique number identifier for the chunked message
@@ -122,7 +126,17 @@ const PIPE_XZ = 76 as const; // Shifted "|"'s character code
  * - `<seq>` is the sequence number of this chunk (0-based)
  * - `<data>` is the actual data of this chunk
  *
- * This has been benchmarked and highly optimized, modify carefully.
+ * The reason we can't just send a message like "hey I'm about to send some chunks"
+ * then send the message itself in bits, and then send an "I'm done sending the
+ * chunks" message is because of a combination of three factors:
+ *   1) we need to send the chunks without blocking the thread for too long;
+ *      sending huge chunks can take several seconds.
+ *   2) other parts of the system might _also_ send data over the same Port; so
+ *      frames would be intermingled.
+ *   3) I couldn't find documentation guaranteeing that sent `runtime.Port`
+ *      messages are received in the order they are sent (hence the `seq`uence number we send)
+ *
+ * This function has been benchmarked and highly optimized, modify carefully.
  *
  * A Note:
  * The resulting *magnitudes* of the `id` and `seq` values aren't validated; we
@@ -137,8 +151,9 @@ const PIPE_XZ = 76 as const; // Shifted "|"'s character code
  * worth chasing.
  *
  * @param input - the string to parse
- * @param length - must be greater than 6, it is not validated within this function.
- * @returns a ChunkFrame if the value is a valid chunk frame, otherwise null
+ * @param length - must be greater than 6, it is *not* validated within this
+ * function; it is validated at the call-site instead.
+ * @returns a {@link ChunkFrame} if the value is a valid chunk frame, otherwise null
  */
 function maybeParseStringAsChunkFrame(
   input: string,
@@ -210,7 +225,7 @@ function maybeParseStringAsChunkFrame(
 }
 
 /**
- * Maybe parses a chunk frame.
+ * Maybe parses a {@link ChunkFrame}.
  *
  * a chunk frame is a string in the form: `<id>|<seq>|<fin><data>`, where:
  * - `<id>` is a unique number identifier for the chunked message
@@ -219,7 +234,7 @@ function maybeParseStringAsChunkFrame(
  * - `<data>` is the actual data of this chunk
  *
  * @param input - the value to try to parse
- * @returns a ChunkFrame if the value is a valid chunk frame, otherwise null
+ * @returns a {@link ChunkFrame} if the value is a valid chunk frame, otherwise null
  */
 function maybeParseAsChunkFrame(input: unknown): ChunkFrame | null {
   if (typeof input !== 'string') {
@@ -233,8 +248,20 @@ function maybeParseAsChunkFrame(input: unknown): ChunkFrame | null {
   return maybeParseStringAsChunkFrame(input, length);
 }
 
+// half a "frame" (at 60 fps) per chunk.
+const FRAME_BUDGET = 1000 / 60 / 2;
+
+const tick =
+  // modern browsers have scheduler.yield() built in.
+  scheduler && typeof scheduler['yield'] === 'function'
+    ? scheduler.yield.bind(scheduler)
+    : async () => await new Promise<void>((r) => setTimeout(r, 0));
+
 /**
- * Converts a JSON object into a generator of chunk frames.
+ * Converts a JSON object into an async generator of chunk frames.
+ *
+ * We use an async generator in order to allow other tasks to complete while
+ * the chunking is happening.
  *
  * @param payload - the payload to be chunked
  * @param chunkSize - the size of each chunk in bytes. If `0`, returns the
@@ -243,10 +270,11 @@ function maybeParseAsChunkFrame(input: unknown): ChunkFrame | null {
  * @yields - a chunk frame or the original payload if it fits within a single
  * frame
  */
-export function* toFrames<Payload extends Json>(
+export async function* toFrames<Payload extends Json>(
   payload: Payload,
   chunkSize: number = CHUNK_SIZE,
-): Generator<TransportChunkFrame | Payload, void> {
+): AsyncGenerator<TransportChunkFrame | Payload, void> {
+  let begin = performance.now();
   const json = JSON.stringify(payload);
   const payloadLength = json.length;
 
@@ -260,7 +288,14 @@ export function* toFrames<Payload extends Json>(
   const id = getNextId();
   let index = 0;
   let seq = 0;
-  while (index < payloadLength) {
+
+  do {
+    if (performance.now() - begin >= FRAME_BUDGET) {
+      // prevent background processing from locking up for too long by allowing
+      // other macro tasks to perform work between chunks
+      await tick();
+      begin = performance.now();
+    }
     const header = `${id}|${seq}|` as const;
     const headerSize = header.length + 1; // +1 for fin
     // how much data can we send with this specific header?
@@ -269,13 +304,12 @@ export function* toFrames<Payload extends Json>(
     const start = index;
     const end = Math.min(start + partialDataLength, payloadLength);
     const fin = end >= payloadLength ? 1 : 0;
-    const data = json.substring(start, end);
-    const frame: TransportChunkFrame = `${header}${fin}${data}`;
+    const frame: TransportChunkFrame = `${header}${fin}${json.substring(start, end)}`;
     yield frame;
 
     index = end;
     seq++;
-  }
+  } while (index < payloadLength);
 }
 
 const TAG = '%cPortStream';
@@ -349,7 +383,7 @@ export class PortStream extends Duplex {
   /**
    * Handles chunked messages.
    *
-   * @param chunk - the chunk frame received from the port
+   * @param chunk - the {@link ChunkFrame} received from the port
    */
   private handleChunk(chunk: ChunkFrame) {
     const { id, seq, fin, source, dataIndex } = chunk;
@@ -463,7 +497,7 @@ export class PortStream extends Duplex {
    * @param encoding - encoding (must be UTF-8)
    * @param callback - callback to call when done
    */
-  override _write(
+  override async _write(
     chunk: Json,
     encoding: BufferEncoding,
     callback: (err?: Error | null) => void,
@@ -505,7 +539,7 @@ export class PortStream extends Duplex {
         ) {
           try {
             // we can't just send it in one go; we need to chunk it
-            for (const frame of toFrames(chunk, chunkSize)) {
+            for await (const frame of toFrames(chunk, chunkSize)) {
               this.postMessage(frame);
             }
             this.log('sent payload with chunking', true);

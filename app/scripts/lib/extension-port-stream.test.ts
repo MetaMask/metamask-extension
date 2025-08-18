@@ -65,7 +65,7 @@ const createMockPort = (chunkSize: number) => {
   };
 };
 
-const originalGlobalJsonStringify = JSON.stringify;
+const originalGlobalJsonStringify = JSON.stringify.bind(JSON);
 
 describe('extension-port-stream', () => {
   let consoleDebugSpy: jest.SpyInstance;
@@ -126,21 +126,21 @@ describe('extension-port-stream', () => {
       mockJsonStringify.mockRestore();
     });
 
-    it('should yield the original payload if it fits in a single frame', () => {
+    it('should yield the original payload if it fits in a single frame', async () => {
       const payload = { message: 'hello' };
       mockJsonStringify.mockImplementation((obj) =>
         originalGlobalJsonStringify(obj),
       );
 
       const generator = toFrames(payload);
-      const result = generator.next();
+      const result = await generator.next();
 
       expect(result.value).toEqual(payload);
       expect(result.done).toBe(false);
-      expect(generator.next().done).toBe(true);
+      expect((await generator.next()).done).toBe(true);
     });
 
-    it('should yield chunk frames for a payload larger than CHUNK_SIZE', () => {
+    it('should yield chunk frames for a payload larger than CHUNK_SIZE', async () => {
       const dummyPayload = { data: 'will be mocked' };
       const desiredLength = CHUNK_SIZE * 2 + Math.floor(CHUNK_SIZE / 2); // Needs 3 chunks
       const largeJsonString = 'A'.repeat(desiredLength);
@@ -149,11 +149,12 @@ describe('extension-port-stream', () => {
         if (obj === dummyPayload) {
           return largeJsonString;
         }
-        return jest.requireActual('JSON').stringify(obj);
+        return originalGlobalJsonStringify(obj);
       });
 
       const generator = toFrames(dummyPayload);
-      const frames = Array.from(generator);
+      // @ts-expect-error `Array.fromAsync` is real
+      const frames = await Array.fromAsync(generator);
 
       expect(mockJsonStringify).toHaveBeenCalledWith(dummyPayload);
       expect(frames.length).toBe(3);
