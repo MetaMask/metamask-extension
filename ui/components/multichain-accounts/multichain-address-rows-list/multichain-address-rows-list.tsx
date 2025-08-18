@@ -7,18 +7,15 @@ import {
   BackgroundColor,
   BlockSize,
   BorderRadius,
-  Display,
-  FlexDirection,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
+  BoxFlexDirection,
   Text,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../component-library';
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { TextFieldSearch, TextFieldSearchSize } from '../../component-library';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain/networks';
 import {
@@ -104,8 +101,7 @@ export const MultichainAddressRowsList = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-address-rows-list"
     >
       <Box padding={4}>
@@ -134,10 +130,10 @@ export const MultichainAddressRowsList = ({
             />
           ))
         ) : (
-          <Box padding={6} textAlign={TextAlign.Center}>
+          <Box padding={6}>
             <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
               data-testid="multichain-address-rows-list-empty-message"
             >
               {searchPattern ? t('noNetworksFound') : t('noNetworksAvailable')}

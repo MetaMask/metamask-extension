@@ -1,24 +1,21 @@
 import React from 'react';
 import {
-  AlignItems,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
+  IconColor,
   IconName,
   Text,
-} from '../../component-library';
+  TextVariant,
+  TextColor,
+  BoxJustifyContent,
+  BoxAlignItems,
+  BoxFlexDirection,
+  FontWeight,
+  twMerge,
+} from '@metamask/design-system-react';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getImageForChainId } from '../../../selectors/multichain';
@@ -63,10 +60,9 @@ export const MultichainAddressRow = ({
 
   return (
     <Box
-      className={`multichain-address-row ${className}`}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+      className={twMerge('w-full flex', className)}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       padding={4}
       gap={4}
       data-testid="multichain-address-row"
@@ -75,45 +71,42 @@ export const MultichainAddressRow = ({
         size={AvatarNetworkSize.Md}
         name={networkName}
         src={networkImageSrc}
-        borderRadius={BorderRadius.LG}
         data-testid="multichain-address-row-network-icon"
       />
 
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
-        // Parent Box with flex: 1 needs minWidth: 0 to allow it to shrink below its content size.
-        // Without that, the flex item would expand the entire row to fit the text content
-        // instead of being constrained by the grid cell.
-        style={{ flex: 1, minWidth: 0 }}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        className="flex-1 min-w-0"
       >
         <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textDefault}
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
           data-testid="multichain-address-row-network-name"
-          ellipsis={true}
-          width={BlockSize.Full}
+          ellipsis
+          className="w-full"
         >
           {networkName}
         </Text>
         <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
           data-testid="multichain-address-row-address"
+          className="w-full"
         >
           {truncatedAddress}
         </Text>
       </Box>
 
       {/* Action buttons */}
-      <Box display={Display.Flex} alignItems={AlignItems.center} gap={4}>
+      <Box alignItems={BoxAlignItems.Center} gap={4}>
         <ButtonIcon
           iconName={copied ? IconName.CopySuccess : IconName.Copy}
           size={ButtonIconSize.Md}
           onClick={handleCopyClick}
           ariaLabel="Copy address"
-          color={IconColor.iconDefault}
+          color={IconColor.IconDefault}
           data-testid="multichain-address-row-copy-button"
         />
 
@@ -122,7 +115,7 @@ export const MultichainAddressRow = ({
           size={ButtonIconSize.Md}
           onClick={handleQrClick}
           ariaLabel="Show QR code"
-          color={IconColor.iconDefault}
+          color={IconColor.IconDefault}
           data-testid="multichain-address-row-qr-button"
         />
       </Box>
