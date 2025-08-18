@@ -18,7 +18,8 @@ import {
   generateERC721TransferData,
 } from '../send-legacy/send.utils';
 
-const toTokenMinimalUnit = (value: string, decimals: number) => {
+export const toTokenMinimalUnit = (value: string, decimals: number) => {
+  if (!decimals) return value;
   const multiplier = Math.pow(10, Number(decimals));
   return new Numeric(value, 16).times(multiplier, 10).toBase(16).toString();
 };
@@ -30,9 +31,9 @@ export const prepareEVMTransaction = (
   const { from, to, value } = transactionParams;
   const trxnParams: TransactionParams = { from };
 
-  const tokenValue = asset.decimals
-    ? toTokenMinimalUnit(value ?? '0', asset.decimals)
-    : value;
+  const tokenValue = asset.tokenId
+    ? value
+    : toTokenMinimalUnit(value ?? '0', asset.decimals);
 
   // Native token
   if (isNativeAddress(asset.address)) {
@@ -44,7 +45,7 @@ export const prepareEVMTransaction = (
 
   // ERC1155 token
   if (asset.standard === ERC1155) {
-    trxnParams.data = generateERC721TransferData({
+    trxnParams.data = generateERC1155TransferData({
       fromAddress: from,
       toAddress: to,
       tokenId: asset.tokenId,
@@ -56,11 +57,10 @@ export const prepareEVMTransaction = (
 
   // ERC721 token
   if (asset.standard === ERC721) {
-    trxnParams.data = generateERC1155TransferData({
+    trxnParams.data = generateERC721TransferData({
       fromAddress: from,
       toAddress: to,
       tokenId: asset.tokenId,
-      amount: value,
     });
     trxnParams.to = asset.address;
     trxnParams.value = '0x0';

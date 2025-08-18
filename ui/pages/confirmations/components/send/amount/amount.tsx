@@ -6,7 +6,7 @@ import { useSendContext } from '../../../context/send';
 
 export const Amount = () => {
   const { goToSendToPage, goToPreviousPage } = useNavigateSendPage();
-  const { updateValue, value } = useSendContext();
+  const { updateValue } = useSendContext();
 
   const onChange = useCallback(
     (event) => updateValue(event.target.value),
