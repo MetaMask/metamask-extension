@@ -397,3 +397,7 @@ env:
   # This should only be used for local testing, and should not be enabled in any
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'
+
+  # EIP-7715 Readable Permissions
+  - PERMISSIONS_KERNEL_SNAP_ID: ''
+  - EIP_7715_READABLE_PERMISSIONS_ENABLED: false

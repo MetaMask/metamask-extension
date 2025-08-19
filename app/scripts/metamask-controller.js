@@ -269,7 +269,10 @@ import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-s
 ///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
+import {
+  getIsSeedlessOnboardingFeatureEnabled,
+  getIsEip7715ReadablePermissionsFeatureEnabled,
+} from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -416,6 +419,7 @@ import {
   getCapabilities,
   processSendCalls,
 } from './lib/transaction/eip5792';
+import { processRequestExecutionPermissions } from './lib/transaction/eip7715';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
@@ -2182,6 +2186,15 @@ export default class MetamaskController extends EventEmitter {
         },
         this.controllerMessenger,
       ),
+      processRequestExecutionPermissions:
+        getIsEip7715ReadablePermissionsFeatureEnabled()
+          ? processRequestExecutionPermissions.bind(null, {
+              handleRequest: this.controllerMessenger.call.bind(
+                this.controllerMessenger,
+                'SnapController:handleRequest',
+              ),
+            })
+          : undefined,
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
