@@ -1,22 +1,25 @@
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import qrCode from 'qrcode-generator';
-import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import type { MetaMaskReduxState } from '../../../store/store';
 import {
-  AlignItems,
-  Display,
-  IconColor,
+  Box,
+  IconName,
+  Text,
+  BoxAlignItems,
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+  Button,
+  ButtonVariant,
+  FontWeight,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  twMerge,
+} from '@metamask/design-system-react';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MINUTE } from '../../../../shared/constants/time';
 import {
@@ -25,30 +28,29 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
-function mapStateToProps(state: Pick<MetaMaskReduxState, 'appState'>) {
-  const { buyView, warning } = state.appState;
-  return {
-    buyView,
-    warning,
-  };
-}
 const PREFIX_LEN = 6;
 const SUFFIX_LEN = 5;
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
+export interface QrData {
+  message?: string | string[];
+  data: string;
+}
+
+export interface QrCodeViewProps {
+  Qr: QrData;
+  warning?: string | null;
+  accountName?: string;
+  location?: string;
+  className?: string;
+}
+
 function QrCodeView({
   Qr,
   warning,
   accountName,
   location = 'Account Details Modal',
-}: {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  Qr: { message?: string; data: string };
-  warning: string | null | undefined;
-  accountName?: string;
-  location?: string;
-}) {
+  className,
+}: QrCodeViewProps) {
   const trackEvent = useContext(MetaMetricsContext);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
   const t = useI18nContext();
@@ -60,9 +62,7 @@ function QrCodeView({
   const qrImage = qrCode(4, 'M');
   qrImage.addData(address);
   qrImage.make();
-  const header = message ? (
-    <div className="qr-code__header">{message}</div>
-  ) : null;
+  const header = message ? <Text>{message}</Text> : null;
   const addressStart = data.substring(0, PREFIX_LEN);
   const addressMiddle: string = data.substring(
     PREFIX_LEN,
@@ -70,70 +70,64 @@ function QrCodeView({
   );
   const addressEnd: string = data.substring(data.length - SUFFIX_LEN);
   return (
-    <div className="qr-code">
+    <Box
+      className={twMerge('flex gap-4', className)}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Center}
+    >
       {Array.isArray(message) ? (
-        <div className="qr-code__message-container">
+        <>
           {message.map((msg, index) => (
-            <Text
-              key={index}
-              variant={TextVariant.bodyXs}
-              color={TextColor.warningDefault}
-            >
+            <Text key={index} variant={TextVariant.BodySm}>
               {msg}
             </Text>
           ))}
-        </div>
+        </>
       ) : (
         header
       )}
-      {warning ? <span className="qr-code__error">{warning}</span> : null}
-      <Box className="qr-code__wrapper" marginBottom={4}>
+      {warning ? (
+        <Text asChild color={TextColor.ErrorDefault}>
+          <span>{warning}</span>
+        </Text>
+      ) : null}
+      <Box className="relative inline-block">
         <Box
           data-testid="qr-code-image"
-          className="qr-code__image"
+          className="relative border border-default rounded-2xl"
           dangerouslySetInnerHTML={{
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             __html: qrImage.createTableTag(5, 16),
           }}
         />
-        <Box className="qr-code__logo">
+        <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-white flex overflow-hidden justify-center items-center h-10 w-11">
           <img src="images/logo/metamask-fox.svg" alt="Logo" />
         </Box>
       </Box>
       {accountName ? (
         <Text
-          variant={TextVariant.bodyLgMedium}
+          variant={TextVariant.BodyLg}
+          fontWeight={FontWeight.Medium}
           textAlign={TextAlign.Center}
-          marginBottom={4}
         >
           {accountName}
         </Text>
       ) : null}
-      <Text
-        variant={TextVariant.bodyMd}
-        className="qr-code__address-segments"
-        marginBottom={4}
-      >
-        {addressStart}
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textMuted}
-          className="qr-code__address-inner-segment"
-        >
-          {addressMiddle}
-        </Text>
-        {addressEnd}
+      <Text asChild className="break-all" textAlign={TextAlign.Center}>
+        <span>
+          {addressStart}
+          <Text className="" color={TextColor.TextAlternative} asChild>
+            <span>{addressMiddle}</span>
+          </Text>
+          {addressEnd}
+        </span>
       </Text>
-      <Box
-        display={Display.Flex}
-        marginBottom={4}
-        gap={2}
-        alignItems={AlignItems.center}
-        color={TextColor.primaryDefault}
-        className="qr-code__copy-button"
+      <Button
         data-testid="address-copy-button-text"
         data-clipboard-text={checksummedAddress}
+        variant={ButtonVariant.Tertiary}
         onClick={() => {
           handleCopy(checksummedAddress);
           trackEvent({
@@ -144,28 +138,12 @@ function QrCodeView({
             },
           });
         }}
+        endIconName={copied ? IconName.CopySuccess : IconName.Copy}
       >
-        <Icon
-          name={copied ? IconName.CopySuccess : IconName.Copy}
-          size={IconSize.Sm}
-          color={IconColor.primaryDefault}
-        />
         {t('copyAddressShort')}
-      </Box>
-    </div>
+      </Button>
+    </Box>
   );
 }
 
-QrCodeView.propTypes = {
-  warning: PropTypes.node,
-  Qr: PropTypes.shape({
-    message: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]),
-    data: PropTypes.string.isRequired,
-  }).isRequired,
-  location: PropTypes.string,
-};
-
-export default connect(mapStateToProps)(QrCodeView);
+export default QrCodeView;
