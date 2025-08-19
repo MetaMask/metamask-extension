@@ -267,7 +267,7 @@
     "@metamask/address-book-controller": "^6.1.0",
     "@metamask/announcement-controller": "^7.0.3",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@73.1.0-preview-a89812f5",
+    "@metamask/assets-controllers": "^73.2.0",
     "@metamask/base-controller": "^8.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.18.0",
     "@metamask/bridge-controller": "^39.1.0",
