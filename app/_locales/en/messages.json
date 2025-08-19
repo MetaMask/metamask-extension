@@ -1794,7 +1794,7 @@
     "message": "the swaps page"
   },
   "deepLink_theNonEvmPage": {
-    "message": "the non-EVM page"
+    "message": "the Swaps/Ramps page"
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
