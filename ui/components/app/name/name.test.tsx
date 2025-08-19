@@ -180,7 +180,7 @@ describe('Name', () => {
         });
 
         renderWithProvider(
-          <MetaMetricsContext.Provider value={trackEventMock}>
+          <MetaMetricsContext.Provider value={{ trackEvent: trackEventMock }}>
             <Name
               type={NameType.ETHEREUM_ADDRESS}
               value={value}

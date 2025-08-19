@@ -166,7 +166,7 @@ describe('Reveal Seed Page', () => {
     const mockTrackEvent = jest.fn();
     const { queryByTestId, queryByText, getByText, queryByLabelText } =
       renderWithProvider(
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
           <Modal />
           <RevealSeedPage />
         </MetaMetricsContext.Provider>,
@@ -343,7 +343,7 @@ describe('Reveal Seed Page', () => {
       .mockImplementationOnce(mockSuccessfulSrpReveal);
     const mockTrackEvent = jest.fn();
     const { queryByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <RevealSeedPage />
       </MetaMetricsContext.Provider>,
       mockStore,

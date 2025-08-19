@@ -87,7 +87,7 @@ describe('Header', () => {
       it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric ${description}`, () => {
         const mockTrackEvent = jest.fn();
         const { getByLabelText } = renderWithConfirmContextProvider(
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
+          <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
             <HeaderInfo />
           </MetaMetricsContext.Provider>,
           configureStore(store),

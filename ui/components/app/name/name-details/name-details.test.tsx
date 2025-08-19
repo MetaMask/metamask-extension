@@ -560,7 +560,7 @@ describe('NameDetails', () => {
 
       await act(async () => {
         renderWithProvider(
-          <MetaMetricsContext.Provider value={trackEventMock}>
+          <MetaMetricsContext.Provider value={{ trackEvent: trackEventMock }}>
             <NameDetails
               type={NameType.ETHEREUM_ADDRESS}
               value={ADDRESS_SAVED_NAME_MOCK}
@@ -643,7 +643,7 @@ describe('NameDetails', () => {
       const trackEventMock = jest.fn();
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
+        <MetaMetricsContext.Provider value={{ trackEvent: trackEventMock }}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_NO_NAME_MOCK}
@@ -746,7 +746,7 @@ describe('NameDetails', () => {
       const trackEventMock = jest.fn();
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
+        <MetaMetricsContext.Provider value={{ trackEvent: trackEventMock }}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
@@ -856,7 +856,7 @@ describe('NameDetails', () => {
       const trackEventMock = jest.fn();
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
+        <MetaMetricsContext.Provider value={{ trackEvent: trackEventMock }}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}

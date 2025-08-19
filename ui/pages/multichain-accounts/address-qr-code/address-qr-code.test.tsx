@@ -121,7 +121,7 @@ const renderComponent = (state = mockState, address = mockAccount.address) => {
       <MemoryRouter
         initialEntries={[`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${address}`]}
       >
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
           <Route path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}>
             <AddressQRCode />
           </Route>

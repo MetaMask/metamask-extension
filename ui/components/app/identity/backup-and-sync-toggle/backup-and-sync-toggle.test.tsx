@@ -57,7 +57,7 @@ describe('BackupAndSyncToggle', () => {
     arrangeMocks();
 
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <BackupAndSyncToggle />
       </MetaMetricsContext.Provider>,
       mockStore(store),

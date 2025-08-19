@@ -20,13 +20,12 @@ import Root from '../../ui/pages';
 
 // Mock MetaMetrics context for tests
 const createMockTrackEvent = () => {
-  const mockTrackEvent = () => Promise.resolve();
-  Object.assign(mockTrackEvent, {
+  return {
+    trackEvent: () => Promise.resolve(),
     bufferedTrace: () => Promise.resolve(),
     bufferedEndTrace: () => Promise.resolve(),
     onboardingParentContext: { current: null },
-  });
-  return mockTrackEvent;
+  };
 };
 
 export const I18nProvider = (props) => {
