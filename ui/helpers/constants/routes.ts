@@ -126,6 +126,8 @@ export const DEEP_LINK_ROUTE = '/link';
 export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
 export const DEFI_ROUTE = '/defi';
 
+export const SHIELD_PLAN_ROUTE = '/shield-plan';
+
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
@@ -625,6 +627,11 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   ///: END:ONLY_INCLUDE_IF
+  {
+    path: SHIELD_PLAN_ROUTE,
+    label: 'Shield Plan',
+    trackInAnalytics: false,
+  },
 ] as const satisfies AppRoute[];
 
 export type AppRoutes = (typeof ROUTES)[number];

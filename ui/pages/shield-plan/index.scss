@@ -1,0 +1,80 @@
+@use "design-system";
+
+.shield-plan-page {
+  max-width: 600px;
+
+  .shield-plan-page__plans {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .shield-plan-page__plan {
+    border: 1px solid transparent;
+    .shield-plan-page__radio {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid var(--color-border-default);
+    }
+
+    .shield-plan-page__radio-label {
+      flex: 1;
+    }
+  }
+
+  .shield-plan-page__plan--selected {
+    border-color: var(--color-primary-default);
+
+    .shield-plan-page__radio {
+      border-color: var(--color-primary-default);
+      border-width: 2px;
+
+      &::after {
+        content: '';
+        width: 12px;
+        height: 12px;
+        background-color: var(--color-primary-default);
+        border-radius: 50%;
+      }
+    }
+  }
+
+  .shield-plan-page__group {
+    .shield-plan-page__row {
+      margin-bottom: 1px;
+
+      &:first-of-type {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+
+      &:last-of-type {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.shield-payment-modal {
+  .payment-method-item {
+    position: relative;
+
+    &:not(.payment-method-item--selected) {
+      &:hover {
+        background: var(--color-background-default-hover);
+      }
+    }
+
+    &__selected-indicator {
+      width: 4px;
+      height: calc(100% - 8px);
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+  }
+}
