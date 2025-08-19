@@ -278,9 +278,6 @@ const WalletDetails = () => {
   const multichainAccountCells = Object.entries(
     multichainAccounts || {},
   ).flatMap(([groupId, groupData]) => {
-    // TODO: Implement logic for removable accounts
-    const isRemovable = false;
-
     return [
       <MultichainAccountCell
         key={`multichain-account-cell-${groupId}`}
@@ -288,13 +285,6 @@ const WalletDetails = () => {
         accountName={groupData.metadata.name}
         balance="$ n/a"
         disableHoverEffect={true}
-        endAccessory={
-          <MultichainAccountMenu
-            accountGroupId={groupId as AccountGroupId}
-            isRemovable={isRemovable}
-            buttonBackgroundColor={BackgroundColor.transparent}
-          />
-        }
       />,
     ];
   });
