@@ -16,7 +16,9 @@ on:
     secrets:
       PR_COMMENT_TOKEN:
         required: true
-      # TODO: [ffmcgee] Uncomment secrets
+      # TODO: [ffmcgee] Uncomment/replace secrets
+      EXTENSION_BUNDLESIZE_STATS_TOKEN:
+        required: true
       # EXTENSION_BENCHMARK_STATS_TOKEN:
       #   required: false
 
@@ -62,11 +64,12 @@ jobs:
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Upload benchmark results
-        # TODO: [ffmcgee] For testing, trigger this on pull_request (steps on benchmark-stats-commit.sh)
-        if: github.ref == 'refs/heads/main' # && secrets.EXTENSION_BENCHMARK_STATS_TOKEN
+        # TODO: [ffmcgee] For testing, trigger this always (steps on benchmark-stats-commit.sh) remove the comment below after testing
+        # if: github.ref == 'refs/heads/main' # && secrets.EXTENSION_BENCHMARK_STATS_TOKEN
         run: .github/scripts/benchmark-stats-commit.sh
         env:
-          # TODO: [ffmcgee] Uncomment secrets
+          # TODO: [ffmcgee] Uncomment / replace secrets
           # EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+          EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}

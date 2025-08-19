@@ -4,7 +4,8 @@ set -e
 set -u
 set -o pipefail
 
-if [[ -z "${EXTENSION_BENCHMARK_STATS_TOKEN:-}" ]]; then
+if [[ -z "${EXTENSION_BUNDLESIZE_STATS_TOKEN:-}" ]]; then
+# if [[ -z "${EXTENSION_BENCHMARK_STATS_TOKEN:-}" ]]; then
     printf '%s\n' 'EXTENSION_BENCHMARK_STATS_TOKEN environment variable must be set'
     exit 1
 fi
@@ -25,8 +26,7 @@ git config --global user.email "metamaskbot@users.noreply.github.com"
 
 git config --global user.name "MetaMask Bot"
 
-# TODO: [ffmcgee] replace repo by "https://github.com/MetaMask/extension_bundlesize_stats.git", for now use personal repo for testing purposes
-git clone --depth 1 https://github.com/ffmcgee725/extension_benchmark_stats.git temp
+git clone --depth 1 https://github.com/MetaMask/extension_benchmark_stats.git temp
 
 BENCHMARK_FILE="test-artifacts/benchmarks/benchmark-results.json"
 STATS_FILE="temp/stats/page_load_data.json"
@@ -68,7 +68,9 @@ git commit --message "Adding page load benchmark data at commit: ${GITHUB_SHA}"
 
 repo_slug="${GITHUB_REPOSITORY_OWNER}/extension_benchmark_stats"
 
-git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" main
+# TODO: [ffmcgee] change "temp" to "main" / "EXTENSION_BUNDLESIZE_STATS_TOKEN" to "EXTENSION_BENCHMARK_STATS_TOKEN"
+git push "https://metamaskbot:${EXTENSION_BUNDLESIZE_STATS_TOKEN}@github.com/${repo_slug}" test
+# git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" main
 
 cd ..
 
