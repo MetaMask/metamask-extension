@@ -54,6 +54,8 @@ import {
 } from './accounts';
 import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
 import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
+import { getGatorPermissionsControllerMessenger } from './gator-permissions';
+import { getGatorPermissionsControllerInitMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -71,6 +73,10 @@ export const CONTROLLER_MESSENGERS = {
   DelegationController: {
     getMessenger: getDelegationControllerMessenger,
     getInitMessenger: getDelegationControllerInitMessenger,
+  },
+  GatorPermissionsController: {
+    getMessenger: getGatorPermissionsControllerMessenger,
+    getInitMessenger: getGatorPermissionsControllerInitMessenger,
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,

@@ -112,6 +112,7 @@ buildTypes:
       - APPLE_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
+      - PERMISSIONS_PAGE_V2: true
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -322,6 +323,7 @@ env:
   - SECURITY_ALERTS_API_ENABLED: 'true'
   # URL of security alerts API used to validate dApp requests
   - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
+  - PERMISSIONS_PAGE_V2: false
 
   # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''

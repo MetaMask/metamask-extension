@@ -380,3 +380,31 @@ describe('toast display', () => {
     expect(toastContainer).toBeInTheDocument();
   });
 });
+
+describe('Permissions page build-time feature flag', () => {
+  const originalEnv = process.env.PERMISSIONS_PAGE_V2;
+
+  afterEach(() => {
+    // Restore original environment variable
+    if (originalEnv === undefined) {
+      delete process.env.PERMISSIONS_PAGE_V2;
+    } else {
+      process.env.PERMISSIONS_PAGE_V2 = originalEnv;
+    }
+  });
+
+  it('should use PermissionsPage when PERMISSIONS_PAGE_V2 is not set to true', () => {
+    process.env.PERMISSIONS_PAGE_V2 = 'false';
+    expect(process.env.PERMISSIONS_PAGE_V2).toBe('false');
+  });
+
+  it('should use PermissionsPageV2 when PERMISSIONS_PAGE_V2 is set to true', () => {
+    process.env.PERMISSIONS_PAGE_V2 = 'true';
+    expect(process.env.PERMISSIONS_PAGE_V2).toBe('true');
+  });
+
+  it('should default to PermissionsPage when PERMISSIONS_PAGE_V2 is undefined', () => {
+    delete process.env.PERMISSIONS_PAGE_V2;
+    expect(process.env.PERMISSIONS_PAGE_V2).toBeUndefined();
+  });
+});

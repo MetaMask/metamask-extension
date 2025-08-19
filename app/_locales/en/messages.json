@@ -3605,6 +3605,9 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
+ "networkNameSepolia": {
+    "message": "Sepolia"
+  },
   "networkNameLinea": {
     "message": "Linea"
   },
@@ -4577,6 +4580,12 @@
   "permissionsPageEmptySubContent": {
     "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
   },
+  "permissions_tokenStreams": {
+    "message": "Token Streams"
+  },
+  "permissions_tokenSubscriptions": {
+    "message": "Token Subscriptions"
+  },
   "permitSimulationChange_approve": {
     "message": "Spending cap"
   },
@@ -5500,6 +5509,9 @@
   },
   "singleNetwork": {
     "message": "1 network"
+  },
+  "sites": {
+    "message": "Sites"
   },
   "siweIssued": {
     "message": "Issued"
@@ -7022,6 +7034,10 @@
   "unknownNetworkForKeyEntropy": {
     "message": "Unknown network",
     "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
+  "unknownNetworkForGatorPermissions": {
+    "message": "Unknown network",
+    "description": "Displayed on places like Gator Permissions page when network name is not available."
   },
   "unknownQrCode": {
     "message": "Error: We couldn't identify that QR code"
