@@ -944,11 +944,10 @@ async function openMenuSafe(driver) {
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
-const manifest = readManifest();
-
-const isWebpack = !manifest.content_scripts[0].js.includes(
-  'scripts/disable-console.js',
-);
+const isWebpack = () => {
+  const manifest = readManifest();
+  return !manifest.content_scripts[0].js.includes('scripts/disable-console.js');
+};
 
 module.exports = {
   DAPP_HOST_ADDRESS,
@@ -998,6 +997,5 @@ module.exports = {
   openMenuSafe,
   sentryRegEx,
   createWebSocketConnection,
-  manifest,
   isWebpack,
 };

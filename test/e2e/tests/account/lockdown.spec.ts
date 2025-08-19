@@ -65,7 +65,7 @@ describe('lockdown', function (this: Mocha.Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        if (isWebpack) {
+        if (isWebpack()) {
           this.skip();
         }
         await driver.navigate(PAGES.HOME);
@@ -86,7 +86,7 @@ describe('lockdown', function (this: Mocha.Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        if (isWebpack) {
+        if (isWebpack()) {
           this.skip();
         }
         if (isManifestV3) {
