@@ -19,7 +19,7 @@ on:
 jobs:
   create-release-pr:
     name: Create Release Pull Request using Github Tools
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@dde6d530bebae07d1e50180894ab2cac64170a2c
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@75cfa5085bee4804dadaa2516a47c4ff37278b35
     with:
       platform: extension
       checkout-base-branch: ${{ inputs.checkout-base-branch }}
