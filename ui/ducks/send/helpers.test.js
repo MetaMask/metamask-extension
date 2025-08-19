@@ -11,7 +11,7 @@ import {
   generateERC1155TransferData,
   generateERC20TransferData,
   generateERC721TransferData,
-} from '../../pages/confirmations/send/send.utils';
+} from '../../pages/confirmations/send-legacy/send.utils';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
@@ -40,7 +40,7 @@ jest.mock('../../../shared/constants/transaction', () => ({
   TokenStandard: { ERC721: 'ERC721', ERC1155: 'ERC1155' },
 }));
 
-jest.mock('../../pages/confirmations/send/send.utils', () => ({
+jest.mock('../../pages/confirmations/send-legacy/send.utils', () => ({
   addGasBuffer: jest.fn(),
   generateERC20TransferData: jest.fn(),
   generateERC721TransferData: jest.fn(),
