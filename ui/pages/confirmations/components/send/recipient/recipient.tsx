@@ -5,7 +5,7 @@ import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useSendActions } from '../../../hooks/send/useSendActions';
 import { useSendContext } from '../../../context/send';
 
-export const SendTo = () => {
+export const Recipient = () => {
   const [to, setTo] = useState('');
   const { goToPreviousPage } = useNavigateSendPage();
   const { handleSubmit } = useSendActions();

@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import * as SendActions from '../../../hooks/send/useSendActions';
 import * as SendContext from '../../../context/send';
-import { SendTo } from './send-to';
+import { Recipient } from './recipient';
 
 const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
 
@@ -22,10 +22,10 @@ jest.mock('react-router-dom', () => ({
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? mockState);
 
-  return renderWithProvider(<SendTo />, store);
+  return renderWithProvider(<Recipient />, store);
 };
 
-describe('SendTo', () => {
+describe('Recipient', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
