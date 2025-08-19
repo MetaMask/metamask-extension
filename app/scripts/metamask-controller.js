@@ -436,6 +436,7 @@ import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
+import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1978,6 +1979,7 @@ export default class MetamaskController extends EventEmitter {
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
+      GatorPermissionsController: GatorPermissionsControllerInit,
     };
 
     const {
@@ -2035,6 +2037,8 @@ export default class MetamaskController extends EventEmitter {
     this.accountTreeController = controllersByName.AccountTreeController;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
+    this.gatorPermissionsController =
+      controllersByName.GatorPermissionsController;
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -3431,6 +3435,7 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
+      gatorPermissionsController,
     } = this;
 
     return {
@@ -3494,6 +3499,18 @@ export default class MetamaskController extends EventEmitter {
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
+        ),
+      enableGatorPermissions:
+        gatorPermissionsController.enableGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
+      disableGatorPermissions:
+        gatorPermissionsController.disableGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
+      fetchAndUpdateGatorPermissions:
+        gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
+          gatorPermissionsController,
         ),
       ///: END:ONLY_INCLUDE_IF
       setUseExternalNameSources:

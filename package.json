@@ -298,6 +298,7 @@
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
     "@metamask/kernel-browser-runtime": "^0.2.0",
+    "@metamask/gator-permissions-controller": "^0.1.0",
     "@metamask/kernel-shims": "^0.2.0",
     "@metamask/kernel-ui": "^0.1.0",
     "@metamask/kernel-utils": "^0.1.0",

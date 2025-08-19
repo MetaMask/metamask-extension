@@ -46,6 +46,11 @@ import {
   CONNECTIONS,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
+  SITES,
+  TOKEN_STREAMS_ROUTE,
+  REVIEW_TOKEN_STREAMS_ROUTE,
+  TOKEN_SUBSCRIPTIONS_ROUTE,
+  REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
   NOTIFICATIONS_ROUTE,
@@ -278,6 +283,44 @@ const ReviewPermissions = mmLazy(
     import(
       '../../components/multichain/pages/review-permissions-page/review-permissions-page.tsx'
     )) as unknown as DynamicImportType,
+);
+const PermissionsPageV2 = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/permissions-page/permissions-page-v2.js'
+    )) as unknown as DynamicImportType,
+);
+const SitesPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/sites-page/sites-page.js'
+    )) as unknown as DynamicImportType,
+);
+const TokenStreamsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  import(
+    '../../components/multichain/pages/gator-permissions-page/token-streams/token-streams-page.js'
+  ) as unknown as DynamicImportType,
+);
+const ReviewTokenStreamsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  import(
+    '../../components/multichain/pages/gator-permissions-page/token-streams/review-token-streams-page.js'
+  ) as unknown as DynamicImportType,
+);
+const TokenSubscriptionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  import(
+    '../../components/multichain/pages/gator-permissions-page/token-subscriptions/token-subscriptions-page.js'
+  ) as unknown as DynamicImportType,
+);
+const ReviewTokenSubscriptionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  import(
+    '../../components/multichain/pages/gator-permissions-page/token-subscriptions/review-token-subscriptions-page.js'
+  ) as unknown as DynamicImportType,
 );
 
 const Home = mmLazy(
@@ -575,7 +618,36 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
-          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+          <Authenticated
+            path={PERMISSIONS}
+            component={
+              process.env.PERMISSIONS_PAGE_V2
+                ? PermissionsPageV2
+                : PermissionsPage
+            }
+            exact
+          />
+             <Authenticated path={SITES} component={SitesPage} exact />
+          <Authenticated
+            path={TOKEN_STREAMS_ROUTE}
+            component={TokenStreamsPage}
+            exact
+          />
+          <Authenticated
+            path={`${REVIEW_TOKEN_STREAMS_ROUTE}/:chainId`}
+            component={ReviewTokenStreamsPage}
+            exact
+          />
+          <Authenticated
+            path={TOKEN_SUBSCRIPTIONS_ROUTE}
+            component={TokenSubscriptionsPage}
+            exact
+          />
+          <Authenticated
+            path={`${REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE}/:chainId`}
+            component={ReviewTokenSubscriptionsPage}
+            exact
+          />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={ReviewPermissions}
