@@ -62,9 +62,7 @@ describe('Editing Confirm Transaction', function () {
         await activityListPage.openActivityTab();
         await activityListPage.checkCompletedTransactionItems(1);
 
-        const txValues = await activityListPage.getAllTransactionAmounts();
-        assert.equal(txValues.length, 1);
-        assert.ok(/-1\s*ETH/u.test(txValues[0]));
+        await activityListPage.checkTransactionAmount('-1 ETH');
       },
     );
   });
@@ -118,9 +116,7 @@ describe('Editing Confirm Transaction', function () {
         await activityListPage.openActivityTab();
         await activityListPage.checkCompletedTransactionItems(1);
 
-        const txValues = await activityListPage.getAllTransactionAmounts();
-        assert.equal(txValues.length, 1);
-        assert.ok(/-1\s*ETH/u.test(txValues[0]));
+        await activityListPage.checkTransactionAmount('-1 ETH');
       },
     );
   });
@@ -176,9 +172,7 @@ describe('Editing Confirm Transaction', function () {
         await activityListPage.openActivityTab();
         await activityListPage.checkCompletedTransactionItems(1);
 
-        const txValues = await activityListPage.getAllTransactionAmounts();
-        assert.equal(txValues.length, 1);
-        assert.ok(/-0.001\s*ETH/u.test(txValues[0]));
+        await activityListPage.checkTransactionAmount('-0.001 ETH');
       },
     );
   });

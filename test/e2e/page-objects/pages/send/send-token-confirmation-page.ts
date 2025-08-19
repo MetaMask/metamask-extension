@@ -19,7 +19,9 @@ class SendTokenConfirmPage {
 
   private readonly maxPriorityFeeInput = '[data-testid="priority-fee-input"]';
 
-  private readonly editGasFeeItem = (gasFeeType: string) =>
+  private readonly editGasFeeItem = (
+    gasFeeType: 'low' | 'medium' | 'high' | 'custom' | 'dappSuggested',
+  ) =>
     `[data-testid="edit-gas-fee-item-${gasFeeType}"] > span:first-child`;
 
   private readonly editGasFeeSeconds = {
@@ -41,6 +43,8 @@ class SendTokenConfirmPage {
   private readonly firstGasField = '[data-testid="first-gas-field"]';
 
   private readonly nativeCurrency = '[data-testid="native-currency"]';
+
+  private readonly inlineGasFeeAlert = '[data-testid="inline-alert"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -179,7 +183,7 @@ class SendTokenConfirmPage {
 
   async checkGasFeeAlert(): Promise<void> {
     console.log('Checking if gas fee alert is displayed');
-    await this.driver.waitForSelector('[data-testid="inline-alert"]');
+    await this.driver.waitForSelector(this.inlineGasFeeAlert);
   }
 
   async checkFirstGasFee(amount: string): Promise<void> {

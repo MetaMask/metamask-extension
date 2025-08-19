@@ -301,6 +301,14 @@ class ActivityListPage {
     return amounts;
   }
 
+  async checkTransactionAmount(transactionAmount: string): Promise<void> {
+    console.log('Validate transaction amount');
+    await this.driver.waitForSelector({
+      css: this.transactionAmountsInActivity,
+      text: transactionAmount,
+    });
+  }
+
   async checkNoFailedTransactions(): Promise<void> {
     try {
       await this.driver.findElement(this.failedTransactions, 1);
