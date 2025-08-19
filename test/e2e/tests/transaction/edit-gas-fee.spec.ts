@@ -1,4 +1,3 @@
-import assert from 'assert/strict';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   createInternalTransaction,
