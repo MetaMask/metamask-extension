@@ -128,12 +128,12 @@ const PIPE_XZ = 76 as const; // Shifted "|"'s character code
  * The reason we can't just send a message like "hey I'm about to send some chunks"
  * then send the message itself in bits, and then send an "I'm done sending the
  * chunks" message is because of a combination of three factors:
- *   1) we need to send the chunks without blocking the thread for too long;
- *      sending huge chunks can take several seconds.
- *   2) other parts of the system might _also_ send data over the same Port; so
- *      frames would be intermingled.
- *   3) I couldn't find documentation guaranteeing that sent `runtime.Port`
- *      messages are received in the order they are sent (hence the `seq`uence number we send)
+ * 1) we need to send the chunks without blocking the thread for too long;
+ * sending huge chunks can take several seconds.
+ * 2) other parts of the system might _also_ send data over the same Port; so
+ * frames would be intermingled.
+ * 3) I couldn't find documentation guaranteeing that sent `runtime.Port`
+ * messages are received in the order they are sent (hence the `seq`uence number we send)
  *
  * This function has been benchmarked and highly optimized, modify carefully.
  *
@@ -252,7 +252,7 @@ const FRAME_BUDGET = 1000 / 60 / 2;
 
 const tick =
   // @ts-expect-error modern browsers have scheduler.yield() built in.
-  scheduler && typeof scheduler['yield'] === 'function'
+  scheduler && typeof scheduler.yield === 'function'
     ? // @ts-expect-error modern browsers have scheduler.yield() built in.
       globalThis.scheduler.yield.bind(globalThis.scheduler)
     : async () => await new Promise<void>((r) => setTimeout(r, 0));
