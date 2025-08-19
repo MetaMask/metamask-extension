@@ -29,7 +29,7 @@ export const AccountDetailsSection = ({
   address: string;
   onExportClick: (str: string) => void;
 }) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 

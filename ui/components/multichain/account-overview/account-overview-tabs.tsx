@@ -42,7 +42,7 @@ export const AccountOverviewTabs = ({
 }: AccountOverviewTabsProps) => {
   const history = useHistory();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const allChainIds = useSelector(getAllChainsToPoll);
 

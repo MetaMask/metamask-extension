@@ -41,7 +41,7 @@ const VisitSupportDataConsentModal: React.FC<
 > = ({ isOpen, onClose }) => {
   const version = process.env.METAMASK_VERSION as string;
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const sessionData = useSelector(selectSessionData);
   const profileId = sessionData?.profile?.profileId;
   const metaMetricsId = useSelector(getMetaMetricsId);

@@ -54,7 +54,7 @@ export default function AwaitingSignatures() {
     getCurrentSmartTransactionsEnabled,
   );
   const needsTwoConfirmations = Boolean(approveTxParams);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
     trackEvent({

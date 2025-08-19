@@ -84,7 +84,7 @@ export const AccountListMenu = ({
   ],
 }: AccountListMenuProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });

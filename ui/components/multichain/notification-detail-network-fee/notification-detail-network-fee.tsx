@@ -88,7 +88,7 @@ const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
   notification,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [networkFees, setNetworkFees] = useState<NetworkFees>(null);
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);

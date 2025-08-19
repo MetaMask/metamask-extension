@@ -190,7 +190,7 @@ export default function ReviewQuote({
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [submitClicked, setSubmitClicked] = useState(false);

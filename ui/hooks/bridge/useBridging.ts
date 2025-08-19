@@ -39,7 +39,7 @@ import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker
 const useBridging = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const metaMetricsId = useSelector(getMetaMetricsId);

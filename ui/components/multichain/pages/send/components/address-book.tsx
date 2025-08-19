@@ -34,7 +34,7 @@ import { SendPageRow } from './send-page-row';
 export const SendPageAddressBook = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);

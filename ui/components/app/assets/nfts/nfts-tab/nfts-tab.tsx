@@ -52,7 +52,7 @@ export default function NftsTab() {
   const isMainnet = useSelector(getIsMainnet);
   const { privacyMode } = useSelector(getPreferences);
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );

@@ -61,7 +61,7 @@ export enum ACTION_MODE {
 
 export const useNetworkChangeHandlers = () => {
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const domains = useSelector(getAllDomains);

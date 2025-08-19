@@ -24,7 +24,7 @@ export function usePetnamesMetrics({
   selectedSourceId?: string;
   type: NameType;
 }) {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const trackPetnamesEvent = useCallback(
     (

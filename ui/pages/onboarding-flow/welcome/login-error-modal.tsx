@@ -43,7 +43,7 @@ export default function LoginErrorModal({
   loginError,
 }: LoginErrorModalProps) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const getTitle = () => {
     if (loginError === LOGIN_ERROR.UNABLE_TO_CONNECT) {

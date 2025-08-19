@@ -69,7 +69,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
     }
   }, [history, secretRecoveryPhrase, nextRouteQueryString]);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const handleContinue = useCallback(() => {
     trackEvent({

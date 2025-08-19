@@ -28,7 +28,7 @@ export default function DefiProtocolCell({
   position,
 }: DeFiProtocolCellProps) {
   const { privacyMode } = useSelector(getPreferences);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const handleTokenClick = (token: DeFiProtocolPosition) => () => {
     onClick(token.chainId, token.protocolId);

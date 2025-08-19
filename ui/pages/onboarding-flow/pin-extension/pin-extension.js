@@ -51,7 +51,7 @@ export default function OnboardingPinExtension() {
   const history = useHistory();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const currentKeyring = useSelector(getCurrentKeyring);
 

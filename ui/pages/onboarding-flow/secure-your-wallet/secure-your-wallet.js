@@ -51,7 +51,7 @@ export default function SecureYourWallet() {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const onboardingCompleted = useSelector(getCompletedOnboarding);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const handleOnShowSrpDetailsModal = useCallback(() => {
     trackEvent({

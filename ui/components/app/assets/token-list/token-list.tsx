@@ -48,7 +48,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const evmBalances = useSelector((state) =>
     getTokenBalancesEvm(state, selectedAccount.address),
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
   pollAndUpdateEvmBalances({
     chainIds: chainIdsToPoll as Hex[],

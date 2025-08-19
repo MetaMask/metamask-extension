@@ -33,7 +33,7 @@ const MetametricsToggle = ({
   setDataCollectionForMarketing: (value: boolean) => void;
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { enableMetametrics, error: enableMetametricsError } =
     useEnableMetametrics();
   const { disableMetametrics, error: disableMetametricsError } =

@@ -121,7 +121,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   targetSubjectMetadata,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const existingPermissions = useSelector((state) =>
     getPermissions(state, request.metadata?.origin),

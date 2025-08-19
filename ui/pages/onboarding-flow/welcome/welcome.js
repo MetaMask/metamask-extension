@@ -103,7 +103,7 @@ export default function OnboardingWelcome({
     isSocialLoginFlowInitialized,
   ]);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     trackEvent;
 

@@ -224,7 +224,7 @@ export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const history = useHistory();
   const pendingConfirmations = useSelector(

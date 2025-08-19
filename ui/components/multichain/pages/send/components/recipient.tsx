@@ -35,7 +35,7 @@ const ACCOUNTS_TAB_KEY = 'accounts';
 export const SendPageRecipient = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const recipient = useSelector(getRecipient);
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
