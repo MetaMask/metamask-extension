@@ -55,6 +55,7 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
+  NONEVM_BALANCE_CHECK_ROUTE
 } from '../../helpers/constants/routes';
 
 import {
@@ -155,6 +156,7 @@ const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
 const WalletDetails = mmLazy(
   () => import('../multichain-accounts/wallet-details'),
 );
+const NonEvmBalanceCheck = mmLazy(() => import('../nonevm-balance-check'));
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -402,6 +404,10 @@ export default class Routes extends Component {
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
             component={AddressQRCode}
             exact
+          />
+          <Authenticated
+            path={NONEVM_BALANCE_CHECK_ROUTE}
+            component={NonEvmBalanceCheck}
           />
 
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
