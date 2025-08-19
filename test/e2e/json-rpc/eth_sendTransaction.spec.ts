@@ -121,7 +121,7 @@ describe('eth_sendTransaction', function () {
     );
   });
 
-  it('prompts for unlock when the wallet is locked', async function () {
+  it('prompts for unlock when the wallet is locked and the requesting origin has permission for the account specified in the "from" parameter', async function () {
     await withFixtures(
       {
         dapp: true,
