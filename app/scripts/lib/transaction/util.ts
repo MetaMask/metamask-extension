@@ -34,7 +34,6 @@ import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-ut
 import {
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
-  SupportedEVMChain,
 } from '../trust-signals/types';
 
 export type AddTransactionOptions = NonNullable<
