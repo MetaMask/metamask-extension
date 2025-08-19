@@ -4,7 +4,7 @@ import {
   getGlobalProperties,
   testIntrinsic,
 } from '../../../helpers/protect-intrinsics-helpers';
-import { withFixtures } from '../../helpers';
+import { isWebpack, withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
@@ -52,6 +52,11 @@ try {
 }
 `;
 
+/*
+These tests are skipped for webpack builds, as lockdown-more doesn't work under webpack
+The security team is working on adding an improved version of lockdown-more to the lavamoat webpack plugin.
+TODO: update and enable this test when the improved version is available.
+*/
 describe('lockdown', function (this: Mocha.Suite) {
   it('the UI environment is locked down', async function () {
     await withFixtures(
@@ -60,6 +65,9 @@ describe('lockdown', function (this: Mocha.Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        if (isWebpack) {
+          this.skip();
+        }
         await driver.navigate(PAGES.HOME);
         assert.equal(
           await driver.executeScript(lockdownTestScript),
@@ -78,6 +86,9 @@ describe('lockdown', function (this: Mocha.Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        if (isWebpack) {
+          this.skip();
+        }
         if (isManifestV3) {
           // TODO: add logic for testing the Service-Worker on MV3
           await driver.navigate(PAGES.OFFSCREEN);
