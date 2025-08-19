@@ -9,11 +9,6 @@ import {
   ButtonVariant,
 } from '../../../../components/component-library';
 import {
-  getSelectedInternalAccount,
-  getInternalAccounts,
-  isSolanaAccount,
-} from '../../../../selectors';
-import {
   BlockSize,
   Display,
   FlexDirection,
@@ -23,7 +18,10 @@ import {
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { t } from '../../../../../shared/lib/translate';
-import { getFromAccount } from '../../../../ducks/bridge/selectors';
+import {
+  getFromAccount,
+  getToAccounts,
+} from '../../../../ducks/bridge/selectors';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
 import { DestinationAccount } from '../types';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
@@ -43,7 +41,7 @@ export const DestinationAccountPicker = ({
 }: DestinationAccountPickerProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const selectedAccount = useSelector(getFromAccount);
-  const accounts = useSelector(getInternalAccounts);
+  const accounts = useSelector(getToAccounts);
 
   const { externalAccount } = useExternalAccountResolution({
     searchQuery,
@@ -64,13 +62,9 @@ export const DestinationAccountPicker = ({
 
         const matchesSearch = matchesSearchByName || matchesSearchByAddress;
 
-        const matchesChain = isDestinationSolana
-          ? isSolanaAccount(account)
-          : !isSolanaAccount(account);
-
-        return matchesSearch && matchesChain;
+        return matchesSearch;
       }),
-    [accounts, isDestinationSolana, searchQuery],
+    [accounts, searchQuery],
   );
 
   if (selectedSwapToAccount) {

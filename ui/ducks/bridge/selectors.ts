@@ -66,7 +66,10 @@ import {
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import {
+  getInternalAccountsByScope,
+  getSelectedInternalAccount,
+} from '../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 
@@ -275,6 +278,19 @@ export const getFromAccount = createSelector(
       );
     }
     return null;
+  },
+);
+
+export const getToAccounts = createSelector(
+  [getToChain, (state) => state],
+  (toChain, state) => {
+    if (!toChain) {
+      return [];
+    }
+    return getInternalAccountsByScope(
+      state,
+      formatChainIdToCaip(toChain.chainId),
+    );
   },
 );
 
