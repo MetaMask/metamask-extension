@@ -21,7 +21,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 type MultichainAccountServiceSetBasicFunctionalityAction = {
   type: 'MultichainAccountService:setBasicFunctionality';
-  handler: ({ enabled }: { enabled: boolean }) => Promise<void>;
+  handler: (enabled: boolean) => Promise<void>;
 };
 ///: END:ONLY_INCLUDE_IF
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
@@ -529,9 +529,10 @@ export class PreferencesController extends BaseController<
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     // Set basic functionality and trigger alignment if enabled
     // This single call handles both provider disable/enable and alignment
-    this.messagingSystem.call('MultichainAccountService:setBasicFunctionality', {
-      enabled: useExternalServices,
-    });
+    this.messagingSystem.call(
+      'MultichainAccountService:setBasicFunctionality',
+      useExternalServices,
+    );
     ///: END:ONLY_INCLUDE_IF
   }
 
