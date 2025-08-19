@@ -522,11 +522,6 @@ describe('trust-signals-util', () => {
           description: 'scroll',
         },
         {
-          chainId: CHAIN_IDS.SEPOLIA,
-          expected: SupportedEVMChain.EthereumSepolia,
-          description: 'sepolia',
-        },
-        {
           chainId: '0x27bc86aa',
           expected: SupportedEVMChain.Degen,
           description: 'degen',
