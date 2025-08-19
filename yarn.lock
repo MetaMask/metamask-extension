@@ -5698,9 +5698,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.10.0, @metamask/controller-utils@npm:^11.11.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.9.0":
-  version: 11.11.0
-  resolution: "@metamask/controller-utils@npm:11.11.0"
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.10.0, @metamask/controller-utils@npm:^11.11.0, @metamask/controller-utils@npm:^11.12.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.9.0":
+  version: 11.12.0
+  resolution: "@metamask/controller-utils@npm:11.12.0"
   dependencies:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
@@ -5715,7 +5715,7 @@ __metadata:
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-  checksum: 10/9b4ac01beb7359fea6da869117be69f8973d2d0e190469773b5f2726b86ccf0150d455bf8b19e9aa0504228fb2fb5fb7e9334a66df83cd2d02a4c84f250dad5a
+  checksum: 10/e3cdc3f8f6d7bd8c30c9f3faba63a0323b2f87057b62d05d5ed46f5eec17d221cb1a846d5d57f269f1b7352f89a0be286d6c60ce397592084f38f7880234f994
   languageName: node
   linkType: hard
 
@@ -21857,18 +21857,6 @@ __metadata:
     "@types/trusted-types":
       optional: true
   checksum: 10/03974f18851fb4e447d26adc0ebf7a64b6c5b4a11caebebec3e04de8fcaa19cdb67bf3575a2335727123d0fc1c2febc1bc992a84f327a8ce65a0bfd11e3afc50
-  languageName: node
-  linkType: hard
-
-"dompurify@npm:^3.2.5":
-  version: 3.2.6
-  resolution: "dompurify@npm:3.2.6"
-  dependencies:
-    "@types/trusted-types": "npm:^2.0.7"
-  dependenciesMeta:
-    "@types/trusted-types":
-      optional: true
-  checksum: 10/b91631ed0e4d17fae950ef53613cc009ed7e73adc43ac94a41dd52f35483f7538d13caebdafa7626e0da145fc8184e7ac7935f14f25b7e841b32fda777e40447
   languageName: node
   linkType: hard
 
