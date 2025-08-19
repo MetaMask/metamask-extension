@@ -96,7 +96,6 @@ import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
@@ -280,15 +279,7 @@ const PrepareBridgePage = ({
   const txAlert = useSelector(getTxAlerts);
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const nativeAsset = useMemo(
-    () =>
-      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
-    [fromChain?.chainId],
-  );
-  const nativeAssetBalance = useLatestBalance(nativeAsset);
-
   const { tokenAlert } = useTokenAlerts();
-  const srcTokenBalance = useLatestBalance(fromToken);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
     useDestinationAccount(isSwap);
 
@@ -365,7 +356,7 @@ const PrepareBridgePage = ({
   const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isInsufficientGasForQuote(nativeAssetBalance)) {
+    if (isInsufficientGasForQuote) {
       insufficientBalanceBannerRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
@@ -377,12 +368,7 @@ const PrepareBridgePage = ({
         block: 'start',
       });
     }
-  }, [
-    isEstimatedReturnLow,
-    nativeAssetBalance,
-    isInsufficientGasForQuote,
-    isLowReturnBannerOpen,
-  ]);
+  }, [isEstimatedReturnLow, isInsufficientGasForQuote, isLowReturnBannerOpen]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
@@ -646,7 +632,6 @@ const PrepareBridgePage = ({
               ? fromAmountInCurrency.valueInCurrency.toString()
               : undefined
           }
-          balanceAmount={srcTokenBalance}
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
@@ -916,8 +901,6 @@ const PrepareBridgePage = ({
               )}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
-                  nativeAssetBalance={nativeAssetBalance}
-                  srcTokenBalance={srcTokenBalance}
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController.current(
                       quoteParams,
@@ -1079,8 +1062,8 @@ const PrepareBridgePage = ({
           )}
           {!isLoading &&
             activeQuote &&
-            !isInsufficientBalance(srcTokenBalance) &&
-            isInsufficientGasForQuote(nativeAssetBalance) && (
+            !isInsufficientBalance &&
+            isInsufficientGasForQuote && (
               <BannerAlert
                 ref={isEstimatedReturnLowRef}
                 marginInline={4}

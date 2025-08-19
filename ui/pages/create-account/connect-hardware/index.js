@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import * as actions from '../../../store/actions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -29,6 +30,7 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 
@@ -282,7 +284,7 @@ class ConnectHardwareForm extends Component {
 
   onUnlockAccounts = async (deviceName, path) => {
     const {
-      history,
+      navigate,
       mostRecentOverviewPage,
       unlockHardwareWalletAccounts,
       hdEntropyIndex,
@@ -316,7 +318,7 @@ class ConnectHardwareForm extends Component {
             is_suggested_name: true,
           },
         });
-        history.push(mostRecentOverviewPage);
+        navigate(mostRecentOverviewPage);
       })
       .catch((e) => {
         this.context.trackEvent({
@@ -335,8 +337,8 @@ class ConnectHardwareForm extends Component {
   };
 
   onCancel = () => {
-    const { history, mostRecentOverviewPage } = this.props;
-    history.push(mostRecentOverviewPage);
+    const { navigate, mostRecentOverviewPage } = this.props;
+    navigate(mostRecentOverviewPage);
   };
 
   renderError() {
@@ -455,7 +457,7 @@ ConnectHardwareForm.propTypes = {
   hideAlert: PropTypes.func,
   unlockHardwareWalletAccounts: PropTypes.func,
   setHardwareWalletDefaultHdPath: PropTypes.func,
-  history: PropTypes.object,
+  navigate: PropTypes.func,
   chainId: PropTypes.string,
   rpcPrefs: PropTypes.object,
   accounts: PropTypes.object,
@@ -518,7 +520,7 @@ ConnectHardwareForm.contextTypes = {
   trackEvent: PropTypes.func,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  withRouterHooks,
+  connect(mapStateToProps, mapDispatchToProps),
 )(ConnectHardwareForm);

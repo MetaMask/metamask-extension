@@ -34,14 +34,11 @@ import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
-import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 
 const useBridging = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
-
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
@@ -53,7 +50,7 @@ const useBridging = () => {
   );
   const openBridgeExperience = useCallback(
     (
-      location: string,
+      location: MetaMetricsSwapsEventSource | 'Carousel',
       srcToken?: Pick<BridgeAsset, 'symbol' | 'address'> & {
         chainId: GenericQuoteRequest['srcChainId'];
       },
@@ -76,25 +73,6 @@ const useBridging = () => {
         name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
         startTime: Date.now(),
       });
-      trackCrossChainSwapsEvent({
-        event: MetaMetricsEventName.ActionButtonClicked,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          location:
-            location === 'Home'
-              ? MetaMetricsSwapsEventSource.MainView
-              : MetaMetricsSwapsEventSource.TokenView,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id_source: formatChainIdToCaip(providerConfig.chainId),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: token.symbol,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_address_source: token.address,
-        },
-      });
       trackEvent({
         event: isSwap
           ? MetaMetricsEventName.SwapLinkClicked
@@ -113,10 +91,7 @@ const useBridging = () => {
       });
       dispatch(
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
-          location:
-            location === 'Home'
-              ? MetaMetricsSwapsEventSource.MainView
-              : MetaMetricsSwapsEventSource.TokenView,
+          location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_source: token.symbol,
@@ -142,7 +117,6 @@ const useBridging = () => {
       history,
       metaMetricsId,
       trackEvent,
-      trackCrossChainSwapsEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
       providerConfig,
