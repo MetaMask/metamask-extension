@@ -5275,14 +5275,16 @@ export function setNextNonce(nextNonce: string): PayloadAction<string> {
  */
 export function getNextNonce(
   address,
+  networkClientId,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
-    const networkClientId = getSelectedNetworkClientId(getState());
+    const networkClientIdValue =
+      networkClientId ?? getSelectedNetworkClientId(getState());
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
         address,
-        networkClientId,
+        networkClientIdValue,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
