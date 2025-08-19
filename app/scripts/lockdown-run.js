@@ -1,6 +1,3 @@
-/* eslint-disable no-unreachable -- deliberate */
-throw Error('lockdown-run.js should no longer be used under webpack');
-
 // Freezes all intrinsics
 try {
   // eslint-disable-next-line no-undef,import/unambiguous
