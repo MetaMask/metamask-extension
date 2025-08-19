@@ -71,7 +71,6 @@ import {
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
-import { MultichainAccountMenu } from '../../../components/multichain-accounts/multichain-account-menu';
 import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
 
 type AccountBalance = {

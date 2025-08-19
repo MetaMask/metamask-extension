@@ -250,6 +250,16 @@ jest.mock(
   }),
 );
 
+jest.mock('../../../selectors', () => ({
+  getMetaMaskHdKeyrings: jest.fn(),
+  getIsMultichainAccountsState2Enabled: jest.fn(() => false),
+}));
+
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  getWalletsWithAccounts: jest.fn(),
+  getMultichainAccountsByWalletId: jest.fn(() => []),
+}));
+
 describe('WalletDetails', () => {
   const mockHistory = { push: jest.fn(), goBack: jest.fn() };
   const mockParams = { id: 'entropy:test-wallet' };
