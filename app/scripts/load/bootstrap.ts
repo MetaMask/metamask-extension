@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-// This code runs before of LavaMoat
+// This code runs before LavaMoat
 
 if (process.env.ENABLE_SNOW === 'true') {
   require('@lavamoat/snow/snow.prod');
