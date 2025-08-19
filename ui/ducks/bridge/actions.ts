@@ -155,25 +155,26 @@ export const setFromChain = ({
   token?: TokenPayload['payload'];
 }) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    if (networkConfig) {
-      const networkId = isNetworkAdded(networkConfig)
-        ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
-            ?.networkClientId
-        : null;
-      const networkParam = isSolanaChainId(networkConfig.chainId)
-        ? networkConfig.chainId
-        : networkId;
-      if (networkParam) {
-        dispatch(setActiveNetworkWithError(networkParam));
-      }
-      if (token) {
-        dispatch(setFromToken(token));
-      }
-      // If the chain is non-EVM, or there is no selected account, return early
-      if (isSolanaChainId(networkConfig.chainId) || !selectedAccount) {
-        return;
-      }
-      // Otherwise fetch the native balance
+    if (!networkConfig) {
+      return;
+    }
+    if (isSolanaChainId(networkConfig.chainId)) {
+      dispatch(setActiveNetworkWithError(networkConfig.chainId));
+      return;
+    }
+
+    const networkId = isNetworkAdded(networkConfig)
+      ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
+          ?.networkClientId
+      : null;
+    if (networkId) {
+      dispatch(setActiveNetworkWithError(networkId));
+    }
+    if (token) {
+      dispatch(setFromToken(token));
+    }
+    // Fetch the native EVM balance
+    if (selectedAccount) {
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {

@@ -90,10 +90,7 @@ export const DestinationAccountPicker = ({
         >
           <DestinationSelectedAccountListItem
             account={selectedSwapToAccount}
-            // @ts-expect-error: Type mismatch between InternalAccount and expected account type - functionality works but needs type alignment
-            isSelected={selectedSwapToAccount.id === selectedAccount?.id}
-            showOptions={false}
-            disableHover
+            selected={selectedSwapToAccount.id === selectedAccount?.id}
           />
         </Box>
         <Box className="deselect-button-container" paddingRight={5}>
@@ -145,15 +142,14 @@ export const DestinationAccountPicker = ({
         }}
       >
         <TextField
-          // @ts-expect-error: TextField component expects different props than provided - works but needs type update
           placeholder={
-            isDestinationSolana
+            (isDestinationSolana
               ? t('destinationAccountPickerSearchPlaceholderToSolana')
-              : t('destinationAccountPickerSearchPlaceholderToMainnet')
+              : t('destinationAccountPickerSearchPlaceholderToMainnet')) ??
+            undefined
           }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          clearButtonOnClick={() => setSearchQuery('')}
           className="text-field-search"
           style={{
             width: '98%',
