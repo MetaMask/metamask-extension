@@ -104,13 +104,10 @@ class SwapPage {
         this.destinationTokenButton,
       ]);
     } catch (e) {
-      console.log(
-        'Timeout while waiting for Advanced Settings page to be loaded',
-        e,
-      );
+      console.log('Timeout while waiting for Swap page to be loaded', e);
       throw e;
     }
-    console.log('Advanced Settings page is loaded');
+    console.log('Swap page is loaded');
   }
 
   async clickOnMoreQuotes(): Promise<void> {
