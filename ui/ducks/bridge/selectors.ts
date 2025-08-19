@@ -68,6 +68,8 @@ import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
@@ -178,9 +180,7 @@ export const getFromChain = createDeepEqualSelector(
   getMultichainProviderConfig,
   getFromChains,
   (providerConfig, fromChains) => {
-    return providerConfig?.chainId
-      ? fromChains.find(({ chainId }) => chainId === providerConfig.chainId)
-      : undefined;
+    return fromChains.find(({ chainId }) => chainId === providerConfig.chainId);
   },
 );
 
@@ -264,6 +264,20 @@ export const getToToken = createSelector(
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
+export const getFromAccount = createSelector(
+  [(state) => getFromChain(state)?.chainId, (state) => state],
+  (fromChainId, state) => {
+    if (fromChainId) {
+      const chainIdInCaip = formatChainIdToCaip(fromChainId);
+      return getInternalAccountBySelectedAccountGroupAndCaip(
+        state,
+        chainIdInCaip,
+      );
+    }
+    return null;
+  },
+);
+
 const _getFromNativeBalance = createSelector(
   getFromChain,
   (state: BridgeAppState) => state.bridge.fromNativeBalance,
@@ -296,17 +310,18 @@ export const getFromTokenBalance = createSelector(
   getFromChain,
   (state: BridgeAppState) => state.bridge.fromTokenBalance,
   getMultichainBalances,
-  getSelectedInternalAccount,
+  getFromAccount,
   (
     fromToken,
     fromChain,
     fromTokenBalance,
     nonEvmBalancesByAccountId,
-    { id },
+    fromAccount,
   ) => {
-    if (!fromToken || !fromChain) {
+    if (!fromToken || !fromChain || !fromAccount) {
       return null;
     }
+    const { id } = fromAccount;
     const { chainId, decimals, address, assetId } = fromToken;
 
     // Use the balance provided by the multichain balances controller
