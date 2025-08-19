@@ -283,7 +283,7 @@ export const getFromAccount = createSelector(
 
 export const getToAccounts = createSelector(
   [getToChain, (state) => state],
-  (toChain, state) => {
+  (toChain, state): InternalAccount[] => {
     if (!toChain) {
       return [];
     }
