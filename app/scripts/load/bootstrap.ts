@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-// currently only used in webpack build.
+// this code runs outside of lavamoat, bundled separately
 
 if (process.env.ENABLE_SNOW === 'true') {
   require('@lavamoat/snow/snow.prod');
