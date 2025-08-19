@@ -105,7 +105,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     s.js
       // scripts/disable-console.js is only relevant for the browserify build
       // console is disabled by the lavamoat webpack plugin automatically
-      // TODO: clean up after browserify builds are removed
+      // TODO(34913): clean up after browserify builds are removed
       ?.filter((filename) => filename !== 'scripts/disable-console.js')
       ?.forEach(addManifestScript),
   );

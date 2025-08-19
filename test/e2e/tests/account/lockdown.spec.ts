@@ -55,7 +55,7 @@ try {
 /*
 These tests are skipped for webpack builds, as lockdown-more doesn't work under webpack
 The security team is working on adding an improved version of lockdown-more to the lavamoat webpack plugin.
-TODO: update and enable this test when the improved version is available.
+TODO(34913): update and enable this test when the improved version is available.
 */
 describe('lockdown', function (this: Mocha.Suite) {
   it('the UI environment is locked down', async function () {

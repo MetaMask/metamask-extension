@@ -54,8 +54,8 @@ const start = () => {
 
 (function () {
   let once = false;
-  // TODO: "document" because LavaMoat blocks props
-  // TODO: definitions against the globalThis (window)
+  // TODO(34913): "document" because LavaMoat blocks props
+  // TODO(34913): definitions against the globalThis (window)
   Object.defineProperty(document, 'INJECT_ONCE', {
     value: (textContent) => {
       if (once) {

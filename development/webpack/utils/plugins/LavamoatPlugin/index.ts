@@ -21,7 +21,8 @@ export const lavamoatPlugin = new LavamoatPlugin({
   },
   scuttleGlobalThis: {
     enabled: true,
-    // scuttlerName: 'SCUTTLER', // TODO(weizman) SUPPORT SNOW AND SCUTTLER
+    // TODO(34913): support snow and scuttler
+    // scuttlerName: 'SCUTTLER',
     exceptions: [
       // globals used by different mm deps outside of lm compartment
       'Proxy',
