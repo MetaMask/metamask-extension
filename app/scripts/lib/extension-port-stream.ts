@@ -251,10 +251,10 @@ function maybeParseAsChunkFrame(input: unknown): ChunkFrame | null {
 const FRAME_BUDGET = 1000 / 60 / 2;
 
 const tick =
-  // @ts-expect-error modern browsers have scheduler.yield() built in.
-  scheduler && typeof scheduler.yield === 'function'
+  // @ts-expect-error modern browsers have scheduler.yield() built in (but Node, where unit tests are run, does not)
+  globalThis.scheduler && typeof scheduler.yield === 'function'
     ? // @ts-expect-error modern browsers have scheduler.yield() built in.
-      globalThis.scheduler.yield.bind(globalThis.scheduler)
+      scheduler.yield.bind(scheduler)
     : async () => await new Promise<void>((r) => setTimeout(r, 0));
 
 /**
