@@ -9,9 +9,7 @@ type BenchmarkOutput = {
   timestamp: string;
   commit: string;
   summary: BenchmarkSummary[];
-  // FIXME: don't use any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rawResults: any[];
+  rawResults: unknown[];
 };
 
 function formatTime(ms: number): string {

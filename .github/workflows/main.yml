@@ -244,13 +244,15 @@ jobs:
   benchmark-pr:
     needs:
       - build-dist-browserify
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
     uses: ./.github/workflows/benchmark-pr.yml
     with:
       browser-loads: '10'
       page-loads: '10'
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      # TODO: [ffmcgee] replace with "EXTENSION_BENCHMARK_STATS_TOKEN"
+      EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
 
   needs-e2e:
     needs:
