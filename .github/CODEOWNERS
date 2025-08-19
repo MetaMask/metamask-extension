@@ -150,3 +150,4 @@ test/e2e/fixture-server.js                @MetaMask/qa
 test/e2e/helpers.js                       @MetaMask/qa
 test/e2e/mock-e2e-allowlist.js            @MetaMask/qa
 test/e2e/mock-e2e.js                      @MetaMask/qa
+test/e2e/tests/settings/state-logs.json   @MetaMask/qa @MetaMask/extension-privacy-reviewers
