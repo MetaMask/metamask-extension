@@ -6,6 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.2.0]
+### Added
+- feat: enable Linea for Smart Transactions (#35117)
+- feat: add discover button for Solana network in the network list (#34498)
+- feat: add account switching functionality for the multichain accounts (#34989)
+- feat: allow offline unlock for social login users (#34996)
+- feat: add price impact information and alert when above a certain threshold (#34951)
+- feat: add new page for displaying multichain accounts (#34836)
+- feat: add message to loading screen when loading is taking an abnormally long time (#34530)
+- feat: add 'Scan QR code and download the Mobile app' page on onboarding flow (#34825)
+- feat: hide 'Remove imported account' button for social login, as it's not yet supported (#34895)
+- feat: add Frax network and token logos (#34986)
+
+### Changed
+- update: remove the Solana modal from the initial flow (#34988)
+- update: disable transaction resubmission (#35028)
+- update: update `SEI` network's name from `Sei Network` to `Sei Mainnet` (#34930)
+- update: reduce bundle size to improve performance (#34690)
+
+### Fixed
+- fix: ensure text doesn't go beyond component boundaries when user is prompted to add a network (#34824)
+- fix: skip metametrics screen if user already chose an option (#35036)
+- fix: disable the hover state when SnapUISelector is disabled (#34964)
+- fix: hide 'Estimated changes have changed' alert from wallet initiated transactions (#34782)
+- fix: remove console error displayed when wallet is locked before transaction is confirmed (#34406)
+- fix: remove misleading console warning (#34816)
+- fix: remove console error displayed when connecting wallet to a dapp (#34783)
+- fix: use a static list of words for blurred SRP to prevent any potential possibility of a 'blur reversal attack' (#34288)
+- fix: revert 'set default theme to dark' (#34274)
+
 ## [13.1.0]
 ### Added
 - feat: inform users using social login when their password got updated in another instance of the wallet (#34757)
@@ -430,7 +460,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.2.0...HEAD
+[13.2.0]: https://github.com/MetaMask/metamask-extension/compare/v13.1.0...v13.2.0
 [13.1.0]: https://github.com/MetaMask/metamask-extension/compare/v13.0.1...v13.1.0
 [13.0.1]: https://github.com/MetaMask/metamask-extension/compare/v13.0.0...v13.0.1
 [13.0.0]: https://github.com/MetaMask/metamask-extension/compare/v12.23.1...v13.0.0
