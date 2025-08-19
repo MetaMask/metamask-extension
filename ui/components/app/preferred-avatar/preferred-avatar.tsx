@@ -7,6 +7,11 @@ import {
 } from '@metamask/design-system-react';
 import { getUseBlockie } from '../../../selectors';
 
+/**
+ * Renders an avatar for an address based on the user's settings. This wraps AvatarAccount.
+ *
+ * @param props - Props to pass to AvatarAccount
+ */
 export const PreferredAvatar = (props: Omit<AvatarAccountProps, 'ref'>) => {
   const variant = useSelector(getUseBlockie)
     ? AvatarAccountVariant.Blockies
