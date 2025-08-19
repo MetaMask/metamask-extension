@@ -154,7 +154,7 @@ const ShieldPlan = () => {
             onClick={() => setShowPaymentModal(true)}
             width={BlockSize.Full}
           >
-            <Text variant={TextVariant.bodyMdMedium}>Pay with</Text>
+            <Text variant={TextVariant.bodyLgMedium}>Pay with</Text>
 
             <Box display={Display.Flex} gap={2} alignItems={AlignItems.center}>
               {selectedPaymentMethod === PAYMENT_METHODS.TOKEN ? (
@@ -177,7 +177,7 @@ const ShieldPlan = () => {
               ) : (
                 <Icon size={IconSize.Xl} name={IconName.Card} />
               )}
-              <Text>
+              <Text variant={TextVariant.bodyLgMedium}>
                 {selectedPaymentMethod === PAYMENT_METHODS.TOKEN
                   ? 'ETH'
                   : 'Card'}
@@ -192,13 +192,18 @@ const ShieldPlan = () => {
             {...rowsStyleProps}
             display={Display.Block}
           >
-            <Text variant={TextVariant.bodyMdMedium} marginBottom={4}>
+            <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
               Plan details
             </Text>
-            <Box>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={2}
+            >
               {planDetails.map((detail, index) => (
                 <Box key={index} display={Display.Flex} gap={2}>
                   <Icon
+                    size={IconSize.Sm}
                     name={IconName.Check}
                     color={IconColor.primaryDefault}
                   />
