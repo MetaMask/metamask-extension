@@ -6564,6 +6564,7 @@ export default class MetamaskController extends EventEmitter {
         await this.seedlessOnboardingController.addNewSecretData(
           bufferedPrivateKey,
           SecretType.PrivateKey,
+          { keyringId },
         );
       } catch (error) {
         log.error('Error adding new private key backup', error);
