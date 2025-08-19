@@ -1,26 +1,59 @@
 import { promises as fs } from 'fs';
 import { execSync } from 'child_process';
 import path from 'path';
-import { chromium, type BrowserContext, Page, Browser } from '@playwright/test';
+import { chromium, type BrowserContext, Browser } from '@playwright/test';
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface Window {
-    ethereum?: { isMetaMask: boolean };
-  }
-}
-
+/**
+ * Performance metrics collected during page load benchmarking.
+ * All time values are in milliseconds unless otherwise specified.
+ */
 export type BenchmarkMetrics = {
+  /**
+   * Total time from navigation start to load event end.
+   * Represents the complete page load time including all resources.
+   */
   pageLoadTime: number;
+  /**
+   * Time from navigation start to DOM content loaded event end.
+   * Indicates when the initial HTML document has been completely loaded and parsed.
+   */
   domContentLoaded: number;
+  /**
+   * Time from navigation start to first paint.
+   * The first time any pixel is painted to the screen.
+   */
   firstPaint: number;
+  /**
+   * Time from navigation start to first contentful paint.
+   * The first time any content (text, images, etc.) is painted to the screen.
+   * This is a key Core Web Vital metric.
+   */
   firstContentfulPaint: number;
+  /**
+   * Time from navigation start to largest contentful paint.
+   * The time when the largest content element becomes visible.
+   * This is a key Core Web Vital metric for perceived loading speed.
+   */
   largestContentfulPaint: number;
-  contentScriptLoadTime: number;
-  backgroundScriptInitTime: number;
+  /**
+   * Memory usage statistics (optional, only available in Chrome).
+   * All values are in bytes.
+   */
   memoryUsage?: {
+    /**
+     * Currently used JavaScript heap size.
+     * Represents the amount of memory actively used by JavaScript objects.
+     */
     usedJSHeapSize: number;
+    /**
+     * Total allocated JavaScript heap size.
+     * The total amount of memory allocated for the JavaScript heap.
+     */
     totalJSHeapSize: number;
+    /**
+     * Maximum JavaScript heap size limit.
+     * The maximum amount of memory that can be allocated for the JavaScript heap.
+     */
     jsHeapSizeLimit: number;
   };
 };
@@ -132,7 +165,7 @@ export class PageLoadBenchmark {
     await page.waitForLoadState('networkidle');
 
     // Collect performance metrics
-    const metrics = await page.evaluate(() => {
+    const metrics: BenchmarkMetrics = await page.evaluate(() => {
       const navigation = performance.getEntriesByType(
         'navigation',
       )[0] as PerformanceNavigationTiming;
@@ -165,19 +198,10 @@ export class PageLoadBenchmark {
       };
     });
 
-    const contentScriptLoadTime = await this.measureContentScriptLoad(page);
-    const backgroundScriptInitTime = await this.measureBackgroundScriptInit();
-
-    const benchmarkMetrics: BenchmarkMetrics = {
-      ...metrics,
-      contentScriptLoadTime,
-      backgroundScriptInitTime,
-    };
-
     const result: BenchmarkResult = {
       page: url,
       run: runNumber,
-      metrics: benchmarkMetrics,
+      metrics,
       timestamp: new Date().toISOString(),
     };
 
@@ -185,44 +209,6 @@ export class PageLoadBenchmark {
     await page.close();
 
     return result;
-  }
-
-  private async measureContentScriptLoad(page: Page): Promise<number> {
-    try {
-      // Check if MetaMask content script is loaded
-      const contentScriptLoaded = await page.evaluate(() => {
-        return (
-          typeof window.ethereum !== 'undefined' &&
-          window.ethereum.isMetaMask === true
-        );
-      });
-
-      if (contentScriptLoaded) {
-        // Measure time to detect ethereum provider
-        const startTime = Date.now();
-        await page?.waitForFunction(() => window.ethereum?.isMetaMask, {
-          timeout: 10000,
-        });
-        return Date.now() - startTime;
-      }
-      return 0;
-    } catch (error) {
-      console.warn('Could not measure content script load time:', error);
-      return 0;
-    }
-  }
-
-  private async measureBackgroundScriptInit(): Promise<number> {
-    try {
-      // FIXME: Measure actual background script initialization
-      // This is a simplified measurement - in a real implementation,
-      // we might need to inject a script to measure background script initialization
-      // For now, we'll use a reasonable estimate based on extension load time
-      return Math.random() * 100 + 50; // Placeholder implementation
-    } catch (error) {
-      console.warn('Could not measure background script init time:', error);
-      return 0;
-    }
   }
 
   async runBenchmark(

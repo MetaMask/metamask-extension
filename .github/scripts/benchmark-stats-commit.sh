@@ -32,6 +32,7 @@ BENCHMARK_FILE="test-artifacts/benchmarks/benchmark-results.json"
 STATS_FILE="temp/stats/page_load_data.json"
 TEMP_FILE="temp/stats/page_load_data.temp.json"
 
+# TODO: [ffmcgee] Remove this step once we get through testing phase
 # Ensure the stats directory exists
 mkdir -p "temp/stats"
 
