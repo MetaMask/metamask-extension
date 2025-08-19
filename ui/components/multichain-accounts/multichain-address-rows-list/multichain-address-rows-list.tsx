@@ -2,12 +2,6 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-} from '../../../helpers/constants/design-system';
 import {
   Box,
   BoxFlexDirection,
@@ -15,6 +9,12 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+} from '../../../helpers/constants/design-system';
 import { TextFieldSearch, TextFieldSearchSize } from '../../component-library';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain/networks';
