@@ -945,7 +945,7 @@ async function openMenuSafe(driver) {
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 // TODO(34913): remove this function when browserify builds are removed
-// the script should also be removed from the manifest
+// the file should be deleted, and the script should be removed from the manifest
 const isWebpack = () => {
   const manifest = readManifest();
   return !manifest.content_scripts[0].js.includes('scripts/disable-console.js');
