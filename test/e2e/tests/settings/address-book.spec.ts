@@ -53,20 +53,20 @@ describe('Address Book', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.startSendFlow();
 
         const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.check_pageIsLoaded();
+        await sendTokenPage.checkPageIsLoaded();
         await sendTokenPage.selectContactItem('Test Name 1');
         await sendTokenPage.fillAmount('2');
         await sendTokenPage.goToNextScreen();
         await new TransactionConfirmation(driver).clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
-        await activityList.check_txAction('Sent', 1);
-        await activityList.check_txAmountInActivity(`-2 ETH`, 1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAction('Sent', 1);
+        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );
   });
@@ -102,11 +102,11 @@ describe('Address Book', function (this: Suite) {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.startSendFlow();
 
         const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.check_pageIsLoaded();
+        await sendTokenPage.checkPageIsLoaded();
 
         await sendTokenPage.selectContactItem('Test Name 1');
 
@@ -120,7 +120,7 @@ describe('Address Book', function (this: Suite) {
         await networkSelector.selectNetworkByChainId('0xe708');
 
         // dest should be cleared
-        await sendTokenPage.check_pageIsLoaded();
+        await sendTokenPage.checkPageIsLoaded();
       },
     );
   });
@@ -136,16 +136,16 @@ describe('Address Book', function (this: Suite) {
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToContactsSettings();
 
         const contactsPage = new ContactsPage(driver);
-        await contactsPage.check_pageIsLoaded();
+        await contactsPage.checkPageIsLoaded();
         await contactsPage.addContact(
           'Test User',
           '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
         );
-        await contactsPage.check_contactDisplayed({
+        await contactsPage.checkContactDisplayed({
           contactName: 'Test User',
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
         });
@@ -164,17 +164,17 @@ describe('Address Book', function (this: Suite) {
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToContactsSettings();
 
         const contactsPage = new ContactsPage(driver);
-        await contactsPage.check_pageIsLoaded();
+        await contactsPage.checkPageIsLoaded();
         await contactsPage.addContactNewChain(
           'Test User',
           '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
           'Sepolia',
         );
-        await contactsPage.check_contactDisplayed({
+        await contactsPage.checkContactDisplayed({
           contactName: 'Test User',
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
         });
@@ -207,18 +207,18 @@ describe('Address Book', function (this: Suite) {
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToContactsSettings();
 
         const contactsPage = new ContactsPage(driver);
-        await contactsPage.check_pageIsLoaded();
+        await contactsPage.checkPageIsLoaded();
         await contactsPage.editContact({
           existingContactName: 'Test Name 1',
           newContactName: 'Test Name Edit',
           newContactAddress: '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
           newNetwork: 'Sepolia',
         });
-        await contactsPage.check_contactDisplayed({
+        await contactsPage.checkContactDisplayed({
           contactName: 'Test Name Edit',
           address: shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
         });
@@ -250,15 +250,15 @@ describe('Address Book', function (this: Suite) {
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToContactsSettings();
 
         const contactsPage = new ContactsPage(driver);
-        await contactsPage.check_pageIsLoaded();
+        await contactsPage.checkPageIsLoaded();
         await contactsPage.deleteContact('Test Name 1');
 
         // it checks if account is deleted
-        await contactsPage.check_contactDisplayed({
+        await contactsPage.checkContactDisplayed({
           contactName: 'Test Name 1',
           address: shortenAddress('0x2f318C334780961FB129D2a6c30D0763d9a5C970'),
           shouldDisplay: false,
@@ -278,27 +278,27 @@ describe('Address Book', function (this: Suite) {
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToContactsSettings();
 
         const contactsPage = new ContactsPage(driver);
-        await contactsPage.check_pageIsLoaded();
+        await contactsPage.checkPageIsLoaded();
         await contactsPage.addContact(
           'Test User 1',
           '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
         );
-        await contactsPage.check_contactDisplayed({
+        await contactsPage.checkContactDisplayed({
           contactName: 'Test User 1',
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
         });
 
-        await contactsPage.check_pageIsLoaded();
+        await contactsPage.checkPageIsLoaded();
         await contactsPage.addContactNewChain(
           'Test User 2',
           '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
           'Sepolia',
         );
-        await contactsPage.check_contactDisplayed({
+        await contactsPage.checkContactDisplayed({
           contactName: 'Test User 2',
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
         });

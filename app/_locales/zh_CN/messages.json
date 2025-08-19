@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "开启基本功能"
   },
-  "bestPrice": {
-    "message": "最优价格"
-  },
   "beta": {
     "message": "测试版"
   },
@@ -936,9 +933,6 @@
     "message": "正在用 $1 兑换 $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "条款"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 分钟",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask 是在世界各地设计和建造的。"
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "忙碌中"
@@ -2665,9 +2656,6 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "处理交易所需的预估费用。最大费用为 $1。"
-  },
   "howQuotesWork": {
     "message": "报价如何运作"
   },
@@ -3003,9 +2991,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "了解有关隐私最佳实践的更多信息。"
-  },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "了解有关 Solana 账户的更多详情"
   },
   "learnMoreKeystone": {
     "message": "了解更多"
@@ -3765,9 +3750,6 @@
   },
   "notEnoughGas": {
     "message": "燃料不足"
-  },
-  "notNow": {
-    "message": "暂时不"
   },
   "notificationDetail": {
     "message": "详情"
@@ -5710,27 +5692,6 @@
   "solanaAccountRequired": {
     "message": "连接到此网站需要 Solana 账户。"
   },
-  "solanaImportAccounts": {
-    "message": "导入 Solana 账户"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "导入私钥助记词以将 Solana 账户从其他钱包迁移。"
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "即将推出更多功能"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFT、硬件钱包支持等功能即将上线。"
-  },
-  "solanaOnMetaMask": {
-    "message": "MetaMask 支持 Solana"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "发送、接收和兑换代币"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "使用 SOL、USDC 等代币进行转账和交易。"
-  },
   "someNetworks": {
     "message": "$1 网络"
   },
@@ -7054,9 +7015,6 @@
   },
   "viewOnOpensea": {
     "message": "在 Opensea 上查看"
-  },
-  "viewSolanaAccount": {
-    "message": "查看 Solana 账户"
   },
   "viewTransaction": {
     "message": "查看交易"

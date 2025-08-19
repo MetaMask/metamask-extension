@@ -97,7 +97,7 @@ describe('Deep Link', function () {
           await driver.navigate();
           const loginPage = new LoginPage(driver);
           console.log('Checking if login page is loaded');
-          await loginPage.check_pageIsLoaded();
+          await loginPage.checkPageIsLoaded();
 
           // if `locked` is set to "unlocked", we need to log in _now_, so the
           // deep link's `continue` button is able to can skip the lock screen.
@@ -107,7 +107,7 @@ describe('Deep Link', function () {
 
             console.log('Checking if home page is loaded (unlocked scenario)');
             const homePage = new HomePage(driver);
-            await homePage.check_pageIsLoaded();
+            await homePage.checkPageIsLoaded();
           }
 
           // navigate to https://link.metamask.io/home and make sure it
@@ -124,7 +124,7 @@ describe('Deep Link', function () {
 
           const deepLink = new DeepLink(driver);
           console.log('Checking if deep link page is loaded');
-          await deepLink.check_pageIsLoaded();
+          await deepLink.checkPageIsLoaded();
 
           // we should render the checkbox when the link is "signed", unless
           // it's an "INVALID" route
@@ -148,7 +148,7 @@ describe('Deep Link', function () {
           await deepLink.clickContinueButton();
           if (locked === 'locked') {
             console.log('Checking if login page is loaded (locked scenario)');
-            await loginPage.check_pageIsLoaded();
+            await loginPage.checkPageIsLoaded();
             console.log('Logging in to homepage (locked scenario)');
             await loginPage.loginToHomepage();
           }
@@ -171,7 +171,7 @@ describe('Deep Link', function () {
           // check that the page we want has been loaded!
           const page = new Page(driver);
           console.log('Checking if target page is loaded');
-          page.check_pageIsLoaded();
+          page.checkPageIsLoaded();
         },
       );
     });
@@ -183,10 +183,10 @@ describe('Deep Link', function () {
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         const rawUrl = `https://link.metamask.io/buy`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
@@ -200,7 +200,7 @@ describe('Deep Link', function () {
         });
 
         await driver.navigate();
-        homePage.check_pageIsLoaded();
+        homePage.checkPageIsLoaded();
 
         // test unsigned flow
         await driver.openNewURL(rawUrl);
@@ -222,10 +222,10 @@ describe('Deep Link', function () {
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         // params that are not related to the swap, and get filtered out
         // (may or not be processed by the deep link router, but we aren't
@@ -254,10 +254,10 @@ describe('Deep Link', function () {
         await driver.openNewURL(rawUrl);
 
         const deepLink = new DeepLink(driver);
-        await deepLink.check_pageIsLoaded();
+        await deepLink.checkPageIsLoaded();
 
         await deepLink.clickContinueButton();
-        await new SwapPage(driver).check_pageIsLoaded();
+        await new SwapPage(driver).checkPageIsLoaded();
 
         const currentUrl = await driver.getCurrentUrl();
 
@@ -286,17 +286,17 @@ describe('Deep Link', function () {
 
         await driver.navigate();
         const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         const rawUrl = `https://link.metamask.io/home`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
         await driver.openNewURL(signedUrl);
         const internalDeepLinkUrl = await driver.getCurrentUrl();
         const deepLink = new DeepLink(driver);
-        await deepLink.check_pageIsLoaded();
+        await deepLink.checkPageIsLoaded();
         const isChecked =
           await deepLink.getSkipDeepLinkInterstitialCheckBoxState();
         assert.equal(isChecked, false, 'checkbox should not be checked');
@@ -308,23 +308,23 @@ describe('Deep Link', function () {
         await deepLink.clickContinueButton();
 
         // make sure we're on the home page
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         // a nice in-between page to make testing more obvious
         await driver.openNewURL(TEST_PAGE);
 
         // open the deep link again, it should go straight to the home page
         await driver.openNewURL(signedUrl);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         // navigating to an unsigned page should NOT skip the interstitial
         await driver.openNewURL(rawUrl);
-        await deepLink.check_pageIsLoaded();
+        await deepLink.checkPageIsLoaded();
 
         // navigating to the internalDeepLinkUrl should display the interstitial
         // with the checkbox *already checked*
         await driver.openNewURL(internalDeepLinkUrl);
-        await deepLink.check_pageIsLoaded();
+        await deepLink.checkPageIsLoaded();
         const isChecked2 =
           await deepLink.getSkipDeepLinkInterstitialCheckBoxState();
         assert.equal(isChecked2, true, 'checkbox should be checked');
@@ -336,7 +336,7 @@ describe('Deep Link', function () {
 
         // open the signed link again, it should show the interstitial
         await driver.openNewURL(signedUrl);
-        await deepLink.check_pageIsLoaded();
+        await deepLink.checkPageIsLoaded();
       },
     );
   });
@@ -356,7 +356,7 @@ describe('Deep Link', function () {
         await Promise.all(localNodes.map((node) => node.quit()));
 
         const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
 
         const rawUrl = `https://link.metamask.io/home`;
@@ -365,7 +365,7 @@ describe('Deep Link', function () {
         // test signed flow
         await driver.openNewURL(signedUrl);
         const deepLink = new DeepLink(driver);
-        await deepLink.check_pageIsLoaded();
+        await deepLink.checkPageIsLoaded();
 
         // make sure the loading overlays is not present
         await driver.assertElementNotPresent('.loading-overlay');
@@ -375,7 +375,7 @@ describe('Deep Link', function () {
 
         // make sure the home page has loaded!
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
       },
     );
   });

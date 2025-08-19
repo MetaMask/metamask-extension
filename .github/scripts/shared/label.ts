@@ -29,8 +29,14 @@ export const externalContributorLabel: Label = {
 
 export const needsTriageLabel: Label = {
   name: 'needs-triage',
-  color: '#68AEE6',
+  color: '68AEE6',
   description: 'Issue needs to be triaged',
+};
+
+export const areaSentryLabel: Label = {
+  name: 'area-sentry',
+  color: '5319E7',
+  description: 'Issue from Sentry',
 };
 
 export const flakyTestsLabel: Label = {
@@ -113,14 +119,14 @@ export function craftTeamLabel(teamName: string): Label {
     case 'extension-platform':
       return {
         name: `team-${teamName}`,
-        color: '#BFD4F2', // light blue
+        color: 'BFD4F2', // light blue
         description: `Extension Platform team`,
       };
 
     case 'mobile-platform':
       return {
         name: `team-${teamName}`,
-        color: '#76E9D0', // light green
+        color: '76E9D0', // light green
         description: `Mobile Platform team`,
       };
 

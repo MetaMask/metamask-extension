@@ -15,9 +15,7 @@ class PermissionListPage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.permissionsPage);
     } catch (e) {
@@ -45,9 +43,7 @@ class PermissionListPage {
    *
    * @param site - Site to check
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_connectedToSite(site: string): Promise<void> {
+  async checkConnectedToSite(site: string): Promise<void> {
     console.log('Check if account is connected to site', site);
     await this.driver.waitForSelector({ text: site, tag: 'p' });
   }
@@ -57,9 +53,7 @@ class PermissionListPage {
    *
    * @param expectedNumberOfConnectedSites - The expected number of connected sites, default to 1
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_numberOfConnectedSites(
+  async checkNumberOfConnectedSites(
     expectedNumberOfConnectedSites: number = 1,
   ): Promise<void> {
     console.log(

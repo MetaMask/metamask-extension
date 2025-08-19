@@ -36,30 +36,30 @@ describe('Settings', function () {
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleIpfsGateway();
         await settingsPage.closeSettingsPage();
         const homePage = new Homepage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         await homePage.goToNftTab();
         const nftListPage = new NftListPage(driver);
-        await nftListPage.check_pageIsLoaded();
+        await nftListPage.checkPageIsLoaded();
         await nftListPage.clickNFTIconOnActivityList();
         const nftDetailsPage = new NFTDetailsPage(driver);
-        await nftDetailsPage.check_pageIsLoaded();
+        await nftDetailsPage.checkPageIsLoaded();
 
         // check for default image
-        await nftDetailsPage.check_nftDefaultImageIsDisplayed();
+        await nftDetailsPage.checkNftDefaultImageIsDisplayed();
 
         // toggle on ipfs to show image
         await nftDetailsPage.showNftImage();
 
         // should render image now
-        await nftDetailsPage.check_nftRenderedImageIsDisplayed();
+        await nftDetailsPage.checkNftRenderedImageIsDisplayed();
       },
     );
   });
