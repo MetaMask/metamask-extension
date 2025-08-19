@@ -18,7 +18,6 @@ import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   forceUpdateMetamaskState,
   setActiveNetworkWithError,
-  setSelectedAccount,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
@@ -32,6 +31,7 @@ import {
   setEVMSrcNativeBalance,
 } from './bridge';
 import type { TokenPayload } from './types';
+import { isNetworkAdded } from './utils';
 
 const {
   setToChainId,
@@ -151,17 +151,26 @@ export const setFromChain = ({
     | NetworkConfiguration
     | AddNetworkFields
     | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
-  selectedAccount: InternalAccount;
+  selectedAccount: InternalAccount | null;
   token?: TokenPayload['payload'];
 }) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     if (networkConfig) {
-      dispatch(setActiveNetworkWithError(networkConfig.chainId));
+      const networkId = isNetworkAdded(networkConfig)
+        ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
+            ?.networkClientId
+        : null;
+      const networkParam = isSolanaChainId(networkConfig.chainId)
+        ? networkConfig.chainId
+        : networkId;
+      if (networkParam) {
+        dispatch(setActiveNetworkWithError(networkParam));
+      }
       if (token) {
         dispatch(setFromToken(token));
       }
-      // If the chain is non-EVM, return early
-      if (isSolanaChainId(networkConfig.chainId)) {
+      // If the chain is non-EVM, or there is no selected account, return early
+      if (isSolanaChainId(networkConfig.chainId) || !selectedAccount) {
         return;
       }
       // Otherwise fetch the native balance

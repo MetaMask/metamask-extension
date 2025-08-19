@@ -29,11 +29,11 @@ import {
   setToToken,
 } from '../../ducks/bridge/actions';
 import {
+  getFromAccount,
   getFromChain,
   getFromChains,
   getFromToken,
 } from '../../ducks/bridge/selectors';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -83,7 +83,7 @@ export const useBridgeQueryParams = () => {
   const fromChains = useSelector(getFromChains);
   const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAccount = useSelector(getFromAccount);
 
   const abortController = useRef<AbortController>(new AbortController());
 
@@ -168,7 +168,7 @@ export const useBridgeQueryParams = () => {
       fromAsset,
       network: NetworkConfiguration,
       networks: NetworkConfiguration[],
-      selectedAccount?: InternalAccount,
+      account: InternalAccount | null,
     ) => {
       const { chainId: fromChainId } = fromAsset;
 
@@ -198,7 +198,7 @@ export const useBridgeQueryParams = () => {
             dispatch(
               setFromChain({
                 networkConfig: targetChain,
-                selectedAccount,
+                selectedAccount: account,
                 token,
               }),
             );

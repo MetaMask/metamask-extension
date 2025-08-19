@@ -23,8 +23,9 @@ import {
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { t } from '../../../../../shared/lib/translate';
-import { DestinationAccount } from '../types';
+import { getFromAccount } from '../../../../ducks/bridge/selectors';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
+import { DestinationAccount } from '../types';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
@@ -41,7 +42,7 @@ export const DestinationAccountPicker = ({
   isDestinationSolana,
 }: DestinationAccountPickerProps) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAccount = useSelector(getFromAccount);
   const accounts = useSelector(getInternalAccounts);
 
   const { externalAccount } = useExternalAccountResolution({

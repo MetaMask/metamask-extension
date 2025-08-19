@@ -54,6 +54,7 @@ import {
   getIsSwap,
   BridgeAppState,
   getTxAlerts,
+  getFromAccount,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -100,7 +101,6 @@ import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
   getEnabledNetworksByNamespace,
-  getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -252,7 +252,7 @@ const PrepareBridgePage = ({
   const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAccount = useSelector(getFromAccount);
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
