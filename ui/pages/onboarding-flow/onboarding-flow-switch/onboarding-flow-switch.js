@@ -29,7 +29,7 @@ import {
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
   getIsSocialLoginFlow,
-  getIsSocialLoginFlowInitialized,
+  getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
@@ -37,8 +37,8 @@ export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
-  const isSocialLoginFlowInitialized = useSelector(
-    getIsSocialLoginFlowInitialized,
+  const isUserAuthenticatedWithSocialLogin = useSelector(
+    getIsSocialLoginUserAuthenticated,
   );
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -69,7 +69,7 @@ export default function OnboardingFlowSwitch() {
   }
 
   // TODO(ritave): Remove allow-list and only leave experimental_area exception
-  if (!isInitialized && !isSocialLoginFlowInitialized) {
+  if (!isInitialized && !isUserAuthenticatedWithSocialLogin) {
     let redirect;
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     redirect = <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
@@ -86,7 +86,7 @@ export default function OnboardingFlowSwitch() {
   }
   if (
     !isInitialized &&
-    isSocialLoginFlowInitialized &&
+    isUserAuthenticatedWithSocialLogin &&
     firstTimeFlowType === FirstTimeFlowType.socialCreate
   ) {
     return <Redirect to={{ pathname: ONBOARDING_CREATE_PASSWORD_ROUTE }} />;
