@@ -47,12 +47,12 @@ export const useAccountGroupsForPermissions = (
 
       // For each requested chain ID, find all account groups that support it
       Array.from(scopeToAccountGroupMap.entries()).forEach(
-        ([scope, accountGroups]) => {
+        ([scope, scopeAccountGroups]) => {
           if (chainIdSet.has(scope as CaipChainId)) {
             // Handle both array and single group formats for backward compatibility
-            const groups = Array.isArray(accountGroups)
-              ? accountGroups
-              : [accountGroups];
+            const groups = Array.isArray(scopeAccountGroups)
+              ? scopeAccountGroups
+              : [scopeAccountGroups];
             groups.forEach((group) => supportedGroups.add(group));
           }
         },
@@ -98,15 +98,17 @@ export const useAccountGroupsForPermissions = (
     const connectedAccountIds =
       getCaipAccountIdsFromCaip25CaveatValue(existingPermission);
 
+    const uniqueAccountGroupIds = new Set<string>();
     const connectedAccountGroupsArray: AccountGroupWithInternalAccounts[] = [];
 
     connectedAccountIds.forEach((caipAccountId) => {
       const accountGroupId = caip25ToAccountGroupMap.get(caipAccountId);
-      if (accountGroupId) {
+      if (accountGroupId && !uniqueAccountGroupIds.has(accountGroupId)) {
         const accountGroup = accountGroups.find(
           (group) => group.id === accountGroupId,
         );
         if (accountGroup) {
+          uniqueAccountGroupIds.add(accountGroupId);
           connectedAccountGroupsArray.push(accountGroup);
         }
       }
