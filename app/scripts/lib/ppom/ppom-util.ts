@@ -28,7 +28,11 @@ import { AppStateController } from '../../controllers/app-state-controller';
 import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
+import {
+  SecurityAlertResponse,
+  GetSecurityAlertsConfig,
+  UpdateSecurityAlertResponse,
+} from './types';
 import {
   isSecurityAlertsAPIEnabled,
   SecurityAlertsAPIRequest,
@@ -62,12 +66,14 @@ export async function validateRequestWithPPOM({
   securityAlertId,
   chainId,
   updateSecurityAlertResponse: updateSecurityResponse,
+  getSecurityAlertsConfig,
 }: {
   ppomController: PPOMController;
   request: PPOMRequest;
   securityAlertId: string;
   chainId: Hex;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
+  getSecurityAlertsConfig?: GetSecurityAlertsConfig;
 }) {
   try {
     const controllerObject = await updateSecurityResponse(
@@ -81,7 +87,12 @@ export async function validateRequestWithPPOM({
     log('Normalized request', normalizedRequest);
 
     const ppomResponse = isSecurityAlertsAPIEnabled()
-      ? await validateWithAPI(ppomController, chainId, normalizedRequest)
+      ? await validateWithAPI(
+          ppomController,
+          chainId,
+          normalizedRequest,
+          getSecurityAlertsConfig,
+        )
       : await validateWithController(
           ppomController,
           normalizedRequest,
@@ -308,9 +319,14 @@ async function validateWithAPI(
   ppomController: PPOMController,
   chainId: string,
   request: SecurityAlertsAPIRequest | PPOMRequest,
+  getSecurityAlertsConfig?: GetSecurityAlertsConfig,
 ): Promise<SecurityAlertResponse> {
   try {
-    const response = await validateWithSecurityAlertsAPI(chainId, request);
+    const response = await validateWithSecurityAlertsAPI(
+      chainId,
+      request,
+      getSecurityAlertsConfig,
+    );
 
     return {
       ...response,

@@ -35,6 +35,7 @@ import { TransactionControllerInitMessenger } from '../messengers/transaction-co
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
+import { getIsShieldGatewayEnabled } from '../../../../shared/modules/environment';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -80,6 +81,24 @@ export const TransactionControllerInit: ControllerInitFunction<
     getSavedGasFees: () => {
       const globalChainId = getGlobalChainId();
       return preferencesController().state.advancedGasFee[globalChainId];
+    },
+    getSimulationConfig: async (url) => {
+      return new Promise((resolve) => {
+        const isShieldGatewayEnabled = getIsShieldGatewayEnabled();
+        if (!isShieldGatewayEnabled) {
+          resolve({
+            newUrl: url,
+            authorization: undefined,
+          });
+          return;
+        }
+
+        const host = process.env.SHIELD_GATEWAY_URL;
+        resolve({
+          newUrl: `${host}/proxy?url=${encodeURIComponent(url)}`,
+          authorization: undefined,
+        });
+      });
     },
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,

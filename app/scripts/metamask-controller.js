@@ -269,7 +269,10 @@ import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-s
 ///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
+import {
+  getIsSeedlessOnboardingFeatureEnabled,
+  getIsShieldGatewayEnabled,
+} from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -2035,6 +2038,32 @@ export default class MetamaskController extends EventEmitter {
     this.accountTreeController = controllersByName.AccountTreeController;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
+
+    this.getSecurityAlertsConfig = () => {
+      return async (url) => {
+        const host = process.env.SHIELD_GATEWAY_URL;
+        if (!host) {
+          throw new Error('Shield gateway URL is not set');
+        }
+
+        return new Promise((resolve) => {
+          const isShieldGatewayEnabled = getIsShieldGatewayEnabled();
+          if (!isShieldGatewayEnabled) {
+            resolve({
+              newUrl: url,
+              authorization: undefined,
+            });
+            return;
+          }
+
+          const newUrl = `${host}/proxy?url=${encodeURIComponent(url)}`;
+          resolve({
+            newUrl,
+            authorization: undefined,
+          });
+        });
+      };
+    };
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -6728,6 +6757,7 @@ export default class MetamaskController extends EventEmitter {
       securityAlertsEnabled:
         this.preferencesController.state?.securityAlertsEnabled,
       updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
+      getSecurityAlertsConfig: this.getSecurityAlertsConfig(),
       ...otherParams,
     };
   }
@@ -7535,6 +7565,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
+        this.getSecurityAlertsConfig.bind(this),
       ),
     );
 

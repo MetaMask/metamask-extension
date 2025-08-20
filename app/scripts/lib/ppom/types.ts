@@ -20,3 +20,11 @@ export type UpdateSecurityAlertResponse = (
   securityAlertId: string,
   securityAlertResponse: SecurityAlertResponse,
 ) => Promise<TransactionMeta | SignatureRequest>;
+
+/**
+ * Parameters for the security alerts API.
+ */
+export type GetSecurityAlertsConfig = (url: string) => Promise<{
+  newUrl?: string;
+  authorization?: string;
+}>;
