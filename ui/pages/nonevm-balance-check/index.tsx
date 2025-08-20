@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import { NonEvmQueryParams } from '../../../shared/lib/deep-links/routes/nonevm';
 import { SWAP_ROUTE } from '../../../shared/lib/deep-links/routes/route';
@@ -65,13 +66,16 @@ export const NonEvmBalanceCheck = () => {
 
   const { assetsWithBalance } = useMultichainBalances();
 
+  const hasAccountForChain = accounts.some((account: InternalAccount) =>
+    account.scopes?.includes(chainId),
+  );
+
   useEffect(() => {
     if (!chainId) {
       return;
     }
 
-    // If there are no accounts, redirect to account creation
-    if (accounts.length === 0) {
+    if (!hasAccountForChain) {
       history.push(NEW_ACCOUNT_ROUTE);
       return;
     }
