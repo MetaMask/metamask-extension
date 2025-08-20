@@ -1,6 +1,5 @@
 import { generateDeterministicRandomNumber } from '@metamask/remote-feature-flag-controller';
 
-import { ENVIRONMENT } from '../../../../development/build/constants';
 import { QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME } from '../../../../shared/constants/network';
 import {
   KNOWN_CUSTOM_ENDPOINTS,
@@ -10,15 +9,13 @@ import {
   shouldCreateRpcServiceEvents,
 } from './utils';
 
-jest.mock('@metamask/remote-feature-flag-controller', () => {
-  return {
-    ...jest.requireActual('@metamask/remote-feature-flag-controller'),
-    // This is the name of the property that turns this into an ES module.
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __esModule: true,
-    generateDeterministicRandomNumber: jest.fn(),
-  };
-});
+jest.mock('@metamask/remote-feature-flag-controller', () => ({
+  ...jest.requireActual('@metamask/remote-feature-flag-controller'),
+  // This is the name of the property that turns this into an ES module.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  generateDeterministicRandomNumber: jest.fn(),
+}));
 
 jest.mock('../../../../shared/constants/network', () => {
   // The network constants file relies on INFURA_PROJECT_ID already being set.
@@ -27,9 +24,9 @@ jest.mock('../../../../shared/constants/network', () => {
   const previousInfuraProjectId = process.env.INFURA_PROJECT_ID;
   // NOTE: This must match MOCK_METAMASK_INFURA_PROJECT_ID below.
   process.env.INFURA_PROJECT_ID = 'metamask-infura-project-id';
-  const module = jest.requireActual('../../../../shared/constants/network');
+  const mod = jest.requireActual('../../../../shared/constants/network');
   process.env.INFURA_PROJECT_ID = previousInfuraProjectId;
-  return module;
+  return mod;
 });
 
 const generateDeterministicRandomNumberMock = jest.mocked(
@@ -141,6 +138,7 @@ describe('shouldCreateRpcServiceEvents', () => {
                 it('returns true', async () => {
                   await withChangesToEnvironmentVariables(() => {
                     process.env.METAMASK_ENVIRONMENT = environment;
+                    setQuicknodeEnvironmentVariables();
                     generateDeterministicRandomNumberMock.mockReturnValue(
                       sampleUserRanking,
                     );
@@ -162,35 +160,29 @@ describe('shouldCreateRpcServiceEvents', () => {
           describe('if the user is not in the MetaMetrics sample', () => {
             const sampleUserRanking = 0.2;
 
-            // @ts-expect-error The Mocha types are incorrect.
-            describe.each(ENDPOINTS_TO_TEST)(
-              'if the endpoint URL is %s',
-              (_description: string, getEndpointUrl: () => string) => {
-                it('returns false', async () => {
-                  await withChangesToEnvironmentVariables(() => {
-                    process.env.METAMASK_ENVIRONMENT = environment;
-                    generateDeterministicRandomNumberMock.mockReturnValue(
-                      sampleUserRanking,
-                    );
+            it('returns false', async () => {
+              await withChangesToEnvironmentVariables(() => {
+                process.env.METAMASK_ENVIRONMENT = environment;
+                generateDeterministicRandomNumberMock.mockReturnValue(
+                  sampleUserRanking,
+                );
 
-                    expect(
-                      shouldCreateRpcServiceEvents({
-                        endpointUrl: getEndpointUrl(),
-                        error,
-                        infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
-                        metaMetricsId: MOCK_METAMETRICS_ID,
-                      }),
-                    ).toBe(false);
-                  });
-                });
-              },
-            );
+                expect(
+                  shouldCreateRpcServiceEvents({
+                    endpointUrl: 'https://example.com',
+                    error,
+                    infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+                    metaMetricsId: MOCK_METAMETRICS_ID,
+                  }),
+                ).toBe(false);
+              });
+            });
           });
         },
       );
 
       describe('if the environment is non-production', () => {
-        const environment = ENVIRONMENT.DEVELOPMENT;
+        const environment = 'development';
 
         // @ts-expect-error The Mocha types are incorrect.
         describe.each(ENDPOINTS_TO_TEST)(
@@ -199,6 +191,7 @@ describe('shouldCreateRpcServiceEvents', () => {
             it('returns true', async () => {
               await withChangesToEnvironmentVariables(() => {
                 process.env.METAMASK_ENVIRONMENT = environment;
+                setQuicknodeEnvironmentVariables();
 
                 expect(
                   shouldCreateRpcServiceEvents({
@@ -281,6 +274,7 @@ describe('shouldCreateRpcServiceEvents', () => {
                 it('returns true', async () => {
                   await withChangesToEnvironmentVariables(() => {
                     process.env.METAMASK_ENVIRONMENT = environment;
+                    setQuicknodeEnvironmentVariables();
                     generateDeterministicRandomNumberMock.mockReturnValue(
                       sampleUserRanking,
                     );
@@ -302,35 +296,29 @@ describe('shouldCreateRpcServiceEvents', () => {
           describe('if the user is not in the MetaMetrics sample', () => {
             const sampleUserRanking = 0.2;
 
-            // @ts-expect-error The Mocha types are incorrect.
-            describe.each(ENDPOINTS_TO_TEST)(
-              'if the endpoint URL is %s',
-              (_description: string, getEndpointUrl: () => string) => {
-                it('returns false', async () => {
-                  await withChangesToEnvironmentVariables(() => {
-                    process.env.METAMASK_ENVIRONMENT = environment;
-                    generateDeterministicRandomNumberMock.mockReturnValue(
-                      sampleUserRanking,
-                    );
+            it('returns false', async () => {
+              await withChangesToEnvironmentVariables(() => {
+                process.env.METAMASK_ENVIRONMENT = environment;
+                generateDeterministicRandomNumberMock.mockReturnValue(
+                  sampleUserRanking,
+                );
 
-                    expect(
-                      shouldCreateRpcServiceEvents({
-                        endpointUrl: getEndpointUrl(),
-                        error,
-                        infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
-                        metaMetricsId: MOCK_METAMETRICS_ID,
-                      }),
-                    ).toBe(false);
-                  });
-                });
-              },
-            );
+                expect(
+                  shouldCreateRpcServiceEvents({
+                    endpointUrl: 'https://example.com',
+                    error,
+                    infuraProjectId: MOCK_METAMASK_INFURA_PROJECT_ID,
+                    metaMetricsId: MOCK_METAMETRICS_ID,
+                  }),
+                ).toBe(false);
+              });
+            });
           });
         },
       );
 
       describe('if the environment is non-production', () => {
-        const environment = ENVIRONMENT.DEVELOPMENT;
+        const environment = 'development';
 
         // @ts-expect-error The Mocha types are incorrect.
         describe.each(ENDPOINTS_TO_TEST)(
@@ -339,6 +327,7 @@ describe('shouldCreateRpcServiceEvents', () => {
             it('returns true', async () => {
               await withChangesToEnvironmentVariables(() => {
                 process.env.METAMASK_ENVIRONMENT = environment;
+                setQuicknodeEnvironmentVariables();
 
                 expect(
                   shouldCreateRpcServiceEvents({
@@ -418,6 +407,23 @@ describe('shouldCreateRpcServiceEvents', () => {
     });
   });
 });
+
+/**
+ * Sets the environment variables that represent all networks that have
+ * Quicknode endpoints.
+ */
+function setQuicknodeEnvironmentVariables() {
+  process.env.QUICKNODE_MAINNET_URL = 'https://example.quicknode.com/mainnet';
+  process.env.QUICKNODE_LINEA_MAINNET_URL =
+    'https://example.quicknode.com/linea-mainnet';
+  process.env.QUICKNODE_ARBITRUM_URL = 'https://example.quicknode.com/arbitrum';
+  process.env.QUICKNODE_AVALANCHE_URL =
+    'https://example.quicknode.com/avalanche';
+  process.env.QUICKNODE_OPTIMISM_URL = 'https://example.quicknode.com/optimism';
+  process.env.QUICKNODE_POLYGON_URL = 'https://example.quicknode.com/polygon';
+  process.env.QUICKNODE_BASE_URL = 'https://example.quicknode.com/base';
+  process.env.QUICKNODE_BSC_URL = 'https://example.quicknode.com/bsc';
+}
 
 /**
  * Ensures that changes to `process.env` during a test get rolled back after a

@@ -15,7 +15,7 @@ import { ENVIRONMENT } from '../../../../development/build/constants';
 const SAMPLING_RATE = 0.01;
 
 /**
- * Environments that are expected to mimic production, or production itself.
+ * Environments that are expected to resemble production, or production itself.
  */
 export const PRODUCTION_LIKE_ENVIRONMENTS = [
   ENVIRONMENT.PRODUCTION,
