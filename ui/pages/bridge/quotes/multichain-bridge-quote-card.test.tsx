@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  QuoteResponse,
   RequestStatus,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
@@ -18,7 +19,7 @@ describe('MultichainBridgeQuoteCard', () => {
     jest.clearAllMocks();
   });
 
-  it('should render the recommended quote', async () => {
+  it('should render the recommended quote (no MM fee)', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         extensionConfig: {
@@ -46,6 +47,83 @@ describe('MultichainBridgeQuoteCard', () => {
         },
         quotesRefreshCount: 1,
         quotes: mockBridgeQuotesErc20Erc20,
+        getQuotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        marketData: {
+          '0xa': {
+            '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
+              currency: 'usd',
+              price: 1,
+            },
+          },
+          '0x89': {
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+              currency: 'usd',
+              price: 0.99,
+            },
+          },
+        },
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+          },
+          POL: {
+            conversionRate: 1,
+            usdConversionRate: 1,
+          },
+        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.OPTIMISM },
+          { chainId: CHAIN_IDS.POLYGON },
+        ),
+      },
+    });
+    const { container } = renderWithProvider(
+      <MultichainBridgeQuoteCard />,
+      configureStore(mockStore),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render a quote with MM fee', async () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        extensionConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+          chains: {
+            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
+            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
+            [CHAIN_IDS.POLYGON]: { isActiveSrc: true, isActiveDest: true },
+          },
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: 1,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: false,
+          srcChainId: 10,
+          destChainId: 137,
+          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          srcTokenAmount: '14000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
+          ...quote,
+          feeData: {
+            ...quote.quote.feeData,
+            metabridge: {
+              amount: '1000000000000000000',
+            },
+          },
+        })),
         getQuotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
