@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
@@ -13,9 +13,15 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getMetaMaskHdKeyrings,
 } from '../../selectors';
 import { BaseUrl } from '../../../shared/constants/urls';
-import { NEW_ACCOUNT_ROUTE } from '../../helpers/constants/routes';
+import { AccountMenu } from '../../components/multichain/account-menu/account-menu';
+import {
+  useMultichainWalletSnapClient,
+  WalletClientType,
+} from '../../hooks/accounts/useMultichainWalletSnapClient';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 const { getExtensionURL } = globalThis.platform;
 
@@ -52,47 +58,72 @@ const getBuyUrl = (
 };
 
 export const NonEvmBalanceCheck = () => {
-  const history = useHistory();
   const location = useLocation();
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
 
   const params = new URLSearchParams(location.search);
-  const chainId = params
-    .get(NonEvmQueryParams.ChainId)
-    ?.toLowerCase() as CaipChainId;
+  const chainId = params.get(NonEvmQueryParams.ChainId) as CaipChainId;
 
   const { assetsWithBalance } = useMultichainBalances();
 
-  const hasAccountForChain = accounts.some((account: InternalAccount) =>
-    account.scopes?.includes(chainId),
-  );
+  const clientType =
+    chainId === MultichainNetworks.SOLANA
+      ? WalletClientType.Solana
+      : WalletClientType.Bitcoin;
+
+  const walletClient = useMultichainWalletSnapClient(clientType);
+
+  const hasAccountForChain = accounts.some((account: InternalAccount) => {
+    console.log({
+      chainId,
+      accountScopes: account.scopes,
+      hasScope: account.scopes.includes(chainId),
+    });
+    return account.scopes.includes(chainId);
+  });
+
+  const handleCreateAccount = useCallback(async () => {
+    try {
+      await walletClient.createAccount(
+        {
+          scope: chainId,
+          entropySource: primaryKeyring.metadata.id,
+        },
+        {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        },
+      );
+    } catch (error) {
+      console.error(`Error creating ${clientType} account:`, error);
+    }
+  }, [chainId, clientType, primaryKeyring.metadata.id, walletClient]);
 
   useEffect(() => {
     if (!chainId) {
       return;
     }
 
-    if (!hasAccountForChain) {
-      history.push(NEW_ACCOUNT_ROUTE);
-      return;
+    if (hasAccountForChain) {
+      const hasPositiveBalance = assetsWithBalance.some(
+        (asset) =>
+          asset.chainId === chainId && asset.balance && asset.balance !== '0',
+      );
+
+      window.location.href = hasPositiveBalance
+        ? getSwapUrl(chainId)
+        : getBuyUrl(
+            chainId,
+            metaMetricsId,
+            isMetaMetricsEnabled,
+            isMarketingEnabled,
+          );
     }
-
-    const hasPositiveBalance = assetsWithBalance.some(
-      (asset) =>
-        asset.chainId === chainId && asset.balance && asset.balance !== '0',
-    );
-
-    window.location.href = hasPositiveBalance
-      ? getSwapUrl(chainId)
-      : getBuyUrl(
-          chainId,
-          metaMetricsId,
-          isMetaMetricsEnabled,
-          isMarketingEnabled,
-        );
   }, [
     chainId,
     assetsWithBalance,
@@ -102,6 +133,17 @@ export const NonEvmBalanceCheck = () => {
     hasAccountForChain,
     accounts,
   ]);
+
+  if (!hasAccountForChain) {
+    return (
+      <AccountMenu
+        onClose={() => {
+          // Just close the modal, account creation will be handled by AccountMenu
+        }}
+        showAccountCreation={true}
+      />
+    );
+  }
 
   return null;
 };
