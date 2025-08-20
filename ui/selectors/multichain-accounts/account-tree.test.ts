@@ -11,7 +11,7 @@ import { createMockInternalAccount } from '../../../test/jest/mocks';
 
 import {
   getAccountTree,
-  getAccountGroups,
+  getAllAccountGroups,
   getAccountGroupWithInternalAccounts,
   getCaip25AccountIdToMultichainAccountGroupMap,
   getCaip25IdByAccountGroupAndScope,
@@ -20,13 +20,16 @@ import {
   getMultichainAccountGroupById,
   getMultichainAccountGroups,
   getMultichainAccountsToScopesMap,
-  getNonMultichainAccountGroups,
+  getSingleAccountGroups,
   getSelectedAccountGroup,
   getWalletIdAndNameByAccountAddress,
   getWalletsWithAccounts,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
-import { createMockMultichainAccountsState, createEmptyState } from './utils';
+import {
+  createMockMultichainAccountsState,
+  createEmptyState,
+} from './test-utils';
 
 describe('Multichain Accounts Selectors', () => {
   // Test data constants
@@ -624,9 +627,9 @@ describe('Multichain Accounts Selectors', () => {
     });
   });
 
-  describe('getAccountGroups', () => {
+  describe('getAllAccountGroups', () => {
     it('returns all account groups from all wallets', () => {
-      const result = getAccountGroups(typedMockState);
+      const result = getAllAccountGroups(typedMockState);
 
       expect(result).toHaveLength(5);
       expect(result.map((group) => group.id)).toEqual([
@@ -639,7 +642,7 @@ describe('Multichain Accounts Selectors', () => {
     });
 
     it('returns groups with correct types', () => {
-      const result = getAccountGroups(typedMockState);
+      const result = getAllAccountGroups(typedMockState);
 
       const groupTypes = result.map((group) => group.type);
       expect(groupTypes).toContain('multichain-account');
@@ -648,7 +651,7 @@ describe('Multichain Accounts Selectors', () => {
 
     it('returns empty array when no wallets exist', () => {
       const emptyState = createEmptyState();
-      const result = getAccountGroups(emptyState);
+      const result = getAllAccountGroups(emptyState);
 
       expect(result).toEqual([]);
     });
@@ -706,9 +709,9 @@ describe('Multichain Accounts Selectors', () => {
     });
   });
 
-  describe('getNonMultichainAccountGroups', () => {
+  describe('getSingleAccountGroups', () => {
     it('returns only non-entropy account groups', () => {
-      const result = getNonMultichainAccountGroups(typedMockState);
+      const result = getSingleAccountGroups(typedMockState);
 
       expect(result).toHaveLength(3);
       expect(
@@ -755,7 +758,7 @@ describe('Multichain Accounts Selectors', () => {
           selectedAccount: '',
         },
       );
-      const result = getNonMultichainAccountGroups(stateWithoutEntropy);
+      const result = getSingleAccountGroups(stateWithoutEntropy);
 
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe('keyring:Test/address');

@@ -2992,9 +2992,6 @@
   "learnMoreAboutPrivacy": {
     "message": "Tìm hiểu thêm về các cách thức bảo mật tốt nhất."
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Tìm hiểu thêm về tài khoản Solana"
-  },
   "learnMoreKeystone": {
     "message": "Tìm hiểu thêm"
   },
@@ -3753,9 +3750,6 @@
   },
   "notEnoughGas": {
     "message": "Không đủ phí gas"
-  },
-  "notNow": {
-    "message": "Không phải bây giờ"
   },
   "notificationDetail": {
     "message": "Chi tiết"
@@ -5698,27 +5692,6 @@
   "solanaAccountRequired": {
     "message": "Cần có tài khoản Solana để kết nối với trang web này."
   },
-  "solanaImportAccounts": {
-    "message": "Nhập tài khoản Solana"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Nhập Cụm từ khôi phục bí mật để di chuyển tài khoản Solana từ một ví khác."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Nhiều tính năng khác sẽ sớm ra mắt"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFT, hỗ trợ ví cứng, v.v. sẽ sớm ra mắt."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana trên MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Gửi, nhận và hoán đổi token"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Chuyển tiền và giao dịch bằng các token như SOL, USDC, v.v."
-  },
   "someNetworks": {
     "message": "$1 mạng"
   },
@@ -7042,9 +7015,6 @@
   },
   "viewOnOpensea": {
     "message": "Xem trên Opensea"
-  },
-  "viewSolanaAccount": {
-    "message": "Xem tài khoản Solana"
   },
   "viewTransaction": {
     "message": "Xem giao dịch"

@@ -30,7 +30,6 @@ import {
   ConsolidatedWallets,
   MultichainAccountGroupScopeToCaipAccountId,
   MultichainAccountGroupToScopesMap,
-  MultichainAccountId,
   MultichainAccountsState,
 } from './account-tree.types';
 
@@ -261,6 +260,13 @@ export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
   },
 );
 
+/**
+ * Retrieve a multichain account group by its ID.
+ *
+ * @param accountTree - Account tree state.
+ * @param accountId - The account group ID to find.
+ * @returns The multichain account group object, or undefined if not found.
+ */
 export const getMultichainAccountGroupById = createDeepEqualSelector(
   getAccountTree,
   (_, accountId: AccountGroupId) => accountId,
@@ -274,7 +280,13 @@ export const getMultichainAccountGroupById = createDeepEqualSelector(
   },
 );
 
-export const getAccountGroups = createDeepEqualSelector(
+/**
+ * Retrieve all account groups from all wallets in the account tree.
+ *
+ * @param accountTree - Account tree state.
+ * @returns Array of all account groups.
+ */
+export const getAllAccountGroups = createDeepEqualSelector(
   getAccountTree,
   (accountTree: AccountTreeState) => {
     const { wallets } = accountTree;
@@ -285,8 +297,14 @@ export const getAccountGroups = createDeepEqualSelector(
   },
 );
 
+/**
+ * Retrieve all multichain account groups (filtered by Entropy wallet type).
+ *
+ * @param accountGroups - Array of all account groups.
+ * @returns Array of multichain account groups.
+ */
 export const getMultichainAccountGroups = createDeepEqualSelector(
-  getAccountGroups,
+  getAllAccountGroups,
   (accountGroups: AccountGroupObject[]) => {
     return accountGroups.filter((group) =>
       group.id.startsWith(AccountWalletType.Entropy),
@@ -294,8 +312,14 @@ export const getMultichainAccountGroups = createDeepEqualSelector(
   },
 );
 
-export const getNonMultichainAccountGroups = createDeepEqualSelector(
-  getAccountGroups,
+/**
+ * Retrieve all non-multichain account groups (filtered to exclude Entropy wallet type).
+ *
+ * @param accountGroups - Array of all account groups.
+ * @returns Array of non-multichain account groups.
+ */
+export const getSingleAccountGroups = createDeepEqualSelector(
+  getAllAccountGroups,
   (accountGroups: AccountGroupObject[]) => {
     return accountGroups.filter(
       (group) => !group.id.startsWith(AccountWalletType.Entropy),
@@ -303,9 +327,16 @@ export const getNonMultichainAccountGroups = createDeepEqualSelector(
   },
 );
 
+/**
+ * Create a map from CAIP-25 account IDs to multichain account group IDs.
+ *
+ * @param accountGroups - Array of all account groups.
+ * @param internalAccounts - Array of internal accounts.
+ * @returns Map from CAIP-25 account IDs to multichain account group IDs.
+ */
 export const getCaip25AccountIdToMultichainAccountGroupMap =
   createDeepEqualSelector(
-    getAccountGroups,
+    getAllAccountGroups,
     getInternalAccounts,
     (
       accountGroups: AccountGroupObject[],
@@ -313,7 +344,7 @@ export const getCaip25AccountIdToMultichainAccountGroupMap =
     ) => {
       const caip25AccountIdToMultichainAccountGroupMap: Map<
         CaipAccountId,
-        MultichainAccountId
+        AccountGroupId
       > = new Map();
       accountGroups.forEach((accountGroup) => {
         accountGroup.accounts.forEach((accountId) => {
@@ -336,8 +367,15 @@ export const getCaip25AccountIdToMultichainAccountGroupMap =
     },
   );
 
+/**
+ * Retrieve account groups with their internal accounts populated.
+ *
+ * @param accountGroups - Array of all account groups.
+ * @param internalAccounts - Array of internal accounts.
+ * @returns Array of account groups with internal accounts instead of account IDs.
+ */
 export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
-  getAccountGroups,
+  getAllAccountGroups,
   getInternalAccounts,
   (
     accountGroups: AccountGroupObject[],
@@ -361,6 +399,13 @@ export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
   },
 );
 
+/**
+ * Create a map from multichain account group IDs to their scope mappings.
+ *
+ * @param multichainAccounts - Array of multichain account groups.
+ * @param internalAccounts - Array of internal accounts.
+ * @returns Map from multichain account group IDs to scope-to-CAIP account ID mappings.
+ */
 export const getMultichainAccountsToScopesMap = createDeepEqualSelector(
   getMultichainAccountGroups,
   getInternalAccounts,
@@ -403,6 +448,14 @@ export const getMultichainAccountsToScopesMap = createDeepEqualSelector(
   },
 );
 
+/**
+ * Get the CAIP-25 account ID for a specific account group and scope.
+ *
+ * @param multichainAccountsToScopesMap - Map of multichain account groups to their scopes.
+ * @param accountGroup - The account group to search in.
+ * @param scope - The CAIP chain ID scope to find.
+ * @returns The CAIP-25 account ID, or undefined if not found.
+ */
 export const getCaip25IdByAccountGroupAndScope = createDeepEqualSelector(
   getMultichainAccountsToScopesMap,
   (_, accountGroup: AccountGroupObject, scope: CaipChainId) => ({
@@ -426,6 +479,13 @@ export const getCaip25IdByAccountGroupAndScope = createDeepEqualSelector(
   },
 );
 
+/**
+ * Get account groups filtered by the provided scopes.
+ *
+ * @param accountGroupsWithInternalAccounts - Array of account groups with internal accounts.
+ * @param scopes - Array of scope strings to filter by.
+ * @returns Array of account groups that match the provided scopes.
+ */
 export const getAccountGroupsByScopes = createDeepEqualSelector(
   getAccountGroupWithInternalAccounts,
   (_, scopes: string[]) => scopes,
