@@ -6728,6 +6728,14 @@ export default class MetamaskController extends EventEmitter {
       securityAlertsEnabled:
         this.preferencesController.state?.securityAlertsEnabled,
       updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
+      getSecurityAlertResponse:
+        this.appStateController.getAddressSecurityAlertResponse.bind(
+          this.appStateController,
+        ),
+      addSecurityAlertResponse:
+        this.appStateController.addAddressSecurityAlertResponse.bind(
+          this.appStateController,
+        ),
       ...otherParams,
     };
   }

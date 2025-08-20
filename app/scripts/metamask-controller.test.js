@@ -577,6 +577,8 @@ describe('MetaMaskController', () => {
           ppomController: expect.any(Object),
           securityAlertsEnabled: expect.any(Boolean),
           updateSecurityAlertResponse: expect.any(Function),
+          getSecurityAlertResponse: expect.any(Function),
+          addSecurityAlertResponse: expect.any(Function),
         });
       });
       it('passes through any additional params to the object', () => {
