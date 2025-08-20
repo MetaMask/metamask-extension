@@ -1029,7 +1029,7 @@ export default class MetamaskController extends EventEmitter {
     this.tokenBalancesController = new TokenBalancesController({
       messenger: tokenBalancesMessenger,
       state: initState.TokenBalancesController,
-      useAccountsAPI: true,
+      useAccountsAPI: false,
       queryMultipleAccounts:
         this.preferencesController.state.useMultiAccountBalanceChecker,
       interval: 30000,
