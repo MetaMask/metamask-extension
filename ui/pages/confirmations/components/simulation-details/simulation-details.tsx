@@ -4,7 +4,7 @@ import {
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
@@ -465,15 +465,14 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         {staticRows.map((staticRow, index) => (
-          <>
+          <Fragment key={index}>
             <BalanceChangeList
-              key={index}
               heading={staticRow.label}
               balanceChanges={staticRow.balanceChanges}
               labelColor={getAlertTextColors(selectedAlertSeverity)}
             />
             <BalanceChangesAlert transactionId={transactionId} />
-          </>
+          </Fragment>
         ))}
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}
