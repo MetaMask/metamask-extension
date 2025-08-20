@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page, expect } from '@playwright/test';
 
 const SEED_PHRASE =
   'ancient cloth onion decline gloom air scare addict action exhaust neck auto';
@@ -48,10 +48,28 @@ export class SignUpPage {
   readonly skipSrpBackupBtn: Locator;
 
   readonly popOverBtn: Locator;
+  readonly termsCheckbox: Locator;
+  readonly termsLabel: Locator;
+  readonly dialog: Locator;
+  readonly scrollControl: Locator;
+  readonly agreeButton: Locator;
+  readonly importWithSrpButton: Locator;
+  readonly importWalletButton: Locator;
+  readonly textarea: Locator;
+  readonly continueButton: Locator;
+  readonly checkBox: Locator;
+  readonly completionDone: Locator;
+  readonly qrContinue: Locator;
+  readonly metametricsContinue: Locator;
+  readonly createPasswordButton: Locator;
+  readonly createPasswordLabel: Locator;
+  readonly confirmPasswordLabel: Locator;
+
 
   constructor(page: Page) {
     this.page = page;
-    this.getStartedBtn = page.locator('button:has-text("Get started")');
+    this.dialog = page.getByRole('dialog');
+    this.getStartedBtn = page.getByTestId('onboarding-get-started-button');
     this.createWalletBtn = page.getByTestId('onboarding-create-wallet');
     this.importWalletBtn = page.locator(
       'button:has-text("Import an existing wallet")',
@@ -59,8 +77,18 @@ export class SignUpPage {
     this.confirmSecretBtn = page.locator(
       'button:has-text("Confirm Secret Recovery Phrase")',
     );
+    this.importWithSrpButton = page.locator('button:has-text("Import using Secret Recovery Phrase")');
+    this.importWalletButton = page.locator('button:has-text("I have an existing wallet")');
+    this.textarea = page.locator('[data-testid="srp-import__srp-note"], form textarea, textarea[rows]');
+    this.continueButton = page.locator('[data-testid="srp-import__continue"], button:has-text("Continue")');
+    this.termsCheckbox = page.locator('[data-testid="onboarding-terms-checkbox"], #terms-of-use__checkbox, input[type="checkbox"]');
+    this.termsLabel = page.locator('label[for="terms-of-use__checkbox"], [data-testid="onboarding-terms-checkbox"] + label');
+    this.scrollControl = page.locator('[data-testid="terms-of-use-scroll-button"], [data-testid="terms-of-use-scroll"]');
+    this.agreeButton = page.locator('[data-testid="terms-of-use-agree-button"], button:has-text("Agree"), button:has-text("I agree")');
+    this.createPasswordButton = page.locator('button:has-text("Create password")');
+    this.createPasswordLabel = page.getByLabel(/Create new password/i);
+    this.confirmPasswordLabel = page.getByLabel(/Confirm password/i);
     this.metametricsBtn = page.getByTestId('metametrics-no-thanks');
-    this.agreeBtn = page.locator('button:has-text("I agree")');
     this.createPasswordBtn = page.getByTestId('create-password-wallet');
     this.noThanksBtn = page.locator('button:has-text("No thanks")');
     this.passwordTxt = page.getByTestId('create-password-new');
@@ -77,9 +105,53 @@ export class SignUpPage {
     this.agreeBtn = page.locator('button:has-text("I agree")');
     this.enableBtn = page.locator('button:has-text("Enable")');
     this.popOverBtn = page.getByTestId('popover-close');
+    this.checkBox = page.getByRole('checkbox');
+    this.completionDone = page.locator('[data-testid="onboarding-complete-done"], [data-testid="onboarding-completion-done"], button:has-text("Done")');
+    this.qrContinue = page.locator('[data-testid="onboarding-download-app-continue"], [data-testid="onboarding-qr-continue"], button:has-text("Continue")');
+    this.metametricsContinue = page.locator('[data-testid="metametrics-i-agree"], button:has-text("I agree")');
   }
 
-  async importWallet() {
+  async createPassword(password: string): Promise<void> {
+    await this.createPasswordLabel.fill(password);
+    await this.confirmPasswordLabel.fill(password);
+    await this.agreePasswordTermsCheck.click();
+    await this.createPasswordButton.click();
+  }
+
+  async clickGetStarted(): Promise<void> {
+    await this.getStartedBtn.waitFor({ state: 'visible', timeout: 10000 });
+    await this.getStartedBtn.click({ timeout: 3000 });
+  }
+
+  async clickScrollAndAgreeTermsOfUse(): Promise<void> {
+    await this.dialog.first().waitFor({ state: 'visible', timeout: 15000 });
+    await this.scrollControl.first().click();
+    await this.checkBox.first().check({ force: true });
+    const agree = this.agreeButton.first();
+    await agree.waitFor({ state: 'visible', timeout: 15000 });
+    await expect(agree).toBeEnabled({ timeout: 15000 });
+    await agree.click();
+  }
+
+  async importExistingWallet(): Promise<void> {
+    await this.importWalletButton.first().waitFor({ state: 'visible', timeout: 15000 });
+    await this.importWalletButton.first().click();
+    await this.importWithSrpButton.first().click({ timeout: 10000 }).catch(() => {});
+  }
+
+  async pasteSrp(phrase: string): Promise<void> {
+    await this.textarea.first().waitFor({ state: 'visible', timeout: 15000 });
+    const ta = this.textarea.first();
+    await ta.click();
+    await this.page.keyboard.press('Meta+a');
+    await this.page.keyboard.press('Delete');
+    await this.page.keyboard.type(phrase, { delay: 20 });
+    await this.continueButton.first().waitFor({ state: 'visible', timeout: 10000 });
+    await expect(this.continueButton.first()).toBeEnabled({ timeout: 15000 });
+    await this.continueButton.first().click();
+  }
+
+  async importWallet(): Promise<void> {
     await this.agreeTandCCheck.click();
     await this.importWalletBtn.click();
     await this.agreeBtn.click();
@@ -99,7 +171,7 @@ export class SignUpPage {
     await this.doneBtn.click();
   }
 
-  async createWallet() {
+  async createWallet(): Promise<void> {
     await this.agreeTandCCheck.click();
     await this.createWalletBtn.click();
     await this.metametricsBtn.click();
@@ -113,5 +185,21 @@ export class SignUpPage {
     await this.gotItBtn.click();
     await this.doneBtn.click();
     await this.popOverBtn.click();
+  }
+
+  async clickContinue(): Promise<void> {
+    await this.qrContinue.first().scrollIntoViewIfNeeded().catch(() => {});
+    await this.qrContinue.first().click({ timeout: 2000 }).catch(() => {});
+  }
+
+  async clickCompletion(): Promise<void> {
+    await this.completionDone.first().scrollIntoViewIfNeeded().catch(() => {});
+    await this.completionDone.first().click({ timeout: 2000 }).catch(() => {});
+  }
+
+  async clickMetric(): Promise<void> {
+    await this.checkBox.first().uncheck({ force: true });
+    await this.metametricsContinue.first().scrollIntoViewIfNeeded().catch(() => {});
+    await this.metametricsContinue.first().click().catch(() => {});
   }
 }

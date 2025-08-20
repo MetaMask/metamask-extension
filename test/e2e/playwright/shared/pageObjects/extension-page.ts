@@ -13,11 +13,33 @@ export class ChromeExtensionPage {
       launchOptions.args.push('--headless=new');
     }
     const context = await chromium.launchPersistentContext('', launchOptions);
-    await context.newPage();
     await context.waitForEvent('page');
-    const pages = context.pages();
-    const page = pages[pages.length - 1]; // return last tab
-    await page.waitForSelector('text=/I agree to MetaMask/');
+
+    // Prefer the extension onboarding page if it opened automatically
+    let page = context
+      .pages()
+      .find(
+        (p) =>
+          p.url().startsWith('chrome-extension://') &&
+          p.url().includes('/home.html#onboarding/welcome'),
+      );
+
+    // Fallback: use the last tab if no extension tab found yet
+    if (!page) {
+      const pages = context.pages();
+      page = pages[pages.length - 1];
+    }
+
+    // Close any about:blank tabs to avoid multiple windows
+    for (const p of context.pages()) {
+      if (p !== page && p.url() === 'about:blank') {
+        try {
+          await p.close();
+        } catch {}
+      }
+    }
+
+    await page.waitForSelector('[data-testid="onboarding-get-started-button"]');
     return page;
   }
 }
