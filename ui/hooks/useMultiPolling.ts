@@ -45,6 +45,7 @@ const useMultiPolling = <PollingInput>(
       for (const token of pollingTokens.current.values()) {
         usePollingOptions.stopPollingByPollingToken(token);
       }
+      pollingTokens.current.clear();
     };
   }, []);
 };
