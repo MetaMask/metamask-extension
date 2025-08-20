@@ -36,10 +36,14 @@ export const useTokenDisplayInfo = ({
   const locale = useSelector(getIntlLocale);
   const tokenChainImage = getImageForChainId(token.chainId);
   const selectedAccount = useSelector(getSelectedAccount);
-  const showFiat = useMultichainSelector(
-    makeGetMultichainShouldShowFiatByChainId(token.chainId),
-    selectedAccount,
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
   );
+  const showFiat =
+    useMultichainSelector(
+      makeGetMultichainShouldShowFiatByChainId(token.chainId),
+      selectedAccount,
+    ) || isMultichainAccountsState2Enabled;
 
   const isTestnet = useSelector(getIsTestnet);
 
@@ -48,56 +52,6 @@ export const useTokenDisplayInfo = ({
 
   const shouldShowFiat =
     showFiat && (isMainnet || (isTestnet && showFiatInTestnets));
-
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
-  if (isMultichainAccountsState2Enabled) {
-    if (isEvm) {
-      const isEvmMainnet = token.chainId
-        ? isChainIdMainnet(token.chainId)
-        : false;
-
-      const tokenData = Object.values(tokenList).find(
-        (tokenToFind) =>
-          isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&
-          isEqualCaseInsensitive(tokenToFind.address, token.address),
-      );
-
-      const title =
-        tokenData?.name ||
-        (token.chainId === '0x1' && token.symbol === 'ETH'
-          ? 'Ethereum'
-          : token.chainId &&
-            erc20TokensByChain?.[token.chainId]?.data?.[
-              token.address.toLowerCase()
-            ]?.name) ||
-        token.symbol;
-
-      const tokenImage =
-        tokenData?.iconUrl ||
-        (token.chainId &&
-          erc20TokensByChain?.[token.chainId]?.data?.[
-            token.address.toLowerCase()
-          ]?.iconUrl) ||
-        token.image;
-
-      return {
-        title,
-        tokenImage,
-        isStakeable: isEvmMainnet && token.isNative,
-        tokenChainImage: tokenChainImage as string,
-      } as TokenDisplayInfo;
-    }
-
-    return {
-      title: token.title,
-      tokenImage: token.image,
-      isStakeable: false,
-      tokenChainImage: token.image as string,
-    } as TokenDisplayInfo;
-  }
 
   const secondaryThreshold = 0.01;
 
@@ -131,9 +85,10 @@ export const useTokenDisplayInfo = ({
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
 
   const isStakeable =
-    token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
+    token.isStakeable ||
+    (isEvmMainnet && (isEvm || token.type === 'evm') && token.isNative);
 
-  if (isEvm) {
+  if (isEvm || (isMultichainAccountsState2Enabled && token.type === 'evm')) {
     const tokenData = Object.values(tokenList).find(
       (tokenToFind) =>
         isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&

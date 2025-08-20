@@ -49,7 +49,8 @@ export const TokenCellSecondaryDisplay = React.memo(
       rpcUrl,
     );
 
-    const showScamWarning = token.isNative && !isOriginalNativeToken && isEvm;
+    const showScamWarning =
+      token.isNative && !isOriginalNativeToken && isEvm && token.type === 'evm';
 
     const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 

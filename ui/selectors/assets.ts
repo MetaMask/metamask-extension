@@ -526,6 +526,7 @@ export const getAllAssetsForSelectedAccountGroup = createDeepEqualSelector(
     balances: metamask.balances,
     conversionRates: metamask.conversionRates,
     currentCurrency: metamask.currentCurrency,
+    networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
     accountsByChainId: metamask.accountsByChainId,
   }),
   (assetListState: AssetListState) =>

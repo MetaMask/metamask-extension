@@ -63,13 +63,6 @@ export default function TokenCell({
     fixCurrencyToUSD,
   });
 
-  if (token.chainId.includes('solana')) {
-    console.log('SADKJHDSAJKH XXXXX', {
-      token,
-      tokenDisplayInfo,
-    });
-  }
-
   const displayToken = useMemo(
     () => ({
       ...token,

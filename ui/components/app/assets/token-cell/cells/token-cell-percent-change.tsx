@@ -2,7 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { CaipAssetType, Hex } from '@metamask/utils';
-import { getMarketData } from '../../../../../selectors';
+import {
+  getIsMultichainAccountsState2Enabled,
+  getMarketData,
+} from '../../../../../selectors';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import { TokenFiatDisplayInfo } from '../../types';
 import { PercentageChange } from '../../../../multichain/token-list-item/price/percentage-change';
@@ -17,6 +20,25 @@ export const TokenCellPercentChange = React.memo(
     const isEvm = useSelector(getMultichainIsEvm);
     const multiChainMarketData = useSelector(getMarketData);
     const nonEvmConversionRates = useSelector(getAssetsRates);
+    const isMultichainAccountsState2Enabled = useSelector(
+      getIsMultichainAccountsState2Enabled,
+    );
+
+    if (isMultichainAccountsState2Enabled) {
+      const tokenPercentageChange =
+        token.type === 'evm'
+          ? multiChainMarketData?.[token.chainId]?.[token.assetId as string]
+              ?.pricePercentChange1d
+          : nonEvmConversionRates?.[token.assetId as CaipAssetType]?.marketData
+              ?.pricePercentChange?.P1D;
+
+      return (
+        <PercentageChange
+          value={tokenPercentageChange}
+          address={token.assetId as `0x${string}` | CaipAssetType}
+        />
+      );
+    }
 
     const tokenAddress =
       token.isNative && isEvm
@@ -28,6 +50,18 @@ export const TokenCellPercentChange = React.memo(
           ?.pricePercentChange1d
       : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData
           ?.pricePercentChange?.P1D;
+
+    if (
+      token.isNative &&
+      (token.chainId === '0x1' || token.type === 'multichain')
+    ) {
+      console.log('TOKEN INFO', {
+        token,
+        tokenAddress,
+        tokenPercentageChange,
+        isEvm,
+      });
+    }
 
     return (
       <PercentageChange value={tokenPercentageChange} address={tokenAddress} />

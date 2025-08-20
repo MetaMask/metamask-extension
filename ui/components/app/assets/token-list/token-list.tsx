@@ -33,9 +33,6 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
-import { formatWithThreshold } from '../util/formatWithThreshold';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -73,8 +70,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
-  const locale = useSelector(getIntlLocale);
-  const currentCurrency = useSelector(getCurrentCurrency);
 
   const networksToShow = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
@@ -83,61 +78,56 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   }, [enabledNetworksByNamespace, networkFilter]);
 
   const sortedFilteredTokens = useMemo(() => {
-    if (isMultichainAccountsState2Enabled) {
-      const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
-        ([chainId, assets]) => {
-          if (
-            isEvm &&
-            chainId.startsWith('0x') &&
-            !Object.entries(networksToShow)
-              .filter(([_, shouldShow]) => shouldShow)
-              .map(([networkKey]) => networkKey)
-              .includes(chainId)
-          ) {
-            return [];
-          }
-
-          return assets.map((asset) => ({
-            ...asset,
-            primary: formatWithThreshold(
-              Number(asset.balance),
-              0.00001,
-              locale,
-              {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 5,
-              },
-            ),
-            secondary: asset.fiatBalance
-              ? formatWithThreshold(Number(asset.fiatBalance), 0.01, locale, {
-                  style: 'currency',
-                  currency: currentCurrency.toUpperCase(),
-                })
-              : undefined,
-            tokenFiatAmount: asset.fiatBalance,
-          }));
+    if (!isMultichainAccountsState2Enabled) {
+      const balances = isEvm ? evmBalances : multichainAssets;
+      const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
+        {
+          key: 'chainId',
+          opts: isEvm ? networksToShow : { [currentNetwork.chainId]: true },
+          filterCallback: 'inclusive',
         },
-      );
+      ]);
 
-      const accountAssets = sortAssets(
-        [...accountAssetsPreSort],
-        tokenSortConfig,
-      );
-
-      return accountAssets;
+      return sortAssets([...filteredAssets], tokenSortConfig);
     }
 
-    const balances = isEvm ? evmBalances : multichainAssets;
-    const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
-      {
-        key: 'chainId',
-        opts: isEvm ? networksToShow : { [currentNetwork.chainId]: true },
-        filterCallback: 'inclusive',
-      },
-    ]);
+    const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
+      ([chainId, assets]) => {
+        if (
+          chainId.startsWith('0x') &&
+          !Object.entries(networksToShow)
+            .filter(([_, shouldShow]) => shouldShow)
+            .map(([networkKey]) => networkKey)
+            .includes(chainId)
+        ) {
+          return [];
+        }
 
-    // sort filtered tokens based on the tokenSortConfig in state
-    return sortAssets([...filteredAssets], tokenSortConfig);
+        return assets.map((asset) => {
+          const token: TokenWithFiatAmount = {
+            ...asset,
+            // TODO: When state2 flag is permanently on, this can be refactored and removed
+            tokenFiatAmount: asset.fiat?.balance,
+            primary: '',
+            secondary: null,
+            title: '',
+            address:
+              'address' in asset ? asset.address : (asset.assetId as Hex),
+            chainId: asset.chainId as Hex,
+          };
+
+          return token;
+        });
+      },
+    );
+
+    const accountAssets = sortAssets(
+      [...accountAssetsPreSort],
+      tokenSortConfig,
+    );
+
+    return accountAssets;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isEvm,
@@ -152,12 +142,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     newTokensImported,
   ]);
 
-  console.log('sdkjkjdsahkjsdaKJHSADhkjdsahjkSDAJK', {
-    XXXX: sortedFilteredTokens.find((token) =>
-      token.chainId.includes('solana'),
-    ),
-    multichainAssets,
-  });
+  console.log('SORTED TOKEN LIST', sortedFilteredTokens);
 
   useEffect(() => {
     if (sortedFilteredTokens) {

@@ -57,6 +57,8 @@ export type TokenWithFiatAmount = Token &
   TokenBalanceValues & {
     isStakeable?: boolean;
     title: string;
+    type?: 'evm' | 'multichain';
+    assetId?: string;
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;
