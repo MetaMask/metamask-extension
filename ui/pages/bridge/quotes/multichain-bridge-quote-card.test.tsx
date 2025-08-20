@@ -117,10 +117,14 @@ describe('MultichainBridgeQuoteCard', () => {
         quotesRefreshCount: 1,
         quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
           ...quote,
-          feeData: {
-            ...quote.quote.feeData,
-            metabridge: {
-              amount: '1000000000000000000',
+          quote: {
+            ...quote.quote,
+            feeData: {
+              ...quote.quote.feeData,
+              metabridge: {
+                ...quote.quote.feeData.metabridge,
+                amount: '1000000000000000000',
+              },
             },
           },
         })),

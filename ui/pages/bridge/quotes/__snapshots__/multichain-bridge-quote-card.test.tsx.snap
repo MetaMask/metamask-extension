@@ -39,7 +39,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
-          1 USDC = 0.999 USDC
+          1 USDC = &lt;0.000001 USDC
         </p>
       </div>
       <div
@@ -149,7 +149,9 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        />
+        >
+          Rate includes 0.875% fee
+        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         >
