@@ -32,6 +32,7 @@ import {
 import SortControl, { SelectableListItem } from '../sort-control/sort-control';
 import {
   BackgroundColor,
+  BorderColor,
   Display,
   JustifyContent,
   TextColor,
@@ -281,11 +282,13 @@ const AssetListControlBar = ({
         : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
+    // NOTE - a little lazy here with this evalution
+    // We could have: enabledNetworks if selected > 1; allNetworks if equal to all active popular networks
     if (
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworksByNamespace).length > 1
     ) {
-      return t('enabledNetworks');
+      return t('allNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&
@@ -308,8 +311,8 @@ const AssetListControlBar = ({
   return (
     <Box
       className="asset-list-control-bar"
-      marginLeft={2}
-      marginRight={2}
+      marginLeft={4}
+      marginRight={4}
       ref={popoverRef}
     >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
@@ -332,6 +335,7 @@ const AssetListControlBar = ({
           }
           color={TextColor.textDefault}
           marginRight={isFullScreen ? 2 : null}
+          borderColor={BorderColor.borderDefault}
           ellipsis
         >
           {networkButtonText}
