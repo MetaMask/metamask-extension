@@ -14,7 +14,7 @@ import { useSendType } from './useSendType';
 type AccountWithBalances = Record<Hex, { balance: Hex }>;
 type TokenBalances = Record<Hex, Record<Hex, Record<Hex, Hex>>>;
 type MetamaskSendStata = {
-  metamask: { accountsByChainId: any };
+  metamask: { accountsByChainId: Record<Hex, AccountWithBalances> };
 };
 export type GetEvmBalanceArgs = {
   accountsWithBalances?: AccountWithBalances;
@@ -48,9 +48,9 @@ export const getEvmBalance = ({
   const tokenBalance = (
     Object.values(tokenBalances[from as Hex]).find(
       (chainTokenBalances: Record<Hex, Hex>) =>
-        chainTokenBalances[asset?.address as Hex],
+        chainTokenBalances?.[asset?.address as Hex],
     ) as Record<Hex, Hex>
-  )[asset?.address as Hex];
+  )?.[asset?.address as Hex];
 
   return formatToFixedDecimals(
     toTokenMinimalUnit(tokenBalance, asset.decimals),
@@ -77,6 +77,7 @@ export const useBalance = () => {
     if (asset?.chainId && asset?.address && isEvmAddress(asset?.address)) {
       return accountsByChainId[toHex(asset?.chainId)];
     }
+    return undefined;
   }, [accountsByChainId, asset?.chainId]);
 
   const balance = useMemo(() => {

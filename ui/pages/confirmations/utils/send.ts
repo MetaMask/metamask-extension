@@ -50,7 +50,7 @@ export function formatToFixedDecimals(
   if (val.isZero()) {
     return '0';
   }
-  let decimals = parseInt(decimalsToShow?.toString());
+  let decimals = parseInt(decimalsToShow?.toString(), 10);
   decimals = decimals < 5 ? decimals : 5;
 
   const minVal = 1 / Math.pow(10, decimals);
@@ -64,7 +64,7 @@ export function formatToFixedDecimals(
   }
 
   return `${strValueArr[0]}.${strValueArr[1].slice(0, decimals)}`.replace(
-    /\.?0+$/,
+    /\.?0+$/u,
     '',
   );
 }
