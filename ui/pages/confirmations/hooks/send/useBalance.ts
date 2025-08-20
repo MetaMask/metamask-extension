@@ -1,25 +1,27 @@
-import { ERC1155 } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
+import { ERC1155, toHex } from '@metamask/controller-utils';
+import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { isNativeAddress } from '@metamask/bridge-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getMetaMaskAccountBalances } from '../../../../selectors';
 import { getTokenBalances } from '../../../../ducks/metamask/metamask';
 import { Asset } from '../../types/send';
 import { formatToFixedDecimals, toTokenMinimalUnit } from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 
-type AccountWithBalances = Record<Hex, { address: Hex; balance: Hex }>;
+type AccountWithBalances = Record<Hex, { balance: Hex }>;
 type TokenBalances = Record<Hex, Record<Hex, Record<Hex, Hex>>>;
-
-export interface GetEvmBalanceArgs {
-  accountsWithBalances: AccountWithBalances;
+type MetamaskSendStata = {
+  metamask: { accountsByChainId: any };
+};
+export type GetEvmBalanceArgs = {
+  accountsWithBalances?: AccountWithBalances;
   asset?: Asset;
   from: string;
   tokenBalances: TokenBalances;
-}
+};
 
 export const getEvmBalance = ({
   accountsWithBalances,
@@ -31,6 +33,9 @@ export const getEvmBalance = ({
     return '0';
   }
   if (isNativeAddress(asset.address)) {
+    if (!accountsWithBalances) {
+      return '0';
+    }
     const accountAddress = Object.keys(accountsWithBalances).find(
       (address) => address.toLowerCase() === from.toLowerCase(),
     ) as Hex;
@@ -62,12 +67,17 @@ export const getNonEvmBalance = (asset?: Asset) => {
 };
 
 export const useBalance = () => {
-  const accountsWithBalances = useSelector(
-    getMetaMaskAccountBalances,
-  ) as AccountWithBalances;
-  const tokenBalances = useSelector(getTokenBalances);
   const { asset, from } = useSendContext();
+  const tokenBalances = useSelector(getTokenBalances);
   const { isEvmSendType } = useSendType();
+  const accountsByChainId = useSelector(
+    (state: MetamaskSendStata) => state.metamask.accountsByChainId,
+  ) as AccountWithBalances;
+  const accountsWithBalances = useMemo(() => {
+    if (asset?.chainId && asset?.address && isEvmAddress(asset?.address)) {
+      return accountsByChainId[toHex(asset?.chainId)];
+    }
+  }, [accountsByChainId, asset?.chainId]);
 
   const balance = useMemo(() => {
     if (asset?.standard === ERC1155) {
