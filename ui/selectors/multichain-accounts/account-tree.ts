@@ -411,7 +411,7 @@ export const getCaip25AccountIdToMultichainAccountGroupMap =
       ) => {
         // Add wildcard mapping
         caip25AccountIdToAccountGroupMap.set(
-          `${KnownCaipNamespace.Eip155}:${address}` as CaipAccountId,
+          `${KnownCaipNamespace.Eip155}:0:${address}` as CaipAccountId,
           accountGroupId,
         );
         // Add specific chain mappings
