@@ -41,14 +41,54 @@ export const createBridgeMockStore = ({
   } = createSwapsMockStore();
   const { internalAccounts: tokenInternalAccounts, ...tokenData } =
     mockTokenData;
+  const {
+    internalAccounts: internalAccountsOverrides,
+    ...metamaskStateOverridesWithoutAccounts
+  } = metamaskStateOverrides;
   const internalAccounts = {
     selectedAccount:
-      metamaskStateOverrides?.internalAccounts?.selectedAccount ??
+      internalAccountsOverrides?.selectedAccount ??
       swapsMetamask.internalAccounts.selectedAccount,
     accounts: {
       ...swapsMetamask.internalAccounts.accounts,
       ...tokenInternalAccounts.accounts,
-      ...(metamaskStateOverrides?.internalAccounts?.accounts ?? {}),
+      ...(internalAccountsOverrides?.accounts ?? {}),
+      'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
+        type: 'solana:data-account',
+        id: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+        address: 'ABCDEu4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
+        options: {
+          scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          derivationPath: "m/44'/501'/0'/0'",
+          entropySource: '01K2FF18CTTXJYD34R78X4N1N1',
+          synchronize: true,
+          index: 0,
+          entropy: {
+            type: 'mnemonic',
+            id: '01K2FF18CTTXJYD34R78X4N1N1',
+            groupIndex: 0,
+            derivationPath: "m/44'/501'/0'/0'",
+          },
+        },
+        scopes: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+          'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+        ],
+        metadata: {
+          name: 'Solana Account 1',
+          importTime: 1755013234384,
+          keyring: {
+            type: 'Snap Keyring',
+          },
+          snap: {
+            id: 'npm:@metamask/solana-wallet-snap',
+            name: 'Solana',
+            enabled: true,
+          },
+          lastSelected: 1755717637857,
+        },
+      },
     },
   };
   return {
@@ -126,6 +166,7 @@ export const createBridgeMockStore = ({
                 accounts: [
                   'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                   '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+                  'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
                 ],
               },
               'entropy:01K2FF18CTTXJYD34R78X4N1N1/1': {
@@ -147,8 +188,8 @@ export const createBridgeMockStore = ({
         selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
       ...tokenData,
-      ...metamaskStateOverrides,
-      ...internalAccounts,
+      ...metamaskStateOverridesWithoutAccounts,
+      internalAccounts,
       ...{
         ...getDefaultBridgeControllerState(),
         remoteFeatureFlags: {
