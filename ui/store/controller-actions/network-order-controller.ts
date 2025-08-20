@@ -8,6 +8,7 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../shared/constants/network';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors';
 import { setEnabledNetworks } from '../actions';
@@ -44,7 +45,9 @@ export function enableSingleNetwork(
 
     // EVM
     if (namespace === KnownCaipNamespace.Eip155) {
-      dispatch(setEnabledNetworks([chainId], KnownCaipNamespace.Eip155));
+      dispatch(
+        setEnabledNetworks([toHex(reference)], KnownCaipNamespace.Eip155),
+      );
       return;
     }
 

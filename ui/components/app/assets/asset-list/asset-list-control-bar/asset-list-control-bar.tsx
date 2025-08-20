@@ -286,8 +286,7 @@ const AssetListControlBar = ({
         : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
-    // NOTE - a little lazy here with this evalution
-    // We could have: enabledNetworks if selected > 1; allNetworks if equal to all active popular networks
+    // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworksByNamespace).length > 1
