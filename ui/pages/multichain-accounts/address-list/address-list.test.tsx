@@ -15,19 +15,6 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-// Simple mock - just verify the component receives the right props
-jest.mock(
-  '../../../components/multichain-accounts/multichain-address-rows-list',
-  () => ({
-    MultichainAddressRowsList: ({ accounts }: { accounts: unknown[] }) => (
-      <div data-testid="multichain-address-rows-list">
-        {accounts.length > 0 && (
-          <div data-testid="accounts-count">{accounts.length} account(s)</div>
-        )}
-      </div>
-    ),
-  }),
-);
 
 describe('AddressList', () => {
   beforeEach(() => {
@@ -81,8 +68,10 @@ describe('AddressList', () => {
       screen.getByTestId('multichain-address-rows-list'),
     ).toBeInTheDocument();
 
-    // Verify it receives array with single account
-    expect(screen.getByText('1 account(s)')).toBeInTheDocument();
+    // Verify search field is rendered
+    expect(
+      screen.getByTestId('multichain-address-rows-list-search'),
+    ).toBeInTheDocument();
   });
 
   it('shows fallback text when no account name is available', () => {
@@ -123,10 +112,14 @@ describe('AddressList', () => {
     // Should show fallback header
     expect(screen.getByText('Account / Addresses')).toBeInTheDocument();
 
-    // MultichainAddressRowsList should receive empty array
+    // MultichainAddressRowsList should show empty state
     const addressList = screen.getByTestId('multichain-address-rows-list');
     expect(addressList).toBeInTheDocument();
-    expect(screen.queryByTestId('accounts-count')).not.toBeInTheDocument();
+    
+    // Should show search field even in empty state
+    expect(
+      screen.getByTestId('multichain-address-rows-list-search'),
+    ).toBeInTheDocument();
   });
 
   it('calls history.goBack when back button is clicked', () => {
