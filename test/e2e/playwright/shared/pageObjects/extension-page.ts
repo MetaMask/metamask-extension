@@ -33,9 +33,7 @@ export class ChromeExtensionPage {
     // Close any about:blank tabs to avoid multiple windows
     for (const p of context.pages()) {
       if (p !== page && p.url() === 'about:blank') {
-        try {
-          await p.close();
-        } catch {}
+        await p.close();
       }
     }
 
