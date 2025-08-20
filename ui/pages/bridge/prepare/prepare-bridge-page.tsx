@@ -79,7 +79,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
-import { setEnabledNetworks } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
@@ -128,6 +127,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
+import { enableSingleNetwork } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -154,16 +154,7 @@ export const useEnableMissingNetwork = () => {
         if (isPopularNetwork) {
           const isNetworkEnabled = enabledNetworkKeys.includes(chainId);
           if (!isNetworkEnabled) {
-            const enabledEvmNetworks = enabledNetworkKeys.filter((key) =>
-              FEATURED_NETWORK_CHAIN_IDS.includes(key as Hex),
-            );
-            const newNetworkEnabledEvmNetworks = [
-              chainId,
-              ...enabledEvmNetworks,
-            ];
-            dispatch(
-              setEnabledNetworks(newNetworkEnabledEvmNetworks, namespace),
-            );
+            dispatch(enableSingleNetwork(chainId));
           }
         }
       }
