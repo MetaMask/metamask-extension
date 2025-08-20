@@ -6,9 +6,9 @@ import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
 import { SignUpPage } from '../../shared/pageObjects/signup-page';
 
 function getSrp(): string {
-  const srp = process.env.SRP_PHRASE || process.env.SRP || '';
+  const srp = process.env.SMOKE_TEST_SRP;
   if (!srp) {
-    throw new Error('SRP phrase not provided. Set SRP_PHRASE in env to run this test.');
+    throw new Error('Missing SMOKE_TEST_SRP env var');
   }
   return srp;
 }
