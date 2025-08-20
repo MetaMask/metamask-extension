@@ -7594,6 +7594,31 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createEthAccountsMethodMiddleware({
         getAccounts: this.getPermittedAccounts.bind(this, origin),
+        requestUserApproval:
+          this.approvalController.addAndShowApprovalRequest.bind(
+            this.approvalController,
+          ),
+        metamaskState: this.getState(),
+        hasApprovalRequestsForOrigin: () =>
+          this.approvalController.has({ origin }),
+        // Preferences controller methods for Hyperliquid referral consent
+        addReferralApprovedAccount:
+          this.preferencesController.addReferralApprovedAccount.bind(
+            this.preferencesController,
+          ),
+        addReferralPassedAccount:
+          this.preferencesController.addReferralPassedAccount.bind(
+            this.preferencesController,
+          ),
+        addReferralDeclinedAccount:
+          this.preferencesController.addReferralDeclinedAccount.bind(
+            this.preferencesController,
+          ),
+        setAllAccountsReferralApproved:
+          this.preferencesController.setAllAccountsReferralApproved.bind(
+            this.preferencesController,
+          ),
+        getFreshPreferencesState: () => this.preferencesController.state,
       }),
     );
 
@@ -7683,6 +7708,24 @@ export default class MetamaskController extends EventEmitter {
         ),
         hasApprovalRequestsForOrigin: () =>
           this.approvalController.has({ origin }),
+        // Preferences controller methods for Hyperliquid referral consent
+        addReferralApprovedAccount:
+          this.preferencesController.addReferralApprovedAccount.bind(
+            this.preferencesController,
+          ),
+        addReferralPassedAccount:
+          this.preferencesController.addReferralPassedAccount.bind(
+            this.preferencesController,
+          ),
+        addReferralDeclinedAccount:
+          this.preferencesController.addReferralDeclinedAccount.bind(
+            this.preferencesController,
+          ),
+        setAllAccountsReferralApproved:
+          this.preferencesController.setAllAccountsReferralApproved.bind(
+            this.preferencesController,
+          ),
+        getFreshPreferencesState: () => this.preferencesController.state,
       }),
     );
 
