@@ -5449,9 +5449,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@file:/Users/bergarces/repos/consensys/metamask-core/packages/assets-controllers::locator=metamask-crx%40workspace%3A.":
+"@metamask/assets-controllers@npm:^74.0.0":
   version: 74.0.0
-  resolution: "@metamask/assets-controllers@file:/Users/bergarces/repos/consensys/metamask-core/packages/assets-controllers#/Users/bergarces/repos/consensys/metamask-core/packages/assets-controllers::hash=995a56&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/assets-controllers@npm:74.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5495,7 +5495,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/6acdc111ab74e6024d93971e9bdc5d2850b579aa34158c85606fa8c7f6331ec8249837d72b3be3f2c9d83c2d0745c2b4e106984b215a41c756f0a4b5f825d22d
+  checksum: 10/ab0ae5db50b2dfc2299b3b1e428f36c2fabac6087b022068006fcdf1837ac9e5f3ca50e5162abda995f5a25c91eb8de490b8668bb3d97b0edfd24e099f7392d9
   languageName: node
   linkType: hard
 
@@ -31947,7 +31947,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "file:/Users/bergarces/repos/consensys/metamask-core/packages/assets-controllers"
+    "@metamask/assets-controllers": "npm:^74.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.19.0"
