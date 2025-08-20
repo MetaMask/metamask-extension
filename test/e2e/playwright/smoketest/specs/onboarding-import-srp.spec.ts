@@ -1,7 +1,7 @@
 /* eslint-disable */
 // Playwright smoketest: New onboarding flow + import existing SRP
 
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
 import { SignUpPage } from '../../shared/pageObjects/signup-page';
 
@@ -21,7 +21,7 @@ test('MetaMask Onboarding: Import existing SRP via new flow', async () => {
   await signUp.clickCompletion();
   await signUp.clickContinue();
   await signUp.clickCompletion();
-  await expect(page.getByTestId('account-menu-icon')).toBeVisible();
+  await signUp.assertWalletVisible();
 });
 
 

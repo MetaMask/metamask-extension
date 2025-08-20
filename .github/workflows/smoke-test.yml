@@ -35,12 +35,11 @@ jobs:
       - name: Build extension dist
         run: yarn dist
 
-      - name: Run smoketest (headless)
+      - name: Run smoketest (xvfb)
         env:
           CI: 'true'
-          PLAYWRIGHT_HEADLESS: '1'
         run: |
-          yarn playwright test --project=smoketest
+          xvfb-run -a yarn playwright test --project=smoketest
 
       - name: Upload Playwright HTML report
         if: always()
@@ -77,12 +76,11 @@ jobs:
       - name: Build extension dist
         run: yarn dist
 
-      - name: Run smoketest (headless)
+      - name: Run smoketest (xvfb)
         env:
           CI: 'true'
-          PLAYWRIGHT_HEADLESS: '1'
         run: |
-          yarn playwright test --project=smoketest
+          xvfb-run -a yarn playwright test --project=smoketest
 
       - name: Upload Playwright HTML report
         if: always()
@@ -90,4 +88,3 @@ jobs:
         with:
           name: playwright-report-pr
           path: public/playwright/playwright-reports/html
-
