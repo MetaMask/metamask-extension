@@ -295,6 +295,21 @@ export const getToAccounts = createSelector(
   },
 );
 
+export const getToAccount = createSelector(
+  [getFromAccount, getToChain, (state) => state],
+  (fromAccount, toChain, state): InternalAccount | null => {
+    // For swaps, always use the currently selected account
+    if (!toChain) {
+      return fromAccount;
+    }
+    // For bridges, use the appropriate account type for the destination chain
+    return getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      formatChainIdToCaip(toChain.chainId),
+    );
+  },
+);
+
 const _getFromNativeBalance = createSelector(
   getFromChain,
   (state: BridgeAppState) => state.bridge.fromNativeBalance,
