@@ -1,3 +1,4 @@
+import { EthScope } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 export const mockTokenData = {
@@ -46,6 +47,7 @@ export const mockTokenData = {
         metadata: {
           lastSelected: 1755717637857,
         },
+        scopes: [EthScope.Eoa],
       },
     },
   },
