@@ -3004,9 +3004,6 @@
   "learnMoreAboutPrivacy": {
     "message": "Obtenga más información sobre las mejores prácticas de privacidad."
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Obtenga más información sobre las cuentas de Solana"
-  },
   "learnMoreKeystone": {
     "message": "Más información"
   },
@@ -3765,9 +3762,6 @@
   },
   "notEnoughGas": {
     "message": "No hay gas suficiente"
-  },
-  "notNow": {
-    "message": "Ahora no"
   },
   "notificationDetail": {
     "message": "Detalles"
@@ -5710,27 +5704,6 @@
   "solanaAccountRequired": {
     "message": "Se requiere una cuenta de Solana para conectarse a este sitio."
   },
-  "solanaImportAccounts": {
-    "message": "Importar cuentas de Solana"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Importe una frase secreta de recuperación para migrar su cuenta de Solana desde otro monedero."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Próximamente habrá más funciones"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Próximamente, compatibilidad con NFT, monederos físicos y más."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana en MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Envíe, reciba e intercambie tokens"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Transfiera y realice transacciones con tokens como SOL, USDC y más."
-  },
   "someNetworks": {
     "message": "$1 redes"
   },
@@ -7054,9 +7027,6 @@
   },
   "viewOnOpensea": {
     "message": "Ver en Opensea"
-  },
-  "viewSolanaAccount": {
-    "message": "Ver cuenta de Solana"
   },
   "viewTransaction": {
     "message": "Ver transacción"
