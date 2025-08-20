@@ -1,5 +1,10 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import {
+  AccountGroupId,
+  AccountGroupType,
+  AccountWalletType,
+} from '@metamask/account-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
@@ -15,16 +20,46 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-
 describe('AddressList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  const renderComponent = (selectedAccount = MOCK_ACCOUNT_EOA) => {
+  const renderComponent = (
+    selectedAccount = MOCK_ACCOUNT_EOA,
+    groupName = 'Test Account',
+  ) => {
+    const groupId = 'test-group-id' as AccountGroupId;
+
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
+        accountTree: {
+          wallets: {
+            'test-wallet': {
+              id: 'test-wallet',
+              type: AccountWalletType.Entropy,
+              groups: {
+                [groupId]: {
+                  id: groupId,
+                  type: AccountGroupType.MultichainAccount,
+                  accounts: [selectedAccount.id],
+                  metadata: {
+                    name: groupName,
+                    entropy: { groupIndex: 0 },
+                    pinned: false,
+                    hidden: false,
+                  },
+                },
+              },
+              metadata: {
+                name: 'Test Wallet',
+                entropy: { id: 'test' },
+              },
+            },
+          },
+          selectedAccountGroup: groupId,
+        },
         internalAccounts: {
           ...mockState.metamask.internalAccounts,
           accounts: {
@@ -51,14 +86,16 @@ describe('AddressList', () => {
       ...MOCK_ACCOUNT_EOA,
       metadata: {
         ...MOCK_ACCOUNT_EOA.metadata,
-        name: 'Test Account',
+        name: 'Individual Account',
       },
     };
 
-    renderComponent(mockAccount);
+    renderComponent(mockAccount, 'Test Multichain Account');
 
-    // Check header shows account name
-    expect(screen.getByText('Test Account / Addresses')).toBeInTheDocument();
+    // Check header shows group name (not individual account name)
+    expect(
+      screen.getByText('Test Multichain Account / Addresses'),
+    ).toBeInTheDocument();
 
     // Check back button is present
     expect(screen.getByLabelText('Back')).toBeInTheDocument();
@@ -74,27 +111,32 @@ describe('AddressList', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows fallback text when no account name is available', () => {
+  it('shows fallback text when no group name is available', () => {
     const mockAccount = {
       ...MOCK_ACCOUNT_EOA,
       metadata: {
         ...MOCK_ACCOUNT_EOA.metadata,
-        name: '',
+        name: 'Individual Account Name',
       },
     };
 
-    renderComponent(mockAccount);
+    renderComponent(mockAccount, ''); // Empty group name
 
     expect(screen.getByText('Account / Addresses')).toBeInTheDocument();
   });
 
-  it('handles empty state when no account is selected', () => {
+  it('handles empty state when no account group is selected', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
+        accountTree: {
+          wallets: {},
+          selectedAccountGroup: null as unknown as AccountGroupId,
+        },
         internalAccounts: {
           ...mockState.metamask.internalAccounts,
-          selectedAccount: null,
+          accounts: {},
+          selectedAccount: '',
         },
       },
       localeMessages: {
@@ -115,7 +157,7 @@ describe('AddressList', () => {
     // MultichainAddressRowsList should show empty state
     const addressList = screen.getByTestId('multichain-address-rows-list');
     expect(addressList).toBeInTheDocument();
-    
+
     // Should show search field even in empty state
     expect(
       screen.getByTestId('multichain-address-rows-list-search'),

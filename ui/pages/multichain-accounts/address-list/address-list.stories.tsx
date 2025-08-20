@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter, Route } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { CaipChainId } from '@metamask/utils';
+import { AccountGroupId, AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import { AddressList } from './address-list';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -28,18 +29,49 @@ const Wrapper: React.FC<WrapperProps> = ({
   </MemoryRouter>
 );
 
-const createMockState = (selectedAccount = MOCK_ACCOUNT_EOA) => ({
-  ...mockState,
-  metamask: {
-    ...mockState.metamask,
-    internalAccounts: {
-      ...mockState.metamask.internalAccounts,
-      selectedAccount: selectedAccount.id,
-      accounts: {
-        [selectedAccount.id]: selectedAccount,
+const createMockState = (accounts = [MOCK_ACCOUNT_EOA], groupName = 'Test Multichain Account') => {
+  const groupId = 'test-group-id' as AccountGroupId;
+  const accountsById = accounts.reduce((acc, account) => {
+    acc[account.id] = account;
+    return acc;
+  }, {} as Record<string, any>);
+
+  return {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      accountTree: {
+        wallets: {
+          'test-wallet': {
+            id: 'test-wallet',
+            type: AccountWalletType.Entropy,
+            groups: {
+              [groupId]: {
+                id: groupId,
+                type: AccountGroupType.MultichainAccount,
+                accounts: accounts.map(account => account.id),
+                metadata: {
+                  name: groupName,
+                  entropy: { groupIndex: 0 },
+                  pinned: false,
+                  hidden: false,
+                },
+              },
+            },
+            metadata: {
+              name: 'Test Wallet',
+              entropy: { id: 'test' },
+            },
+          },
+        },
+        selectedAccountGroup: groupId,
       },
-    },
-    remoteFeatureFlags: {
+      internalAccounts: {
+        ...mockState.metamask.internalAccounts,
+        selectedAccount: accounts[0]?.id || '',
+        accounts: accountsById,
+      },
+      remoteFeatureFlags: {
       ...mockState.metamask.remoteFeatureFlags,
       addSolanaAccount: true,
       addBitcoinAccount: true,
@@ -101,7 +133,8 @@ const createMockState = (selectedAccount = MOCK_ACCOUNT_EOA) => ({
       },
     },
   },
-});
+  };
+};
 
 const meta: Meta<typeof AddressList> = {
   title: 'Pages/MultichainAccounts/AddressList',
@@ -116,97 +149,29 @@ const meta: Meta<typeof AddressList> = {
 export default meta;
 type Story = StoryObj<typeof AddressList>;
 
-export const EthereumAccount: Story = {
+export const Default: Story = {
   decorators: [
     (Story) => {
-      const selectedAccount = {
+      const evmAccount = {
         ...MOCK_ACCOUNT_EOA,
+        id: 'evm-multichain',
+        metadata: { ...MOCK_ACCOUNT_EOA.metadata, name: 'EVM Account' },
         scopes: ['eip155:*'] as CaipChainId[],
       };
-      const store = mockStore(createMockState(selectedAccount));
-      return (
-        <Provider store={store}>
-          <Wrapper>
-            <Story />
-          </Wrapper>
-        </Provider>
-      );
-    },
-  ],
-};
-
-export const SolanaAccount: Story = {
-  decorators: [
-    (Story) => {
-      const selectedAccount = {
+      const solanaAccount = {
         ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        id: 'solana-multichain',
+        metadata: { ...MOCK_ACCOUNT_SOLANA_MAINNET.metadata, name: 'Solana Account' },
         scopes: ['solana:*'] as CaipChainId[],
       };
-      const store = mockStore(createMockState(selectedAccount));
-      return (
-        <Provider store={store}>
-          <Wrapper>
-            <Story />
-          </Wrapper>
-        </Provider>
-      );
-    },
-  ],
-};
-
-export const BitcoinAccount: Story = {
-  decorators: [
-    (Story) => {
-      const selectedAccount = {
+      const bitcoinAccount = {
         ...MOCK_ACCOUNT_BIP122_P2WPKH,
+        id: 'bitcoin-multichain',
+        metadata: { ...MOCK_ACCOUNT_BIP122_P2WPKH.metadata, name: 'Bitcoin Account' },
         scopes: ['bip122:*'] as CaipChainId[],
       };
-      const store = mockStore(createMockState(selectedAccount));
-      return (
-        <Provider store={store}>
-          <Wrapper>
-            <Story />
-          </Wrapper>
-        </Provider>
-      );
-    },
-  ],
-};
-
-export const SpecificNetworkAccount: Story = {
-  decorators: [
-    (Story) => {
-      const selectedAccount = {
-        ...MOCK_ACCOUNT_EOA,
-        id: 'polygon-account',
-        metadata: { ...MOCK_ACCOUNT_EOA.metadata, name: 'Polygon Account' },
-        scopes: ['eip155:137'] as CaipChainId[], // Only Polygon network
-      };
-      const store = mockStore(createMockState(selectedAccount));
-      return (
-        <Provider store={store}>
-          <Wrapper>
-            <Story />
-          </Wrapper>
-        </Provider>
-      );
-    },
-  ],
-};
-
-export const MultiNetworkAccount: Story = {
-  decorators: [
-    (Story) => {
-      const selectedAccount = {
-        ...MOCK_ACCOUNT_EOA,
-        id: 'multi-network',
-        metadata: {
-          ...MOCK_ACCOUNT_EOA.metadata,
-          name: 'Multi-Network Account',
-        },
-        scopes: ['eip155:1', 'eip155:137', 'eip155:42161'] as CaipChainId[], // Ethereum, Polygon, Arbitrum
-      };
-      const store = mockStore(createMockState(selectedAccount));
+      
+      const store = mockStore(createMockState([evmAccount, solanaAccount, bitcoinAccount], 'Full Multichain Account'));
       return (
         <Provider store={store}>
           <Wrapper>

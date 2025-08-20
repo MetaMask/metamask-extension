@@ -17,15 +17,22 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import {
+  getInternalAccountsFromSelectedGroup,
+  getSelectedAccountGroup,
+  getMultichainAccountGroupById,
+} from '../../../selectors/multichain-accounts/account-tree';
 
 export const AddressList = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-
-  // MultichainAddressRowsList expects an array of accounts
-  const accounts = selectedAccount ? [selectedAccount] : [];
+  const accounts = useSelector(getInternalAccountsFromSelectedGroup);
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const accountGroup = useSelector((state) =>
+    selectedAccountGroup
+      ? getMultichainAccountGroupById(state, selectedAccountGroup)
+      : null,
+  );
 
   return (
     <Page className="max-w-[600px]">
@@ -42,7 +49,7 @@ export const AddressList = () => {
           />
         }
       >
-        {selectedAccount?.metadata?.name || t('account')} / {t('addresses')}
+        {accountGroup?.metadata?.name || t('account')} / {t('addresses')}
       </Header>
       <Content className="p-0">
         <Box flexDirection={BoxFlexDirection.Column}>
