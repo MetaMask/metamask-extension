@@ -11,6 +11,12 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+  AvatarBaseShape,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BlockSize,
@@ -23,9 +29,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -204,15 +207,19 @@ export const AppHeaderUnlockedContent = ({
 
     return (
       <>
-        <AvatarAccount
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
-          }
-          address={internalAccount.address}
-          size={AvatarAccountSize.Md}
-        />
+        {!isMultichainAccountsState2Enabled && (
+          // TODO: Remove this once we are using PreferredAvatar
+          <AvatarAccount
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
+            address={internalAccount.address}
+            size={AvatarAccountSize.Md}
+            shape={AvatarBaseShape.Circle}
+          />
+        )}
         {internalAccount && (
           <Text
             as="div"
@@ -240,7 +247,7 @@ export const AppHeaderUnlockedContent = ({
               paddingLeft={2}
               paddingRight={2}
             />
-            <>{CopyButton}</>
+            <>{!isMultichainAccountsState2Enabled && CopyButton}</>
           </Text>
         )}
       </>

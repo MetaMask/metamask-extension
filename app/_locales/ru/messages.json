@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Если проблема не устранена, перезапустите MetaMask.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "Загрузка занимает больше времени, чем обычно.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Ошибка"
   },
@@ -175,6 +183,9 @@
     "message": "Добавить счет $1",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Добавить счет или кошелек"
+  },
   "addAccountToMetaMask": {
     "message": "Добавить счет в MetaMask"
   },
@@ -306,6 +317,9 @@
   "address": {
     "message": "Адрес"
   },
+  "addressCopied": {
+    "message": "Адрес скопирован"
+  },
   "addressMismatch": {
     "message": "Несоответствие адреса сайта"
   },
@@ -316,6 +330,10 @@
   "addressMismatchPunycode": {
     "message": "Версия пьюникода: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "Адреса",
+    "description": "Multichain account menu item for linking to addresses page"
   },
   "advanced": {
     "message": "Дополнительно"
@@ -414,6 +432,12 @@
   "alertMessageNoGasPrice": {
     "message": "Мы не сможем продолжить эту транзакцию, пока вы не обновите комиссию вручную."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Идентифицирован как вредоносный. Рекомендуем не взаимодействовать с этим сайтом."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Идентифицирован как подозрительный. Рекомендуем не взаимодействовать с этим сайтом."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "Сайт, отправляющий запрос, не является сайтом, на который вы входите. Это может быть попыткой украсть ваши учетные данные."
   },
@@ -455,6 +479,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Оценка комиссии недоступна"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Вредоносный сайт"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Подозрительный сайт"
   },
   "alertReasonPendingTransactions": {
     "message": "Ожидается транзакция"
@@ -883,6 +913,21 @@
   },
   "bridgeNetCost": {
     "message": "Чистая стоимость"
+  },
+  "bridgePriceImpact": {
+    "message": "Влияние на цену"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "Влияние на цену отражает, как ваш своп-ордер влияет на рыночную цену актива. Если у вас недостаточно средств для оплаты газа, часть вашего исходного токена автоматически выделяется на покрытие комиссий, что уменьшает сумму обмена. MetaMask не влияет на цену и не контролирует влияние на нее."
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "Влияние на цену отражает, как ваш своп-ордер влияет на рыночную цену актива. Оно зависит от объёма сделки и доступной ликвидности в пуле. MetaMask не влияет на цену и не контролирует влияние на нее."
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Влияние на цену"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "Предупреждение о влиянии на цену"
   },
   "bridgeQuoteExpired": {
     "message": "Срок действия Вашей котировки истек."
@@ -1438,6 +1483,12 @@
   "connectionRequest": {
     "message": "Запрос подключения"
   },
+  "connectionsRemovedModalDescription": {
+    "message": "Некоторые подключения (например, аппаратные кошельки и snaps) были удалены из-за отсутствия активности на этом устройстве. Вы можете добавить их снова в любое время в Настройках."
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "Соединения удалены"
+  },
   "contactUs": {
     "message": "Свяжитесь с нами"
   },
@@ -1928,8 +1979,23 @@
   "downArrow": {
     "message": "стрелка «вниз»"
   },
+  "downloadAppDescription": {
+    "message": "Возьмите MetaMask с собой куда угодно благодаря мобильному приложению. Кроме того, включите Face ID, чтобы у вас всегда был доступ, даже если вы забудете пароль."
+  },
+  "downloadAppTitle": {
+    "message": "Отсканировать QR-код и скачать приложение"
+  },
   "downloadGoogleChrome": {
     "message": "Скачать Google Chrome"
+  },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Face ID в нашем приложении позволяет войти, даже если вы забыли пароль. Берите MetaMask с собой куда угодно!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Отсканируйте этот QR-код, чтобы начать."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Скачайте наше мобильное приложение"
   },
   "downloadNow": {
     "message": "Скачать сейчас"
@@ -2211,6 +2277,10 @@
     "message": "Код: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
+  "errorDetails": {
+    "message": "Сведения об ошибке",
+    "description": "Label for the error details field in the error screen."
+  },
   "errorGettingSafeChainList": {
     "message": "Ошибка при получении списка безопасных блокчейнов. Продолжайте с осторожностью."
   },
@@ -2415,7 +2485,7 @@
     "message": "биометрия включена"
   },
   "forgotPasswordSocialStep2": {
-    "message": "Если у вас есть ваш $1, вы можете сбросить текущий кошелек и заново импортировать его с помощью $1.",
+    "message": "Если у вас есть ваш $1, вы можете сбросить текущий кошелек и заново импортировать его с помощью секретной фразы для восстановления.",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
@@ -2701,6 +2771,13 @@
   },
   "importAccountMsg": {
     "message": "Импортированные счета не будут связаны с вашей секретной фразой для восстановления MetaMask. Узнайте больше об импортированных счетах"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "Импортированные закрыте ключи сохраняются в вашем счете и автоматически синхронизируются при входе с помощью того же аккаунта Google или Apple."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 о том, как работают импортированные ключи",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "Импорт NFT"
@@ -2992,9 +3069,6 @@
   "learnMoreAboutPrivacy": {
     "message": "Узнайте больше о лучших методах обеспечения конфиденциальности."
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Узнайте больше о счетах Solana"
-  },
   "learnMoreKeystone": {
     "message": "Подробнее"
   },
@@ -3042,6 +3116,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Входные данные транзакции Ethereum недостаточно подробно заполнены."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "У нас возникли проблемы с подключением к Ledger. Ознакомьтесь с нашим "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " о том, как подключить аппаратный кошелек, а затем попробуйте снова."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger больше не поддерживает Firefox, поэтому вам, возможно, придется использовать другой браузер."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "руководством"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox не поддерживается"
   },
   "ledgerLiveApp": {
     "message": "приложение Ledger Live"
@@ -3480,6 +3569,9 @@
   "networkIsBusy": {
     "message": "Сеть занята. Цены газа высоки, а оценки менее точны."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "Должна быть включена хотя бы одна сеть"
+  },
   "networkMenu": {
     "message": "Сетевое меню"
   },
@@ -3697,6 +3789,9 @@
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
   },
+  "noDeFiPositions": {
+    "message": "Не можете найти то, что ищете?"
+  },
   "noDomainResolution": {
     "message": "Разрешение для домена не предоставлено."
   },
@@ -3705,6 +3800,9 @@
   },
   "noNFTs": {
     "message": "Пока нет NFT"
+  },
+  "noNetworksAvailable": {
+    "message": "Нет доступных сетей"
   },
   "noNetworksFound": {
     "message": "По заданному поисковому запросу сети не найдены"
@@ -3753,9 +3851,6 @@
   },
   "notEnoughGas": {
     "message": "Недостаточно газа"
-  },
-  "notNow": {
-    "message": "Не сейчас"
   },
   "notificationDetail": {
     "message": "Подробности"
@@ -4075,7 +4170,7 @@
     "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
-    "message": "Продолжить с секретной фразой для восстановления"
+    "message": "Использовать секретную фразу для восстановления"
   },
   "onboardingSrpImport": {
     "message": "Импорт с помощью секретной фразы для восстановления"
@@ -4166,7 +4261,7 @@
     "message": "Пароль"
   },
   "passwordChangedRecently": {
-    "message": "Ваш пароль изменен"
+    "message": "Ваш пароль был изменен"
   },
   "passwordChangedRecentlyDescription": {
     "message": "Введите новый пароль, чтобы остаться в MetaMask."
@@ -4182,6 +4277,9 @@
     "message": "Надежный пароль может повысить безопасность вашего кошелька в случае кражи или взлома вашего устройства."
   },
   "passwordTermsWarning": {
+    "message": "Если я забуду этот пароль, MetaMask не сможет восстановить его для меня."
+  },
+  "passwordTermsWarningSocial": {
     "message": "Если я забуду этот пароль, я навсегда потеряю доступ к своему кошельку. MetaMask не сможет его восстановить."
   },
   "passwordToggleHide": {
@@ -4509,6 +4607,10 @@
   "personalAddressDetected": {
     "message": "Обнаружен личный адрес. Введите адрес контракта токена."
   },
+  "pin": {
+    "message": "Закрепить",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "Закрепить вверху"
   },
@@ -4591,6 +4693,9 @@
   },
   "proposedApprovalLimit": {
     "message": "Предлагаемый лимит одобрения"
+  },
+  "protocolNotSupported": {
+    "message": "Возможно, мы ещё не поддерживаем ваш протокол."
   },
   "provide": {
     "message": "Предоставить"
@@ -4799,6 +4904,10 @@
   "removeSnapDescription": {
     "message": "Это действие удалит snap, его данные и аннулирует предоставленные вам разрешения."
   },
+  "rename": {
+    "message": "Переименовать",
+    "description": "Multichain account menu item for triggering account rename action modal"
+  },
   "replace": {
     "message": "заменить"
   },
@@ -4835,16 +4944,34 @@
     "message": "Сбросить"
   },
   "resetWallet": {
-    "message": "Сбросить кошелек"
+    "message": "Сбросьте свой кошелек"
   },
   "resetWalletSubHeader": {
     "message": "MetaMask не хранит копию вашего пароля. Если у вас возникли проблемы с разблокировкой счета, вам необходимо сбросить настройки кошелька. Вы можете сделать это, введя секретную фразу для восстановления, которую вы использовали при настройке кошелька."
   },
+  "resetWalletSubHeaderSocial": {
+    "message": "MetaMask не сохраняет копию вашего пароля. Если у вас возникли проблемы с разблокировкой счета, вам необходимо сбросить кошелек. Если у вас есть секретная фраза для восстановления, вы можете использовать её, чтобы удалить текущий кошелёк с этого устройства вместе со списком своих счетов."
+  },
   "resetWalletUsingSRP": {
     "message": "Это действие удалит ваш текущий кошелек и секретную фразу для восстановления с этого устройства, а также список счетов, которые вы курировали. После сброса с помощью секретной фразы для восстановления вы увидите список счетов, основанный на секретной фразе для восстановления, которую вы использовали для сброса. Этот новый список будет автоматически включать счета с балансом средств. Вы также сможете получить $1, созданный ранее. Пользовательские счета, которые вы импортировали, должны будут $2, и любые пользовательские токены, которые вы добавили на счет, также должны будут $3."
   },
+  "resetWalletUsingSRPSocial": {
+    "message": "После сброса настроек с помощью секретной фразы для восстановления вы увидите новый список счетов. В нём будут счета с балансом. Вы можете вернуть $1, заработанный ранее. Но вам нужно будет вернуть импортированные $2 и $3. "
+  },
+  "resetWalletUsingSRPSocialAccounts": {
+    "message": "повторно добавьте любые другие счета"
+  },
+  "resetWalletUsingSRPSocialCustomAccounts": {
+    "message": "пользовательские счета"
+  },
+  "resetWalletUsingSRPSocialCustomTokens": {
+    "message": "пользовательские токены"
+  },
   "resetWalletWarning": {
     "message": "Прежде чем продолжить, убедитесь, что вы используете правильную секретную фразу для восстановления. Вы не сможете отменить это."
+  },
+  "resetWalletWarningSocial": {
+    "message": "Перед сбросом настроек убедитесь, что вы используете правильную секретную фразу для восстановления. Это действие нельзя будет отменить."
   },
   "restartMetamask": {
     "message": "Перезапустить MetaMask"
@@ -4968,6 +5095,9 @@
   "searchAccounts": {
     "message": "Поиск счетов"
   },
+  "searchNetworks": {
+    "message": "Поиск сетей"
+  },
   "searchNfts": {
     "message": "Поиск NFT"
   },
@@ -5055,7 +5185,7 @@
     "message": "Включено"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Этот адрес эл. почты и ваш пароль MetaMask помогут восстановить ваш счет и фразы для восстановления.",
+    "message": "Используйте свой логин $1 и пароль MetaMask для восстановления своего счета и секретных фраз для восстановления.",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
@@ -5347,6 +5477,12 @@
   "simulationErrorMessageV2": {
     "message": "Мы не смогли оценить размер платы за газ. В контракте может быть ошибка, и эта транзакция может завершиться неудачно."
   },
+  "simulationSettingsModalEnforceSlippage": {
+    "message": "Допуск проскальзывания"
+  },
+  "simulationSettingsModalEnforceSlippageDescription": {
+    "message": "Установите удобную для вас разницу для изменения баланса. Транзакции не пройдут, если разница будет больше."
+  },
   "simulationSettingsModalEnforceToggle": {
     "message": "Внедрить изменения баланса"
   },
@@ -5416,6 +5552,12 @@
   "slideDebitCardTitle": {
     "message": "Дебетовая карта MetaMask"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Берите кошелек с собой везде"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Скачать MetaMask mobile"
+  },
   "slideFundWalletDescription": {
     "message": "Добавьте или переведите токены, чтобы начать"
   },
@@ -5446,6 +5588,15 @@
   "slideSweepStakeTitle": {
     "message": "Примите участие в розыгрыше USDC на $5000!"
   },
+  "slippage": {
+    "message": "Проскальзывание"
+  },
+  "slippageAuto": {
+    "message": "Авто"
+  },
+  "slippageEditAriaLabel": {
+    "message": "Изменить проскальзывание"
+  },
   "smartAccountAccept": {
     "message": "Использовать смарт-счет"
   },
@@ -5472,6 +5623,9 @@
   },
   "smartAccountSameAccount": {
     "message": "Один и тот же счет, более умные функции."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Смарт-счета"
   },
   "smartAccountSplashTitle": {
     "message": "Использовать смарт-счет?"
@@ -5630,6 +5784,9 @@
   "snapResultSuccessDescription": {
     "message": "$1 готово к использованию"
   },
+  "snapUIAccountSelectorTitle": {
+    "message": "Выбрать счет"
+  },
   "snapUIAssetSelectorTitle": {
     "message": "Выбрать актив"
   },
@@ -5697,27 +5854,6 @@
   },
   "solanaAccountRequired": {
     "message": "Для подключения к этому сайту необходим счет Solana."
-  },
-  "solanaImportAccounts": {
-    "message": "Импортировать счета Solana"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Импортируйте секретную фразу для восстановления, чтобы перенести свой счет Solana из другого кошелька."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Скоро появятся другие функции"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Скоро появятся dapps Solana, NFT, поддержка аппаратного кошелька и многое другое."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana в MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Отправляйте, получайте и обменивайте токены"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Выполняйте пеерводы и совершайте транзакции с помощью токенов, таких как SOL, USDC и другие."
   },
   "someNetworks": {
     "message": "Сети $1"
@@ -5863,7 +5999,7 @@
     "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
-    "message": "Вы можете вставить всю свою секретную фразу для восстановления в любое поле",
+    "message": "Вы можете вставить всю секретную фразу для восстановления в любое поле.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
@@ -6569,7 +6705,7 @@
     "message": "Согласиться"
   },
   "termsOfUseAgreeText": {
-    "message": "Я согласен(-на) с Условиями использования, которые применяются к использованию мною MetaMask и всех его функций"
+    "message": "Я согласен(-на) с Условиями использования, которые применяются к использованию мною MetaMask и всех его функций."
   },
   "termsOfUseFooterText": {
     "message": "Прокрутите, чтобы прочитать все разделы"
@@ -6807,6 +6943,12 @@
     "message": "Не удалось подключиться к вашему $1, попробуйте проверить $2 и повторите попытку.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStartingMessage": {
+    "message": "Эта ошибка может быть периодической, поэтому попробуйте перезапустить расширение."
+  },
+  "troubleStartingTitle": {
+    "message": "У MetaMask возникли проблемы с запуском."
+  },
   "tryAgain": {
     "message": "Попробуйте еще раз"
   },
@@ -6894,7 +7036,7 @@
     "message": "Неверный пароль. Попробуйте еще раз."
   },
   "unlockPageTooManyFailedAttempts": {
-    "message": "Слишком много неудачных попыток. Попробуйте еще раз через "
+    "message": "Слишком много попыток. Попробуйте ещё раз через "
   },
   "unpin": {
     "message": "Открепить"
@@ -7014,6 +7156,10 @@
   "viewActivity": {
     "message": "Смотреть активность"
   },
+  "viewAddressOnExplorer": {
+    "message": "Смотреть в $1",
+    "description": "$1 is the block explorer name"
+  },
   "viewAllQuotes": {
     "message": "смотреть все котировки"
   },
@@ -7042,9 +7188,6 @@
   },
   "viewOnOpensea": {
     "message": "Смотреть на OpenSea"
-  },
-  "viewSolanaAccount": {
-    "message": "Смотреть счет Solana"
   },
   "viewTransaction": {
     "message": "Смотреть транзакцию"
