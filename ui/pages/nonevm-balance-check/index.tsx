@@ -7,10 +7,46 @@ import { NonEvmQueryParams } from '../../../shared/lib/deep-links/routes/nonevm'
 import { SWAP_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { RampsMetaMaskEntry } from '../../hooks/ramps/useRamps/useRamps';
-import { getDataCollectionForMarketing, getMetaMetricsId, getParticipateInMetaMetrics } from '../../selectors';
+import {
+  getDataCollectionForMarketing,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
+} from '../../selectors';
 import { BaseUrl } from '../../../shared/constants/urls';
 
 const { getExtensionURL } = globalThis.platform;
+
+const getSwapUrl = (chainId: CaipChainId): string => {
+  const query = new URLSearchParams();
+  query.set('sourceToken', chainId);
+  query.set(BridgeQueryParams.SWAPS, 'true');
+  return getExtensionURL(SWAP_ROUTE, query.toString());
+};
+
+const getBuyUrl = (
+  chainId: CaipChainId,
+  metaMetricsId: string | null,
+  isMetaMetricsEnabled: boolean,
+  isMarketingEnabled: boolean,
+): string => {
+  const buyParams = new URLSearchParams();
+  buyParams.set('metamaskEntry', RampsMetaMaskEntry.BuySellButton);
+  buyParams.set('chainId', chainId);
+
+  if (metaMetricsId) {
+    buyParams.set('metametricsId', metaMetricsId);
+  }
+
+  buyParams.set('metricsEnabled', String(isMetaMetricsEnabled));
+
+  if (isMarketingEnabled) {
+    buyParams.set('marketingEnabled', String(isMarketingEnabled));
+  }
+
+  const buyUrl = new URL('/buy', BaseUrl.Portfolio);
+  buyUrl.search = buyParams.toString();
+  return buyUrl.toString();
+};
 
 export const NonEvmBalanceCheck = () => {
   const location = useLocation();
@@ -19,7 +55,9 @@ export const NonEvmBalanceCheck = () => {
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const params = new URLSearchParams(location.search);
-  const chainId = params.get(NonEvmQueryParams.CHAIN_ID)?.toLowerCase() as CaipChainId;
+  const chainId = params
+    .get(NonEvmQueryParams.CHAIN_ID)
+    ?.toLowerCase() as CaipChainId;
 
   const { assetsWithBalance } = useMultichainBalances();
 
@@ -29,33 +67,24 @@ export const NonEvmBalanceCheck = () => {
     }
 
     const hasPositiveBalance = assetsWithBalance.some(
-      (asset) => asset.balance && asset.balance !== '0'
+      (asset) => asset.balance && asset.balance !== '0',
     );
 
-    if (hasPositiveBalance) {
-      const query = new URLSearchParams();
-      query.set('sourceToken', chainId);
-      query.set(BridgeQueryParams.SWAPS, 'true');
-      window.location.href = getExtensionURL(SWAP_ROUTE, query.toString());
-    } else {
-      const buyParams = new URLSearchParams();
-
-      buyParams.set('metamaskEntry', RampsMetaMaskEntry.BuySellButton);
-      buyParams.set('chainId', chainId);
-      if (metaMetricsId) {
-        buyParams.set('metametricsId', metaMetricsId);
-      }
-      buyParams.set('metricsEnabled', String(isMetaMetricsEnabled));
-      if (isMarketingEnabled) {
-        buyParams.set('marketingEnabled', String(isMarketingEnabled));
-      }
-
-      const buyUrl = new URL('/buy', BaseUrl.Portfolio);
-      buyUrl.search = buyParams.toString();
-
-      window.location.href = buyUrl.toString();
-    }
-  }, [chainId, assetsWithBalance, metaMetricsId, isMetaMetricsEnabled, isMarketingEnabled]);
+    window.location.href = hasPositiveBalance
+      ? getSwapUrl(chainId)
+      : getBuyUrl(
+          chainId,
+          metaMetricsId,
+          isMetaMetricsEnabled,
+          isMarketingEnabled,
+        );
+  }, [
+    chainId,
+    assetsWithBalance,
+    metaMetricsId,
+    isMetaMetricsEnabled,
+    isMarketingEnabled,
+  ]);
 
   return null;
 };

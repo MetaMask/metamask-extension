@@ -4,11 +4,11 @@ export enum NonEvmQueryParams {
   CHAIN_ID = 'chainId',
 }
 
-export const NONEVM_BALANCE_CHECK_ROUTE = 'nonevm-balance-check';
+const NONEVM_BALANCE_CHECK_ROUTE = 'nonevm-balance-check';
 
 export default new Route({
   pathname: '/nonevm',
-  getTitle: (_: URLSearchParams) => 'deepLink_theNonEvmPage',
+  getTitle: (_: URLSearchParams) => 'deepLink_theSwapsRampsPage',
   handler: function handler(params: URLSearchParams) {
     const chainId = params.get(NonEvmQueryParams.CHAIN_ID);
 
