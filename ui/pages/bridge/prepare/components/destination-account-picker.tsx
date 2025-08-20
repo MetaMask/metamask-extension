@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import {
   TextField,
   Box,
@@ -18,10 +19,7 @@ import {
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { t } from '../../../../../shared/lib/translate';
-import {
-  getFromAccount,
-  getToAccounts,
-} from '../../../../ducks/bridge/selectors';
+import { getToAccounts, getToChain } from '../../../../ducks/bridge/selectors';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
 import { DestinationAccount } from '../types';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
@@ -31,17 +29,18 @@ import { ExternalAccountListItem } from './external-account-list-item';
 type DestinationAccountPickerProps = {
   onAccountSelect: (account: DestinationAccount | null) => void;
   selectedSwapToAccount: DestinationAccount | null;
-  isDestinationSolana: boolean;
 };
 
 export const DestinationAccountPicker = ({
   onAccountSelect,
   selectedSwapToAccount,
-  isDestinationSolana,
 }: DestinationAccountPickerProps) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const selectedAccount = useSelector(getFromAccount);
   const accounts = useSelector(getToAccounts);
+  const toChain = useSelector(getToChain);
+  const isDestinationSolana = toChain?.chainId
+    ? isSolanaChainId(toChain.chainId)
+    : false;
 
   const { externalAccount } = useExternalAccountResolution({
     searchQuery,
@@ -90,7 +89,7 @@ export const DestinationAccountPicker = ({
         >
           <DestinationSelectedAccountListItem
             account={selectedSwapToAccount}
-            selected={selectedSwapToAccount.id === selectedAccount?.id}
+            selected
           />
         </Box>
         <Box className="deselect-button-container" paddingRight={5}>
@@ -181,20 +180,12 @@ export const DestinationAccountPicker = ({
             key={account.id}
             account={account}
             onClick={() => onAccountSelect(account)}
-            // @ts-expect-error: Type mismatch in isSelected prop between InternalAccount and component expectations
-            isSelected={account.id === selectedSwapToAccount?.id}
-            showOptions={false}
           />
         ))}
         {externalAccount && (
           <ExternalAccountListItem
             key="external-account"
             account={externalAccount}
-            selected={Boolean(
-              selectedSwapToAccount &&
-                (selectedSwapToAccount as DestinationAccount).address ===
-                  externalAccount.address,
-            )}
             onClick={() => onAccountSelect(externalAccount)}
           />
         )}

@@ -4,6 +4,7 @@ import type {
   ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   isSolanaChainId,
   isNativeAddress,

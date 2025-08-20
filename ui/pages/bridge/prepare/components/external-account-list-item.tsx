@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { ExternalAccount } from '../types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   AvatarAccount,
@@ -25,16 +24,17 @@ import { getUseBlockie } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import type { DestinationAccount } from '../types';
 
 type ExternalAccountListItemProps = {
-  account: ExternalAccount;
-  selected: boolean;
+  account: DestinationAccount;
+  selected?: boolean;
   onClick?: () => void;
 };
 
 export const ExternalAccountListItem: React.FC<
   ExternalAccountListItemProps
-> = ({ account, selected, onClick }) => {
+> = ({ account, selected = false, onClick }) => {
   const useBlockie = useSelector(getUseBlockie);
   const t = useI18nContext();
   const isEnsName = account.metadata.name.endsWith('.eth');
