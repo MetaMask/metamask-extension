@@ -55,3 +55,12 @@ export type ScanAddressResponse = {
   result_type: ResultType;
   label: string;
 };
+
+export type GetAddressSecurityAlertResponse = (
+  address: string,
+) => ScanAddressResponse | undefined;
+
+export type AddAddressSecurityAlertResponse = (
+  address: string,
+  response: ScanAddressResponse,
+) => void;
