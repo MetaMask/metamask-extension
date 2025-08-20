@@ -56,7 +56,7 @@ export const NonEvmBalanceCheck = () => {
 
   const params = new URLSearchParams(location.search);
   const chainId = params
-    .get(NonEvmQueryParams.CHAIN_ID)
+    .get(NonEvmQueryParams.ChainId)
     ?.toLowerCase() as CaipChainId;
 
   const { assetsWithBalance } = useMultichainBalances();
