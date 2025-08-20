@@ -6487,14 +6487,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/keyring-internal-api@npm:8.0.0"
+"@metamask/keyring-internal-api@npm:^8.0.0, @metamask/keyring-internal-api@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/keyring-internal-api@npm:8.1.0"
   dependencies:
-    "@metamask/keyring-api": "npm:^20.0.0"
+    "@metamask/keyring-api": "npm:^20.1.0"
     "@metamask/keyring-utils": "npm:^3.1.0"
     "@metamask/superstruct": "npm:^3.1.0"
-  checksum: 10/6aedd45fe1a9d5e058cc098feafe68734a70c81f722d9249c2252a121dcff19442b4b92e4ebe435190a4e63770cf9ea18cd985662070849382956a988106c30b
+  checksum: 10/0fb615821a822de914b95a6b9678a1fc72f7f22b4ec694382977b0212e27ee5199887bd5112ea964e9bdd1aab1ba1a9e1ce3d9fd36957dc8ff8cf7c2f7003865
   languageName: node
   linkType: hard
 
@@ -32030,9 +32030,9 @@ __metadata:
     "@metamask/kernel-shims": "npm:^0.2.0"
     "@metamask/kernel-ui": "npm:^0.1.0"
     "@metamask/kernel-utils": "npm:^0.1.0"
-    "@metamask/keyring-api": "npm:^20.0.0"
+    "@metamask/keyring-api": "npm:^20.1.0"
     "@metamask/keyring-controller": "npm:^22.1.1"
-    "@metamask/keyring-internal-api": "npm:^8.0.0"
+    "@metamask/keyring-internal-api": "npm:^8.1.0"
     "@metamask/keyring-internal-snap-client": "npm:^6.0.0"
     "@metamask/keyring-snap-client": "npm:^7.0.0"
     "@metamask/logger": "npm:^0.3.0"
