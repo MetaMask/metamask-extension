@@ -59,7 +59,6 @@ export const SendPageAccountPicker = () => {
         }}
         labelProps={{
           style: { flexGrow: 1, textAlign: 'start' },
-          paddingInlineStart: 1,
           className: 'multichain-send-page__account-picker__label',
         }}
         textProps={{
