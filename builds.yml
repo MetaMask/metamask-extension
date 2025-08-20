@@ -322,6 +322,10 @@ env:
   - SECURITY_ALERTS_API_ENABLED: 'true'
   # URL of security alerts API used to validate dApp requests
   - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
+  # Enable shield gateway
+  - SHIELD_GATEWAY_ENABLED: 'false'
+  # URL of Shield gateway
+  - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
 
   # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
