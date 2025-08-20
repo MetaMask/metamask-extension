@@ -301,7 +301,10 @@ const insertOrderedNonce = (nonces, nonceToInsert) => {
   for (let i = 0; i < nonces.length; i++) {
     const nonce = nonces[i];
 
-    if (Number(hexToDecimal(nonce)) > Number(hexToDecimal(nonceToInsert))) {
+    if (
+      Number(hexToDecimal(nonce.split('-')[0])) >
+      Number(hexToDecimal(nonceToInsert.split('-')[0]))
+    ) {
       insertIndex = i;
       break;
     }
@@ -403,6 +406,7 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
 
   transactions.forEach((transaction) => {
     const {
+      networkClientId,
       txParams: { nonce } = {},
       status,
       type,
@@ -547,7 +551,7 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
         nonceProps.hasCancelled = true;
       }
     } else {
-      nonceToTransactionsMap[nonce] = {
+      nonceToTransactionsMap[`${nonce}-${networkClientId}`] = {
         nonce,
         transactions: [transaction],
         initialTransaction: transaction,
@@ -561,7 +565,7 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
           (status in PRIORITY_STATUS_HASH ||
             status === TransactionStatus.dropped),
       };
-      insertOrderedNonce(orderedNonces, nonce);
+      insertOrderedNonce(orderedNonces, `${nonce}-${networkClientId}`);
     }
   });
 
