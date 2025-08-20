@@ -4,20 +4,30 @@ import {
   InternalAccountsState,
   MultichainAccountsState,
 } from './account-tree.types';
+import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/modules/selectors/networks';
 
 // Helper function to create properly typed mock state
 export const createMockMultichainAccountsState = (
   accountTree: AccountTreeState,
   internalAccounts: InternalAccountsState,
-): MultichainAccountsState => ({
+  networkConfigurations?: {
+    networkConfigurationsByChainId?: Record<string, any>;
+    multichainNetworkConfigurationsByChainId?: Record<string, any>;
+  },
+): MultichainAccountsState & MultichainNetworkConfigurationsByChainIdState => ({
   metamask: {
     accountTree,
     internalAccounts,
+    networkConfigurationsByChainId:
+      networkConfigurations?.networkConfigurationsByChainId || {},
+    multichainNetworkConfigurationsByChainId:
+      networkConfigurations?.multichainNetworkConfigurationsByChainId || {},
   },
 });
 
 // Helper function to create empty state
-export const createEmptyState = (): MultichainAccountsState =>
+export const createEmptyState = (): MultichainAccountsState &
+  MultichainNetworkConfigurationsByChainIdState =>
   createMockMultichainAccountsState(
     {
       wallets: {},

@@ -3,14 +3,17 @@ import {
   type AccountGroupId,
   type AccountWalletId,
 } from '@metamask/account-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AccountId } from '@metamask/accounts-controller';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
+import { EthAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { NetworkConfiguration } from '@metamask/network-controller';
+import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   type CaipAccountId,
   type CaipChainId,
   KnownCaipNamespace,
 } from '@metamask/utils';
-import { AccountId } from '@metamask/accounts-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
@@ -24,6 +27,7 @@ import {
   getInternalAccountsObject,
   getSelectedInternalAccount,
 } from '../accounts';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../shared/modules/selectors/networks';
 import {
   AccountGroupWithInternalAccounts,
   AccountTreeState,
@@ -328,46 +332,6 @@ export const getSingleAccountGroups = createDeepEqualSelector(
 );
 
 /**
- * Create a map from CAIP-25 account IDs to multichain account group IDs.
- *
- * @param accountGroups - Array of all account groups.
- * @param internalAccounts - Array of internal accounts.
- * @returns Map from CAIP-25 account IDs to multichain account group IDs.
- */
-export const getCaip25AccountIdToMultichainAccountGroupMap =
-  createDeepEqualSelector(
-    getAllAccountGroups,
-    getInternalAccounts,
-    (
-      accountGroups: AccountGroupObject[],
-      internalAccounts: InternalAccount[],
-    ) => {
-      const caip25AccountIdToMultichainAccountGroupMap: Map<
-        CaipAccountId,
-        AccountGroupId
-      > = new Map();
-      accountGroups.forEach((accountGroup) => {
-        accountGroup.accounts.forEach((accountId) => {
-          const internalAccount = internalAccounts.find(
-            (account) => account.id === accountId,
-          );
-          if (!internalAccount) {
-            return;
-          }
-          const [caip25Id] = internalAccount.scopes;
-          if (caip25Id) {
-            caip25AccountIdToMultichainAccountGroupMap.set(
-              `${caip25Id}:${internalAccount.address}`,
-              accountGroup.id,
-            );
-          }
-        });
-      });
-      return caip25AccountIdToMultichainAccountGroupMap;
-    },
-  );
-
-/**
  * Retrieve account groups with their internal accounts populated.
  *
  * @param accountGroups - Array of all account groups.
@@ -396,6 +360,143 @@ export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
           ),
       };
     });
+  },
+);
+
+/**
+ * Create a map from CAIP-25 account IDs to multichain account group IDs.
+ *
+ * @param accountGroups - Array of all account groups.
+ * @param internalAccounts - Array of internal accounts.
+ * @returns Map from CAIP-25 account IDs to multichain account group IDs.
+ */
+export const getCaip25AccountIdToMultichainAccountGroupMap =
+  createDeepEqualSelector(
+    getAccountGroupWithInternalAccounts,
+    getAllNetworkConfigurationsByCaipChainId,
+    (
+      accountGroupsWithInternalAccounts: AccountGroupWithInternalAccounts[],
+      networkConfigurationsByCaipChainId: Record<
+        string,
+        NetworkConfiguration | MultichainNetworkConfiguration
+      >,
+    ) => {
+      const caip25AccountIdToAccountGroupMap = new Map<
+        CaipAccountId,
+        AccountGroupId
+      >();
+
+      // Pre-filter EVM chains once to avoid repeated filtering
+      const evmChains = Object.keys(networkConfigurationsByCaipChainId).filter(
+        (caipChainId) =>
+          caipChainId.startsWith(`${KnownCaipNamespace.Eip155}:`),
+      ) as CaipChainId[];
+
+      const addScopedMappings = (
+        scopes: string[],
+        address: string,
+        accountGroupId: AccountGroupId,
+      ) => {
+        scopes.forEach((scope) => {
+          caip25AccountIdToAccountGroupMap.set(
+            `${scope}:${address}` as CaipAccountId,
+            accountGroupId,
+          );
+        });
+      };
+
+      const addEoaMappings = (
+        address: string,
+        accountGroupId: AccountGroupId,
+      ) => {
+        // Add wildcard mapping
+        caip25AccountIdToAccountGroupMap.set(
+          `${KnownCaipNamespace.Eip155}:${address}` as CaipAccountId,
+          accountGroupId,
+        );
+        // Add specific chain mappings
+        evmChains.forEach((caipChainId) => {
+          caip25AccountIdToAccountGroupMap.set(
+            `${caipChainId}:${address}` as CaipAccountId,
+            accountGroupId,
+          );
+        });
+      };
+
+      accountGroupsWithInternalAccounts.forEach((accountGroup) => {
+        accountGroup.accounts.forEach((account) => {
+          const { address, type, scopes } = account;
+          const { id: accountGroupId } = accountGroup;
+
+          if (type === EthAccountType.Eoa) {
+            addEoaMappings(address, accountGroupId);
+          } else {
+            // Handle ERC4337 and all other account types with scopes
+            addScopedMappings(scopes, address, accountGroupId);
+          }
+        });
+      });
+
+      return caip25AccountIdToAccountGroupMap;
+    },
+  );
+
+/**
+ * Create a map from scope to account groups (multiple groups can support the same scope).
+ *
+ * @param accountGroupsWithInternalAccounts - Array of account groups with internal accounts.
+ * @param networkConfigurationsByCaipChainId - Map of network configurations by CAIP chain ID.
+ * @returns Map from scope to array of account groups.
+ */
+export const getScopeToAccountGroupMap = createDeepEqualSelector(
+  getAccountGroupWithInternalAccounts,
+  getAllNetworkConfigurationsByCaipChainId,
+  (
+    accountGroupsWithInternalAccounts: AccountGroupWithInternalAccounts[],
+    networkConfigurationsByCaipChainId: Record<
+      string,
+      NetworkConfiguration | MultichainNetworkConfiguration
+    >,
+  ) => {
+    const scopeToAccountGroupMap = new Map<
+      string,
+      AccountGroupWithInternalAccounts[]
+    >();
+
+    const addAccountGroupToScope = (
+      scope: string,
+      accountGroup: AccountGroupWithInternalAccounts,
+    ) => {
+      const existingGroups = scopeToAccountGroupMap.get(scope) || [];
+      if (!existingGroups.includes(accountGroup)) {
+        existingGroups.push(accountGroup);
+        scopeToAccountGroupMap.set(scope, existingGroups);
+      }
+    };
+
+    accountGroupsWithInternalAccounts.forEach((accountGroup) => {
+      accountGroup.accounts.forEach((account) => {
+        account.scopes.forEach((scope) => {
+          addAccountGroupToScope(scope, accountGroup);
+
+          if (account.type === EthAccountType.Eoa) {
+            addAccountGroupToScope(
+              `${KnownCaipNamespace.Eip155}:0`,
+              accountGroup,
+            );
+            Object.keys(networkConfigurationsByCaipChainId).forEach(
+              (caipChainId) => {
+                if (caipChainId.startsWith(`${KnownCaipNamespace.Eip155}:`)) {
+                  addAccountGroupToScope(caipChainId, accountGroup);
+                }
+              },
+            );
+          }
+        });
+      });
+    });
+
+    return scopeToAccountGroupMap;
   },
 );
 

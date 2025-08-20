@@ -3,56 +3,62 @@ import {
   Caip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
-import {
-  CaipAccountId,
-  CaipChainId,
-  CaipNamespace,
-  KnownCaipNamespace,
-  parseCaipAccountId,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { CaipChainId, CaipNamespace } from '@metamask/utils';
 import { useMemo } from 'react';
-import { AccountGroupObject } from '@metamask/account-tree-controller';
 import {
-  getAccountGroupsByScopes,
   getCaip25AccountIdToMultichainAccountGroupMap,
   getAccountGroupWithInternalAccounts,
+  getScopeToAccountGroupMap,
 } from '../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../selectors/multichain-accounts/account-tree.types';
 
+/**
+ * Hook that manages account groups for CAIP-25 permissions, providing both connected
+ * and supported account groups based on existing permissions and requested chains/namespaces.
+ *
+ * This hook handles the complex logic of:
+ * - Filtering account groups that support requested chains/namespaces
+ * - Mapping existing CAIP-25 permissions to account groups
+ * - Converting between different account ID formats
+ *
+ * @param existingPermission - The current CAIP-25 caveat value containing existing permissions
+ * @param requestedCaipChainIds - Array of CAIP chain IDs being requested for permission
+ * @param requestedNamespacesWithoutWallet - Array of CAIP namespaces being requested (excluding wallet namespace)
+ * @returns Object containing connected account groups, supported account groups, and existing connected CAIP account IDs
+ */
 export const useAccountGroupsForPermissions = (
   existingPermission: Caip25CaveatValue,
   requestedCaipChainIds: CaipChainId[],
   requestedNamespacesWithoutWallet: CaipNamespace[],
 ) => {
+  /** All account groups with their internal account details */
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
 
+  /** Map from CAIP-25 account IDs to multichain account group IDs */
   const caip25ToAccountGroupMap = useSelector(
     getCaip25AccountIdToMultichainAccountGroupMap,
   );
-
-  // Calculate deduplicated EVM chains for selector dependency
-  const deduplicatedEvmChains = useMemo(() => {
-    return Array.from(
-      new Set(
-        requestedCaipChainIds.map((chainId) => {
-          return parseCaipChainId(chainId).namespace ===
-            KnownCaipNamespace.Eip155
-            ? (`${KnownCaipNamespace.Eip155}:0` as CaipChainId)
-            : chainId;
-        }),
-      ),
-    );
-  }, [requestedCaipChainIds]);
-
-  // Get multichain account groups by scopes (always call useSelector at top level)
-  const multichainAccountGroups = useSelector((state) =>
-    getAccountGroupsByScopes(state, deduplicatedEvmChains),
-  );
+  const scopeToAccountGroupMap = useSelector(getScopeToAccountGroupMap);
 
   const supportedAccountGroups = useMemo(() => {
     if (requestedCaipChainIds.length) {
-      return multichainAccountGroups;
+      const chainIdSet = new Set(requestedCaipChainIds);
+      const supportedGroups = new Set<AccountGroupWithInternalAccounts>();
+
+      // For each requested chain ID, find all account groups that support it
+      Array.from(scopeToAccountGroupMap.entries()).forEach(
+        ([scope, accountGroups]) => {
+          if (chainIdSet.has(scope as CaipChainId)) {
+            // Handle both array and single group formats for backward compatibility
+            const groups = Array.isArray(accountGroups)
+              ? accountGroups
+              : [accountGroups];
+            groups.forEach((group) => supportedGroups.add(group));
+          }
+        },
+      );
+
+      return Array.from(supportedGroups);
     }
 
     // Early return if no namespaces requested
@@ -64,10 +70,13 @@ export const useAccountGroupsForPermissions = (
 
     return accountGroups.filter((accountGroup) => {
       for (const account of accountGroup.accounts) {
-        for (const scope of account.scopes) {
-          const scopeNamespace = scope.split(':')[0];
-          if (namespaceSet.has(scopeNamespace as CaipNamespace)) {
-            return true;
+        // Ensure account.scopes exists and is iterable
+        if (account.scopes && Array.isArray(account.scopes)) {
+          for (const scope of account.scopes) {
+            const scopeNamespace = scope.split(':')[0];
+            if (namespaceSet.has(scopeNamespace as CaipNamespace)) {
+              return true;
+            }
           }
         }
       }
@@ -75,56 +84,46 @@ export const useAccountGroupsForPermissions = (
     });
   }, [
     requestedCaipChainIds,
-    multichainAccountGroups,
+    scopeToAccountGroupMap,
     accountGroups,
     requestedNamespacesWithoutWallet,
   ]);
 
+  /**
+   * Connected account groups and their CAIP account IDs from existing permissions.
+   * Processes existing CAIP-25 permissions to find corresponding account groups.
+   */
   const { connectedAccountGroups, connectedCaipAccountIds } = useMemo(() => {
-    // need to convert all eip155 chain ids to wildcard
+    /** Extract all connected CAIP account IDs from existing permission */
     const connectedAccountIds =
       getCaipAccountIdsFromCaip25CaveatValue(existingPermission);
 
-    const connectedAccountGroupsSet =
-      new Set<AccountGroupWithInternalAccounts>();
+    const connectedAccountGroupsArray: AccountGroupWithInternalAccounts[] = [];
 
     connectedAccountIds.forEach((caipAccountId) => {
-      try {
-        const {
-          address,
-          chain: { namespace },
-        } = parseCaipAccountId(caipAccountId);
-
-        const caip25IdToUse: CaipAccountId =
-          namespace === KnownCaipNamespace.Eip155
-            ? `${KnownCaipNamespace.Eip155}:0:${address}`
-            : caipAccountId;
-
-        const accountGroupId: AccountGroupObject['id'] | undefined =
-          caip25ToAccountGroupMap.get(caip25IdToUse);
-
-        if (accountGroupId) {
-          const accountGroup = accountGroups.find(
-            (group) => group.id === accountGroupId,
-          );
-          if (accountGroup) {
-            connectedAccountGroupsSet.add(accountGroup);
-          }
+      const accountGroupId = caip25ToAccountGroupMap.get(caipAccountId);
+      if (accountGroupId) {
+        const accountGroup = accountGroups.find(
+          (group) => group.id === accountGroupId,
+        );
+        if (accountGroup) {
+          connectedAccountGroupsArray.push(accountGroup);
         }
-      } catch (error) {
-        // Skip malformed CAIP account IDs
       }
     });
 
     return {
-      connectedAccountGroups: Array.from(connectedAccountGroupsSet),
+      connectedAccountGroups: connectedAccountGroupsArray,
       connectedCaipAccountIds: connectedAccountIds,
     };
-  }, [existingPermission, accountGroups, caip25ToAccountGroupMap]);
+  }, [existingPermission, caip25ToAccountGroupMap, accountGroups]);
 
   return {
+    /** Account groups that are currently connected via existing permissions */
     connectedAccountGroups,
+    /** Account groups that support the requested chains/namespaces */
     supportedAccountGroups,
+    /** CAIP account IDs that are already connected via existing permissions */
     existingConnectedCaipAccountIds: connectedCaipAccountIds,
   };
 };
