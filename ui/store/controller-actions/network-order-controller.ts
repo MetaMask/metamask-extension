@@ -1,10 +1,6 @@
-import { ThunkAction } from 'redux-thunk';
-import { MetaMaskReduxState } from '../store';
 import { AnyAction } from 'redux';
-import { getMultichainNetworkConfigurationsByChainId } from '../../selectors';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../shared/constants/network';
+import { ThunkAction } from 'redux-thunk';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { setEnabledNetworks } from '../actions';
 import {
   CaipChainId,
   Hex,
@@ -12,6 +8,10 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../shared/constants/network';
+import { getMultichainNetworkConfigurationsByChainId } from '../../selectors';
+import { setEnabledNetworks } from '../actions';
+import { MetaMaskReduxState } from '../store';
 
 export function enableAllPopularNetworks(): ThunkAction<
   void,
@@ -50,6 +50,5 @@ export function enableSingleNetwork(
 
     // Non-EVM
     dispatch(setEnabledNetworks([caipChainId], namespace));
-    return;
   };
 }
