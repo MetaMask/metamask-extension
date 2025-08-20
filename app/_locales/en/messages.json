@@ -510,6 +510,9 @@
   "allPermissions": {
     "message": "All permissions"
   },
+  "allPopularNetworks": {
+    "message": "All popular networks"
+  },
   "allTimeHigh": {
     "message": "All time high"
   },

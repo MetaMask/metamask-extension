@@ -1,31 +1,15 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { UpdateNetworkFields } from '@metamask/network-controller';
 import { ApprovalType } from '@metamask/controller-utils';
-import { parseCaipChainId } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  FEATURED_NETWORK_CHAIN_IDS,
-} from '../../../../../shared/constants/network';
-import {
-  hideModal,
-  requestUserApproval,
-  setEnabledNetworks,
-} from '../../../../store/actions';
-import {
-  getEnabledNetworksByNamespace,
-  getSelectedMultichainNetworkChainId,
-} from '../../../../selectors/multichain/networks';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { hideModal, requestUserApproval } from '../../../../store/actions';
+import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 
 export const useAdditionalNetworkHandlers = () => {
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const dispatch = useDispatch();
-  const currentMultichainChainId = useSelector(
-    getSelectedMultichainNetworkChainId,
-  );
-  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   // Memoize the additional network click handler
   const handleAdditionalNetworkClick = useCallback(
@@ -60,18 +44,9 @@ export const useAdditionalNetworkHandlers = () => {
           },
         }),
       );
-      const enabledNetworksArray = Object.keys(enabledNetworksByNamespace);
-      const filteredPopularNetworks = enabledNetworksArray.filter((key) =>
-        FEATURED_NETWORK_CHAIN_IDS.includes(key as `0x${string}`),
-      );
-      await dispatch(
-        setEnabledNetworks(
-          [...filteredPopularNetworks, network.chainId],
-          namespace,
-        ),
-      );
+      await dispatch(enableSingleNetwork(network.chainId));
     },
-    [dispatch, enabledNetworksByNamespace, namespace],
+    [dispatch],
   );
 
   return {

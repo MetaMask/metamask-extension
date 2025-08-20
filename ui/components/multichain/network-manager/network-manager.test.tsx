@@ -177,7 +177,7 @@ describe('NetworkManager Component', () => {
     expect(screen.getByText('Custom')).toBeInTheDocument();
 
     // Verify default tab content is rendered
-    expect(screen.getByText('Select all')).toBeInTheDocument();
+    expect(screen.getByText('All popular networks')).toBeInTheDocument();
     expect(screen.getByText('Arbitrum One')).toBeInTheDocument();
     expect(screen.getByText('Optimism')).toBeInTheDocument();
     expect(screen.getByText('Avalanche')).toBeInTheDocument();
@@ -186,7 +186,7 @@ describe('NetworkManager Component', () => {
 
   it('should not render select all button when non-EVM network is selected', () => {
     renderNetworkManagerWithNonEvmNetworkSelected();
-    expect(screen.queryByText('Select all')).not.toBeInTheDocument();
+    expect(screen.queryByText('All popular networks')).not.toBeInTheDocument();
   });
 
   it('switches tab when tab is clicked', () => {
@@ -194,7 +194,7 @@ describe('NetworkManager Component', () => {
 
     // Verify that Default tab is active by default
     expect(screen.getByText('Default')).toBeInTheDocument();
-    expect(screen.getByText('Select all')).toBeInTheDocument();
+    expect(screen.getByText('All popular networks')).toBeInTheDocument();
 
     // Click on Custom tab
     fireEvent.click(screen.getByText('Custom'));
