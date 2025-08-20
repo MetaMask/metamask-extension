@@ -249,4 +249,14 @@ export class SignUpPage {
   async assertWalletVisible(): Promise<void> {
     await expect(this.page.getByTestId('account-menu-icon')).toBeVisible();
   }
+
+  async stopTracing() {
+    const ctx = this.page.context();
+    await ctx.tracing.stopChunk();
+  }
+
+  async startTracing(title: string) {
+    const ctx = this.page.context();
+    await ctx.tracing.startChunk({ title });
+  }
 }
