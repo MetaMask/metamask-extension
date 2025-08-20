@@ -158,23 +158,25 @@ export const setFromChain = ({
     if (!networkConfig) {
       return;
     }
-    if (isSolanaChainId(networkConfig.chainId)) {
+    const isSolana = isSolanaChainId(networkConfig.chainId);
+    // Set the src network
+    if (isSolana) {
       dispatch(setActiveNetworkWithError(networkConfig.chainId));
-      return;
+    } else {
+      const networkId = isNetworkAdded(networkConfig)
+        ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
+            ?.networkClientId
+        : null;
+      if (networkId) {
+        dispatch(setActiveNetworkWithError(networkId));
+      }
     }
-
-    const networkId = isNetworkAdded(networkConfig)
-      ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
-          ?.networkClientId
-      : null;
-    if (networkId) {
-      dispatch(setActiveNetworkWithError(networkId));
-    }
+    // Set the src token
     if (token) {
       dispatch(setFromToken(token));
     }
     // Fetch the native EVM balance
-    if (selectedAccount) {
+    if (selectedAccount && !isSolana) {
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {
