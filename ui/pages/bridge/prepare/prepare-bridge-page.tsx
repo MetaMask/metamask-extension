@@ -86,12 +86,6 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import {
-  CrossChainSwapsEventProperties,
-  useCrossChainSwapsEventTracker,
-} from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
@@ -305,9 +299,6 @@ const PrepareBridgePage = ({
       : undefined,
   );
 
-  const { flippedRequestProperties } = useRequestProperties();
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
-
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
@@ -414,32 +405,7 @@ const PrepareBridgePage = ({
     [dispatch],
   );
 
-  // When entering the page for the first time emit an event for the page viewed
   useEffect(() => {
-    trackCrossChainSwapsEvent({
-      event: MetaMetricsEventName.ActionPageViewed,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol_source: fromToken?.symbol ?? '',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_address_source: fromToken?.address ?? '',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol_destination: toToken?.symbol ?? '',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_address_destination: toToken?.address ?? '',
-      },
-    });
-
     return () => {
       debouncedUpdateQuoteRequestInController.cancel();
     };
@@ -466,18 +432,6 @@ const PrepareBridgePage = ({
     debouncedUpdateQuoteRequestInController(quoteParams, eventProperties);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteParams]);
-
-  const trackInputEvent = useCallback(
-    (
-      properties: CrossChainSwapsEventProperties[MetaMetricsEventName.InputChanged],
-    ) => {
-      trackCrossChainSwapsEvent({
-        event: MetaMetricsEventName.InputChanged,
-        properties,
-      });
-    },
-    [],
-  );
 
   // Use smart slippage defaults
   useSmartSlippage({
@@ -566,11 +520,6 @@ const PrepareBridgePage = ({
             if (token.address === toToken?.address) {
               dispatch(setToToken(null));
             }
-            bridgeToken.address &&
-              trackInputEvent({
-                input: 'token_source',
-                value: bridgeToken.address,
-              });
           }}
           networkProps={{
             network: fromChain,
@@ -717,12 +666,6 @@ const PrepareBridgePage = ({
 
                 setRotateSwitchTokens(!rotateSwitchTokens);
 
-                flippedRequestProperties &&
-                  trackCrossChainSwapsEvent({
-                    event: MetaMetricsEventName.InputSourceDestinationFlipped,
-                    properties: flippedRequestProperties,
-                  });
-
                 const shouldFlipNetworks = isUnifiedUIEnabled || !isSwap;
                 if (shouldFlipNetworks) {
                   // Handle account switching for Solana
@@ -747,11 +690,6 @@ const PrepareBridgePage = ({
                 ...token,
                 address: token.address ?? zeroAddress(),
               };
-              bridgeToken.address &&
-                trackInputEvent({
-                  input: 'token_destination',
-                  value: bridgeToken.address,
-                });
               dispatch(setToToken(bridgeToken));
             }}
             networkProps={
@@ -764,11 +702,6 @@ const PrepareBridgePage = ({
                       if (isNetworkAdded(networkConfig)) {
                         enableMissingNetwork(networkConfig.chainId);
                       }
-                      networkConfig.chainId !== toChain?.chainId &&
-                        trackInputEvent({
-                          input: 'chain_destination',
-                          value: networkConfig.chainId,
-                        });
                       dispatch(setToChainId(networkConfig.chainId));
                     },
                     header: t('yourNetworks'),

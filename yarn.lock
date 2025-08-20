@@ -5596,10 +5596,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^0.18.0":
-  version: 0.18.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:0.18.0"
-  checksum: 10/082506f5f1929522b77799b7b97cce68e47c291de504ca517d2c687f9aa932f80c7772d673aca22dd99a6b86c002cec9bfa9081bfaa090b145dd940513933829
+"@metamask/bitcoin-wallet-snap@npm:^0.19.0":
+  version: 0.19.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:0.19.0"
+  checksum: 10/d4dc306ae62ed4ce3a487028d6671125687053760aa75ab8e399f0b8adb32cbfd05bbdde464457d27b76f2b48ca9adbfed161b4f3b9252199d553e59457915bb
   languageName: node
   linkType: hard
 
@@ -6926,9 +6926,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/phishing-warning@npm:5.0.0"
+"@metamask/phishing-warning@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/phishing-warning@npm:5.0.1"
   dependencies:
     "@metamask/design-tokens": "npm:^7.1.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
@@ -6937,7 +6937,7 @@ __metadata:
     punycode: "npm:^2.3.1"
     readable-stream: "npm:^3.6.2"
     ses: "npm:^1.1.0"
-  checksum: 10/446e72dad36729afb5830f88ccfa4e49ce9f89f64a3edc61f7b2548b17c39a5aaf9e537773fc990a5e2fc59fa973d860b6bf1d2d1c7601138553e7fb8aff5dbf
+  checksum: 10/fdcb5c7398b68adbcd15876c39516c7cf93b810d08e85dc60ee459dab7ee83a41d4248a2332c772a562dc3652f34eed0eb1af982ad486f81a70089e1ec520e31
   languageName: node
   linkType: hard
 
@@ -31996,7 +31996,7 @@ __metadata:
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A73.0.2#~/.yarn/patches/@metamask-assets-controllers-npm-73.0.2-d92e4492b2.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^0.18.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^0.19.0"
     "@metamask/bridge-controller": "npm:^39.1.0"
     "@metamask/bridge-status-controller": "npm:^38.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
@@ -32062,7 +32062,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/permission-log-controller": "npm:^4.0.0"
     "@metamask/phishing-controller": "npm:^13.1.0"
-    "@metamask/phishing-warning": "npm:^5.0.0"
+    "@metamask/phishing-warning": "npm:^5.0.1"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
