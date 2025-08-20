@@ -5628,7 +5628,7 @@
     "message": "Asset auswählen"
   },
   "snapUpdateAlertDescription": {
-    "message": "Holen Sie sich die neueste Version von $1\n",
+    "message": "Holen Sie sich die neueste Version von $1",
     "description": "Description used in Snap update alert banner when snap update is available. $1 is the Snap name."
   },
   "snapUpdateAvailable": {
