@@ -144,19 +144,17 @@ export function trackRpcEndpointEvent(
     return;
   }
 
-  // The case of the Segment properties are intentional.
+  // The names of Segment properties have a particular case.
   /* eslint-disable @typescript-eslint/naming-convention */
-  const properties: Json = {
+  const properties = {
     chain_id_caip: `eip155:${hexToNumber(chainId)}`,
     rpc_endpoint_url: onlyKeepHost(endpointUrl),
-  };
-  if (
-    isObject(error) &&
+    ...(isObject(error) &&
     'httpStatus' in error &&
     isValidJson(error.httpStatus)
-  ) {
-    properties.http_status = error.httpStatus;
-  }
+      ? { http_status: error.httpStatus }
+      : {}),
+  };
   /* eslint-enable @typescript-eslint/naming-convention */
 
   log.debug(
