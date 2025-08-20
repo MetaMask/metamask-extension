@@ -6635,7 +6635,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^0.4.0":
+"@metamask/multichain-account-service@npm:^0.4.0-preview-7dfc3145":
   version: 0.4.0
   resolution: "@metamask/multichain-account-service@npm:0.4.0"
   dependencies:
@@ -32049,7 +32049,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:1.1.2"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:^0.4.0"
+    "@metamask/multichain-account-service": "npm:^0.4.0-preview-7dfc3145"
     "@metamask/multichain-api-client": "npm:^0.6.5"
     "@metamask/multichain-api-middleware": "npm:1.0.0"
     "@metamask/multichain-network-controller": "npm:^0.11.1"
