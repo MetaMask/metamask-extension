@@ -140,8 +140,18 @@ exports[`useBridgeQueryParams should set evm bridge params 2`] = `
 
 exports[`useBridgeQueryParams should set solana swap params 1`] = `
 {
-  "fromToken": undefined,
-  "fromTokenInputValue": undefined,
+  "fromToken": {
+    "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "balance": "0",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "decimals": 9,
+    "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+    "name": "Solana",
+    "string": "0",
+    "symbol": "USDC",
+  },
+  "fromTokenInputValue": "0.000000100",
   "toChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
   "toToken": {
     "address": "501",
