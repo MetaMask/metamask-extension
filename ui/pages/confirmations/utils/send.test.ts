@@ -6,7 +6,7 @@ import { Asset } from '../types/send';
 import {
   prepareEVMTransaction,
   submitEvmTransaction,
-  toTokenMinimalUnit,
+  fromTokenMinimalUnit,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -17,14 +17,14 @@ jest.mock('../../../store/actions', () => {
 });
 
 describe('Send - utils', () => {
-  describe('toTokenMinimalUnit', () => {
+  describe('fromTokenMinimalUnit', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
 
     it('return hex for the value with decimals multiplied', async () => {
-      expect(toTokenMinimalUnit('0xA', 18)).toBe('8ac7230489e80000');
-      expect(toTokenMinimalUnit('0xA', 0)).toBe('0xA');
+      expect(fromTokenMinimalUnit('0xA', 18)).toBe('8ac7230489e80000');
+      expect(fromTokenMinimalUnit('0xA', 0)).toBe('0xA');
     });
   });
 
