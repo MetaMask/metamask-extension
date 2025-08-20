@@ -1,45 +1,29 @@
 /* eslint-disable camelcase */
 import { useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  formatProviderLabel,
+  UnifiedSwapBridgeEventName,
+} from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
-  getFromAmount,
   getQuoteRequest,
   getValidationErrors,
 } from '../../ducks/bridge/selectors';
-import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
-import { useRequestMetadataProperties } from './events/useRequestMetadataProperties';
-import { useRequestProperties } from './events/useRequestProperties';
-import { useTradeProperties } from './events/useTradeProperties';
-import { useConvertedUsdAmounts } from './events/useConvertedUsdAmounts';
-import { useQuoteProperties } from './events/useQuoteProperties';
+import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 
 // This hook is used to track cross chain swaps events related to quote-fetching
 export const useQuoteFetchEvents = () => {
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
+  const dispatch = useDispatch();
   const {
     isLoading,
     quotesRefreshCount,
     quoteFetchError,
-    quotesInitialLoadTimeMs,
+    activeQuote,
+    recommendedQuote,
   } = useSelector(getBridgeQuotes);
-  const { insufficientBal, srcTokenAddress } = useSelector(getQuoteRequest);
-  const fromTokenInputValue = useSelector(getFromAmount);
+  const { insufficientBal } = useSelector(getQuoteRequest);
   const validationErrors = useSelector(getValidationErrors);
-
-  const { quoteRequestProperties } = useRequestProperties();
-  const requestMetadataProperties = useRequestMetadataProperties();
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { usd_amount_source } = useConvertedUsdAmounts();
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const has_sufficient_funds = !insufficientBal;
-
-  const quoteListProperties = useQuoteProperties();
-  const tradeProperties = useTradeProperties();
 
   const warnings = useMemo(() => {
     const {
@@ -62,87 +46,40 @@ export const useQuoteFetchEvents = () => {
     return latestWarnings;
   }, [validationErrors]);
 
-  // Emitted when quotes are fetched for the first time for a given request
+  // Emitted each time quotes are fetched successfully
   useEffect(() => {
-    const isInitialFetch =
-      isLoading &&
-      quotesRefreshCount === 0 &&
-      quotesInitialLoadTimeMs === undefined;
-
-    if (
-      quoteRequestProperties &&
-      fromTokenInputValue &&
-      srcTokenAddress &&
-      isInitialFetch
-    ) {
-      trackCrossChainSwapsEvent({
-        event: MetaMetricsEventName.CrossChainSwapsQuotesRequested,
-        properties: {
-          ...quoteRequestProperties,
-          ...requestMetadataProperties,
+    if (!isLoading && quotesRefreshCount > 0 && !quoteFetchError) {
+      dispatch(
+        trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.QuotesReceived, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          has_sufficient_funds,
+          can_submit: !insufficientBal,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          usd_amount_source,
-        },
-      });
-    }
-  }, [isLoading, quotesInitialLoadTimeMs]);
-
-  // Emitted when an error is caught during fetch
-  useEffect(() => {
-    if (
-      quoteRequestProperties &&
-      fromTokenInputValue &&
-      srcTokenAddress &&
-      quoteFetchError
-    ) {
-      trackCrossChainSwapsEvent({
-        event: MetaMetricsEventName.CrossChainSwapsQuoteError,
-        properties: {
-          ...quoteRequestProperties,
-          ...requestMetadataProperties,
+          gas_included: Boolean(activeQuote?.quote?.gasIncluded),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          has_sufficient_funds,
+          quoted_time_minutes: activeQuote?.estimatedProcessingTimeInSeconds
+            ? activeQuote.estimatedProcessingTimeInSeconds / 60
+            : 0,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          usd_amount_source,
+          usd_quoted_gas: Number(activeQuote?.gasFee?.effective?.usd ?? 0),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: quoteFetchError,
-        },
-      });
-    }
-  }, [quoteFetchError]);
-
-  // Emitted after each time quotes are fetched successfully
-  useEffect(() => {
-    if (
-      fromTokenInputValue &&
-      srcTokenAddress &&
-      !isLoading &&
-      quotesRefreshCount >= 0 &&
-      quoteListProperties.initial_load_time_all_quotes > 0 &&
-      quoteRequestProperties &&
-      !quoteFetchError &&
-      tradeProperties
-    ) {
-      trackCrossChainSwapsEvent({
-        event: MetaMetricsEventName.CrossChainSwapsQuotesReceived,
-        properties: {
-          ...quoteRequestProperties,
-          ...requestMetadataProperties,
-          ...quoteListProperties,
-          ...tradeProperties,
+          usd_quoted_return: Number(activeQuote?.toTokenAmount?.usd ?? 0),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          refresh_count: quotesRefreshCount - 1,
+          best_quote_provider: recommendedQuote
+            ? formatProviderLabel(recommendedQuote.quote)
+            : undefined,
+          provider: activeQuote ? formatProviderLabel(activeQuote.quote) : '_',
           warnings,
-        },
-      });
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          price_impact: Number(activeQuote?.quote.priceData?.priceImpact ?? 0),
+        }),
+      );
     }
   }, [quotesRefreshCount]);
 };
