@@ -5739,14 +5739,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/design-system-react@npm:0.3.0"
+"@metamask/design-system-react@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@metamask/design-system-react@npm:0.3.1"
   dependencies:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
-    dompurify: "npm:^3.2.5"
     tailwind-merge: "npm:^2.0.0"
   peerDependencies:
     "@metamask/design-system-tailwind-preset": ^0.6.0
@@ -5754,10 +5753,10 @@ __metadata:
     "@metamask/utils": ^11.4.2
     "@solana/addresses": ^2.0.0
     bitcoin-address-validation: ">=2.0.0"
-    react: ^16.0.0
-    react-dom: ^16.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
     tailwindcss: ^3.0.0
-  checksum: 10/f95d4dcbeb64b26bd74df76347065499006a0a4103cc59e1ab398a6c58339accfe805968ad154acef09083e3fbadce45c6258dadd771e18722a1a2323617cc4f
+  checksum: 10/f1270d3e351d539582914b3c6848c5abc264954975f4c4443e135e10a6e8eb0ed4c583bc462e737ad152abbb7ab6b238df39c98f62089d901a3a43f127005364
   languageName: node
   linkType: hard
 
@@ -32006,7 +32005,7 @@ __metadata:
     "@metamask/controller-utils": "npm:^11.11.0"
     "@metamask/delegation-controller": "npm:^0.6.0"
     "@metamask/delegation-deployments": "npm:^0.11.0"
-    "@metamask/design-system-react": "npm:^0.3.0"
+    "@metamask/design-system-react": "npm:^0.3.1"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
     "@metamask/ens-controller": "npm:^15.0.2"
