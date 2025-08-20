@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
@@ -13,14 +13,12 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getMetaMaskHdKeyrings,
 } from '../../selectors';
 import { BaseUrl } from '../../../shared/constants/urls';
-import { AccountMenu } from '../../components/multichain/account-menu/account-menu';
 import {
-  useMultichainWalletSnapClient,
-  WalletClientType,
-} from '../../hooks/accounts/useMultichainWalletSnapClient';
+  AccountMenu,
+  ACTION_MODES,
+} from '../../components/multichain/account-menu/account-menu';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 const { getExtensionURL } = globalThis.platform;
@@ -63,46 +61,15 @@ export const NonEvmBalanceCheck = () => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
 
   const params = new URLSearchParams(location.search);
   const chainId = params.get(NonEvmQueryParams.ChainId) as CaipChainId;
 
   const { assetsWithBalance } = useMultichainBalances();
 
-  const clientType =
-    chainId === MultichainNetworks.SOLANA
-      ? WalletClientType.Solana
-      : WalletClientType.Bitcoin;
-
-  const walletClient = useMultichainWalletSnapClient(clientType);
-
-  const hasAccountForChain = accounts.some((account: InternalAccount) => {
-    console.log({
-      chainId,
-      accountScopes: account.scopes,
-      hasScope: account.scopes.includes(chainId),
-    });
-    return account.scopes.includes(chainId);
-  });
-
-  const handleCreateAccount = useCallback(async () => {
-    try {
-      await walletClient.createAccount(
-        {
-          scope: chainId,
-          entropySource: primaryKeyring.metadata.id,
-        },
-        {
-          displayConfirmation: false,
-          displayAccountNameSuggestion: false,
-          setSelectedAccount: false,
-        },
-      );
-    } catch (error) {
-      console.error(`Error creating ${clientType} account:`, error);
-    }
-  }, [chainId, clientType, primaryKeyring.metadata.id, walletClient]);
+  const hasAccountForChain = accounts.some((account: InternalAccount) =>
+    account.scopes.includes(chainId),
+  );
 
   useEffect(() => {
     if (!chainId) {
@@ -135,12 +102,18 @@ export const NonEvmBalanceCheck = () => {
   ]);
 
   if (!hasAccountForChain) {
+    const initialMode =
+      chainId === MultichainNetworks.SOLANA
+        ? ACTION_MODES.ADD_SOLANA
+        : ACTION_MODES.ADD_BITCOIN;
+
     return (
       <AccountMenu
         onClose={() => {
-          // Just close the modal, account creation will be handled by AccountMenu
+          // nothing to do here
         }}
         showAccountCreation={true}
+        initialActionMode={initialMode}
       />
     );
   }

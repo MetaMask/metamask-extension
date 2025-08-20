@@ -187,12 +187,14 @@ type AccountMenuProps = {
   onClose: () => void;
   showAccountCreation?: boolean;
   children?: React.ReactNode;
+  initialActionMode?: ActionMode;
 };
 
 export const AccountMenu = ({
   onClose,
   showAccountCreation = true,
   children,
+  initialActionMode = ACTION_MODES.LIST,
 }: AccountMenuProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -208,7 +210,7 @@ export const AccountMenu = ({
   // sync SRPs list when menu opens
   useSyncSRPs();
 
-  const [actionMode, setActionMode] = useState<ActionMode>(ACTION_MODES.LIST);
+  const [actionMode, setActionMode] = useState<ActionMode>(initialActionMode);
   const [previousActionMode, setPreviousActionMode] = useState<ActionMode>(
     ACTION_MODES.LIST,
   );
