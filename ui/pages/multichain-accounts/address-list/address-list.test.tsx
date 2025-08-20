@@ -29,7 +29,7 @@ describe('AddressList', () => {
     selectedAccount = MOCK_ACCOUNT_EOA,
     groupName = 'Test Account',
   ) => {
-    const groupId = 'test-group-id' as AccountGroupId;
+    const groupId = 'test-wallet/0' as AccountGroupId;
 
     const store = configureStore({
       metamask: {
@@ -66,6 +66,21 @@ describe('AddressList', () => {
             [selectedAccount.id]: selectedAccount,
           },
           selectedAccount: selectedAccount.id,
+        },
+        multichainNetworkConfigurationsByChainId: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            name: 'Solana Mainnet',
+            nativeCurrency:
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+            isEvm: false,
+          },
+          'bip122:000000000019d6689c085ae165831e93': {
+            chainId: 'bip122:000000000019d6689c085ae165831e93',
+            name: 'Bitcoin Mainnet',
+            nativeCurrency: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+            isEvm: false,
+          },
         },
       },
       localeMessages: {
@@ -137,6 +152,21 @@ describe('AddressList', () => {
           ...mockState.metamask.internalAccounts,
           accounts: {},
           selectedAccount: '',
+        },
+        multichainNetworkConfigurationsByChainId: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            name: 'Solana Mainnet',
+            nativeCurrency:
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+            isEvm: false,
+          },
+          'bip122:000000000019d6689c085ae165831e93': {
+            chainId: 'bip122:000000000019d6689c085ae165831e93',
+            name: 'Bitcoin Mainnet',
+            nativeCurrency: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+            isEvm: false,
+          },
         },
       },
       localeMessages: {
