@@ -20,6 +20,8 @@ import {
 import { getEnabledNetworksByNamespace } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -28,9 +30,11 @@ import {
   IconSize,
   Popover,
   PopoverPosition,
+  Text,
 } from '../../../../component-library';
 import SortControl, { SelectableListItem } from '../sort-control/sort-control';
 import {
+  AlignItems,
   BackgroundColor,
   BorderColor,
   Display,
@@ -306,7 +310,32 @@ const AssetListControlBar = ({
     }
 
     return t('popularNetworks');
-  }, [isTokenNetworkFilterEqualCurrentNetwork, currentMultichainNetwork, t]);
+  }, [
+    enabledNetworksByNamespace,
+    isTokenNetworkFilterEqualCurrentNetwork,
+    currentMultichainNetwork.isEvmNetwork,
+    currentMultichainNetwork.network.nickname,
+    currentMultichainNetwork?.nickname,
+    t,
+    allNetworks,
+  ]);
+
+  const singleNetworkIconUrl = useMemo(() => {
+    if (!isGlobalNetworkSelectorRemoved) {
+      return undefined;
+    }
+
+    const chainIds = Object.keys(enabledNetworksByNamespace);
+
+    if (chainIds.length !== 1) {
+      return undefined;
+    }
+
+    return currentMultichainNetwork?.network?.rpcPrefs?.imageUrl;
+  }, [
+    currentMultichainNetwork?.network?.rpcPrefs?.imageUrl,
+    enabledNetworksByNamespace,
+  ]);
 
   return (
     <Box
@@ -326,7 +355,7 @@ const AssetListControlBar = ({
               : toggleNetworkFilterPopover
           }
           disabled={isGlobalNetworkSelectorRemoved ? false : isDisabled}
-          size={ButtonBaseSize.Sm}
+          size={ButtonBaseSize.Md}
           endIconName={IconName.ArrowDown}
           backgroundColor={
             isNetworkFilterPopoverOpen
@@ -338,7 +367,17 @@ const AssetListControlBar = ({
           borderColor={BorderColor.borderDefault}
           ellipsis
         >
-          {networkButtonText}
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            {singleNetworkIconUrl && (
+              <AvatarNetwork
+                name={currentMultichainNetwork.nickname}
+                src={singleNetworkIconUrl}
+                size={AvatarNetworkSize.Sm}
+                borderWidth={0}
+              />
+            )}
+            <Text ellipsis>{networkButtonText}</Text>
+          </Box>
         </ButtonBase>
 
         <Box
@@ -352,9 +391,9 @@ const AssetListControlBar = ({
                 data-testid="sort-by-popover-toggle"
                 className="asset-list-control-bar__button"
                 onClick={toggleTokenSortPopover}
-                size={ButtonBaseSize.Sm}
+                size={ButtonBaseSize.Md}
                 startIconName={IconName.Filter}
-                startIconProps={{ marginInlineEnd: 0 }}
+                startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
                 backgroundColor={
                   isTokenSortPopoverOpen
                     ? BackgroundColor.backgroundPressed
