@@ -99,6 +99,8 @@ export const NonEvmBalanceCheck = () => {
     metaMetricsId,
     isMetaMetricsEnabled,
     isMarketingEnabled,
+    hasAccountForChain,
+    accounts,
   ]);
 
   return null;
