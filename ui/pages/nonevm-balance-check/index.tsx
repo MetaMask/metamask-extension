@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import { NonEvmQueryParams } from '../../../shared/lib/deep-links/routes/nonevm';
@@ -9,10 +9,12 @@ import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { RampsMetaMaskEntry } from '../../hooks/ramps/useRamps/useRamps';
 import {
   getDataCollectionForMarketing,
+  getMetaMaskAccountsOrdered,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../../selectors';
 import { BaseUrl } from '../../../shared/constants/urls';
+import { NEW_ACCOUNT_ROUTE } from '../../helpers/constants/routes';
 
 const { getExtensionURL } = globalThis.platform;
 
@@ -49,10 +51,12 @@ const getBuyUrl = (
 };
 
 export const NonEvmBalanceCheck = () => {
+  const history = useHistory();
   const location = useLocation();
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  const accounts = useSelector(getMetaMaskAccountsOrdered);
 
   const params = new URLSearchParams(location.search);
   const chainId = params
@@ -66,8 +70,15 @@ export const NonEvmBalanceCheck = () => {
       return;
     }
 
+    // If there are no accounts, redirect to account creation
+    if (accounts.length === 0) {
+      history.push(NEW_ACCOUNT_ROUTE);
+      return;
+    }
+
     const hasPositiveBalance = assetsWithBalance.some(
-      (asset) => asset.balance && asset.balance !== '0',
+      (asset) =>
+        asset.chainId === chainId && asset.balance && asset.balance !== '0',
     );
 
     window.location.href = hasPositiveBalance
