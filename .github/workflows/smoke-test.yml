@@ -1,0 +1,93 @@
+name: Playwright Smoketest
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *' # nightly at 06:00 UTC against main
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+jobs:
+  smoketest-nightly:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.0'
+
+      - name: Enable Corepack (Yarn)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Install Playwright Chromium
+        run: yarn playwright install chromium --with-deps
+
+      - name: Build extension dist
+        run: yarn dist
+
+      - name: Run smoketest (headless)
+        env:
+          CI: 'true'
+          PLAYWRIGHT_HEADLESS: '1'
+        run: |
+          yarn playwright test --project=smoketest
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-nightly
+          path: public/playwright/playwright-reports/html
+
+  smoketest-pr:
+    if: |
+      github.event_name == 'pull_request' && contains(toJson(github.event.pull_request.labels), 'smoke-test')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.0'
+
+      - name: Enable Corepack (Yarn)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Install Playwright Chromium
+        run: yarn playwright install chromium --with-deps
+
+      - name: Build extension dist
+        run: yarn dist
+
+      - name: Run smoketest (headless)
+        env:
+          CI: 'true'
+          PLAYWRIGHT_HEADLESS: '1'
+        run: |
+          yarn playwright test --project=smoketest
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-pr
+          path: public/playwright/playwright-reports/html
+
