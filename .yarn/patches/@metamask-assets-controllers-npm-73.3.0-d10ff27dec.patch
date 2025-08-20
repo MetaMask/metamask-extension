@@ -1,18 +1,18 @@
 diff --git a/dist/DeFiPositionsController/DeFiPositionsController.cjs b/dist/DeFiPositionsController/DeFiPositionsController.cjs
-index bdf9fd13708b9b9ee88fc0d5823f5afb30fce305..17fabe0594dcaccc7f4d2f7f54f89a575bde247e 100644
+index 17fabe0594dcaccc7f4d2f7f54f89a575bde247e..937784721dd084f1583b0cc437bfee94d954f196 100644
 --- a/dist/DeFiPositionsController/DeFiPositionsController.cjs
 +++ b/dist/DeFiPositionsController/DeFiPositionsController.cjs
 @@ -18,7 +18,7 @@ const calculate_defi_metrics_1 = require("./calculate-defi-metrics.cjs");
  const fetch_positions_1 = require("./fetch-positions.cjs");
  const group_defi_positions_1 = require("./group-defi-positions.cjs");
  const assetsUtil_1 = require("../assetsUtil.cjs");
--const TEN_MINUTES_IN_MS = 60000;
-+const TEN_MINUTES_IN_MS = 600000;
+-const TEN_MINUTES_IN_MS = 600000;
++const TEN_MINUTES_IN_MS = 6000000;
  const FETCH_POSITIONS_BATCH_SIZE = 10;
  const controllerName = 'DeFiPositionsController';
  const controllerMetadata = {
 diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
-index da8ec3d363bd775b23a70c12c3c4638ab00cd860..6b985729b22a35ea6409a3567bffc93b3bdd6dd0 100644
+index 2c759f2ecc76b0a6f467166a2e4d077dc951445e..ed9bd88af4da25e058c6863aca72932f29313b8c 100644
 --- a/dist/assetsUtil.cjs
 +++ b/dist/assetsUtil.cjs
 @@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -20,7 +20,7 @@ index da8ec3d363bd775b23a70c12c3c4638ab00cd860..6b985729b22a35ea6409a3567bffc93b
  };
  Object.defineProperty(exports, "__esModule", { value: true });
 +function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }
- exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.reduceInBatchesSerially = exports.divideIntoBatches = exports.ethersBigNumberToBN = exports.addUrlProtocolPrefix = exports.getFormattedIpfsUrl = exports.getIpfsCIDv1AndPath = exports.removeIpfsProtocolPrefix = exports.isTokenListSupportedForNetwork = exports.isTokenDetectionSupportedForNetwork = exports.SupportedStakedBalanceNetworks = exports.SupportedTokenDetectionNetworks = exports.formatIconUrlWithProxy = exports.formatAggregatorNames = exports.hasNewCollectionFields = exports.compareNftMetadata = exports.TOKEN_PRICES_BATCH_SIZE = void 0;
+ exports.accountAddressToCaipReference = exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.reduceInBatchesSerially = exports.divideIntoBatches = exports.ethersBigNumberToBN = exports.addUrlProtocolPrefix = exports.getFormattedIpfsUrl = exports.getIpfsCIDv1AndPath = exports.removeIpfsProtocolPrefix = exports.isTokenListSupportedForNetwork = exports.isTokenDetectionSupportedForNetwork = exports.SupportedStakedBalanceNetworks = exports.SupportedTokenDetectionNetworks = exports.formatIconUrlWithProxy = exports.formatAggregatorNames = exports.hasNewCollectionFields = exports.compareNftMetadata = exports.TOKEN_PRICES_BATCH_SIZE = void 0;
  const controller_utils_1 = require("@metamask/controller-utils");
  const utils_1 = require("@metamask/utils");
 @@ -237,7 +238,7 @@ async function getIpfsCIDv1AndPath(ipfsUrl) {
