@@ -4397,7 +4397,7 @@
     "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites', $2 is the snap name."
   },
   "permission_rpcDescription": {
-    "message": "$$1 측이 $2 스냅으로 메시지를 전송하고 $2에서 응답을 받도록 허용합니다.",
+    "message": "$1 측이 $2 스냅으로 메시지를 전송하고 $2에서 응답을 받도록 허용합니다.",
     "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites', $2 is the snap name."
   },
   "permission_rpcDescriptionOriginList": {
