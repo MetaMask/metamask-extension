@@ -8,6 +8,8 @@ import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../shared/constants/transaction';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useEthFiatAmount } from '../../../../../../hooks/useEthFiatAmount';
 import { formatAmount } from '../../../simulation-details/formatAmount';
@@ -18,7 +20,6 @@ import {
 } from '../../../../../../selectors';
 import { useFeeCalculations } from './useFeeCalculations';
 
-export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
 export const RATE_WEI_NATIVE = '0xDE0B6B3A7640000'; // 1x10^18
 export const METAMASK_FEE_PERCENTAGE = 0.35;
 

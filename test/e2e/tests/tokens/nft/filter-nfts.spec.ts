@@ -17,7 +17,7 @@ describe('View NFT details', function () {
           .withNftController({
             allNftContracts: {
               '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                [toHex(1337)]: [
+                [toHex(59144)]: [
                   {
                     address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
                     name: 'TestDappNFTs',
@@ -35,7 +35,7 @@ describe('View NFT details', function () {
             },
             allNfts: {
               '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                [toHex(1337)]: [
+                [toHex(59144)]: [
                   {
                     address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
                     description: 'Test Dapp NFTs for testing.',
@@ -46,7 +46,7 @@ describe('View NFT details', function () {
                     name: 'Test Dapp NFTs #1',
                     standard: 'ERC721',
                     tokenId: '1',
-                    chainId: 1337,
+                    chainId: 59144,
                   },
                 ],
                 [toHex(1)]: [
@@ -81,8 +81,10 @@ describe('View NFT details', function () {
           })
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            '0x1': true,
-            '0x539': true,
+            eip155: {
+              '0x1': true,
+              '0xe708': true,
+            },
           })
           .build(),
         smartContract,
@@ -96,21 +98,21 @@ describe('View NFT details', function () {
         await homePage.goToNftTab();
 
         const nftListPage = new NftListPage(driver);
-        await nftListPage.filterNftsByNetworks('Current network');
-        await nftListPage.check_numberOfNftsDisplayed(2);
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.toggleLineaEnablement();
+        await nftListPage.checkNumberOfNftsDisplayed(2);
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #2 on mainnet',
         );
-        await nftListPage.filterNftsByNetworks('Popular networks');
-        await nftListPage.check_numberOfNftsDisplayed(3);
-        await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #1');
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.toggleLineaEnablement();
+        await nftListPage.checkNumberOfNftsDisplayed(3);
+        await nftListPage.checkNftNameIsDisplayed('Test Dapp NFTs #1');
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #2 on mainnet',
         );
       },

@@ -13,6 +13,7 @@ import {
   getSnapInsightsControllerMessenger,
   getSnapInterfaceControllerMessenger,
   getSnapsRegistryMessenger,
+  getWebSocketServiceMessenger,
 } from './snaps';
 import {
   getTransactionControllerMessenger,
@@ -49,7 +50,10 @@ import {
 import {
   getAccountTreeControllerMessenger,
   getAccountTreeControllerInitMessenger,
+  getMultichainAccountServiceMessenger,
 } from './accounts';
+import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
+import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -108,6 +112,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getRateLimitControllerMessenger,
     getInitMessenger: getRateLimitControllerInitMessenger,
   },
+  SeedlessOnboardingController: {
+    getMessenger: getSeedlessOnboardingControllerMessenger,
+    getInitMessenger: noop,
+  },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
     getInitMessenger: noop,
@@ -155,5 +163,17 @@ export const CONTROLLER_MESSENGERS = {
   AccountTreeController: {
     getMessenger: getAccountTreeControllerMessenger,
     getInitMessenger: getAccountTreeControllerInitMessenger,
+  },
+  WebSocketService: {
+    getMessenger: getWebSocketServiceMessenger,
+    getInitMessenger: noop,
+  },
+  SmartTransactionsController: {
+    getMessenger: getSmartTransactionsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainAccountService: {
+    getMessenger: getMultichainAccountServiceMessenger,
+    getInitMessenger: noop,
   },
 } as const;

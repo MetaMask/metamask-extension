@@ -6,8 +6,8 @@ import { MultichainAccountsTree } from './index';
 import type {
   AccountGroupId,
   AccountWalletId,
-} from '@metamask/account-tree-controller';
-import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/multichain-accounts-selectors.types';
+} from '@metamask/account-api';
+import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 
 export default {
   title: 'Components/MultichainAccounts/MultichainAccountsTree',
@@ -26,11 +26,9 @@ export default {
 } as Meta<typeof MultichainAccountsTree>;
 
 const walletOneId: AccountWalletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
-const walletOneGroupId: AccountGroupId =
-  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ:default';
+const walletOneGroupId: AccountGroupId = `${walletOneId}/default`;
 const walletTwoId: AccountWalletId = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
-const walletTwoGroupId: AccountGroupId =
-  'entropy:01JKAF3PJ247KAM6C03G5Q0NP8:default';
+const walletTwoGroupId: AccountGroupId = `${walletTwoId}/default`;
 
 const mockWallets: ConsolidatedWallets = {
   [walletOneId]: {
@@ -60,6 +58,14 @@ const mockWallets: ConsolidatedWallets = {
             scopes: [EthScope.Eoa],
             type: EthAccountType.Eoa,
             balance: '0x0',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+            active: false,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+            label: '',
           },
           {
             address: '0x123456789abcdef0123456789abcdef012345678',
@@ -76,6 +82,14 @@ const mockWallets: ConsolidatedWallets = {
             scopes: [EthScope.Eoa],
             type: EthAccountType.Eoa,
             balance: '0x0',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+            active: false,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+            label: '',
           },
         ],
       },
@@ -108,6 +122,14 @@ const mockWallets: ConsolidatedWallets = {
             scopes: [EthScope.Eoa],
             type: EthAccountType.Erc4337,
             balance: '0x0',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+            active: false,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+            label: '',
           },
         ],
       },

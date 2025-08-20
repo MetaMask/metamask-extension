@@ -7,6 +7,7 @@ import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   getMultichainNetworkConfigurationsByChainId,
+  getUseTransactionSimulations,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
   selectTransactionValue,
@@ -17,7 +18,7 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { isBalanceSufficient } from '../../../send/send.utils';
+import { isBalanceSufficient } from '../../../send-legacy/send.utils';
 import { useConfirmContext } from '../../../context/confirm';
 
 export function useInsufficientBalanceAlerts({
@@ -31,12 +32,15 @@ export function useInsufficientBalanceAlerts({
     id: transactionId,
     chainId,
     selectedGasFeeToken,
+    gasFeeTokens,
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
     currentConfirmation?.nestedTransactions?.map(
       (trxn) => (trxn.value as Hex) ?? 0x0,
     ) ?? [];
+
+  const isSimulationEnabled = useSelector(getUseTransactionSimulations);
 
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId, chainId),
@@ -66,8 +70,14 @@ export function useInsufficientBalanceAlerts({
     balance,
   });
 
+  const canSkipSimulationChecks = ignoreGasFeeToken || !isSimulationEnabled;
+  const hasGaslessSimulationFinished =
+    canSkipSimulationChecks || Boolean(gasFeeTokens);
+
   const showAlert =
-    insufficientBalance && (ignoreGasFeeToken || !selectedGasFeeToken);
+    insufficientBalance &&
+    hasGaslessSimulationFinished &&
+    (ignoreGasFeeToken || !selectedGasFeeToken);
 
   return useMemo(() => {
     if (!showAlert) {

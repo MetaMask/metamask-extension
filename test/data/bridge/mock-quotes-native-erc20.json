@@ -16,6 +16,7 @@
       "srcTokenAmount": "9912500000000000",
       "destChainId": 137,
       "destAsset": {
+        "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
         "chainId": 137,
         "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
         "symbol": "USDC",
@@ -63,14 +64,15 @@
             "chainAgnosticId": null
           },
           "destAsset": {
-            "chainId": 10,
             "address": "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
-            "symbol": "USDC",
-            "name": "USD Coin",
+            "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+            "chainAgnosticId": null,
+            "chainId": 10,
             "decimals": 6,
             "icon": "https://assets.polygon.technology/tokenAssets/usdc.svg",
             "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
-            "chainAgnosticId": null
+            "name": "USD Coin",
+            "symbol": "USDC"
           },
           "srcAmount": "9912500000000000",
           "destAmount": "24456223"
@@ -95,6 +97,7 @@
             "chainAgnosticId": null
           },
           "destAsset": {
+            "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "chainId": 137,
             "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "symbol": "USDC",
@@ -125,6 +128,7 @@
           "decimals": 18
         },
         "destAsset": {
+          "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
           "chainId": 137,
           "address": "0x0000000000000000000000000000000000000000",
           "symbol": "MATIC",
@@ -162,6 +166,7 @@
       "srcTokenAmount": "9912500000000000",
       "destChainId": 137,
       "destAsset": {
+        "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
         "chainId": 137,
         "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
         "symbol": "USDC",
@@ -209,6 +214,7 @@
             "chainAgnosticId": null
           },
           "destAsset": {
+            "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "chainId": 10,
             "address": "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
             "symbol": "USDC",
@@ -241,6 +247,7 @@
             "chainAgnosticId": null
           },
           "destAsset": {
+            "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "chainId": 137,
             "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             "symbol": "USDC",
@@ -271,6 +278,7 @@
           "decimals": 18
         },
         "destAsset": {
+          "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
           "chainId": 137,
           "address": "0x0000000000000000000000000000000000000000",
           "symbol": "MATIC",

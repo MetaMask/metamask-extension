@@ -1,6 +1,8 @@
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
@@ -8,7 +10,6 @@ import { updateSelectedGasFeeToken } from '../../../store/controller-actions/tra
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../test/data/confirmations/gas';
-import { NATIVE_TOKEN_ADDRESS } from '../components/confirm/info/hooks/useGasFeeToken';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useAutomaticGasFeeTokenSelect } from './useAutomaticGasFeeTokenSelect';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';

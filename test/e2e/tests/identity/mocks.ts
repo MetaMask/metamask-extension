@@ -42,11 +42,11 @@ export async function mockIdentityServices(
   }
   if (
     !userStorageMockttpControllerInstance?.paths.get(
-      USER_STORAGE_FEATURE_NAMES.networks,
+      USER_STORAGE_FEATURE_NAMES.addressBook,
     )
   ) {
     userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_FEATURE_NAMES.networks,
+      USER_STORAGE_FEATURE_NAMES.addressBook,
       server,
     );
   }

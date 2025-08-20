@@ -14,7 +14,7 @@ const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
-const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
+const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -156,10 +156,7 @@ async function setupMocking(
         return {
           url: 'http://localhost:8545',
         };
-      } else if (
-        ALLOWLISTED_URLS.includes(url) ||
-        ALLOWLISTED_HOSTS.includes(host)
-      ) {
+      } else if (ALLOWLISTED_URLS.includes(url)) {
         // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
         console.log('Request going to a live server ============', url);
         return {};
@@ -176,6 +173,28 @@ async function setupMocking(
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
+
+  // User Profile Lineage
+  await server
+    .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          lineage: [
+            {
+              agent: 'mobile',
+              metametrics_id: '0xdeadbeef',
+              created_at: '2021-01-01',
+              updated_at: '2021-01-01',
+              counter: 1,
+            },
+          ],
+          created_at: '2025-07-16T10:03:57Z',
+          profile_id: '0deaba86-4b9d-4137-87d7-18bc5bf7708d',
+        },
+      };
+    });
 
   // Account link
   const accountLinkRegex =

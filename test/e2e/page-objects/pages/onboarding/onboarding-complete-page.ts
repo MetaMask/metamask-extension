@@ -11,6 +11,9 @@ class OnboardingCompletePage {
   private readonly onboardingCompleteDoneButton =
     '[data-testid="onboarding-complete-done"]';
 
+  private readonly downloadAppContinueButton =
+    '[data-testid="download-app-continue"]';
+
   private readonly pinExtensionDoneButton =
     '[data-testid="pin-extension-done"]';
 
@@ -24,6 +27,11 @@ class OnboardingCompletePage {
     tag: 'h2',
   };
 
+  private readonly keepSrpSafeMessage = {
+    text: 'Keep your Secret Recovery Phrase safe!',
+    tag: 'h2',
+  };
+
   private readonly remindMeLaterButton = {
     text: 'We’ll remind you later',
     tag: 'h2',
@@ -32,11 +40,16 @@ class OnboardingCompletePage {
   private readonly manageDefaultSettingsButton =
     '[data-testid="manage-default-settings"]';
 
+  private readonly downloadAppTitle = {
+    text: 'Scan QR code and download the app',
+    tag: 'h2',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.manageDefaultSettingsButton,
@@ -52,20 +65,53 @@ class OnboardingCompletePage {
     console.log('Onboarding wallet creation complete page is loaded');
   }
 
+  async checkPageIsLoadedBackup(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.keepSrpSafeMessage,
+        this.onboardingCompleteDoneButton,
+      ]);
+    } catch (e) {
+      console.error(
+        'Timeout while waiting for srp backup complete page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('SRP backup complete page is loaded');
+  }
+
   async clickCreateWalletDoneButton(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
       this.onboardingCompleteDoneButton,
     );
   }
 
-  async completeOnboarding(): Promise<void> {
+  async displayDownloadAppPageAndContinue(): Promise<void> {
+    await this.driver.waitForSelector(this.downloadAppTitle);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.downloadAppContinueButton,
+    );
+  }
+
+  async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
     console.log('Complete onboarding');
-    await this.clickCreateWalletDoneButton();
+    if (!isSocialImportFlow) {
+      await this.clickCreateWalletDoneButton();
+    }
+
+    await this.displayDownloadAppPageAndContinue();
+
     await this.driver.waitForSelector(this.installCompleteMessage);
     await this.driver.waitForSelector(this.pinExtensionMessage);
     await this.driver.clickElementAndWaitToDisappear(
       this.pinExtensionDoneButton,
     );
+  }
+
+  async completeBackup(): Promise<void> {
+    console.log('Complete backup');
+    await this.clickCreateWalletDoneButton();
   }
 
   async navigateToDefaultPrivacySettings(): Promise<void> {
@@ -74,11 +120,15 @@ class OnboardingCompletePage {
     );
   }
 
-  async check_walletReadyMessageIsDisplayed(): Promise<void> {
+  async checkWalletReadyMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.walletReadyMessage);
   }
 
-  async check_remindMeLaterButtonIsDisplayed(): Promise<void> {
+  async checkKeepSrpSafeMessageIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.keepSrpSafeMessage);
+  }
+
+  async checkRemindMeLaterButtonIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.remindMeLaterButton);
   }
 }

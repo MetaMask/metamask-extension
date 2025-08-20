@@ -5,7 +5,8 @@ import {
 } from '../../tests/solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
-import { updateNetworkCheckboxes } from '../multichain-api/testHelpers';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import {
   account1Short,
   account2Short,
@@ -18,15 +19,43 @@ import {
 
 describe('Solana Wallet Standard - e2e tests', function () {
   describe('Solana Wallet Standard - Connect & disconnect', function () {
-    it('Should connect', async function () {
+    it('Should onboard and connect when there are no existing Solana accounts in the wallet', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          numberOfAccounts: 0,
           title: this.test?.fullTitle(),
         },
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+
+          await connectSolanaTestDapp(driver, testDapp, { onboard: true });
+
+          const header = await testDapp.getHeader();
+
+          const connectionStatus = await header.getConnectionStatus();
+          assertConnected(connectionStatus);
+
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+        },
+      );
+    });
+
+    it('Should connect when there is an existing Solana account in the wallet', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          numberOfAccounts: 1,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+
           await connectSolanaTestDapp(driver, testDapp);
 
           const header = await testDapp.getHeader();
@@ -48,6 +77,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           // 1. Start connection and cancel it
           const header = await testDapp.getHeader();
@@ -63,7 +93,11 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Cancel the connection
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.clickElement({ text: 'Cancel', tag: 'button' });
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
+          );
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.cancelConnect();
           await testDapp.switchTo();
 
           // Verify we're not connected
@@ -92,6 +126,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           // Start connection
           const header = await testDapp.getHeader();
@@ -103,13 +138,27 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Open the permissions modal
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.clickElement('[data-testid="permissions-tab"]');
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
+          );
+          await connectAccountConfirmation.checkPageIsLoaded();
 
           // Deselect all networks except "Ethereum Mainnet"
-          await updateNetworkCheckboxes(driver, ['Ethereum Mainnet']);
+          await connectAccountConfirmation.goToPermissionsTab();
+          await connectAccountConfirmation.openEditNetworksModal();
+
+          const networkPermissionSelectModal = new NetworkPermissionSelectModal(
+            driver,
+          );
+          await networkPermissionSelectModal.checkPageIsLoaded();
+          await networkPermissionSelectModal.updateNetworkStatus([
+            'Ethereum Mainnet',
+          ]);
+          await networkPermissionSelectModal.clickConfirmEditButton();
 
           // Click connect
-          await driver.clickElement({ text: 'Connect', tag: 'button' });
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.confirmConnect();
 
           // Switch back to test dapp
           await testDapp.switchTo();
@@ -129,6 +178,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp);
 
           const header = await testDapp.getHeader();
@@ -159,6 +209,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: true,
           });
@@ -174,7 +225,6 @@ describe('Solana Wallet Standard - e2e tests', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await switchToAccount(driver, 'Solana 1');
-          await driver.delay(regularDelayMs);
           await testDapp.switchTo();
 
           // Check that we're connected to the first account
@@ -185,7 +235,6 @@ describe('Solana Wallet Standard - e2e tests', function () {
     });
   });
   describe('Given I have connected to one of my two accounts', function () {
-    // eslint-disable-next-line mocha/no-skipped-tests
     it('Switching between them should NOT reflect in the dapp', async function () {
       await withSolanaAccountSnap(
         {
@@ -196,6 +245,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           // By default, the connection is established with the second account, which is the last one selected in the UI.
           await connectSolanaTestDapp(driver, testDapp, {
@@ -213,7 +263,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           );
           await switchToAccount(driver, 'Solana 1');
           await testDapp.switchTo();
-          await driver.delay(regularDelayMs);
+
           // Check that we're still connected to the second account
           account = await header.getAccount();
           assertConnected(account, account2Short);
@@ -242,6 +292,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp);
 
           const header = await testDapp.getHeader();
@@ -250,12 +301,13 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           await driver.refresh();
 
+          await testDapp.checkPageIsLoaded();
           const accountAfterRefresh = await header.getAccount();
           assertConnected(accountAfterRefresh, account1Short);
         },
       );
     });
-    // eslint-disable-next-line mocha/no-skipped-tests
+
     it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
       await withSolanaAccountSnap(
         {
@@ -266,12 +318,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: true,
           });
 
           await driver.refresh();
 
+          await testDapp.checkPageIsLoaded();
           const header = await testDapp.getHeader();
           const account = await header.getAccount();
           assertConnected(account, account2Short);
@@ -280,7 +334,6 @@ describe('Solana Wallet Standard - e2e tests', function () {
     });
   });
   describe('Given I have connected to Mainnet and Devnet', function () {
-    // eslint-disable-next-line mocha/no-skipped-tests
     it('Should use the Mainnet scope by default', async function () {
       await withSolanaAccountSnap(
         {
@@ -290,17 +343,19 @@ describe('Solana Wallet Standard - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             includeDevnet: true,
           });
 
           // Refresh the page
           await driver.refresh();
+          await testDapp.checkPageIsLoaded();
 
           // Set the endpoint to devnet as it has been reset after the refresh
           const header = await testDapp.getHeader();
           await header.setEndpoint(SOLANA_DEVNET_URL);
-          await driver.clickElement({ text: 'Update', tag: 'button' });
+          await testDapp.clickUpdateEndpointButton();
 
           const signMessageTest = await testDapp.getSignMessageTest();
           await signMessageTest.setMessage('Hello, world!');

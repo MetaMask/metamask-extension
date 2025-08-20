@@ -19,6 +19,7 @@ const initialStore = () => ({
     useExternalServices: true,
     isBackupAndSyncEnabled: true,
     isAccountSyncingEnabled: false,
+    isContactSyncingEnabled: false,
     participateInMetaMetrics: false,
     isBackupAndSyncUpdateLoading: false,
     keyrings: [],
@@ -61,10 +62,20 @@ describe('BackupAndSyncFeaturesToggles', () => {
       category: 'Settings',
       event: 'Settings Updated',
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         settings_group: 'backup_and_sync',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         settings_type: 'accounts',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         old_value: true,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         new_value: false,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         was_notifications_on: undefined,
       },
     });
@@ -110,6 +121,50 @@ describe('BackupAndSyncFeaturesToggles', () => {
     );
     expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
       BACKUPANDSYNC_FEATURES.accountSyncing,
+      false,
+    );
+  });
+
+  it('enables contact syncing', () => {
+    const store = initialStore();
+    store.metamask.isContactSyncingEnabled = false;
+
+    const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+
+    const { getByTestId } = render(
+      <Redux.Provider store={mockStore(store)}>
+        <BackupAndSyncFeaturesToggles />
+      </Redux.Provider>,
+    );
+    fireEvent.click(
+      getByTestId(
+        backupAndSyncFeaturesTogglesTestIds.contactSyncingToggleButton,
+      ),
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.contactSyncing,
+      true,
+    );
+  });
+
+  it('disables contact syncing', () => {
+    const store = initialStore();
+    store.metamask.isContactSyncingEnabled = true;
+
+    const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+
+    const { getByTestId } = render(
+      <Redux.Provider store={mockStore(store)}>
+        <BackupAndSyncFeaturesToggles />
+      </Redux.Provider>,
+    );
+    fireEvent.click(
+      getByTestId(
+        backupAndSyncFeaturesTogglesTestIds.contactSyncingToggleButton,
+      ),
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.contactSyncing,
       false,
     );
   });

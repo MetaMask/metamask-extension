@@ -5,9 +5,17 @@ import type { Hex } from './utils';
  * A version agnostic blob of contract addresses required for the DeleGator system to function.
  */
 export type DeleGatorEnvironment = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   DelegationManager: Hex;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   EIP7702StatelessDeleGatorImpl: Hex;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   EntryPoint: Hex;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SimpleFactory: Hex;
   implementations: {
     [implementation: string]: Hex;
@@ -46,11 +54,14 @@ export function getDeleGatorEnvironment(
       ArgsEqualityCheckEnforcer: c.ArgsEqualityCheckEnforcer,
       BlockNumberEnforcer: c.BlockNumberEnforcer,
       DeployedEnforcer: c.DeployedEnforcer,
+      ERC20BalanceChangeEnforcer: c.ERC20BalanceChangeEnforcer,
       ERC20BalanceGteEnforcer: c.ERC20BalanceGteEnforcer,
       ERC20TransferAmountEnforcer: c.ERC20TransferAmountEnforcer,
       ERC20StreamingEnforcer: c.ERC20StreamingEnforcer,
+      ERC721BalanceChangeEnforcer: c.ERC721BalanceChangeEnforcer,
       ERC721BalanceGteEnforcer: c.ERC721BalanceGteEnforcer,
       ERC721TransferEnforcer: c.ERC721TransferEnforcer,
+      ERC1155BalanceChangeEnforcer: c.ERC1155BalanceChangeEnforcer,
       ERC1155BalanceGteEnforcer: c.ERC1155BalanceGteEnforcer,
       IdEnforcer: c.IdEnforcer,
       LimitedCallsEnforcer: c.LimitedCallsEnforcer,
@@ -59,6 +70,7 @@ export function getDeleGatorEnvironment(
       ValueLteEnforcer: c.ValueLteEnforcer,
       MultiTokenPeriodEnforcer: c.MultiTokenPeriodEnforcer,
       NativeTokenTransferAmountEnforcer: c.NativeTokenTransferAmountEnforcer,
+      NativeBalanceChangeEnforcer: c.NativeBalanceChangeEnforcer,
       NativeBalanceGteEnforcer: c.NativeBalanceGteEnforcer,
       NativeTokenStreamingEnforcer: c.NativeTokenStreamingEnforcer,
       NativeTokenPaymentEnforcer: c.NativeTokenPaymentEnforcer,

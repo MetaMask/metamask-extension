@@ -27,7 +27,7 @@ class DecryptMessageConfirmation {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.decryptMessageConfirmationTitle,
@@ -62,7 +62,7 @@ class DecryptMessageConfirmation {
    *
    * @param balanceValue - The balance value to check.
    */
-  async check_accountBalance(balanceValue: string): Promise<void> {
+  async checkAccountBalance(balanceValue: string): Promise<void> {
     console.log(
       'Check account balance on decrypt message confirmation screen: ',
       balanceValue,
@@ -78,7 +78,7 @@ class DecryptMessageConfirmation {
    *
    * @param message - The decrypted message to check.
    */
-  async check_decryptedMessage(message: string): Promise<void> {
+  async checkDecryptedMessage(message: string): Promise<void> {
     console.log('Check decrypted message on decrypt message confirmation page');
     await this.driver.waitForSelector({
       css: this.decryptedMessage,

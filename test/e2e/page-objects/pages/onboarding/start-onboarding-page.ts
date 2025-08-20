@@ -1,3 +1,4 @@
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Driver } from '../../../webdriver/driver';
 
 class StartOnboardingPage {
@@ -36,11 +37,23 @@ class StartOnboardingPage {
   private readonly onboardingImportWithSrpButton =
     '[data-testid="onboarding-import-with-srp-button"]';
 
+  private readonly onboardingCreateWithGoogleButton =
+    '[data-testid="onboarding-create-with-google-button"]';
+
+  private readonly onboardingImportWithGoogleButton =
+    '[data-testid="onboarding-import-with-google-button"]';
+
+  private readonly onboardingCreateWithAppleButton =
+    '[data-testid="onboarding-create-with-apple-button"]';
+
+  private readonly onboardingImportWithAppleButton =
+    '[data-testid="onboarding-import-with-apple-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_bannerPageIsLoaded(): Promise<void> {
+  async checkBannerPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.welcomeMessage,
@@ -58,19 +71,19 @@ class StartOnboardingPage {
 
   async agreeToTermsOfUse(): Promise<void> {
     await this.driver.clickElement(this.getStartedButton);
+    await this.driver.waitForSelector(this.termsOfUseCheckbox);
     await this.driver.waitForSelector(this.termsOfUseScrollButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.termsOfUseScrollButton,
       5000,
     );
-    await this.driver.waitForSelector(this.termsOfUseCheckbox);
     await this.driver.clickElement(this.termsOfUseCheckbox);
     await this.driver.clickElementAndWaitToDisappear(
       this.termsOfUseAgreeButton,
     );
   }
 
-  async check_loginPageIsLoaded(): Promise<void> {
+  async checkLoginPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.logInMessage,
@@ -84,16 +97,44 @@ class StartOnboardingPage {
     console.log('Get started page is loaded');
   }
 
-  async createWalletWithSrp(): Promise<void> {
+  async createWalletWithSrp(socialLoginEnabled = true): Promise<void> {
     await this.driver.clickElement(this.createWalletButton);
-    await this.driver.waitForSelector(this.onboardingCreateWithSrpButton);
-    await this.driver.clickElement(this.onboardingCreateWithSrpButton);
+    if (socialLoginEnabled) {
+      await this.driver.clickElement(this.onboardingCreateWithSrpButton);
+    }
   }
 
   async importWallet(): Promise<void> {
     await this.driver.clickElement(this.importWalletButton);
-    await this.driver.waitForSelector(this.onboardingImportWithSrpButton);
     await this.driver.clickElement(this.onboardingImportWithSrpButton);
+  }
+
+  async createWalletWithSocialLogin(
+    authConnection = AuthConnection.Google,
+  ): Promise<void> {
+    await this.driver.clickElement(this.createWalletButton);
+
+    const socialLoginButton =
+      authConnection === AuthConnection.Google
+        ? this.onboardingCreateWithGoogleButton
+        : this.onboardingCreateWithAppleButton;
+
+    await this.driver.waitForSelector(socialLoginButton);
+    await this.driver.clickElement(socialLoginButton);
+  }
+
+  async importWalletWithSocialLogin(
+    authConnection = AuthConnection.Google,
+  ): Promise<void> {
+    await this.driver.clickElement(this.importWalletButton);
+
+    const socialLoginButton =
+      authConnection === AuthConnection.Google
+        ? this.onboardingImportWithGoogleButton
+        : this.onboardingImportWithAppleButton;
+
+    await this.driver.waitForSelector(socialLoginButton);
+    await this.driver.clickElement(socialLoginButton);
   }
 }
 

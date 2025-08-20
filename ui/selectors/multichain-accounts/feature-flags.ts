@@ -74,7 +74,6 @@ export const getMultichainAccountsRemoteFeatureFlags = (
   try {
     assert(multichainAccountsFeatureFlags, MultichainAccountsFeatureFlag);
   } catch (error) {
-    console.warn('Invalid multichain accounts feature flags:', error);
     return {
       enabled: false,
       featureVersion: null,

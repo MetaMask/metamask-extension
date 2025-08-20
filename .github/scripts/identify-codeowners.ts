@@ -28,7 +28,7 @@ const teamEmojis: TeamEmojis = {
   '@MetaMask/extension-devs': '🧩',
   '@MetaMask/policy-reviewers': '📜',
   '@MetaMask/supply-chain': '🔗',
-  '@MetaMask/snaps-devs': '🫰',
+  '@MetaMask/core-platform': '🫰',
   '@MetaMask/extension-security-team': '🔒',
   '@MetaMask/extension-privacy-reviewers': '🕵️',
   '@MetaMask/confirmations': '✅',
@@ -40,6 +40,9 @@ const teamEmojis: TeamEmojis = {
   '@MetaMask/ramp': '📈',
   '@MetaMask/wallet-ux': '🖥️',
   '@MetaMask/metamask-assets': '💎',
+  '@MetaMask/web3auth': '🔐',
+  '@MetaMask/transactions': '💸',
+  '@MetaMask/qa': '🧪',
 };
 
 main().catch((error: Error): void => {
@@ -232,14 +235,14 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
     // List files in a simplified, but properly-indented format
     const dirTree = buildSimpleDirectoryTree(files);
 
-    if(team === '@MetaMask/policy-reviewers') {
-      commentBody += policyReviewInstructions
-    }
-
     commentBody += renderSimpleDirectoryTree(dirTree, '');
 
     // Close the details tag
     commentBody += `</details>\n`;
+
+    if(team === '@MetaMask/policy-reviewers') {
+      commentBody += policyReviewInstructions
+    }
 
     // Only add divider if not the last team
     if (index < sortedOwners.length - 1) {

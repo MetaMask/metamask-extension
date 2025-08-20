@@ -48,11 +48,21 @@ const useTrackERC20WithoutDecimalInformation = (
         event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
         category: MetaMetricsEventCategory.Confirmations,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_decimals_available: 'not_available',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_address: tokenAddress,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_type: TokenStandard.ERC20,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: chainId,
           location: metricLocation,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           ui_customizations: [
             MetaMetricsEventUiCustomization.RedesignedConfirmation,
           ],

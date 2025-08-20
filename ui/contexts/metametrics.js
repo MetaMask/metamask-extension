@@ -9,18 +9,25 @@ import React, {
   useEffect,
   useRef,
   useCallback,
+  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
 import { matchPath, useLocation } from 'react-router-dom';
-import { captureException, captureMessage } from '@sentry/browser';
+import { useSelector } from 'react-redux';
 
 import { omit } from 'lodash';
+import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
 import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
+import { getParticipateInMetaMetrics } from '../selectors';
+import {
+  generateActionId,
+  submitRequestToBackground,
+} from '../store/background-connection';
 
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 
@@ -30,6 +37,9 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsPageObject} MetaMetricsPageObject
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsReferrerObject} MetaMetricsReferrerObject
+ * @typedef {import('../../shared/lib/trace').TraceRequest} TraceRequest
+ * @typedef {import('../../shared/lib/trace').EndTraceRequest} EndTraceRequest
+ * @typedef {import('../../shared/lib/trace').TraceCallback} TraceCallback
  */
 
 // types
@@ -44,7 +54,23 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
  */
 
 /**
- * @type {React.Context<UITrackEventMethod>}
+ * @typedef {<T>(request: TraceRequest, fn?: TraceCallback<T>) => Promise<T | undefined>} UITraceMethod
+ */
+
+/**
+ * @typedef {(request: EndTraceRequest) => void} UIEndTraceMethod
+ */
+
+/**
+ * @typedef {UITrackEventMethod & {
+ *   bufferedTrace?: UITraceMethod,
+ *   bufferedEndTrace?: UIEndTraceMethod,
+ *   onboardingParentContext?: React.MutableRefObject<Span | null>
+ * }} MetaMetricsContextValue
+ */
+
+/**
+ * @type {React.Context<MetaMetricsContextValue>}
  */
 export const MetaMetricsContext = createContext(() => {
   captureException(
@@ -57,6 +83,10 @@ export const MetaMetricsContext = createContext(() => {
 export function MetaMetricsProvider({ children }) {
   const location = useLocation();
   const context = useSegmentContext();
+  const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+
+  /** @type {React.MutableRefObject<Span | null>} */
+  const onboardingParentContext = useRef(null);
 
   // Sometimes we want to track context properties inside the event's "properties" object.
   const addContextPropsIntoEventProperties = useCallback(
@@ -80,19 +110,41 @@ export function MetaMetricsProvider({ children }) {
    * @type {UITrackEventMethod}
    */
   const trackEvent = useCallback(
-    (payload, options) => {
+    async (payload, options) => {
       addContextPropsIntoEventProperties(payload, options);
-      trackMetaMetricsEvent(
-        {
-          ...payload,
-          environmentType: getEnvironmentType(),
-          ...context,
-        },
-        options,
-      );
+
+      const fullPayload = {
+        ...payload,
+        environmentType: getEnvironmentType(),
+        ...context,
+      };
+
+      if (isMetricsEnabled) {
+        // If metrics are enabled, track immediately
+        trackMetaMetricsEvent(fullPayload, options);
+      } else {
+        // If metrics are not enabled, buffer the event
+        await submitRequestToBackground('addEventBeforeMetricsOptIn', [
+          { ...fullPayload, actionId: generateActionId() },
+        ]);
+      }
     },
-    [addContextPropsIntoEventProperties, context],
+    [addContextPropsIntoEventProperties, context, isMetricsEnabled],
   );
+
+  /**
+   * @type {UITraceMethod}
+   */
+  const bufferedTrace = useCallback((request, fn) => {
+    submitRequestToBackground('bufferedTrace', [request, fn]);
+  }, []);
+
+  /**
+   * @type {UIEndTraceMethod}
+   */
+  const bufferedEndTrace = useCallback((request) => {
+    submitRequestToBackground('bufferedEndTrace', [request]);
+  }, []);
 
   // Used to prevent double tracking page calls
   const previousMatch = useRef();
@@ -152,8 +204,14 @@ export function MetaMetricsProvider({ children }) {
     previousMatch.current = match?.path;
   }, [location, context]);
 
+  // For backwards compatibility, attach the new methods as properties to trackEvent
+  const trackEventWithMethods = trackEvent;
+  trackEventWithMethods.bufferedTrace = bufferedTrace;
+  trackEventWithMethods.bufferedEndTrace = bufferedEndTrace;
+  trackEventWithMethods.onboardingParentContext = onboardingParentContext;
+
   return (
-    <MetaMetricsContext.Provider value={trackEvent}>
+    <MetaMetricsContext.Provider value={trackEventWithMethods}>
       {children}
     </MetaMetricsContext.Provider>
   );
@@ -177,15 +235,48 @@ export class LegacyMetaMetricsProvider extends Component {
     // using the same name would result in whichever was lower in the tree to be
     // used.
     trackEvent: PropTypes.func,
+    bufferedTrace: PropTypes.func,
+    bufferedEndTrace: PropTypes.func,
   };
 
   getChildContext() {
+    const trackEventWithMethods = this.context;
     return {
-      trackEvent: this.context,
+      trackEvent: trackEventWithMethods,
+      bufferedTrace: trackEventWithMethods?.bufferedTrace,
+      bufferedEndTrace: trackEventWithMethods?.bufferedEndTrace,
     };
   }
 
   render() {
     return this.props.children;
   }
+}
+
+/**
+ * HOC for class components to access MetaMetricsContext
+ *
+ * @param {React.ComponentType} WrappedComponent - Component to wrap
+ * @returns {React.ComponentType} Wrapped component with MetaMetrics context
+ */
+export function withMetaMetrics(WrappedComponent) {
+  const WithMetaMetrics = (props) => {
+    const metaMetricsContext = useContext(MetaMetricsContext);
+
+    return (
+      <WrappedComponent
+        {...props}
+        trackEvent={metaMetricsContext}
+        bufferedTrace={metaMetricsContext?.bufferedTrace}
+        bufferedEndTrace={metaMetricsContext?.bufferedEndTrace}
+        onboardingParentContext={metaMetricsContext?.onboardingParentContext}
+      />
+    );
+  };
+
+  WithMetaMetrics.displayName = `withMetaMetrics(${
+    WrappedComponent.displayName || WrappedComponent.name || 'Component'
+  })`;
+
+  return WithMetaMetrics;
 }

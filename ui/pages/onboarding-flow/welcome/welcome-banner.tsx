@@ -2,14 +2,14 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Box,
-  ButtonBase,
-  ButtonBaseSize,
+  Button,
+  ButtonSize,
   IconName,
   Text,
 } from '../../../components/component-library';
 import {
   BlockSize,
-  FontWeight,
+  BorderRadius,
   TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -17,6 +17,8 @@ import TermsOfUsePopup from '../../../components/app/terms-of-use-popup';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -42,22 +44,22 @@ export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
         </Text>
         <Text
           variant={TextVariant.bodyLgMedium}
-          fontWeight={FontWeight.Normal}
           className="welcome-banner__description"
           marginBottom={6}
         >
           {t('welcomeDescription')}
         </Text>
-        <ButtonBase
+        <Button
           data-testid="onboarding-get-started-button"
           className="welcome-banner__button"
-          size={ButtonBaseSize.Lg}
+          size={ButtonSize.Lg}
           onClick={() => setShowTermsOfUse(true)}
           endIconName={IconName.Arrow2Right}
-          fontWeight={FontWeight.Medium}
+          textTransform={TextTransform.Uppercase}
+          borderRadius={BorderRadius.pill}
         >
           {t('welcomeGetStarted')}
-        </ButtonBase>
+        </Button>
       </Box>
       {showTermsOfUse && (
         <TermsOfUsePopup

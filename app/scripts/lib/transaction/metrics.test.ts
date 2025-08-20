@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Provider } from '@metamask/network-controller';
 import {
   TransactionMeta,
@@ -16,6 +17,7 @@ import {
 import {
   AssetType,
   EIP5792ErrorCode,
+  NATIVE_TOKEN_ADDRESS,
   TokenStandard,
   TransactionMetaMetricsEvent,
 } from '../../../../shared/constants/transaction';
@@ -55,6 +57,8 @@ const METHOD_NAME_MOCK = 'testMethod1';
 const METHOD_NAME_2_MOCK = 'testMethod2';
 
 const providerResultStub = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_getCode: '0x123',
 };
 const { provider } = createTestProviderTools({
@@ -66,7 +70,11 @@ const { provider } = createTestProviderTools({
 jest.mock('../snap-keyring/metrics', () => {
   return {
     getSnapAndHardwareInfoForMetrics: jest.fn().mockResolvedValue({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_snap_type: 'snaptype',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_snap_version: 'snapversion',
     }),
   };
@@ -150,6 +158,8 @@ describe('Transaction metrics', () => {
     mockTransactionMetaWithBlockaid = {
       ...JSON.parse(JSON.stringify(mockTransactionMeta)),
       securityAlertResponse: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: BlockaidResultType.Malicious,
         reason: BlockaidReason.maliciousDomain,
         providerRequestsCount: {
@@ -160,45 +170,111 @@ describe('Transaction metrics', () => {
     };
 
     expectedProperties = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_snap_type: 'snaptype',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_snap_version: 'snapversion',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       api_method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       asset_type: AssetType.native,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       chain_id: mockChainId,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       device_model: undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eip_1559_version: '0',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eip7702_upgrade_transaction: false,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_edit_attempted: 'none',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_estimation_failed: false,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_fee_selected: undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_insufficient_native_asset: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_paid_with: undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_payment_tokens_available: undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_smart_transaction: undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_edit_type: 'none',
       network: mockNetworkId,
       referrer: ORIGIN_METAMASK,
       source: MetaMetricsTransactionEventSource.User,
       status: 'unapproved',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_standard: TokenStandard.none,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_speed_up: false,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_type: TransactionType.simpleSend,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       ui_customizations: ['redesigned_confirmation'],
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_advanced_view: undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_contract_method: [],
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_internal_id: '1',
     };
 
     expectedSensitiveProperties = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       default_estimate: MetaMetricsEventTransactionEstimateType.DefaultEstimate,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       default_gas: '0.000031501',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       default_gas_price: '2',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       first_seen: 1624408066355,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_limit: '0x7b0d',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_price: '2',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_contract_address: [],
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_replaced: undefined,
     };
 
@@ -411,13 +487,23 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ui_customizations: [
               'flagged_as_malicious',
               'redesigned_confirmation',
             ],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_reason: BlockaidReason.maliciousDomain,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_response: 'Malicious',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ppom_eth_call_count: 5,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ppom_eth_getCode_count: 3,
           },
           sensitiveProperties: expectedSensitiveProperties,
@@ -557,13 +643,23 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ui_customizations: [
               'flagged_as_malicious',
               'redesigned_confirmation',
             ],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_reason: BlockaidReason.maliciousDomain,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_response: 'Malicious',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ppom_eth_call_count: 5,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ppom_eth_getCode_count: 3,
           },
           sensitiveProperties: {
@@ -695,7 +791,11 @@ describe('Transaction metrics', () => {
           properties: expectedProperties,
           sensitiveProperties: {
             ...expectedSensitiveProperties,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             completion_time: expect.any(String),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             gas_used: '0.000000291',
             status: METRICS_STATUS_FAILED,
           },
@@ -762,18 +862,32 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ui_customizations: [
               'flagged_as_malicious',
               'redesigned_confirmation',
             ],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_reason: BlockaidReason.maliciousDomain,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_response: 'Malicious',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ppom_eth_call_count: 5,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ppom_eth_getCode_count: 3,
           },
           sensitiveProperties: {
             ...expectedSensitiveProperties,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             completion_time: expect.any(String),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             gas_used: '0.000000291',
             status: METRICS_STATUS_FAILED,
           },
@@ -800,21 +914,39 @@ describe('Transaction metrics', () => {
       const properties = {
         ...expectedProperties,
         status: TransactionStatus.confirmed,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         transaction_type: TransactionType.contractInteraction,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         asset_type: AssetType.unknown,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         ui_customizations: [
           MetaMetricsEventUiCustomization.RedesignedConfirmation,
         ],
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         is_smart_transaction: undefined,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         transaction_advanced_view: undefined,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         rpc_domain: 'private',
       };
       const sensitiveProperties = {
         ...expectedSensitiveProperties,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         transaction_contract_address: [
           '0x1678a085c290ebd122dc42cba69373b5953b831d',
         ],
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         completion_time: expect.any(String),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         gas_used: '0.000000291',
         status: METRICS_STATUS_FAILED,
       };
@@ -905,8 +1037,14 @@ describe('Transaction metrics', () => {
           properties: expectedProperties,
           sensitiveProperties: {
             ...expectedSensitiveProperties,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             completion_time: expect.any(String),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             completion_time_onchain: '0.88',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             gas_used: '0.000000291',
             status: METRICS_STATUS_FAILED,
           },
@@ -975,6 +1113,8 @@ describe('Transaction metrics', () => {
           sensitiveProperties: {
             ...expectedSensitiveProperties,
             dropped: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             transaction_replaced: 'other',
           },
         },
@@ -1033,18 +1173,30 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ui_customizations: [
               'flagged_as_malicious',
               'redesigned_confirmation',
             ],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_reason: BlockaidReason.maliciousDomain,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_response: 'Malicious',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ppom_eth_call_count: 5,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ppom_eth_getCode_count: 3,
           },
           sensitiveProperties: {
             ...expectedSensitiveProperties,
             dropped: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             transaction_replaced: 'other',
           },
         },
@@ -1162,13 +1314,23 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ui_customizations: [
               'flagged_as_malicious',
               'redesigned_confirmation',
             ],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_reason: BlockaidReason.maliciousDomain,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_response: 'Malicious',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ppom_eth_call_count: 5,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ppom_eth_getCode_count: 3,
           },
           sensitiveProperties: expectedSensitiveProperties,
@@ -1203,6 +1365,8 @@ describe('Transaction metrics', () => {
       expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith(
         expect.objectContaining({
           properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eip7702_upgrade_rejection: true,
           }),
         }),
@@ -1336,6 +1500,7 @@ describe('Transaction metrics', () => {
     it('includes gas_paid_with if selected gas fee token', async () => {
       const transactionMeta = {
         ...mockTransactionMeta,
+        type: 'gas_payment',
         gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
         selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
       } as TransactionMeta;
@@ -1351,6 +1516,31 @@ describe('Transaction metrics', () => {
       expect(properties).toStrictEqual(
         expect.objectContaining({
           gas_paid_with: GAS_FEE_TOKEN_MOCK.symbol,
+          transaction_type: 'gas_payment',
+        }),
+      );
+    });
+
+    it('set gas_paid_with to "pre-funded_ETH" if gas is paid using Future ETH', async () => {
+      const transactionMeta = {
+        ...mockTransactionMeta,
+        gasFeeTokens: [
+          { ...GAS_FEE_TOKEN_MOCK, tokenAddress: NATIVE_TOKEN_ADDRESS },
+        ],
+        selectedGasFeeToken: NATIVE_TOKEN_ADDRESS,
+      } as TransactionMeta;
+
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta,
+      });
+
+      const { properties } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
+
+      expect(properties).toStrictEqual(
+        expect.objectContaining({
+          gas_paid_with: 'pre-funded_ETH',
         }),
       );
     });
@@ -1375,27 +1565,6 @@ describe('Transaction metrics', () => {
       expect(properties).toStrictEqual(
         expect.objectContaining({
           gas_payment_tokens_available: [GAS_FEE_TOKEN_MOCK.symbol, 'DAI'],
-        }),
-      );
-    });
-
-    it('includes transasction_type as gas_payment', async () => {
-      const transactionMeta = {
-        ...mockTransactionMeta,
-        batchId: '0x123',
-      } as TransactionMeta;
-
-      await fn(mockTransactionMetricsRequest, {
-        transactionMeta,
-      });
-
-      const { properties } = jest.mocked(
-        mockTransactionMetricsRequest.createEventFragment,
-      ).mock.calls[0][0];
-
-      expect(properties).toStrictEqual(
-        expect.objectContaining({
-          transaction_type: 'gas_payment',
         }),
       );
     });
@@ -1456,6 +1625,80 @@ describe('Transaction metrics', () => {
       expect(properties).toStrictEqual(
         expect.objectContaining({
           gas_insufficient_native_asset: false,
+        }),
+      );
+    });
+
+    it('sets account_type to `error`, if wallet is locked', async () => {
+      jest
+        .mocked(mockTransactionMetricsRequest.getAccountType)
+        .mockRejectedValueOnce(new Error('error'));
+
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMeta,
+      });
+
+      const { properties } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
+
+      expect(properties).toStrictEqual(
+        expect.objectContaining({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'error',
+        }),
+      );
+    });
+
+    it('includes swap or bridge specific types', async () => {
+      const transactionMetaForSwap = {
+        ...mockTransactionMeta,
+        type: TransactionType.swap,
+        assetsFiatValues: {
+          sending: '100',
+          receiving: '100',
+        },
+      } as TransactionMeta;
+
+      const transactionMetaForBridge = {
+        ...mockTransactionMeta,
+        type: TransactionType.bridge,
+        assetsFiatValues: {
+          sending: '200',
+          receiving: '200',
+        },
+      } as TransactionMeta;
+
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta: transactionMetaForSwap,
+      });
+
+      const { properties: propertiesForSwap } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
+
+      expect(propertiesForSwap).toStrictEqual(
+        expect.objectContaining({
+          transaction_type: 'mm_swap',
+          simulation_sending_assets_total_value: '100',
+          simulation_receiving_assets_total_value: '100',
+        }),
+      );
+
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta: transactionMetaForBridge,
+      });
+
+      const { properties: propertiesForBridge } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[1][0];
+
+      expect(propertiesForBridge).toStrictEqual(
+        expect.objectContaining({
+          transaction_type: 'mm_bridge',
+          simulation_sending_assets_total_value: '200',
+          simulation_receiving_assets_total_value: '200',
         }),
       );
     });

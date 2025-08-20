@@ -1,6 +1,8 @@
 import { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
+import { PhishingController } from '@metamask/phishing-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
+import { PreferencesController } from '../../controllers/preferences-controller';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
@@ -9,35 +11,41 @@ import {
   isEthSignTypedData,
   isEthSendTransaction,
   hasValidTransactionParams,
-  isProdEnabled,
+  isSecurityAlertsEnabledByUser,
+  isConnected,
+  connectScreenHasBeenPrompted,
 } from './trust-signals-util';
 
 export function createTrustSignalsMiddleware(
   networkController: NetworkController,
   appStateController: AppStateController,
+  phishingController: PhishingController,
+  preferencesController: PreferencesController,
+  getPermittedAccounts: (origin: string) => string[],
 ) {
   return async (
-    req: JsonRpcRequest,
+    req: JsonRpcRequest & { origin?: string },
     _res: JsonRpcResponse,
     next: () => void,
   ) => {
     try {
-      if (!isSecurityAlertsAPIEnabled() || !isProdEnabled()) {
+      if (
+        !isSecurityAlertsEnabledByUser(preferencesController) ||
+        !isSecurityAlertsAPIEnabled()
+      ) {
         return;
       }
 
       if (isEthSendTransaction(req)) {
-        await handleEthSendTransaction(
-          req,
-          appStateController,
-          networkController,
-        );
+        handleEthSendTransaction(req, appStateController, networkController);
+        scanUrl(req, phishingController);
       } else if (isEthSignTypedData(req)) {
-        await handleEthSignTypedData(
-          req,
-          appStateController,
-          networkController,
-        );
+        handleEthSignTypedData(req, appStateController, networkController);
+        scanUrl(req, phishingController);
+      } else if (isConnected(req, getPermittedAccounts)) {
+        scanUrl(req, phishingController);
+      } else if (connectScreenHasBeenPrompted(req)) {
+        scanUrl(req, phishingController);
       }
     } catch (error) {
       console.error('[createTrustSignalsMiddleware] error: ', error);
@@ -47,7 +55,18 @@ export function createTrustSignalsMiddleware(
   };
 }
 
-async function handleEthSendTransaction(
+function scanUrl(
+  req: JsonRpcRequest & { origin?: string },
+  phishingController: PhishingController,
+) {
+  if (req.origin) {
+    phishingController.scanUrl(req.origin).catch((error) => {
+      console.error('[createTrustSignalsMiddleware] error:', error);
+    });
+  }
+}
+
+function handleEthSendTransaction(
   req: JsonRpcRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
@@ -57,10 +76,17 @@ async function handleEthSendTransaction(
   }
 
   const { to } = req.params[0];
-  await scanAddressAndAddToCache(to, appStateController, networkController);
+  scanAddressAndAddToCache(to, appStateController, networkController).catch(
+    (error) => {
+      console.error(
+        '[createTrustSignalsMiddleware] error scanning address for transaction:',
+        error,
+      );
+    },
+  );
 }
 
-async function handleEthSignTypedData(
+function handleEthSignTypedData(
   req: JsonRpcRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
@@ -79,9 +105,14 @@ async function handleEthSignTypedData(
     return;
   }
 
-  await scanAddressAndAddToCache(
+  scanAddressAndAddToCache(
     verifyingContract,
     appStateController,
     networkController,
-  );
+  ).catch((error) => {
+    console.error(
+      '[createTrustSignalsMiddleware] error scanning address for signature:',
+      error,
+    );
+  });
 }

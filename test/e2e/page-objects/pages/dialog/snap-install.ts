@@ -44,7 +44,7 @@ class SnapInstall {
     this.driver = driver;
   }
 
-  async check_messageResultSpan(
+  async checkMessageResultSpan(
     spanSelectorId: string,
     expectedMessage: string,
   ) {
@@ -55,7 +55,7 @@ class SnapInstall {
     });
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.pageFooter,
@@ -105,6 +105,11 @@ class SnapInstall {
       'Clicking Confirm/Ok button without waiting for the dialog to close',
     );
     await this.driver.clickElement(this.okButton);
+  }
+
+  async clickFooterConfirmButton() {
+    console.log('Clicking Confirm button');
+    await this.driver.clickElement(this.nextPageButton);
   }
 
   async updateScrollAndClickConfirmButton() {

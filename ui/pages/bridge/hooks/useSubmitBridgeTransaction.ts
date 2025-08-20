@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import { createProjectLogger } from '@metamask/utils';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { captureException } from '@sentry/browser';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -14,10 +13,11 @@ import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import {
-  getSmartTransactionsEnabled,
+  getIsSmartTransaction,
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
-import useSnapConfirmation from './useSnapConfirmation';
+import { getFromChain } from '../../../ducks/bridge/selectors';
+import { captureException } from '../../../../shared/lib/sentry';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
@@ -59,10 +59,11 @@ export default function useSubmitBridgeTransaction() {
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
-  // This redirects to the confirmation page if an unapproved snap confirmation exists
-  useSnapConfirmation();
+  const fromChain = useSelector(getFromChain);
+  const smartTransactionsEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
 
-  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
@@ -70,20 +71,25 @@ export default function useSubmitBridgeTransaction() {
       history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
 
-    if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
-      // Move to activity tab before submitting a transaction
-      // This is a temporary solution to avoid the transaction not being shown in the activity tab
-      // We should find a better solution in the future
-      await dispatch(setDefaultHomeActiveTabName('activity'));
-      await dispatch(submitBridgeTx(quoteResponse, false));
-      // The useSnapConfirmation hook redirects to the confirmation page right after
-      // submitting the tx so everything below is unnecessary and we can return early
-      return;
-    }
-
     // Execute transaction(s)
     try {
-      await dispatch(submitBridgeTx(quoteResponse, smartTransactionsEnabled));
+      if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        history.push({
+          pathname: DEFAULT_ROUTE,
+          state: { stayOnHomePage: true },
+        });
+        await dispatch(submitBridgeTx(quoteResponse, false));
+        return;
+      }
+      await dispatch(
+        await submitBridgeTx(
+          quoteResponse,
+          isSolanaChainId(quoteResponse.quote.srcChainId)
+            ? false
+            : smartTransactionsEnabled,
+        ),
+      );
     } catch (e) {
       debugLog('Bridge transaction failed', e);
       captureException(e);

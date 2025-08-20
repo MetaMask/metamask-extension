@@ -60,7 +60,7 @@ class AddEditNetworkModal {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.networkNameInputField,
@@ -84,7 +84,9 @@ class AddEditNetworkModal {
    */
   async addExplorerUrl(explorerUrl: string): Promise<void> {
     console.log(`Add explorer URL ${explorerUrl}`);
-    await this.driver.clickElement(this.explorerUrlInputDropDownButton);
+    await this.driver.findScrollToAndClickElement(
+      this.explorerUrlInputDropDownButton,
+    );
     await this.driver.clickElement(this.addExplorerUrlButton);
     await this.driver.waitForSelector(this.addExplorerUrlTitle);
     await this.driver.fill(this.addExplorerUrlInput, explorerUrl);
@@ -167,7 +169,7 @@ class AddEditNetworkModal {
    *
    * @param shouldBeEnabled - Whether the chain id input field should be enabled. Defaults to true.
    */
-  async check_chainIdInputFieldIsEnabled(
+  async checkChainIdInputFieldIsEnabled(
     shouldBeEnabled: boolean = true,
   ): Promise<void> {
     console.log(
@@ -184,7 +186,7 @@ class AddEditNetworkModal {
    *
    * @param errorMessage - The error message to check.
    */
-  async check_chainIdInputErrorMessageIsDisplayed(
+  async checkChainIdInputErrorMessageIsDisplayed(
     errorMessage: string,
   ): Promise<void> {
     console.log(
@@ -196,7 +198,7 @@ class AddEditNetworkModal {
     });
   }
 
-  async check_currencySymbolWarningIsDisplayed(
+  async checkCurrencySymbolWarningIsDisplayed(
     warningMessage: string,
   ): Promise<void> {
     console.log(
@@ -214,7 +216,7 @@ class AddEditNetworkModal {
    * @param rpcName - The name of the RPC to check.
    * @param shouldBeDisplayed - Whether the RPC should be displayed or not, default is true.
    */
-  async check_rpcIsDisplayed(
+  async checkRpcIsDisplayed(
     rpcName: string,
     shouldBeDisplayed: boolean = true,
   ): Promise<void> {
@@ -237,7 +239,7 @@ class AddEditNetworkModal {
     }
   }
 
-  async check_saveButtonIsEnabled(): Promise<boolean> {
+  async checkSaveButtonIsEnabled(): Promise<boolean> {
     console.log('Check if save button is enabled on add/edit network modal');
     try {
       await this.driver.findClickableElement(this.editModalSaveButton, {

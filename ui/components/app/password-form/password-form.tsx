@@ -11,13 +11,24 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 type PasswordFormProps = {
   onChange: (password: string) => void;
+  pwdInputTestId?: string;
+  confirmPwdInputTestId?: string;
 };
 
-export default function PasswordForm({ onChange }: PasswordFormProps) {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export default function PasswordForm({
+  onChange,
+  pwdInputTestId,
+  confirmPwdInputTestId,
+}: PasswordFormProps) {
   const t = useI18nContext();
 
   const [password, setPassword] = useState('');
@@ -76,6 +87,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
           as="span"
           key={score}
           data-testid={passwordStrengthLabel.dataTestId}
+          color={TextColor.textAlternative}
         >
           {passwordStrengthLabel.text}
         </Text>
@@ -133,20 +145,21 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
   return (
     <Box>
       <FormTextField
-        label={t('newPassword')}
+        label={t('newPasswordCreate')}
         id="create-password-new"
         autoFocus
         autoComplete
-        placeholder={t('newPasswordPlaceholder')}
-        labelProps={{ marginBottom: 1 }}
         size={FormTextFieldSize.Lg}
         value={password}
         inputProps={{
-          'data-testid': 'create-password-new-input',
+          'data-testid': pwdInputTestId || 'create-password-new-input',
           type: showPassword ? InputType.Text : InputType.Password,
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           handlePasswordChange(e.target.value);
+        }}
+        helpTextProps={{
+          color: TextColor.textAlternative,
         }}
         helpText={passwordStrengthElement && passwordStrengthElement}
         endAccessory={
@@ -170,8 +183,6 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         id="create-password-confirm"
         autoComplete
         marginTop={4}
-        placeholder={t('confirmPasswordPlaceholder')}
-        labelProps={{ marginBottom: 1 }}
         size={FormTextFieldSize.Lg}
         error={Boolean(confirmPasswordError)}
         helpTextProps={{
@@ -179,9 +190,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         }}
         helpText={confirmPasswordError}
         value={confirmPassword}
-        disabled={password.length < PASSWORD_MIN_LENGTH}
         inputProps={{
-          'data-testid': 'create-password-confirm-input',
+          'data-testid':
+            confirmPwdInputTestId || 'create-password-confirm-input',
           type: showConfirmPassword ? InputType.Text : InputType.Password,
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

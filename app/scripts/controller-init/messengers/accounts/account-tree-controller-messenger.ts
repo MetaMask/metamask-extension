@@ -2,19 +2,29 @@ import { Messenger } from '@metamask/base-controller';
 import {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
+  AccountsControllerAccountRenamedEvent,
+  AccountsControllerGetAccountAction,
+  AccountsControllerGetSelectedAccountAction,
   AccountsControllerListMultichainAccountsAction,
+  AccountsControllerSelectedAccountChangeEvent,
+  AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
 import { GetSnap as SnapControllerGet } from '@metamask/snaps-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 
 type Actions =
+  | AccountsControllerGetAccountAction
+  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerSetSelectedAccountAction
   | AccountsControllerListMultichainAccountsAction
   | SnapControllerGet
   | KeyringControllerGetStateAction;
 
 type Events =
   | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRemovedEvent;
+  | AccountsControllerAccountRenamedEvent
+  | AccountsControllerAccountRemovedEvent
+  | AccountsControllerSelectedAccountChangeEvent;
 
 export type AccountTreeControllerMessenger = ReturnType<
   typeof getAccountTreeControllerMessenger
@@ -34,10 +44,15 @@ export function getAccountTreeControllerMessenger(
     name: 'AccountTreeController',
     allowedEvents: [
       'AccountsController:accountAdded',
+      'AccountsController:accountRenamed',
       'AccountsController:accountRemoved',
+      'AccountsController:selectedAccountChange',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
+      'AccountsController:getAccount',
+      'AccountsController:getSelectedAccount',
+      'AccountsController:setSelectedAccount',
       'SnapController:get',
       'KeyringController:getState',
     ],

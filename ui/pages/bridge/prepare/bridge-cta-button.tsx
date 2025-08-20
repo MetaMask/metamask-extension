@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { type BigNumber } from 'bignumber.js';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -37,11 +36,7 @@ import { Row } from '../layout';
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
-  nativeAssetBalance,
-  srcTokenBalance,
 }: {
-  nativeAssetBalance?: BigNumber;
-  srcTokenBalance?: BigNumber;
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
 }) => {
@@ -61,35 +56,26 @@ export const BridgeCTAButton = ({
 
   const {
     isNoQuotesAvailable,
-    isInsufficientBalance: isInsufficientBalance_,
-    isInsufficientGasBalance: isInsufficientGasBalance_,
-    isInsufficientGasForQuote: isInsufficientGasForQuote_,
+    isInsufficientBalance,
+    isInsufficientGasBalance,
+    isInsufficientGasForQuote,
+    isTxAlertPresent,
   } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const isTxSubmittable = useIsTxSubmittable(
-    nativeAssetBalance,
-    srcTokenBalance,
-  );
+  const isTxSubmittable = useIsTxSubmittable();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
   const tradeProperties = useTradeProperties();
-
-  const isInsufficientBalance = isInsufficientBalance_(srcTokenBalance);
-
-  const isInsufficientGasBalance =
-    isInsufficientGasBalance_(nativeAssetBalance);
-  const isInsufficientGasForQuote =
-    isInsufficientGasForQuote_(nativeAssetBalance);
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
       return 'youDeclinedTheTransaction';
     }
 
-    if (isQuoteExpired) {
+    if (isQuoteExpired && !isLoading) {
       return 'bridgeQuoteExpired';
     }
 
@@ -120,13 +106,14 @@ export const BridgeCTAButton = ({
       return 'bridgeSelectDestinationAccount';
     }
 
-    if (isTxSubmittable) {
+    if (isTxSubmittable || isTxAlertPresent) {
       return 'submit';
     }
 
     return 'swapSelectToken';
   }, [
     isLoading,
+    isTxAlertPresent,
     fromAmount,
     toToken,
     isTxSubmittable,
@@ -184,6 +171,7 @@ export const BridgeCTAButton = ({
       loading={isSubmitting}
       disabled={
         !isTxSubmittable ||
+        isTxAlertPresent ||
         isQuoteExpired ||
         isSubmitting ||
         needsDestinationAddress

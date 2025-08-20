@@ -54,22 +54,24 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
 
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.clickAdvancedDetailsButton();
+        await transactionConfirmation.closeGasFeeToastMessage();
         await transactionConfirmation.clickGasFeeTokenPill();
 
         const gasFeeTokenModal = new GasFeeTokenModal(driver);
-        await gasFeeTokenModal.check_AmountFiat('DAI', '$3.21');
-        await gasFeeTokenModal.check_AmountToken('DAI', '3.21 DAI');
-        await gasFeeTokenModal.check_Balance('DAI', '$10.00');
+        await gasFeeTokenModal.checkAmountFiat('DAI', '$3.21');
+        await gasFeeTokenModal.checkAmountToken('DAI', '3.21 DAI');
+        await gasFeeTokenModal.checkBalance('DAI', '$10.00');
 
-        await gasFeeTokenModal.check_AmountFiat('USDC', '$1.23');
-        await gasFeeTokenModal.check_AmountToken('USDC', '1.23 USDC');
-        await gasFeeTokenModal.check_Balance('USDC', '$5.00');
+        await gasFeeTokenModal.checkAmountFiat('USDC', '$1.23');
+        await gasFeeTokenModal.checkAmountToken('USDC', '1.23 USDC');
+        await gasFeeTokenModal.checkBalance('USDC', '$5.00');
         await gasFeeTokenModal.clickToken('USDC');
+        await transactionConfirmation.closeGasFeeToastMessage();
 
-        await transactionConfirmation.check_gasFeeSymbol('USDC');
-        await transactionConfirmation.check_gasFeeFiat('$1.23');
-        await transactionConfirmation.check_gasFee('1.23');
-        await transactionConfirmation.check_gasFeeTokenFee('$0.43');
+        await transactionConfirmation.checkGasFeeSymbol('USDC');
+        await transactionConfirmation.checkGasFeeFiat('$1.23');
+        await transactionConfirmation.checkGasFee('1.23');
+        await transactionConfirmation.checkGasFeeTokenFee('$0.43');
         await transactionConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(
@@ -80,7 +82,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await homepage.goToActivityList();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_confirmedTxNumberDisplayedInActivity(1);
+        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -114,12 +116,14 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.closeGasFeeToastMessage();
         await transactionConfirmation.clickGasFeeTokenPill();
 
         const gasFeeTokenModal = new GasFeeTokenModal(driver);
         await gasFeeTokenModal.clickToken('USDC');
+        await transactionConfirmation.closeGasFeeToastMessage();
 
-        await transactionConfirmation.check_gasFeeSymbol('USDC');
+        await transactionConfirmation.checkGasFeeSymbol('USDC');
         await transactionConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(
@@ -130,7 +134,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await homepage.goToActivityList();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_failedTxNumberDisplayedInActivity(1);
+        await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -215,6 +219,7 @@ async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
             network: 'ethereum-mainnet',
             confirmations: true,
             relayTransactions: true,
+            sendBundle: true,
           },
         },
       };

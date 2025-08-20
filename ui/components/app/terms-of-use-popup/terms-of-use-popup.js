@@ -4,8 +4,8 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   Box,
   Button,
-  ButtonIcon,
   ButtonLink,
+  ButtonPrimary,
   ButtonSize,
   ButtonVariant,
   Checkbox,
@@ -25,12 +25,10 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   TextAlign,
   TextColor,
   TextVariant,
@@ -70,7 +68,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
         // The scrollable container
         root: scrollContainerRef.current,
         // Trigger when sentinel is visible
-        threshold: 0.5,
+        threshold: [0, 0.5],
       },
     );
 
@@ -1209,17 +1207,15 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
               however any information submitted to a blockchain protocol for
               processing.&nbsp;
             </Text>
-            <div ref={bottomRef} style={{ height: '1px' }} />
+            <div ref={bottomRef} style={{ height: '2px' }} />
           </Box>
           {shouldShowScrollButton && (
             <Box className="terms-of-use-popup__scroll-button-container">
-              <ButtonIcon
-                backgroundColor={BackgroundColor.primaryMuted}
-                iconName={IconName.ArrowDown}
-                color={IconColor.primaryDefault}
-                borderRadius={BorderRadius.full}
-                iconProps={{ size: IconSize.Md }}
+              <ButtonPrimary
                 onClick={handleScrollDownClick}
+                borderRadius={BorderRadius.full}
+                startIconName={IconName.ArrowDown}
+                startIconProps={{ size: IconSize.Md, marginRight: 0 }}
                 className="terms-of-use-popup__scroll-button"
                 data-testid="terms-of-use-scroll-button"
               />
@@ -1246,11 +1242,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
             onChange={() => {
               setIsTermsOfUseChecked(!isTermsOfUseChecked);
             }}
-            label={
-              <Text variant={TextVariant.bodySmMedium}>
-                {t('termsOfUseAgreeText')}
-              </Text>
-            }
+            label={t('termsOfUseAgreeText')}
           />
           <Button
             data-testid="terms-of-use-agree-button"

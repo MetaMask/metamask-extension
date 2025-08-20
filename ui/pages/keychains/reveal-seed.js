@@ -26,7 +26,6 @@ import Box from '../../components/ui/box';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   AlignItems,
   BlockSize,
@@ -58,7 +57,6 @@ export default function RevealSeedPage() {
   const [seedWords, setSeedWords] = useState(null);
   const [completedLongPress, setCompletedLongPress] = useState(false);
   const [error, setError] = useState(null);
-  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
   const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
 
@@ -275,7 +273,7 @@ export default function RevealSeedPage() {
                 hd_entropy_index: hdEntropyIndex,
               },
             });
-            history.push(mostRecentOverviewPage);
+            history.goBack();
           }}
         >
           {t('cancel')}
@@ -324,7 +322,7 @@ export default function RevealSeedPage() {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
             });
-            history.push(mostRecentOverviewPage);
+            history.goBack();
           }}
         >
           {t('close')}

@@ -44,10 +44,20 @@ describe('Incremental Security', function (this: Suite) {
 
         // agree to terms of use and start onboarding
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.checkBannerPageIsLoaded();
         await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
+
+        // create password
+        const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+        await onboardingPasswordPage.checkPageIsLoaded();
+        await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
+
+        // secure wallet later
+        const secureWalletPage = new SecureWalletPage(driver);
+        await secureWalletPage.checkPageIsLoaded();
+        await secureWalletPage.skipSRPBackup();
 
         // skip collect metametrics
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
@@ -55,24 +65,14 @@ describe('Incremental Security', function (this: Suite) {
           await onboardingMetricsPage.clickNoThanksButton();
         }
 
-        // create password
-        const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-        await onboardingPasswordPage.check_pageIsLoaded();
-        await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-
-        // secure wallet later
-        const secureWalletPage = new SecureWalletPage(driver);
-        await secureWalletPage.check_pageIsLoaded();
-        await secureWalletPage.skipSRPBackup();
-
         // complete onboarding and pin extension
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
         // copy the wallet address
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.clickAddressCopyButton();
 
         // switched to Dapp and send eth to the current account
@@ -80,27 +80,32 @@ describe('Incremental Security', function (this: Suite) {
         const extension = windowHandles[0];
         const testDapp = new TestDappSendEthWithPrivateKey(driver);
         await testDapp.openTestDappSendEthWithPrivateKey();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.pasteAddressAndSendEthWithPrivateKey();
 
         // switch back to extension and check the balance is updated
         await driver.switchToWindow(extension);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('1');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('1');
 
         // backup reminder is displayed and it directs user to the backup SRP page
         await homePage.goToBackupSRPPage();
-        await secureWalletPage.check_pageIsLoaded();
+        await secureWalletPage.checkPageIsLoaded();
 
         // reveal and confirm the Secret Recovery Phrase on backup SRP page
         await secureWalletPage.revealAndConfirmSRP(WALLET_PASSWORD);
 
+        // complete backup
+        await onboardingCompletePage.checkPageIsLoadedBackup();
+        await onboardingCompletePage.checkKeepSrpSafeMessageIsDisplayed();
+        await onboardingCompletePage.completeBackup();
+
         // check the balance is correct after revealing and confirming the SRP
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('1');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('1');
 
         // check backup reminder is not displayed on homepage
-        await homePage.check_backupReminderIsNotDisplayed();
+        await homePage.checkBackupReminderIsNotDisplayed();
       },
     );
   });

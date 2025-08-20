@@ -9,13 +9,18 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 export class TestDappSolana {
   private readonly driver: Driver;
 
+  private readonly solanaChainDisplay = {
+    text: 'solana:devnet',
+    css: 'div',
+  };
+
+  private readonly walletModalSelector = '.wallet-adapter-modal-list';
+
+  private readonly walletButtonSelector = `${this.walletModalSelector} .wallet-adapter-button`;
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
-
-  walletModalSelector = '.wallet-adapter-modal-list';
-
-  walletButtonSelector = `${this.walletModalSelector} .wallet-adapter-button`;
 
   /**
    * Open the solana test dapp page.
@@ -32,11 +37,32 @@ export class TestDappSolana {
     await this.driver.openNewPage(url);
   }
 
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.solanaChainDisplay);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Solana Test Dapp page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Solana Test Dapp page is loaded');
+  }
+
   /**
    * Focus on the Solana test dapp window.
    */
   async switchTo() {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
+    await this.checkPageIsLoaded();
+  }
+
+  async clickUpdateEndpointButton() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.header.updateEndpoint,
+      tag: 'button',
+    });
   }
 
   /**
@@ -87,9 +113,15 @@ export class TestDappSolana {
         return element.getText();
       },
       connect: async () =>
-        await this.clickElement(dataTestIds.testPage.header.connect),
+        await this.driver.clickElement({
+          testId: dataTestIds.testPage.header.connect,
+          tag: 'button',
+        }),
       disconnect: async () =>
-        await this.clickElement(dataTestIds.testPage.header.disconnect),
+        await this.driver.clickElement({
+          testId: dataTestIds.testPage.header.disconnect,
+          tag: 'button',
+        }),
       getAccount: async () =>
         await this.getSolscanShortContent(dataTestIds.testPage.header.account),
     };

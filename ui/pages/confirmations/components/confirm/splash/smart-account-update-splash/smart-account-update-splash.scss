@@ -1,0 +1,31 @@
+@use "design-system";
+
+.smart-account-update-splash {
+  &__container {
+    font-size: 12px;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: design-system.$modal-z-index;
+
+    @media screen and (min-width: design-system.$break-small) {
+      max-width: 85vw;
+    }
+
+    @media screen and (min-width: design-system.$break-midpoint) {
+      max-width: 80vw;
+    }
+
+    @media screen and (min-width: 1280px) {
+      width: 62vw;
+    }
+  }
+
+  &__inner {
+    border-radius: 6px;
+    margin: 16px;
+    height: calc(100% - 32px);
+    width: calc(100% - 32px);
+    overflow: auto;
+  }
+}

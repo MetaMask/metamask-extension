@@ -10,6 +10,7 @@ const props = {
   isConnected: true,
   onClick: jest.fn(),
   onClose: jest.fn(),
+  connectedOrigin: 'https://metamask.github.io',
 };
 
 const render = () => {
@@ -17,6 +18,43 @@ const render = () => {
     metamask: {
       ...mockState.metamask,
       completedOnboarding: true,
+      // Add multichain network state
+      selectedMultichainNetworkChainId: 'eip155:5',
+      isEvmSelected: true,
+      multichainNetworkConfigurationsByChainId: {
+        ...mockState.metamask.multichainNetworkConfigurationsByChainId,
+        'eip155:5': {
+          chainId: 'eip155:5',
+          name: 'Goerli',
+          nativeCurrency: 'ETH',
+          isEvm: true,
+        },
+      },
+      // Add permissions for the test dapp
+      subjects: {
+        'https://metamask.github.io': {
+          permissions: {
+            'endowment:caip25': {
+              caveats: [
+                {
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:5': {
+                        accounts: [
+                          'eip155:5:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
     },
     activeTab: {
       id: 113,

@@ -1,5 +1,6 @@
 import { type DebounceSettings, type DebouncedFunc, debounce } from 'lodash';
 import log from 'loglevel';
+import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
 
 export type { DebounceSettings } from 'lodash';
 
@@ -14,6 +15,8 @@ export type Op = (...params: AnyParams) => unknown | Promise<unknown>;
 /**
  * Options for the lock used in the OperationSafener.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type Config<O extends Op> = {
   /**
    * The operation to be debounced and executed safely.
@@ -31,6 +34,8 @@ type Config<O extends Op> = {
   options?: DebounceSettings;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export class OperationSafener<O extends Op = Op> {
   /**
    * A debounced function that wraps the operation to be executed.
@@ -39,6 +44,9 @@ export class OperationSafener<O extends Op = Op> {
    */
   #bouncer: DebouncedFunc<(...params: Parameters<O>) => Promise<ReturnType<O>>>;
 
+  /**
+   * Tracks whether the OperationSafener is currently evacuating.
+   */
   #evacuating: Promise<void> | null = null;
 
   /**
@@ -83,7 +91,9 @@ export class OperationSafener<O extends Op = Op> {
   constructor({ op, wait, options }: Config<O>) {
     const opts: LockOptions = { mode: 'exclusive' };
     const func = (...params: Parameters<O>) =>
-      navigator.locks.request('lock', opts, () => op(...params));
+      navigator.locks.request('operation-safener-lock', opts, () =>
+        op(...params),
+      );
     this.#bouncer = debounce(func, wait, options);
   }
 
@@ -99,16 +109,20 @@ export class OperationSafener<O extends Op = Op> {
       return this.#evacuating;
     }
 
-    // eslint-disable-next-line no-async-promise-executor
-    this.#evacuating = new Promise(async (resolve) => {
-      try {
-        // flush will invoke the latest pending op, then return a Promise that
-        // resolves to the result of running that `op`.
-        await this.#bouncer.flush();
-      } finally {
-        resolve();
-      }
-    });
+    // execute the final operation in the queue, if any
+    const finalInvocation = this.#bouncer.flush();
+    if (finalInvocation) {
+      // ensure that `evacuate` always resolves successfully, AND that a
+      // rejection from running `this.#bouncer.flush()` *is* an unhandled
+      // rejection; we want it to bubble up to the process/window's
+      // `unhandledRejection` listener, i.e., Sentry.
+      const { promise, resolve } = withResolvers<void>();
+      finalInvocation.finally(resolve);
+      this.#evacuating = promise;
+    } else {
+      this.#evacuating = Promise.resolve();
+    }
+
     return this.#evacuating;
   };
 
@@ -129,8 +143,8 @@ export class OperationSafener<O extends Op = Op> {
       return false;
     }
 
-    // fire and forget, return values for debounced functions are complicated
-    // and not useful for our use case
+    // fire and forget; the return value for a `debounce`d function is the
+    // _previous_ invocation's return value, not the current one.
     this.#bouncer(...params);
     return true;
   };

@@ -27,7 +27,12 @@ import {
   getMultichainAggregatedBalance,
   getMultichainNativeTokenBalance,
 } from '../../../selectors/assets';
-import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
+import {
+  getEnabledNetworksByNamespace,
+  getPreferences,
+  getSelectedInternalAccount,
+  isGlobalNetworkSelectorRemoved,
+} from '../../../selectors';
 import {
   getMultichainNetwork,
   getMultichainShouldShowFiat,
@@ -57,6 +62,12 @@ export const AggregatedBalance = ({
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, selectedAccount),
   );
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
+  const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
+    ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
+    : showNativeTokenAsMainBalance;
+
   const multichainNativeTokenBalance = useSelector((state) =>
     getMultichainNativeTokenBalance(state, selectedAccount),
   );
@@ -110,9 +121,7 @@ export const AggregatedBalance = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
         >
-          {showNativeTokenAsMainBalance ||
-          !isNonEvmRatesAvailable ||
-          !shouldShowFiat
+          {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? formattedTokenDisplay
             : formattedFiatDisplay}
         </SensitiveText>
@@ -121,9 +130,7 @@ export const AggregatedBalance = ({
           variant={TextVariant.inherit}
           isHidden={privacyMode}
         >
-          {showNativeTokenAsMainBalance ||
-          !isNonEvmRatesAvailable ||
-          !shouldShowFiat
+          {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? currentNetwork.network.ticker
             : currentCurrency.toUpperCase()}
         </SensitiveText>

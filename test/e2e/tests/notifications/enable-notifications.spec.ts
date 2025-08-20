@@ -1,8 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
-import { accountsToMockForAccountsSync as unencryptedMockAccounts } from '../identity/account-syncing/mock-data';
 import { Driver } from '../../webdriver/driver';
 import {
   enableNotificationsThroughGlobalMenu,
@@ -13,7 +11,8 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { completeOnboardFlowIdentity } from '../identity/flows';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
-import { mockNotificationServices } from './mocks';
+import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
+import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 
 describe('Enable Notifications - Without Accounts Syncing', function () {
   describe('from inside MetaMask', function () {
@@ -40,8 +39,8 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * → Second account: disabled (persisted from Part 1)
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
-
+      // server that persists trigger settings.
+      const triggerServer = new MockttpNotificationTriggerServer();
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true })
@@ -49,10 +48,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            await mockNotificationServices(
-              server,
-              userStorageMockttpController,
-            );
+            await mockNotificationServices(server, triggerServer);
           },
         },
         async ({ driver }) => {
@@ -67,7 +63,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
 
           // Switch off address 2 and product notifications toggle
           await notificationsSettingsPage.clickNotificationToggle({
-            address: unencryptedMockAccounts[1].a,
+            address: notificationsMockAccounts[1].a,
             toggleType: 'address',
           });
 
@@ -82,12 +78,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            return [
-              await mockNotificationServices(
-                server,
-                userStorageMockttpController,
-              ),
-            ];
+            return [await mockNotificationServices(server, triggerServer)];
           },
         },
         async ({ driver }) => {
@@ -102,14 +93,14 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
 
           // Assert Notification Account Settings have persisted
           // The second account was switched off from the initial run
-          const [{ a: account1 }, { a: account2 }] = unencryptedMockAccounts;
-          await notificationsSettingsPage.check_notificationState({
+          const [{ a: account1 }, { a: account2 }] = notificationsMockAccounts;
+          await notificationsSettingsPage.checkNotificationState({
             address: account1,
             toggleType: 'address',
             expectedState: 'enabled',
           });
 
-          await notificationsSettingsPage.check_notificationState({
+          await notificationsSettingsPage.checkNotificationState({
             address: account2,
             toggleType: 'address',
             expectedState: 'disabled',
@@ -121,7 +112,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
       await completeOnboardFlowIdentity(driver);
 
       const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.check_pageIsLoaded();
+      await headerNavbar.checkPageIsLoaded();
       await headerNavbar.openAccountMenu();
 
       const accountListPage = new AccountListPage(driver);

@@ -5,7 +5,6 @@ import {
   NotificationComponentType,
   type NotificationComponent,
 } from '../types/notifications/notifications';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { t } from '../../../../../shared/lib/translate';
 
 import {
@@ -31,7 +30,6 @@ import {
   getNetworkDetailsByChainId,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import {
   TextVariant,
   BackgroundColor,
@@ -123,9 +121,8 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
         );
       },
       Asset: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
+          notification.chain_id,
         );
         return (
           <NotificationDetailAsset
@@ -154,9 +151,8 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
         );
       },
       AssetReceived: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
+          notification.chain_id,
         );
         return (
           <NotificationDetailAsset
@@ -209,9 +205,8 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
         />
       ),
       Network: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyName, nativeCurrencyLogo } =
-          getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+          getNetworkDetailsByChainId(notification.chain_id);
         return (
           <NotificationDetailAsset
             icon={{
