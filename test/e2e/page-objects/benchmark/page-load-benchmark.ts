@@ -58,37 +58,77 @@ export type BenchmarkMetrics = {
   };
 };
 
+/**
+ * Individual benchmark measurement result for a single page load test.
+ * Contains the raw performance metrics for one specific test run.
+ */
 export type BenchmarkResult = {
+  /** URL of the page that was tested */
   page: string;
+  /** Sequential run number for this test iteration */
   run: number;
+  /** Performance metrics collected during this test run */
   metrics: BenchmarkMetrics;
+  /** ISO timestamp when this measurement was taken */
   timestamp: string;
 };
 
+/**
+ * Statistical summary of benchmark results for a specific page.
+ * Contains aggregated statistics across multiple test runs for performance analysis.
+ */
 export type BenchmarkSummary = {
+  /** URL of the page that was tested */
   page: string;
+  /** Number of test samples collected for this page */
   samples: number;
+  /** Mean (average) values for each performance metric */
   mean: Partial<BenchmarkMetrics>;
+  /** 95th percentile values for each performance metric */
   p95: Partial<BenchmarkMetrics>;
+  /** 99th percentile values for each performance metric */
   p99: Partial<BenchmarkMetrics>;
+  /** Minimum values for each performance metric */
   min: Partial<BenchmarkMetrics>;
+  /** Maximum values for each performance metric */
   max: Partial<BenchmarkMetrics>;
+  /** Standard deviation values for each performance metric */
   standardDeviation: Partial<BenchmarkMetrics>;
 };
 
+/**
+ * Main class for conducting page load performance benchmarks using Playwright.
+ * Manages browser lifecycle, extension loading, and performance measurement collection.
+ */
 export class PageLoadBenchmark {
+  /** Playwright browser instance for running tests */
   private browser: Browser | undefined;
 
+  /** Browser context for managing pages and sessions */
   private context: BrowserContext | undefined;
 
+  /** Path to the MetaMask extension directory */
   private extensionPath: string;
 
+  /** Collection of all benchmark results from test runs */
   private results: BenchmarkResult[] = [];
 
+  /**
+   * Creates a new PageLoadBenchmark instance.
+   *
+   * @param extensionPath - Path to the MetaMask extension directory to test
+   */
   constructor(extensionPath: string) {
     this.extensionPath = extensionPath;
   }
 
+  /**
+   * Initializes the browser environment and loads the MetaMask extension.
+   * Builds the extension if needed, launches browser with optimized settings,
+   * and waits for the extension to fully load.
+   *
+   * @throws {Error} If browser or context initialization fails
+   */
   async setup() {
     await this.buildExtension();
 
@@ -114,6 +154,13 @@ export class PageLoadBenchmark {
     await this.waitForExtensionLoad();
   }
 
+  /**
+   * Ensures the MetaMask extension is built and ready for testing.
+   * Checks if the extension already exists in the dist directory,
+   * and builds it if necessary using the test build configuration.
+   *
+   * @throws {Error} If the build process fails
+   */
   private async buildExtension() {
     // Check if extension is already built
     const distPath = path.join(process.cwd(), 'dist', 'chrome');
@@ -127,6 +174,11 @@ export class PageLoadBenchmark {
     this.extensionPath = distPath;
   }
 
+  /**
+   * Waits for the MetaMask extension to fully load in the browser.
+   * Finds the extension's home page and waits for it to reach a stable state
+   * before proceeding with benchmark tests.
+   */
   private async waitForExtensionLoad() {
     const pages = await this.context?.pages();
     const extensionPage = pages?.find(
@@ -140,6 +192,16 @@ export class PageLoadBenchmark {
     }
   }
 
+  /**
+   * Measures performance metrics for a single page load.
+   * Navigates to the specified URL, waits for the page to fully load,
+   * and collects comprehensive performance data including timing and memory usage.
+   *
+   * @param url - The URL to navigate to and measure
+   * @param runNumber - Sequential number identifying this test run
+   * @returns Promise resolving to the benchmark result for this page load
+   * @throws {Error} If browser context is not initialized or page measurement fails
+   */
   async measurePageLoad(
     url: string,
     runNumber: number,
@@ -211,6 +273,15 @@ export class PageLoadBenchmark {
     return result;
   }
 
+  /**
+   * Executes the complete benchmark test suite across multiple browser loads and page loads.
+   * Creates fresh browser contexts for each browser load to simulate real-world conditions,
+   * and measures each URL multiple times to gather statistical data.
+   *
+   * @param urls - Array of URLs to test
+   * @param browserLoads - Number of fresh browser contexts to create (default: 10)
+   * @param pageLoads - Number of page loads per browser context (default: 10)
+   */
   async runBenchmark(
     urls: string[],
     browserLoads: number = 10,
@@ -256,6 +327,13 @@ export class PageLoadBenchmark {
     }
   }
 
+  /**
+   * Calculates comprehensive statistical summaries for all benchmark results.
+   * Groups results by page URL and computes mean, percentiles, min/max, and standard deviation
+   * for each performance metric across all test runs.
+   *
+   * @returns Array of statistical summaries, one for each tested page
+   */
   calculateStatistics(): BenchmarkSummary[] {
     const summaries: BenchmarkSummary[] = [];
 
@@ -309,16 +387,37 @@ export class PageLoadBenchmark {
     return summaries;
   }
 
+  /**
+   * Calculates the arithmetic mean (average) of an array of numbers.
+   *
+   * @param values - Array of numeric values
+   * @returns The mean value
+   */
   private calculateMean(values: number[]): number {
     return values.reduce((sum, val) => sum + val, 0) / values.length;
   }
 
+  /**
+   * Calculates the specified percentile value from an array of numbers.
+   * Uses the nearest-rank method for percentile calculation.
+   *
+   * @param values - Array of numeric values
+   * @param percentile - Percentile to calculate (0-100)
+   * @returns The value at the specified percentile
+   */
   private calculatePercentile(values: number[], percentile: number): number {
     const sorted = [...values].sort((a, b) => a - b);
     const index = Math.floor((percentile / 100) * sorted.length);
     return sorted[index];
   }
 
+  /**
+   * Calculates the standard deviation of an array of numbers.
+   * Uses the population standard deviation formula.
+   *
+   * @param values - Array of numeric values
+   * @returns The standard deviation value
+   */
   private calculateStandardDeviation(values: number[]): number {
     const mean = this.calculateMean(values);
     const squaredDiffs = values.map((val) => Math.pow(val - mean, 2));
@@ -326,6 +425,13 @@ export class PageLoadBenchmark {
     return Math.sqrt(variance);
   }
 
+  /**
+   * Saves benchmark results to a JSON file with comprehensive metadata.
+   * Includes timestamp, git commit SHA, statistical summaries, and raw measurement data.
+   *
+   * @param outputPath - File path where results should be saved
+   * @throws {Error} If file writing fails or git command fails
+   */
   async saveResults(outputPath: string) {
     const commitSha = execSync('git rev-parse --short HEAD', {
       cwd: __dirname,
@@ -343,6 +449,10 @@ export class PageLoadBenchmark {
     console.log(`Results saved to ${outputPath}`);
   }
 
+  /**
+   * Cleans up browser resources and closes all connections.
+   * Should be called after benchmark testing is complete to free up system resources.
+   */
   async cleanup() {
     await this.context?.close();
     await this.browser?.close();
