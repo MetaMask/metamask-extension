@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  QuoteResponse,
   RequestStatus,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
