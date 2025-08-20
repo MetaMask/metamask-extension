@@ -310,7 +310,7 @@ export const getToAccount = createSelector(
       state,
       isSolanaChainId(toChainId) ? SolScope.Mainnet : EthScope.Eoa,
       // TODO: use this when selector is ready
-      //formatChainIdToCaip(toChain.chainId),
+      // formatChainIdToCaip(toChain.chainId),
     );
   },
 );
