@@ -1,17 +1,9 @@
 import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { shortenAddress } from '../../../../helpers/utils/util';
-
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
-  Text,
-} from '../../../component-library';
-import { getUseBlockie } from '../../../../selectors';
+import { PreferredAvatar } from '../../preferred-avatar';
+import { Box, Text } from '../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -31,7 +23,6 @@ export default function ConnectedAccountsListItem({
   options = null,
   backgroundColor,
 }) {
-  const useBlockie = useSelector(getUseBlockie);
   const containerbackgroundColor =
     backgroundColor ?? BackgroundColor.backgroundDefault;
   return (
@@ -45,15 +36,7 @@ export default function ConnectedAccountsListItem({
       alignItems={AlignItems.center}
     >
       <Box className="connected-accounts-list__row-content" gap={4}>
-        <AvatarAccount
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
-          }
-          address={address}
-          size={AvatarAccountSize.Md}
-        />
+        <PreferredAvatar address={address} />
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <Box>
             <Text

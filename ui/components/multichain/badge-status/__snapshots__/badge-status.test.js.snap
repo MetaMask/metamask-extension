@@ -10,13 +10,12 @@ exports[`Badge Status should not render the badge if showConnectedStatus is fals
       class="mm-box mm-badge-wrapper mm-box--display-inline-block"
     >
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        class="items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
       >
         <img
-          alt=""
+          alt="Blockies for 0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
           height="32"
           src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woMTM5IDg5JSA1OSUpIiBkPSJNMCwwSDhWOEgweiIvPjxwYXRoIGZpbGw9ImhzbCgzMjEgOTIlIDU2JSkiIGQ9Ik0xLDJoMXYxaC0xek02LDJoMXYxaC0xek0yLDJoMXYxaC0xek01LDJoMXYxaC0xek0zLDJoMXYxaC0xek00LDJoMXYxaC0xek0zLDNoMXYxaC0xek00LDNoMXYxaC0xek0wLDRoMXYxaC0xek03LDRoMXYxaC0xek0yLDRoMXYxaC0xek01LDRoMXYxaC0xek0wLDZoMXYxaC0xek03LDZoMXYxaC0xek0xLDZoMXYxaC0xek02LDZoMXYxaC0xek0zLDZoMXYxaC0xek00LDZoMXYxaC0xek0wLDdoMXYxaC0xek03LDdoMXYxaC0xek0yLDdoMXYxaC0xek01LDdoMXYxaC0xek0zLDdoMXYxaC0xek00LDdoMXYxaC0xeiIvPjxwYXRoIGZpbGw9ImhzbCgzMjUgNDclIDU1JSkiIGQ9Ik0xLDBoMXYxaC0xek02LDBoMXYxaC0xek0zLDFoMXYxaC0xek00LDFoMXYxaC0xek0wLDVoMXYxaC0xek03LDVoMXYxaC0xeiIvPjwvc3ZnPg=="
-          style="border-radius: 50%;"
           width="32"
         />
       </div>
@@ -47,19 +46,18 @@ exports[`Badge Status should render correctly 1`] = `
           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class="items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
           >
             <img
-              alt=""
+              alt="Blockies for 0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
               height="32"
               src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woMTM5IDg5JSA1OSUpIiBkPSJNMCwwSDhWOEgweiIvPjxwYXRoIGZpbGw9ImhzbCgzMjEgOTIlIDU2JSkiIGQ9Ik0xLDJoMXYxaC0xek02LDJoMXYxaC0xek0yLDJoMXYxaC0xek01LDJoMXYxaC0xek0zLDJoMXYxaC0xek00LDJoMXYxaC0xek0zLDNoMXYxaC0xek00LDNoMXYxaC0xek0wLDRoMXYxaC0xek03LDRoMXYxaC0xek0yLDRoMXYxaC0xek01LDRoMXYxaC0xek0wLDZoMXYxaC0xek03LDZoMXYxaC0xek0xLDZoMXYxaC0xek02LDZoMXYxaC0xek0zLDZoMXYxaC0xek00LDZoMXYxaC0xek0wLDdoMXYxaC0xek03LDdoMXYxaC0xek0yLDdoMXYxaC0xek01LDdoMXYxaC0xek0zLDdoMXYxaC0xek00LDdoMXYxaC0xeiIvPjxwYXRoIGZpbGw9ImhzbCgzMjUgNDclIDU1JSkiIGQ9Ik0xLDBoMXYxaC0xek02LDBoMXYxaC0xek0zLDFoMXYxaC0xek00LDFoMXYxaC0xek0wLDVoMXYxaC0xek03LDVoMXYxaC0xeiIvPjwvc3ZnPg=="
-              style="border-radius: 50%;"
               width="32"
             />
           </div>
           <div
             class="mm-box mm-badge-wrapper__badge-container"
-            style="bottom: 2px; right: 5px;"
+            style="bottom: -4%; right: -12%;"
           >
             <div
               class="mm-box multichain-badge-status__badge multichain-badge-status__badge-not-connected mm-box--background-color-background-default mm-box--rounded-full mm-box--border-color-success-default mm-box--border-width-2 box--border-style-solid"

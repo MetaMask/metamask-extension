@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import {
+  AvatarAccount,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import {
   TextVariant,
@@ -15,8 +19,6 @@ import ToggleButton from '../../../components/ui/toggle-button';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
-import Jazzicon from '../../../components/ui/jazzicon';
-import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -206,15 +208,7 @@ export default class SettingsTab extends PureComponent {
 
   renderBlockieOptIn() {
     const { t } = this.context;
-    const { useBlockie, setUseBlockie, selectedAddress, tokenList } =
-      this.props;
-
-    const getIconStyles = () => ({
-      display: 'block',
-      borderRadius: '16px',
-      width: '32px',
-      height: '32px',
-    });
+    const { useBlockie, setUseBlockie, selectedAddress } = this.props;
 
     return (
       <Box
@@ -238,31 +232,21 @@ export default class SettingsTab extends PureComponent {
             marginBottom={3}
             className="settings-page__content-item__description"
           >
-            {t('jazzAndBlockies')}
+            {t('maskAndBlockies')}
           </Text>
           <div className="settings-page__content-item__identicon">
             <button
-              data-testid="jazz_icon"
+              data-testid="mask_icon"
               onClick={() => setUseBlockie(false)}
               className="settings-page__content-item__identicon__item"
             >
-              <div
-                className={classnames(
-                  'settings-page__content-item__identicon__item__icon',
-                  {
-                    'settings-page__content-item__identicon__item__icon--active':
-                      !useBlockie,
-                  },
-                )}
-              >
-                <Jazzicon
-                  id="jazzicon"
-                  address={selectedAddress}
-                  diameter={32}
-                  tokenList={tokenList}
-                  style={getIconStyles()}
-                />
-              </div>
+              <AvatarAccount
+                variant={AvatarAccountVariant.Maskicon}
+                address={selectedAddress}
+                className={classnames('flex', {
+                  'border-2 border-primary-default': !useBlockie,
+                })}
+              />
               <Text
                 color={TextColor.textDefault}
                 variant={TextVariant.bodySm}
@@ -272,7 +256,7 @@ export default class SettingsTab extends PureComponent {
                 marginBottom={0}
                 marginLeft={3}
               >
-                {t('jazzicons')}
+                {t('maskicons')}
               </Text>
             </button>
             <button
@@ -280,22 +264,13 @@ export default class SettingsTab extends PureComponent {
               onClick={() => setUseBlockie(true)}
               className="settings-page__content-item__identicon__item"
             >
-              <div
-                className={classnames(
-                  'settings-page__content-item__identicon__item__icon',
-                  {
-                    'settings-page__content-item__identicon__item__icon--active':
-                      useBlockie,
-                  },
-                )}
-              >
-                <BlockieIdenticon
-                  id="blockies"
-                  address={selectedAddress}
-                  diameter={32}
-                  borderRadius="50%"
-                />
-              </div>
+              <AvatarAccount
+                variant={AvatarAccountVariant.Blockies}
+                address={selectedAddress}
+                className={classnames({
+                  'border-2 border-primary-default': useBlockie,
+                })}
+              />
               <Text
                 color={TextColor.textDefault}
                 variant={TextVariant.bodySm}

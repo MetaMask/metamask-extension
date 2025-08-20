@@ -21,47 +21,11 @@ exports[`SiteCellTooltip should render correctly 1`] = `
           style="margin-left: 0px;"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+            class="inline-flex items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 187, 242);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#018E7E"
-                    height="16"
-                    transform="translate(1.2744369446245154 -0.7053655586725533) rotate(363.1 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F91A01"
-                    height="16"
-                    transform="translate(4.77517448786361 4.320459175535714) rotate(54.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FB1882"
-                    height="16"
-                    transform="translate(-12.741493192782233 -7.733296510164053) rotate(360.4 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              class="flex [&>div]:!rounded-none"
+            />
           </div>
         </div>
         <div
@@ -69,47 +33,11 @@ exports[`SiteCellTooltip should render correctly 1`] = `
           style="margin-left: -8px;"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+            class="inline-flex items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 180, 0);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#C81459"
-                    height="16"
-                    transform="translate(0.10864265332766807 3.0706102866109184) rotate(138.0 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#018E89"
-                    height="16"
-                    transform="translate(6.382605835258964 0.38215457860863067) rotate(152.6 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#2372E1"
-                    height="16"
-                    transform="translate(-12.49164843832654 -7.756211576864221) rotate(374.4 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              class="flex [&>div]:!rounded-none"
+            />
           </div>
         </div>
         <div
@@ -117,47 +45,11 @@ exports[`SiteCellTooltip should render correctly 1`] = `
           style="margin-left: -8px;"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+            class="inline-flex items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 142, 0);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#1885F2"
-                    height="16"
-                    transform="translate(0.05978858756790129 -0.031134724604508498) rotate(387.3 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FB1849"
-                    height="16"
-                    transform="translate(-9.720573090114765 2.147084032854713) rotate(199.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#C8143B"
-                    height="16"
-                    transform="translate(-13.051635417362899 8.223931749994133) rotate(284.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              class="flex [&>div]:!rounded-none"
+            />
           </div>
         </div>
       </div>
