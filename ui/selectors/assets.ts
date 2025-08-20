@@ -322,8 +322,9 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
   getAccountAssets,
   getAssetsRates,
   (selectedAccountAddress, multichainBalances, accountAssets, assetRates) => {
-    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
-    const balances = multichainBalances?.[selectedAccountAddress.id];
+    const { id } = selectedAccountAddress ?? {};
+    const assetIds = id ? accountAssets?.[id] || [] : [];
+    const balances = id ? multichainBalances?.[id] : {};
 
     let aggregatedBalance = new BigNumber(0);
 
