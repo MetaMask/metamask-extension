@@ -62,39 +62,41 @@ jobs:
                   # Check if ALL changed files match skip patterns
                   SKIP_E2E=true
                   while IFS= read -r file; do
-                      # Check for package.json file for version-only changes
                       if [[ "$file" == "package.json" ]] || [[ "$file" =~ /package\.json$ ]]; then
                           BASE_REF="${{ github.event.pull_request.base.ref }}"
                           git fetch origin "${BASE_REF}" --depth=1
 
                           DIFF_OUTPUT=$(git diff "origin/${BASE_REF}" HEAD -- "$file")
                           # Look for changes other than version field
-                          if echo "$DIFF_OUTPUT" | grep -E '^[+-]' | grep -v '^[+-][[:space:]]*"version":[[:space:]]*"[0-9]+\.[0-9]+\.[0-9]+' | grep -v '^[+-]\+\+\+' | grep -v '^[+-]---' | grep -q .; then
+                          # Filter out: diff headers (+++/---), and version-only changes
+                          if echo "$DIFF_OUTPUT" | grep -E '^[+-]' | grep -v '^+++' | grep -v '^---' | grep -v '^[+-][[:space:]]*"version":[[:space:]]*"[^"]*"' | grep -q .; then
                               # Found changes other than version
                               SKIP_E2E=false
                               break
                           fi
+                          # Version-only change, continue to next file
+                          continue
                       # Skip still true if documentation or data files
                       elif [[ "$file" =~ \.(md|mdx|csv|txt)$ ]]; then
                           continue
                       # Skip still true if unit tests files
                       elif [[ "$file" =~ \.test\.(js|ts|tsx|jsx)$ ]] || [[ "$file" =~ \.snap$ ]]; then
                           continue
-                  else
-                      # This file requires E2E tests and we stop here
-                      SKIP_E2E=false
-                      break
-                  fi
-              done <<< "$CHANGED_FILES"
+                      else
+                          # This file requires E2E tests and we stop here
+                          SKIP_E2E=false
+                          break
+                      fi
+                  done <<< "$CHANGED_FILES"
 
-              if [[ "$SKIP_E2E" == "true" ]]; then
-                  echo "Skipping e2e tests due to low risk of the changes in files:"
-                  echo "$CHANGED_FILES"
-                  echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
-              else
-                  echo "Changes include files that require e2e tests"
-                  echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
-              fi
+                  if [[ "$SKIP_E2E" == "true" ]]; then
+                      echo "Skipping e2e tests due to low risk of the changes in files:"
+                      echo "$CHANGED_FILES"
+                      echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "Changes include files that require e2e tests"
+                      echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
+                  fi
           else
               echo "Push event detected - running e2e tests"
               echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
