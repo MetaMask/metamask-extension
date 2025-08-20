@@ -43,6 +43,9 @@ export const mockTokenData = {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         balance: '0xa',
         type: 'eip155:eoa',
+        metadata: {
+          lastSelected: 1755717637857,
+        },
       },
     },
   },

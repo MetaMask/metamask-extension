@@ -167,6 +167,7 @@ export const createBridgeMockStore = ({
                   'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                   '07c2cfec-36c9-46c4-8115-3836d3ac9047',
                   'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+                  'account-1',
                 ],
               },
               'entropy:01K2FF18CTTXJYD34R78X4N1N1/1': {
