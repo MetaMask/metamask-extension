@@ -1159,8 +1159,7 @@ export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
   Hex | `${string}:${string}`,
   string
 > = {
-  [CHAIN_IDS.LINEA_MAINNET]:
-    'https://app.metamask.io/explore/networks/linea',
+  [CHAIN_IDS.LINEA_MAINNET]: 'https://app.metamask.io/explore/networks/linea',
   [CHAIN_IDS.SEI]: 'https://app.metamask.io/explore/networks/sei',
   [MultichainNetworks.SOLANA]:
     'https://app.metamask.io/explore/networks/solana',
