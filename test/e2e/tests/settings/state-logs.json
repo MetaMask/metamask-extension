@@ -14976,7 +14976,9 @@
     "featureFlags": {},
     "currentLocale": "en",
     "currentBlockGasLimit": "",
-    "currentBlockGasLimitByChainId": {},
+    "currentBlockGasLimitByChainId": {
+      "0x539": "0x1c9c380"
+    },
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showExtensionInFullSizeView": false,
