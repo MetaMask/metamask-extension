@@ -22,9 +22,9 @@ test('MetaMask Onboarding: Import existing SRP via new flow', async () => {
   await signUp.clickScrollAndAgreeTermsOfUse();
   await signUp.importExistingWallet();
   const ctx = page.context();
-  await ctx.tracing.stopChunk().catch(() => {});
+  await ctx.tracing.stopChunk();
   await signUp.pasteSrp(getSrp());
-  await ctx.tracing.startChunk({ title: 'post-srp' }).catch(() => {});
+  await ctx.tracing.startChunk({ title: 'post-srp' });
   await signUp.createPassword('Test123!');
   await signUp.clickMetric();
   await signUp.clickCompletion();
