@@ -13,13 +13,13 @@ exports[`useBridgeQueryParams should not set inputs when there are no query para
 [
   [
     undefined,
-    "0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293",
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "0x0000000000000000000000000000000000000000",
     "0x1",
   ],
   [
     undefined,
-    "0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293",
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "0x0000000000000000000000000000000000000000",
     "0x1",
   ],
@@ -77,13 +77,13 @@ exports[`useBridgeQueryParams should only set src token and amount 2`] = `
 [
   [
     undefined,
-    "0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293",
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     "0xe708",
   ],
   [
     undefined,
-    "0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293",
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "0x0000000000000000000000000000000000000000",
     "0xe708",
   ],
@@ -125,13 +125,13 @@ exports[`useBridgeQueryParams should set evm bridge params 2`] = `
 [
   [
     undefined,
-    "0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293",
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     "0xe708",
   ],
   [
     undefined,
-    "0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293",
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "0x0000000000000000000000000000000000000000",
     "0xe708",
   ],
@@ -189,25 +189,13 @@ exports[`useBridgeQueryParams should set src token after navigating from native 
 [
   [
     undefined,
-    "0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293",
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "0x0000000000000000000000000000000000000000",
     "0xe708",
   ],
   [
     undefined,
-    "0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293",
-    "0x0000000000000000000000000000000000000000",
-    "0xe708",
-  ],
-  [
-    undefined,
-    "0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293",
-    "0x0000000000000000000000000000000000000000",
-    "0xe708",
-  ],
-  [
-    undefined,
-    "0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293",
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "0x0000000000000000000000000000000000000000",
     "0xe708",
   ],

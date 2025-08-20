@@ -19,7 +19,7 @@ import {
   isValidQuoteRequest,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { SolAccountType } from '@metamask/keyring-api';
+import { EthScope, SolAccountType, SolScope } from '@metamask/keyring-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
@@ -73,6 +73,7 @@ import {
 } from '../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import type { AccountTreeState } from '../../selectors/multichain-accounts/account-tree.types';
 
 import {
   exchangeRateFromMarketData,
@@ -88,6 +89,7 @@ export type BridgeAppState = {
     GasFeeState &
     NetworkState &
     AccountsControllerState &
+    AccountTreeState &
     MultichainAssetsRatesControllerState &
     TokenRatesControllerState &
     RatesControllerState &
@@ -272,10 +274,11 @@ export const getFromAccount = createSelector(
   [(state) => getFromChain(state)?.chainId, (state) => state],
   (fromChainId, state) => {
     if (fromChainId) {
-      const chainIdInCaip = formatChainIdToCaip(fromChainId);
       return getInternalAccountBySelectedAccountGroupAndCaip(
         state,
-        chainIdInCaip,
+        isSolanaChainId(fromChainId) ? SolScope.Mainnet : EthScope.Eoa,
+        // TODO use chainId when selector is ready
+        // :formatChainIdToCaip(fromChainId),
       );
     }
     return null;
