@@ -10,8 +10,7 @@ import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import { mockLedgerTransactionRequests } from './mocks';
 
 describe('Ledger Swap', function () {
-
-  it('should Swap ETH to DAI', async function () {
+  it('swaps ETH to DAI', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -40,7 +39,7 @@ describe('Ledger Swap', function () {
         await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
-        // await homePage.checkExpectedTokenBalanceIsDisplayed('20', 'ETH');
+        await homePage.checkExpectedTokenBalanceIsDisplayed('20', 'ETH');
 
         // disable smart transactions
         const headerNavbar = new HeaderNavbar(driver);
@@ -54,7 +53,6 @@ describe('Ledger Swap', function () {
         await advancedSettingsPage.checkPageIsLoaded();
         await advancedSettingsPage.toggleSmartTransactions();
         await settingsPage.closeSettingsPage();
-
 
         await homePage.checkIfSwapButtonIsClickable();
         await homePage.startSwapFlow();

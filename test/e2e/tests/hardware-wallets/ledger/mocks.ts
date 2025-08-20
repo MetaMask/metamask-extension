@@ -389,14 +389,14 @@ async function mockLedgerTransactionRequestsBase(mockServer: MockttpServer) {
     .once()
     .thenJson(200, GET_BATCH_STATUS_RESPONSE_SUCCESS);
 
-    await mockServer
+  await mockServer
     .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
     .thenCallback(() => ({
       statusCode: 200,
       json: {},
-    })),
+    }));
 
-    await mockServer
+  await mockServer
     .forGet(
       'https://accounts.api.cx.metamask.io/v2/accounts/0xf68464152d7289d7ea9a2bec2e0035c45188223c/balances',
     )
@@ -419,7 +419,7 @@ async function mockLedgerTransactionRequestsBase(mockServer: MockttpServer) {
         ],
         unprocessedNetworks: [],
       },
-    })),
+    }));
 
   await mockServer
     .forJsonRpcRequest({
