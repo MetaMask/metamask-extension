@@ -387,9 +387,9 @@ describe('Gator permissions page build-time feature flag', () => {
   afterEach(() => {
     // Restore original environment variable
     if (originalEnv === undefined) {
-      delete process.env.PERMISSIONS_PAGE_V2;
+      delete process.env.GATOR_PERMISSIONS_PAGE;
     } else {
-      process.env.PERMISSIONS_PAGE_V2 = originalEnv;
+      process.env.GATOR_PERMISSIONS_PAGE = originalEnv;
     }
   });
 
