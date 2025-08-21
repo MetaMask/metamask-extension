@@ -8,10 +8,10 @@ The document explains the need for these new state transformations and the ratio
 ## Background
 
 As of release 10.34.0, we started having a `No metadata found for 'previousProviderStore'` error thrown from the `deriveStateFromMetadata` function in `BaseControllerV2.js`.
-This was occuring when there was data on the NetworkController state for which the NetworkController + BaseController expect metadata, but no metadata exists. In particular,
+This was occurring when there was data on the NetworkController state for which the NetworkController + BaseController expect metadata, but no metadata exists. In particular,
 `previousProviderStore` was on the NetworkController state when it should not have been.
 
-`previousProviderStore` should not have been on the NetworkController state because of migration 85, which explictly deletes it.
+`previousProviderStore` should not have been on the NetworkController state because of migration 85, which explicitly deletes it.
 
 We discovered that for some users, that migration had failed to run because of an error in an earlier migration: `TypeError#1: MetaMask Migration Error #77: Cannot convert undefined or null to object`.
 This error was thrown from this line https://github.com/MetaMask/metamask-extension/commit/8f18e04b97af02e5a8a72e3e4872aac66595d1d8#diff-9e76a7c60c1e37cd949f729222338b23ab743e44938ccf63a4a6dab7d84ed8bcR38
@@ -49,7 +49,7 @@ and subsequent network data would between written to and modified in state in th
 data could overwrite the existing `networkConfigurations` data, and the user could lose `networkConfigurations` data that had been written to their state since migration 82 had first failed to run.
 
 To fix this, the migration 82 supplement deletes `frequentRpcListDetail` if the `networkConfigurations` object exists. Users in such a scenario will have network data in `networkConfigurations` that
-they have been using, while the `frequentRpcListDetail` data would not have been seen for some time. So the best thing to do for them is delete their old data and preserve the data they have most recently
+they have been using, while the `frequentRpcListDetail` data would not have been seen for some time. So the best thing to do for them is to delete their old data and preserve the data they have most recently
 used.
 
 **Migration 84**
