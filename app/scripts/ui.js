@@ -17,6 +17,7 @@ import browser from 'webextension-polyfill';
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
+import { ExtensionPortStream } from 'extension-port-stream';
 import launchMetaMaskUi, {
   CriticalStartupErrorHandler,
   connectToBackground,
@@ -33,7 +34,6 @@ import {
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
-import { PortStream } from './lib/extension-port-stream';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -98,7 +98,7 @@ async function start() {
   );
   criticalErrorHandler.install();
 
-  const connectionStream = new PortStream(extensionPort);
+  const connectionStream = new ExtensionPortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   connectToBackground(backgroundConnection, handleStartUISync);
@@ -305,7 +305,7 @@ async function initializeUi(activeTab, backgroundConnection, traceContext) {
  * Establishes a connections between the PortStream (background) and various UI
  * streams.
  *
- * @param {PortStream} connectionStream - PortStream instance establishing a background connection
+ * @param {ExtensionPortStream} connectionStream - PortStream instance establishing a background connection
  * @returns The multiplexed streams
  */
 function connectSubstreams(connectionStream) {
