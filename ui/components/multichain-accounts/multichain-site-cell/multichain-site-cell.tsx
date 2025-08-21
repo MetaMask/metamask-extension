@@ -24,7 +24,6 @@ import { SiteCellConnectionListItem } from '../../multichain/pages/review-permis
 import { MultichainEditAccountsModal } from '../permissions/edit-accounts-modal/multichain-edit-accounts-modal';
 import { AccountGroupId } from '@metamask/account-api';
 
-// Define types for networks, accounts, and other props
 type Network = {
   name: string;
   chainId: string;
@@ -138,7 +137,6 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           paddingBottomValue={2}
           paddingTopValue={0}
           content={
-            // Why this difference?
             selectedAccountGroupIds.length === 1 ? (
               <AvatarAccount
                 address={
@@ -154,7 +152,6 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
                 accountGroups={supportedAccountGroups.filter((account) =>
                   selectedAccountGroupIds.includes(account.id),
                 )}
-                networks={selectedNetworks}
               />
             )
           }
