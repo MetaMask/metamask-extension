@@ -6,8 +6,8 @@ import {
   SATS_IN_1_BTC,
 } from '../../../constants';
 
-const ESPLORA_URL = 'https://esplora.rivet.link/api';
-const ESPLORA_TESTNET_URL = 'https://esplora.rivet.link/testnet/api';
+const ESPLORA_URL = 'https://esplora.rivet.link/esplora/api';
+const ESPLORA_TESTNET_URL = 'https://esplora.rivet.link/esplora/testnet/api';
 
 const FUNDING_SCRIPT_HASH =
   '538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721';
