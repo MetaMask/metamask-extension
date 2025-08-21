@@ -3,6 +3,13 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { Box } from '../../components/component-library';
+import {
+  BlockSize,
+  Display,
+  FlexDirection,
+  JustifyContent,
+} from '../../helpers/constants/design-system';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import { NonEvmQueryParams } from '../../../shared/lib/deep-links/routes/nonevm';
 import { SWAP_ROUTE } from '../../../shared/lib/deep-links/routes/route';
@@ -98,7 +105,17 @@ export const NonEvmBalanceCheck = () => {
   ]);
 
   if (!hasAccountForChain) {
-    return <AddNonEvmAccountModal chainId={chainId} />;
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.spaceBetween}
+        width={BlockSize.OneFifth}
+        padding={4}
+      >
+        <AddNonEvmAccountModal chainId={chainId} />
+      </Box>
+    );
   }
 
   return null;
