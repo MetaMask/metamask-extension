@@ -36,6 +36,9 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 
   // Connect to the dapp
   await driver.clickElement({ text: 'Connect', tag: 'button' });
+
+  // Small delay to ensure dialog window appears
+  await driver.delay(3000);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.clickElementAndWaitForWindowToClose({
