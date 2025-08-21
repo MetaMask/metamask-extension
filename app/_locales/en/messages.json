@@ -3117,9 +3117,6 @@
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum transaction's input data isn't sufficiently padded."
   },
-  "ledgerEthAppNftNotSupported": {
-    "message": "Ledger Nano S can't send or manage Ethereum NFTs. See <a href='https://shop.ledger.com/pages/ledger-nano-s-upgrade-program'>upgrade options</a>"
-  },
   "ledgerEthAppNftNotSupportedNotification": {
     "message": "Ledger Nano S can't send or manage Ethereum NFTs. See upgrade options at https://shop.ledger.com/pages/ledger-nano-s-upgrade-program"
   },
