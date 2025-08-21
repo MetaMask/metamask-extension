@@ -171,6 +171,9 @@
   "addACustomNetwork": {
     "message": "Add a custom network"
   },
+  "addAHardwareWallet": {
+    "message": "Add a hardware wallet"
+  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -308,6 +311,9 @@
   },
   "addUrl": {
     "message": "Add URL"
+  },
+  "addWallet": {
+    "message": "Add wallet"
   },
   "addingAccount": {
     "message": "Adding account"
@@ -1564,6 +1570,9 @@
   "createNewAccountHeader": {
     "message": "Create a new account"
   },
+  "createNewWallet": {
+    "message": "Create a new wallet"
+  },
   "createPassword": {
     "message": "MetaMask password"
   },
@@ -2792,6 +2801,9 @@
   "importAccountWithSocialMsgLearnMore": {
     "message": "$1 about how imported keys work",
     "description": "$1 is a link to learn more about imported keys"
+  },
+  "importAnAccount": {
+    "message": "Import an account"
   },
   "importNFT": {
     "message": "Import NFT"
