@@ -1,10 +1,6 @@
 import React from 'react';
 import { Severity } from '../../../../helpers/constants/design-system';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '../../../component-library';
+import { ButtonLink, ButtonLinkSize, Text } from '../../../component-library';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import GeneralAlert from './general-alert';
 
@@ -77,7 +73,7 @@ export const Default = (args) => <GeneralAlert {...args} />;
 Default.args = {
   description: 'This is a default security alert banner.',
   severity: Severity.Warning,
-  title: 'Components/App/AlertSystem/GeneralAlert',
+  title: 'Security Alert',
   provider: SecurityProvider.Blockaid,
 };
 

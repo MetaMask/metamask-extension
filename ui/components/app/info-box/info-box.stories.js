@@ -17,6 +17,6 @@ export const DefaultStory = (args) => <InfoBox {...args} />;
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  title: 'Components/App/InfoBox',
+  title: 'Hello Ether',
   description: 'This is the description',
 };

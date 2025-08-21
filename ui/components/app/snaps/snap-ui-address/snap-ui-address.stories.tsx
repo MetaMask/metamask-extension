@@ -2,7 +2,7 @@ import React from 'react';
 import { SnapUIAddress } from './snap-ui-address';
 
 export default {
-  title: 'Components/App/Snaps/SnapUiAddress',
+  title: 'Components/App/Snaps/SnapUIAddress',
   component: SnapUIAddress,
   argTypes: {},
 };

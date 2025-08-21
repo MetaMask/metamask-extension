@@ -10,7 +10,7 @@ export default {
     },
   },
   args: {
-    title: 'Components/App/Assets/Nfts/NftDetails/NftDetailInformationRow',
+    title: 'Token ID',
     value: '345',
   },
 };

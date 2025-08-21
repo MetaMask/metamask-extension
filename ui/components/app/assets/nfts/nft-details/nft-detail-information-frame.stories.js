@@ -17,7 +17,7 @@ export default {
     },
   },
   args: {
-    title: 'Components/App/Assets/Nfts/NftDetails/NftDetailInformationFrame',
+    title: 'Bought for',
     value: '$500',
     frameClassname: 'nft-details__nft-frame',
     frameTextTitleProps: {

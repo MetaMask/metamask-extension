@@ -15,7 +15,7 @@ const mockState = {
   },
   activeTab: {
     id: 113,
-    title: 'Components/App/Alerts/UnconnectedAccountAlert',
+    title: 'E2E Test Dapp',
     origin: 'https://metamask.github.io',
     protocol: 'https:',
     url: 'https://metamask.github.io/test-dapp/',
@@ -40,7 +40,8 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component: 'Alert shown when the selected account is not connected to the current dapp',
+        component:
+          'Alert shown when the selected account is not connected to the current dapp',
       },
     },
   },

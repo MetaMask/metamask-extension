@@ -11,7 +11,7 @@ export const DefaultStory = (args) => <PermissionConnectHeader {...args} />;
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  title: 'Components/App/PermissionConnectHeader',
+  title: 'E2E Test Dapp',
   origin: 'https://metamask.github.io',
   iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
 };
@@ -21,7 +21,7 @@ export const HeaderWithFallbackIcon = (args) => (
 );
 
 HeaderWithFallbackIcon.args = {
-  title: 'Components/App/PermissionConnectHeader',
+  title: 'E2E Test Dapp',
   origin: 'https://metamask.github.io',
   iconUrl: '',
 };
@@ -31,7 +31,7 @@ export const HeaderWithFallbackTitle = (args) => (
 );
 
 HeaderWithFallbackTitle.args = {
-  title: 'Components/App/PermissionConnectHeader',
+  title: 'https://metamask.github.io',
   origin: 'https://metamask.github.io',
   iconUrl: '',
 };
