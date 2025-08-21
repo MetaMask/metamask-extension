@@ -150,7 +150,7 @@ describe('extension platform', () => {
         extensionPlatform,
         '_showNotification',
       );
-      const expectedErrorMessage = t('ledgerEthAppNftNotSupported');
+      const expectedErrorMessage = t('ledgerEthAppNftNotSupportedNotification');
 
       await extensionPlatform.showTransactionNotification(txMeta, rpcPrefs);
 

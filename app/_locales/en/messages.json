@@ -3117,6 +3117,12 @@
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum transaction's input data isn't sufficiently padded."
   },
+  "ledgerEthAppNftNotSupported": {
+    "message": "Ledger Nano S can't send or manage Ethereum NFTs. See <a href='https://shop.ledger.com/pages/ledger-nano-s-upgrade-program'>upgrade options</a>"
+  },
+  "ledgerEthAppNftNotSupportedNotification": {
+    "message": "Ledger Nano S can't send or manage Ethereum NFTs. See upgrade options at https://shop.ledger.com/pages/ledger-nano-s-upgrade-program"
+  },
   "ledgerFirefoxNotSupportedDescription1": {
     "message": "We're having trouble connecting to Ledger. Check out our "
   },
@@ -3150,9 +3156,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "ledgerEthAppNftNotSupported": {
-    "message": "Ledger Nano S can't send or manage Ethereum NFTs. See <a href='https://shop.ledger.com/pages/ledger-nano-s-upgrade-program'>upgrade options</a>"
   },
   "levelArrow": {
     "message": "level arrow"

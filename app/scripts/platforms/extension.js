@@ -135,7 +135,7 @@ export default class ExtensionPlatform {
       if (txMeta.error?.message?.includes('ledgerEthAppNftNotSupported')) {
         await this._showFailedTransaction(
           txMeta,
-          t('ledgerEthAppNftNotSupported'),
+          t('ledgerEthAppNftNotSupportedNotification'),
         );
       } else {
         await this._showFailedTransaction(txMeta);
