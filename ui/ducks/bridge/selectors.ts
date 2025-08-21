@@ -545,6 +545,7 @@ export const getBridgeQuotes = createSelector(
           quote: {
             ...result.activeQuote.quote,
             gasless7702: true,
+            gasIncluded: false,
           },
         },
       };
@@ -639,7 +640,8 @@ export const getValidationErrors = createDeepEqualSelector(
     nativeBalance,
     fromTokenBalance,
   ) => {
-    const { gasIncluded } = activeQuote?.quote ?? {};
+    const { gasIncluded, gasless7702 } = activeQuote?.quote ?? {};
+    const isGasless = gasless7702 || gasIncluded;
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
@@ -663,7 +665,7 @@ export const getValidationErrors = createDeepEqualSelector(
           !activeQuote &&
           validatedSrcAmount &&
           fromToken &&
-          !gasIncluded &&
+          !isGasless &&
           (isNativeAddress(fromToken.address)
             ? new BigNumber(nativeBalance)
                 .sub(minimumBalanceToUse)
@@ -676,7 +678,7 @@ export const getValidationErrors = createDeepEqualSelector(
           activeQuote &&
           fromToken &&
           fromTokenInputValue &&
-          !gasIncluded &&
+          !isGasless &&
           (isNativeAddress(fromToken.address)
             ? new BigNumber(nativeBalance)
                 .sub(activeQuote.totalMaxNetworkFee.amount)

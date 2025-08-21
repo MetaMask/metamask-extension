@@ -86,6 +86,8 @@ export const MultichainBridgeQuoteCard = ({
   // Calculate if price impact warning should show
   const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
+  const gasless7702 = activeQuote?.quote?.gasless7702 ?? false;
+  const isGasless = gasless7702 || gasIncluded;
 
   const shouldRenderPriceImpactRow = useMemo(() => {
     const priceImpactThreshold = priceImpactThresholds;
@@ -99,7 +101,7 @@ export const MultichainBridgeQuoteCard = ({
     if (!shouldRenderPriceImpactRow) {
       return false;
     }
-    const threshold = gasIncluded
+    const threshold = isGasless
       ? priceImpactThresholds?.gasless
       : priceImpactThresholds?.normal;
     if (threshold === null || threshold === undefined) {
@@ -107,7 +109,7 @@ export const MultichainBridgeQuoteCard = ({
     }
     return Number(priceImpact) >= Number(threshold);
   }, [
-    gasIncluded,
+    isGasless,
     priceImpact,
     shouldRenderPriceImpactRow,
     priceImpactThresholds,
@@ -207,7 +209,8 @@ export const MultichainBridgeQuoteCard = ({
               >
                 {t('networkFee')}
               </Text>
-              {activeQuote.quote.gasIncluded && (
+              {(activeQuote.quote.gasIncluded ||
+                activeQuote.quote.gasless7702) && (
                 <Row gap={1} data-testid="network-fees-included">
                   <Text style={{ textDecoration: 'line-through' }}>
                     {activeQuote.includedTxFees?.valueInCurrency
@@ -225,15 +228,16 @@ export const MultichainBridgeQuoteCard = ({
                   <Text fontStyle={FontStyle.Italic}>{' Included'}</Text>
                 </Row>
               )}
-              {!activeQuote.quote.gasIncluded && (
-                <Text data-testid="network-fees">
-                  {formatCurrencyAmount(
-                    activeQuote.totalNetworkFee?.valueInCurrency,
-                    currency,
-                    2,
-                  )}
-                </Text>
-              )}
+              {!activeQuote.quote.gasIncluded &&
+                !activeQuote.quote.gasless7702 && (
+                  <Text data-testid="network-fees">
+                    {formatCurrencyAmount(
+                      activeQuote.totalNetworkFee?.valueInCurrency,
+                      currency,
+                      2,
+                    )}
+                  </Text>
+                )}
             </Row>
 
             {/* Slippage */}
@@ -281,7 +285,7 @@ export const MultichainBridgeQuoteCard = ({
                     iconName={IconName.Question}
                   >
                     {t(
-                      gasIncluded
+                      isGasless
                         ? 'bridgePriceImpactGaslessWarning'
                         : 'bridgePriceImpactNormalWarning',
                     )}
@@ -356,6 +360,9 @@ export const MultichainBridgeQuoteCard = ({
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
                           gas_included: Boolean(activeQuote.quote?.gasIncluded),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          gasless_7702: Boolean(activeQuote.quote?.gasless7702),
                         },
                       ),
                     );

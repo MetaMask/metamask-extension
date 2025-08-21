@@ -122,6 +122,11 @@ export const BridgeQuotesModal = ({
                         ),
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
+                        gasless_7702: Boolean(
+                          recommendedQuote?.quote?.gasless7702,
+                        ),
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_source:
                           fromToken?.symbol ??
                           getNativeAssetForChainId(fromChain.chainId).symbol,
@@ -190,8 +195,15 @@ export const BridgeQuotesModal = ({
                 toTokenAmount,
                 cost,
                 sentAmount,
-                quote: { destAsset, bridges, requestId, gasIncluded },
+                quote: {
+                  destAsset,
+                  bridges,
+                  requestId,
+                  gasIncluded,
+                  gasless7702,
+                },
               } = quote;
+              const isGasless = gasless7702 || gasIncluded;
               const isQuoteActive = requestId === activeQuote?.quote.requestId;
               const isRecommendedQuote =
                 requestId === recommendedQuote?.quote.requestId;
@@ -241,6 +253,9 @@ export const BridgeQuotesModal = ({
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
                           gas_included: Boolean(quote.quote?.gasIncluded),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          gasless_7702: Boolean(quote.quote?.gasless7702),
                         },
                       ),
                     );
@@ -266,7 +281,7 @@ export const BridgeQuotesModal = ({
                   )}
                   <Column>
                     <Text variant={TextVariant.bodyMd}>
-                      {gasIncluded
+                      {isGasless
                         ? formatCurrencyAmount(
                             new BigNumber(sentAmount.valueInCurrency ?? 0)
                               .minus(toTokenAmount.valueInCurrency ?? 0)
@@ -281,7 +296,7 @@ export const BridgeQuotesModal = ({
                           )}
                     </Text>
                     {[
-                      gasIncluded && sentAmount?.valueInCurrency
+                      isGasless && sentAmount?.valueInCurrency
                         ? t('quotedTotalCost', [
                             formatCurrencyAmount(
                               sentAmount.valueInCurrency,
@@ -290,7 +305,7 @@ export const BridgeQuotesModal = ({
                             ),
                           ])
                         : undefined,
-                      !gasIncluded &&
+                      !isGasless &&
                         (totalNetworkFee?.valueInCurrency &&
                         sentAmount?.valueInCurrency
                           ? t('quotedTotalCost', [
