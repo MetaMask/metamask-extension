@@ -15,11 +15,7 @@ import {
   getParticipateInMetaMetrics,
 } from '../../selectors';
 import { BaseUrl } from '../../../shared/constants/urls';
-import {
-  AccountMenu,
-  ACTION_MODES,
-} from '../../components/multichain/account-menu/account-menu';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import AddNonEvmAccountModal from '../../components/multichain/network-list-menu/add-non-evm-account/add-non-evm-account';
 
 const { getExtensionURL } = globalThis.platform;
 
@@ -76,21 +72,21 @@ export const NonEvmBalanceCheck = () => {
       return;
     }
 
-    if (hasAccountForChain) {
-      const hasPositiveBalance = assetsWithBalance.some(
-        (asset) =>
-          asset.chainId === chainId && asset.balance && asset.balance !== '0',
-      );
+    // if (hasAccountForChain) {
+    //   const hasPositiveBalance = assetsWithBalance.some(
+    //     (asset) =>
+    //       asset.chainId === chainId && asset.balance && asset.balance !== '0',
+    //   );
 
-      window.location.href = hasPositiveBalance
-        ? getSwapUrl(chainId)
-        : getBuyUrl(
-            chainId,
-            metaMetricsId,
-            isMetaMetricsEnabled,
-            isMarketingEnabled,
-          );
-    }
+    //   window.location.href = hasPositiveBalance
+    //     ? getSwapUrl(chainId)
+    //     : getBuyUrl(
+    //         chainId,
+    //         metaMetricsId,
+    //         isMetaMetricsEnabled,
+    //         isMarketingEnabled,
+    //       );
+    // }
   }, [
     chainId,
     assetsWithBalance,
@@ -101,21 +97,8 @@ export const NonEvmBalanceCheck = () => {
     accounts,
   ]);
 
-  if (!hasAccountForChain) {
-    const initialMode =
-      chainId === MultichainNetworks.SOLANA
-        ? ACTION_MODES.ADD_SOLANA
-        : ACTION_MODES.ADD_BITCOIN;
-
-    return (
-      <AccountMenu
-        onClose={() => {
-          // nothing to do here
-        }}
-        showAccountCreation={true}
-        initialActionMode={initialMode}
-      />
-    );
+  if (hasAccountForChain) {
+    return <AddNonEvmAccountModal chainId={chainId} />;
   }
 
   return null;
