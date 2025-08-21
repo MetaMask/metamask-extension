@@ -15,6 +15,36 @@
 - **Theming**: If theming is needed, add a story-level decorator that wraps the component in the theme provider.
 - **CSF migration**: Replace `Template.bind({})` with `export const Name: Story = { args: {}, render: ... }`.
 
+## Hooks in stories
+
+- Keep stories simple; avoid adding a `parameters` block unless absolutely necessary.
+- If a story needs React hooks, use a function component for `render` so hooks run at the top level of a component.
+- Do not call hooks conditionally or inside plain closures.
+
+Example:
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react';
+import { useMemo } from 'react';
+import { MyComponent } from './my-component';
+
+const meta: Meta<typeof MyComponent> = {
+  title: 'Components/MyComponent',
+  component: MyComponent,
+};
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const WithHook: Story = {
+  args: { label: 'With hook' },
+  render: function Render(args) {
+    const computed = useMemo(() => args.label.toUpperCase(), [args.label]);
+    return <MyComponent {...args} label={computed} />;
+  },
+};
+```
+
 ## Example (CSF 3)
 
 ```ts
