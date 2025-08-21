@@ -1,1 +1,1 @@
-export { default as SnapAccountRedirect } from './transaction-shield';
+export { default as TransactionShield } from './transaction-shield';

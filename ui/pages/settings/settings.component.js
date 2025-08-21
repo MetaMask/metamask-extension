@@ -65,7 +65,7 @@ import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
-import TransactionShield from './transaction-shield-tab/transaction-shield';
+import { TransactionShield } from './transaction-shield-tab';
 
 class SettingsPage extends PureComponent {
   static propTypes = {

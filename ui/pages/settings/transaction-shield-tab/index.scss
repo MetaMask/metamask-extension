@@ -1,15 +1,38 @@
 .transaction-shield-page {
-  &__container {}
+  &__membership {
+    background: url('/images/shield-membership-active.svg') no-repeat right -10px center;
+    background-color: var(--color-accent03-dark);
+    background-size: 85px;
+    height: 85px;
+
+    .transaction-shield-page__membership-text {
+      color: var(--color-accent03-light);
+    }
+
+    &--loading {
+      background: var(--color-border-muted);
+    }
+
+    &--inactive {
+      background: url('/images/shield-membership-inactive.svg') no-repeat right -10px center;
+      background-color: var(--color-icon-muted);
+
+      .transaction-shield-page__membership-text {
+        color: var(--color-text-default);
+      }
+    }
+  }
+
 
   &__row {
     margin-bottom: 1px;
 
-    &:first-of-type {
+    &:first-child {
       border-top-left-radius: 8px;
       border-top-right-radius: 8px;
     }
 
-    &:last-of-type {
+    &:last-child {
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
       margin-bottom: 0;
