@@ -1,6 +1,5 @@
 import React from 'react';
 import { DomainInputResolutionCell } from '.';
-
 export default {
   title:
     'Components/Multichain/Pages/Send/Components/DomainInputResolutionCell',
