@@ -12,6 +12,8 @@ jobs:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment:
+      name: smoke
     env:
       SMOKE_TEST_SRP: ${{ secrets.SMOKE_TEST_SRP }}
     steps:
@@ -56,6 +58,8 @@ jobs:
       github.event_name == 'pull_request' && contains(toJson(github.event.pull_request.labels), 'smoke-test')
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment:
+      name: smoke
     env:
       SMOKE_TEST_SRP: ${{ secrets.SMOKE_TEST_SRP }}
     steps:
