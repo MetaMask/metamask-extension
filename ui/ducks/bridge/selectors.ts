@@ -535,8 +535,8 @@ export const getBridgeQuotes = createSelector(
       selectedQuote,
     });
 
-    // Temporarily add gasless7702 flag when gasIncluded is true
-    // This code will be removed once backend returns gasless7702 in individual quotes
+    // Temporarily add gasIncluded7702 flag when gasIncluded is true
+    // This code will be removed once backend returns gasIncluded7702 in individual quotes
     if (result.activeQuote && result.activeQuote.quote?.gasIncluded) {
       return {
         ...result,
@@ -544,7 +544,7 @@ export const getBridgeQuotes = createSelector(
           ...result.activeQuote,
           quote: {
             ...result.activeQuote.quote,
-            gasless7702: true,
+            gasIncluded7702: true,
             gasIncluded: false,
           },
         },
@@ -640,8 +640,8 @@ export const getValidationErrors = createDeepEqualSelector(
     nativeBalance,
     fromTokenBalance,
   ) => {
-    const { gasIncluded, gasless7702 } = activeQuote?.quote ?? {};
-    const isGasless = gasless7702 || gasIncluded;
+    const { gasIncluded, gasIncluded7702 } = activeQuote?.quote ?? {};
+    const isGasless = gasIncluded7702 || gasIncluded;
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;

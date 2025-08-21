@@ -122,8 +122,8 @@ export const BridgeQuotesModal = ({
                         ),
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        gasless_7702: Boolean(
-                          recommendedQuote?.quote?.gasless7702,
+                        gas_included_7702: Boolean(
+                          recommendedQuote?.quote?.gasIncluded7702,
                         ),
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -200,10 +200,10 @@ export const BridgeQuotesModal = ({
                   bridges,
                   requestId,
                   gasIncluded,
-                  gasless7702,
+                  gasIncluded7702,
                 },
               } = quote;
-              const isGasless = gasless7702 || gasIncluded;
+              const isGasless = gasIncluded7702 || gasIncluded;
               const isQuoteActive = requestId === activeQuote?.quote.requestId;
               const isRecommendedQuote =
                 requestId === recommendedQuote?.quote.requestId;
@@ -255,7 +255,9 @@ export const BridgeQuotesModal = ({
                           gas_included: Boolean(quote.quote?.gasIncluded),
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
-                          gasless_7702: Boolean(quote.quote?.gasless7702),
+                          gas_included_7702: Boolean(
+                            quote.quote?.gasIncluded7702,
+                          ),
                         },
                       ),
                     );

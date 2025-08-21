@@ -20,23 +20,24 @@ type Account = {
  * @param fromChain - The source chain
  * @returns Whether gasless 7702 is supported
  */
-export function useGasless7702Support(
+export function useGasIncluded7702Support(
   smartAccountOptIn: boolean,
   isSwap: boolean,
   selectedAccount: Account | null | undefined,
   fromChain: Chain | null | undefined,
 ): boolean {
-  const [isGasless7702Supported, setIsGasless7702Supported] = useState(false);
+  const [isGasIncluded7702Supported, setIsGasIncluded7702Supported] =
+    useState(false);
 
   useEffect(() => {
-    const checkGasless7702Support = async () => {
+    const checkGasIncluded7702Support = async () => {
       if (
         !smartAccountOptIn ||
         !isSwap ||
         !selectedAccount?.address ||
         !fromChain?.chainId
       ) {
-        setIsGasless7702Supported(false);
+        setIsGasIncluded7702Supported(false);
         return;
       }
 
@@ -62,15 +63,15 @@ export function useGasless7702Support(
           atomicBatchChainSupport?.isSupported && relaySupportsChain,
         );
 
-        setIsGasless7702Supported(is7702Supported);
+        setIsGasIncluded7702Supported(is7702Supported);
       } catch (error) {
         console.error('Error checking gasless 7702 support:', error);
-        setIsGasless7702Supported(false);
+        setIsGasIncluded7702Supported(false);
       }
     };
 
-    checkGasless7702Support();
+    checkGasIncluded7702Support();
   }, [smartAccountOptIn, isSwap, selectedAccount?.address, fromChain?.chainId]);
 
-  return isGasless7702Supported;
+  return isGasIncluded7702Supported;
 }

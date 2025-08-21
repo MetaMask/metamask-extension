@@ -123,7 +123,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
-import { useGasless7702Support } from '../hooks/useGasless7702Support';
+import { useGasIncluded7702Support } from '../hooks/useGasIncluded7702Support';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -261,7 +261,7 @@ const PrepareBridgePage = ({
     ? selectedEvmAccount
     : selectedMultichainAccount;
 
-  const isGasless7702Supported = useGasless7702Support(
+  const isGasIncluded7702Supported = useGasIncluded7702Support(
     smartAccountOptIn,
     isSwap,
     selectedAccount,
@@ -408,7 +408,7 @@ const PrepareBridgePage = ({
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
       gasIncluded: smartTransactionsEnabled && isSwap,
-      gasless7702: isGasless7702Supported,
+      gasIncluded7702: isGasIncluded7702Supported,
     }),
     [
       fromToken?.address,
@@ -423,7 +423,7 @@ const PrepareBridgePage = ({
       providerConfig?.rpcUrl,
       smartTransactionsEnabled,
       isSwap,
-      isGasless7702Supported,
+      isGasIncluded7702Supported,
     ],
   );
 

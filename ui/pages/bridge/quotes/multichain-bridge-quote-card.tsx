@@ -86,8 +86,8 @@ export const MultichainBridgeQuoteCard = ({
   // Calculate if price impact warning should show
   const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
-  const gasless7702 = activeQuote?.quote?.gasless7702 ?? false;
-  const isGasless = gasless7702 || gasIncluded;
+  const gasIncluded7702 = activeQuote?.quote?.gasIncluded7702 ?? false;
+  const isGasless = gasIncluded7702 || gasIncluded;
 
   const shouldRenderPriceImpactRow = useMemo(() => {
     const priceImpactThreshold = priceImpactThresholds;
@@ -210,7 +210,7 @@ export const MultichainBridgeQuoteCard = ({
                 {t('networkFee')}
               </Text>
               {(activeQuote.quote.gasIncluded ||
-                activeQuote.quote.gasless7702) && (
+                activeQuote.quote.gasIncluded7702) && (
                 <Row gap={1} data-testid="network-fees-included">
                   <Text style={{ textDecoration: 'line-through' }}>
                     {activeQuote.includedTxFees?.valueInCurrency
@@ -229,7 +229,7 @@ export const MultichainBridgeQuoteCard = ({
                 </Row>
               )}
               {!activeQuote.quote.gasIncluded &&
-                !activeQuote.quote.gasless7702 && (
+                !activeQuote.quote.gasIncluded7702 && (
                   <Text data-testid="network-fees">
                     {formatCurrencyAmount(
                       activeQuote.totalNetworkFee?.valueInCurrency,
@@ -362,7 +362,9 @@ export const MultichainBridgeQuoteCard = ({
                           gas_included: Boolean(activeQuote.quote?.gasIncluded),
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
-                          gasless_7702: Boolean(activeQuote.quote?.gasless7702),
+                          gas_included_7702: Boolean(
+                            activeQuote.quote?.gasIncluded7702,
+                          ),
                         },
                       ),
                     );

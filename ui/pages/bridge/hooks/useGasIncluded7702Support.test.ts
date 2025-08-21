@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
-import { useGasless7702Support } from './useGasless7702Support';
+import { useGasIncluded7702Support } from './useGasIncluded7702Support';
 
 jest.mock('../../../store/actions', () => ({
   isRelaySupported: jest.fn(),
@@ -10,7 +10,7 @@ jest.mock('../../../store/controller-actions/transaction-controller', () => ({
   isAtomicBatchSupported: jest.fn(),
 }));
 
-describe('useGasless7702Support', () => {
+describe('useGasIncluded7702Support', () => {
   const mockIsRelaySupported = jest.requireMock(
     '../../../store/actions',
   ).isRelaySupported;
@@ -31,7 +31,7 @@ describe('useGasless7702Support', () => {
 
   it('returns false when smartAccountOptIn is false', () => {
     const { result } = renderHook(() =>
-      useGasless7702Support(
+      useGasIncluded7702Support(
         false,
         true,
         { address: '0x123' },
@@ -46,7 +46,7 @@ describe('useGasless7702Support', () => {
 
   it('returns false when isSwap is false', () => {
     const { result } = renderHook(() =>
-      useGasless7702Support(
+      useGasIncluded7702Support(
         true,
         false,
         { address: '0x123' },
@@ -61,7 +61,7 @@ describe('useGasless7702Support', () => {
 
   it('returns false when selectedAccount is null', () => {
     const { result } = renderHook(() =>
-      useGasless7702Support(true, true, null, { chainId: '0x1' }),
+      useGasIncluded7702Support(true, true, null, { chainId: '0x1' }),
     );
 
     expect(result.current).toBe(false);
@@ -71,7 +71,7 @@ describe('useGasless7702Support', () => {
 
   it('returns false when fromChain is null', () => {
     const { result } = renderHook(() =>
-      useGasless7702Support(true, true, { address: '0x123' }, null),
+      useGasIncluded7702Support(true, true, { address: '0x123' }, null),
     );
 
     expect(result.current).toBe(false);
@@ -86,7 +86,7 @@ describe('useGasless7702Support', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useGasless7702Support(
+      useGasIncluded7702Support(
         true,
         true,
         { address: '0x123' },
@@ -111,7 +111,7 @@ describe('useGasless7702Support', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result } = renderHook(() =>
-      useGasless7702Support(
+      useGasIncluded7702Support(
         true,
         true,
         { address: '0x123' },
@@ -138,7 +138,7 @@ describe('useGasless7702Support', () => {
     mockIsRelaySupported.mockResolvedValue(false);
 
     const { result } = renderHook(() =>
-      useGasless7702Support(
+      useGasIncluded7702Support(
         true,
         true,
         { address: '0x123' },
@@ -162,7 +162,7 @@ describe('useGasless7702Support', () => {
     mockIsAtomicBatchSupported.mockRejectedValue(new Error('Test error'));
 
     const { result } = renderHook(() =>
-      useGasless7702Support(
+      useGasIncluded7702Support(
         true,
         true,
         { address: '0x123' },
@@ -193,7 +193,7 @@ describe('useGasless7702Support', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useGasless7702Support(
+      useGasIncluded7702Support(
         true,
         true,
         { address: '0x123' },
@@ -212,7 +212,7 @@ describe('useGasless7702Support', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result } = renderHook(() =>
-      useGasless7702Support(
+      useGasIncluded7702Support(
         true,
         true,
         { address: '0x123' },
