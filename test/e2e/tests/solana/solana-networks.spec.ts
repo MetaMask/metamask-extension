@@ -45,9 +45,7 @@ describe('Solana network', function (this: Suite) {
         // in the network-controller
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Default');
-        await networkManager.selectNetwork(NetworkId.ETHEREUM);
         await networkManager.selectNetwork(NetworkId.LINEA);
-        await networkManager.deselectNetwork(NetworkId.ETHEREUM);
         await networkManager.closeNetworkManager();
 
         // Switch back to Solana Mainnet
