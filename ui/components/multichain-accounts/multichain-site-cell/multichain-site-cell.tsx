@@ -129,7 +129,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
       >
         <SiteCellConnectionListItem
           title={t('accountsPermissionsTitle')}
-          iconName={IconName.Wallet}
+          iconName={IconName.Eye}
           connectedMessage={accountMessageConnectedState}
           unconnectedMessage={accountMessageNotConnectedState}
           isConnectFlow={isConnectFlow}
@@ -158,7 +158,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
         />
         <SiteCellConnectionListItem
           title={t('permission_walletSwitchEthereumChain')}
-          iconName={IconName.Data}
+          iconName={IconName.Global}
           connectedMessage={networkMessageConnectedState}
           unconnectedMessage={networkMessageNotConnectedState}
           isConnectFlow={isConnectFlow}
