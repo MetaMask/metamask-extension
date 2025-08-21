@@ -133,7 +133,7 @@ export const ConnectedAccountsMenu = ({
               iconColor={IconColor.errorDefault}
               data-testid="disconnect-menu-item"
               onClick={() => {
-                onActionClick(account.metadata.name);
+                onActionClick(account.metadata.name); // TODO Accounts: Migrate to new account group name
                 dispatch(
                   removePermittedAccount(activeTabOrigin, account.address),
                 );

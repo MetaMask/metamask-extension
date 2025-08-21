@@ -1118,14 +1118,14 @@ export function getAddressBookEntryOrAccountName(state, address) {
     (account) => isEqualCaseInsensitive(account.address, address),
   );
 
-  return internalAccount?.metadata.name || address;
+  return internalAccount?.metadata.name || address; // TODO Confirmations: Migrate to new account group name
 }
 
 export function getAccountName(accounts, accountAddress) {
   const account = accounts.find((internalAccount) =>
     isEqualCaseInsensitive(internalAccount.address, accountAddress),
   );
-  return account && account.metadata.name !== '' ? account.metadata.name : '';
+  return account && account.metadata.name !== '' ? account.metadata.name : ''; // TODO Confirmations: Migrate to new account group name
 }
 
 export function accountsWithSendEtherInfoSelector(state) {

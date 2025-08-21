@@ -49,6 +49,7 @@ export default class ConfirmRemoveAccount extends Component {
             {t('name')}
           </span>
           <span className="account_value">{account.metadata.name}</span>
+          {/* // TODO Accounts: Migrate to new account group name */}
         </div>
         <div className="confirm-remove-account__account__address">
           <span className="confirm-remove-account__account__label">

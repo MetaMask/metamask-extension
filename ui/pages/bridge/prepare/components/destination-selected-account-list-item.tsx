@@ -79,11 +79,11 @@ const DestinationSelectedAccountListItem: React.FC<
           {(() => {
             if (isExternalAccount) {
               if (account.metadata.name.endsWith('.eth')) {
-                return account.metadata.name;
+                return account.metadata.name; // TODO Swaps: This needs to be updated to the new account group name
               }
               return t('externalAccount');
             }
-            return account.metadata.name;
+            return account.metadata.name; // TODO Swaps: This needs to be updated to the new account group name
           })()}
         </Text>
       </Box>

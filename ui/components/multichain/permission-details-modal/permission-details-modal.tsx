@@ -87,7 +87,7 @@ export const PermissionDetailsModal = ({
               }
             />
             <Text variant={TextVariant.headingSm}>
-              {account.metadata.name
+              {account.metadata.name // TODO Wallet UX?: Migrate to new account group name
                 ? account.metadata.name
                 : shortenAddress(account.address)}
             </Text>

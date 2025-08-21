@@ -14,6 +14,6 @@ export const matchesSearchPattern = (
   const lowercasedPattern = pattern.toLowerCase();
   return (
     account.metadata.name.toLowerCase().includes(lowercasedPattern) ||
-    account.address.toLowerCase().includes(lowercasedPattern)
+    account.address.toLowerCase().includes(lowercasedPattern) // TODO Accounts: Does this need to be migrated to the new account group name?
   );
 };

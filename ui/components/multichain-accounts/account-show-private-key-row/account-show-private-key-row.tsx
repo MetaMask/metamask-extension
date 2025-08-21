@@ -90,7 +90,7 @@ export const AccountShowPrivateKeyRow = ({
 
           {privateKey && !showHoldToReveal && (
             <AccountDetailsKey
-              accountName={account.metadata.name}
+              accountName={account.metadata.name} // TODO Accounts: Does this need to be migrated to the new account group name?
               onClose={handleClose}
               privateKey={privateKey}
             />

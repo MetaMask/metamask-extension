@@ -230,7 +230,7 @@ export const AppHeaderUnlockedContent = ({
           >
             <AccountPicker
               address={internalAccount.address}
-              name={internalAccount.metadata.name}
+              name={internalAccount.metadata.name} // TODO Wallet UX?: Migrate to new account group name
               showAvatarAccount={false}
               onClick={() => {
                 handleAccountMenuClick();

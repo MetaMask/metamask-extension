@@ -53,7 +53,7 @@ export const DestinationAccountPicker = ({
   const filteredAccounts = useMemo(
     () =>
       accounts.filter((account) => {
-        const matchesSearchByName = account.metadata.name
+        const matchesSearchByName = account.metadata.name // TODO Swaps: This needs to be updated to the new account group name
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
 

@@ -316,14 +316,15 @@ const AccountListItem = ({
                 {account.metadata.name.length >
                 MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
                   <Tooltip
-                    title={account.metadata.name}
+                    title={account.metadata.name} // TODO Accounts: Migrate to new account group name
                     position="bottom"
                     wrapperClassName="multichain-account-list-item__tooltip"
                   >
                     {account.metadata.name}
+                    {/* // TODO Accounts: Migrate to new account group name */}
                   </Tooltip>
                 ) : (
-                  account.metadata.name
+                  account.metadata.name // TODO Accounts: Migrate to new account group name
                 )}
               </Text>
             </Box>

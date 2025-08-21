@@ -37,7 +37,7 @@ export const ExternalAccountListItem: React.FC<
 > = ({ account, selected, onClick }) => {
   const useBlockie = useSelector(getUseBlockie);
   const t = useI18nContext();
-  const isEnsName = account.metadata.name.endsWith('.eth');
+  const isEnsName = account.metadata.name.endsWith('.eth'); // TODO Swaps: This needs to be updated to the new account group name
 
   return (
     <Box
@@ -79,6 +79,7 @@ export const ExternalAccountListItem: React.FC<
             }}
           >
             {isEnsName ? account.metadata.name : t('externalAccount')}
+            {/* // TODO Swaps: This needs to be updated to the new account group name */}
           </Text>
           <Text
             variant={TextVariant.bodySm}

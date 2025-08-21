@@ -43,7 +43,7 @@ export const SendPageAccountPicker = () => {
       <AccountPicker
         className="multichain-send-page__account-picker"
         address={internalAccount.address}
-        name={internalAccount.metadata.name}
+        name={internalAccount.metadata.name} // TODO Confirmations: Migrate to new account group name
         onClick={() => setShowAccountPicker(true)}
         showAddress
         borderColor={BorderColor.borderMuted}

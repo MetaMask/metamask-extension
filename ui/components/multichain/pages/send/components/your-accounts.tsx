@@ -45,7 +45,7 @@ export const SendPageYourAccounts = ({
     (account: MergedInternalAccount) => {
       dispatch(
         addHistoryEntry(
-          `sendFlow - User clicked recipient from my accounts. address: ${account.address}, nickname ${account.metadata.name}`,
+          `sendFlow - User clicked recipient from my accounts. address: ${account.address}, nickname ${account.metadata.name}`, // TODO Confirmations: Migrate to new account group name
         ),
       );
       trackEvent(
@@ -62,7 +62,7 @@ export const SendPageYourAccounts = ({
       dispatch(
         updateRecipient({
           address: account.address,
-          nickname: account.metadata.name,
+          nickname: account.metadata.name, // TODO Confirmations: Migrate to new account group name
         }),
       );
       dispatch(updateRecipientUserInput(account.address));
