@@ -1796,6 +1796,9 @@
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
   },
+  "deepLink_theSwapsRampsPage": {
+    "message": "the Swaps/Ramps page"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
