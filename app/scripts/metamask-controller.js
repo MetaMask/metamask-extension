@@ -8989,8 +8989,8 @@ export default class MetamaskController extends EventEmitter {
     await this._createTransactionNotifcation(transactionMeta);
     await this._updateNFTOwnership(transactionMeta);
     this._trackTransactionFailure(transactionMeta);
-    await this.tokenBalancesController.updateBalancesByChainId({
-      chainId: transactionMeta.chainId,
+    await this.tokenBalancesController.updateBalances({
+      chainIds: [transactionMeta.chainId],
     });
     endTrace({
       name: TraceName.OnFinishedTransaction,
