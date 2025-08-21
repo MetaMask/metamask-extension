@@ -4,7 +4,7 @@ import { Meta, Story } from '@storybook/react';
 import NftCollectionImage from './nft-collection-image';
 
 export default {
-  title: 'Components/UI/NFTCollectionImage',
+  title: 'Components/UI/NftCollectionImage',
   component: NftCollectionImage,
   argTypes: {
     // Define argTypes here if necessary

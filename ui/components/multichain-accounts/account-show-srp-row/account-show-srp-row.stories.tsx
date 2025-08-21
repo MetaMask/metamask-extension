@@ -31,7 +31,7 @@ const createMockState = (
 });
 
 export default {
-  title: 'Components/MultichainAccounts/AccountShowSRPRow',
+  title: 'Components/MultichainAccounts/AccountShowSrpRow',
   component: AccountShowSrpRow,
   parameters: {
     docs: {

@@ -9,7 +9,7 @@ import { ButtonIcon, IconName, IconSize } from '../../../../component-library';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 
 export default {
-  title: 'Components/App/Assets/Nfts/NFTDetails/NftDetailInformationFrame',
+  title: 'Components/App/Assets/Nfts/NftDetails/NftDetailInformationFrame',
 
   argTypes: {
     nft: {

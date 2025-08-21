@@ -2,7 +2,7 @@ import React from 'react';
 import NftDefaultImage from '.';
 
 export default {
-  title: 'Components/App/Assets/Nfts/NFTDefaultImage',
+  title: 'Components/App/Assets/Nfts/NftDefaultImage',
 
   argTypes: {
     clickable: {
