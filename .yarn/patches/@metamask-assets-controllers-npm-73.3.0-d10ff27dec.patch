@@ -12,34 +12,42 @@ index 17fabe0594dcaccc7f4d2f7f54f89a575bde247e..937784721dd084f1583b0cc437bfee94
  const controllerName = 'DeFiPositionsController';
  const controllerMetadata = {
 diff --git a/dist/TokenBalancesController.cjs b/dist/TokenBalancesController.cjs
-index 2b0f1645ae2d3251429fb569626c7b6969f4639d..282b0e0167cbf309bb0e188f1f460d81764e7fdb 100644
+index 2b0f1645ae2d3251429fb569626c7b6969f4639d..1998227787d40160e26b6078fc44029b94d11783 100644
 --- a/dist/TokenBalancesController.cjs
 +++ b/dist/TokenBalancesController.cjs
-@@ -252,7 +252,7 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
+@@ -32,6 +32,7 @@ const metadata = {
+ // region: Helper utilities
+ const draft = (base, fn) => (0, immer_1.produce)(base, fn);
+ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
++const checksum = (addr) => (0, controller_utils_1.toChecksumHexAddress)(addr);
+ // endregion
+ // ────────────────────────────────────────────────────────────────────────────
+ // region: Main controller
+@@ -252,7 +253,7 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
                      if (chainTokens?.[account]) {
                          Object.values(chainTokens[account]).forEach((token) => {
                              var _a, _b;
 -                            const tokenAddress = token.address;
-+                            const tokenAddress = token.address.toLowerCase();
++                            const tokenAddress = checksum(token.address);
                              ((_b = ((_a = d.tokenBalances)[account] ?? (_a[account] = {})))[chainId] ?? (_b[chainId] = {}))[tokenAddress] = '0x0';
                          });
                      }
-@@ -261,7 +261,7 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
+@@ -261,7 +262,7 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
                      if (detectedChainTokens?.[account]) {
                          Object.values(detectedChainTokens[account]).forEach((token) => {
                              var _a, _b;
 -                            const tokenAddress = token.address;
-+                            const tokenAddress = token.address.toLowerCase();
++                            const tokenAddress = checksum(token.address);
                              ((_b = ((_a = d.tokenBalances)[account] ?? (_a[account] = {})))[chainId] ?? (_b[chainId] = {}))[tokenAddress] = '0x0';
                          });
                      }
-@@ -271,8 +271,7 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
+@@ -271,8 +272,7 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
              aggregated.forEach(({ success, value, account, token, chainId }) => {
                  var _a, _b;
                  if (success && value !== undefined) {
 -                    ((_b = ((_a = d.tokenBalances)[account] ?? (_a[account] = {})))[chainId] ?? (_b[chainId] = {}))[token] =
 -                        (0, controller_utils_1.toHex)(value);
-+                    ((_b = ((_a = d.tokenBalances)[account] ?? (_a[account] = {})))[chainId] ?? (_b[chainId] = {}))[token.toLowerCase()] = (0, controller_utils_1.toHex)(value);
++                    ((_b = ((_a = d.tokenBalances)[account] ?? (_a[account] = {})))[chainId] ?? (_b[chainId] = {}))[checksum(token)] = (0, controller_utils_1.toHex)(value);
                  }
              });
          });
