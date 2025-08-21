@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classnames from 'classnames';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -9,7 +10,6 @@ import {
   IconName,
   IconSize,
   Modal,
-  ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -28,9 +28,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../helpers/constants/design-system';
-import classnames from 'classnames';
 import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
 import { TabName } from '../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
+import { AssetType } from '../../../shared/constants/transaction';
 import { PAYMENT_METHODS, PaymentMethod } from './types';
 
 export const ShieldPaymentModal = ({
@@ -184,11 +184,32 @@ export const ShieldPaymentModal = ({
         <AssetPickerModal
           isOpen={showAssetPickerModal}
           onClose={() => setShowAssetPickerModal(false)}
-          asset={undefined}
-          onAssetChange={() => {}}
+          onAssetChange={(asset) => {
+            console.log('onAssetChange', asset);
+          }}
           header="Select a token"
           autoFocus={false}
           visibleTabs={[TabName.TOKENS]}
+          customTokenListGenerator={() => {
+            return [
+              {
+                address: '0x0000000000000000000000000000000000000000',
+                symbol: 'USDC',
+                image:
+                  'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
+                type: AssetType.token,
+                chainId: '0x1',
+              },
+              {
+                address: '0x0000000000000000000000000000000000000000',
+                symbol: 'USDT',
+                image:
+                  'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
+                type: AssetType.token,
+                chainId: '0x1',
+              },
+            ] as unknown as (keyof typeof AssetPickerModal)['customTokenListGenerator'];
+          }}
         />
       </ModalContent>
     </Modal>

@@ -143,6 +143,23 @@ const ShieldPlan = () => {
                 <Text variant={TextVariant.bodySm}>{plan.label}</Text>
                 <Text variant={TextVariant.headingMd}>{plan.price}</Text>
               </Box>
+              {plan.id === PLAN_TYPES.ANNUAL && (
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  justifyContent={JustifyContent.center}
+                  paddingInline={2}
+                  borderRadius={BorderRadius.SM}
+                  className="shield-plan-page__save-badge"
+                >
+                  <Text
+                    variant={TextVariant.bodyXs}
+                    color={TextColor.iconInverse}
+                  >
+                    Save 16%
+                  </Text>
+                </Box>
+              )}
             </Box>
           ))}
         </Box>
@@ -220,7 +237,12 @@ const ShieldPlan = () => {
           setSelectedPaymentMethod={setSelectedPaymentMethod}
         />
       </Content>
-      <Footer flexDirection={FlexDirection.Column} gap={3}>
+      <Footer
+        className="shield-plan-page__footer"
+        flexDirection={FlexDirection.Column}
+        gap={3}
+        backgroundColor={BackgroundColor.backgroundMuted}
+      >
         <Button size={ButtonSize.Lg} variant={ButtonVariant.Primary} block>
           {t('continue')}
         </Button>
