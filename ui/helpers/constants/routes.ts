@@ -113,6 +113,7 @@ export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
+export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';

@@ -60,6 +60,7 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
+  NONEVM_BALANCE_CHECK_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -289,6 +290,13 @@ const WalletDetails = mmLazy(
   (() =>
     import(
       '../multichain-accounts/wallet-details/index.ts'
+    )) as unknown as DynamicImportType,
+);
+
+const NonEvmBalanceCheck = mmLazy(
+  (() =>
+    import(
+      '../nonevm-balance-check/index.tsx'
     )) as unknown as DynamicImportType,
 );
 // End Lazy Routes
@@ -590,6 +598,10 @@ export default function Routes() {
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
             component={AddressQRCode}
             exact
+          />
+          <Authenticated
+            path={NONEVM_BALANCE_CHECK_ROUTE}
+            component={NonEvmBalanceCheck}
           />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
