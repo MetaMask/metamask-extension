@@ -12,7 +12,7 @@ function getStore() {
 }
 
 const Story = {
-  title: 'Components/App/Confirm/info/shared/NetworkRow',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/NetworkRow',
   component: NetworkRow,
   decorators: [
     (story: () => Meta<typeof NetworkRow>) => (

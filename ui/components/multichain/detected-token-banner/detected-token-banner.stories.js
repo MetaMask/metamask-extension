@@ -15,7 +15,7 @@ const store = configureStore({
 });
 
 export default {
-  title: 'Components/Multichain/DetectedTokensBanner',
+  title: 'Components/Multichain/DetectedTokenBanner',
   component: DetectedTokensBanner,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argTypes: {

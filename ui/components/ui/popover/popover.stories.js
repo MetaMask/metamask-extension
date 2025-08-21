@@ -64,7 +64,7 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
-  title: 'Approve spend limit',
+  title: 'Components/UI/Popover',
   subtitle: 'This is the new limit',
   footer: <button>Example Footer</button>,
   showArrow: false,

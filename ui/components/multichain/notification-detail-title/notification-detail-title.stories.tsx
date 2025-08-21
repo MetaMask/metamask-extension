@@ -8,7 +8,7 @@ import {
 
 export default {
   title:
-    'Components/Multichain/Notification/NotificationDetail/NotificationDetailTitle',
+    'Components/Multichain/NotificationDetailTitle',
   component: NotificationDetailTitle,
 } as Meta;
 
@@ -18,6 +18,6 @@ const Template = (args: NotificationDetailTitleProps) => (
 
 export const DefaultStory = Template.bind({});
 DefaultStory.args = {
-  title: 'Sent COMP',
+  title: 'Components/Multichain/NotificationDetailTitle',
   date: 'Aug 15, 2023 at 12:56 PM',
 };

@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 const store = configureStore(mockState);
 
 export default {
-  title: 'Components/Multichain/MultichainAccounts/MultichainAccountListMenu',
+  title: 'Components/MultichainAccounts/MultichainAccountListMenu',
   component: MultichainAccountListMenu,
   argTypes: {
     onClose: {

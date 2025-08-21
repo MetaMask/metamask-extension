@@ -2,7 +2,7 @@ import React from 'react';
 import NftDetailInformationRow from './nft-detail-information-row';
 
 export default {
-  title: 'Components/App/NftDetailInformationRow',
+  title: 'Components/App/Assets/Nfts/NftDetails/NftDetailInformationRow',
 
   argTypes: {
     nft: {
@@ -10,7 +10,7 @@ export default {
     },
   },
   args: {
-    title: 'Token ID',
+    title: 'Components/App/Assets/Nfts/NftDetails/NftDetailInformationRow',
     value: '345',
   },
 };

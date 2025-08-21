@@ -76,7 +76,7 @@ const AssetPickerModalNetworkWithButton: StoryFn<typeof AssetPickerModalNetwork>
 };
 
 const meta: Meta<typeof AssetPickerModalNetwork> = {
-  title: 'Components/Multichain/AssetPickerModalNetwork',
+  title: 'Components/Multichain/AssetPickerAmount/AssetPickerModal/AssetPickerModalNetwork',
   component: AssetPickerModalNetwork,
   render: AssetPickerModalNetworkWithButton,
   args: {

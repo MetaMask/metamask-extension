@@ -16,7 +16,7 @@ const store = mockStore({
 });
 
 const meta: Meta<typeof RestoreVaultPage> = {
-  title: 'Pages/Keychains/RestoreVaultPage',
+  title: 'Pages/Keychains/RestoreVault',
   component: RestoreVaultPage,
   decorators: [(Story) => <Provider store={store}><Story /></Provider>],
   argTypes: {

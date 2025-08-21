@@ -14,7 +14,7 @@ export const DefaultStory = (args) => <PermissionCell {...args} />;
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  title: 'Access the Ethereum provider.',
+  title: 'Components/App/PermissionCell',
   description:
     'Allow the snap to communicate with MetaMask direct…blockchain and suggest messages and transactions.',
   weight: 1,
@@ -49,7 +49,7 @@ const accounts = [
 export const RequestedPermission = (args) => <PermissionCell {...args} />;
 
 RequestedPermission.args = {
-  title: 'Fetch and display transaction insights.',
+  title: 'Components/App/PermissionCell',
   description: `Allow Transaction Insight Snap
       to decode transactions and show insights within the MetaMask UI. This can
       be used for anti-phishing and security solutions.`,
@@ -60,7 +60,7 @@ RequestedPermission.args = {
 export const RevokedPermission = (args) => <PermissionCell {...args} />;
 
 RevokedPermission.args = {
-  title: 'Fetch and display transaction insights.',
+  title: 'Components/App/PermissionCell',
   description: `Allow Transaction Insight Snap
       to decode transactions and show insights within the MetaMask UI. This can
       be used for anti-phishing and security solutions.`,
@@ -72,7 +72,7 @@ RevokedPermission.args = {
 export const RequestedForAccounts = (args) => <PermissionCell {...args} />;
 
 RequestedForAccounts.args = {
-  title: 'Display notifications in MetaMask',
+  title: 'Components/App/PermissionCell',
   weight: 3,
   avatarIcon: 'notification',
   accounts,
@@ -81,7 +81,7 @@ RequestedForAccounts.args = {
 export const ApprovedForAccounts = (args) => <PermissionCell {...args} />;
 
 ApprovedForAccounts.args = {
-  title: 'Display notifications in MetaMask',
+  title: 'Components/App/PermissionCell',
   weight: 3,
   avatarIcon: 'notification',
   dateApproved: 1680185432326,
@@ -91,7 +91,7 @@ ApprovedForAccounts.args = {
 export const RevokedForAccounts = (args) => <PermissionCell {...args} />;
 
 RevokedForAccounts.args = {
-  title: 'Display notifications in MetaMask',
+  title: 'Components/App/PermissionCell',
   weight: 3,
   avatarIcon: 'notification',
   revoked: true,

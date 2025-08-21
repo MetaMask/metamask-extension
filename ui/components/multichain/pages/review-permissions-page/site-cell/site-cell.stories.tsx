@@ -2,7 +2,7 @@ import React from 'react';
 import { SiteCell } from './site-cell';
 
 export default {
-  title: 'Components/Multichain/SiteCell',
+  title: 'Components/Multichain/Pages/ReviewPermissionsPage/SiteCell',
   component: SiteCell,
   argTypes: {
     accounts: { control: 'array' },

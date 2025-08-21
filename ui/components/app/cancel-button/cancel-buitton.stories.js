@@ -2,7 +2,7 @@ import React from 'react';
 import CancelButton from './cancel-button';
 
 export default {
-  title: 'Components/App/CancelButton',
+  title: 'Components/App/CancelButton/CancelBuitton',
   component: CancelButton,
   argTypes: {
     transaction: {

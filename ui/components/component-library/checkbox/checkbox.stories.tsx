@@ -159,7 +159,7 @@ IsRequired.args = {
 export const Title = Template.bind({});
 
 Title.args = {
-  title: 'Apples',
+  title: 'Components/ComponentLibrary/Checkbox',
   label: 'Inspect to see title attribute',
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import Player from './player';
 
 export default {
-  title: 'Components/App/Player',
+  title: 'Components/App/QrHardwarePopover/QrHardwareSignRequest/Player',
   component: Player,
   argTypes: {
     type: {

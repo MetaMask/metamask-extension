@@ -9,7 +9,7 @@ import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { Page, Header, Content, Footer } from '.';
 
 const story = {
-  title: 'Components/Multichain/Page',
+  title: 'Components/Multichain/Pages/Page',
   component: Page,
   argTypes: {},
   args: {},

@@ -25,7 +25,7 @@ const storeMock = configureStore({
 });
 
 export default {
-  title: 'Confirmations/Components/Alerts/ConfirmAlertModal',
+  title: 'Components/App/AlertSystem/ConfirmAlertModal',
   component: ConfirmAlertModal,
   argTypes: {
     alertKey: {

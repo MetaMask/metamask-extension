@@ -12,7 +12,7 @@ import {
 
 export default {
   title:
-    'Components/Multichain/Notification/NotificationListItem/Components/NotificationListItemText',
+    'Components/Multichain/NotificationListItemText',
   component: NotificationListItemText,
   argTypes: {
     items: {

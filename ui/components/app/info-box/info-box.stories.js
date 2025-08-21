@@ -7,7 +7,7 @@ export default {
 
   component: InfoBox,
   argTypes: {
-    title: 'string',
+    title: 'Components/App/InfoBox',
     description: 'string',
   },
 };
@@ -17,6 +17,6 @@ export const DefaultStory = (args) => <InfoBox {...args} />;
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  title: 'Hello Ether',
+  title: 'Components/App/InfoBox',
   description: 'This is the description',
 };

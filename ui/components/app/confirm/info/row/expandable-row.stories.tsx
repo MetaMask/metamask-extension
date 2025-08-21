@@ -5,7 +5,7 @@ import { ConfirmInfoRow } from './row';
 import { ConfirmInfoSection } from './section';
 
 export default {
-  title: 'Components/App/Confirm/ExpandableRow',
+  title: 'Components/App/Confirm/Info/Row/ExpandableRow',
   component: ConfirmInfoExpandableRow,
   decorators: [
     (story) => (

@@ -70,7 +70,7 @@ const store = configureStore(
 );
 
 const Story = {
-  title: 'Components/App/Confirm/Nav',
+  title: 'Pages/Confirmations/Components/Confirm/Nav',
   component: ConfirmNav,
   decorators: [
     (story: any) => (

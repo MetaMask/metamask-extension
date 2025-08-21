@@ -4,7 +4,7 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import { Meta, StoryFn } from '@storybook/react';
 
 export default {
-  title: 'Confirmations/Components/Alerts/InlineAlert',
+  title: 'Components/App/AlertSystem/InlineAlert',
   component: InlineAlert,
   argTypes: {
     severity: {

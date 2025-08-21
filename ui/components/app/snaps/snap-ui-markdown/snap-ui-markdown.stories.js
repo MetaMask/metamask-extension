@@ -2,7 +2,7 @@ import React from 'react';
 import { SnapUIMarkdown } from './snap-ui-markdown';
 
 export default {
-  title: 'Components/App/Snaps/SnapUIMarkdown',
+  title: 'Components/App/Snaps/SnapUiMarkdown',
   component: SnapUIMarkdown,
   argTypes: {
     children: {

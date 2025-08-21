@@ -8,7 +8,7 @@ import { PendingApproval } from './util';
  * Automatically displayed via the `ConfirmationPage` component when using the `ApprovalController.add` method with the `type` set to `snap_manageAccounts:confirmAccountCreation`.
  */
 export default {
-  title: 'Pages/ConfirmationPage/CreateSnapAccount',
+  title: 'Pages/Confirmations/Confirmation/Stories/CreateSnapAccount',
   component: ConfirmationPage,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {

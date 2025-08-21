@@ -32,7 +32,7 @@ function getStore({
 }
 
 const Story = {
-  title: 'Components/App/Confirm/info/EditGasFeesRow',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/EditGasFeesRow',
   component: EditGasFeesRow,
   decorators: [
     (story: any, { args }) => (

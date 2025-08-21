@@ -15,7 +15,7 @@ const mockState = {
   },
   activeTab: {
     id: 113,
-    title: 'E2E Test Dapp',
+    title: 'Components/App/Alerts/UnconnectedAccountAlert',
     origin: 'https://metamask.github.io',
     protocol: 'https:',
     url: 'https://metamask.github.io/test-dapp/',

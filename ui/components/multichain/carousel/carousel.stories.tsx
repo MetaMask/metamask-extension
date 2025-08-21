@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Carousel } from './carousel';
 
 export default {
-  title: 'Components/ComponentLibrary/Carousel',
+  title: 'Components/Multichain/Carousel',
   component: Carousel,
   argTypes: {
     slides: {
@@ -18,19 +18,19 @@ export default {
 const mockSlides = [
   {
     id: '1',
-    title: 'First Slide',
+    title: 'Components/Multichain/Carousel',
     description: 'This is the first slide description',
     image: './images/sample-image-1.png',
   },
   {
     id: '2',
-    title: 'Second Slide',
+    title: 'Components/Multichain/Carousel',
     description: 'This is the second slide description',
     image: './images/sample-image-2.png',
   },
   {
     id: '3',
-    title: 'Third Slide',
+    title: 'Components/Multichain/Carousel',
     description: 'This is the third slide description',
     image: './images/sample-image-3.png',
   },

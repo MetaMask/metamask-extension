@@ -8,7 +8,7 @@ import SnapsConnect from '.';
 const store = configureStore(mockState);
 
 export default {
-  title: 'Pages/Snaps/SnapConnect',
+  title: 'Pages/PermissionsConnect/Snaps/SnapsConnect',
 
   component: SnapsConnect,
   argTypes: {},

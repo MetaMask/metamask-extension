@@ -10,7 +10,7 @@ import Footer from './footer';
 const store = configureStore(getMockPersonalSignConfirmState());
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/Footer',
+  title: 'Pages/Confirmations/Components/Confirm/Footer',
   component: Footer,
   decorators: [
     (story: any) => (

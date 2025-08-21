@@ -11,7 +11,7 @@ function getStore() {
 }
 
 const Story = {
-  title: 'Components/App/Confirm/info/EditGasIconButton',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/EditGasIcon/EditGasIconButton',
   component: EditGasIconButton,
   decorators: [
     (story: () => Meta<typeof EditGasIconButton>) => (

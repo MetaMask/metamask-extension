@@ -2,7 +2,7 @@ import React from 'react';
 import { ReviewPermissions } from './review-permissions-page';
 
 export default {
-  title: 'Components/Multichain/ReviewPermissions',
+  title: 'Components/Multichain/Pages/ReviewPermissionsPage',
 };
 
 export const DefaultStory = () => <ReviewPermissions />;

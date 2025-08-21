@@ -16,7 +16,7 @@ export default {
     },
   },
   args: {
-    title: 'Basic definitions',
+    title: 'Components/UI/TruncatedDefinitionList',
   },
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import BottomButtons from './bottom-buttons';
 
 export default {
-  title: 'Components/Multichain/BottomButtons',
+  title: 'Components/Multichain/ImportAccount/BottomButtons',
   component: BottomButtons,
   argTypes: {
     isPrimaryDisabled: {

@@ -16,7 +16,7 @@ import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 const store = configureStore(testData);
 
 export default {
-  title: 'Components/App/Snaps/SnapUISelector',
+  title: 'Components/App/Snaps/SnapUiSelector',
   component: SnapUISelector,
   argTypes: {},
   decorators: [

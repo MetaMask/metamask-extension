@@ -2,7 +2,7 @@ import React from 'react';
 import SnapExternalPill from '.';
 
 export default {
-  title: 'Components/App/Snaps/SnapExternalPill',
+  title: 'Components/App/Snaps/SnapVersion/SnapExternalPill',
   component: SnapExternalPill,
 };
 export const DefaultStory = (args) => <SnapExternalPill {...args} />;

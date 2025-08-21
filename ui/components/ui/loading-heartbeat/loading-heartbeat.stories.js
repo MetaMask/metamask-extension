@@ -2,7 +2,7 @@ import React from 'react';
 import LoadingHeartBeat from '.';
 
 export default {
-  title: 'Components/UI/LoadingHeartBeat',
+  title: 'Components/UI/LoadingHeartbeat',
   component: LoadingHeartBeat,
   argTypes: {
     backgroundColor: {

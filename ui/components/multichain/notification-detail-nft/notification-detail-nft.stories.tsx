@@ -7,7 +7,7 @@ import {
 
 export default {
   title:
-    'Components/Multichain/Notification/NotificationDetail/NotificationDetailNft',
+    'Components/Multichain/NotificationDetailNft',
   component: NotificationDetailNft,
 } as Meta;
 

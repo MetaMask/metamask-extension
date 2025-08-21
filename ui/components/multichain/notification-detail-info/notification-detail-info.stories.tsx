@@ -12,7 +12,7 @@ import {
 
 export default {
   title:
-    'Components/Multichain/Notification/NotificationDetail/NotificationDetailInfo',
+    'Components/Multichain/NotificationDetailInfo',
   component: NotificationDetailInfo,
 } as Meta;
 

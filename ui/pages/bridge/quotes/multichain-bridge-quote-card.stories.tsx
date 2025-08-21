@@ -6,7 +6,7 @@ import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 
 const storybook = {
-  title: 'Pages/Bridge/MultichainBridgeQuoteCard',
+  title: 'Pages/Bridge/Quotes/MultichainBridgeQuoteCard',
   component: MultichainBridgeQuoteCard,
 };
 

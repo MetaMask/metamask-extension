@@ -32,7 +32,7 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   siteOrigin: 'https://metamask.io',
-  title: 'https://metamask.io',
+  title: 'Components/UI/SiteOrigin',
   iconName: 'MetaMask',
   iconSrc: './metamark.svg',
   chip: true,

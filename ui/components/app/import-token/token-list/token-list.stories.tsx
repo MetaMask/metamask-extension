@@ -3,7 +3,7 @@ import { StoryFn, Meta } from '@storybook/react';
 import TokenList from './token-list.component';
 
 export default {
-  title: 'Components/App/TokenList',
+  title: 'Components/App/ImportToken/TokenList',
   component: TokenList,
   argTypes: {
     tokens: {

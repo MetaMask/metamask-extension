@@ -9,7 +9,7 @@ import SendHeading from './send-heading';
 const store = configureStore(getMockTokenTransferConfirmState({}));
 
 const Story = {
-  title: 'Components/App/Confirm/info/SendHeading',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/SendHeading',
   component: SendHeading,
   decorators: [
     (story: () => Meta<typeof SendHeading>) => (

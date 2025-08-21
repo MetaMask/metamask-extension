@@ -4,7 +4,7 @@ import { ConfirmInfoRow } from './row';
 import { ConfirmInfoRowText } from './text';
 
 const ConfirmInfoRowTextStory = {
-  title: 'Components/App/Confirm/InfoRowText',
+  title: 'Components/App/Confirm/Info/Row/Text',
   component: ConfirmInfoRowText,
   decorators: [
     (story) => <ConfirmInfoRow label="Message">{story()}</ConfirmInfoRow>,

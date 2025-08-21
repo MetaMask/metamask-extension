@@ -4,7 +4,7 @@ import { Button } from '../../component-library';
 import SRPDetailsModal from './srp-details-modal';
 
 export default {
-  title: 'Components/App/SRPDetailsModal',
+  title: 'Components/App/SrpDetailsModal',
   component: SRPDetailsModal,
   argTypes: {
     isShowingModal: {

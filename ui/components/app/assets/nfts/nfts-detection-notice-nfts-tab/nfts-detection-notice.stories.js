@@ -2,7 +2,7 @@ import React from 'react';
 import NftsDetectionNotice from '.';
 
 export default {
-  title: 'Components/App/NftsDetectionNoticeNFTsTab',
+  title: 'Components/App/Assets/Nfts/NftsDetectionNoticeNftsTab/NftsDetectionNotice',
 };
 
 export const DefaultStory = () => <NftsDetectionNotice />;

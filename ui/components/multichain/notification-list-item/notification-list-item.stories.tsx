@@ -11,7 +11,7 @@ import { NotificationListItem } from './notification-list-item';
 
 export default {
   title:
-    'Components/Multichain/Notification/NotificationListItem/NotificationListItem',
+    'Components/Multichain/NotificationListItem',
   component: NotificationListItem,
 } as Meta;
 

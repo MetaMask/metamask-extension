@@ -15,7 +15,7 @@ import TokenTransferInfo from './token-transfer';
 const store = configureStore(getMockTokenTransferConfirmState({}));
 
 const Story = {
-  title: 'Components/App/Confirm/info/TokenTransferInfo',
+  title: 'Pages/Confirmations/Components/Confirm/Info/TokenTransfer',
   component: TokenTransferInfo,
   decorators: [
     (story: () => any) => (

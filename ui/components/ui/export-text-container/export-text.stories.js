@@ -3,7 +3,7 @@ import README from './README.mdx';
 import ExportTextContainer from '.';
 
 export default {
-  title: 'Components/UI/ExportTextContainer',
+  title: 'Components/UI/ExportTextContainer/ExportText',
 
   component: ExportTextContainer,
   parameters: {

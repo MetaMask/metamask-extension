@@ -12,7 +12,7 @@ const store = configureStore(testData);
 
 const meta: Meta<typeof AdvancedGasFeeSaveButton> = {
   title:
-    'Pages/Confirmations/Components/AdvancedGasFeePopover/AdvancedGasFeeSaveButton',
+    'Pages/Confirmations/Components/AdvancedGasFeePopover/AdvancedGasFeeSave',
   component: AdvancedGasFeeSaveButton,
   decorators: [
     (Story) => (

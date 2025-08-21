@@ -20,7 +20,7 @@ const store = configureStore(
 );
 
 const Story = {
-  title: 'Confirmations/Components/Modals/SimulationSettingsModal',
+  title: 'Pages/Confirmations/Components/Modals/SimulationSettingsModal',
   component: SimulationSettingsModal,
   decorators: [
     (story: any) => (

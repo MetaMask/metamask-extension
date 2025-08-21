@@ -2,7 +2,7 @@ import React from 'react';
 import PasswordChangedModal from './password-outdated-modal';
 
 export default {
-  title: 'Components/App/PasswordChangedModal',
+  title: 'Components/App/PasswordOutdatedModal',
   component: PasswordChangedModal,
 };
 

@@ -62,7 +62,7 @@ const Template: StoryFn<typeof BannerAlert> = (args) => (
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
-  title: 'Title is sentence case no period',
+  title: 'Components/ComponentLibrary/BannerAlert',
   children: "Description shouldn't repeat title. 1-3 lines.",
   actionButtonLabel: 'Action',
 };
@@ -101,13 +101,13 @@ SeverityStory.storyName = 'Severity';
 
 export const Title: StoryFn<typeof BannerAlert> = Template.bind({});
 Title.args = {
-  title: 'Title is sentence case no period',
+  title: 'Components/ComponentLibrary/BannerAlert',
   children: 'Pass only a string through the title prop',
 };
 
 export const Description: StoryFn<typeof BannerAlert> = Template.bind({});
 Description.args = {
-  title: 'Description vs children',
+  title: 'Components/ComponentLibrary/BannerAlert',
   description:
     'Pass only a string through the description prop or you can use children if the contents require more',
 };
@@ -130,7 +130,7 @@ Children.args = {
 
 export const ActionButton: StoryFn<typeof BannerAlert> = Template.bind({});
 ActionButton.args = {
-  title: 'Action prop demo',
+  title: 'Components/ComponentLibrary/BannerAlert',
   actionButtonLabel: 'Action',
   actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
   actionButtonProps: {
@@ -162,6 +162,6 @@ export const OnClose: StoryFn<typeof BannerAlert> = (args) => {
 };
 
 OnClose.args = {
-  title: 'onClose demo',
+  title: 'Components/ComponentLibrary/BannerAlert',
   children: 'Click the close button icon to hide this notifcation',
 };

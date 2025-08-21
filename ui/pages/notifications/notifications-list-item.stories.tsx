@@ -57,7 +57,7 @@ const notifications: Notification[] = Object.values(notificationMocks).map(
 );
 
 export default {
-  title: 'Pages/Notifications/NotificationsListItems',
+  title: 'Pages/Notifications/NotificationsListItem',
   component: NotificationsListItem,
 } as Meta;
 

@@ -7,7 +7,7 @@ import { SnapUIRenderer } from '.';
 const store = configureStore(testData);
 
 export default {
-  title: 'Components/App/SnapUIRenderer',
+  title: 'Components/App/Snaps/SnapUiRenderer',
   component: SnapUIRenderer,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };

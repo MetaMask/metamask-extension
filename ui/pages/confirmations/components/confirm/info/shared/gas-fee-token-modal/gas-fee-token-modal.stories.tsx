@@ -56,7 +56,7 @@ const store = configureStore(
 );
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/GasFeeTokenModal',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/GasFeeTokenModal',
   component: GasFeeTokenModal,
   decorators: [
     (story: any) => (

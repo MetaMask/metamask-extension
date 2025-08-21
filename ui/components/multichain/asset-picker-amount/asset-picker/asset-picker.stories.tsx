@@ -15,7 +15,7 @@ import { mockNetworkState } from '../../../../../test/stub/networks';
 import { RpcEndpointType } from '@metamask/network-controller';
 
 const storybook = {
-  title: 'Components/Multichain/AssetPicker',
+  title: 'Components/Multichain/AssetPickerAmount/AssetPicker',
   component: AssetPicker,
 };
 

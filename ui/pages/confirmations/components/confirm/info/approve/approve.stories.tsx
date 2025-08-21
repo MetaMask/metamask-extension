@@ -9,7 +9,7 @@ import ApproveInfo from './approve';
 const store = configureStore(getMockApproveConfirmState());
 
 const Story = {
-  title: 'Components/App/Confirm/info/ApproveInfo',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Approve',
   component: ApproveInfo,
   decorators: [
     (story: () => Meta<typeof ApproveInfo>) => (

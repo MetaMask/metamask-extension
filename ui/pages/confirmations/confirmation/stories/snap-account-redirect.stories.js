@@ -9,7 +9,7 @@ import { PendingApproval } from './util';
  * The below arguments are properties of the `requestData` object required by the `ApprovalController.add` method.
  */
 export default {
-  title: 'Pages/ConfirmationPage/SnapAccountRedirect',
+  title: 'Pages/Confirmations/Confirmation/Stories/SnapAccountRedirect',
   component: ConfirmationPage,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {

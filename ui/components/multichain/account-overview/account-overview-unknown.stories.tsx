@@ -3,7 +3,7 @@ import { AccountOverviewUnknown } from './account-overview-unknown'
 import { AccountOverviewCommonProps } from './common';
 
 export default {
-  title: 'Components/Multichain/AccountOverviewUnknown',
+  title: 'Components/Multichain/AccountOverview/AccountOverviewUnknown',
   component: AccountOverviewUnknown,
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
 export default {
-  title: 'Components/Multichain/ConnectAccountsModalList',
+  title: 'Components/Multichain/ConnectAccountsModal',
   component: ConnectAccountsModalList,
   argTypes: {
     onClose: {

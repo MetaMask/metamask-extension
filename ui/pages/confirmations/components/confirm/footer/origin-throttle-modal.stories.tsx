@@ -12,7 +12,7 @@ const store = configureStore({
 });
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/OriginThrottleModal',
+  title: 'Pages/Confirmations/Components/Confirm/Footer/OriginThrottleModal',
   component: OriginThrottleModal,
   decorators: [
     (story) => {

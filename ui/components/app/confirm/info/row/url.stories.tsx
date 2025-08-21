@@ -3,7 +3,7 @@ import { ConfirmInfoRow } from './row';
 import { ConfirmInfoRowUrl } from './url';
 
 const ConfirmInfoRowUrlStory = {
-  title: 'Components/App/Confirm/InfoRowUrl',
+  title: 'Components/App/Confirm/Info/Row/Url',
   component: ConfirmInfoRowUrl,
 
   decorators: [

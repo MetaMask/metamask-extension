@@ -2,7 +2,7 @@ import React from 'react';
 import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default {
-  title: 'Pages/OnboardingFlow/SecureYourWallet/SkipSRPBackupPopover',
+  title: 'Pages/OnboardingFlow/SecureYourWallet/SkipSrpBackupPopover',
   component: SkipSRPBackup,
 };
 

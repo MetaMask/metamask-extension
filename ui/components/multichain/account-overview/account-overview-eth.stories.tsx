@@ -3,7 +3,7 @@ import { AccountOverviewEth } from './account-overview-eth'
 import { AccountOverviewCommonProps } from './common';
 
 export default {
-  title: 'Components/Multichain/AccountOverviewEth',
+  title: 'Components/Multichain/AccountOverview/AccountOverviewEth',
   component: AccountOverviewEth,
 };
 

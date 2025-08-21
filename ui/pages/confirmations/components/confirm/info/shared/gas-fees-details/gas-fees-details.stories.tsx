@@ -12,7 +12,7 @@ function getStore() {
 }
 
 const Story = {
-  title: 'Components/App/Confirm/info/GasFeesDetails',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/GasFeesDetails',
   component: GasFeesDetails,
   decorators: [
     (story: () => Meta<typeof GasFeesDetails>) => (

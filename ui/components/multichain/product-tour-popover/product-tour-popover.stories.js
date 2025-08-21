@@ -2,7 +2,7 @@ import React from 'react';
 import { ProductTour } from '.';
 
 export default {
-  title: 'Components/Multichain/ProductTour',
+  title: 'Components/Multichain/ProductTourPopover',
   component: ProductTour,
   argTypes: {
     prevIcon: {
@@ -35,7 +35,7 @@ export default {
   },
   args: {
     prevIcon: true,
-    title: 'Permissions',
+    title: 'Components/Multichain/ProductTourPopover',
     description: 'Find your connected accounts and manage permissions here.',
     currentStep: '1',
     totalSteps: '3',

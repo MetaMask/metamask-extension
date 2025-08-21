@@ -7,7 +7,7 @@ import { BasicConfigurationModal } from '.';
 const store = configureStore(testData);
 
 export default {
-  title: 'Components/BasicConfigurationModal',
+  title: 'Components/App/BasicConfigurationModal',
   decorators: [(storyFn) => <Provider store={store}>{storyFn()}</Provider>],
   component: BasicConfigurationModal,
 };

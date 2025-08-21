@@ -7,7 +7,7 @@ import { Meta } from '@storybook/react';
 import { TAB_KEYS } from './notifications-list';
 
 export default {
-  title: 'Pages/Notifications/NotificationsListStates',
+  title: 'Pages/Notifications/NotificationsList',
   component: NotificationsList,
   argTypes: {
     notifications: { table: { disable: true } },

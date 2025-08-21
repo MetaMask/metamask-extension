@@ -10,7 +10,7 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import { TokenListItem } from '.';
 
 export default {
-  title: 'Components/Multichain/MultichainTokenListItem',
+  title: 'Components/Multichain/TokenListItem',
   component: TokenListItem,
   argTypes: {
     tokenSymbol: {
@@ -37,7 +37,7 @@ export default {
     primary: '88.0068',
     tokenImage: './images/eth_logo.svg',
     tokenSymbol: CURRENCY_SYMBOLS.ETH,
-    title: 'Ethereum',
+    title: 'Components/Multichain/TokenListItem',
     isOriginalTokenSymbol: true,
   },
 };
@@ -83,7 +83,7 @@ ChaosStory.decorators = [
 ];
 
 ChaosStory.args = {
-  title: 'Really long, long name',
+  title: 'Components/Multichain/TokenListItem',
   secondary: '$94556756776.80 USD',
   primary: '34449765768526.00',
 };
@@ -117,7 +117,7 @@ CrossChainTokenStory.decorators = [
 ];
 
 CrossChainTokenStory.args = {
-  title: 'USDC',
+  title: 'Components/Multichain/TokenListItem',
   secondary: '$94556756776.80 USD',
   primary: '34449765768526.00',
   isTitleNetworkName: true,

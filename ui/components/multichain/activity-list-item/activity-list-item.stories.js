@@ -32,7 +32,7 @@ DefaultStory.args = {
   'data-testid': 'activity-list-item',
   onClick: () => undefined,
   className: 'custom-class',
-  title: 'Activity Title',
+  title: 'Components/Multichain/ActivityListItem',
   icon: (
     <BadgeWrapper
       anchorElementShape={BadgeWrapperAnchorElementShape.circular}

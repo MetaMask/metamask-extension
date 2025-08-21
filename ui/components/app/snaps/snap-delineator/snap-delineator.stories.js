@@ -2,7 +2,7 @@ import React from 'react';
 import { SnapDelineator } from '.';
 
 export default {
-  title: 'Components/App/SnapDelineator',
+  title: 'Components/App/Snaps/SnapDelineator',
 };
 
 export const DefaultStory = () => (

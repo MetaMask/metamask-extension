@@ -9,7 +9,7 @@ import { ButtonIcon, IconName, IconSize } from '../../../../component-library';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 
 export default {
-  title: 'Components/App/NftDetailInformationFrame',
+  title: 'Components/App/Assets/Nfts/NftDetails/NftDetailInformationFrame',
 
   argTypes: {
     nft: {
@@ -17,7 +17,7 @@ export default {
     },
   },
   args: {
-    title: 'Bought for',
+    title: 'Components/App/Assets/Nfts/NftDetails/NftDetailInformationFrame',
     value: '$500',
     frameClassname: 'nft-details__nft-frame',
     frameTextTitleProps: {

@@ -4,7 +4,7 @@ import LoadingSwapsQuotes from './loading-swaps-quotes';
 import { storiesMetadata } from './loading-swaps-quotes-stories-metadata';
 
 export default {
-  title: 'Pages/Swaps/LoadingSwapQuotes',
+  title: 'Pages/Swaps/LoadingSwapsQuotes/LoadingSwapQuotes',
 };
 
 export const DefaultStory = () => (

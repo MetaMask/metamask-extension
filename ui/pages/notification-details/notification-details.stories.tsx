@@ -44,7 +44,7 @@ const store = configureStore({
 });
 
 export default {
-  title: 'Pages/Notifications/NotificationDetails',
+  title: 'Pages/NotificationDetails',
   component: NotificationDetails,
   decorators: [
     (Story) => (

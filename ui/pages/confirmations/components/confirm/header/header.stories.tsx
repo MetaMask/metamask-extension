@@ -10,7 +10,7 @@ import { ConfirmContextProvider } from '../../../context/confirm';
 const store = configureStore(getMockTypedSignConfirmState());
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/Header',
+  title: 'Pages/Confirmations/Components/Confirm/Header',
   component: Header,
   decorators: [
     (story: any) => (

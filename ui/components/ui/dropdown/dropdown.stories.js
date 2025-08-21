@@ -43,7 +43,7 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   disabled: false,
-  title: 'Test Dropdown Name',
+  title: 'Components/UI/Dropdown',
   options: namedOptions,
   selectedOption: namedOptions[0].value,
 };
@@ -52,7 +52,7 @@ export const OptionsWithoutNames = (args) => <Dropdown {...args} />;
 
 OptionsWithoutNames.args = {
   disabled: false,
-  title: 'Test Dropdown Name',
+  title: 'Components/UI/Dropdown',
   options: unnamedOptions,
   selectedOption: unnamedOptions[0].value,
 };
@@ -61,7 +61,7 @@ export const OptionsWithLongNames = (args) => <Dropdown {...args} />;
 
 OptionsWithLongNames.args = {
   disabled: false,
-  title: 'Test Dropdown Name',
+  title: 'Components/UI/Dropdown',
   options: namedOptionsWithVeryLongNames,
   selectedOption: namedOptionsWithVeryLongNames[0].value,
 };
@@ -72,7 +72,7 @@ export const OptionsWithLongNamesAndShortWidth = (args) => (
 
 OptionsWithLongNamesAndShortWidth.args = {
   disabled: false,
-  title: 'Test Dropdown Name',
+  title: 'Components/UI/Dropdown',
   options: namedOptionsWithVeryLongNames,
   selectedOption: namedOptionsWithVeryLongNames[0].value,
   style: { width: '200px' },

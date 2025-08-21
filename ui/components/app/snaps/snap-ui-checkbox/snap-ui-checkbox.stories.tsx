@@ -25,7 +25,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 
 // Define the metadata for the component
 const meta: Meta<typeof SnapUICheckbox> = {
-  title: 'Components/App/Snaps/SnapUICheckbox',
+  title: 'Components/App/Snaps/SnapUiCheckbox',
   component: SnapUICheckbox,
   parameters: {
     docs: {

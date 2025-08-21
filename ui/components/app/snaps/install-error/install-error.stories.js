@@ -20,7 +20,7 @@ export default {
     },
   },
   args: {
-    title: 'Connection failed',
+    title: 'Components/App/Snaps/InstallError',
     error:
       'Failed to fetch Snap "npm:metamask/test-snap-error: Failed to fetch',
     description:

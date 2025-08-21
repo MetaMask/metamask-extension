@@ -39,7 +39,7 @@ const store = configureStore({
 const walletId = encodeURIComponent('entropy:test-entropy-wallet');
 
 const meta: Meta<typeof WalletDetails> = {
-  title: 'Pages/MultichainAccounts/WalletDetails',
+  title: 'Pages/MultichainAccounts/WalletDetails/WalletDetails.component',
   component: WalletDetails,
   decorators: [
     (story) => (

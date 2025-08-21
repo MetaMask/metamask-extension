@@ -33,7 +33,7 @@ function getStore({ sender }: { sender?: Hex }) {
 }
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/GasFeeTokenListItem',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/GasFeeTokenListItem',
   component: GasFeeTokenListItem,
   decorators: [
     (story: any, { args }) => (

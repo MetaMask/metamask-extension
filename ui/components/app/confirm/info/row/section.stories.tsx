@@ -4,7 +4,7 @@ import { ConfirmInfoRow } from './row';
 import { ConfirmInfoRowText } from './text';
 
 const ConfirmInfoSectionStory = {
-  title: 'Components/App/Confirm/InfoSection',
+  title: 'Components/App/Confirm/Info/Row/Section',
   component: ConfirmInfoSection,
 
   decorators: [

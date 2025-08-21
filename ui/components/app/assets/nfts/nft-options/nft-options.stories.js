@@ -2,7 +2,7 @@ import React from 'react';
 import NftOptions from './nft-options';
 
 export default {
-  title: 'Components/App/NftOptions',
+  title: 'Components/App/Assets/Nfts/NftOptions',
   component: NftOptions,
   argTypes: {
     onRemove: {

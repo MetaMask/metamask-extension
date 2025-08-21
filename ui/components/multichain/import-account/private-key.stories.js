@@ -2,7 +2,7 @@ import React from 'react';
 import PrivateKeyImportView from './private-key';
 
 export default {
-  title: 'Pages/CreateAccount/ImportAccount/PrivateKeyImportView',
+  title: 'Components/Multichain/ImportAccount/PrivateKey',
   component: PrivateKeyImportView,
   argTypes: {
     importAccountFunc: {

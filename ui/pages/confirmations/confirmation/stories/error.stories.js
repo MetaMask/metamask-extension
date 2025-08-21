@@ -15,7 +15,7 @@ import { PendingApproval } from './util';
  * The below arguments are properties in the `ApprovalController.error` request.
  */
 export default {
-  title: 'Pages/ConfirmationPage/ResultError',
+  title: 'Pages/Confirmations/Confirmation/Stories/Error',
   component: ConfirmationPage,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {
@@ -99,7 +99,7 @@ export const TemplateStory = () => {
     <PendingApproval
       type={ApprovalType.ResultError}
       requestData={{
-        title: 'Account creation failed',
+        title: 'Pages/Confirmations/Confirmation/Stories/Error',
         icon: IconName.UserCircleAdd,
         error: [
           {

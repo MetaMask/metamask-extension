@@ -7,7 +7,7 @@ import {
 
 export default {
   title:
-    'Components/Multichain/Notification/NotificationsSettingsBox/NotificationsSettingsType',
+    'Components/Multichain/NotificationsSettingsType',
   component: NotificationsSettingsType,
 } as Meta;
 
@@ -18,23 +18,23 @@ const Template = (args: NotificationsSettingsTypeProps) => {
 export const Default = Template.bind({});
 Default.args = {
   icon: 'Bank',
-  title: 'Enable Notifications',
+  title: 'Components/Multichain/NotificationsSettingsType',
   text: 'Receive notifications for transactions and events.',
 };
 
 export const WithoutIcon = Template.bind({});
 WithoutIcon.args = {
-  title: 'Enable Notifications',
+  title: 'Components/Multichain/NotificationsSettingsType',
   text: 'Receive notifications for transactions and events.',
 };
 
 export const WithoutText = Template.bind({});
 WithoutText.args = {
   icon: 'Bank',
-  title: 'Enable Notifications',
+  title: 'Components/Multichain/NotificationsSettingsType',
 };
 
 export const Minimal = Template.bind({});
 Minimal.args = {
-  title: 'Enable Notifications',
+  title: 'Components/Multichain/NotificationsSettingsType',
 };

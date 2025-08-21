@@ -3,7 +3,7 @@ import { DomainInputResolutionCell } from '.';
 
 
 export default {
-  title: 'Components/Multichain/DomainInputResolutionCell',
+  title: 'Components/Multichain/Pages/Send/Components/DomainInputResolutionCell',
   component: DomainInputResolutionCell,
   argTypes: {
     address: {

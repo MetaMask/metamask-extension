@@ -29,7 +29,7 @@ const storeMock = configureStore({
 });
 
 export default {
-  title: 'Confirmations/Components/Alerts/MultipleAlertModal',
+  title: 'Components/App/AlertSystem/MultipleAlertModal',
   component: MultipleAlertModal,
   argTypes: {
     alertKey: {

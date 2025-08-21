@@ -9,7 +9,7 @@ import {
 
 export default {
   title:
-    'Components/Multichain/Notification/NotificationDetail/NotificationDetailCopyButton',
+    'Components/Multichain/NotificationDetailCopyButton',
   component: NotificationDetailCopyButton,
 } as Meta;
 

@@ -30,7 +30,7 @@ const MockDetailsList = () => (
 );
 
 export default {
-  title: 'Confirmations/Components/GeneralAlert',
+  title: 'Components/App/AlertSystem/GeneralAlert',
   component: GeneralAlert,
   argTypes: {
     description: {
@@ -77,7 +77,7 @@ export const Default = (args) => <GeneralAlert {...args} />;
 Default.args = {
   description: 'This is a default security alert banner.',
   severity: Severity.Warning,
-  title: 'Security Alert',
+  title: 'Components/App/AlertSystem/GeneralAlert',
   provider: SecurityProvider.Blockaid,
 };
 

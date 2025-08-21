@@ -23,7 +23,7 @@ const STATE_MOCK = getMockConfirmStateForTransaction(TRANSACTION_MOCK, {
 const store = configureStore(STATE_MOCK);
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/TransactionAccountDetails',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Batch/TransactionAccountDetails',
   component: TransactionAccountDetails,
   decorators: [
     (story) => {

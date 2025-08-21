@@ -10,7 +10,7 @@ const store = configureStore(getMockApproveConfirmState());
 
 const Story = {
   title:
-    'Pages/Confirmations/Components/Confirm/Info/SetApprovalForAll/RevokeSetApprovalForAllStaticSimulation',
+    'Pages/Confirmations/Components/Confirm/Info/SetApprovalForAllInfo/RevokeSetApprovalForAllStaticSimulation',
   component: RevokeSetApprovalForAllStaticSimulation,
   decorators: [
     (story: () => Meta<typeof RevokeSetApprovalForAllStaticSimulation>) => (

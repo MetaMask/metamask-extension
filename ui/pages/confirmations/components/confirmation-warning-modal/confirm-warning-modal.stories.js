@@ -2,7 +2,7 @@ import React from 'react';
 import ConfirmationWarningModal from '.';
 
 export default {
-  title: 'Confirmations/Components/ConfirmationWarningModal',
+  title: 'Pages/Confirmations/Components/ConfirmationWarningModal/ConfirmWarningModal',
 };
 
 export const DefaultStory = (args) => <ConfirmationWarningModal {...args} />;

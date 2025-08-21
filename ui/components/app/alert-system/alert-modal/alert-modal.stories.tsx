@@ -46,7 +46,7 @@ const storeMock = configureStore({
 });
 
 export default {
-  title: 'Confirmations/Components/Alerts/AlertModal',
+  title: 'Components/App/AlertSystem/AlertModal',
   component: AlertModal,
   argTypes: {
     ownerId: {

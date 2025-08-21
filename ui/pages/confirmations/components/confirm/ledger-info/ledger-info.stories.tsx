@@ -36,7 +36,7 @@ const store = configureStore(
 );
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/LedgerInfo',
+  title: 'Pages/Confirmations/Components/Confirm/LedgerInfo',
   component: LedgerInfo,
   decorators: [
     (story: any) => (
