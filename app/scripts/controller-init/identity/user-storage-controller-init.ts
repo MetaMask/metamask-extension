@@ -32,6 +32,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
     trace,
     config: {
       accountSyncing: {
+        forceEnableMultichainAccountSyncing: true,
         maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
         onAccountAdded: (profileId) => {
           trackEvent({
