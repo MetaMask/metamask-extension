@@ -43,8 +43,9 @@ describe('Network Manager', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
+
+        // there cannot be an inbetween value, either 1 network or all networks. So the controller updates to all networks
+        await networkManager.checkAllPopularNetworksIsSelected();
       },
     );
   });
@@ -67,15 +68,15 @@ describe('Network Manager', function (this: Suite) {
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
         await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
 
-        // Act Assert - Both eth and linea selected
+        // Act Assert - select linea will deselect etherum and select linea
         await networkManager.selectNetwork(NetworkId.LINEA);
         await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-
-        // Act Assert - eth deselected, linea selected
-        await networkManager.deselectNetwork(NetworkId.ETHEREUM);
-        await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
         await networkManager.checkNetworkIsDeselected(NetworkId.ETHEREUM);
+
+        // Act Assert - select ethereum will deselect linea and select ethereum
+        await networkManager.selectNetwork(NetworkId.ETHEREUM);
+        await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
+        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
       },
     );
   });
@@ -118,7 +119,7 @@ describe('Network Manager', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withEnabledNetworks({ eip155: { '0x1': true, '0xe708': true } })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -127,21 +128,20 @@ describe('Network Manager', function (this: Suite) {
         const assetListPage = new AssetListPage(driver);
         const networkManager = new NetworkManager(driver);
 
-        await assetListPage.checkTokenItemNumber(2);
-
-        await networkManager.openNetworkManager();
-        await networkManager.checkTabIsSelected('Default');
-        await networkManager.deselectNetwork(NetworkId.LINEA);
-
+        // Only Ethereum native token visible
         await assetListPage.checkTokenItemNumber(1);
 
-        await networkManager.selectNetwork('eip155:8453');
-
-        await assetListPage.checkTokenItemNumber(2);
-
+        // Change to Linea, only Linea native token visible
+        await networkManager.openNetworkManager();
         await networkManager.selectNetwork(NetworkId.LINEA);
+        await networkManager.closeNetworkManager();
+        await assetListPage.checkTokenItemNumber(1);
 
-        await assetListPage.checkTokenItemNumber(3);
+        // Change to Ethereum, only Ethereum native token visible
+        await networkManager.openNetworkManager();
+        await networkManager.selectNetwork(NetworkId.ETHEREUM);
+        await networkManager.closeNetworkManager();
+        await assetListPage.checkTokenItemNumber(1);
       },
     );
   });
@@ -225,9 +225,7 @@ describe('Network Manager', function (this: Suite) {
         // Should be on Default tab since both are default networks
         await networkManager.checkTabIsSelected('Default');
 
-        // Check both networks are selected
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-
+        // New network is selected (we do not keep both networks on, as UI does only supports single or all popular networks)
         await networkManager.checkNetworkIsSelected(NetworkId.POLYGON);
       },
     );
@@ -319,6 +317,7 @@ describe('Network Manager', function (this: Suite) {
 
         // Switch to Default tab and verify Ethereum is deselected
         await networkManager.selectTab('Default');
+        await networkManager.checkNetworkIsDeselected(NetworkId.ETHEREUM);
       },
     );
   });
