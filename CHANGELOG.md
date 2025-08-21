@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add 'Scan QR code and download the Mobile app' page on onboarding flow (#34825)
 - feat: hide 'Remove imported account' button for social login, as it's not yet supported (#34895)
 - feat: add Frax network and token logos (#34986)
+- feat: add support for non-evm deep links (#35228)
 
 ### Changed
 - update: remove the Solana modal from the initial flow (#34988)
