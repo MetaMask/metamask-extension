@@ -11,7 +11,6 @@ const requestEthereumAccounts = {
   implementation: requestEthereumAccountsHandler,
   hookNames: {
     getAccounts: true,
-    getUnlockPromise: true,
     sendMetrics: true,
     metamaskState: true,
     getCaip25PermissionFromLegacyPermissionsForOrigin: true,
@@ -36,7 +35,6 @@ const locks = new Set();
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
- * @param options.getUnlockPromise - A hook that resolves when the wallet is unlocked.
  * @param options.sendMetrics - A hook that helps track metric events.
  * @param options.metamaskState - The MetaMask app state.
  * @param options.getCaip25PermissionFromLegacyPermissionsForOrigin - A hook that returns a CAIP-25 permission from a legacy `eth_accounts` and `endowment:permitted-chains` permission.
@@ -50,7 +48,6 @@ async function requestEthereumAccountsHandler(
   end,
   {
     getAccounts,
-    getUnlockPromise,
     sendMetrics,
     metamaskState,
     getCaip25PermissionFromLegacyPermissionsForOrigin,
@@ -65,14 +62,13 @@ async function requestEthereumAccountsHandler(
     return end();
   }
 
-  let ethAccounts = getAccounts({ ignoreLock: true });
+  let ethAccounts = getAccounts();
   if (ethAccounts.length > 0) {
     // We wait for the extension to unlock in this case only, because permission
     // requests are handled when the extension is unlocked, regardless of the
     // lock state when they were received.
     try {
       locks.add(origin);
-      await getUnlockPromise(true);
       res.result = ethAccounts;
       end();
     } catch (error) {
@@ -93,7 +89,7 @@ async function requestEthereumAccountsHandler(
 
   // We cannot derive ethAccounts directly from the CAIP-25 permission
   // because the accounts will not be in order of lastSelected
-  ethAccounts = getAccounts({ ignoreLock: true });
+  ethAccounts = getAccounts();
 
   // first time connection to dapp will lead to no log in the permissionHistory
   // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state

@@ -40,7 +40,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       <ButtonBase
         className={classNames('icon-button', className)}
         onClick={onClick}
-        backgroundColor={BackgroundColor.backgroundSection}
+        backgroundColor={BackgroundColor.backgroundMuted}
         disabled={disabled}
         ref={ref}
         display={Display.InlineFlex}
