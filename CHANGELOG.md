@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: disable transaction resubmission (#35028)
 - update: update `SEI` network's name from `Sei Network` to `Sei Mainnet` (#34930)
 - update: reduce bundle size to improve performance (#34690)
+- update: removed the `socialLoginEmail` from the state-logs export (settings -> advanced -> download state-logs), instead of masking the value (#35170)
 
 ### Fixed
 - fix: ensure text doesn't go beyond component boundaries when user is prompted to add a network (#34824)
@@ -35,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: remove console error displayed when connecting wallet to a dapp (#34783)
 - fix: use a static list of words for blurred SRP to prevent any potential possibility of a 'blur reversal attack' (#34288)
 - fix: revert 'set default theme to dark' (#34274)
+- fix: fixed incorrect email value in onboarding and setting page UI (#35170)
 
 ## [13.1.0]
 ### Added
