@@ -68,9 +68,6 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Debug step
-        run: echo "try"
-
       - name: Restore .metamask folder
         id: restore-metamask
         uses: actions/cache/restore@v4
