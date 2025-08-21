@@ -37,6 +37,7 @@ export function calculateTokenBalance({
     }
   } else {
     const hexBalance =
+      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address] ||
       selectedAccountTokenBalancesAcrossChains?.[chainId]?.[
         toChecksumHexAddress(address) as Hex
       ];
