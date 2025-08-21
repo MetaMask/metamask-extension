@@ -107,8 +107,9 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.spaceBetween}
+        minWidth={BlockSize.Half}
       >
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+        <Box padding={4}>
           <CreateSnapAccount
             onActionComplete={handleActionComplete}
             selectedKeyringId={selectedKeyringId}
@@ -139,7 +140,8 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
       className="add-non-evm-account-modal"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
+      justifyContent={JustifyContent.flexStart}
+      paddingTop={4}
     >
       <Box paddingLeft={4} paddingRight={4}>
         <Text textAlign={TextAlign.Left} variant={TextVariant.bodyMd}>

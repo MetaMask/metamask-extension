@@ -72,21 +72,21 @@ export const NonEvmBalanceCheck = () => {
       return;
     }
 
-    if (hasAccountForChain) {
-      const hasPositiveBalance = assetsWithBalance.some(
-        (asset) =>
-          asset.chainId === chainId && asset.balance && asset.balance !== '0',
-      );
+    // if (hasAccountForChain) {
+    //   const hasPositiveBalance = assetsWithBalance.some(
+    //     (asset) =>
+    //       asset.chainId === chainId && asset.balance && asset.balance !== '0',
+    //   );
 
-      window.location.href = hasPositiveBalance
-        ? getSwapUrl(chainId)
-        : getBuyUrl(
-            chainId,
-            metaMetricsId,
-            isMetaMetricsEnabled,
-            isMarketingEnabled,
-          );
-    }
+    //   window.location.href = hasPositiveBalance
+    //     ? getSwapUrl(chainId)
+    //     : getBuyUrl(
+    //         chainId,
+    //         metaMetricsId,
+    //         isMetaMetricsEnabled,
+    //         isMarketingEnabled,
+    //       );
+    // }
   }, [
     chainId,
     assetsWithBalance,
@@ -97,7 +97,7 @@ export const NonEvmBalanceCheck = () => {
     accounts,
   ]);
 
-  if (!hasAccountForChain) {
+  if (hasAccountForChain) {
     return <AddNonEvmAccountModal chainId={chainId} />;
   }
 
