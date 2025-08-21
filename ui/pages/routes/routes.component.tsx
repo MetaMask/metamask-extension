@@ -61,6 +61,7 @@ import {
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+  NONEVM_BALANCE_CHECK_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -209,10 +210,12 @@ const ConfirmTransaction = mmLazy(
 );
 const SendPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/send/index.js'
-    )) as unknown as DynamicImportType,
+  (() => {
+    if (process.env.SEND_REDESIGN_ENABLED) {
+      return import('../confirmations/send/index.ts');
+    }
+    return import('../../components/multichain/pages/send/index.js');
+  }) as unknown as DynamicImportType,
 );
 const Swaps = mmLazy(
   (() => import('../swaps/index.js')) as unknown as DynamicImportType,
@@ -297,6 +300,12 @@ const MultichainAccountDetailsPage = mmLazy(
   (() =>
     import(
       '../multichain-accounts/multichain-account-details-page/index.ts'
+    )) as unknown as DynamicImportType,
+);
+const NonEvmBalanceCheck = mmLazy(
+  (() =>
+    import(
+      '../nonevm-balance-check/index.tsx'
     )) as unknown as DynamicImportType,
 );
 // End Lazy Routes
@@ -603,6 +612,10 @@ export default function Routes() {
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
             component={AddressQRCode}
             exact
+          />
+          <Authenticated
+            path={NONEVM_BALANCE_CHECK_ROUTE}
+            component={NonEvmBalanceCheck}
           />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
