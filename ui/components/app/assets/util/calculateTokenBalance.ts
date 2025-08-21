@@ -1,5 +1,6 @@
 import BN from 'bn.js';
 import { Hex } from '@metamask/utils';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { stringifyBalance } from '../../../../hooks/useTokenBalances';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { AddressBalanceMapping } from '../types';
@@ -36,7 +37,9 @@ export function calculateTokenBalance({
     }
   } else {
     const hexBalance =
-      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
+      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[
+        toChecksumHexAddress(address) as Hex
+      ];
     if (hexBalance && hexBalance !== '0x0') {
       balance = stringifyBalance(
         new BN(hexToDecimal(hexBalance)),
