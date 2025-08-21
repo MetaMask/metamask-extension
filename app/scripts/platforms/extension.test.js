@@ -134,27 +134,6 @@ describe('extension platform', () => {
       );
     });
 
-    it('should show failed transaction with ledgerEthAppNftNotSupported error message', async () => {
-      const errorMessage = 'ledgerEthAppNftNotSupported';
-      const txMeta = {
-        txParams: { nonce: '0x1' },
-        error: { message: errorMessage },
-      };
-      const extensionPlatform = new ExtensionPlatform();
-      const showNotificationSpy = jest.spyOn(
-        extensionPlatform,
-        '_showNotification',
-      );
-      const expectedErrorMessage = t('ledgerEthAppNftNotSupported');
-
-      await extensionPlatform.showTransactionNotification(txMeta, errorMessage);
-
-      expect(showNotificationSpy).toHaveBeenCalledWith(
-        'Failed transaction',
-        `Transaction 1 failed! ${expectedErrorMessage}`,
-      );
-    });
-
     it('shows failed transaction with ledgerEthAppNftNotSupported error message', async () => {
       const errorMessage = 'ledgerEthAppNftNotSupported';
       const txMeta = {
