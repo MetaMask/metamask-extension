@@ -25,7 +25,7 @@ type Story = StoryObj<typeof PageContainerHeader>;
 export const Default: Story = {
   // Add any additional properties if required
   args: {
-    title: 'Components/UI/PageContainer/PageContainerHeader',
+    title: 'Sample Title',
     subtitle: 'Sample Subtitle',
     showBackButton: true,
     backButtonString: 'Back',
