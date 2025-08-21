@@ -1,5 +1,7 @@
+import { Driver } from '../../webdriver/driver';
+
 // ANSI color codes for better readability
-export const colors = {
+const colors = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
   red: '\x1b[31m',
@@ -15,7 +17,7 @@ export const colorize = (text: string, color: keyof typeof colors): string => {
   return `${colors[color]}${text}${colors.reset}`;
 };
 
-export const createCleanDifferenceMessage = (
+const createCleanDifferenceMessage = (
   type: 'missing' | 'new' | 'mismatch' | 'empty_object',
   key: string,
   expectedType?: string,
@@ -35,9 +37,8 @@ export const createCleanDifferenceMessage = (
   }
 };
 
-// Type definition for the specific fields we validate in state logs
-// This is NOT the complete state logs structure - only includes fields used in tests
-export type MinimalStateLogsJson = {
+// Type definition for the specific fields we validate in state logs in the Account spec
+type MinimalStateLogsJson = {
   metamask: {
     identities: {
       [key: string]: {
@@ -56,7 +57,7 @@ export type MinimalStateLogsJson = {
   [key: string]: unknown;
 };
 
-export const getValueType = (value: unknown): string => {
+const getValueType = (value: unknown): string => {
   if (value === null) {
     return 'null';
   }
@@ -116,7 +117,7 @@ export const createTypeMap = (
   return typeMap;
 };
 
-export const isEmptyObjectKey = (
+const isEmptyObjectKey = (
   key: string,
   typeMap: Record<string, string>,
 ): boolean => {
@@ -384,8 +385,7 @@ export const compareTypeMaps = (
   return { colored: coloredDifferences, clean: cleanDifferences };
 };
 
-// Function to get state logs JSON from file
-export const getStateLogsJson = async (
+const readStateLogsFile = async (
   downloadsFolder: string,
 ): Promise<MinimalStateLogsJson | null> => {
   try {
@@ -393,9 +393,28 @@ export const getStateLogsJson = async (
     const { promises: fs } = await import('fs');
     const contents = await fs.readFile(stateLogs);
     const parsedContents = JSON.parse(contents.toString());
-
     return parsedContents;
   } catch (e) {
     return null;
   }
+};
+
+export const getDownloadedStateLogs = async (
+  driver: Driver,
+  downloadsFolder: string,
+): Promise<MinimalStateLogsJson> => {
+  console.log('Verifying downloaded state logs');
+
+  let currentStateLogs: MinimalStateLogsJson | null = null;
+  await driver.wait(async () => {
+    currentStateLogs = await readStateLogsFile(downloadsFolder);
+    return currentStateLogs !== null;
+  }, 10000);
+
+  if (currentStateLogs === null) {
+    throw new Error(colorize('❌ State logs not found', 'red'));
+  }
+
+  console.log(colorize('✅ State logs downloaded successfully', 'green'));
+  return currentStateLogs;
 };

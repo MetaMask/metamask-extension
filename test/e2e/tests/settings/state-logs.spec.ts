@@ -11,8 +11,7 @@ import {
   colorize,
   compareTypeMaps,
   createTypeMap,
-  getStateLogsJson,
-  type MinimalStateLogsJson,
+  getDownloadedStateLogs,
 } from './state-logs-helpers';
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
@@ -41,17 +40,9 @@ describe('State logs', function () {
         await advancedSettingsPage.checkPageIsLoaded();
         await advancedSettingsPage.downloadStateLogs();
 
-        // Verify download
-        let info: MinimalStateLogsJson | null = null;
-        await driver.wait(async () => {
-          info = await getStateLogsJson(downloadsFolder);
-          return info !== null;
-        }, 10000);
-        // Verify Json
-        if (info === null) {
-          throw new Error('State logs not found');
-        }
-        const stateLogs: MinimalStateLogsJson = info;
+        // Verify download and get state logs
+        const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);
+
         assert.equal(
           stateLogs.metamask.identities[
             '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
@@ -91,26 +82,15 @@ describe('State logs', function () {
         await advancedSettingsPage.checkPageIsLoaded();
         await advancedSettingsPage.downloadStateLogs();
 
-        // Verify download
-        let currentStateLogs: MinimalStateLogsJson | null = null;
-        await driver.wait(async () => {
-          currentStateLogs = await getStateLogsJson(downloadsFolder);
-          return currentStateLogs !== null;
-        }, 10000);
-
-        if (currentStateLogs === null) {
-          throw new Error(colorize('❌ State logs not found', 'red'));
-        }
-
-        console.log(colorize('✅ State logs downloaded successfully', 'green'));
+        // Verify download and get state logs
+        const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);
 
         // Create type maps for comparison
-        const currentTypeMap = createTypeMap(currentStateLogs);
+        const currentTypeMap = createTypeMap(stateLogs);
         const expectedTypeMap = createTypeMap(referenceStateLogs);
 
         console.log(colorize('📋 Created type maps for comparison', 'cyan'));
 
-        // Compare type maps
         const { colored, clean } = compareTypeMaps(
           currentTypeMap,
           expectedTypeMap,
