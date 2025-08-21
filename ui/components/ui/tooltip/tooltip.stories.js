@@ -51,7 +51,7 @@ export default {
   },
   args: {
     position: 'top',
-    title: 'Components/UI/Tooltip',
+    title: 'Title of the tooltip',
     trigger: 'mouseenter',
   },
 };
