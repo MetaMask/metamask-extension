@@ -106,7 +106,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           location: 'confirmation',
-          decodingChangeTypes: ['LISTING', 'RECEIVE'],
+          decodingChangeTypes: ['LISTING', 'RECEIVE'], //
           decodingResponse: 'CHANGE',
           decodingDescription: null,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
