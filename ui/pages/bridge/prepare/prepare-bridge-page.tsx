@@ -79,7 +79,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
-import { setEnabledNetworks, isRelaySupported } from '../../../store/actions';
+import { setEnabledNetworks } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
@@ -99,7 +99,6 @@ import {
   getTokenList,
 } from '../../../selectors';
 import { getUseSmartAccount } from '../../confirmations/selectors/preferences';
-import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -124,6 +123,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
+import { useGasless7702Support } from '../hooks/useGasless7702Support';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -179,8 +179,6 @@ const PrepareBridgePage = ({
   const enableMissingNetwork = useEnableMissingNetwork();
 
   const t = useI18nContext();
-
-  const [isGasless7702Supported, setIsGasless7702Supported] = useState(false);
 
   const fromChain = useSelector(getFromChain);
   const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
@@ -262,6 +260,13 @@ const PrepareBridgePage = ({
   const selectedAccount = isEvm
     ? selectedEvmAccount
     : selectedMultichainAccount;
+
+  const isGasless7702Supported = useGasless7702Support(
+    smartAccountOptIn,
+    isSwap,
+    selectedAccount,
+    fromChain,
+  );
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -499,49 +504,6 @@ const PrepareBridgePage = ({
       dispatch(resetBridgeState());
     }
   }, []);
-
-  // Check if gasless 7702 is supported for Smart Accounts
-  useEffect(() => {
-    const checkGasless7702Support = async () => {
-      if (
-        !smartAccountOptIn ||
-        !isSwap ||
-        !selectedAccount?.address ||
-        !fromChain?.chainId
-      ) {
-        setIsGasless7702Supported(false);
-        return;
-      }
-
-      try {
-        // Check if atomic batch is supported for the account
-        const atomicBatchResult = await isAtomicBatchSupported({
-          address: selectedAccount.address as Hex,
-          chainIds: [fromChain.chainId],
-        });
-
-        const atomicBatchChainSupport = atomicBatchResult?.find(
-          (result) =>
-            result.chainId.toLowerCase() === fromChain.chainId.toLowerCase(),
-        );
-
-        // Check if relay is supported for the chain
-        const relaySupportsChain = await isRelaySupported(fromChain.chainId);
-
-        // 7702 is supported if both atomic batch and relay are supported
-        const is7702Supported = Boolean(
-          atomicBatchChainSupport?.isSupported && relaySupportsChain,
-        );
-
-        setIsGasless7702Supported(is7702Supported);
-      } catch (error) {
-        console.error('Error checking gasless 7702 support:', error);
-        setIsGasless7702Supported(false);
-      }
-    };
-
-    checkGasless7702Support();
-  }, [smartAccountOptIn, isSwap, selectedAccount?.address, fromChain?.chainId]);
 
   useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
 

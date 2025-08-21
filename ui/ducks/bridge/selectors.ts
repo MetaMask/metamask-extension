@@ -536,6 +536,7 @@ export const getBridgeQuotes = createSelector(
     });
 
     // Temporarily add gasless7702 flag when gasIncluded is true
+    // This code will be removed once backend returns gasless7702 in individual quotes
     if (result.activeQuote && result.activeQuote.quote?.gasIncluded) {
       return {
         ...result,
