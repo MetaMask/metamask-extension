@@ -38,6 +38,16 @@
   }
 }
 
+.network-manager__all-popular-networks {
+  .mm-avatar-base {
+    background-color: transparent;
+    border-color: transparent;
+    .mm-icon {
+      --icon-size: 30px;
+    }
+  }
+}
+
 .add-network__warning-icon {
   cursor: help;
 }

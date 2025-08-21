@@ -271,13 +271,15 @@ const DefaultNetworks = memo(() => {
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         {isEvmNetworkSelected ? (
-          <NetworkListItem
-            name={t('allPopularNetworks')}
-            onClick={selectAllDefaultNetworks}
-            iconSrc={IconName.Global}
-            iconSize={AvatarNetworkSize.Md}
-            selected={isAllPopularNetworksSelected}
-          />
+          <Box className="network-manager__all-popular-networks">
+            <NetworkListItem
+              name={t('allPopularNetworks')}
+              onClick={selectAllDefaultNetworks}
+              iconSrc={IconName.Global}
+              iconSize={AvatarNetworkSize.Md}
+              selected={isAllPopularNetworksSelected}
+            />
+          </Box>
         ) : null}
         {networkListItems}
         {isEvmNetworkSelected && (
