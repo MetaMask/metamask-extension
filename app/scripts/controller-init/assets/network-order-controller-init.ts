@@ -1,15 +1,15 @@
-import { ControllerInitFunction } from '../types';
-import { NetworkOrderControllerMessenger } from '../messengers/assets';
-import {
-  NetworkOrderController,
-  NetworkOrderControllerState,
-} from '../../controllers/network-order';
+import { SolScope } from '@metamask/keyring-api';
 import { Hex, KnownCaipNamespace } from '@metamask/utils';
 import {
   CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
 } from '../../../../shared/constants/network';
-import { SolScope } from '@metamask/keyring-api';
+import {
+  NetworkOrderController,
+  NetworkOrderControllerState,
+} from '../../controllers/network-order';
+import { NetworkOrderControllerMessenger } from '../messengers/assets';
+import { ControllerInitFunction } from '../types';
 
 const generateDefaultNetworkOrderControllerState =
   (): NetworkOrderControllerState => {
@@ -46,12 +46,15 @@ const generateDefaultNetworkOrderControllerState =
 
 /**
  * Validates and fixes the network state after controller initialization
+ *
+ * @param controller - network order controller
+ * @param currentlyAddedPopularNetworks - current popular networks added
  */
 export const validateAndFixNetworkState = (
   controller: NetworkOrderController,
   currentlyAddedPopularNetworks: Hex[],
 ): void => {
-  const state = controller.state;
+  const { state } = controller;
 
   // ensure EVM only have 1 network or all currently added popular networks (cannot be in-between)
   if (!state?.enabledNetworkMap?.[KnownCaipNamespace.Eip155]) {
@@ -83,7 +86,6 @@ export const validateAndFixNetworkState = (
         currentlyAddedPopularNetworks,
         KnownCaipNamespace.Eip155,
       );
-      return;
     }
   }
 };

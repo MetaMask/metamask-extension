@@ -1,21 +1,20 @@
 import { Messenger } from '@metamask/base-controller';
-import { KnownCaipNamespace, Hex } from '@metamask/utils';
 import { SolScope } from '@metamask/keyring-api';
-import {
-  NetworkOrderController,
-  NetworkOrderControllerState,
-} from '../../controllers/network-order';
-import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
-import { getNetworkOrderControllerMessenger } from '../messengers/assets';
-import {
-  NetworkOrderControllerInit,
-  validateAndFixNetworkState,
-} from './network-order-controller-init';
+import { Hex, KnownCaipNamespace } from '@metamask/utils';
 import {
   CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
 } from '../../../../shared/constants/network';
+import {
+  NetworkOrderController,
+  NetworkOrderControllerState,
+} from '../../controllers/network-order';
+import { getNetworkOrderControllerMessenger } from '../messengers/assets';
+import { buildControllerInitRequestMock } from '../test/utils';
+import {
+  NetworkOrderControllerInit,
+  validateAndFixNetworkState,
+} from './network-order-controller-init';
 
 // Mock the NetworkOrderController
 jest.mock('../../controllers/network-order');
@@ -24,9 +23,10 @@ jest.mock('../../controllers/network-order');
 const originalEnv = process.env;
 
 // Mock Type for testing purposes
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockVar = any;
 
-function buildInitRequestMock(): jest.Mocked<ControllerInitRequest<any>> {
+function buildInitRequestMock() {
   const baseControllerMessenger = new Messenger();
   return {
     ...buildControllerInitRequestMock(),
@@ -264,8 +264,8 @@ describe('validateAndFixNetworkState', () => {
 
   it('sets mainnet when EVM enabledNetworkMap is missing', () => {
     const { mockController } = arrange();
-    mockController.state.enabledNetworkMap[KnownCaipNamespace.Eip155] =
-      undefined as any;
+    delete mockController.state.enabledNetworkMap[KnownCaipNamespace.Eip155];
+
     const popularNetworks: Hex[] = [CHAIN_IDS.MAINNET, CHAIN_IDS.SEPOLIA];
 
     validateAndFixNetworkState(mockController, popularNetworks);
