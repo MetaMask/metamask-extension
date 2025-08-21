@@ -40,7 +40,7 @@ export const DefaultStory: StoryFn<typeof BannerTip> = (args) => {
 };
 
 DefaultStory.args = {
-  title: 'Components/ComponentLibrary/BannerTip',
+  title: 'Title is sentence case no period',
   children: "Description shouldn't repeat title. 1-3 lines.",
   actionButtonLabel: 'Action',
 };
@@ -67,14 +67,14 @@ export const LogoType: StoryFn<typeof BannerTip> = (args) => {
 export const Title = Template.bind({});
 
 Title.args = {
-  title: 'Components/ComponentLibrary/BannerTip',
+  title: 'Title is sentence case no period',
   children: 'Pass only a string through the title prop',
 };
 
 export const Description = Template.bind({});
 
 Description.args = {
-  title: 'Components/ComponentLibrary/BannerTip',
+  title: 'Description vs children',
   description:
     'Pass only a string through the description prop or you can use children if the contents require more',
 };
@@ -97,7 +97,7 @@ export const Children: StoryFn<typeof BannerTip> = (args) => {
 export const ActionButton = Template.bind({});
 
 ActionButton.args = {
-  title: 'Components/ComponentLibrary/BannerTip',
+  title: 'Action prop demo',
   actionButtonLabel: 'Action',
   actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
   actionButtonProps: {
@@ -127,7 +127,7 @@ export const OnClose: StoryFn<typeof BannerTip> = (args) => {
 };
 
 OnClose.args = {
-  title: 'Components/ComponentLibrary/BannerTip',
+  title: 'onClose demo',
   children: 'Click the close button icon to hide this notifcation',
 };
 

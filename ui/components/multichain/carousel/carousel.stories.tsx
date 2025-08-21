@@ -18,19 +18,19 @@ export default {
 const mockSlides = [
   {
     id: '1',
-    title: 'Components/Multichain/Carousel',
+    title: 'First Slide',
     description: 'This is the first slide description',
     image: './images/sample-image-1.png',
   },
   {
     id: '2',
-    title: 'Components/Multichain/Carousel',
+    title: 'Second Slide',
     description: 'This is the second slide description',
     image: './images/sample-image-2.png',
   },
   {
     id: '3',
-    title: 'Components/Multichain/Carousel',
+    title: 'Third Slide',
     description: 'This is the third slide description',
     image: './images/sample-image-3.png',
   },
