@@ -31,10 +31,62 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+```
 
-// Only when needed
-export const WithRender: Story = {
-  render: (args) => <MyComponent {...args} />,
+## Example: Using Hooks in render
+
+Keep hooks at the top-level of the `render` function component. Avoid extra `parameters` when possible.
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react';
+import { useMemo } from 'react';
+import { MyComponent } from './my-component';
+
+const meta: Meta<typeof MyComponent> = {
+  title: 'Components/MyComponent',
+  component: MyComponent,
+};
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const WithHook: Story = {
+  args: { label: 'With hook' },
+  render: function Render(args) {
+    const computed = useMemo(() => args.label.toUpperCase(), [args.label]);
+    return <MyComponent {...args} label={computed} />;
+  },
+};
+```
+
+## Example: With Provider and in-repo test data
+
+Use the app's store creator and test data under `test/data/`. Do not reference `.storybook/test-data`.
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react';
+import { Provider } from 'react-redux';
+import configureStore from '../../ui/store/store';
+import mockState from '../../test/data/mock-state.json';
+import { MyConnectedComponent } from './my-connected-component';
+
+const meta: Meta<typeof MyConnectedComponent> = {
+  title: 'Components/MyConnectedComponent',
+  component: MyConnectedComponent,
+};
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const WithProvider: Story = {
+  render: () => {
+    const store = configureStore(mockState);
+    return (
+      <Provider store={store}>
+        <MyConnectedComponent />
+      </Provider>
+    );
+  },
 };
 ```
 
