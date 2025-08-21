@@ -204,7 +204,6 @@ describe('Request-queue UI changes', function () {
         );
 
         const networkManager = new NetworkManager(driver);
-
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
         await driver.clickElement('[data-testid="Localhost 8546"]');
@@ -540,8 +539,9 @@ describe('Request-queue UI changes', function () {
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await networkManager.closeNetworkManager();
 
-        // Kill local node serverså
+        // Kill local node servers
         await localNodes[0].quit();
         await localNodes[1].quit();
 
@@ -615,6 +615,7 @@ describe('Request-queue UI changes', function () {
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await networkManager.closeNetworkManager();
 
         // Kill local node servers
         await localNodes[0].quit();
