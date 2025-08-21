@@ -37,7 +37,7 @@ export default {
     primary: '88.0068',
     tokenImage: './images/eth_logo.svg',
     tokenSymbol: CURRENCY_SYMBOLS.ETH,
-    title: 'Components/Multichain/TokenListItem',
+    title: 'Ethereum',
     isOriginalTokenSymbol: true,
   },
 };
@@ -83,7 +83,7 @@ ChaosStory.decorators = [
 ];
 
 ChaosStory.args = {
-  title: 'Components/Multichain/TokenListItem',
+  title: 'Really long, long name',
   secondary: '$94556756776.80 USD',
   primary: '34449765768526.00',
 };
@@ -117,7 +117,7 @@ CrossChainTokenStory.decorators = [
 ];
 
 CrossChainTokenStory.args = {
-  title: 'Components/Multichain/TokenListItem',
+  title: 'USDC',
   secondary: '$94556756776.80 USD',
   primary: '34449765768526.00',
   isTitleNetworkName: true,

@@ -2,7 +2,7 @@ import React from 'react';
 import ErrorMessage from '.';
 
 export default {
-  title: 'Components/UI/ErrorMessage',
+  title: 'Components/UI/ErrorMessage (deprecated)',
   component: ErrorMessage,
   argTypes: {
     errorMessage: { control: 'text' },

@@ -29,7 +29,7 @@ export default {
     },
   },
   args: {
-    title: 'Components/UI/ListItem',
+    title: 'Send DAI',
     subtitle: 'Sept 20 · To: 00X4...3058',
     primaryCurrency: '2 ETH',
     secondaryCurrency: '70 USD',

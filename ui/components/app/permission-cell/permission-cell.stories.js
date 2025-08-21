@@ -14,7 +14,7 @@ export const DefaultStory = (args) => <PermissionCell {...args} />;
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  title: 'Fetch and display transaction insights.',
+  title: 'Access the Ethereum provider.',
   description:
     'Allow the snap to communicate with MetaMask direct…blockchain and suggest messages and transactions.',
   weight: 1,

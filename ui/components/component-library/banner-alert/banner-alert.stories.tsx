@@ -101,7 +101,7 @@ SeverityStory.storyName = 'Severity';
 
 export const Title: StoryFn<typeof BannerAlert> = Template.bind({});
 Title.args = {
-  itle: 'Title is sentence case no period',
+  title: 'Title is sentence case no period',
   children: 'Pass only a string through the title prop',
 };
 

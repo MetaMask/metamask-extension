@@ -2,7 +2,8 @@ import React from 'react';
 import ConnectedAccountsPermissions from './connected-accounts-permissions';
 
 export default {
-  title: 'Components/App/ConnectedAccountsPermissions/ConnectedAccountPermissions',
+  title:
+    'Components/App/ConnectedAccountsPermissions/ConnectedAccountPermissions',
   component: ConnectedAccountsPermissions,
   argTypes: {
     permission: {

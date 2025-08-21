@@ -25,7 +25,7 @@ export default {
   args: {
     children: 'hello world',
     size: 'normal',
-    title: 'Components/UI/Disclosure',
+    title: 'title',
   },
 };
 

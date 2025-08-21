@@ -5,7 +5,7 @@ import { Button } from '../../../component-library';
 import SRPQuiz from '.';
 
 export default {
-  title: 'Components/App/SrpQuizModal/Srpquiz',
+  title: 'Components/App/SRPQuizModal/SRPQuiz',
   component: SRPQuiz,
   argTypes: {
     isShowingModal: {

@@ -2,7 +2,8 @@ import React from 'react';
 import ConfirmationNetworkSwitch from '.';
 
 export default {
-  title: 'Pages/Confirmations/Confirmation/Components/ConfirmationNetworkSwitch',
+  title:
+    'Pages/Confirmations/Confirmation/Components/ConfirmationNetworkSwitch',
   argTypes: {
     toNetwork: {
       controls: 'object',

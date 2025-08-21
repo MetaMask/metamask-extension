@@ -35,7 +35,7 @@ export default {
   },
   args: {
     prevIcon: true,
-    title: 'Components/Multichain/ProductTourPopover',
+    title: 'Permissions',
     description: 'Find your connected accounts and manage permissions here.',
     currentStep: '1',
     totalSteps: '3',

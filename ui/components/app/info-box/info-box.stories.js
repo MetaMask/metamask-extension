@@ -4,11 +4,14 @@ import InfoBox from '.';
 
 export default {
   title: 'Components/App/InfoBox',
-
   component: InfoBox,
   argTypes: {
-    title: 'Components/App/InfoBox',
-    description: 'string',
+    title: {
+      control: 'text',
+    },
+    description: {
+      control: 'text',
+    },
   },
 };
 
