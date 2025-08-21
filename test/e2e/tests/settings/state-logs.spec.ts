@@ -8,7 +8,6 @@ import AdvancedSettings from '../../page-objects/pages/settings/advanced-setting
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import referenceStateLogs from './state-logs.json';
 import {
-  colorize,
   compareTypeMaps,
   createTypeMap,
   getDownloadedStateLogs,
@@ -89,45 +88,35 @@ describe('State logs', function () {
         const currentTypeMap = createTypeMap(stateLogs);
         const expectedTypeMap = createTypeMap(referenceStateLogs);
 
-        console.log(colorize('📋 Created type maps for comparison', 'cyan'));
+        console.log('📋 Created type maps for comparison');
 
-        const { colored, clean } = compareTypeMaps(
+        const { differences } = compareTypeMaps(
           currentTypeMap,
           expectedTypeMap,
         );
 
-        if (colored.length > 0) {
-          // The state logs are already downloaded to the downloads folder
+        if (differences.length > 0) {
           const downloadedStateLogsPath = `${downloadsFolder}/MetaMask state logs.json`;
 
-          console.log(
-            colorize(`\n📊 State logs structure comparison results:`, 'bright'),
-          );
-          console.log(
-            colorize(`Found ${colored.length} differences:`, 'yellow'),
-          );
-          console.log(colorize('='.repeat(60), 'cyan'));
+          console.log('\n📊 State logs structure comparison results:');
+          console.log(`Found ${differences.length} differences:`);
+          console.log('='.repeat(60));
 
-          colored.forEach((diff, index) => {
-            console.log(`${colorize(`${index + 1}.`, 'blue')} ${diff}`);
+          differences.forEach((diff, index) => {
+            console.log(`${index + 1}. ${diff}`);
           });
 
-          console.log(colorize('='.repeat(60), 'cyan'));
+          console.log('='.repeat(60));
           console.log(
-            colorize(
-              `📝 Please update the state-logs.json file. You can copy it from ${downloadedStateLogsPath}`,
-              'yellow',
-            ),
+            `📝 Please update the state-logs.json file. You can copy it from ${downloadedStateLogsPath}`,
           );
 
           assert.fail(
-            `State logs structure has changed. Found ${colored.length} differences:\n${clean.join('\n')}\n\nPlease update the state-logs.json file with the new structure from: ${downloadedStateLogsPath}`,
+            `State logs structure has changed. Found ${differences.length} differences:\n${differences.join('\n')}\n\nPlease update the state-logs.json file with the new structure from: ${downloadedStateLogsPath}`,
           );
         }
 
-        console.log(
-          colorize('✅ State logs structure validation passed!', 'green'),
-        );
+        console.log('✅ State logs structure validation passed!');
       },
     );
   });
