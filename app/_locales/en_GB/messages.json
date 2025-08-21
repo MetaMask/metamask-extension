@@ -510,6 +510,9 @@
   "allPermissions": {
     "message": "All permissions"
   },
+  "allPopularNetworks": {
+    "message": "All popular networks"
+  },
   "allTimeHigh": {
     "message": "All time high"
   },
@@ -3568,9 +3571,6 @@
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
-  },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Must have at least one network enabled"
   },
   "networkMenu": {
     "message": "Network Menu"

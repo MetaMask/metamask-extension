@@ -3572,9 +3572,6 @@
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Must have at least one network enabled"
-  },
   "networkMenu": {
     "message": "Network Menu"
   },
