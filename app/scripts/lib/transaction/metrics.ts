@@ -1042,7 +1042,10 @@ async function buildEventFragmentProperties({
   );
   Object.assign(properties, snapAndHardwareInfo);
 
-  if (transactionContractMethod === contractMethodNames.APPROVE) {
+  if (
+    transactionContractMethod === contractMethodNames.APPROVE ||
+    getMMSwapOrBridgeType(type as TransactionType)
+  ) {
     properties = {
       ...properties,
       simulation_receiving_assets_total_value:
