@@ -20,9 +20,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  DEFAULT_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
@@ -55,30 +53,30 @@ export const GatorPermissionsPage = () => {
       <Content padding={0}>
         <Box ref={headerRef}></Box>
         <Box
-            data-testid="no-connections"
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.center}
-            height={BlockSize.Full}
-            gap={2}
-            padding={4}
+          data-testid="no-connections"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          height={BlockSize.Full}
+          gap={2}
+          padding={4}
+        >
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            backgroundColor={BackgroundColor.backgroundDefault}
+            textAlign={TextAlign.Center}
           >
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              textAlign={TextAlign.Center}
-            >
-              {t('permissionsPageEmptyContent')}
-            </Text>
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              textAlign={TextAlign.Center}
-            >
-              {t('permissionsPageEmptySubContent')}
-            </Text>
-          </Box>
+            {t('permissionsPageEmptyContent')}
+          </Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            backgroundColor={BackgroundColor.backgroundDefault}
+            textAlign={TextAlign.Center}
+          >
+            {t('permissionsPageEmptySubContent')}
+          </Text>
+        </Box>
       </Content>
     </Page>
   );
