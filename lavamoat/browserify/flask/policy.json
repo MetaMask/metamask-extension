@@ -1372,7 +1372,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "readable-stream": true
+        "@metamask/json-rpc-middleware-stream>readable-stream": true
       }
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
@@ -1629,13 +1629,13 @@
       },
       "packages": {
         "@metamask/object-multiplex>once": true,
-        "readable-stream": true
+        "@metamask/object-multiplex>readable-stream": true
       }
     },
     "@metamask/obs-store": {
       "packages": {
         "@metamask/safe-event-emitter": true,
-        "readable-stream": true
+        "@metamask/obs-store>readable-stream": true
       }
     },
     "@metamask/permission-controller": {
@@ -1724,7 +1724,7 @@
       },
       "packages": {
         "@metamask/utils": true,
-        "readable-stream": true
+        "@metamask/post-message-stream>readable-stream": true
       }
     },
     "@metamask/ppom-validator": {
@@ -1800,7 +1800,7 @@
         "@metamask/providers>extension-port-stream": true,
         "eslint>fast-deep-equal": true,
         "@metamask/providers>is-stream": true,
-        "readable-stream": true
+        "@metamask/providers>readable-stream": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -1932,7 +1932,7 @@
         "immer": true,
         "luxon": true,
         "nanoid": true,
-        "readable-stream": true,
+        "@metamask/snaps-controllers>readable-stream": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "semver": true,
         "@metamask/snaps-controllers>tar-stream": true
@@ -2663,7 +2663,7 @@
         "@zxing/library>ts-custom-error": true
       }
     },
-    "@lavamoat/lavapack>readable-stream>abort-controller": {
+    "readable-stream>abort-controller": {
       "globals": {
         "AbortController": true
       }
@@ -3134,7 +3134,7 @@
         "terser>source-map-support>buffer-from": true,
         "browserify>buffer": true,
         "pumpify>inherits": true,
-        "readable-stream": true,
+        "@metamask/snaps-controllers>readable-stream": true,
         "browserify>concat-stream>typedarray": true
       }
     },
@@ -3539,6 +3539,21 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
+    "extension-port-stream": {
+      "globals": {
+        "AggregateError": true,
+        "console.debug": true,
+        "console.error": true,
+        "navigator.userAgent.includes": true,
+        "performance.now": true,
+        "queueMicrotask": true,
+        "scheduler": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "readable-stream": true
+      }
+    },
     "@metamask/providers>extension-port-stream": {
       "packages": {
         "browserify>buffer": true,
@@ -3673,14 +3688,14 @@
     "ethereumjs-util>create-hash>md5.js>hash-base": {
       "packages": {
         "pumpify>inherits": true,
-        "readable-stream": true,
+        "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": true,
         "koa>content-disposition>safe-buffer": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160>hash-base": {
       "packages": {
         "pumpify>inherits": true,
-        "readable-stream": true,
+        "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": true,
         "koa>content-disposition>safe-buffer": true
       }
     },
@@ -3966,7 +3981,7 @@
     "ethereumjs-util>ethereum-cryptography>keccak": {
       "packages": {
         "browserify>buffer": true,
-        "readable-stream": true
+        "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": true
       }
     },
     "currency-formatter>locale-currency": {
@@ -4745,6 +4760,22 @@
       }
     },
     "readable-stream": {
+      "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "AggregateError": true,
+        "Blob": true,
+        "queueMicrotask": true
+      },
+      "packages": {
+        "readable-stream>abort-controller": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "process": true,
+        "browserify>string_decoder": true
+      }
+    },
+    "@metamask/json-rpc-middleware-stream>readable-stream": {
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
@@ -4752,7 +4783,62 @@
         "pumpify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/obs-store>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/providers>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/snaps-controllers>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
       }
     },
     "crypto-browserify>browserify-sign>readable-stream": {
@@ -4767,7 +4853,7 @@
         "crypto-browserify>browserify-sign>readable-stream>safe-buffer": true,
         "crypto-browserify>browserify-sign>readable-stream>string_decoder": true,
         "browserify>timers-browserify": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "@metamask/providers>extension-port-stream>readable-stream": {
@@ -4779,16 +4865,82 @@
         "queueMicrotask": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream>abort-controller": true,
+        "readable-stream>abort-controller": true,
         "browserify>buffer": true,
         "webpack>events": true,
         "process": true,
         "browserify>string_decoder": true
       }
     },
+    "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "stream-browserify>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "stream-http>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
     "@metamask/snaps-controllers>readable-web-to-node-stream": {
       "packages": {
-        "readable-stream": true
+        "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": true
       }
     },
     "redux": {
@@ -5013,7 +5165,7 @@
       "packages": {
         "webpack>events": true,
         "pumpify>inherits": true,
-        "readable-stream": true
+        "stream-browserify>readable-stream": true
       }
     },
     "stream-http": {
@@ -5035,7 +5187,7 @@
         "stream-http>builtin-status-codes": true,
         "pumpify>inherits": true,
         "process": true,
-        "readable-stream": true,
+        "stream-http>readable-stream": true,
         "browserify>url": true,
         "watchify>xtend": true
       }
@@ -5217,7 +5369,7 @@
         "tslib": true
       }
     },
-    "readable-stream>util-deprecate": {
+    "@storybook/react>util-deprecate": {
       "globals": {
         "console.trace": true,
         "console.warn": true,
