@@ -97,8 +97,8 @@ export const NetworkOrderControllerInit: ControllerInitFunction<
   const controller = new NetworkOrderController({
     messenger: controllerMessenger,
     state: {
-      ...persistedState.NetworkOrderController,
       ...generateDefaultNetworkOrderControllerState(),
+      ...persistedState.NetworkOrderController,
     },
   });
 

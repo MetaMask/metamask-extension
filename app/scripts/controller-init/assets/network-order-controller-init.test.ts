@@ -114,31 +114,6 @@ describe('NetworkOrderControllerInit', () => {
     });
   });
 
-  it('merges persisted state with default state', () => {
-    const { requestMock, NetworkOrderControllerClassMock } = arrange();
-    requestMock.persistedState.NetworkOrderController = {
-      orderedNetworkList: [],
-      enabledNetworkMap: {
-        [KnownCaipNamespace.Eip155]: {
-          [CHAIN_IDS.GOERLI]: true,
-        },
-      },
-    };
-
-    NetworkOrderControllerInit(requestMock);
-
-    expect(NetworkOrderControllerClassMock).toHaveBeenCalledWith({
-      messenger: requestMock.controllerMessenger,
-      state: expect.objectContaining({
-        orderedNetworkList: [],
-        enabledNetworkMap: expect.objectContaining({
-          [KnownCaipNamespace.Eip155]: expect.any(Object),
-          [KnownCaipNamespace.Solana]: expect.any(Object),
-        }),
-      }),
-    });
-  });
-
   it('uses development state when in debug mode', () => {
     const { requestMock, NetworkOrderControllerClassMock } = arrange();
     process.env.METAMASK_DEBUG = 'true';
