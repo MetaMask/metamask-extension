@@ -68,13 +68,8 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Install Vulkan drivers
-        run: |
-          apt-get update
-          apt-get install -y mesa-vulkan-drivers vulkan-tools libvulkan1 mesa-utils
-          echo "VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json:/usr/share/vulkan/icd.d/radeon_icd.x86_64.json" >> $GITHUB_ENV
-          echo "DISPLAY=:99" >> $GITHUB_ENV
-          vulkaninfo --summary || echo "Vulkan installation completed"
+      - name: Debug step
+        run: echo "try"
 
       - name: Restore .metamask folder
         id: restore-metamask
