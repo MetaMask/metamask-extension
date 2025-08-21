@@ -787,7 +787,7 @@ const PrepareBridgePage = ({
             ) : null}
           </Column>
 
-          <Row padding={6} paddingTop={activeQuote ? 0 : 6}>
+          <Row padding={6}>
             <Column
               gap={3}
               className={activeQuote ? 'highlight' : ''}
