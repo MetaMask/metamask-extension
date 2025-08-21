@@ -69,14 +69,19 @@ describe('Network Manager', function (this: Suite) {
         await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
 
         // Act Assert - select linea will deselect etherum and select linea
-        await networkManager.selectNetwork(NetworkId.LINEA);
+        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
+        await networkManager.openNetworkManager();
         await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
         await networkManager.checkNetworkIsDeselected(NetworkId.ETHEREUM);
+        await networkManager.closeNetworkManager();
 
         // Act Assert - select ethereum will deselect linea and select ethereum
-        await networkManager.selectNetwork(NetworkId.ETHEREUM);
+        await networkManager.openNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await networkManager.openNetworkManager();
         await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await networkManager.closeNetworkManager();
       },
     );
   });
@@ -133,14 +138,12 @@ describe('Network Manager', function (this: Suite) {
 
         // Change to Linea, only Linea native token visible
         await networkManager.openNetworkManager();
-        await networkManager.selectNetwork(NetworkId.LINEA);
-        await networkManager.closeNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
         await assetListPage.checkTokenItemNumber(1);
 
         // Change to Ethereum, only Ethereum native token visible
         await networkManager.openNetworkManager();
-        await networkManager.selectNetwork(NetworkId.ETHEREUM);
-        await networkManager.closeNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
         await assetListPage.checkTokenItemNumber(1);
       },
     );

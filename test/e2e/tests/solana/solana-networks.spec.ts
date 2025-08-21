@@ -45,8 +45,7 @@ describe('Solana network', function (this: Suite) {
         // in the network-controller
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
-        await networkManager.selectNetwork(NetworkId.LINEA);
-        await networkManager.closeNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
 
         // Switch back to Solana Mainnet
         await headerNavbar.openAccountMenu();

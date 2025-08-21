@@ -1,4 +1,3 @@
-import { regularDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
 export enum NetworkId {
@@ -67,27 +66,6 @@ class NetworkManager {
 
   async selectNetworkByChainId(chainId: string): Promise<void> {
     await this.driver.clickElementSafe(this.networkListItem(chainId));
-  }
-
-  // Method to select/click on a network item
-  async selectNetwork(networkName: string): Promise<void> {
-    console.log(`Selecting network: ${networkName}`);
-    await this.driver.delay(regularDelayMs);
-    await this.checkNetworkIsDeselected(networkName);
-    await this.driver.delay(regularDelayMs);
-    await this.driver.clickElementSafe(this.networkListItem(networkName));
-    await this.driver.delay(regularDelayMs);
-    await this.checkNetworkIsSelected(networkName);
-  }
-
-  async deselectNetwork(networkName: string): Promise<void> {
-    console.log(`Deselecting network: ${networkName}`);
-    await this.driver.delay(regularDelayMs);
-    await this.checkNetworkIsSelected(networkName);
-    await this.driver.delay(regularDelayMs);
-    await this.driver.clickElementSafe(this.networkListItem(networkName));
-    await this.driver.delay(regularDelayMs);
-    await this.checkNetworkIsDeselected(networkName);
   }
 
   async checkAllPopularNetworksIsSelected(): Promise<void> {

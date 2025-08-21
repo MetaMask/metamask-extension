@@ -105,8 +105,7 @@ describe('View NFT details', function () {
         // Show Ethereum NFTs
         const nftListPage = new NftListPage(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectNetwork(NetworkId.ETHEREUM);
-        await networkManager.closeNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
         await nftListPage.checkNumberOfNftsDisplayed(2);
 
         await nftListPage.checkNftNameIsDisplayed(
@@ -119,7 +118,6 @@ describe('View NFT details', function () {
         // Show All NFTs
         await networkManager.openNetworkManager();
         await networkManager.selectAllNetworks();
-        await networkManager.closeNetworkManager();
 
         await nftListPage.checkNumberOfNftsDisplayed(3);
 

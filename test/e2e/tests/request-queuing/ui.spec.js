@@ -208,7 +208,6 @@ describe('Request-queue UI changes', function () {
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
         await driver.clickElement('[data-testid="Localhost 8546"]');
-        await networkManager.closeNetworkManager();
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -349,21 +348,18 @@ describe('Request-queue UI changes', function () {
           await networkManager.openNetworkManager();
           await networkManager.selectTab('Custom');
           await driver.clickElement('[data-testid="Localhost 7777"]');
-          await networkManager.closeNetworkManager();
           await validateBalanceAndActivity(driver, '24.9998');
         }
 
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
         await driver.clickElement('[data-testid="Localhost 8546"]');
-        await networkManager.closeNetworkManager();
 
         await validateBalanceAndActivity(driver, '25', 0);
 
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
         await driver.clickElement('[data-testid="Localhost 8545"]');
-        await networkManager.closeNetworkManager();
 
         await validateBalanceAndActivity(driver, '24.9998');
       },
@@ -544,7 +540,6 @@ describe('Request-queue UI changes', function () {
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.closeNetworkManager();
 
         // Kill local node serverså
         await localNodes[0].quit();
@@ -620,7 +615,6 @@ describe('Request-queue UI changes', function () {
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.closeNetworkManager();
 
         // Kill local node servers
         await localNodes[0].quit();
