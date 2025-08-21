@@ -23,12 +23,7 @@ import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-
 import { SiteCellConnectionListItem } from '../../multichain/pages/review-permissions-page/site-cell/site-cell-connection-list-item';
 import { MultichainEditAccountsModal } from '../permissions/edit-accounts-modal/multichain-edit-accounts-modal';
 import { AccountGroupId } from '@metamask/account-api';
-
-type Network = {
-  name: string;
-  chainId: string;
-  caipChainId: CaipChainId;
-};
+import { Network } from './tool-tip.types';
 
 type MultichainSiteCellProps = {
   nonTestNetworks: Network[];

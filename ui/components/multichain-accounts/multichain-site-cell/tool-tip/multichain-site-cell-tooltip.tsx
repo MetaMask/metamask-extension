@@ -25,12 +25,7 @@ import { AvatarGroup } from '../../../multichain/avatar-group';
 import { AvatarType } from '../../../multichain/avatar-group/avatar-group.types';
 import { CaipChainId } from '@metamask/utils';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
-
-type Network = {
-  name: string;
-  chainId: string;
-  caipChainId: CaipChainId;
-};
+import { Network } from '../tool-tip.types';
 
 interface SiteCellTooltipProps {
   accountGroups?: AccountGroupWithInternalAccounts[];

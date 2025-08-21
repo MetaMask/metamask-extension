@@ -5,12 +5,7 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { MultichainSiteCellTooltip } from './multichain-site-cell-tooltip';
-
-type Network = {
-  name: string;
-  chainId: string;
-  caipChainId: CaipChainId;
-};
+import { Network } from '../tool-tip.types';
 
 describe('MultichainSiteCellTooltip', () => {
   const store = configureStore({
