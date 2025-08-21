@@ -15,7 +15,10 @@ export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
   const tokenBalances = useSelector(getTokenBalances);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
-  const pollableChains = chainIds.length > 0 ? chainIds : Object.keys(networkConfigurations);
+  const pollableChains =
+    chainIds && chainIds.length > 0
+      ? chainIds
+      : Object.keys(networkConfigurations);
 
   useMultiPolling({
     startPolling: tokenBalancesStartPolling,
