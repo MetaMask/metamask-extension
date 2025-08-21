@@ -4178,39 +4178,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onekeyBridgeInstallationRequired": {
-    "message": "Phần cứng yêu cầu phần mềm OneKey Bridge, $1"
-  },
-  "onekeyConnectDevice": {
-    "message": "Kết nối thiết bị"
-  },
-  "onekeyDownloadBridge": {
-    "message": "Tải xuống OneKey Bridge"
-  },
-  "onekeyExitBootloaderMode": {
-    "message": "OneKey cần thoát khỏi chế độ bootloader để sử dụng tính năng này."
-  },
-  "onekeyDeviceCheckPassphraseStateError": {
-    "message": "Mã PIN hoặc mật khẩu không khớp với tài khoản hiện tại"
-  },
-  "onekeyForceUpdate": {
-    "message": "Firmware OneKey cần được cập nhật. $1"
-  },
-  "onekeyGoToUpdateFirmware": {
-    "message": "Đi đến cập nhật firmware"
-  },
-  "onekeyHardwareError": {
-    "message": "Lỗi phần cứng OneKey"
-  },
-  "onekeyHardwareHelpLink": {
-    "message": "Vui lòng truy cập hướng dẫn trực tuyến của chúng tôi để biết chi tiết."
-  },
-  "onekeyNeedUpdateFirmware": {
-    "message": "Cần cập nhật firmware OneKey để sử dụng tính năng này, $1"
-  },
-  "onekeyWebUSBNotConnectedErrorMessage": {
-    "message": "Cần có sự cho phép của người dùng để kết nối thiết bị OneKey. Nếu bạn muốn kết nối OneKey của mình, hãy nhấp vào 'Kết nối thiết bị' và chấp nhận kết nối USB"
-  },
   "only": {
     "message": "chỉ"
   },
@@ -6117,13 +6084,6 @@
   "step1LedgerWalletMsg": {
     "message": "Tải về, thiết lập và nhập mật khẩu của bạn để mở khóa $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1OnekeyWallet": {
-    "message": "Liên kết OneKey của bạn"
-  },
-  "step1OnekeyWalletMsg": {
-    "message": "Cắm OneKey của bạn trực tiếp vào máy tính và mở khóa. Đảm bảo sử dụng cụm từ mật khẩu chính xác. Để biết thêm thông tin chi tiết về việc sử dụng ví phần cứng của bạn, $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Kết nối với Trezor"
