@@ -27,35 +27,35 @@ describe('QR Hardware', function () {
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.openConnectHardwareWalletModal();
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
-        await connectHardwareWalletPage.check_pageIsLoaded();
+        await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.openConnectQRPage();
 
         const selectQRAccountPage = new SelectHardwareWalletAccountPage(driver);
-        await selectQRAccountPage.check_pageIsLoaded();
+        await selectQRAccountPage.checkPageIsLoaded();
 
         // Check that the first page of accounts is correct
-        await selectQRAccountPage.check_accountNumber();
+        await selectQRAccountPage.checkAccountNumber();
         for (const address of KNOWN_QR_ACCOUNTS.slice(0, 3)) {
           const shortenedAddress = `${address.slice(0, 4)}...${address.slice(
             -4,
           )}`;
-          await selectQRAccountPage.check_addressIsDisplayed(shortenedAddress);
+          await selectQRAccountPage.checkAddressIsDisplayed(shortenedAddress);
         }
 
         // Unlock first account of first page and check that the correct account has been added
         await selectQRAccountPage.unlockAccount(1);
-        await headerNavbar.check_pageIsLoaded();
-        await new HomePage(driver).check_expectedBalanceIsDisplayed('0');
+        await headerNavbar.checkPageIsLoaded();
+        await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList(
           `${KNOWN_QR_BASE_NAME} 1`,
         );
-        await accountListPage.check_accountAddressDisplayedInAccountList(
+        await accountListPage.checkAccountAddressDisplayedInAccountList(
           shortenAddress(KNOWN_QR_ACCOUNTS[0]),
         );
       },
@@ -75,17 +75,17 @@ describe('QR Hardware', function () {
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.openConnectHardwareWalletModal();
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
-        await connectHardwareWalletPage.check_pageIsLoaded();
+        await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.openConnectQRPage();
 
         // Unlock 3 QR accounts
         const selectQRAccountPage = new SelectHardwareWalletAccountPage(driver);
-        await selectQRAccountPage.check_pageIsLoaded();
-        await selectQRAccountPage.check_accountNumber();
+        await selectQRAccountPage.checkPageIsLoaded();
+        await selectQRAccountPage.checkAccountNumber();
         for (let i = 1; i <= 3; i++) {
           await selectQRAccountPage.selectAccount(i);
         }
@@ -93,25 +93,25 @@ describe('QR Hardware', function () {
 
         // Check that all 3 QR accounts are displayed in account list
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         for (let i = 0; i < 3; i++) {
-          await accountListPage.check_accountDisplayedInAccountList(
+          await accountListPage.checkAccountDisplayedInAccountList(
             `${KNOWN_QR_BASE_NAME} ${i + 1}`,
           );
-          await accountListPage.check_accountAddressDisplayedInAccountList(
+          await accountListPage.checkAccountAddressDisplayedInAccountList(
             shortenAddress(KNOWN_QR_ACCOUNTS[i]),
           );
         }
 
         // Remove QR 1 account and check QR 1 account is removed
         await accountListPage.removeAccount(`${KNOWN_QR_BASE_NAME} 1`);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_accountIsNotDisplayedInAccountList('QR 1');
+        await accountListPage.checkAccountIsNotDisplayedInAccountList('QR 1');
       },
     );
   });
