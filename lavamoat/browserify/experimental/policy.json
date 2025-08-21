@@ -41,12 +41,17 @@
         "TextEncoder": true
       }
     },
-    "@ethereumjs/tx>@ethereumjs/util>@ethereumjs/rlp": {
+    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": {
+    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
@@ -69,7 +74,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/eth-sig-util>@ethereumjs/rlp": true,
+        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -83,30 +88,17 @@
         "fetch": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true
       }
     },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/util": {
+    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util": {
       "globals": {
         "console.warn": true
       },
       "packages": {
-        "@metamask/eth-sig-util>@ethereumjs/rlp": true,
-        "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "webpack>events": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
-      }
-    },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/eth-sig-util>@ethereumjs/rlp": true,
+        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -132,7 +124,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/eth-sig-util>@ethereumjs/rlp": true,
+        "eth-lattice-keyring>@ethereumjs/util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -573,42 +565,22 @@
         "@open-rpc/test-coverage>isomorphic-fetch": true
       }
     },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": {
-      "packages": {
-        "@metamask/eth-sig-util>@ethereumjs/rlp": true,
-        "@ethereumjs/tx": true,
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/util": true,
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth": true,
-        "browserify>buffer": true,
-        "@metamask/eth-trezor-keyring>hdkey": true,
-        "uuid": true
-      }
-    },
     "@keystonehq/bc-ur-registry-eth": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
         "browserify>buffer": true,
-        "@metamask/eth-trezor-keyring>hdkey": true,
+        "@metamask/eth-qr-keyring>hdkey": true,
         "uuid": true
       }
     },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth": {
+    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/util": true,
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
+        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util": true,
+        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
         "browserify>buffer": true,
-        "@metamask/eth-trezor-keyring>hdkey": true,
-        "uuid": true
-      }
-    },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth": {
-      "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util": true,
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
-        "browserify>buffer": true,
-        "@metamask/eth-trezor-keyring>hdkey": true,
-        "uuid": true
+        "@metamask/eth-qr-keyring>hdkey": true,
+        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>uuid": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
@@ -623,7 +595,7 @@
         "tslib": true
       }
     },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
+    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
       "globals": {
         "define": true
       },
@@ -633,30 +605,6 @@
         "buffer": true,
         "browserify>buffer": true,
         "tslib": true
-      }
-    },
-    "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "@ngraveio/bc-ur": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "buffer": true,
-        "browserify>buffer": true,
-        "tslib": true
-      }
-    },
-    "@keystonehq/metamask-airgapped-keyring": {
-      "packages": {
-        "@metamask/eth-sig-util>@ethereumjs/rlp": true,
-        "@ethereumjs/tx": true,
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": true,
-        "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth": true,
-        "@metamask/obs-store": true,
-        "browserify>buffer": true,
-        "webpack>events": true,
-        "uuid": true
       }
     },
     "chart.js>@kurkle/color": {
@@ -1017,6 +965,7 @@
       "globals": {
         "CryptoKey": true,
         "btoa": true,
+        "console.log": true,
         "crypto.getRandomValues": true,
         "crypto.subtle.decrypt": true,
         "crypto.subtle.deriveKey": true,
@@ -1171,7 +1120,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
@@ -1179,7 +1128,19 @@
         "@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "@metamask/eth-trezor-keyring>hdkey": true
+        "@metamask/eth-qr-keyring>hdkey": true
+      }
+    },
+    "@metamask/eth-qr-keyring": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "@metamask/eth-qr-keyring>hdkey": true,
+        "@metamask/eth-qr-keyring>uuid": true
       }
     },
     "@metamask/controller-utils>@metamask/eth-query": {
@@ -1258,7 +1219,7 @@
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
         "@trezor/connect-web": true,
         "browserify>buffer": true,
-        "@metamask/eth-trezor-keyring>hdkey": true
+        "@metamask/eth-qr-keyring>hdkey": true
       }
     },
     "@metamask/etherscan-link": {
@@ -2471,19 +2432,21 @@
     "@trezor/connect-web": {
       "globals": {
         "URLSearchParams": true,
+        "WebSocket": true,
         "__TREZOR_CONNECT_SRC": true,
         "addEventListener": true,
         "btoa": true,
         "chrome": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console.error": true,
         "console.warn": true,
         "document.body": true,
         "document.createElement": true,
         "document.createTextNode": true,
         "document.getElementById": true,
         "document.querySelectorAll": true,
-        "location.origin": true,
+        "location": true,
         "navigator": true,
         "open": true,
         "origin": true,
@@ -2495,23 +2458,16 @@
         "@trezor/connect-web>@trezor/connect-common": true,
         "@trezor/connect-web>@trezor/connect": true,
         "@trezor/connect-web>@trezor/utils": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@trezor/websocket-client": true,
         "webpack>events": true,
         "tslib": true
       }
     },
     "@trezor/connect-web>@trezor/connect": {
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/device-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/transport": true,
         "@trezor/connect-web>@trezor/utils": true,
-        "tslib": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@trezor/device-utils": {
-      "packages": {
         "tslib": true
       }
     },
@@ -2529,6 +2485,7 @@
       },
       "packages": {
         "process": true,
+        "tslib": true,
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true
       }
     },
@@ -2536,7 +2493,6 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "browserify>buffer": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
         "tslib": true
       }
@@ -2554,9 +2510,7 @@
     "@trezor/connect-web>@trezor/utils": {
       "globals": {
         "AbortController": true,
-        "Blob": true,
         "Intl.NumberFormat": true,
-        "TextEncoder": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -2571,18 +2525,6 @@
         "@trezor/connect-web>@trezor/utils>bignumber.js": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
-        "webpack>events": true,
-        "tslib": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@trezor/websocket-client": {
-      "globals": {
-        "WebSocket": true,
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/utils": true,
         "webpack>events": true,
         "tslib": true
       }
@@ -3441,7 +3383,7 @@
         "ethereumjs-util>create-hash": true,
         "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": true,
         "browserify>insert-module-globals>is-buffer": true,
-        "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util>rlp": true
+        "ethereumjs-util>rlp": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
@@ -3588,7 +3530,7 @@
         "string.prototype.matchall>get-intrinsic>get-proto": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>has-symbols": true,
-        "axios>form-data>hasown": true,
+        "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>get-intrinsic>math-intrinsics": true
       }
     },
@@ -3630,7 +3572,7 @@
         "ethers>@ethersproject/sha2>hash.js": true,
         "eth-ens-namehash>js-sha3": true,
         "lodash": true,
-        "eth-lattice-keyring>rlp": true,
+        "eth-lattice-keyring>gridplus-sdk>rlp": true,
         "ganache>secp256k1": true,
         "eth-lattice-keyring>gridplus-sdk>uuid": true
       }
@@ -3672,12 +3614,12 @@
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true
       }
     },
-    "axios>form-data>hasown": {
+    "depcheck>is-core-module>hasown": {
       "packages": {
         "browserify>has>function-bind": true
       }
     },
-    "@metamask/eth-trezor-keyring>hdkey": {
+    "@metamask/eth-qr-keyring>hdkey": {
       "packages": {
         "browserify>assert": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
@@ -3759,7 +3701,7 @@
     "string.prototype.matchall>internal-slot": {
       "packages": {
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "axios>form-data>hasown": true,
+        "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
     },
@@ -3992,13 +3934,6 @@
         "localStorage": true,
         "log": "write",
         "navigator": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": {
-      "globals": {
-        "WebAssembly.Instance": true,
-        "WebAssembly.Module": true,
-        "define": true
       }
     },
     "lottie-web": {
@@ -4852,10 +4787,9 @@
         "browserify>buffer": true
       }
     },
-    "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util>rlp": {
-      "packages": {
-        "bn.js": true,
-        "browserify>buffer": true
+    "eth-lattice-keyring>gridplus-sdk>rlp": {
+      "globals": {
+        "TextEncoder": true
       }
     },
     "wait-on>rxjs": {
@@ -5246,6 +5180,17 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
+      }
+    },
+    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      }
+    },
+    "@metamask/eth-qr-keyring>uuid": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/eth-snap-keyring>uuid": {
