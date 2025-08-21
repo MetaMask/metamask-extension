@@ -61,6 +61,7 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId } from '@metamask/account-api';
+import { SerializedUR } from '@metamask/eth-qr-keyring';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -165,7 +166,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { QrScanResponse, SerializedUR } from '@metamask/eth-qr-keyring';
 
 type CustomGasSettings = {
   gas?: string;

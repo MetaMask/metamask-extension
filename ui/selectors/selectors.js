@@ -32,6 +32,7 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -146,7 +147,6 @@ import {
 } from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
-import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
 export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
