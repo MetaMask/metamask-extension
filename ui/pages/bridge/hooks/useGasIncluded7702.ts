@@ -20,7 +20,7 @@ type Account = {
  * @param fromChain - The source chain
  * @returns Whether gasless 7702 is supported
  */
-export function useGasIncluded7702Support(
+export function useGasIncluded7702(
   smartAccountOptIn: boolean,
   isSwap: boolean,
   selectedAccount: Account | null | undefined,
