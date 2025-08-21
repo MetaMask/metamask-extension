@@ -503,7 +503,7 @@ const mockFundingTx = (mockServer: Mockttp, network: string = ESPLORA_URL) =>
 const mockAnyTxs = (mockServer: Mockttp) =>
   mockServer
     .forGet(
-      /^https:\/\/esplora.rivet.link\/(api|testnet\/api)\/scripthash\/[0-9a-f]{64}\/txs$/u,
+      /^https:\/\/esplora.rivet\.link\/esplora\/(api|testnet\/api)\/scripthash\/[0-9a-f]{64}\/txs$/u,
     )
     .thenJson(200, []);
 
