@@ -12,7 +12,7 @@ import { PendingApproval } from './util';
  * The below arguments are properties in the `ApprovalController.success` request.
  */
 export default {
-  title: 'Pages/Confirmations/Confirmation/Stories/ConfirmationPage',
+  title: 'Pages/Confirmations/Confirmation/Stories/ResultSuccess',
   component: ConfirmationPage,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {
@@ -96,7 +96,7 @@ export const TemplateStory = () => {
     <PendingApproval
       type={ApprovalType.ResultSuccess}
       requestData={{
-        title: 'Pages/Confirmations/Confirmation/Stories/Success',
+        title: 'Account created',
         icon: IconName.UserCircleAdd,
         message: [
           {

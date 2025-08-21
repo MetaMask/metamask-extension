@@ -9,7 +9,7 @@ import { PendingApproval } from './util';
  * The below arguments are properties of the `requestData` object required by the `ApprovalController.add` method.
  */
 export default {
-  title: 'Pages/Confirmations/Confirmation/Stories/ConfirmationPage',
+  title: 'Pages/Confirmations/Confirmation/Stories/SwitchEthereumChain',
   component: ConfirmationPage,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {

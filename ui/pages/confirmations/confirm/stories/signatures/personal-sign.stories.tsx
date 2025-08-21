@@ -14,7 +14,7 @@ import { signatureRequestSIWE } from '../../../../../../test/data/confirmations/
  * The `<ConfirmPage>` that's displayed when the current confirmation is a `personal_sign` signature.
  */
 export default {
-  title: 'Pages/Confirmations/Confirm/Stories/Signatures/ConfirmPage',
+  title: 'Pages/Confirmations/Confirm/Stories/Signatures/PersonalSign',
   component: ConfirmPage,
   decorators: CONFIRM_PAGE_DECORATOR,
   argTypes: ARG_TYPES_SIGNATURE,

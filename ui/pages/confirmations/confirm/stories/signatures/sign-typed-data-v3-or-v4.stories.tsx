@@ -19,7 +19,7 @@ import {
  * "V3" or "V4" `eth_signTypedData` signature. The default example is version "V4".
  */
 export default {
-  title: 'Pages/Confirmations/Confirm/Stories/Signatures/ConfirmPage',
+  title: 'Pages/Confirmations/Confirm/Stories/Signatures/SignedTypedDataV3orV4',
   component: ConfirmPage,
   decorators: CONFIRM_PAGE_DECORATOR,
   argTypes: ARG_TYPES_SIGNATURE,
