@@ -234,8 +234,6 @@
     "@trezor/connect-web": "~9.4.7",
     "nanoid@npm:^5.1.5": "^3.3.8",
     "tar-fs@npm:^2.1.0": "^2.1.3",
-    "@metamask/eth-qr-keyring": "npm:@metamask-previews/eth-qr-keyring@1.0.0-307c0d3",
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@22.0.2-preview-d7c00b1",
     "lodash.memoize@npm:^4.1.2": "patch:lodash.memoize@npm%3A4.1.2#~/.yarn/patches/lodash.memoize-npm-4.1.2-0e6250041f.patch",
     "lodash": "patch:lodash@npm%3A4.17.21#~/.yarn/patches/lodash-npm-4.17.21-6382451519.patch",
     "dompurify": "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch"
@@ -303,7 +301,7 @@
     "@metamask/kernel-ui": "^0.1.0",
     "@metamask/kernel-utils": "^0.1.0",
     "@metamask/keyring-api": "^20.0.0",
-    "@metamask/keyring-controller": "^22.1.1",
+    "@metamask/keyring-controller": "^23.0.0",
     "@metamask/keyring-internal-api": "^8.0.0",
     "@metamask/keyring-internal-snap-client": "^6.0.0",
     "@metamask/keyring-snap-client": "^7.0.0",

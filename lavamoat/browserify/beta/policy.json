@@ -870,7 +870,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/name-controller>async-mutex": true,
+        "@metamask/eth-qr-keyring>async-mutex": true,
         "bn.js": true,
         "lodash": true,
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
@@ -1069,7 +1069,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/name-controller>async-mutex": true,
+        "@metamask/eth-qr-keyring>async-mutex": true,
         "pify": true
       }
     },
@@ -1138,6 +1138,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": true,
         "@metamask/utils": true,
+        "@metamask/eth-qr-keyring>async-mutex": true,
         "browserify>buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true,
         "@metamask/eth-qr-keyring>uuid": true
@@ -1369,7 +1370,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
-        "@metamask/name-controller>async-mutex": true,
+        "@metamask/eth-qr-keyring>async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "lodash": true,
         "@metamask/keyring-controller>ulid": true
@@ -1507,7 +1508,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "@metamask/name-controller>async-mutex": true
+        "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
     "@metamask/network-controller": {
@@ -1797,7 +1798,7 @@
         "@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
-        "@metamask/name-controller>async-mutex": true
+        "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -1870,7 +1871,7 @@
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
-        "@metamask/name-controller>async-mutex": true,
+        "@metamask/eth-qr-keyring>async-mutex": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "cron-parser": true,
         "eslint>fast-deep-equal": true,
@@ -2036,7 +2037,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "@metamask/name-controller>async-mutex": true,
+        "@metamask/eth-qr-keyring>async-mutex": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eth-method-registry": true,
@@ -2644,7 +2645,7 @@
         "browserify>assert>util": true
       }
     },
-    "@metamask/name-controller>async-mutex": {
+    "@metamask/eth-qr-keyring>async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
