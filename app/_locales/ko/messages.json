@@ -4178,42 +4178,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onekeyBridgeInstallationRequired": {
-    "message": "하드웨어에 필요한 OneKey Bridge 소프트웨어, $1"
-  },
-  "onekeyConnectDevice": {
-    "message": "장치 연결"
-  },
-  "onekeyDownloadBridge": {
-    "message": "OneKey Bridge 다운로드"
-  },
-  "onekeyExitBootloaderMode": {
-    "message": "OneKey는 이 기능을 사용하기 위해 부트로더 모드를 종료해야 합니다."
-  },
-  "onekeyDeviceCheckPassphraseStateError": {
-    "message": "계정이 현재 디바이스 언락 주소와 일치하지 않습니다. 디바이스와 계정 주소가 일치하는지 확인하고 다시 시도해 주세요"
-  },
-  "onekeyDeviceOnlyOneError": {
-    "message": "동시에 한 대의 장치만 연결할 수 있습니다. 먼저 다른 장치의 연결을 끊고 다시 시도해 주세요"
-  },
-  "onekeyForceUpdate": {
-    "message": "OneKey 펌웨어 업데이트가 필요합니다. $1"
-  },
-  "onekeyGoToUpdateFirmware": {
-    "message": "펌웨어 업데이트로 이동"
-  },
-  "onekeyHardwareError": {
-    "message": "OneKey 하드웨어 오류"
-  },
-  "onekeyHardwareHelpLink": {
-    "message": "자세한 안내는 온라인 튜토리얼을 방문해 주세요."
-  },
-  "onekeyNeedUpdateFirmware": {
-    "message": "이 기능을 사용하려면 OneKey 펌웨어를 업데이트해야 합니다. $1"
-  },
-  "onekeyWebUSBNotConnectedErrorMessage": {
-    "message": "OneKey 장치를 연결하려면 사용자 승인이 필요합니다. OneKey를 연결하시려면 '장치 연결'을 클릭하고 USB 연결을 승인하세요."
-  },
   "only": {
     "message": "전용"
   },
@@ -6120,13 +6084,6 @@
   "step1LedgerWalletMsg": {
     "message": "$1의 잠금을 해제하려면 다운로드, 설정 및 비밀번호를 입력하세요.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1OnekeyWallet": {
-    "message": "OneKey 연결하기"
-  },
-  "step1OnekeyWalletMsg": {
-    "message": "OneKey를 컴퓨터에 직접 연결하고 잠금을 해제하세요. 동시에 한 대의 장치만 연결할 수 있습니다. 올바른 암호문구를 사용하고 있는지 확인하세요. 하드웨어 지갑 사용에 관한 자세한 정보는 $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Trezor 지갑 연결"
