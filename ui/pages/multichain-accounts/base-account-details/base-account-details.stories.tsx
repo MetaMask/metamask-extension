@@ -66,7 +66,7 @@ const createBaseMockStore = (account, address, walletName = 'Mock Wallet') => ({
   },
   activeTab: {
     id: 1,
-    title: 'Pages/MultichainAccounts/BaseAccountDetails',
+    title: 'Test Dapp',
     origin: 'https://test-dapp.com',
     protocol: 'https:',
     url: 'https://test-dapp.com',
