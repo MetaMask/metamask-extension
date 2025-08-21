@@ -130,20 +130,19 @@ export const CustomNetworks = React.memo(() => {
     });
 
     return filteredNetworks.length > 0 ? (
-      <>
+      <Box paddingBottom={2}>
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
           paddingLeft={4}
           paddingRight={4}
-          paddingTop={4}
         >
           {t('customNetworks')}
         </Text>
         {filteredNetworks.map((network) =>
           generateMultichainNetworkListItem(network),
         )}
-      </>
+      </Box>
     ) : null;
   }, [
     orderedNetworks,
@@ -194,7 +193,6 @@ export const CustomNetworks = React.memo(() => {
                 color={TextColor.textAlternative}
                 paddingLeft={4}
                 paddingRight={4}
-                paddingTop={4}
               >
                 {t('testnets')}
               </Text>

@@ -23,7 +23,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { setActiveNetwork } from '../../../../../store/actions';
+import { hideModal, setActiveNetwork } from '../../../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -128,6 +128,7 @@ const DefaultNetworks = memo(() => {
     const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
     dispatch(enableAllPopularNetworks());
+    dispatch(hideModal());
     // deferring execution to keep select all unblocked
     setTimeout(() => {
       dispatch(setActiveNetwork(finalNetworkClientId));
@@ -192,12 +193,13 @@ const DefaultNetworks = memo(() => {
                     .defaultRpcEndpoint
                 : undefined
             }
-            onClick={() =>
-              handleNetworkChangeCallback(
+            onClick={async () => {
+              await handleNetworkChangeCallback(
                 network.chainId,
                 isLastRemainingNetwork,
-              )
-            }
+              );
+              await dispatch(hideModal());
+            }}
             onDeleteClick={onDelete}
             onEditClick={onEdit}
             onDiscoverClick={onDiscoverClick}

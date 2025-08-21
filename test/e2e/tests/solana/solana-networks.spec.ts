@@ -44,7 +44,7 @@ describe('Solana network', function (this: Suite) {
         // Switch to Linea Mainnet to set it as the selected network
         // in the network-controller
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Default');
+        await networkManager.selectTab('Popular');
         await networkManager.selectNetwork(NetworkId.LINEA);
         await networkManager.closeNetworkManager();
 

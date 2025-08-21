@@ -291,7 +291,7 @@ const AssetListControlBar = ({
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworksByNamespace).length > 1
     ) {
-      return t('allNetworks');
+      return t('allPopularNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&

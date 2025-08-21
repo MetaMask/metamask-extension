@@ -173,7 +173,7 @@ describe('NetworkManager Component', () => {
     renderNetworkManager();
 
     // Verify tabs are rendered
-    expect(screen.getByText('Default')).toBeInTheDocument();
+    expect(screen.getByText('Popular')).toBeInTheDocument();
     expect(screen.getByText('Custom')).toBeInTheDocument();
 
     // Verify default tab content is rendered
@@ -193,7 +193,7 @@ describe('NetworkManager Component', () => {
     renderNetworkManager();
 
     // Verify that Default tab is active by default
-    expect(screen.getByText('Default')).toBeInTheDocument();
+    expect(screen.getByText('Popular')).toBeInTheDocument();
     expect(screen.getByText('All popular networks')).toBeInTheDocument();
 
     // Click on Custom tab

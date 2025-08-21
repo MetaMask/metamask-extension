@@ -109,7 +109,7 @@ describe('Network Manager', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.checkTabIsSelected('Default');
+        await networkManager.checkTabIsSelected('Popular');
       },
     );
   });
@@ -222,8 +222,8 @@ describe('Network Manager', function (this: Suite) {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
 
-        // Should be on Default tab since both are default networks
-        await networkManager.checkTabIsSelected('Default');
+        // Should be on Popular tab since both are popular networks
+        await networkManager.checkTabIsSelected('Popular');
 
         // New network is selected (we do not keep both networks on, as UI does only supports single or all popular networks)
         await networkManager.checkNetworkIsSelected(NetworkId.POLYGON);
@@ -315,8 +315,8 @@ describe('Network Manager', function (this: Suite) {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
 
-        // Switch to Default tab and verify Ethereum is deselected
-        await networkManager.selectTab('Default');
+        // Switch to Popular tab and verify Ethereum is deselected
+        await networkManager.selectTab('Popular');
         await networkManager.checkNetworkIsDeselected(NetworkId.ETHEREUM);
       },
     );

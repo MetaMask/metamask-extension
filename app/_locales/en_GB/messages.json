@@ -3653,6 +3653,12 @@
     "message": "We can't connect to $1",
     "description": "$1 represents the network name"
   },
+  "networkTabCustom": {
+    "message": "Custom"
+  },
+  "networkTabPopular": {
+    "message": "Popular"
+  },
   "networkURL": {
     "message": "Network URL"
   },

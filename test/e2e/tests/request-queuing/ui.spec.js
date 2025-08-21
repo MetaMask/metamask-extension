@@ -542,7 +542,7 @@ describe('Request-queue UI changes', function () {
         // Check if Ethereum Mainnet is selected
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Default');
+        await networkManager.selectTab('Popular');
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
         await networkManager.closeNetworkManager();
 
@@ -618,7 +618,7 @@ describe('Request-queue UI changes', function () {
         // Check if Ethereum Mainnet is selected
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Default');
+        await networkManager.selectTab('Popular');
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
         await networkManager.closeNetworkManager();
 
