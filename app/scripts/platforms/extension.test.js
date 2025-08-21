@@ -1,4 +1,6 @@
 import browser from 'webextension-polyfill';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { t } from '../../../shared/lib/translate';
 import ExtensionPlatform from './extension';
 
 const TEST_URL =
@@ -129,6 +131,52 @@ describe('extension platform', () => {
       expect(showNotificationSpy).toHaveBeenCalledWith(
         'Failed transaction',
         `Transaction 1 failed! ${errorMessage}`,
+      );
+    });
+
+    it('should show failed transaction with ledgerEthAppNftNotSupported error message', async () => {
+      const errorMessage = 'ledgerEthAppNftNotSupported';
+      const txMeta = {
+        txParams: { nonce: '0x1' },
+        error: { message: errorMessage },
+      };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+      const expectedErrorMessage = t('ledgerEthAppNftNotSupported');
+
+      await extensionPlatform.showTransactionNotification(txMeta, errorMessage);
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        `Transaction 1 failed! ${expectedErrorMessage}`,
+      );
+    });
+
+    it('shows failed transaction with ledgerEthAppNftNotSupported error message', async () => {
+      const errorMessage = 'ledgerEthAppNftNotSupported';
+      const txMeta = {
+        status: TransactionStatus.failed,
+        txParams: { nonce: '0x1' },
+        error: { message: errorMessage },
+      };
+      const rpcPrefs = {
+        chainId: 1,
+      };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+      const expectedErrorMessage = t('ledgerEthAppNftNotSupported');
+
+      await extensionPlatform.showTransactionNotification(txMeta, rpcPrefs);
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        `Transaction 1 failed! ${expectedErrorMessage}`,
       );
     });
   });
