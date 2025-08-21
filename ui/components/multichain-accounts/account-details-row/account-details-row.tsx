@@ -15,6 +15,7 @@ type AccountDetailsRowProps = {
   endAccessory: React.ReactNode;
   onClick?: () => void;
   style?: React.CSSProperties;
+  labelColor?: TextColor;
 };
 
 export const AccountDetailsRow = ({
@@ -23,6 +24,7 @@ export const AccountDetailsRow = ({
   endAccessory,
   style,
   onClick,
+  labelColor,
 }: AccountDetailsRowProps) => {
   return (
     <Box
@@ -31,7 +33,7 @@ export const AccountDetailsRow = ({
       justifyContent={JustifyContent.spaceBetween}
       style={{
         ...style,
-        height: '48px',
+        height: '52px',
         cursor: onClick ? 'pointer' : 'default',
       }}
       paddingLeft={4}
@@ -44,9 +46,9 @@ export const AccountDetailsRow = ({
         .replaceAll(' ', '-')}`}
     >
       <Text
-        color={TextColor.textDefault}
+        color={labelColor ?? TextColor.textDefault}
         variant={TextVariant.bodyMdMedium}
-        paddingRight={12}
+        style={{ fontWeight: '600' }}
       >
         {label}
       </Text>
