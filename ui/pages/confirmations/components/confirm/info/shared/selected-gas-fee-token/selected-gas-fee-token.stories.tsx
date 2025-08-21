@@ -65,7 +65,8 @@ function getStore({
 }
 
 const Story = {
-  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/SelectedGasFeeToken',
+  title:
+    'Pages/Confirmations/Components/Confirm/Info/Shared/SelectedGasFeeToken',
   component: SelectedGasFeeToken,
   decorators: [
     (story: any, { args }) => (

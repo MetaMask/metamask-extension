@@ -10,7 +10,10 @@ import { AccountShowSrpRow } from './account-show-srp-row';
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
 
-const createMockState = (seedPhraseBackedUp = true, firstTimeFlowType = 'import') => ({
+const createMockState = (
+  seedPhraseBackedUp = true,
+  firstTimeFlowType = 'import',
+) => ({
   metamask: {
     seedPhraseBackedUp,
     firstTimeFlowType,
@@ -33,7 +36,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'A component that displays a Secret Recovery Phrase row with backup reminder functionality.',
+        component:
+          'A component that displays a Secret Recovery Phrase row with backup reminder functionality.',
       },
     },
     controls: { sort: 'alpha' },
@@ -65,7 +69,10 @@ export const Default = Template.bind({});
 Default.args = {
   account: {
     ...MOCK_ACCOUNT_EOA,
-    options: { ...MOCK_ACCOUNT_EOA.options, entropySource: 'mock-hd-keyring-id' },
+    options: {
+      ...MOCK_ACCOUNT_EOA.options,
+      entropySource: 'mock-hd-keyring-id',
+    },
   },
 };
 Default.storyName = 'Default (Seed Phrase Backed Up)';
@@ -74,7 +81,10 @@ export const WithBackupReminder = Template.bind({});
 WithBackupReminder.args = {
   account: {
     ...MOCK_ACCOUNT_EOA,
-    options: { ...MOCK_ACCOUNT_EOA.options, entropySource: 'mock-hd-keyring-id' },
+    options: {
+      ...MOCK_ACCOUNT_EOA.options,
+      entropySource: 'mock-hd-keyring-id',
+    },
   },
 };
 WithBackupReminder.decorators = [

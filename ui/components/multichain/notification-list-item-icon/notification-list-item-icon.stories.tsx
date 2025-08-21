@@ -8,8 +8,7 @@ import {
 } from './notification-list-item-icon';
 
 export default {
-  title:
-    'Components/Multichain/NotificationListItemIcon',
+  title: 'Components/Multichain/NotificationListItemIcon',
   component: NotificationListItemIcon,
   argTypes: {
     type: {

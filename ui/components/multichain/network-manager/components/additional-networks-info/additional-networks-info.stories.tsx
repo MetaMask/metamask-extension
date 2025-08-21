@@ -7,7 +7,8 @@ import { AdditionalNetworksInfo } from '.';
 const customNetworkStore = configureStore({});
 
 export default {
-  title: 'Components/Multichain/NetworkManager/Components/AdditionalNetworksInfo',
+  title:
+    'Components/Multichain/NetworkManager/Components/AdditionalNetworksInfo',
   component: AdditionalNetworksInfo,
   argTypes: {},
 };

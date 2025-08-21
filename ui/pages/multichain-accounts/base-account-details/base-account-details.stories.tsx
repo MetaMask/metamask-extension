@@ -198,7 +198,13 @@ export default {
 // Ethereum Account Story
 export const EthereumAccount = {
   render: () => (
-    <StoryWrapper mockStore={createBaseMockStore(MOCK_ETH_ACCOUNT, MOCK_ETH_ACCOUNT.address, 'My Ethereum Wallet')}>
+    <StoryWrapper
+      mockStore={createBaseMockStore(
+        MOCK_ETH_ACCOUNT,
+        MOCK_ETH_ACCOUNT.address,
+        'My Ethereum Wallet',
+      )}
+    >
       <BaseAccountDetails
         address={MOCK_ETH_ACCOUNT.address}
         account={MOCK_ETH_ACCOUNT}
@@ -210,7 +216,13 @@ export const EthereumAccount = {
 // Solana Account Story
 export const SolanaAccount = {
   render: () => (
-    <StoryWrapper mockStore={createBaseMockStore(MOCK_SOLANA_ACCOUNT, MOCK_SOLANA_ACCOUNT.address, 'My Solana Wallet')}>
+    <StoryWrapper
+      mockStore={createBaseMockStore(
+        MOCK_SOLANA_ACCOUNT,
+        MOCK_SOLANA_ACCOUNT.address,
+        'My Solana Wallet',
+      )}
+    >
       <BaseAccountDetails
         address={MOCK_SOLANA_ACCOUNT.address}
         account={MOCK_SOLANA_ACCOUNT}

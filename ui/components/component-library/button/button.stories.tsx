@@ -123,9 +123,7 @@ SizeStory.storyName = 'Size';
 
 export const Danger: StoryFn<typeof Button> = (args) => (
   <Box display={Display.Flex} gap={4}>
-    <Button danger>
-      Danger
-    </Button>
+    <Button danger>Danger</Button>
     <Button variant={ButtonVariant.Secondary} danger>
       Danger
     </Button>

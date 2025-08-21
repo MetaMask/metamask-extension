@@ -48,7 +48,7 @@ export default {
           lastSelected: 1726046726882,
         },
         balance: '0x00',
-        caipAccountId: 'eip155:0:0x860092756917d3e069926ba130099375eeeb9440'
+        caipAccountId: 'eip155:0:0x860092756917d3e069926ba130099375eeeb9440',
       },
     ],
   },

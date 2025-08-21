@@ -35,7 +35,8 @@ function getStore() {
 }
 
 const Story = {
-  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/TransactionDetails',
+  title:
+    'Pages/Confirmations/Components/Confirm/Info/Shared/TransactionDetails',
   component: TransactionDetails,
   decorators: [
     (story: () => Meta<typeof TransactionDetails>) => (

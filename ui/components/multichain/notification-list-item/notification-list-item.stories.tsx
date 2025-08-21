@@ -10,8 +10,7 @@ import type { NotificationListItemProps } from './notification-list-item';
 import { NotificationListItem } from './notification-list-item';
 
 export default {
-  title:
-    'Components/Multichain/NotificationListItem',
+  title: 'Components/Multichain/NotificationListItem',
   component: NotificationListItem,
 } as Meta;
 

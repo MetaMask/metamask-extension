@@ -42,7 +42,11 @@ const GAS_FEE_TOKEN_3_MOCK: GasFeeToken = {
 const store = configureStore(
   getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
-      gasFeeTokens: [GAS_FEE_TOKEN_MOCK, GAS_FEE_TOKEN_2_MOCK, GAS_FEE_TOKEN_3_MOCK],
+      gasFeeTokens: [
+        GAS_FEE_TOKEN_MOCK,
+        GAS_FEE_TOKEN_2_MOCK,
+        GAS_FEE_TOKEN_3_MOCK,
+      ],
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
     }),
     {

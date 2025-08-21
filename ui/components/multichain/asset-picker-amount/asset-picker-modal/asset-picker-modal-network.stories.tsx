@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
-import { RpcEndpointType, NetworkConfiguration } from '@metamask/network-controller';
+import {
+  RpcEndpointType,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -60,7 +63,9 @@ function store() {
   return configureStore(mockState);
 }
 
-const AssetPickerModalNetworkWithButton: StoryFn<typeof AssetPickerModalNetwork> = (args) => {
+const AssetPickerModalNetworkWithButton: StoryFn<
+  typeof AssetPickerModalNetwork
+> = (args) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -76,7 +81,8 @@ const AssetPickerModalNetworkWithButton: StoryFn<typeof AssetPickerModalNetwork>
 };
 
 const meta: Meta<typeof AssetPickerModalNetwork> = {
-  title: 'Components/Multichain/AssetPickerAmount/AssetPickerModal/AssetPickerModalNetwork',
+  title:
+    'Components/Multichain/AssetPickerAmount/AssetPickerModal/AssetPickerModalNetwork',
   component: AssetPickerModalNetwork,
   render: AssetPickerModalNetworkWithButton,
   args: {
@@ -89,7 +95,9 @@ export default meta;
 const Story = {
   args: {} as Partial<React.ComponentProps<typeof AssetPickerModalNetwork>>,
 };
-type StoryType = typeof Story & { args: Partial<React.ComponentProps<typeof AssetPickerModalNetwork>> };
+type StoryType = typeof Story & {
+  args: Partial<React.ComponentProps<typeof AssetPickerModalNetwork>>;
+};
 
 export const Default: StoryType = {
   args: {
@@ -109,7 +117,8 @@ export const WithMultiSelect: StoryType = {
     networks,
     isMultiselectEnabled: true,
     selectedChainIds: [CHAIN_IDS.MAINNET, CHAIN_IDS.OPTIMISM],
-    onMultiselectSubmit: (chainIds) => console.log('Selected chains:', chainIds),
+    onMultiselectSubmit: (chainIds) =>
+      console.log('Selected chains:', chainIds),
   },
 };
 

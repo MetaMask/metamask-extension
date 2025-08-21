@@ -11,8 +11,7 @@ import {
 } from './notification-list-item-text';
 
 export default {
-  title:
-    'Components/Multichain/NotificationListItemText',
+  title: 'Components/Multichain/NotificationListItemText',
   component: NotificationListItemText,
   argTypes: {
     items: {

@@ -51,7 +51,7 @@ const storeMock = configureStore({
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
-    ...mockNetworkState({chainId:CHAIN_IDS.MAINNET}),
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     preferences: {
       useCurrencyRateCheck: true,
       currentCurrency: 'ETH',
@@ -103,4 +103,3 @@ type Story = StoryObj<typeof ConvertTokenToNFTModal>;
 export const DefaultStory: Story = {};
 
 DefaultStory.storyName = 'Default';
-

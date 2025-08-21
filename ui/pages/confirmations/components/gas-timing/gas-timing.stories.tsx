@@ -14,7 +14,11 @@ const storeMock = configureStore({
 
 const meta: Meta<typeof GasTiming> = {
   title: 'Pages/Confirmations/Components/GasTiming',
-  component: GasTiming as React.ComponentType<{ maxFeePerGas?: number; maxPriorityFeePerGas?: number; gasWarnings: any }>,
+  component: GasTiming as React.ComponentType<{
+    maxFeePerGas?: number;
+    maxPriorityFeePerGas?: number;
+    gasWarnings: any;
+  }>,
   decorators: [
     (StoryComponent: React.FC) => (
       <Provider store={storeMock}>

@@ -40,13 +40,16 @@ const TRANSACTION_MOCK = genUnapprovedContractInteractionConfirmation({
       to: ERC721_TOKEN_MOCK,
     },
     {
-      data: buildApproveTransactionData(ERC20_TOKEN_2_MOCK, TOKEN_VALUE_UNLIMITED_THRESHOLD),
+      data: buildApproveTransactionData(
+        ERC20_TOKEN_2_MOCK,
+        TOKEN_VALUE_UNLIMITED_THRESHOLD,
+      ),
       to: ERC20_TOKEN_2_MOCK,
     },
     {
       data: buildSetApproveForAllTransactionData(ERC721_TOKEN_MOCK, true),
       to: ERC721_TOKEN_MOCK,
-    }
+    },
   ],
   simulationData: {
     nativeBalanceChange: {
@@ -121,7 +124,8 @@ const STATE_MOCK = getMockConfirmStateForTransaction(TRANSACTION_MOCK, {
 const store = configureStore(STATE_MOCK);
 
 const Story = {
-  title: 'Pages/Confirmations/Components/Confirm/Info/Batch/BatchSimulationDetails',
+  title:
+    'Pages/Confirmations/Components/Confirm/Info/Batch/BatchSimulationDetails',
   component: BatchSimulationDetails,
   decorators: [
     (story) => {

@@ -20,7 +20,10 @@ import {
   createMockFeatureAnnouncementRaw,
   createMockSnapNotification,
 } from '@metamask/notification-services-controller/notification-services/mocks';
-import { SnapComponent, SnapNotification } from './notification-components/snap/snap';
+import {
+  SnapComponent,
+  SnapNotification,
+} from './notification-components/snap/snap';
 import { NotificationsListItem } from './notifications-list-item';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 
@@ -47,7 +50,7 @@ const notificationMocks = {
   Snap: () => {
     const mock = createMockSnapNotification();
     // TODO(hmalik88): the mock's origin should be fixed upstream
-    mock.data.origin = 'npm:@metamask/example-snap'
+    mock.data.origin = 'npm:@metamask/example-snap';
     return mock;
   },
 } as const;
