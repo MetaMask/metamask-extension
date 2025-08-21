@@ -76,12 +76,7 @@ package_list="
     ca-certificates\
     unzip \
     nano \
-    locales \
-    mesa-vulkan-drivers \
-    vulkan-tools \
-    vulkan-validationlayers \
-    libvulkan1 \
-    mesa-utils"
+    locales"
 
 # Packages to attempt to install if essential tools are missing (ie: vncpasswd).
 # This is useful, at least, for Ubuntu 22.04 (jammy)
@@ -324,7 +319,6 @@ export DISPLAY=:1
 export VNC_RESOLUTION="${VNC_RESOLUTION:-1440x768x16}"
 export LANG="${LANG:-"en_US.UTF-8"}"
 export LANGUAGE="${LANGUAGE:-"en_US.UTF-8"}"
-export VK_ICD_FILENAMES="/usr/share/vulkan/icd.d/intel_icd.x86_64.json:/usr/share/vulkan/icd.d/radeon_icd.x86_64.json"
 
 # Execute the command it not already running
 startInBackgroundIfNotRunning()
