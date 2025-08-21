@@ -81,6 +81,7 @@
   "responsive-rpc.test",
   "security-alerts.api.cx.metamask.io",
   "security-alerts.dev-api.cx.metamask.io",
+  "sei-mainnet.infura.io",
   "sentry.io",
   "sepolia.infura.io",
   "signature-insights.api.cx.metamask.io",
