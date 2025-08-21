@@ -1,6 +1,5 @@
 import { Driver } from '../../webdriver/driver';
 
-// ANSI color codes for better readability
 const colors = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
@@ -15,6 +14,24 @@ const colors = {
 
 export const colorize = (text: string, color: keyof typeof colors): string => {
   return `${colors[color]}${text}${colors.reset}`;
+};
+
+// Main comparison function - orchestrates all comparison types
+export const compareTypeMaps = (
+  current: Record<string, string>,
+  expected: Record<string, string>,
+): { colored: string[]; clean: string[] } => {
+  console.log(colorize('🔍 Comparing state log structures...', 'cyan'));
+
+  const ignoredKeys = getIgnoredKeys();
+  const shouldIgnore = (key: string) => shouldIgnoreKey(key, ignoredKeys);
+
+  const missingKeys = findMissingKeys(current, expected, shouldIgnore);
+  const newKeys = findNewKeys(current, expected, shouldIgnore);
+  const typeMismatches = findTypeMismatches(current, expected, shouldIgnore);
+  const srpResults = validateSrpSessionData(current, expected);
+
+  return combineResults([missingKeys, newKeys, typeMismatches, srpResults]);
 };
 
 const createCleanDifferenceMessage = (
@@ -82,11 +99,9 @@ export const createTypeMap = (
       const value = obj[key];
       const type = getValueType(value);
 
-      // Always set the type for this key
       typeMap[currentPath] = type;
 
       if (type === 'object' && value !== null) {
-        // If the object has properties, recursively process them
         const objectKeys = Object.keys(value as Record<string, unknown>);
         if (objectKeys.length > 0) {
           Object.assign(
@@ -94,7 +109,7 @@ export const createTypeMap = (
             createTypeMap(value as Record<string, unknown>, currentPath),
           );
         }
-        // Note: Empty objects will still have their type recorded as 'object'
+        // Empty objects will still have their type recorded as 'object'
       } else if (type === 'array' && Array.isArray(value) && value.length > 0) {
         // For arrays, we'll check the type of the first element as a sample
         const firstElementType = getValueType(value[0]);
@@ -127,199 +142,115 @@ const isEmptyObjectKey = (
   );
 };
 
-// Main comparison function for state logs
-export const compareTypeMaps = (
+type Differences = {
+  colored: string[];
+  clean: string[];
+};
+
+const getIgnoredKeys = (): string[] => [
+  'localeMessages',
+  'metamask.slides',
+  'metamask.currentBlockGasLimitByChainId',
+  'metamask.networkConfigurationsByChainId',
+];
+
+const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {
+  if (key.match(/\[\d+\]$/u)) {
+    return true;
+  }
+
+  // Ignore entropy keys in account tree (dynamic entropy IDs)
+  if (key.match(/entropy:[A-Z0-9]+/u)) {
+    return true;
+  }
+
+  // Check if any part of the key path should be ignored
+  const keyParts = key.split('.');
+  const shouldIgnore = ignoredKeys.some((ignoredKey) => {
+    const ignoredParts = ignoredKey.split('.');
+
+    // Ignore if the ignored key is an exact prefix of the current key
+    // OR if the current key exactly matches the ignored key
+    // OR if the current key starts with the ignored key (for nested properties)
+    const isExactPrefix = ignoredParts.every(
+      (part, index) => keyParts[index] === part,
+    );
+    const isExactMatch = key === ignoredKey;
+    const startsWithIgnoredKey =
+      key.startsWith(`${ignoredKey}.`) || key.startsWith(`${ignoredKey}[`);
+
+    return isExactPrefix || isExactMatch || startsWithIgnoredKey;
+  });
+
+  return shouldIgnore;
+};
+
+const findMissingKeys = (
   current: Record<string, string>,
   expected: Record<string, string>,
-): { colored: string[]; clean: string[] } => {
+  shouldIgnore: (key: string) => boolean,
+): Differences => {
   const coloredDifferences: string[] = [];
   const cleanDifferences: string[] = [];
-  console.log(colorize('🔍 Comparing state log structures...', 'cyan'));
 
-  // There are 2 reasons for adding a key into this list:
-  // 1. To avoid updates on the state logs file, with low risk changes
-  // 2. To avoid flakiness with intermittent keys
-  const ignoredKeys = [
-    'localeMessages',
-    'metamask.slides',
-    'metamask.currentBlockGasLimitByChainId',
-    'metamask.networkConfigurationsByChainId',
-  ];
-
-  const shouldIgnoreKey = (key: string): boolean => {
-    if (key.match(/\[\d+\]$/u)) {
-      return true;
-    }
-
-    // Ignore entropy keys in account tree (dynamic entropy IDs)
-    if (key.match(/entropy:[A-Z0-9]+/u)) {
-      return true;
-    }
-
-    // Check if any part of the key path should be ignored
-    const keyParts = key.split('.');
-    const shouldIgnore = ignoredKeys.some((ignoredKey) => {
-      const ignoredParts = ignoredKey.split('.');
-
-      // Ignore if the ignored key is an exact prefix of the current key
-      // OR if the current key exactly matches the ignored key
-      // OR if the current key starts with the ignored key (for nested properties)
-      const isExactPrefix = ignoredParts.every(
-        (part, index) => keyParts[index] === part,
-      );
-      const isExactMatch = key === ignoredKey;
-      const startsWithIgnoredKey =
-        key.startsWith(`${ignoredKey}.`) || key.startsWith(`${ignoredKey}[`);
-
-      return isExactPrefix || isExactMatch || startsWithIgnoredKey;
-    });
-
-    return shouldIgnore;
-  };
-
-  // Special validation for srpSessionData - validate structure but ignore specific session IDs
-  const validateSrpSessionData = (
-    currentSrp: Record<string, string>,
-    expectedSrp: Record<string, string>,
-  ): { colored: string[]; clean: string[] } => {
-    const coloredSrpDifferences: string[] = [];
-    const cleanSrpDifferences: string[] = [];
-
-    // Find current srpSessionData keys
-    const currentSrpKeys = Object.keys(currentSrp).filter((key) =>
-      key.startsWith('metamask.srpSessionData.'),
-    );
-    const expectedSrpKeys = Object.keys(expectedSrp).filter((key) =>
-      key.startsWith('metamask.srpSessionData.'),
-    );
-
-    // If expected has srpSessionData but current doesn't, that's okay - it might be empty
-    if (currentSrpKeys.length === 0 && expectedSrpKeys.length > 0) {
-      // Don't report this as an error - srpSessionData might be empty in current state
-      return { colored: coloredSrpDifferences, clean: cleanSrpDifferences };
-    }
-
-    if (currentSrpKeys.length > 0 && expectedSrpKeys.length === 0) {
-      coloredSrpDifferences.push(
-        colorize('❌ Unexpected srpSessionData structure found', 'red'),
-      );
-      cleanSrpDifferences.push('❌ Unexpected srpSessionData structure found');
-      return { colored: coloredSrpDifferences, clean: cleanSrpDifferences };
-    }
-
-    // Group keys by session ID to validate structure
-    const groupKeysBySession = (keys: string[]) => {
-      const grouped: Record<string, string[]> = {};
-      keys.forEach((key) => {
-        const parts = key.split('.');
-        if (parts.length >= 3) {
-          const sessionId = parts[2];
-          if (!grouped[sessionId]) {
-            grouped[sessionId] = [];
-          }
-          grouped[sessionId].push(key);
-        }
-      });
-      return grouped;
-    };
-
-    const currentSessions = groupKeysBySession(currentSrpKeys);
-    const expectedSessions = groupKeysBySession(expectedSrpKeys);
-
-    // For each current session, validate it has the expected structure
-    for (const currentSessionId in currentSessions) {
-      if (
-        Object.prototype.hasOwnProperty.call(currentSessions, currentSessionId)
-      ) {
-        const currentSessionKeys = currentSessions[currentSessionId];
-
-        // Find a reference expected session (use the first one)
-        const expectedSessionIds = Object.keys(expectedSessions);
-        if (expectedSessionIds.length === 0) {
-          coloredSrpDifferences.push(
-            colorize(`❌ No expected SRP session structure found`, 'red'),
-          );
-          cleanSrpDifferences.push(
-            `❌ No expected SRP session structure found`,
-          );
-          continue;
-        }
-
-        const referenceSessionId = expectedSessionIds[0];
-        const referenceSessionKeys = expectedSessions[referenceSessionId];
-
-        // Create a mapping from reference session keys to current session keys
-        const keyMapping: Record<string, string> = {};
-        referenceSessionKeys.forEach((refKey) => {
-          const mappedKey = refKey.replace(
-            `metamask.srpSessionData.${referenceSessionId}`,
-            `metamask.srpSessionData.${currentSessionId}`,
-          );
-          keyMapping[refKey] = mappedKey;
-        });
-
-        // Check for missing keys in current session
-        for (const refKey in keyMapping) {
-          if (Object.prototype.hasOwnProperty.call(keyMapping, refKey)) {
-            const mappedKey = keyMapping[refKey];
-            if (!(mappedKey in currentSrp)) {
-              coloredSrpDifferences.push(
-                colorize(`❌ Missing SRP key: ${mappedKey}`, 'red'),
-              );
-              cleanSrpDifferences.push(`❌ Missing SRP key: ${mappedKey}`);
-            } else if (currentSrp[mappedKey] !== expectedSrp[refKey]) {
-              coloredSrpDifferences.push(
-                colorize(
-                  `🔄 SRP type mismatch at ${mappedKey}: expected ${colorize(expectedSrp[refKey], 'yellow')}, got ${colorize(currentSrp[mappedKey], 'blue')}`,
-                  'magenta',
-                ),
-              );
-              cleanSrpDifferences.push(
-                createCleanDifferenceMessage(
-                  'mismatch',
-                  mappedKey,
-                  expectedSrp[refKey],
-                  currentSrp[mappedKey],
-                ),
-              );
-            }
-          }
-        }
-
-        // Check for extra keys in current session
-        for (const currentKey of currentSessionKeys) {
-          const expectedKey = currentKey.replace(
-            `metamask.srpSessionData.${currentSessionId}`,
-            `metamask.srpSessionData.${referenceSessionId}`,
-          );
-          if (!(expectedKey in expectedSrp)) {
-            coloredSrpDifferences.push(
-              colorize(`🆕 New SRP key found: ${currentKey}`, 'green'),
-            );
-            cleanSrpDifferences.push(
-              createCleanDifferenceMessage('new', currentKey),
-            );
-          }
-        }
-      }
-    }
-
-    return { colored: coloredSrpDifferences, clean: cleanSrpDifferences };
-  };
-
-  // Check for missing keys in current
   for (const key in expected) {
     if (Object.prototype.hasOwnProperty.call(expected, key)) {
       // Skip ignored keys and srpSessionData keys (handled separately)
-      if (shouldIgnoreKey(key) || key.startsWith('metamask.srpSessionData.')) {
+      if (shouldIgnore(key) || key.startsWith('metamask.srpSessionData.')) {
         continue;
       }
 
       if (!(key in current)) {
         coloredDifferences.push(colorize(`❌ Missing key: ${key}`, 'red'));
         cleanDifferences.push(createCleanDifferenceMessage('missing', key));
-      } else if (current[key] !== expected[key]) {
-        // Check if this is an empty object difference
+      }
+    }
+  }
+
+  return { colored: coloredDifferences, clean: cleanDifferences };
+};
+
+const findNewKeys = (
+  current: Record<string, string>,
+  expected: Record<string, string>,
+  shouldIgnore: (key: string) => boolean,
+): Differences => {
+  const coloredDifferences: string[] = [];
+  const cleanDifferences: string[] = [];
+
+  for (const key in current) {
+    if (Object.prototype.hasOwnProperty.call(current, key)) {
+      // Skip ignored keys and srpSessionData keys (handled separately)
+      if (shouldIgnore(key) || key.startsWith('metamask.srpSessionData.')) {
+        continue;
+      }
+
+      if (!(key in expected)) {
+        coloredDifferences.push(colorize(`🆕 New key found: ${key}`, 'green'));
+        cleanDifferences.push(createCleanDifferenceMessage('new', key));
+      }
+    }
+  }
+
+  return { colored: coloredDifferences, clean: cleanDifferences };
+};
+
+const findTypeMismatches = (
+  current: Record<string, string>,
+  expected: Record<string, string>,
+  shouldIgnore: (key: string) => boolean,
+): Differences => {
+  const coloredDifferences: string[] = [];
+  const cleanDifferences: string[] = [];
+
+  for (const key in expected) {
+    if (Object.prototype.hasOwnProperty.call(expected, key)) {
+      // Skip ignored keys and srpSessionData keys (handled separately)
+      if (shouldIgnore(key) || key.startsWith('metamask.srpSessionData.')) {
+        continue;
+      }
+
+      if (key in current && current[key] !== expected[key]) {
         const isCurrentEmpty = isEmptyObjectKey(key, current);
         const isExpectedEmpty = isEmptyObjectKey(key, expected);
 
@@ -362,27 +293,145 @@ export const compareTypeMaps = (
     }
   }
 
-  // Check for new keys in current
-  for (const key in current) {
-    if (Object.prototype.hasOwnProperty.call(current, key)) {
-      // Skip ignored keys and srpSessionData keys (handled separately)
-      if (shouldIgnoreKey(key) || key.startsWith('metamask.srpSessionData.')) {
+  return { colored: coloredDifferences, clean: cleanDifferences };
+};
+
+// Special validation for srpSessionData - validate structure but ignore specific session IDs as they change
+const validateSrpSessionData = (
+  current: Record<string, string>,
+  expected: Record<string, string>,
+): Differences => {
+  const coloredSrpDifferences: string[] = [];
+  const cleanSrpDifferences: string[] = [];
+
+  const currentSrpKeys = Object.keys(current).filter((key) =>
+    key.startsWith('metamask.srpSessionData.'),
+  );
+  const expectedSrpKeys = Object.keys(expected).filter((key) =>
+    key.startsWith('metamask.srpSessionData.'),
+  );
+
+  // If expected has srpSessionData but current doesn't, that's okay - it might be empty
+  if (currentSrpKeys.length === 0 && expectedSrpKeys.length > 0) {
+    return { colored: coloredSrpDifferences, clean: cleanSrpDifferences };
+  }
+
+  if (currentSrpKeys.length > 0 && expectedSrpKeys.length === 0) {
+    coloredSrpDifferences.push(
+      colorize('❌ Unexpected srpSessionData structure found', 'red'),
+    );
+    cleanSrpDifferences.push('❌ Unexpected srpSessionData structure found');
+    return { colored: coloredSrpDifferences, clean: cleanSrpDifferences };
+  }
+
+  // Group keys by session ID to validate structure
+  const groupKeysBySession = (keys: string[]) => {
+    const grouped: Record<string, string[]> = {};
+    keys.forEach((key) => {
+      const parts = key.split('.');
+      if (parts.length >= 3) {
+        const sessionId = parts[2];
+        if (!grouped[sessionId]) {
+          grouped[sessionId] = [];
+        }
+        grouped[sessionId].push(key);
+      }
+    });
+    return grouped;
+  };
+
+  const currentSessions = groupKeysBySession(currentSrpKeys);
+  const expectedSessions = groupKeysBySession(expectedSrpKeys);
+
+  // For each current session, validate it has the expected structure
+  for (const currentSessionId in currentSessions) {
+    if (
+      Object.prototype.hasOwnProperty.call(currentSessions, currentSessionId)
+    ) {
+      const currentSessionKeys = currentSessions[currentSessionId];
+
+      // Find a reference expected session (use the first one)
+      const expectedSessionIds = Object.keys(expectedSessions);
+      if (expectedSessionIds.length === 0) {
+        coloredSrpDifferences.push(
+          colorize(`❌ No expected SRP session structure found`, 'red'),
+        );
+        cleanSrpDifferences.push(`❌ No expected SRP session structure found`);
         continue;
       }
 
-      if (!(key in expected)) {
-        coloredDifferences.push(colorize(`🆕 New key found: ${key}`, 'green'));
-        cleanDifferences.push(createCleanDifferenceMessage('new', key));
+      const referenceSessionId = expectedSessionIds[0];
+      const referenceSessionKeys = expectedSessions[referenceSessionId];
+
+      // Create a mapping from reference session keys to current session keys
+      const keyMapping: Record<string, string> = {};
+      referenceSessionKeys.forEach((refKey) => {
+        const mappedKey = refKey.replace(
+          `metamask.srpSessionData.${referenceSessionId}`,
+          `metamask.srpSessionData.${currentSessionId}`,
+        );
+        keyMapping[refKey] = mappedKey;
+      });
+
+      // Check for missing keys in current session
+      for (const refKey in keyMapping) {
+        if (Object.prototype.hasOwnProperty.call(keyMapping, refKey)) {
+          const mappedKey = keyMapping[refKey];
+          if (!(mappedKey in current)) {
+            coloredSrpDifferences.push(
+              colorize(`❌ Missing SRP key: ${mappedKey}`, 'red'),
+            );
+            cleanSrpDifferences.push(`❌ Missing SRP key: ${mappedKey}`);
+          } else if (current[mappedKey] !== expected[refKey]) {
+            coloredSrpDifferences.push(
+              colorize(
+                `🔄 SRP type mismatch at ${mappedKey}: expected ${colorize(expected[refKey], 'yellow')}, got ${colorize(current[mappedKey], 'blue')}`,
+                'magenta',
+              ),
+            );
+            cleanSrpDifferences.push(
+              createCleanDifferenceMessage(
+                'mismatch',
+                mappedKey,
+                expected[refKey],
+                current[mappedKey],
+              ),
+            );
+          }
+        }
+      }
+
+      // Check for extra keys in current session
+      for (const currentKey of currentSessionKeys) {
+        const expectedKey = currentKey.replace(
+          `metamask.srpSessionData.${currentSessionId}`,
+          `metamask.srpSessionData.${referenceSessionId}`,
+        );
+        if (!(expectedKey in expected)) {
+          coloredSrpDifferences.push(
+            colorize(`🆕 New SRP key found: ${currentKey}`, 'green'),
+          );
+          cleanSrpDifferences.push(
+            createCleanDifferenceMessage('new', currentKey),
+          );
+        }
       }
     }
   }
 
-  // Add srpSessionData validation results
-  const srpResults = validateSrpSessionData(current, expected);
-  coloredDifferences.push(...srpResults.colored);
-  cleanDifferences.push(...srpResults.clean);
+  return { colored: coloredSrpDifferences, clean: cleanSrpDifferences };
+};
 
-  return { colored: coloredDifferences, clean: cleanDifferences };
+const combineResults = (results: Differences[]): Differences => {
+  const combinedColored: string[] = [];
+  const combinedClean: string[] = [];
+
+  results.forEach((result) => {
+    combinedColored.push(...result.colored);
+    combinedClean.push(...result.clean);
+  });
+
+  return { colored: combinedColored, clean: combinedClean };
 };
 
 const readStateLogsFile = async (
