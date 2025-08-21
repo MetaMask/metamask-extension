@@ -37,7 +37,11 @@ import type {
   ThrottledOrigins,
   ThrottledOrigin,
 } from '../../../shared/types/origin-throttling';
-import { ScanAddressResponse } from '../lib/trust-signals/types';
+import {
+  ScanAddressResponse,
+  GetAddressSecurityAlertResponse,
+  AddAddressSecurityAlertResponse,
+} from '../lib/trust-signals/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -999,21 +1003,21 @@ export class AppStateController extends BaseController<
     }
   }
 
-  getAddressSecurityAlertResponse(
+  getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (
     address: string,
-  ): ScanAddressResponse | undefined {
+  ): ScanAddressResponse | undefined => {
     return this.state.addressSecurityAlertResponses[address.toLowerCase()];
-  }
+  };
 
-  addAddressSecurityAlertResponse(
+  addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse = (
     address: string,
     addressSecurityAlertResponse: ScanAddressResponse,
-  ): void {
+  ): void => {
     this.update((state) => {
       state.addressSecurityAlertResponses[address.toLowerCase()] =
         addressSecurityAlertResponse;
     });
-  }
+  };
 
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active

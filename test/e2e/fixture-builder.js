@@ -451,6 +451,26 @@ class FixtureBuilder {
     });
   }
 
+  withNetworkControllerOnSei() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'sei',
+      networkConfigurations: {
+        sei: {
+          chainId: CHAIN_IDS.SEI,
+          nickname: 'Sei',
+          rpcUrl: 'https://sei-mainnet.infura.io/v3/',
+          ticker: 'SEI',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://seitrace.com',
+          },
+          id: 'sei',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
   withNftController(data) {
     merge(
       this.fixture.data.NftController
