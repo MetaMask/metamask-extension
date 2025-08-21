@@ -8,48 +8,14 @@ import {
   isEthSignTypedData,
   hasValidTypedDataParams,
   getChainId,
-  isProdEnabled,
+  isConnected,
+  connectScreenHasBeenPrompted,
 } from './trust-signals-util';
 import { SupportedEVMChain } from './types';
 
 jest.mock('../../../../shared/modules/selectors/networks');
 
 describe('trust-signals-util', () => {
-  describe('isProdEnabled', () => {
-    const originalEnv = process.env;
-
-    beforeEach(() => {
-      jest.resetModules();
-      process.env = { ...originalEnv };
-    });
-
-    afterAll(() => {
-      process.env = originalEnv;
-    });
-
-    it('should return true when TRUST_SIGNALS_PROD_ENABLED is "true"', () => {
-      process.env.TRUST_SIGNALS_PROD_ENABLED = 'true';
-      expect(isProdEnabled()).toBe(true);
-    });
-
-    it('should return false when TRUST_SIGNALS_PROD_ENABLED is "false"', () => {
-      process.env.TRUST_SIGNALS_PROD_ENABLED = 'false';
-      expect(isProdEnabled()).toBe(false);
-    });
-
-    it('should return false when TRUST_SIGNALS_PROD_ENABLED is undefined', () => {
-      delete process.env.TRUST_SIGNALS_PROD_ENABLED;
-      expect(isProdEnabled()).toBe(false);
-    });
-
-    it('should return false when TRUST_SIGNALS_PROD_ENABLED is any other value', () => {
-      process.env.TRUST_SIGNALS_PROD_ENABLED = '1';
-      expect(isProdEnabled()).toBe(false);
-
-      process.env.TRUST_SIGNALS_PROD_ENABLED = 'TRUE';
-      expect(isProdEnabled()).toBe(false);
-    });
-  });
   describe('isEthSendTransaction', () => {
     it('should return true for eth_sendTransaction method', () => {
       const req: JsonRpcRequest = {
@@ -399,6 +365,80 @@ describe('trust-signals-util', () => {
 
         expect(getChainId(mockNetworkController)).toBe(expected);
       });
+    });
+  });
+
+  describe('isConnected', () => {
+    it('returns true when the user is connected', () => {
+      const req: JsonRpcRequest & { origin?: string } = {
+        method: MESSAGE_TYPE.ETH_ACCOUNTS,
+        origin: 'https://example.com',
+      } as JsonRpcRequest & { origin?: string };
+      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
+      expect(isConnected(req, getPermittedAccounts)).toBe(true);
+    });
+
+    it('returns false when the user is not connected', () => {
+      const req: JsonRpcRequest & { origin?: string } = {
+        method: MESSAGE_TYPE.ETH_ACCOUNTS,
+        origin: 'https://example.com',
+      } as JsonRpcRequest & { origin?: string };
+      const getPermittedAccounts = jest.fn().mockReturnValue([]);
+      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+    });
+
+    it('returns false when the method is not eth_accounts', () => {
+      const req: JsonRpcRequest & { origin?: string } = {
+        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+        origin: 'https://example.com',
+      } as JsonRpcRequest & { origin?: string };
+      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
+      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+    });
+
+    it('returns false when the origin is not present', () => {
+      const req: JsonRpcRequest & { origin?: string } = {
+        method: MESSAGE_TYPE.ETH_ACCOUNTS,
+      } as JsonRpcRequest & { origin?: string };
+      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
+      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+    });
+    it('returns false even if connected but different method', () => {
+      const req: JsonRpcRequest & { origin?: string } = {
+        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+        origin: 'https://example.com',
+      } as JsonRpcRequest & { origin?: string };
+      const getPermittedAccounts = jest.fn().mockReturnValue(['0x123']);
+      expect(isConnected(req, getPermittedAccounts)).toBe(false);
+    });
+  });
+
+  describe('connectScreenHasBeenPrompted', () => {
+    it('returns true when the method is eth_request_accounts', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(connectScreenHasBeenPrompted(req)).toBe(true);
+    });
+
+    it('returns true when the method is wallet_request_permissions', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(connectScreenHasBeenPrompted(req)).toBe(true);
+    });
+
+    it('returns false when the method is not eth_request_accounts or wallet_request_permissions', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(connectScreenHasBeenPrompted(req)).toBe(false);
     });
   });
 });

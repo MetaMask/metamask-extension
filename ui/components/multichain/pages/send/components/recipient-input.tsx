@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Label } from '../../../../component-library';
-import DomainInput from '../../../../../pages/confirmations/send/send-content/add-recipient/domain-input';
+import DomainInput from '../../../../../pages/confirmations/send-legacy/send-content/add-recipient/domain-input';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
   addHistoryEntry,
@@ -75,6 +75,8 @@ export const SendPageRecipientInput = () => {
       category: MetaMetricsEventCategory.Transactions,
       properties: {
         action: 'Edit Screen',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         legacy_event: true,
       },
     });

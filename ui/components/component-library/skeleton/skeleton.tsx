@@ -11,6 +11,8 @@ import type { PolymorphicRef, BoxProps } from '../box';
 import { SkeletonProps, SkeletonComponent } from './skeleton.types';
 
 export const Skeleton: SkeletonComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       className = '',

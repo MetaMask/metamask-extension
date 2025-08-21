@@ -55,7 +55,7 @@ const rightAnswerIcon = (
 
 const openSupportArticle = (): void => {
   global.platform.openTab({
-    url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+    url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
   });
 };
 
@@ -66,6 +66,8 @@ export type SRPQuizProps = {
   closeAfterCompleting?: boolean;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
@@ -286,8 +288,12 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportSelected,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           location,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
       },

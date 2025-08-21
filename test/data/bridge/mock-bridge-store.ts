@@ -1,5 +1,4 @@
 import {
-  BRIDGE_PREFERRED_GAS_ESTIMATE,
   getDefaultBridgeControllerState,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
@@ -63,7 +62,11 @@ export const createBridgeMockStore = ({
       completedOnboarding: true,
       gasFeeEstimates: {
         estimatedBaseFee: '0.00010456',
-        [BRIDGE_PREFERRED_GAS_ESTIMATE]: {
+        medium: {
+          suggestedMaxFeePerGas: '0.00018456',
+          suggestedMaxPriorityFeePerGas: '0.0001',
+        },
+        high: {
           suggestedMaxFeePerGas: '0.00018456',
           suggestedMaxPriorityFeePerGas: '0.0001',
         },

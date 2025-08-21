@@ -35,7 +35,7 @@ import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
-import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
+import { getWalletsWithAccountsSimplified } from '../../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsTree } from '../multichain-accounts-tree';
 import { AccountMenu } from '../../multichain/account-menu';
 
@@ -76,7 +76,7 @@ export const MultichainAccountListMenu = ({
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
 
-  const walletAccountCollection = useSelector(getWalletsWithAccounts);
+  const walletAccountCollection = useSelector(getWalletsWithAccountsSimplified);
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
   );
@@ -92,6 +92,8 @@ export const MultichainAccountListMenu = ({
         event: MetaMetricsEventName.NavAccountSwitched,
         properties: {
           location: 'Main Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
       });
@@ -130,7 +132,7 @@ export const MultichainAccountListMenu = ({
         <TextFieldSearch
           size={TextFieldSearchSize.Sm}
           width={BlockSize.Full}
-          placeholder={t('searchAccounts')}
+          placeholder={t('search')}
           value={searchPattern}
           onChange={onSearchBarChange}
           clearButtonOnClick={() => setSearchPattern('')}

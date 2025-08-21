@@ -65,7 +65,7 @@ class SettingsPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
     await this.driver.waitForSelector(this.settingsPageTitle);
   }
@@ -157,7 +157,7 @@ class SettingsPage {
     });
   }
 
-  async check_noMatchingResultsFoundMessageIsDisplayed(): Promise<void> {
+  async checkNoMatchingResultsFoundMessageIsDisplayed(): Promise<void> {
     console.log(
       'Checking no matching results found message is displayed on settings page',
     );

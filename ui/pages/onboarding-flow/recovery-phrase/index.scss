@@ -1,6 +1,10 @@
 @use "design-system";
 
 .recovery-phrase {
+  &__header {
+    grid-template-columns: 0.25fr 3.5fr 0.25fr;
+  }
+
   &__chips {
     grid-template-columns: 1fr 1fr 1fr;
 
@@ -41,6 +45,9 @@
     // SRP_OVERRIDE: END
   }
 
+  &__text {
+    height: 40px;
+  }
 
   &__word-index {
     width: 20px;

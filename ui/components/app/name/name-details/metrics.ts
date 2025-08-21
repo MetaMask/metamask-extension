@@ -43,7 +43,11 @@ export function usePetnamesMetrics({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const properties: Record<string, any> = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         petname_category: type,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         suggested_names_sources: suggestedNameSources,
         ...additionalProperties,
       };
@@ -73,6 +77,8 @@ export function usePetnamesMetrics({
       event = MetaMetricsEventName.PetnameDeleted;
 
       additionalProperties = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         petname_previous_source: savedSourceId,
       };
     }
@@ -81,7 +87,11 @@ export function usePetnamesMetrics({
       event = MetaMetricsEventName.PetnameUpdated;
 
       additionalProperties = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         petname_previous_source: savedSourceId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         petname_source: petnameSource,
       };
     }
@@ -90,6 +100,8 @@ export function usePetnamesMetrics({
       event = MetaMetricsEventName.PetnameCreated;
 
       additionalProperties = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         petname_source: petnameSource,
       };
     }
@@ -103,7 +115,11 @@ export function usePetnamesMetrics({
 
   const trackPetnamesOpenEvent = useCallback(() => {
     trackPetnamesEvent(MetaMetricsEventName.PetnameModalOpened, {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       has_petname: Boolean(savedName?.length),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       suggested_names_sources: initialSources,
     });
   }, [trackPetnamesEvent, savedName, initialSources]);

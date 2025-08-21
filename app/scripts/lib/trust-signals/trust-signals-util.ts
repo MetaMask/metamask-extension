@@ -6,12 +6,6 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { SupportedEVMChain } from './types';
 
-// TODO: Remove when we want this enabled in production.
-export function isProdEnabled() {
-  const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
-  return isEnabled?.toString() === 'true';
-}
-
 // isSecurityAlertsEnabledByUser is a function that checks if the security alerts are enabled in the preferences controller.
 export function isSecurityAlertsEnabledByUser(
   preferencesController: PreferencesController,
@@ -60,8 +54,22 @@ export function isEthSignTypedData(req: JsonRpcRequest): boolean {
   );
 }
 
-export function isEthAccounts(req: JsonRpcRequest): boolean {
-  return req.method === MESSAGE_TYPE.ETH_ACCOUNTS;
+export function isConnected(
+  req: JsonRpcRequest & { origin?: string },
+  getPermittedAccounts: (origin: string) => string[],
+): boolean {
+  if (!req.origin || req.method !== MESSAGE_TYPE.ETH_ACCOUNTS) {
+    return false;
+  }
+  const permittedAccounts = getPermittedAccounts(req.origin);
+  return Array.isArray(permittedAccounts) && permittedAccounts.length > 0;
+}
+
+export function connectScreenHasBeenPrompted(req: JsonRpcRequest): boolean {
+  return (
+    req.method === MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS ||
+    req.method === MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS
+  );
 }
 
 export function hasValidTypedDataParams(

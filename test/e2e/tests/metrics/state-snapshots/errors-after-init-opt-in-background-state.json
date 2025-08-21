@@ -4,7 +4,11 @@
     "hiddenAccountList": {}
   },
   "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
-  "AccountTreeController": { "accountTree": "object" },
+  "AccountTreeController": {
+    "accountTree": "object",
+    "accountGroupsMetadata": "object",
+    "accountWalletsMetadata": "object"
+  },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -45,16 +49,16 @@
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "surveyLinkLastClickedOrClosed": "object",
-    "switchedNetworkNeverShowMessage": "boolean",
+    "showDownloadMobileAppSlide": "boolean",
     "slides": "object",
     "throttledOrigins": "object",
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
+    "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "addressSecurityAlertResponses": "object",
-    "switchedNetworkDetails": null,
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
     "snapsInstallPrivacyWarningShown": true
@@ -134,6 +138,7 @@
     "dataCollectionForMarketing": "boolean",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
+    "tracesBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
@@ -174,9 +179,7 @@
   },
   "NetworkOrderController": {
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": {
-      "eip155": "object"
-    }
+    "enabledNetworkMap": { "eip155": "object", "solana": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -213,6 +216,7 @@
     "permissionHistory": "object",
     "permissionActivityLog": "object"
   },
+  "PhishingController": { "urlScanCache": "object" },
   "PreferencesController": {
     "selectedAddress": "string",
     "useBlockie": false,
@@ -273,6 +277,7 @@
     },
     "cacheTimestamp": "number"
   },
+  "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "signatureRequests": "object",
@@ -356,10 +361,10 @@
     "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
+    "isContactSyncingEnabled": true,
+    "isContactSyncingInProgress": "boolean",
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
-    "isAccountSyncingInProgress": "boolean",
-    "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean"
+    "isAccountSyncingInProgress": "boolean"
   }
 }

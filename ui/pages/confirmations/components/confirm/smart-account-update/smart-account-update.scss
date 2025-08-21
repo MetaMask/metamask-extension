@@ -4,65 +4,67 @@
   &__container {
     font-size: 12px;
     height: 100%;
+    position: relative;
+    overflow: auto;
+    width: 100vw;
 
     @media screen and (min-width: design-system.$break-large) {
       width: 85vw;
+      height: auto;
     }
 
     @media screen and (min-width: 768px) {
       width: 80vw;
+      height: auto;
     }
 
     @media screen and (min-width: 1280px) {
       width: 62vw;
-    }
-  }
-
-  &__container-wrapped {
-    font-size: 12px;
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    z-index: design-system.$modal-z-index;
-
-    @media screen and (min-width: design-system.$break-small) {
-      max-width: 360px;
+      height: auto;
     }
   }
 
   &__inner {
     height: 100%;
     width: 100%;
-    overflow: auto;
-    position: relative;
+    max-width: 360px;
+    padding: 0;
+
+    @media screen and (min-width: design-system.$break-large) {
+      padding: 16px;
+      height: auto;
+    }
   }
 
-  &__inner-wrapped {
-    border-radius: 6px;
-    margin: 16px;
-    height: calc(100% - 32px);
-    width: calc(100% - 32px);
-    overflow: auto;
+  &__update {
+    min-height: 48px;
   }
 
-  &__edit {
+  &__back-btn {
     position: absolute;
-    right: 10px;
-    top: 20px;
+    top: 10px;
+    left: 20px;
+
+    @media screen and (min-width: design-system.$break-large) {
+      top: 20px;
+    }
   }
 
-  &__acc-avatar {
-    margin-right: -36px;
-  }
-
-  &__request-for {
-    margin-left: -36px;
-    width: 140px;
-  }
-
-  &__close {
+  &__close-btn {
     position: absolute;
-    right: 4px;
-    top: 4px;
+    top: 10px;
+    right: 20px;
+
+    @media screen and (min-width: design-system.$break-large) {
+      top: 20px;
+    }
+  }
+
+  &__title {
+    margin-top: 10px;
+
+    @media screen and (min-width: design-system.$break-large) {
+      margin-top: 0;
+    }
   }
 }

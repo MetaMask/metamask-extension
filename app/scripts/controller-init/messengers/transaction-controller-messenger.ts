@@ -12,6 +12,7 @@ import {
 } from '@metamask/network-controller';
 import {
   TransactionControllerEstimateGasAction,
+  TransactionControllerGetStateAction,
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
   TransactionControllerTransactionApprovedEvent,
@@ -35,6 +36,7 @@ import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
+import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
   InstitutionalSnapControllerPublishHookAction,
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
@@ -44,6 +46,7 @@ type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
+  | AppStateControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
@@ -55,7 +58,8 @@ type MessengerActions =
   | RemoteFeatureFlagControllerGetStateAction
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction
-  | TransactionControllerEstimateGasAction;
+  | TransactionControllerEstimateGasAction
+  | TransactionControllerGetStateAction;
 
 type MessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -117,6 +121,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'AppStateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
@@ -127,6 +132,7 @@ export function getTransactionControllerInitMessenger(
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
       'TransactionController:estimateGas',
+      'TransactionController:getState',
     ],
   });
 }

@@ -22,12 +22,12 @@ describe('Wallet Revoke Permissions', function (this: Suite) {
         // Get initial accounts permissions
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
-        await testDapp.check_getPermissionsResult('eth_accounts');
+        await testDapp.checkPageIsLoaded();
+        await testDapp.checkGetPermissionsResult('eth_accounts');
 
         // Revoke eth_accounts permissions and check that the permission is removed
         await testDapp.disconnectAccount(publicAddress);
-        await testDapp.check_getPermissionsResult('No permissions found.');
+        await testDapp.checkGetPermissionsResult('No permissions found.');
       },
     );
   });
@@ -45,10 +45,10 @@ describe('Wallet Revoke Permissions', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // Get initial accounts permissions
-        await testDapp.check_getPermissionsResult('eth_accounts');
+        await testDapp.checkGetPermissionsResult('eth_accounts');
 
         const revokeChainsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -65,7 +65,7 @@ describe('Wallet Revoke Permissions', function (this: Suite) {
         );
 
         // Get new allowed permissions and check that the permission is removed
-        await testDapp.check_getPermissionsResult('No permissions found.');
+        await testDapp.checkGetPermissionsResult('No permissions found.');
       },
     );
   });

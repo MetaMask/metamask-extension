@@ -92,6 +92,10 @@ export const buttonLocator = {
   signEntropyMessageButton: '#signEntropyMessage',
   signTypedDataButton: '#signTypedDataButton',
   submitClientStatusButton: '#sendClientStatusTest',
+  trackErrorButton: '#trackError',
+  trackEventButton: '#trackEvent',
+  startTraceButton: '#start-trace',
+  endTraceButton: '#end-trace',
   clearStateButton: '#clearState',
   sendUnencryptedStateButton: '#sendUnencryptedState',
   sendGetUnencryptedStateButton: '#sendGetUnencryptedState',
@@ -169,7 +173,7 @@ export class TestSnaps {
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.installedSnapsHeader,
@@ -185,7 +189,7 @@ export class TestSnaps {
     console.log('Test Snap Dapp page is loaded');
   }
 
-  async check_clientStatus(expectedStatus: string): Promise<void> {
+  async checkClientStatus(expectedStatus: string): Promise<void> {
     console.log(`Checking that the client status should be ${expectedStatus}`);
     await this.driver.waitForSelector({
       css: spanLocator.clientStatusResultSpan,
@@ -216,7 +220,7 @@ export class TestSnaps {
     await this.driver.scrollToElement(buttonSelector);
   }
 
-  async check_installationComplete(
+  async checkInstallationComplete(
     selector: keyof typeof buttonLocator,
     expectedMessage: string,
   ) {
@@ -227,7 +231,7 @@ export class TestSnaps {
     });
   }
 
-  async check_installedSnapsResult(expectedMessage: string) {
+  async checkInstalledSnapsResult(expectedMessage: string) {
     console.log('Checking installed snaps, result section on the top left');
     await this.driver.waitForSelector({
       css: spanLocator.installedSnapResultSpan,
@@ -235,7 +239,7 @@ export class TestSnaps {
     });
   }
 
-  async check_messageResultSpan(
+  async checkMessageResultSpan(
     spanSelectorId: keyof typeof spanLocator,
     expectedMessage: string,
   ) {
@@ -248,7 +252,7 @@ export class TestSnaps {
     });
   }
 
-  async check_messageResultSpanIncludes(
+  async checkMessageResultSpanIncludes(
     spanSelectorId: keyof typeof spanLocator,
     partialMessage: string,
   ) {
@@ -259,7 +263,7 @@ export class TestSnaps {
     }
   }
 
-  async check_Count(expectedCount: string) {
+  async checkCount(expectedCount: string) {
     console.log(`Checking the count is ${expectedCount}`);
     await this.driver.waitForSelector({
       tag: 'p',
@@ -303,7 +307,7 @@ export class TestSnaps {
    * @param expectedPreferences.displayNftMedia
    * @param expectedPreferences.useNftDetection
    */
-  async check_preferencesResult(expectedPreferences: GetPreferencesResult) {
+  async checkPreferencesResult(expectedPreferences: GetPreferencesResult) {
     console.log('Validating preferences result span JSON response');
 
     const element = await this.driver.findElement(

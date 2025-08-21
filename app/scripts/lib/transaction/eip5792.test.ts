@@ -36,6 +36,7 @@ import {
   getCapabilities,
   processSendCalls,
 } from './eip5792';
+import { getSendBundleSupportedChains } from './sentinel-api';
 
 const CHAIN_ID_MOCK = '0x123';
 const CHAIN_ID_2_MOCK = '0xabc';
@@ -120,6 +121,10 @@ describe('EIP-5792', () => {
   const isRelaySupportedMock: jest.MockedFn<typeof isRelaySupportedOriginal> =
     jest.fn();
 
+  const getSendBundleSupportedChainsMock: jest.MockedFn<
+    typeof getSendBundleSupportedChains
+  > = jest.fn();
+
   const validateSecurityMock: jest.MockedFunction<
     Parameters<typeof processSendCalls>[0]['validateSecurity']
   > = jest.fn();
@@ -153,6 +158,7 @@ describe('EIP-5792', () => {
     isAtomicBatchSupported: isAtomicBatchSupportedMock,
     getIsSmartTransaction: getIsSmartTransactionMock,
     isRelaySupported: isRelaySupportedMock,
+    getSendBundleSupportedChains: getSendBundleSupportedChainsMock,
   };
 
   beforeEach(() => {
@@ -327,6 +333,17 @@ describe('EIP-5792', () => {
       ).toStrictEqual({ id: BATCH_ID_MOCK });
     });
 
+    it('throws if version not supported for single nested transaction', async () => {
+      await expect(
+        processSendCalls(
+          sendCallsHooks,
+          messenger,
+          { ...SEND_CALLS_MOCK, calls: [{ to: '0x123' }], version: '1.0' },
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(`Version not supported: Got 1.0, expected 2.0.0`);
+    });
+
     it('throws if version not supported', async () => {
       await expect(
         processSendCalls(
@@ -364,6 +381,18 @@ describe('EIP-5792', () => {
       ).rejects.toThrow('EIP-7702 upgrade disabled by the user');
     });
 
+    it('does not throw if user enabled preference to dismiss option to upgrade account for single nested transaction', async () => {
+      getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
+
+      const result = await processSendCalls(
+        sendCallsHooks,
+        messenger,
+        { ...SEND_CALLS_MOCK, calls: [{ to: '0x123' }] },
+        REQUEST_MOCK,
+      );
+      expect(result.id).toBeDefined();
+    });
+
     it('does not throw if user enabled preference to dismiss option to upgrade account if already upgraded', async () => {
       getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
 
@@ -392,6 +421,25 @@ describe('EIP-5792', () => {
           messenger,
           {
             ...SEND_CALLS_MOCK,
+            capabilities: {
+              test: {},
+              test2: { optional: true },
+              test3: { optional: false },
+            },
+          },
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow('Unsupported non-optional capabilities: test, test3');
+    });
+
+    it('throws if top-level capability is required for single nested transaction', async () => {
+      await expect(
+        processSendCalls(
+          sendCallsHooks,
+          messenger,
+          {
+            ...SEND_CALLS_MOCK,
+            calls: [{ to: '0x123' }],
             capabilities: {
               test: {},
               test2: { optional: true },
@@ -622,6 +670,9 @@ describe('EIP-5792', () => {
       } as unknown as PreferencesControllerState);
 
       isRelaySupportedMock.mockResolvedValue(true);
+      getSendBundleSupportedChainsMock.mockResolvedValue({
+        [CHAIN_ID_MOCK]: true,
+      });
     });
 
     it('includes atomic capability if already upgraded', async () => {
@@ -869,6 +920,59 @@ describe('EIP-5792', () => {
         [CHAIN_ID_MOCK]: {
           atomic: {
             status: AtomicCapabilityStatus.Supported,
+          },
+        },
+      });
+    });
+
+    it('returns alternateGasFees true if send bundle is supported', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        {
+          chainId: CHAIN_ID_MOCK,
+          delegationAddress: DELEGATION_ADDRESS_MOCK,
+          isSupported: true,
+        },
+      ]);
+      getSendBundleSupportedChainsMock.mockResolvedValue({
+        [CHAIN_ID_MOCK]: true,
+      });
+
+      const capabilities = await getCapabilities(
+        getCapabilitiesHooks,
+        messenger,
+        FROM_MOCK,
+        [CHAIN_ID_MOCK],
+      );
+
+      expect(capabilities).toStrictEqual({
+        [CHAIN_ID_MOCK]: {
+          atomic: {
+            status: AtomicCapabilityStatus.Supported,
+          },
+          alternateGasFees: {
+            supported: true,
+          },
+        },
+      });
+    });
+
+    it('does not add alternateGasFees property if send bundle is not supported', async () => {
+      isRelaySupportedMock.mockResolvedValue(false);
+      getSendBundleSupportedChainsMock.mockResolvedValue({
+        [CHAIN_ID_MOCK]: false,
+      });
+
+      const capabilities = await getCapabilities(
+        getCapabilitiesHooks,
+        messenger,
+        FROM_MOCK,
+        [CHAIN_ID_MOCK],
+      );
+
+      expect(capabilities).toStrictEqual({
+        [CHAIN_ID_MOCK]: {
+          atomic: {
+            status: AtomicCapabilityStatus.Ready,
           },
         },
       });

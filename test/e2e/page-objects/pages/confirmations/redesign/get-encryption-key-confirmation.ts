@@ -20,7 +20,7 @@ class GetEncryptionKeyConfirmation {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.getEncryptionKeyConfirmationTitle,
@@ -50,7 +50,7 @@ class GetEncryptionKeyConfirmation {
    *
    * @param balanceValue - The balance value to check.
    */
-  async check_accountBalance(balanceValue: string): Promise<void> {
+  async checkAccountBalance(balanceValue: string): Promise<void> {
     console.log(
       'Check account balance on get encryption key confirmation screen: ',
       balanceValue,

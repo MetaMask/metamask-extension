@@ -425,7 +425,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridge to OP MainnetTransaction 2 of 2-2 USDC',
+      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC',
     );
   });
 
@@ -451,7 +451,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridge to OP MainnetTransaction 2 of 2-2 USDC',
+      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC',
     );
     expect(getByText('Transaction 2 of 2')).toBeInTheDocument();
   });
@@ -478,7 +478,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridge to OP MainnetConfirmed-2 USDC',
+      '?Bridged to OP MainnetConfirmed-2 USDC',
     );
 
     fireEvent.click(getByTestId('activity-list-item'));
@@ -524,7 +524,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridge to OP MainnetFailed-2 USDC',
+      '?Bridged to OP MainnetFailed-2 USDC',
     );
     expect(getByText('Failed')).toBeInTheDocument();
 

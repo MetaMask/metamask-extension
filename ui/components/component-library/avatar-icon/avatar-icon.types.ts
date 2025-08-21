@@ -44,9 +44,13 @@ export interface AvatarIconStyleUtilityProps
   color?: TextColor | IconColor;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AvatarIconProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, AvatarIconStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AvatarIconComponent = <C extends React.ElementType = 'span'>(
   props: AvatarIconProps<C>,
 ) => React.ReactElement | null;

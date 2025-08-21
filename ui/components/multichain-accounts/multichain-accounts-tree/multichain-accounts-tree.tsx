@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { useHistory } from 'react-router-dom';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -16,6 +17,7 @@ import {
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { HiddenAccountList } from '../../multichain/account-list-menu/hidden-account-list';
+import { WALLET_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import { matchesSearchPattern } from './utils';
 
 export type MultichainAccountsTreeProps = {
@@ -43,6 +45,18 @@ export const MultichainAccountsTree = ({
   onClose,
   onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
+  const history = useHistory();
+
+  const handleWalletDetailsClick = useCallback(
+    (walletId: string) => {
+      history.push(
+        WALLET_DETAILS_ROUTE.replace(':id', encodeURIComponent(walletId)),
+      );
+      onClose();
+    },
+    [history, onClose],
+  );
+
   const accountsTree = useMemo(() => {
     // We keep a flag to check if there are any hidden accounts
     let hasHiddenAccounts: boolean = false;
@@ -54,6 +68,7 @@ export const MultichainAccountsTree = ({
         const walletHeader = (
           <Box
             key={`wallet-header-${walletId}`}
+            data-testid="multichain-account-tree-wallet-header"
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
@@ -70,7 +85,11 @@ export const MultichainAccountsTree = ({
             <ButtonLink
               size={ButtonLinkSize.Sm}
               color={TextColor.primaryDefault}
-              fontWeight={FontWeight.Normal}
+              fontWeight={FontWeight.Medium}
+              onClick={() => handleWalletDetailsClick(walletId)}
+              style={{
+                fontSize: '0.875rem',
+              }}
             >
               Details
             </ButtonLink>
@@ -133,6 +152,7 @@ export const MultichainAccountsTree = ({
             return [
               <Box
                 key={`account-group-${groupId}`}
+                marginBottom={4}
                 style={{
                   borderBottom: '1px solid var(--color-border-muted)',
                 }}
@@ -170,6 +190,7 @@ export const MultichainAccountsTree = ({
     accountTreeItemProps,
     selectedAccount,
     onAccountTreeItemClick,
+    handleWalletDetailsClick,
   ]);
 
   return <>{accountsTree}</>;

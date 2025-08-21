@@ -55,6 +55,9 @@ function onboardingFixture() {
           eip155: {
             [CHAIN_IDS.LOCALHOST]: true,
           },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+          },
         },
       },
       NotificationServicesController: {},
@@ -123,7 +126,6 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MEGAETH_TESTNET]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MONAD_TESTNET]: true,
         },
-        skipDeepLinkInterstitial: false,
       },
       SelectedNetworkController: {
         domains: {},
@@ -633,6 +635,7 @@ class FixtureBuilder {
   withPermissionControllerConnectedToMultichainTestDapp({
     account = '',
     useLocalhostHostname = false,
+    value = null,
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     const subjects = {
@@ -643,7 +646,7 @@ class FixtureBuilder {
             caveats: [
               {
                 type: 'authorizedScopes',
-                value: {
+                value: value ?? {
                   requiredScopes: {},
                   optionalScopes: {
                     'eip155:1337': {
@@ -672,6 +675,7 @@ class FixtureBuilder {
         },
       },
     };
+
     return this.withPermissionController({
       subjects,
     });
@@ -1875,6 +1879,25 @@ class FixtureBuilder {
         },
       },
     });
+  }
+
+  withBackupAndSyncSettings(options = {}) {
+    const {
+      isProfileSyncingEnabled = true,
+      isAccountSyncingEnabled = true,
+      isProfileSyncingUpdateLoading = false,
+      isAccountSyncingUpdateLoading = false,
+      hasAccountSyncingSyncedAtLeastOnce = false,
+    } = options;
+
+    merge(this.fixture.data.UserStorageController, {
+      isProfileSyncingEnabled,
+      isAccountSyncingEnabled,
+      isProfileSyncingUpdateLoading,
+      isAccountSyncingUpdateLoading,
+      hasAccountSyncingSyncedAtLeastOnce,
+    });
+    return this;
   }
 
   build() {

@@ -33,7 +33,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
           />
         </div>
         <h6
-          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
+          class="mm-box mm-text origin-pill-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
           data-testid="signature-origin-pill-text"
         >
           https://test-dapp.metamask.io

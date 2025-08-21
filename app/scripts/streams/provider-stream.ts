@@ -19,7 +19,7 @@ import {
   PHISHING_SAFELIST,
   PHISHING_STREAM,
 } from '../constants/stream';
-import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
+import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
@@ -286,6 +286,8 @@ export function onDisconnectDestroyStreams(err: unknown) {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (lastErr) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.warn(`${lastErr} Resetting the streams.`);
     setTimeout(setupExtensionStreams, 1000);
   }

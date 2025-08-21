@@ -143,9 +143,13 @@ ${Object.entries(env)
     assert(manifestPlugin.options.transform);
     const transformedManifest = manifestPlugin.options.transform(
       {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         name: 'name',
         version: '1.2.3',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         content_scripts: [
           {
             js: [
@@ -161,9 +165,13 @@ ${Object.entries(env)
     );
     console.log('transformedManifest', transformedManifest);
     assert.deepStrictEqual(transformedManifest, {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 3,
       name: 'name',
       version: '1.2.3',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_scripts: [
         {
           js: ['scripts/contentscript.js', 'scripts/inpage.js'],
@@ -198,6 +206,8 @@ ${Object.entries(env)
         INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
         SEGMENT_WRITE_KEY: '-',
         SEGMENT_PROD_WRITE_KEY: '-',
+        GOOGLE_PROD_CLIENT_ID: '00000000000',
+        APPLE_PROD_CLIENT_ID: '00000000000',
       },
     );
     // webpack logs a warning if we specify `watch: true`, `getWebpackInstance`
@@ -285,6 +295,8 @@ ${Object.entries(env)
 
   it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
     const config: Configuration = getWebpackConfig(['--watch'], {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       __HMR_READY__: 'true',
     });
     delete config.watch;

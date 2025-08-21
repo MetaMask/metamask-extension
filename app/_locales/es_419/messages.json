@@ -742,9 +742,6 @@
     "message": "Acepto los riesgos",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
   },
-  "followUsOnTwitter": {
-    "message": "Síganos en Twitter"
-  },
   "forbiddenIpfsGateway": {
     "message": "Puerta de enlace de IPFS prohibida: especifique una puerta de enlace de CID"
   },
@@ -1488,10 +1485,6 @@
   },
   "send": {
     "message": "Enviar"
-  },
-  "sendSpecifiedTokens": {
-    "message": "Enviar $1",
-    "description": "Symbol of the specified token"
   },
   "sendingDisabled": {
     "message": "Todavía no se admite el envío de activos ERC-1155 NFT."

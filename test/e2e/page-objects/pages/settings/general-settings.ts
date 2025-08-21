@@ -33,9 +33,9 @@ class GeneralSettings {
   /**
    * Check if the General Settings page is loaded
    */
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.check_noLoadingOverlaySpinner();
+      await this.checkNoLoadingOverlaySpinner();
       await this.driver.waitForMultipleSelectors([
         this.generalSettingsPageTitle,
         this.selectLanguageField,
@@ -61,19 +61,17 @@ class GeneralSettings {
       languageToSelect,
       'on general settings page',
     );
-    await this.check_noLoadingOverlaySpinner();
-    await this.driver.clickElement(this.selectLanguageField);
-    await this.driver.clickElement({
-      text: languageToSelect,
-      tag: 'option',
-    });
-    await this.check_noLoadingOverlaySpinner();
+    await this.checkNoLoadingOverlaySpinner();
+    // We use send keys, because clicking the dropdown causes flakiness, if it's not auto closed after selecting the language
+    const dropdown = await this.driver.findElement(this.selectLanguageField);
+    await dropdown.sendKeys(languageToSelect);
+    await this.checkNoLoadingOverlaySpinner();
   }
 
   /**
    * Verify that both Jazzicon and Blockies options are visible
    */
-  async check_identiconOptionsAreDisplayed(): Promise<void> {
+  async checkIdenticonOptionsAreDisplayed(): Promise<void> {
     console.log(
       'Checking if identicon options are displayed on general settings page',
     );
@@ -86,7 +84,7 @@ class GeneralSettings {
    *
    * @param identicon - The type of identicon to check ('jazzicon' or 'blockies')
    */
-  async check_identiconIsActive(
+  async checkIdenticonIsActive(
     identicon: 'jazzicon' | 'blockies',
   ): Promise<void> {
     console.log(
@@ -98,7 +96,7 @@ class GeneralSettings {
     await this.driver.waitForSelector(activeSelector);
   }
 
-  async check_noLoadingOverlaySpinner(): Promise<void> {
+  async checkNoLoadingOverlaySpinner(): Promise<void> {
     await this.driver.assertElementNotPresent(this.loadingOverlaySpinner);
   }
 }

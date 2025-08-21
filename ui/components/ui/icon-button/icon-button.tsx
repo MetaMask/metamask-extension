@@ -11,10 +11,11 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
-import IconButtonRound from './icon-button-round';
 
 export type IconButtonProps = ButtonBaseProps<'button'> & {
   onClick: () => void;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Icon: React.ReactNode;
   label: string;
   className?: string;
@@ -31,30 +32,15 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       label,
       className = '',
       tooltipRender,
-      round = true,
       ...props
     },
     ref,
   ) => {
-    if (round) {
-      return (
-        <IconButtonRound
-          onClick={onClick}
-          Icon={Icon as object}
-          disabled={disabled}
-          label={label}
-          tooltipRender={tooltipRender}
-          ref={ref}
-          {...props}
-        />
-      );
-    }
-
     const buttonContent = (
       <ButtonBase
         className={classNames('icon-button', className)}
         onClick={onClick}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={BackgroundColor.backgroundSection}
         disabled={disabled}
         ref={ref}
         display={Display.InlineFlex}

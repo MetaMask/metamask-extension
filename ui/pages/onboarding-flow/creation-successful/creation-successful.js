@@ -1,6 +1,7 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { capitalize } from 'lodash';
 import {
   Button,
   ButtonSize,
@@ -23,7 +24,6 @@ import {
   Text,
   IconName,
   IconSize,
-  ButtonBase,
   Icon,
   ButtonLink,
   ButtonLinkSize,
@@ -31,37 +31,23 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getFirstTimeFlowType, getHDEntropyIndex } from '../../../selectors';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
-import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getSocialLoginType } from '../../../selectors';
+import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
   const { search } = useLocation();
-  const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
+  const userSocialLoginType = useSelector(getSocialLoginType);
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
-
-  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-
-  const isWalletReady =
-    firstTimeFlowType === FirstTimeFlowType.import || seedPhraseBackedUp;
 
   const searchParams = new URLSearchParams(search);
   const isFromReminder = searchParams.get('isFromReminder');
@@ -78,6 +64,10 @@ export default function CreationSuccessful() {
   }, [isFromReminder, isWalletReady, t]);
 
   const renderDetails1 = useMemo(() => {
+    if (userSocialLoginType) {
+      return t('walletReadySocialDetails1', [capitalize(userSocialLoginType)]);
+    }
+
     if (isWalletReady) {
       return isFromReminder
         ? t('walletReadyLoseSrpFromReminder')
@@ -85,9 +75,13 @@ export default function CreationSuccessful() {
     }
 
     return t('walletReadyLoseSrpRemind');
-  }, [isWalletReady, isFromReminder, t]);
+  }, [userSocialLoginType, isWalletReady, t, isFromReminder]);
 
   const renderDetails2 = useMemo(() => {
+    if (userSocialLoginType) {
+      return t('walletReadySocialDetails2');
+    }
+
     if (isWalletReady || isFromReminder) {
       return t('walletReadyLearn', [
         <ButtonLink
@@ -108,7 +102,7 @@ export default function CreationSuccessful() {
     }
 
     return t('walletReadyLearnRemind');
-  }, [isWalletReady, isFromReminder, t]);
+  }, [userSocialLoginType, isWalletReady, isFromReminder, t]);
 
   const renderFox = useMemo(() => {
     if (isWalletReady || isFromReminder) {
@@ -135,26 +129,8 @@ export default function CreationSuccessful() {
       history.push(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
-
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationComplete,
-      properties: {
-        method: firstTimeFlowType,
-        is_profile_syncing_enabled: isBackupAndSyncEnabled,
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
-    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-  }, [
-    firstTimeFlowType,
-    isBackupAndSyncEnabled,
-    hdEntropyIndex,
-    trackEvent,
-    history,
-    isFromReminder,
-    isFromSettingsSecurity,
-  ]);
+    history.push(ONBOARDING_DOWNLOAD_APP_ROUTE);
+  }, [history, isFromReminder, isFromSettingsSecurity]);
 
   return (
     <Box
@@ -221,7 +197,8 @@ export default function CreationSuccessful() {
             className="creation-successful__settings-actions"
             gap={4}
           >
-            <ButtonBase
+            <Button
+              variant={ButtonVariant.Secondary}
               data-testid="manage-default-settings"
               borderRadius={BorderRadius.LG}
               width={BlockSize.Full}
@@ -245,7 +222,7 @@ export default function CreationSuccessful() {
                 color={IconColor.iconAlternative}
                 size={IconSize.Sm}
               />
-            </ButtonBase>
+            </Button>
           </Box>
         )}
       </Box>

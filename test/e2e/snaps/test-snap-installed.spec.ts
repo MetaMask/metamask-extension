@@ -75,7 +75,7 @@ describe('Test Snap installed', function () {
         await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
 
         // Check installation success
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectDialogsButton',
           'Reconnect to Dialogs Snap',
         );
@@ -84,25 +84,31 @@ describe('Test Snap installed', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Installed');
         assert.deepStrictEqual(events[0].properties, {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: 'npm:@metamask/dialog-example-snap',
           origin: 'https://metamask.github.io',
           version: '2.3.1',
           category: 'Snaps',
           locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'background',
         });
 
         // Click to connect to errors snap and validate the install snaps result
         await testSnaps.scrollAndClickButton('connectErrorsButton');
         await completeSnapInstallSwitchToTestSnap(driver);
-        await testSnaps.check_installedSnapsResult(
+        await testSnaps.checkInstalledSnapsResult(
           'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
         );
 
         // Click Send error button and validate the message result
         await testSnaps.scrollAndClickButton('sendErrorButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'errorResultSpan',
           '"Hello, world!"',
         );

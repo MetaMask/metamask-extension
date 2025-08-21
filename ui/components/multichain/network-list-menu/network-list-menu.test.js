@@ -27,16 +27,42 @@ const mockSetEnabledNetworks = jest.fn();
 const mockDetectNfts = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
-  setShowTestNetworks: () => mockSetShowTestNetworks,
-  setActiveNetwork: () => mockSetActiveNetwork,
-  toggleNetworkMenu: () => mockToggleNetworkMenu,
-  updateCustomNonce: () => mockUpdateCustomNonce,
-  setNextNonce: () => mockSetNextNonce,
-  setNetworkClientIdForDomain: (network, id) =>
-    mockSetNetworkClientIdForDomain(network, id),
-  setTokenNetworkFilter: () => mockSetTokenNetworkFilter,
-  setEnabledNetworks: () => mockSetEnabledNetworks,
-  detectNfts: () => mockDetectNfts,
+  setShowTestNetworks: () => {
+    mockSetShowTestNetworks();
+    return { type: 'SET_SHOW_TEST_NETWORKS' };
+  },
+  setActiveNetwork: () => {
+    mockSetActiveNetwork();
+    return { type: 'SET_ACTIVE_NETWORK' };
+  },
+  toggleNetworkMenu: () => {
+    mockToggleNetworkMenu();
+    return { type: 'TOGGLE_NETWORK_MENU' };
+  },
+  updateCustomNonce: () => {
+    mockUpdateCustomNonce();
+    return { type: 'UPDATE_CUSTOM_NONCE' };
+  },
+  setNextNonce: () => {
+    mockSetNextNonce();
+    return { type: 'SET_NEXT_NONCE' };
+  },
+  setNetworkClientIdForDomain: jest.fn((network, id) => {
+    mockSetNetworkClientIdForDomain(network, id);
+    return { type: 'SET_NETWORK_CLIENT_ID_FOR_DOMAIN', network, id };
+  }),
+  setTokenNetworkFilter: () => {
+    mockSetTokenNetworkFilter();
+    return { type: 'SET_TOKEN_NETWORK_FILTER' };
+  },
+  setEnabledNetworks: () => {
+    mockSetEnabledNetworks();
+    return { type: 'SET_ENABLED_NETWORKS' };
+  },
+  detectNfts: () => {
+    mockDetectNfts();
+    return { type: 'DETECT_NFTS' };
+  },
 }));
 
 const MOCK_ORIGIN = 'https://portfolio.metamask.io';
@@ -222,8 +248,16 @@ describe('NetworkListMenu', () => {
   });
 
   it('switches networks when an item is clicked', () => {
-    const { getByText } = render();
-    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+    const origin = 'https://portfolio.metamask.io';
+    const { getByText } = render({
+      selectedTabOriginInDomainsState: true,
+      isUnlocked: true,
+      isAccessedFromDappConnectedSitePopover: true,
+      origin,
+    });
+    const mainnetItem = getByText(MAINNET_DISPLAY_NAME);
+    expect(mainnetItem).toBeInTheDocument();
+    fireEvent.click(mainnetItem);
     expect(mockToggleNetworkMenu).toHaveBeenCalled();
     expect(mockSetActiveNetwork).toHaveBeenCalled();
     expect(mockUpdateCustomNonce).toHaveBeenCalled();
@@ -232,11 +266,14 @@ describe('NetworkListMenu', () => {
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {
-    // Mainnet and Custom Mainnet RPC both use chain ID 0x1
     const { queryByText } = render({
       showTestNetworks: false,
       currentChainId: CHAIN_IDS.MAINNET,
-      selectedNetworkClientId: 'testNetworkConfigurationId',
+      selectedNetworkClientId: NETWORK_TYPES.MAINNET,
+      selectedTabOriginInDomainsState: true,
+      isUnlocked: true,
+      isAccessedFromDappConnectedSitePopover: true,
+      origin: 'https://portfolio.metamask.io',
     });
 
     // Contains Mainnet, Linea Mainnet and the two custom networks
@@ -321,7 +358,7 @@ describe('NetworkListMenu', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`', () => {
+  it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`', () => {
     const { queryByTestId } = render({
       neNetworkDiscoverButton: {
         '0x1': true,
@@ -342,20 +379,122 @@ describe('NetworkListMenu', () => {
 
   describe('selectedTabOrigin is connected to wallet', () => {
     it('fires setNetworkClientIdForDomain when network item is clicked', () => {
-      const { getByText } = render();
+      const state = {
+        appState: {
+          isAddingNewNetwork: false,
+          editedNetwork: undefined,
+          isAccessedFromDappConnectedSitePopover: true,
+        },
+        metamask: {
+          ...mockState.metamask,
+          networkConfigurationsByChainId: {
+            '0x1': {
+              nativeCurrency: 'ETH',
+              chainId: '0x1',
+              name: MAINNET_DISPLAY_NAME,
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'http://localhost/rpc',
+                  type: RpcEndpointType.Custom,
+                  networkClientId: NETWORK_TYPES.MAINNET,
+                },
+              ],
+            },
+          },
+          isUnlocked: true,
+          selectedNetworkClientId: NETWORK_TYPES.MAINNET,
+          preferences: {
+            showTestNetworks: false,
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          },
+          domains: {
+            [MOCK_ORIGIN]: NETWORK_TYPES.MAINNET,
+          },
+          remoteFeatureFlags: {
+            '0x531': true,
+            '0xe708': true,
+          },
+        },
+        activeTab: {
+          origin: MOCK_ORIGIN,
+        },
+      };
+      const store = configureStore(state);
+      jest.spyOn(store, 'dispatch');
+      const { getByText } = renderWithProvider(
+        <NetworkListMenu onClose={jest.fn()} />,
+        store,
+      );
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-        MOCK_ORIGIN,
-        NETWORK_TYPES.MAINNET,
+      expect(store.dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'SET_NETWORK_CLIENT_ID_FOR_DOMAIN',
+          network: MOCK_ORIGIN,
+          id: NETWORK_TYPES.MAINNET,
+        }),
       );
     });
 
     it('fires setNetworkClientIdForDomain when test network item is clicked', () => {
-      const { getByText } = render({ showTestNetworks: true });
+      const state = {
+        appState: {
+          isAddingNewNetwork: false,
+          editedNetwork: undefined,
+          isAccessedFromDappConnectedSitePopover: true,
+        },
+        metamask: {
+          ...mockState.metamask,
+          networkConfigurationsByChainId: {
+            '0x539': {
+              nativeCurrency: 'ETH',
+              chainId: '0x539',
+              name: SEPOLIA_DISPLAY_NAME,
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'http://localhost/rpc',
+                  type: RpcEndpointType.Custom,
+                  networkClientId: NETWORK_TYPES.SEPOLIA,
+                },
+              ],
+            },
+          },
+          isUnlocked: true,
+          selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+          preferences: {
+            showTestNetworks: true,
+            tokenNetworkFilter: {
+              [CHAIN_IDS.SEPOLIA]: true,
+            },
+          },
+          domains: {
+            [MOCK_ORIGIN]: NETWORK_TYPES.SEPOLIA,
+          },
+          remoteFeatureFlags: {
+            '0x531': true,
+            '0xe708': true,
+          },
+        },
+        activeTab: {
+          origin: MOCK_ORIGIN,
+        },
+      };
+      const store = configureStore(state);
+      jest.spyOn(store, 'dispatch');
+      const { getByText } = renderWithProvider(
+        <NetworkListMenu onClose={jest.fn()} />,
+        store,
+      );
       fireEvent.click(getByText(SEPOLIA_DISPLAY_NAME));
-      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-        MOCK_ORIGIN,
-        NETWORK_TYPES.SEPOLIA,
+      expect(store.dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'SET_NETWORK_CLIENT_ID_FOR_DOMAIN',
+          network: MOCK_ORIGIN,
+          id: NETWORK_TYPES.SEPOLIA,
+        }),
       );
     });
   });
@@ -406,14 +545,6 @@ describe('NetworkListMenu', () => {
   });
 
   describe('NetworkListMenu with REMOVE_GNS enabled', () => {
-    beforeEach(() => {
-      process.env.REMOVE_GNS = '1';
-    });
-
-    afterEach(() => {
-      delete process.env.REMOVE_GNS;
-    });
-
     it('should not switch networks when clicking network items', () => {
       const { getByText } = render({ selectedTabOriginInDomainsState: false });
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));

@@ -25,7 +25,24 @@ import {
   JustifyContent,
   AlignItems,
   BackgroundColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
+
+// this was Truffle's original dev recovery phrase from ~2017
+export const fakeSeedPhraseWords = [
+  'candy',
+  'maple',
+  'cake',
+  'sugar',
+  'pudding',
+  'cream',
+  'honey',
+  'rich',
+  'smooth',
+  'crumble',
+  'sweet',
+  'treat',
+];
 
 export default function RecoveryPhraseChips({
   secretRecoveryPhrase,
@@ -36,7 +53,6 @@ export default function RecoveryPhraseChips({
   setInputValue,
 }) {
   const t = useI18nContext();
-  const phrasesToDisplay = secretRecoveryPhrase;
   const indicesToCheck = useMemo(
     () => quizWords.map((word) => word.index),
     [quizWords],
@@ -94,7 +110,7 @@ export default function RecoveryPhraseChips({
       };
 
       setQuizAnswers(newQuizAnswers);
-      setIndexToFocus(setNextTargetIndex(newQuizAnswers));
+      setIndexToFocus(newQuizAnswers[targetIndex].index);
     },
     [quizAnswers],
   );
@@ -115,6 +131,14 @@ export default function RecoveryPhraseChips({
     }
   }, [quizWords]);
 
+  // obfuscate the blurred recovery phrase to prevent blur-reversal attacks
+  // from revealing the underlying words.
+  const phrasesToDisplay = phraseRevealed
+    ? secretRecoveryPhrase
+    : secretRecoveryPhrase.map((_word, index) => {
+        return fakeSeedPhraseWords[index % fakeSeedPhraseWords.length];
+      });
+
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
       <Box
@@ -126,6 +150,7 @@ export default function RecoveryPhraseChips({
         className="recovery-phrase__secret"
       >
         <Box
+          key="recovery-phrase-chips"
           display={Display.Grid}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
@@ -142,35 +167,28 @@ export default function RecoveryPhraseChips({
             const wordToDisplay = isQuizWord
               ? quizAnswers.find((answer) => answer.index === index)?.word || ''
               : word;
-            return (
-              <TextField
-                testId={
-                  confirmPhase && isQuizWord
-                    ? `recovery-phrase-input-${index}`
-                    : `recovery-phrase-chip-${index}`
+            const isTargetIndex = index === indexToFocus;
+            return isQuizWord || !confirmPhase ? (
+              <Box
+                as={isQuizWord ? 'button' : 'div'}
+                data-testid={`recovery-phrase-chip-${index}`}
+                className="recovery-phrase__text"
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                backgroundColor={BackgroundColor.backgroundDefault}
+                borderColor={
+                  isTargetIndex
+                    ? BorderColor.primaryDefault
+                    : BorderColor.borderMuted
                 }
-                key={index}
-                value={wordToDisplay}
-                className={classnames({
-                  'mm-text-field--target-index': index === indexToFocus,
-                  'mm-text-field--quiz-word': isQuizWord,
-                })}
-                startAccessory={
-                  <Text
-                    color={TextColor.textAlternative}
-                    className="recovery-phrase__word-index"
-                  >
-                    {index + 1}.
-                  </Text>
-                }
-                type={confirmPhase && !isQuizWord ? 'password' : 'text'}
-                readOnly
-                disabled={
-                  (confirmPhase && !isQuizWord) ||
-                  (!confirmPhase && !phraseRevealed)
-                }
+                borderWidth={isTargetIndex ? 2 : 1}
+                borderRadius={BorderRadius.LG}
+                paddingInline={2}
+                paddingTop={1}
+                paddingBottom={1}
+                gap={1}
                 onClick={() => {
-                  if (!confirmPhase) {
+                  if (!isQuizWord) {
                     return;
                   }
                   if (wordToDisplay === '') {
@@ -179,6 +197,31 @@ export default function RecoveryPhraseChips({
                     removeQuizWord(wordToDisplay);
                   }
                 }}
+              >
+                <Text
+                  color={TextColor.textAlternative}
+                  className="recovery-phrase__word-index"
+                >
+                  {index + 1}.
+                </Text>
+                <Text>{isQuizWord ? wordToDisplay : word}</Text>
+              </Box>
+            ) : (
+              <TextField
+                testId={`recovery-phrase-chip-${index}`}
+                key={index}
+                value={wordToDisplay}
+                startAccessory={
+                  <Text
+                    color={TextColor.textAlternative}
+                    className="recovery-phrase__word-index"
+                  >
+                    {index + 1}.
+                  </Text>
+                }
+                type="password"
+                disabled
+                readOnly
               />
             );
           })}
@@ -186,6 +229,7 @@ export default function RecoveryPhraseChips({
 
         {!phraseRevealed && (
           <Box
+            key="recovery-phrase__secret-blocker-container"
             width={BlockSize.Full}
             height={BlockSize.Full}
             className="recovery-phrase__secret-blocker-container"

@@ -145,7 +145,7 @@ export const CHAIN_ID_TO_SECURITY_API_NAME: Record<
   [CHAIN_IDS.AVALANCHE]: 'avalanche',
   [CHAIN_IDS.BSC]: 'bsc',
   [CHAIN_IDS.ARBITRUM]: 'arbitrum',
-  [CHAIN_IDS.OPTIMISM]: 'optimist',
+  [CHAIN_IDS.OPTIMISM]: 'optimism',
   [CHAIN_IDS.ZKSYNC_ERA]: 'zksync',
   [CHAIN_IDS.BASE]: 'base',
   [CHAIN_IDS.SEI]: 'sei',
@@ -186,6 +186,8 @@ export async function fetchTxAlerts({
   const body = {
     method: SolMethod.SignAndSendTransaction,
     encoding: 'base64',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     account_address: Buffer.from(base58.decode(accountAddress)).toString(
       'base64',
     ),
@@ -215,12 +217,9 @@ export async function fetchTxAlerts({
 
   assert<MessageScanResponse, unknown>(respBody, MessageScanResponse);
 
-  if (respBody.error_details?.code === 'ResultWithNegativeLamports') {
-    return null;
-  }
-
   if (respBody.status === 'ERROR') {
-    // eslint-disable-next-line camelcase
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line camelcase, @typescript-eslint/naming-convention
     const { error_details } = respBody;
     return {
       titleId: 'txAlertTitle',

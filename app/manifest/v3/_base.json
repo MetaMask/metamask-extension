@@ -85,7 +85,8 @@
     "storage",
     "unlimitedStorage",
     "webRequest",
-    "offscreen"
+    "offscreen",
+    "identity"
   ],
   "sandbox": {
     "pages": ["snaps/index.html"]

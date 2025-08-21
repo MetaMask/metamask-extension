@@ -20,7 +20,7 @@ describe('Terms of use', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         // accept updated terms of use
         const updateTermsOfUseModal = new TermsOfUseUpdateModal(driver);
-        await updateTermsOfUseModal.check_pageIsLoaded();
+        await updateTermsOfUseModal.checkPageIsLoaded();
         await updateTermsOfUseModal.confirmAcceptTermsOfUseUpdate();
       },
     );

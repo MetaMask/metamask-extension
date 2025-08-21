@@ -81,7 +81,7 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
                     class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
                     data-testid="activity-list-item-action"
                   >
-                    Receive
+                    Received
                   </p>
                 </div>
                 <div
@@ -187,7 +187,7 @@ exports[`TransactionList renders TransactionList component with props hideNetwor
                     class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
                     data-testid="activity-list-item-action"
                   >
-                    Receive
+                    Received
                   </p>
                 </div>
                 <div
@@ -254,11 +254,13 @@ exports[`TransactionList renders TransactionList component with props hideTokenT
       </button>
     </div>
     <div
-      class="mm-box transaction-list__transactions"
+      class="mm-box nfts-tab__link mm-box--margin-top-12 mm-box--margin-bottom-12 mm-box--padding-top-6 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
     >
-      <div
-        class="mm-box transaction-list__completed-transactions"
-      />
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-text--text-align-center mm-box--color-text-alternative"
+      >
+        No activity yet
+      </p>
     </div>
   </div>
 </div>
