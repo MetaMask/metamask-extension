@@ -71,7 +71,7 @@ const DebugWrapper = ({ children }) => {
 };
 
 const meta: Meta<typeof ConvertTokenToNFTModal> = {
-  title: 'Components/App/Modals/ConvertTokenToNftModal',
+  title: 'Components/App/Modals/ConvertTokenToNFTModal',
   component: ConvertTokenToNFTModal,
   parameters: {
     docs: {

@@ -6,7 +6,7 @@ import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 
 export default {
-  title: 'Pages/Confirmations/Confirmation/Stories/SnapDialog',
+  title: 'Pages/Confirmations/Confirmation/Stories/ConfirmationPage',
   component: ConfirmationPage,
   args: {},
 };

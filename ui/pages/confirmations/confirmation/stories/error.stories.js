@@ -15,7 +15,7 @@ import { PendingApproval } from './util';
  * The below arguments are properties in the `ApprovalController.error` request.
  */
 export default {
-  title: 'Pages/Confirmations/Confirmation/Stories/Error',
+  title: 'Pages/Confirmations/Confirmation/Stories/ConfirmationPage',
   component: ConfirmationPage,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {

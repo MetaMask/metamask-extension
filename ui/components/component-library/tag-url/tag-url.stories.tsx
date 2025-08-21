@@ -9,7 +9,7 @@ import README from './README.mdx';
 import { TagUrl } from './tag-url';
 
 export default {
-  title: 'Components/ComponentLibrary/TagUrl',
+  title: 'Components/ComponentLibrary/TagURL',
   component: TagUrl,
   parameters: {
     docs: {

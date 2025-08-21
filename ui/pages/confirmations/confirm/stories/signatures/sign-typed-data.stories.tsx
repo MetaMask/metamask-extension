@@ -11,7 +11,7 @@ import { unapprovedTypedSignMsgV1 } from '../../../../../../test/data/confirmati
  * The `<ConfirmPage>` that's displayed when the current confirmation is a version "V1" `eth_signTypedData` signature.
  */
 export default {
-  title: 'Pages/Confirmations/Confirm/Stories/Signatures/SignTypedData',
+  title: 'Pages/Confirmations/Confirm/Stories/Signatures/ConfirmPage',
   component: ConfirmPage,
   decorators: CONFIRM_PAGE_DECORATOR,
   argTypes: ARG_TYPES_SIGNATURE,

@@ -2,7 +2,7 @@ import React from 'react';
 import NftInfo from './nft-info';
 
 export default {
-  title: 'Components/UI/NftInfo',
+  title: 'Components/UI/NFTInfo',
 
   argTypes: {
     assetName: {

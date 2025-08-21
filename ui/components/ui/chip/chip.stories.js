@@ -22,7 +22,7 @@ import README from './README.mdx';
 import Chip from '.';
 
 export default {
-  title: 'Components/UI/Chip',
+  title: 'Components/UI/Chip (deprecated)',
 
   component: Chip,
   parameters: {

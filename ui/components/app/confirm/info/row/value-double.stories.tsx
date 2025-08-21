@@ -3,7 +3,7 @@ import { ConfirmInfoRow, ConfirmInfoRowVariant } from './row';
 import { ConfirmInfoRowValueDouble } from './value-double';
 
 const ConfirmInfoRowValueDoubleStory = {
-  title: 'Components/App/Confirm/Info/Row/ValueDouble',
+  title: 'Components/App/Confirm/Info/Row/ConfirmInfoRowValueDouble',
 
   component: ConfirmInfoRowValueDouble,
   argTypes: {

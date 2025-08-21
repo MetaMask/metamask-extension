@@ -5,7 +5,7 @@ import README from './README.mdx';
 import Dialog from '.';
 
 export default {
-  title: 'Components/UI/Dialog',
+  title: 'Components/UI/Dialog (deprecated)',
 
   component: Dialog,
   parameters: {

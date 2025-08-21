@@ -9,7 +9,7 @@ import NFTSendHeading from './nft-send-heading';
 const store = configureStore(getMockTokenTransferConfirmState({}));
 
 const Story = {
-  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/NftSendHeading',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/NFTSendHeading',
   component: NFTSendHeading,
   decorators: [
     (story: () => Meta<typeof NFTSendHeading>) => (

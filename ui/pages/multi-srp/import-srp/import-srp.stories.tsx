@@ -2,7 +2,7 @@ import React from 'react';
 import { ImportSrp } from '.';
 
 export default {
-  title: 'Pages/MultiSrp/ImportSrp',
+  title: 'Pages/MultiSRP/ImportSRP',
   component: ImportSrp,
 };
 

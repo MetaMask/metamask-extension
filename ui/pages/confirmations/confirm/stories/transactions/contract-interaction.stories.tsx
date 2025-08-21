@@ -11,7 +11,7 @@ import mockState from '../../../../../../test/data/mock-state.json';
 const FROM = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 export default {
-  title: 'Pages/Confirmations/Confirm/Stories/Transactions/ContractInteraction',
+  title: 'Pages/Confirmations/Confirm/Stories/Transactions/ConfirmPage',
   component: ConfirmPage,
   decorators: CONFIRM_PAGE_DECORATOR,
 };

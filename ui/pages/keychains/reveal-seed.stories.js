@@ -2,7 +2,7 @@ import React from 'react';
 import RevealSeedPage from './reveal-seed';
 
 export default {
-  title: 'Pages/Keychains/RevealSeed',
+  title: 'Pages/Keychains/RevealSeedPage',
 
   argTypes: {
     requestRevealSeedWords: {

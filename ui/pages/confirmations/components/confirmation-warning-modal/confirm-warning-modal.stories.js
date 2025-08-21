@@ -3,7 +3,7 @@ import ConfirmationWarningModal from '.';
 
 export default {
   title:
-    'Pages/Confirmations/Components/ConfirmationWarningModal/ConfirmWarningModal',
+    'Pages/Confirmations/Components/ConfirmationWarningModal',
 };
 
 export const DefaultStory = (args) => <ConfirmationWarningModal {...args} />;

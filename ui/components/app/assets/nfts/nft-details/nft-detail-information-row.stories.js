@@ -2,7 +2,7 @@ import React from 'react';
 import NftDetailInformationRow from './nft-detail-information-row';
 
 export default {
-  title: 'Components/App/Assets/Nfts/NftDetails/NftDetailInformationRow',
+  title: 'Components/App/Assets/Nfts/NFTDetails/NftDetailInformationRow',
 
   argTypes: {
     nft: {

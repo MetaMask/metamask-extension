@@ -2,7 +2,7 @@ import React from 'react';
 import UrlIcon from './url-icon';
 
 export default {
-  title: 'Components/UI/UrlIcon',
+  title: 'Components/UI/URLIcon',
 
   argType: {
     name: { control: 'text' },

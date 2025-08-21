@@ -2,7 +2,7 @@ import React from 'react';
 import SrpInput from '.';
 
 export default {
-  title: 'Components/App/SrpInput',
+  title: 'Components/App/SRPInput',
 
   component: SrpInput,
   argTypes: {

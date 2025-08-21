@@ -22,7 +22,7 @@ Deprecated.propTypes = {
 };
 
 export default {
-  title: 'Components/UI/IconWithFallback',
+  title: 'Components/UI/IconWithFallback (deprecated)',
 
   component: IconWithFallback,
   parameters: {

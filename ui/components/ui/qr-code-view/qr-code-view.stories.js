@@ -2,7 +2,7 @@ import React from 'react';
 import QrCodeView from '.';
 
 export default {
-  title: 'Components/UI/QrCodeView',
+  title: 'Components/UI/QRCodeView',
 
   argTypes: {
     Qr: {

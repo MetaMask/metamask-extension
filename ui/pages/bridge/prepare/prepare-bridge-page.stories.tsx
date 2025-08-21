@@ -14,7 +14,7 @@ import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes
 import { RequestStatus } from '@metamask/bridge-controller';
 
 const storybook = {
-  title: 'Pages/Bridge/Prepare/PrepareBridgePage',
+  title: 'Pages/Bridge/Prepare/CrossChainSwap',
   component: CrossChainSwap,
 };
 

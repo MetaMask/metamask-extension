@@ -41,7 +41,7 @@ const validColors = [
 ];
 
 export default {
-  title: 'Components/UI/Icon',
+  title: 'Components/UI/Icon (deprecated)',
 
   parameters: {
     docs: {

@@ -15,7 +15,7 @@ import NFTTokenTransferInfo from './nft-token-transfer';
 const store = configureStore(getMockTokenTransferConfirmState({}));
 
 const Story = {
-  title: 'Pages/Confirmations/Components/Confirm/Info/NftTokenTransfer',
+  title: 'Pages/Confirmations/Components/Confirm/Info/NFTTokenTransfer',
   component: NFTTokenTransferInfo,
   decorators: [
     (story: () => any) => (

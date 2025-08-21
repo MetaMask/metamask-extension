@@ -9,6 +9,11 @@ function toPascalCase(str) {
     return 'UI';
   }
   
+  // If the string is already in PascalCase and contains no separators, return as-is
+  if (!/[-_]/.test(str) && /^[A-Z][a-zA-Z0-9]*$/.test(str)) {
+    return str;
+  }
+  
   return str
     .split(/[-_]/)
     .map(word => {
@@ -51,13 +56,21 @@ function isDeprecated(content) {
 }
 
 function generateTitleFromPath(filePath, content) {
+  // Normalize the path to handle both relative and absolute paths
+  let normalizedPath = filePath;
+  
+  // If path starts with 'ui/', treat it as already relative to project root
+  if (filePath.startsWith('ui/')) {
+    normalizedPath = '/' + filePath; // Add leading slash for indexOf to work
+  }
+  
   // Find the ui/ directory and get the path after it
-  const uiIndex = filePath.indexOf('/ui/');
+  const uiIndex = normalizedPath.indexOf('/ui/');
   if (uiIndex === -1) {
     throw new Error(`Path does not contain /ui/: ${filePath}`);
   }
   
-  const relativePath = filePath.substring(uiIndex + 4); // +4 to skip "/ui/"
+  const relativePath = normalizedPath.substring(uiIndex + 4); // +4 to skip "/ui/"
   const pathParts = path.dirname(relativePath).split('/');
   
   // Convert each part to PascalCase
@@ -99,43 +112,53 @@ function updateStoryTitle(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
     const newTitle = generateTitleFromPath(filePath, content);
     
-    // Only match title property in the export default block
-    // This regex matches the title property that comes after 'export default {' 
-    // and before the component property or other properties
-    const exportDefaultRegex = /(export\s+default\s*\{[^}]*?title:\s*['"`])([^'"`]+)(['"`][^}]*?\})/s;
-    
     let updatedContent = content;
     let titleFound = false;
+    
+    // Pattern 1: export default { title: '...' }
+    const exportDefaultRegex = /(export\s+default\s*\{[^}]*?title:\s*['"`])([^'"`]+)(['"`])/s;
+    
+    // Pattern 2: const meta: Meta<...> = { title: '...' }
+    const metaRegex = /(const\s+meta[^=]*=\s*\{[^}]*?title:\s*['"`])([^'"`]+)(['"`])/s;
+    
+    // Pattern 3: const SomeStory = { title: '...' }
+    const constStoryRegex = /(const\s+[A-Za-z][A-Za-z0-9]*\s*=\s*\{[^}]*?title:\s*['"`])([^'"`]+)(['"`])/s;
+    
+    // Pattern 4: Simple title property at start of line (with context checking)
+    const simpleTitleRegex = /^(\s*title:\s*['"`])([^'"`]+)(['"`])/m;
     
     if (exportDefaultRegex.test(content)) {
       updatedContent = content.replace(exportDefaultRegex, `$1${newTitle}$3`);
       titleFound = true;
-    }
-    
-    // Fallback: try to find a standalone title property (but be more careful)
-    if (!titleFound) {
-      // Look for title at the beginning of a line (possibly with whitespace)
-      // and ensure it's not inside args or other nested objects
-      const standaloneRegex = /^(\s*title:\s*['"`])([^'"`]+)(['"`])/m;
-      
-      // Check if this appears to be in the main export default block by looking at context
+    } else if (metaRegex.test(content)) {
+      updatedContent = content.replace(metaRegex, `$1${newTitle}$3`);
+      titleFound = true;
+    } else if (constStoryRegex.test(content)) {
+      updatedContent = content.replace(constStoryRegex, `$1${newTitle}$3`);
+      titleFound = true;
+    } else if (simpleTitleRegex.test(content)) {
+      // For simple title regex, check context to make sure we're not in args
       const lines = content.split('\n');
       for (let i = 0; i < lines.length; i++) {
-        if (standaloneRegex.test(lines[i])) {
-          // Check if we're in the export default block
-          let inExportDefault = false;
+        if (simpleTitleRegex.test(lines[i])) {
+          // Check if we're in the main meta object or export default block
+          let inMainBlock = false;
+          let inArgsBlock = false;
+          
           for (let j = i - 1; j >= 0; j--) {
-            if (lines[j].includes('export default')) {
-              inExportDefault = true;
+            const line = lines[j].trim();
+            if (line.includes('export default') || line.includes('const meta')) {
+              inMainBlock = true;
               break;
             }
-            if (lines[j].includes('args') || lines[j].includes('argTypes')) {
-              break; // We're in a nested object, skip this match
+            if (line.includes('.args') || line.includes('args:') || line.includes('argTypes')) {
+              inArgsBlock = true;
+              break;
             }
           }
           
-          if (inExportDefault) {
-            updatedContent = content.replace(standaloneRegex, `$1${newTitle}$3`);
+          if (inMainBlock && !inArgsBlock) {
+            updatedContent = content.replace(simpleTitleRegex, `$1${newTitle}$3`);
             titleFound = true;
             break;
           }
@@ -144,7 +167,7 @@ function updateStoryTitle(filePath) {
     }
     
     if (!titleFound) {
-      console.log(`⚠️  Could not find title property in export default: ${filePath}`);
+      console.log(`⚠️  Could not find title property in main story config: ${filePath}`);
       return false;
     }
     

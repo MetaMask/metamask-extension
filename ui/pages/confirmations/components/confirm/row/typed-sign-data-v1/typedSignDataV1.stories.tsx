@@ -8,7 +8,7 @@ import { unapprovedTypedSignMsgV1 } from '../../../../../../../test/data/confirm
 import { ConfirmInfoRowTypedSignDataV1 } from './typedSignDataV1';
 
 const ConfirmInfoRowTypedSignDataStory = {
-  title: 'Pages/Confirmations/Components/Confirm/Row/TypedSignDataV1/Typedsigndatav1',
+  title: 'Pages/Confirmations/Components/Confirm/Row/TypedSignDataV1/ConfirmInfoRowTypedSignDataV1',
 
   component: ConfirmInfoRowTypedSignDataV1,
   argTypes: {

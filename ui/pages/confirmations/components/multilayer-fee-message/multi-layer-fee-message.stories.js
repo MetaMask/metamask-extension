@@ -3,7 +3,7 @@ import MultilayerFeeMessage from './multi-layer-fee-message';
 
 export default {
   title:
-    'Pages/Confirmations/Components/MultilayerFeeMessage/MultiLayerFeeMessage',
+    'Pages/Confirmations/Components/MultilayerFeeMessage',
   component: MultilayerFeeMessage,
   argTypes: {
     transaction: {

@@ -28,7 +28,7 @@ const createMockState = (seedPhraseBackedUp = true, firstTimeFlowType = 'import'
 });
 
 export default {
-  title: 'Components/MultichainAccounts/AccountShowSrpRow',
+  title: 'Components/MultichainAccounts/AccountShowSRPRow',
   component: AccountShowSrpRow,
   parameters: {
     docs: {

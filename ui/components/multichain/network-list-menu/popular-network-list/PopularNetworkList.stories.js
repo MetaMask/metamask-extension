@@ -50,7 +50,7 @@ const customNetworkStore = configureStore({
 
 export default {
   title:
-    'Components/Multichain/NetworkListMenu/PopularNetworkList/Popularnetworklist',
+    'Components/Multichain/NetworkListMenu/PopularNetworkList',
   component: PopularNetworkList,
 };
 

@@ -22,7 +22,7 @@ Deprecated.propTypes = {
 };
 
 export default {
-  title: 'Components/UI/TextField',
+  title: 'Components/UI/TextField (deprecated)',
 
   component: TextField,
   parameters: {

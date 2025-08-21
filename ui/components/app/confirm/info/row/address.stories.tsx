@@ -4,7 +4,7 @@ import { ConfirmInfoRowAddress } from './address';
 import { TEST_ADDRESS } from './constants';
 
 const ConfirmInfoRowAddressStory = {
-  title: 'Components/App/Confirm/Info/Row/Address',
+  title: 'Components/App/Confirm/Info/Row/ConfirmInfoRowAddress',
 
   component: ConfirmInfoRowAddress,
   argTypes: {

@@ -4,7 +4,7 @@ import { ConfirmInfoRow } from './row';
 import { ConfirmInfoRowDate } from './date';
 
 const ConfirmInfoRowDateStory = {
-  title: 'Components/App/Confirm/Info/Row/Date',
+  title: 'Components/App/Confirm/Info/Row/ConfirmInfoRowDate',
   component: ConfirmInfoRowDate,
 
   decorators: [

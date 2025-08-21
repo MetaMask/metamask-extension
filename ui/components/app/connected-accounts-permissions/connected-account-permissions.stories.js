@@ -3,7 +3,7 @@ import ConnectedAccountsPermissions from './connected-accounts-permissions';
 
 export default {
   title:
-    'Components/App/ConnectedAccountsPermissions/ConnectedAccountPermissions',
+    'Components/App/ConnectedAccountsPermissions',
   component: ConnectedAccountsPermissions,
   argTypes: {
     permission: {

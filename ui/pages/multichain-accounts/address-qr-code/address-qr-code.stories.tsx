@@ -198,7 +198,7 @@ function StoryWrapper({ children, mockStore, address }) {
 }
 
 export default {
-  title: 'Pages/MultichainAccounts/AddressQrCode',
+  title: 'Pages/MultichainAccounts/AddressQRCode',
   component: AddressQRCode,
 };
 

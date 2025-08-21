@@ -52,7 +52,7 @@ const store = configureStore({
 });
 
 export default {
-  title: 'Pages/ConfirmAddSuggestedNft',
+  title: 'Pages/ConfirmAddSuggestedNFT',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 

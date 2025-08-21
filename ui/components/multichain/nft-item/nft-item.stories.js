@@ -3,7 +3,7 @@ import { getNftImageAlt } from '../../../helpers/utils/nfts';
 import { NftItem } from '.';
 
 export default {
-  title: 'Components/Multichain/NftItem',
+  title: 'Components/Multichain/NFTItem',
   argTypes: {
     alt: {
       control: 'text',
