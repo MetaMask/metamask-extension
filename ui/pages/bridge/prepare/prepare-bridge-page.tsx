@@ -121,7 +121,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
-import { enableSingleNetwork } from '../../../store/controller-actions/network-order-controller';
+import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -148,7 +148,9 @@ export const useEnableMissingNetwork = () => {
         if (isPopularNetwork) {
           const isNetworkEnabled = enabledNetworkKeys.includes(chainId);
           if (!isNetworkEnabled) {
-            dispatch(enableSingleNetwork(chainId));
+            // Bridging between popular networks indicates we want the 'select all' enabled
+            // This way users can see their full briding tx activity
+            dispatch(enableAllPopularNetworks());
           }
         }
       }

@@ -281,14 +281,14 @@ describe('useEnableMissingNetwork', () => {
         '0x1': true,
         '0xe708': true,
       });
-    const mockEnableSingleNetwork = jest.spyOn(
+    const mockEnableAllPopularNetworks = jest.spyOn(
       NetworkOrderControllerActionsModule,
-      'enableSingleNetwork',
+      'enableAllPopularNetworks',
     );
 
     return {
       mockGetEnabledNetworksByNamespace,
-      mockEnableSingleNetwork,
+      mockEnableAllPopularNetworks,
     };
   };
 
@@ -305,7 +305,7 @@ describe('useEnableMissingNetwork', () => {
     hook.result.current('0x1');
 
     // Assert - Adds 0x1 to enabled networks
-    expect(mocks.mockEnableSingleNetwork).toHaveBeenCalledWith('0x1');
+    expect(mocks.mockEnableAllPopularNetworks).toHaveBeenCalledWith();
   });
 
   it('does not enable popular network if already enabled', () => {
@@ -314,7 +314,7 @@ describe('useEnableMissingNetwork', () => {
 
     // Act - enable 0x1 (already enabled)
     hook.result.current('0x1');
-    expect(mocks.mockEnableSingleNetwork).not.toHaveBeenCalled();
+    expect(mocks.mockEnableAllPopularNetworks).not.toHaveBeenCalled();
   });
 
   it('does not enable non-popular network', () => {
@@ -322,6 +322,6 @@ describe('useEnableMissingNetwork', () => {
     const hook = renderHook(() => useEnableMissingNetwork());
 
     hook.result.current('0x1111'); // not popular network
-    expect(mocks.mockEnableSingleNetwork).not.toHaveBeenCalled();
+    expect(mocks.mockEnableAllPopularNetworks).not.toHaveBeenCalled();
   });
 });
