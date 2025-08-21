@@ -3536,9 +3536,6 @@
   "networkIsBusy": {
     "message": "Ağ meşgul. Gaz fiyatları yüksektir ve tahminler daha az doğrudur."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "En az bir ağ etkinleştirilmiş olmalıdır"
-  },
   "networkMenu": {
     "message": "Ağ Menüsü"
   },
