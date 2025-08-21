@@ -22,26 +22,22 @@ Thorough documentation makes components easier to find, adapt, and reuse. Keep e
 
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from '.';
+import { ModalBody } from '../ui/components/component-library/modal-body/modal-body';
 
-const meta: Meta<typeof Button> = {
-  title: 'Components/UI/Button',
-  component: Button,
+const meta: Meta<typeof ModalBody> = {
+  title: 'Components/ComponentLibrary/ModalBody',
+  component: ModalBody,
 };
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    children: 'Default',
-    disabled: false,
-  },
-};
+export const Default: Story = {};
 
-export const WithClick: Story = {
-  args: { children: 'Click me' },
-  render: (args) => <Button {...args} onClick={() => console.log('clicked')} />,
+export const Children: Story = {
+  args: {
+    children: 'Lorem ipsum dolor sit amet...'
+  },
 };
 ```
 
@@ -51,18 +47,19 @@ export const WithClick: Story = {
 
 ## Controls and ArgTypes
 
+The `ModalBody` story uses `argTypes` and defaults via `args`:
+
 ```ts
-const meta: Meta<typeof Button> = {
-  title: 'Components/UI/Button',
-  component: Button,
+const meta: Meta<typeof ModalBody> = {
+  title: 'Components/ComponentLibrary/ModalBody',
+  component: ModalBody,
   argTypes: {
+    className: { control: 'text' },
     children: { control: 'text' },
-    disabled: { control: 'boolean' },
-    onClick: { action: 'clicked' },
-    type: {
-      control: { type: 'select' },
-      options: ['default','primary','secondary','warning','danger','danger-primary','link'],
-    },
+  },
+  args: {
+    className: '',
+    children: 'Modal Body',
   },
 };
 ```
@@ -73,19 +70,19 @@ Use MDX to provide narrative docs and embed stories.
 
 ```mdx
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
-import { Button } from '.';
+import { ModalBody } from '../ui/components/component-library/modal-body/modal-body';
 
-# Button
+# ModalBody
 
-Buttons communicate actions that users can take.
+Displays body content within a modal.
 
 <Canvas>
-  <Story id="components-ui-button--default" />
+  <Story id="components-componentlibrary-modalbody--default" />
 </Canvas>
 
 ## Props
 
-<ArgsTable of={Button} />
+<ArgsTable of={ModalBody} />
 ```
 
 ## Additional Best Practices
