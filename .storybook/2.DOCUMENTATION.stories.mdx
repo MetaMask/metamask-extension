@@ -2,42 +2,49 @@ import { Meta } from '@storybook/addon-docs';
 
 <Meta title="Getting Started / Documentation Guidelines" />
 
-# Documentation Guidelines
+# Story Format Guidelines (CSF 3.0)
 
-> 💡 We are standardizing on Storybook CSF 3 and preparing for Storybook v9. Prefer controls, a11y, autodocs, and typed stories.
+> We standardize on Storybook CSF 3.0. Keep stories minimal and deterministic. No MDX docs required for typical UI work.
 
-## General Guidelines
-
-Thorough documentation makes components easier to find, adapt, and reuse. Keep examples simple, deterministic, and accessible.
-
-- Think like a first-time user of the component
-- Add a brief description in the component's `README.md`
-- Display the component API via Args/Controls; add descriptions via JSDoc in TypeScript types or PropTypes
-- Use Controls (not knobs)
-- Use the action argType annotation for events
-
-## Stories (CSF 3)
+## Required Format
 
 - Use CSF 3 with typed `Meta` and `StoryObj`
-- Title should mirror folder structure; avoid spaces
-- Prefer `args` for variations instead of ad-hoc state
-- Use a `render` function only when composition or handlers are needed; keep it minimal
-- Keep stories deterministic; mock time, randomness, and network
+- Export a `meta` object and a default export
+- Export stories as objects (no `Template.bind()`)
+- Use `render` only if you must compose/wrap or provide handlers
+- Keep stories simple; avoid extra `parameters` unless necessary
+- Name titles to mirror folder structure; avoid spaces
+- Co-locate `*.stories.tsx` next to the component
 
-## ArgTypes and Controls
+## Minimal Example (CSF 3)
 
-- Expose interactive props via `argTypes` and set sensible defaults with `args`
-- Use select controls for enums; boolean for flags; text for strings
-- Log events using `onX` action annotations (e.g., `onClick: { action: 'clicked' }`)
+```tsx
+import type { Meta, StoryObj } from '@storybook/react';
+import { MyComponent } from './my-component';
 
-## Additional Best Practices
+const meta: Meta<typeof MyComponent> = {
+  title: 'Components/MyComponent',
+  component: MyComponent,
+};
+export default meta;
 
-- Keep global decorators minimal; prefer per-story decorators
-- Prefer autodocs; avoid custom MDX pages for UI components
-- Ensure accessible usage; include labels and roles in examples
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {};
+
+// Only when needed
+export const WithRender: Story = {
+  render: (args) => <MyComponent {...args} />,
+};
+```
+
+## Do Not
+
+- Do not use `Template.bind()`
+- Do not write MDX docs pages unless explicitly required
+- Do not add unnecessary `parameters`, providers, or side effects
 
 ## References
 - CSF 3: `https://storybook.js.org/docs/writing-stories#stories-in-csf-3`
-- Args and Controls: `https://storybook.js.org/docs/writing-stories/args`
 - Replace Template.bind: `https://storybook.js.org/docs/writing-stories#using-render-to-replace-template-bind`
 - Storybook v9 migration: `https://storybook.js.org/docs/migrations/v9`
