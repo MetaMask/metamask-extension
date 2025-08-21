@@ -114,7 +114,7 @@ buildTypes:
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
 
       # For testing gator permissions page
-      - GATOR_PERMISSIONS_PAGE: true
+      - GATOR_PERMISSIONS_PAGE: false
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -335,7 +335,7 @@ env:
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   # For testing gator permissions page
-  - GATOR_PERMISSIONS_PAGE: true
+  - GATOR_PERMISSIONS_PAGE: false
 
   ###
   # Meta variables
