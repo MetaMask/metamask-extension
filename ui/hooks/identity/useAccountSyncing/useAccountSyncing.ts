@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   deleteAccountSyncingDataFromUserStorage,
-  syncInternalAccountsWithUserStorage,
+  syncAccountTreeWithUserStorage,
 } from '../../../store/actions';
 import {
   selectIsAccountSyncingEnabled,
@@ -67,7 +67,7 @@ export const useAccountSyncing = () => {
       if (!shouldDispatchAccountSyncing) {
         return;
       }
-      dispatch(syncInternalAccountsWithUserStorage());
+      dispatch(syncAccountTreeWithUserStorage());
     } catch (e) {
       log.error(e);
     }

@@ -4315,6 +4315,11 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
         ),
+      // AccountTreeController backup and sync
+      syncAccountTreeWithUserStorage:
+        this.accountTreeController.syncWithUserStorage.bind(
+          this.accountTreeController,
+        ),
 
       // NotificationServicesController
       checkAccountsPresence:
@@ -5502,6 +5507,7 @@ export default class MetamaskController extends EventEmitter {
       // newly created accounts.
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
+      this.accountTreeController.clearPersistedMetadataAndSyncingState();
       this.accountTreeController.init();
 
       if (completedOnboarding) {

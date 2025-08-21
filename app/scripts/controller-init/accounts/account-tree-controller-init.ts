@@ -17,6 +17,15 @@ export const AccountTreeControllerInit: ControllerInitFunction<
   const controller = new AccountTreeController({
     messenger: controllerMessenger,
     state: persistedState.AccountTreeController,
+    config: {
+      backupAndSync: {
+        enableDebugLogging: true,
+        onBackupAndSyncEvent: (event) => {
+          // Handle backup and sync events here, e.g., logging or tracking.
+          console.log('Backup and Sync Event:', event);
+        },
+      },
+    },
   });
 
   // Re-build initial account wallet tree.

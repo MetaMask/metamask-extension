@@ -6616,6 +6616,36 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
 }
 
 /**
+ * Synchronizes account tree data with user storage between devices.
+ *
+ * This function sends a request to the background script to sync accounts data and update the state accordingly.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to synchronize accounts data with user storage between devices.
+ */
+export function syncAccountTreeWithUserStorage(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async () => {
+    try {
+      console.log('syncAccountTreeWithUserStorage');
+      const response = await submitRequestToBackground(
+        'syncAccountTreeWithUserStorage',
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
  * "Locks" account syncing by setting the necessary flags in UserStorageController.
  * This is used to temporarily prevent account syncing from listening to accounts being changed, and the downward sync to happen.
  *
