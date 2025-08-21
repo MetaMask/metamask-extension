@@ -22,7 +22,7 @@ const createDifferenceMessage = (
   }
 };
 
-// Type definition for the specific fields we validate in state logs in the Account spec
+// Minimal type definition for the specific fields we validate in the State Logs Account spec
 type MinimalStateLogsJson = {
   metamask: {
     identities: {
@@ -101,6 +101,9 @@ export const createTypeMap = (
   return typeMap;
 };
 
+// We can ignore keys for 2 reasons:
+// 1. To avoid failing for frequent state changes, which are low risk
+// 2. To mitigate flakiness for properties which appear intermittently on state, right after login in
 const getIgnoredKeys = (): string[] => [
   'localeMessages',
   'metamask.slides',
@@ -360,16 +363,16 @@ export const getDownloadedStateLogs = async (
 ): Promise<MinimalStateLogsJson> => {
   console.log('Verifying downloaded state logs');
 
-  let currentStateLogs: MinimalStateLogsJson | null = null;
+  let stateLogs: MinimalStateLogsJson | null = null;
   await driver.wait(async () => {
-    currentStateLogs = await readStateLogsFile(downloadsFolder);
-    return currentStateLogs !== null;
+    stateLogs = await readStateLogsFile(downloadsFolder);
+    return stateLogs !== null;
   }, 10000);
 
-  if (currentStateLogs === null) {
+  if (stateLogs === null) {
     throw new Error('❌ State logs not found');
   }
 
   console.log('✅ State logs downloaded successfully');
-  return currentStateLogs;
+  return stateLogs;
 };
