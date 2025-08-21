@@ -3,16 +3,17 @@ import { Hex } from '@metamask/utils';
 import { isRelaySupported } from '../../../store/actions';
 import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
 
-interface Chain {
+type Chain = {
   chainId: string;
-}
+};
 
-interface Account {
+type Account = {
   address: string;
-}
+};
 
 /**
  * Custom hook to check if gasless 7702 is supported for Smart Accounts
+ *
  * @param smartAccountOptIn - Whether smart account is opted in
  * @param isSwap - Whether this is a swap transaction
  * @param selectedAccount - The selected account
@@ -43,7 +44,7 @@ export function useGasless7702Support(
         // Check if atomic batch is supported for the account
         const atomicBatchResult = await isAtomicBatchSupported({
           address: selectedAccount.address as Hex,
-          chainIds: [fromChain.chainId],
+          chainIds: [fromChain.chainId as Hex],
         });
 
         const atomicBatchChainSupport = atomicBatchResult?.find(
@@ -52,7 +53,9 @@ export function useGasless7702Support(
         );
 
         // Check if relay is supported for the chain
-        const relaySupportsChain = await isRelaySupported(fromChain.chainId);
+        const relaySupportsChain = await isRelaySupported(
+          fromChain.chainId as Hex,
+        );
 
         // 7702 is supported if both atomic batch and relay are supported
         const is7702Supported = Boolean(
