@@ -1,12 +1,12 @@
 import { AccountGroupId } from '@metamask/account-api';
+import { NetworkConfiguration } from '@metamask/network-controller';
+import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/modules/selectors/networks';
 import {
   AccountTreeState,
   InternalAccountsState,
   MultichainAccountsState,
 } from './account-tree.types';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 
 // Helper function to create properly typed mock state
 export const createMockMultichainAccountsState = (
