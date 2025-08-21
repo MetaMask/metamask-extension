@@ -5,6 +5,7 @@ on:
     branches:
       - Version-v*
       - release/*
+      - main # for testing
 
 jobs:
   check:
