@@ -158,7 +158,7 @@ const renderHookWithStore = (
 
 describe('useAccountGroupsForPermissions', () => {
   describe('when no existing permissions', () => {
-    it('should return empty connected account groups with available supported groups', () => {
+    it('returns empty connected account groups with available supported groups', () => {
       const emptyPermission = createEmptyPermission();
       const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
       const requestedNamespaces: CaipNamespace[] = [];
@@ -176,7 +176,7 @@ describe('useAccountGroupsForPermissions', () => {
   });
 
   describe('when existing EVM permissions exist', () => {
-    it('should return connected account groups for existing EVM accounts', () => {
+    it('returns connected account groups for existing EVM accounts', () => {
       const existingPermission = createPermissionWithEvmAccounts([
         mockEvmAccount1.address,
       ]);
@@ -199,7 +199,7 @@ describe('useAccountGroupsForPermissions', () => {
   });
 
   describe('EVM wildcard handling', () => {
-    it('should convert EVM chain IDs to wildcard format for deduplication', () => {
+    it('converts EVM chain IDs to wildcard format for deduplication', () => {
       const emptyPermission = createEmptyPermission();
       const requestedChainIds: CaipChainId[] = [
         'eip155:1' as CaipChainId,
@@ -219,7 +219,7 @@ describe('useAccountGroupsForPermissions', () => {
   });
 
   describe('supportedAccountGroups when no chain IDs provided', () => {
-    it('should return empty array when no namespaces are requested', () => {
+    it('returns empty array when no namespaces are requested', () => {
       const emptyPermission = createEmptyPermission();
       const requestedChainIds: CaipChainId[] = [];
       const requestedNamespaces: CaipNamespace[] = [];
@@ -233,7 +233,7 @@ describe('useAccountGroupsForPermissions', () => {
       expect(result.current.supportedAccountGroups).toEqual([]);
     });
 
-    it('should filter account groups by requested namespaces when no chain IDs provided', () => {
+    it('filters account groups by requested namespaces when no chain IDs provided', () => {
       const emptyPermission = createEmptyPermission();
       const requestedChainIds: CaipChainId[] = [];
       const requestedNamespaces: CaipNamespace[] = ['solana' as CaipNamespace];
@@ -247,7 +247,7 @@ describe('useAccountGroupsForPermissions', () => {
       expect(result.current.supportedAccountGroups).toHaveLength(2);
     });
 
-    it('should handle multiple matching namespaces', () => {
+    it('handles multiple matching namespaces', () => {
       const emptyPermission = createEmptyPermission();
       const requestedChainIds: CaipChainId[] = [];
       const requestedNamespaces: CaipNamespace[] = [
@@ -266,7 +266,7 @@ describe('useAccountGroupsForPermissions', () => {
   });
 
   describe('error handling', () => {
-    it('should handle malformed CAIP account IDs', () => {
+    it('handles malformed CAIP account IDs', () => {
       const malformedPermission: Caip25CaveatValue = {
         requiredScopes: {
           'eip155:1': {
@@ -296,7 +296,7 @@ describe('useAccountGroupsForPermissions', () => {
       ]);
     });
 
-    it('should handle missing account groups gracefully', () => {
+    it('handles missing account groups gracefully', () => {
       const stateOverrides = {
         accountTree: {
           selectedAccountGroup: MOCK_GROUP_ID_1,
@@ -322,7 +322,7 @@ describe('useAccountGroupsForPermissions', () => {
   });
 
   describe('mixed namespace and chain scenarios', () => {
-    it('should handle mixed EVM and non-EVM chain requests', () => {
+    it('handles mixed EVM and non-EVM chain requests', () => {
       const emptyPermission = createEmptyPermission();
       const requestedChainIds: CaipChainId[] = [
         'eip155:1' as CaipChainId,
@@ -341,7 +341,7 @@ describe('useAccountGroupsForPermissions', () => {
       expect(result.current.supportedAccountGroups).toHaveLength(2);
     });
 
-    it('should handle non-EVM existing permissions', () => {
+    it('handles non-EVM existing permissions', () => {
       const solPermission: Caip25CaveatValue = {
         requiredScopes: {
           [MOCK_SOLANA_CHAIN_ID]: {
@@ -374,7 +374,7 @@ describe('useAccountGroupsForPermissions', () => {
     });
   });
 
-  it('should handle empty permission scopes', () => {
+  it('handles empty permission scopes', () => {
     const emptyPermission = createEmptyPermission();
     const requestedChainIds: CaipChainId[] = [];
     const requestedNamespaces: CaipNamespace[] = [];
@@ -390,7 +390,7 @@ describe('useAccountGroupsForPermissions', () => {
     expect(result.current.existingConnectedCaipAccountIds).toEqual([]);
   });
 
-  it('should handle permission with empty account arrays', () => {
+  it('handles permission with empty account arrays', () => {
     const emptyAccountsPermission: Caip25CaveatValue = {
       requiredScopes: {
         'eip155:1': {
@@ -415,7 +415,7 @@ describe('useAccountGroupsForPermissions', () => {
     expect(result.current.existingConnectedCaipAccountIds).toEqual([]);
   });
 
-  it('should handle accounts with no scopes when filtering by namespace', () => {
+  it('handles accounts with no scopes when filtering by namespace', () => {
     const stateOverrides = {
       internalAccounts: {
         accounts: {
