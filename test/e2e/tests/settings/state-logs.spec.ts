@@ -12,13 +12,13 @@ import {
   compareTypeMaps,
   createTypeMap,
   getStateLogsJson,
-  type StateLogsJson,
+  type MinimalStateLogsJson,
 } from './state-logs-helpers';
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
 
 describe('State logs', function () {
-  it('should download state logs for the account and match expected structure', async function () {
+  it('should download state logs for the account', async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
@@ -41,10 +41,58 @@ describe('State logs', function () {
         await advancedSettingsPage.checkPageIsLoaded();
         await advancedSettingsPage.downloadStateLogs();
 
-        // Wait for the currentBlockGasLimitByChainId to populate in state
-        await driver.delay(5000);
         // Verify download
-        let currentStateLogs: StateLogsJson | null = null;
+        let info: MinimalStateLogsJson | null = null;
+        await driver.wait(async () => {
+          info = await getStateLogsJson(downloadsFolder);
+          return info !== null;
+        }, 10000);
+        // Verify Json
+        if (info === null) {
+          throw new Error('State logs not found');
+        }
+        const stateLogs: MinimalStateLogsJson = info;
+        assert.equal(
+          stateLogs.metamask.identities[
+            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
+          ].address,
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        );
+        assert.equal(
+          stateLogs.metamask.internalAccounts.accounts[
+            stateLogs.metamask.internalAccounts.selectedAccount
+          ].address,
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        );
+      },
+    );
+  });
+
+  it('state log file matches the expected state structure', async function () {
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      // Chrome shows OS level download prompt which can't be dismissed by Selenium
+      this.skip();
+    }
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await createDownloadFolder(downloadsFolder);
+        await loginWithBalanceValidation(driver);
+
+        // Download state logs
+        await new HeaderNavbar(driver).openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.clickAdvancedTab();
+        const advancedSettingsPage = new AdvancedSettings(driver);
+        await advancedSettingsPage.checkPageIsLoaded();
+        await advancedSettingsPage.downloadStateLogs();
+
+        // Verify download
+        let currentStateLogs: MinimalStateLogsJson | null = null;
         await driver.wait(async () => {
           currentStateLogs = await getStateLogsJson(downloadsFolder);
           return currentStateLogs !== null;
@@ -99,25 +147,6 @@ describe('State logs', function () {
 
         console.log(
           colorize('✅ State logs structure validation passed!', 'green'),
-        );
-
-        // Additional specific assertions for critical fields (type checking)
-        const stateLogs = currentStateLogs as StateLogsJson;
-        assert.equal(
-          typeof stateLogs.metamask.identities[
-            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
-          ].address,
-          'string',
-        );
-        assert.equal(
-          typeof stateLogs.metamask.internalAccounts.accounts[
-            stateLogs.metamask.internalAccounts.selectedAccount
-          ].address,
-          'string',
-        );
-
-        console.log(
-          colorize('✅ Critical field type validation passed!', 'green'),
         );
       },
     );

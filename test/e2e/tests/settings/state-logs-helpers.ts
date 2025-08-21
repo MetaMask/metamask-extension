@@ -35,7 +35,9 @@ export const createCleanDifferenceMessage = (
   }
 };
 
-export type StateLogsJson = {
+// Type definition for the specific fields we validate in state logs
+// This is NOT the complete state logs structure - only includes fields used in tests
+export type MinimalStateLogsJson = {
   metamask: {
     identities: {
       [key: string]: {
@@ -133,8 +135,15 @@ export const compareTypeMaps = (
   const cleanDifferences: string[] = [];
   console.log(colorize('🔍 Comparing state log structures...', 'cyan'));
 
-  // To avoid updates on the state logs file, with low risk changes
-  const ignoredKeys = ['localeMessages', 'metamask.slides'];
+  // There are 2 reasons for adding a key into this list:
+  // 1. To avoid updates on the state logs file, with low risk changes
+  // 2. To avoid flakiness with intermittent keys
+  const ignoredKeys = [
+    'localeMessages',
+    'metamask.slides',
+    'metamask.currentBlockGasLimitByChainId',
+    'metamask.networkConfigurationsByChainId',
+  ];
 
   const shouldIgnoreKey = (key: string): boolean => {
     if (key.match(/\[\d+\]$/u)) {
@@ -378,7 +387,7 @@ export const compareTypeMaps = (
 // Function to get state logs JSON from file
 export const getStateLogsJson = async (
   downloadsFolder: string,
-): Promise<StateLogsJson | null> => {
+): Promise<MinimalStateLogsJson | null> => {
   try {
     const stateLogs = `${downloadsFolder}/MetaMask state logs.json`;
     const { promises: fs } = await import('fs');
