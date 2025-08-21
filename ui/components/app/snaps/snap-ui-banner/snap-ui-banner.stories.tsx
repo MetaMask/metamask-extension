@@ -3,7 +3,7 @@ import { SnapUIBanner } from './snap-ui-banner';
 import { BannerAlertSeverity } from '../../../component-library';
 
 export default {
-  title: 'Components/App/Snaps/SnapUiBanner',
+  title: 'Components/App/Snaps/SnapUIBanner',
   component: SnapUIBanner,
   argTypes: {
     title: {
@@ -27,7 +27,7 @@ export const DefaultStory = (args: {
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  title: 'Components/App/Snaps/SnapUiBanner',
+  title: 'Banner title',
   severity: 'info',
   children: 'Banner content.',
 };

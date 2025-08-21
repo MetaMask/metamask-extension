@@ -61,7 +61,7 @@ const Template: StoryFn<typeof BannerBase> = (args) => <BannerBase {...args} />;
 export const DefaultStory = Template.bind({});
 
 DefaultStory.args = {
-  title: 'Components/ComponentLibrary/BannerBase',
+  title: 'Title is sentence case no period',
   children: "Description shouldn't repeat title. 1-3 lines.",
   actionButtonLabel: 'Action',
   startAccessory: <Icon name={IconName.Info} size={IconSize.Lg} />,
@@ -72,14 +72,14 @@ DefaultStory.storyName = 'Default';
 export const Title = Template.bind({});
 
 Title.args = {
-  title: 'Components/ComponentLibrary/BannerBase',
+  title: 'Title is sentence case no period',
   children: 'Pass only a string through the title prop',
 };
 
 export const Description = Template.bind({});
 
 Description.args = {
-  title: 'Components/ComponentLibrary/BannerBase',
+  title: 'Description vs children',
   description:
     'Pass only a string through the description prop or you can use children if the contents require more',
 };
@@ -103,7 +103,7 @@ export const Children: StoryFn<typeof BannerBase> = (args) => {
 export const ActionButton = Template.bind({});
 
 ActionButton.args = {
-  title: 'Components/ComponentLibrary/BannerBase',
+  title: 'Action prop demo',
   actionButtonLabel: 'Action',
   actionButtonProps: {
     endIconName: IconName.Arrow2Right,
@@ -127,14 +127,14 @@ export const OnClose: StoryFn<typeof BannerBase> = (args) => {
 };
 
 OnClose.args = {
-  title: 'Components/ComponentLibrary/BannerBase',
+  title: 'onClose demo',
   children: 'Click the close button icon to hide this notifcation',
 };
 
 export const StartAccessory = Template.bind({});
 
 StartAccessory.args = {
-  title: 'Components/ComponentLibrary/BannerBase',
+  title: 'Start accessory demo',
   children:
     'The info icon on the left is passed through the startAccessory prop',
   startAccessory: <Icon name={IconName.Info} size={IconSize.Lg} />,

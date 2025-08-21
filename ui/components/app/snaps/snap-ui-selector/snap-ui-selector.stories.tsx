@@ -16,7 +16,7 @@ import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 const store = configureStore(testData);
 
 export default {
-  title: 'Components/App/Snaps/SnapUiSelector',
+  title: 'Components/App/Snaps/SnapUISelector',
   component: SnapUISelector,
   argTypes: {},
   decorators: [
@@ -25,7 +25,7 @@ export default {
         <SnapInterfaceContextProvider
           snapId={'npm:fooSnap'}
           interfaceId={'foo'}
-          initialState={{ 'selector': 'foo' }}
+          initialState={{ selector: 'foo' }}
           context={{}}
         >
           {story()}
@@ -35,7 +35,9 @@ export default {
   ],
 };
 
-export const DefaultStory = (args) => <SnapUISelector name='selector' {...args} />;
+export const DefaultStory = (args) => (
+  <SnapUISelector name="selector" {...args} />
+);
 
 DefaultStory.storyName = 'Default';
 
@@ -51,7 +53,9 @@ DefaultStory.args = {
   ],
 };
 
-export const AdvancedStory = (args) => <SnapUISelector name='selector' {...args} />;
+export const AdvancedStory = (args) => (
+  <SnapUISelector name="selector" {...args} />
+);
 
 AdvancedStory.storyName = 'Advanced';
 
@@ -85,7 +89,7 @@ AdvancedStory.args = {
   ],
 };
 
-export const CardStory = (args) => <SnapUISelector name='selector' {...args} />;
+export const CardStory = (args) => <SnapUISelector name="selector" {...args} />;
 
 CardStory.storyName = 'Card';
 
