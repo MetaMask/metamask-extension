@@ -39,7 +39,7 @@ export function onRpcEndpointUnavailable({
   endpointUrl: string;
   error: unknown;
   infuraProjectId: string;
-  metaMetricsId: string | null;
+  metaMetricsId: string | null | undefined;
   trackEvent: MetaMetricsController['trackEvent'];
 }): void {
   trackRpcEndpointEvent(MetaMetricsEventName.RpcServiceUnavailable, {
@@ -82,7 +82,7 @@ export function onRpcEndpointDegraded({
   endpointUrl: string;
   error: unknown;
   infuraProjectId: string;
-  metaMetricsId: string | null;
+  metaMetricsId: string | null | undefined;
   trackEvent: MetaMetricsController['trackEvent'];
 }): void {
   trackRpcEndpointEvent(MetaMetricsEventName.RpcServiceDegraded, {
@@ -124,7 +124,7 @@ export function trackRpcEndpointEvent(
     error: unknown;
     infuraProjectId: string;
     trackEvent: MetaMetricsController['trackEvent'];
-    metaMetricsId: string | null;
+    metaMetricsId: string | null | undefined;
   },
 ): void {
   if (
