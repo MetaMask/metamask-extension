@@ -31,6 +31,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  IconSize,
   Text,
 } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
@@ -281,7 +282,7 @@ const DefaultNetworks = memo(() => {
               name={t('allPopularNetworks')}
               onClick={selectAllDefaultNetworks}
               iconSrc={IconName.Global}
-              iconSize={AvatarNetworkSize.Md}
+              iconSize={IconSize.Xl}
               selected={isAllPopularNetworksSelected}
             />
           </Box>
