@@ -76,7 +76,7 @@ async function connectionHandshake(extensionPort) {
   const { promise: handshake, resolve: handshakeCompleted } =
     createDeferredPromise();
   const ackHandler = (event) => {
-    if (event.data?.method === 'ACK') {
+    if (event.name === 'handshake' && event.data?.method === 'ACK') {
       extensionPort.onMessage.removeListener(ackHandler);
       handshakeCompleted();
     }
