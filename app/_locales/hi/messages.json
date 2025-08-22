@@ -684,12 +684,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "जानें कि हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "अपने एकाउंट्स और सिंक सेटिंग्स का बैकअप लें।"
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "बैकअप और सिंक का परिचय"
-  },
   "backupApprovalInfo": {
     "message": "यदि आप अपना डिवाइस खो देते हैं, अपना पासवर्ड भूल जाते हैं, MetaMask को फिर से इनस्टॉल करना हो या दूसरे डिवाइस पर अपने वॉलेट को एक्सेस करना चाहते हों, तो आपके वॉलेट को रिकवर करने के लिए यह सीक्रेट कोड आवश्यक है।"
   },
@@ -713,9 +707,6 @@
   },
   "basic": {
     "message": "बेसिक"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "बेसिक फंक्शनलिटी बंद है"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask इंटरनेट सेवाओं के माध्यम से टोकन विवरण और गैस सेटिंग्स जैसी बुनियादी सुविधाएं प्रदान करता है। जब आप इंटरनेट सेवाओं का उपयोग करते हैं, तो आपका आईपी ​​एड्रेस साझा किया जाता है, इस मामले में MetaMask के साथ। यह बिल्कुल वैसा ही है जैसे आप किसी वेबसाइट पर जाते हैं। MetaMask इस डेटा का अस्थायी रूप से उपयोग करता है और कभी भी आपका डेटा नहीं बेचता है। आप वीपीएन का उपयोग कर सकते हैं या इन सेवाओं को बंद कर सकते हैं, लेकिन यह आपके MetaMask अनुभव को प्रभावित कर सकता है। अधिक जानने के लिए हमारी $1 पढ़ें।",
@@ -5533,60 +5524,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "इस विकल्प को चालू करने से MetaMask में डीप लिंक खोलने पर दिखाई देने वाली इंटरस्टिशियल स्क्रीन को स्किप कर दिया जाएगा। \"डीप लिंक\" https://link.metamask.io/home जैसा लिंक होता है जो MetaMask को खोलने का कारण बनता है; ऐसे लिंक को अन्य लोग छुपा या बदल सकते हैं। इंटरस्टिशियल स्क्रीन आपको MetaMask के भीतर गलती से खुलने वाले पेज से बचाने के लिए डिज़ाइन की गई है जो आपके एकाउंट्स, टोकन, इतिहास, बैलेंस, सेटिंग्स या अन्य संभावित रूप से संवेदनशील जानकारी प्रदर्शित कर सकते हैं। यह सेटिंग केवल MetaMask द्वारा साइन किए गए लिंक पर लागू होती है।"
-  },
-  "slideBridgeDescription": {
-    "message": "अपने वॉलेट के भीतर, सभी 9 चेंस में एक-दूसरे में मूव करें"
-  },
-  "slideBridgeTitle": {
-    "message": "ब्रिज करने के लिए तैयार हैं?"
-  },
-  "slideCashOutDescription": {
-    "message": "कैश के लिए अपना क्रिप्टो बेचें"
-  },
-  "slideCashOutTitle": {
-    "message": "MetaMask के साथ कैश आउट करें"
-  },
-  "slideDebitCardDescription": {
-    "message": "चयनित क्षेत्रों में उपलब्ध है"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMask डेबिट कार्ड"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "जहां भी जाएं अपना वॉलेट साथ ले जाएं"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "MetaMask मोबाइल डाउनलोड करें"
-  },
-  "slideFundWalletDescription": {
-    "message": "शुरू करने के लिए टोकन जोड़ें या स्थानांतरित करें"
-  },
-  "slideFundWalletTitle": {
-    "message": "अपने वॉलेट और एमईवी सुरक्षा को फंड करें।"
-  },
-  "slideMultiSrpDescription": {
-    "message": "MetaMask में एकाधिक वॉलेट इंपोर्ट करें और उनका उपयोग करें"
-  },
-  "slideMultiSrpTitle": {
-    "message": "कई सीक्रेट रिकवरी फ्रेज़ जोड़ें"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "वही एड्रेस, और स्मार्ट फीचर्स"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "स्मार्ट एकाउंट्स का उपयोग शुरू करें"
-  },
-  "slideSolanaDescription": {
-    "message": "शुरू करने के लिए एक Solana अकाउंट बनाएं"
-  },
-  "slideSolanaTitle": {
-    "message": "Solana अब सपोर्टेड है"
-  },
-  "slideSweepStakeDescription": {
-    "message": "जीतने का मौका पाने के लिए अभी NFT मिंट करें"
-  },
-  "slideSweepStakeTitle": {
-    "message": "$5000 USDC गिवअवे में प्रवेश करें!"
   },
   "slippage": {
     "message": "स्लिपेज (slippage)"

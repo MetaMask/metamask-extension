@@ -684,12 +684,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "了解我们如何保护您的隐私"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "备份您的账户并同步设置。"
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "备份与同步简介"
-  },
   "backupApprovalInfo": {
     "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 MetaMask，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
   },
@@ -713,9 +707,6 @@
   },
   "basic": {
     "message": "基本"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "基本功能已关闭"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask 通过互联网服务提供代币详情和燃料设置等基本功能。当您使用互联网服务时，您的 IP 地址会共享，在本例中与 MetaMask 共享。这就像您访问任何网站一样。MetaMask 暂时使用这些数据，并且绝不会出卖您的数据。您可以使用 VPN 或关闭这些服务，但这可能会影响您的 MetaMask 体验。要了解详情，请参阅我们的 $1。",
@@ -5533,60 +5524,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "启用此选项将跳过在 MetaMask 中打开深度链接时显示的插页式屏幕。“深度链接”（如 https://link.metamask.io/home）会直接唤起 MetaMask 启动；此类链接可能被他人伪装处理。插页式屏幕旨在防止您误开 MetaMask 内可能显示账户、代币、交易记录、余额、设置及其他敏感信息的页面。此设置仅适用于由 MetaMask 签名的链接。"
-  },
-  "slideBridgeDescription": {
-    "message": "横跨 9 条链，一切尽在您的钱包"
-  },
-  "slideBridgeTitle": {
-    "message": "准备好桥接了吗？"
-  },
-  "slideCashOutDescription": {
-    "message": "卖出加密货币，获取现金"
-  },
-  "slideCashOutTitle": {
-    "message": "通过 MetaMask 兑现"
-  },
-  "slideDebitCardDescription": {
-    "message": "特定地区可用"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMask 借记卡"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "钱包随身，随行随付"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "下载 MetaMask 移动版"
-  },
-  "slideFundWalletDescription": {
-    "message": "添加或转入代币即可开始使用"
-  },
-  "slideFundWalletTitle": {
-    "message": "为您的钱包存入资金"
-  },
-  "slideMultiSrpDescription": {
-    "message": "在 MetaMask 中导入并使用多个钱包"
-  },
-  "slideMultiSrpTitle": {
-    "message": "添加多个助记词"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "地址相同，功能更加智能化"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "开始使用智能账户"
-  },
-  "slideSolanaDescription": {
-    "message": "创建 Solana 账户即可开始使用"
-  },
-  "slideSolanaTitle": {
-    "message": "现已支持 Solana"
-  },
-  "slideSweepStakeDescription": {
-    "message": "立即铸造 NFT，赢取惊喜奖励"
-  },
-  "slideSweepStakeTitle": {
-    "message": "参与 $5000 USDC 赢奖活动！"
   },
   "slippage": {
     "message": "滑移"
