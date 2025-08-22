@@ -28,18 +28,28 @@ import {
 } from '../../component-library';
 import { ThemeType } from '../../../../shared/constants/preferences';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export default function ShieldEntryModal() {
+export default function ShieldEntryModal({
+  onClose,
+  onGetStarted,
+}: {
+  onClose: () => void;
+  onGetStarted: () => void;
+}) {
   const t = useI18nContext();
 
   return (
-    <Modal isOpen onClose={() => undefined} className="shield-entry-modal">
+    <Modal
+      data-testid="shield-entry-modal"
+      isOpen
+      onClose={onClose}
+      className="shield-entry-modal"
+    >
       <ModalOverlay />
       <ModalContent
         alignItems={AlignItems.center}
         modalDialogProps={{ paddingTop: 0, paddingBottom: 6 }}
       >
+        {/* TODO: update with full image banner */}
         <ModalHeader
           paddingTop={4}
           className="shield-entry-modal__header h-[160px] flex items-center"
@@ -56,6 +66,7 @@ export default function ShieldEntryModal() {
             ariaLabel={t('close')}
             size={ButtonIconSize.Sm}
             className="absolute top-2 right-2"
+            onClick={onClose}
           />
         </ModalHeader>
         <ModalBody paddingTop={4}>
@@ -106,13 +117,20 @@ export default function ShieldEntryModal() {
         <ModalFooter>
           <Box display={Display.Flex} gap={4}>
             <Button
+              data-testid="shield-entry-modal-skip-button"
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               block
+              onClick={onClose}
             >
               {t('shieldEntryModalSkip')}
             </Button>
-            <Button size={ButtonSize.Lg} block>
+            <Button
+              data-testid="shield-entry-modal-get-started-button"
+              size={ButtonSize.Lg}
+              block
+              onClick={onGetStarted}
+            >
               {t('shieldEntryModalGetStarted')}
             </Button>
           </Box>
