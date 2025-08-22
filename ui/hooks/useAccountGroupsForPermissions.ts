@@ -45,18 +45,17 @@ export const useAccountGroupsForPermissions = (
       const chainIdSet = new Set(requestedCaipChainIds);
       const supportedGroups = new Set<AccountGroupWithInternalAccounts>();
 
-      // For each requested chain ID, find all account groups that support it
-      Array.from(scopeToAccountGroupMap.entries()).forEach(
-        ([scope, scopeAccountGroups]) => {
-          if (chainIdSet.has(scope as CaipChainId)) {
-            // Handle both array and single group formats for backward compatibility
-            const groups = Array.isArray(scopeAccountGroups)
-              ? scopeAccountGroups
-              : [scopeAccountGroups];
-            groups.forEach((group) => supportedGroups.add(group));
+      for (const [scope, scopeAccountGroups] of scopeToAccountGroupMap) {
+        if (chainIdSet.has(scope as CaipChainId)) {
+          if (Array.isArray(scopeAccountGroups)) {
+            for (const group of scopeAccountGroups) {
+              supportedGroups.add(group);
+            }
+          } else {
+            supportedGroups.add(scopeAccountGroups);
           }
-        },
-      );
+        }
+      }
 
       return Array.from(supportedGroups);
     }
@@ -67,21 +66,35 @@ export const useAccountGroupsForPermissions = (
     }
 
     const namespaceSet = new Set(requestedNamespacesWithoutWallet);
+    const supportedGroups = new Set<AccountGroupWithInternalAccounts>();
 
-    return accountGroups.filter((accountGroup) => {
+    for (const accountGroup of accountGroups) {
+      let hasMatchingScope = false;
+
       for (const account of accountGroup.accounts) {
-        // Ensure account.scopes exists and is iterable
-        if (account.scopes && Array.isArray(account.scopes)) {
+        if (account.scopes?.length) {
           for (const scope of account.scopes) {
-            const scopeNamespace = scope.split(':')[0];
-            if (namespaceSet.has(scopeNamespace as CaipNamespace)) {
-              return true;
+            const [scopeNamespace] = scope.split(':');
+            if (
+              scopeNamespace &&
+              namespaceSet.has(scopeNamespace as CaipNamespace)
+            ) {
+              hasMatchingScope = true;
+              break;
             }
+          }
+          if (hasMatchingScope) {
+            break;
           }
         }
       }
-      return false; // No matching scopes found
-    });
+
+      if (hasMatchingScope) {
+        supportedGroups.add(accountGroup);
+      }
+    }
+
+    return Array.from(supportedGroups);
   }, [
     requestedCaipChainIds,
     scopeToAccountGroupMap,
@@ -98,21 +111,29 @@ export const useAccountGroupsForPermissions = (
     const connectedAccountIds =
       getCaipAccountIdsFromCaip25CaveatValue(existingPermission);
 
+    // Create a Map for O(1) account group lookup instead of O(n) find()
+    const accountGroupsById = new Map<
+      string,
+      AccountGroupWithInternalAccounts
+    >();
+    for (const group of accountGroups) {
+      accountGroupsById.set(group.id, group);
+    }
+
     const uniqueAccountGroupIds = new Set<string>();
     const connectedAccountGroupsArray: AccountGroupWithInternalAccounts[] = [];
 
-    connectedAccountIds.forEach((caipAccountId) => {
+    // Use for...of for better performance than forEach
+    for (const caipAccountId of connectedAccountIds) {
       const accountGroupId = caip25ToAccountGroupMap.get(caipAccountId);
       if (accountGroupId && !uniqueAccountGroupIds.has(accountGroupId)) {
-        const accountGroup = accountGroups.find(
-          (group) => group.id === accountGroupId,
-        );
+        const accountGroup = accountGroupsById.get(accountGroupId);
         if (accountGroup) {
           uniqueAccountGroupIds.add(accountGroupId);
           connectedAccountGroupsArray.push(accountGroup);
         }
       }
-    });
+    }
 
     return {
       connectedAccountGroups: connectedAccountGroupsArray,
