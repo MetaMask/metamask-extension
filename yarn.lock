@@ -5563,10 +5563,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^0.19.0":
-  version: 0.19.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:0.19.0"
-  checksum: 10/d4dc306ae62ed4ce3a487028d6671125687053760aa75ab8e399f0b8adb32cbfd05bbdde464457d27b76f2b48ca9adbfed161b4f3b9252199d553e59457915bb
+"@metamask/bitcoin-wallet-snap@npm:^0.19.3":
+  version: 0.19.3
+  resolution: "@metamask/bitcoin-wallet-snap@npm:0.19.3"
+  checksum: 10/b6040e600cc862f7350e68dc3d0e86e4e6456aef352b6cbcf29f5de7ffed6bf49f23352d1ac890007c8696896401723e7d72c6bde4b9cdd5446fcc9aa3eaeae3
   languageName: node
   linkType: hard
 
@@ -19181,12 +19181,12 @@ __metadata:
   linkType: hard
 
 "cipher-base@npm:^1.0.0, cipher-base@npm:^1.0.1, cipher-base@npm:^1.0.3":
-  version: 1.0.4
-  resolution: "cipher-base@npm:1.0.4"
+  version: 1.0.6
+  resolution: "cipher-base@npm:1.0.6"
   dependencies:
-    inherits: "npm:^2.0.1"
-    safe-buffer: "npm:^5.0.1"
-  checksum: 10/3d5d6652ca499c3f7c5d7fdc2932a357ec1e5aa84f2ad766d850efd42e89753c97b795c3a104a8e7ae35b4e293f5363926913de3bf8181af37067d9d541ca0db
+    inherits: "npm:^2.0.4"
+    safe-buffer: "npm:^5.2.1"
+  checksum: 10/faf232deff2351448ea23d265eb8723e035ebbb454baca45fb60c1bd71056ede8b153bef1b221e067f13e6b9288ebb83bb6ae2d5dd4cec285411f9fc22ec1f5b
   languageName: node
   linkType: hard
 
@@ -31683,7 +31683,7 @@ __metadata:
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A73.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-73.3.0-d10ff27dec.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^0.19.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^0.19.3"
     "@metamask/bridge-controller": "npm:^39.1.0"
     "@metamask/bridge-status-controller": "npm:^38.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
@@ -38932,7 +38932,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sha.js@npm:2.4.11, sha.js@npm:^2.3.6, sha.js@npm:^2.4.0, sha.js@npm:^2.4.11, sha.js@npm:^2.4.8":
+"sha.js@npm:2.4.11":
   version: 2.4.11
   resolution: "sha.js@npm:2.4.11"
   dependencies:
@@ -38941,6 +38941,19 @@ __metadata:
   bin:
     sha.js: ./bin.js
   checksum: 10/d833bfa3e0a67579a6ce6e1bc95571f05246e0a441dd8c76e3057972f2a3e098465687a4369b07e83a0375a88703577f71b5b2e966809e67ebc340dbedb478c7
+  languageName: node
+  linkType: hard
+
+"sha.js@npm:^2.3.6, sha.js@npm:^2.4.0, sha.js@npm:^2.4.11, sha.js@npm:^2.4.8":
+  version: 2.4.12
+  resolution: "sha.js@npm:2.4.12"
+  dependencies:
+    inherits: "npm:^2.0.4"
+    safe-buffer: "npm:^5.2.1"
+    to-buffer: "npm:^1.2.0"
+  bin:
+    sha.js: bin.js
+  checksum: 10/39c0993592c2ab34eb2daae2199a2a1d502713765aecb611fd97c0c4ab7cd53e902d628e1962aaf384bafd28f55951fef46dcc78799069ce41d74b03aa13b5a7
   languageName: node
   linkType: hard
 
