@@ -99,9 +99,9 @@ jobs:
         run: |
           # Set minimal environment variables to prevent Vulkan driver issues
           {
-            echo "export DISPLAY=:99"
-            echo "export VK_LOADER_DRIVERS_SELECT=swiftshader"
-            echo "export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
+            echo "DISPLAY=:99"
+            echo "VK_LOADER_DRIVERS_SELECT=swiftshader"
+            echo "VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
           } >> "$GITHUB_ENV"
 
       - name: Debug Vulkan environment
