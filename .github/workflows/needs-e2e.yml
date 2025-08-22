@@ -82,6 +82,9 @@ jobs:
                       # Skip still true if documentation or data files
                       elif [[ "$file" =~ \.(md|mdx|csv|txt)$ ]]; then
                           continue
+                      # Skip still true if GitHub workflow files
+                      elif [[ "$file" =~ ^\.github/.*\.(yml|yaml)$ ]]; then
+                          continue
                       # Skip still true if unit tests files
                       elif [[ "$file" =~ \.test\.(js|ts|tsx|jsx)$ ]] || [[ "$file" =~ \.snap$ ]]; then
                           continue
