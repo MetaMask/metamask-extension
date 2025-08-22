@@ -23,14 +23,13 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { AvatarGroup } from '../../../multichain/avatar-group';
 import { AvatarType } from '../../../multichain/avatar-group/avatar-group.types';
-import { CaipChainId } from '@metamask/utils';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { Network } from '../tool-tip.types';
 
-interface SiteCellTooltipProps {
+type SiteCellTooltipProps = {
   accountGroups?: AccountGroupWithInternalAccounts[];
   networks?: Network[];
-}
+};
 
 export const MultichainSiteCellTooltip = ({
   accountGroups,
