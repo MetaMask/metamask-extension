@@ -548,6 +548,13 @@ const getGroupByGroupId = (
   return null;
 };
 
+const getSanitizedChainId = (chainId: CaipChainId) => {
+  if (chainId.startsWith('eip155')) {
+    return 'eip155:0';
+  }
+  return chainId;
+};
+
 /**
  * Get an internal account from a group by its CAIP chain ID.
  *
@@ -565,9 +572,11 @@ const getInternalAccountFromGroup = (
     return null;
   }
 
+  const sanitizedChainId = getSanitizedChainId(caipChainId);
+
   for (const account of group.accounts) {
     const internalAccount = internalAccounts[account];
-    if (internalAccount?.scopes.includes(caipChainId)) {
+    if (internalAccount?.scopes.includes(sanitizedChainId)) {
       return internalAccount;
     }
   }
