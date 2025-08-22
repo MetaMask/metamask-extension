@@ -182,3 +182,37 @@ export const Default: Story = {
     },
   ],
 };
+
+export const ReceivingAddress: Story = {
+  decorators: [
+    (Story) => {
+      const evmAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: 'evm-multichain',
+        metadata: { ...MOCK_ACCOUNT_EOA.metadata, name: 'EVM Account' },
+        scopes: ['eip155:*'] as CaipChainId[],
+      };
+      const solanaAccount = {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        id: 'solana-multichain',
+        metadata: { ...MOCK_ACCOUNT_SOLANA_MAINNET.metadata, name: 'Solana Account' },
+        scopes: ['solana:*'] as CaipChainId[],
+      };
+      const bitcoinAccount = {
+        ...MOCK_ACCOUNT_BIP122_P2WPKH,
+        id: 'bitcoin-multichain',
+        metadata: { ...MOCK_ACCOUNT_BIP122_P2WPKH.metadata, name: 'Bitcoin Account' },
+        scopes: ['bip122:*'] as CaipChainId[],
+      };
+      
+      const store = mockStore(createMockState([evmAccount, solanaAccount, bitcoinAccount], 'Full Multichain Account'));
+      return (
+        <Provider store={store}>
+          <Wrapper initialEntries={['/multichain-account-address-list/test-group-id?source=receive']}>
+            <Story />
+          </Wrapper>
+        </Provider>
+      );
+    },
+  ],
+};

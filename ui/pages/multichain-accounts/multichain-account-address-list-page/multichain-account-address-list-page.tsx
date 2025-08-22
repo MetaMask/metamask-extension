@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -26,6 +26,7 @@ import {
 export const MultichainAccountAddressListPage = () => {
   const t = useI18nContext();
   const history = useHistory();
+  const location = useLocation();
   const accounts = useSelector(getInternalAccountsFromSelectedGroup);
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const accountGroup = useSelector((state) =>
@@ -33,6 +34,15 @@ export const MultichainAccountAddressListPage = () => {
       ? getMultichainAccountGroupById(state, selectedAccountGroup)
       : null,
   );
+
+  // Check if we're in "receive" mode based on query parameter
+  const searchParams = new URLSearchParams(location.search);
+  const isReceiveMode = searchParams.get('source') === 'receive';
+
+  // Determine the page title based on the mode
+  const pageTitle = isReceiveMode
+    ? t('receivingAddress')
+    : `${accountGroup?.metadata?.name || t('account')} / ${t('addresses')}`;
 
   return (
     <Page className="max-w-[600px]">
@@ -49,7 +59,7 @@ export const MultichainAccountAddressListPage = () => {
           />
         }
       >
-        {accountGroup?.metadata?.name || t('account')} / {t('addresses')}
+        {pageTitle}
       </Header>
       <Content className="p-0">
         <Box flexDirection={BoxFlexDirection.Column}>
