@@ -97,38 +97,8 @@ jobs:
 
       - name: Set GPU environment variables
         run: |
-          # Set minimal environment variables to prevent Vulkan driver issues
-          {
-            echo "DISPLAY=:99"
-            echo "VK_LOADER_DRIVERS_SELECT=swiftshader"
-            echo "VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
-          } >> "$GITHUB_ENV"
-
-      - name: Debug Vulkan environment
-        run: |
-          echo "=== Minimal Vulkan Environment Variables ==="
-          echo "DISPLAY: $DISPLAY"
-          echo "VK_LOADER_DRIVERS_SELECT: $VK_LOADER_DRIVERS_SELECT"
-          echo "VK_ICD_FILENAMES: $VK_ICD_FILENAMES"
-          echo ""
-          echo "=== Checking Vulkan availability ==="
-          if command -v vulkaninfo >/dev/null 2>&1; then
-            echo "vulkaninfo is available"
-            echo "Running vulkaninfo --summary:"
-            vulkaninfo --summary 2>&1 | head -10 || echo "vulkaninfo failed (this might be expected)"
-          else
-            echo "vulkaninfo not available"
-          fi
-          echo ""
-          echo "=== Checking Vulkan ICD files ==="
-          if [ -f "$VK_ICD_FILENAMES" ]; then
-            echo "VK_ICD_FILENAMES file exists: $VK_ICD_FILENAMES"
-            head -5 "$VK_ICD_FILENAMES"
-          else
-            echo "VK_ICD_FILENAMES file does not exist: $VK_ICD_FILENAMES"
-            echo "Available Vulkan ICD files:"
-            find /usr/share/vulkan/icd.d/ -name "*.json" 2>/dev/null | head -5 || echo "No Vulkan ICD files found"
-          fi
+          # Set minimal environment variable to prevent Vulkan driver issues
+          echo "VK_LOADER_DRIVERS_SELECT=swiftshader" >> "$GITHUB_ENV"
 
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}
