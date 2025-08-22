@@ -132,7 +132,7 @@ export default class ExtensionPlatform {
           )
         : await this._showConfirmedTransaction(txMeta, rpcPrefs);
     } else if (status === TransactionStatus.failed) {
-      if (txMeta.error?.message?.includes('ledgerEthAppNftNotSupported')) {
+      if (txMeta.error?.message?.includes('EthAppNftNotSupported')) {
         await this._showFailedTransaction(
           txMeta,
           t('ledgerEthAppNftNotSupportedNotification'),

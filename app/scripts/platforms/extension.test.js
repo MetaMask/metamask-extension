@@ -136,11 +136,11 @@ describe('extension platform', () => {
   });
 
   describe('showTransactionNotification', () => {
-    it('shows failed transaction with ledgerEthAppNftNotSupported error message', async () => {
+    it('shows failed transaction with EthAppNftNotSupported error message', async () => {
       const txMeta = {
         status: TransactionStatus.failed,
         txParams: { nonce: '0x1' },
-        error: { message: 'ledgerEthAppNftNotSupported' },
+        error: { message: 'EthAppNftNotSupported' },
       };
       const rpcPrefs = {
         chainId: 1,
