@@ -4,6 +4,7 @@ import { Button, TextField } from '../../../../../components/component-library';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useSendActions } from '../../../hooks/send/useSendActions';
 import { useSendContext } from '../../../context/send';
+import { Header } from '../header';
 
 export const Recipient = () => {
   const [to, setTo] = useState('');
@@ -25,11 +26,16 @@ export const Recipient = () => {
   }, [handleSubmit, to]);
 
   return (
-    <div>
-      <p>TO</p>
-      <TextField onChange={onChange} />
-      <Button onClick={goToPreviousPage}>Previous</Button>
-      <Button onClick={onClick}>Continue</Button>
+    <div className="send__wrapper">
+      <div className="send__container">
+        <div className="send__content">
+          <Header />
+          <p>TO</p>
+          <TextField onChange={onChange} />
+          <Button onClick={goToPreviousPage}>Previous</Button>
+          <Button onClick={onClick}>Continue</Button>
+        </div>
+      </div>
     </div>
   );
 };
