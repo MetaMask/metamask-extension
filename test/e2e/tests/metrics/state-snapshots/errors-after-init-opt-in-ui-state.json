@@ -177,6 +177,7 @@
     "historicalPrices": "object",
     "marketData": "object",
     "multichainNetworkConfigurationsByChainId": "object",
+    "MultichainAccountService": "object",
     "selectedMultichainNetworkChainId": "string",
     "isEvmSelected": "boolean",
     "networksWithTransactionActivity": "object",
