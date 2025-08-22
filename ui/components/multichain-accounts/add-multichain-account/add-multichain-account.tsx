@@ -26,17 +26,14 @@ export const AddMultichainAccount = ({
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCreateMultichainAccountClick = () => {
+  const handleCreateMultichainAccountClick = async () => {
     if (isLoading) {
       return;
     }
 
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-
-    dispatch(createMultichainAccount(walletId));
+    await dispatch(createMultichainAccount(walletId));
+    setIsLoading(false);
   };
 
   return (
