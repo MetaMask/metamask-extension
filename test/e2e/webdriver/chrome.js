@@ -59,6 +59,7 @@ class ChromeDriver {
 
     if (process.env.CI || process.env.CODESPACES) {
       args.push('--disable-gpu');
+      args.push('--disable-vulkan');
     }
 
     if (isHeadless('SELENIUM')) {
