@@ -9,7 +9,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
-import { AddressList } from './address-list';
+import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
 
 const mockHistoryGoBack = jest.fn();
 
@@ -20,7 +20,7 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-describe('AddressList', () => {
+describe('MultichainAccountAddressListPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -93,7 +93,7 @@ describe('AddressList', () => {
       },
     });
 
-    return renderWithProvider(<AddressList />, store);
+    return renderWithProvider(<MultichainAccountAddressListPage />, store);
   };
 
   it('renders the page with correct components', () => {
@@ -179,7 +179,7 @@ describe('AddressList', () => {
       },
     });
 
-    renderWithProvider(<AddressList />, store);
+    renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Should show fallback header
     expect(screen.getByText('Account / Addresses')).toBeInTheDocument();

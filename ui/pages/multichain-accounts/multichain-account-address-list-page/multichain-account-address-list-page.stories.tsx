@@ -5,7 +5,7 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { CaipChainId } from '@metamask/utils';
 import { AccountGroupId, AccountGroupType, AccountWalletType } from '@metamask/account-api';
-import { AddressList } from './address-list';
+import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   MOCK_ACCOUNT_EOA,
@@ -136,9 +136,9 @@ const createMockState = (accounts = [MOCK_ACCOUNT_EOA], groupName = 'Test Multic
   };
 };
 
-const meta: Meta<typeof AddressList> = {
-  title: 'Pages/MultichainAccounts/AddressList',
-  component: AddressList,
+const meta: Meta<typeof MultichainAccountAddressListPage> = {
+  title: 'Pages/MultichainAccounts/MultichainAccountAddressListPage',
+  component: MultichainAccountAddressListPage,
   parameters: {
     backgrounds: {
       default: 'light',
@@ -147,7 +147,7 @@ const meta: Meta<typeof AddressList> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof AddressList>;
+type Story = StoryObj<typeof MultichainAccountAddressListPage>;
 
 export const Default: Story = {
   decorators: [

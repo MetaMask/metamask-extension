@@ -23,7 +23,7 @@ import {
   getMultichainAccountGroupById,
 } from '../../../selectors/multichain-accounts/account-tree';
 
-export const AddressList = () => {
+export const MultichainAccountAddressListPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const accounts = useSelector(getInternalAccountsFromSelectedGroup);

@@ -16,7 +16,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  ADDRESS_LIST_ROUTE,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { MultichainAccountMenuItems } from '../multichain-account-menu-items/multichain-account-menu-items';
@@ -53,7 +53,7 @@ export const MultichainAccountMenu = ({
       // TODO: Implement account addresses click handling
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
-      const multichainAccountAddressesPageRoute = `${ADDRESS_LIST_ROUTE}/${encodeURIComponent(accountGroupId)}`;
+      const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
       history.push(multichainAccountAddressesPageRoute);
     };
 
