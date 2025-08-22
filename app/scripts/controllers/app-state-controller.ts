@@ -79,7 +79,7 @@ export type AppStateControllerState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  activeQrCodeScanRequest?: QrScanRequest | null;
+  activeQrCodeScanRequest: QrScanRequest | null;
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
@@ -224,6 +224,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   enableEnforcedSimulationsForTransactions: {},
   enforcedSimulationsSlippage: 10,
   enforcedSimulationsSlippageForTransactions: {},
+  activeQrCodeScanRequest: null,
   ...getInitialStateOverrides(),
 });
 
