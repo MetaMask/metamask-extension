@@ -28,17 +28,17 @@ export const MultichainAccountAddressListPage = () => {
   const history = useHistory();
   const location = useLocation();
   const { accountGroupId } = useParams<{ accountGroupId: string }>();
-  
+
   // Decode the account group ID from the URL parameter and cast to proper type
-  const decodedAccountGroupId = accountGroupId 
-    ? (decodeURIComponent(accountGroupId) as AccountGroupId) 
+  const decodedAccountGroupId = accountGroupId
+    ? (decodeURIComponent(accountGroupId) as AccountGroupId)
     : null;
-  
+
   // Get accounts for the specific group from the URL
   const accounts = useSelector((state) =>
     getInternalAccountsFromGroupById(state, decodedAccountGroupId),
   );
-  
+
   // Get the account group details using the URL parameter
   const accountGroup = useSelector((state) =>
     decodedAccountGroupId
@@ -72,7 +72,7 @@ export const MultichainAccountAddressListPage = () => {
       >
         {pageTitle}
       </Header>
-      <Content className="p-0">
+      <Content>
         <Box flexDirection={BoxFlexDirection.Column}>
           <MultichainAddressRowsList accounts={accounts} />
         </Box>

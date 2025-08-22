@@ -657,7 +657,7 @@ export const getInternalAccountBySelectedAccountGroupAndCaip =
 export const getInternalAccountsFromGroupById = createDeepEqualSelector(
   getAccountTree,
   getInternalAccountsObject,
-  (_: any, groupId: AccountGroupId | null) => groupId,
+  (_, groupId: AccountGroupId) => groupId,
   (
     accountTree: AccountTreeState,
     internalAccounts: Record<AccountId, InternalAccount>,
