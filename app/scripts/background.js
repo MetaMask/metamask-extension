@@ -443,7 +443,7 @@ const corruptionHandler = new CorruptionHandler();
 browser.runtime.onConnect.addListener(async (port) => {
   // Setup listeners to respond immediately to handshake from UI.
   const synHandler = (event) => {
-    if (event.data?.method === 'SYN') {
+    if (event.name === 'handshake' && event.data?.method === 'SYN') {
       port.onMessage.removeListener(synHandler);
       port.postMessage({
         data: {
