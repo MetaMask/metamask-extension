@@ -476,22 +476,24 @@ export const getScopeToAccountGroupMap = createDeepEqualSelector(
 
     accountGroupsWithInternalAccounts.forEach((accountGroup) => {
       accountGroup.accounts.forEach((account) => {
-        account.scopes.forEach((scope) => {
-          addAccountGroupToScope(scope, accountGroup);
+        const scopesToAdd = new Set(account.scopes);
 
-          if (account.type === EthAccountType.Eoa) {
-            addAccountGroupToScope(
-              `${KnownCaipNamespace.Eip155}:0`,
-              accountGroup,
-            );
-            Object.keys(networkConfigurationsByCaipChainId).forEach(
-              (caipChainId) => {
-                if (caipChainId.startsWith(`${KnownCaipNamespace.Eip155}:`)) {
-                  addAccountGroupToScope(caipChainId, accountGroup);
-                }
-              },
-            );
-          }
+        if (account.type === EthAccountType.Eoa) {
+          // Add eip155:0 scope
+          scopesToAdd.add(`${KnownCaipNamespace.Eip155}:0`);
+
+          // Add all eip155 network scopes
+          Object.keys(networkConfigurationsByCaipChainId).forEach(
+            (caipChainId) => {
+              if (caipChainId.startsWith(`${KnownCaipNamespace.Eip155}:`)) {
+                scopesToAdd.add(caipChainId as `${string}:${string}`);
+              }
+            },
+          );
+        }
+
+        scopesToAdd.forEach((scope) => {
+          addAccountGroupToScope(scope, accountGroup);
         });
       });
     });
