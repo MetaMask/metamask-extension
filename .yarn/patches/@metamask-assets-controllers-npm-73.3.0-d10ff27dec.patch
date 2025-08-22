@@ -1,18 +1,3 @@
-diff --git a/dist/DeFiPositionsController/DeFiPositionsController.cjs b/dist/DeFiPositionsController/DeFiPositionsController.cjs
-index 17fabe0594dcaccc7f4d2f7f54f89a575bde247e..937784721dd084f1583b0cc437bfee94d954f196 100644
---- a/dist/DeFiPositionsController/DeFiPositionsController.cjs
-+++ b/dist/DeFiPositionsController/DeFiPositionsController.cjs
-@@ -18,7 +18,7 @@ const calculate_defi_metrics_1 = require("./calculate-defi-metrics.cjs");
- const fetch_positions_1 = require("./fetch-positions.cjs");
- const group_defi_positions_1 = require("./group-defi-positions.cjs");
- const assetsUtil_1 = require("../assetsUtil.cjs");
--const TEN_MINUTES_IN_MS = 600000;
-+const TEN_MINUTES_IN_MS = 6000000;
- const FETCH_POSITIONS_BATCH_SIZE = 10;
- const controllerName = 'DeFiPositionsController';
- const controllerMetadata = {
-diff --git a/dist/TokenBalancesController.cjs b/dist/TokenBalancesController.cjs
-index 2b0f1645ae2d3251429fb569626c7b6969f4639d..1998227787d40160e26b6078fc44029b94d11783 100644
 --- a/dist/TokenBalancesController.cjs
 +++ b/dist/TokenBalancesController.cjs
 @@ -32,6 +32,7 @@ const metadata = {
