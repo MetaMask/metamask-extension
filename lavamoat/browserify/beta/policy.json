@@ -4523,8 +4523,7 @@
         "process": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "koa>content-disposition>safe-buffer": true,
-        "@ngraveio/bc-ur>sha.js": true,
-        "@ngraveio/bc-ur>sha.js>to-buffer": true
+        "@ngraveio/bc-ur>sha.js": true
       }
     },
     "@material-ui/core>popper.js": {
@@ -5410,6 +5409,13 @@
       },
       "packages": {
         "browserify>browser-resolve": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>typed-array-buffer": {
+      "packages": {
+        "eslint-plugin-react>object.values>call-bound": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "browserify>util>is-typed-array": true
       }
     },
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
