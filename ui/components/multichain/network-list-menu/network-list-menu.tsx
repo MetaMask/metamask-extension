@@ -47,7 +47,6 @@ import {
   setNextNonce,
   addPermittedChain,
   setTokenNetworkFilter,
-  setEnabledNetworks,
   detectNfts,
 } from '../../../store/actions';
 import {
@@ -115,6 +114,10 @@ import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import {
+  enableAllPopularNetworks,
+  enableSingleNetwork,
+} from '../../../store/controller-actions/network-order-controller';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -371,12 +374,10 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       dispatch(setTokenNetworkFilter(allOpts));
     }
 
-    const { namespace } = parseCaipChainId(currentChainId);
-
     if (Object.keys(enabledNetworksByNamespace).length === 1) {
-      dispatch(setEnabledNetworks([hexChainId], namespace));
+      dispatch(enableSingleNetwork(hexChainId));
     } else {
-      dispatch(setEnabledNetworks(Object.keys(evmNetworks), namespace));
+      dispatch(enableAllPopularNetworks());
     }
 
     // If presently on a dapp, communicate a change to

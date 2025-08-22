@@ -260,7 +260,7 @@ export const AppHeaderUnlockedContent = ({
       >
         <Box display={Display.Flex} gap={3}>
           {showConnectedStatus && (
-            <Box ref={menuRef} data-testid="connection-menu">
+            <Box ref={menuRef} data-testid="connection-menu" margin="auto">
               <ConnectedStatusIndicator
                 onClick={() => handleConnectionsRoute()}
               />
@@ -271,12 +271,10 @@ export const AppHeaderUnlockedContent = ({
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
+            style={{ position: 'relative' }}
           >
             {!accountOptionsMenuOpen && (
-              <Box
-                style={{ position: 'relative' }}
-                onClick={() => handleMainMenuOpened()}
-              >
+              <Box onClick={() => handleMainMenuOpened()}>
                 <NotificationsTagCounter noLabel />
               </Box>
             )}
@@ -287,7 +285,7 @@ export const AppHeaderUnlockedContent = ({
               onClick={() => {
                 handleMainMenuOpened();
               }}
-              size={ButtonIconSize.Sm}
+              size={ButtonIconSize.Lg}
             />
           </Box>
         </Box>

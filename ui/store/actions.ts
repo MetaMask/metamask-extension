@@ -4804,6 +4804,9 @@ export function updateAccountsList(
  * This method updates the enabledNetworkMap to mark specified networks as enabled.
  * It can handle both a single chain ID or an array of chain IDs.
  *
+ * @deprecated - this unsafely sets the EnabledNetworkMap,
+ * - we want to have better control on how we enable networks (either single network or all, not in between)
+ * Please use controller-actions/network-order-controller.ts actions
  * @param chainIds - A single chainId (e.g. 'eip155:1') or an array of chain IDs
  * to be enabled. All other networks will be implicitly disabled.
  * @param networkId - The CAIP-2 chain ID of the currently selected network

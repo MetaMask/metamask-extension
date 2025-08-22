@@ -17,6 +17,7 @@
 }
 
 .network-manager__tab-content {
+  padding-top: 16px;
   overflow-y: auto;
   max-height: 70vh;
 }
@@ -35,6 +36,17 @@
 
   .mm-button-icon {
     --button-icon-size: 20px;
+  }
+}
+
+.network-manager__all-popular-networks {
+  .mm-avatar-base {
+    background-color: transparent;
+    border-color: transparent;
+
+    .mm-icon {
+      --icon-size: 30px;
+    }
   }
 }
 

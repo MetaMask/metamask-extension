@@ -25,11 +25,6 @@ class NftListPage {
 
   private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  private readonly LineaMainnet =
-    '[data-testid="network-list-item-eip155:59144"]';
-
   private readonly noNftInfo = {
     text: 'No NFTs yet',
     tag: 'p',
@@ -44,17 +39,6 @@ class NftListPage {
     text: 'NFT was successfully removed!',
     tag: 'h6',
   };
-
-  private readonly modalCloseButton =
-    '[data-testid="modal-header-close-button"]';
-
-  private readonly nftFilterByNetworks = '[data-testid="sort-by-networks"]';
-
-  private readonly nftFilterByPopularNetworks =
-    '[data-testid="network-filter-all"]';
-
-  private readonly nftFilterByCurrentNetwork =
-    '[data-testid="network-filter-current"]';
 
   private readonly nftListItem = '[data-testid="nft-wrapper"]';
 
@@ -176,27 +160,6 @@ class NftListPage {
     }, 10000);
 
     console.log(`${expectedNumberOfNfts} NFTs found in NFT list on homepage`);
-  }
-
-  async filterNftsByNetworks(networkName: string): Promise<void> {
-    await this.driver.clickElement(this.nftFilterByNetworks);
-    if (networkName === 'Popular networks') {
-      await this.driver.waitForSelector(this.nftFilterByPopularNetworks);
-      await this.driver.clickElement(this.nftFilterByPopularNetworks);
-    } else if (networkName === 'Current network') {
-      await this.driver.waitForSelector(this.nftFilterByCurrentNetwork);
-      await this.driver.clickElement(this.nftFilterByCurrentNetwork);
-    } else {
-      throw new Error(
-        `Invalid network name selected for filtering NFTs: ${networkName}`,
-      );
-    }
-  }
-
-  async toggleLineaEnablement(): Promise<void> {
-    await this.driver.clickElement(this.nftFilterByNetworks);
-    await this.driver.clickElementSafe(this.LineaMainnet);
-    await this.driver.clickElementSafe(this.modalCloseButton);
   }
 
   async clickNFTFromList(index = 0, timeout = 10000): Promise<void> {
