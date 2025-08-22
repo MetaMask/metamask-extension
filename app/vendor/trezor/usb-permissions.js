@@ -1,5 +1,5 @@
 /*
-Handling messages from usb permissions iframe
+Handling messages from usb permissions iframe change
 */
 
 const switchToPopupTab = (event) => {
