@@ -1164,7 +1164,7 @@ export default class MetamaskController extends EventEmitter {
 
     const keyringOverrides = this.opts.overrides?.keyrings;
 
-    let additionalKeyrings = [
+    const additionalKeyrings = [
       qrKeyringBuilderFactory(
         keyringOverrides?.qr || QrKeyring,
         keyringOverrides?.qrBridge || QrKeyringScannerBridge,
@@ -1179,35 +1179,19 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     if (isManifestV3 === false) {
-      const additionalNonBridgedKeyrings = [
-        keyringOverrides?.lattice || LatticeKeyring,
-      ];
-
-      const additionalBridgedKeyrings = [
-        {
-          keyring: keyringOverrides?.trezor || TrezorKeyring,
-          bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
-        },
-        {
-          keyring: keyringOverrides?.oneKey || OneKeyKeyring,
-          bridge: keyringOverrides?.oneKeyBridge || TrezorConnectBridge,
-        },
-        {
-          keyring: keyringOverrides?.ledger || LedgerKeyring,
-          bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
-        },
-      ];
-
-      additionalNonBridgedKeyrings.forEach((KeyringClass) =>
-        additionalKeyrings.push(keyringBuilderFactory(KeyringClass)),
-      );
-
-      additionalBridgedKeyrings.forEach((keyringType) =>
-        additionalKeyrings.push(
-          hardwareKeyringBuilderFactory(
-            keyringType.keyring,
-            keyringType.bridge,
-          ),
+      additionalKeyrings.push(
+        keyringBuilderFactory(keyringOverrides?.lattice || LatticeKeyring),
+        hardwareKeyringBuilderFactory(
+          TrezorKeyring,
+          keyringOverrides?.trezorBridge || TrezorConnectBridge,
+        ),
+        hardwareKeyringBuilderFactory(
+          OneKeyKeyring,
+          keyringOverrides?.oneKey || TrezorConnectBridge,
+        ),
+        hardwareKeyringBuilderFactory(
+          LedgerKeyring,
+          keyringOverrides?.ledgerBridge || LedgerIframeBridge,
         ),
       );
     } else {
