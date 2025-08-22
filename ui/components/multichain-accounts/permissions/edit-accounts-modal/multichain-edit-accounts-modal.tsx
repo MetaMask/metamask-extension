@@ -5,6 +5,8 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Modal,
@@ -27,10 +29,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { MultichainAccountList } from '../../multichain-account-list';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
-import { useSelector } from 'react-redux';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 
 type MultichainEditAccountsModalProps = {
