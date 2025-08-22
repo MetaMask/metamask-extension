@@ -50,7 +50,10 @@ export const TokenCellSecondaryDisplay = React.memo(
     );
 
     const showScamWarning =
-      token.isNative && !isOriginalNativeToken && isEvm && token.type === 'evm';
+      token.isNative &&
+      !isOriginalNativeToken &&
+      isEvm &&
+      (!token.type || token.type.startsWith('eip155'));
 
     const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 

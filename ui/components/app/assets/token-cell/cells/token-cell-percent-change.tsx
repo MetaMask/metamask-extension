@@ -25,12 +25,11 @@ export const TokenCellPercentChange = React.memo(
     );
 
     if (isMultichainAccountsState2Enabled) {
-      const tokenPercentageChange =
-        token.type === 'evm'
-          ? multiChainMarketData?.[token.chainId]?.[token.assetId as string]
-              ?.pricePercentChange1d
-          : nonEvmConversionRates?.[token.assetId as CaipAssetType]?.marketData
-              ?.pricePercentChange?.P1D;
+      const tokenPercentageChange = token.type?.startsWith('eip155')
+        ? multiChainMarketData?.[token.chainId]?.[token.assetId as string]
+            ?.pricePercentChange1d
+        : nonEvmConversionRates?.[token.assetId as CaipAssetType]?.marketData
+            ?.pricePercentChange?.P1D;
 
       return (
         <PercentageChange
@@ -53,7 +52,7 @@ export const TokenCellPercentChange = React.memo(
 
     if (
       token.isNative &&
-      (token.chainId === '0x1' || token.type === 'multichain')
+      (token.chainId === '0x1' || !token.type?.startsWith('eip155'))
     ) {
       console.log('TOKEN INFO', {
         token,

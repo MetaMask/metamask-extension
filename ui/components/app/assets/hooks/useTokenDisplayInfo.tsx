@@ -86,9 +86,12 @@ export const useTokenDisplayInfo = ({
 
   const isStakeable =
     token.isStakeable ||
-    (isEvmMainnet && (isEvm || token.type === 'evm') && token.isNative);
+    (isEvmMainnet &&
+      isEvm &&
+      (!token.type || token.type.startsWith('eip155')) &&
+      token.isNative);
 
-  if (isEvm || (isMultichainAccountsState2Enabled && token.type === 'evm')) {
+  if (isEvm && (!token.type || token.type.startsWith('eip155'))) {
     const tokenData = Object.values(tokenList).find(
       (tokenToFind) =>
         isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&
