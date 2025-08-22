@@ -18,7 +18,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   });
 
   return {
-    memStateKey: null,
+    memStateKey: 'MultichainAccountService',
     persistedStateKey: null,
     controller,
   };
