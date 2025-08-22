@@ -11,8 +11,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
+import { Icon, IconName } from '../icon';
 import type { AvatarNetworkComponent } from './avatar-network.types';
 import { AvatarNetworkProps, AvatarNetworkSize } from './avatar-network.types';
+
+const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
+  Object.values(IconName).includes(iconSrc as IconName);
 
 export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -77,16 +81,20 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
                 aria-hidden="true"
               />
             )}
-            <img
-              className={
-                showHalo
-                  ? 'mm-avatar-network__network-image--size-reduced'
-                  : 'mm-avatar-network__network-image'
-              }
-              onError={handleOnError}
-              src={src}
-              alt={(name && `${name} logo`) || 'network logo'}
-            />
+            {isIconSrc(src) ? (
+              <Icon name={src} />
+            ) : (
+              <img
+                className={
+                  showHalo
+                    ? 'mm-avatar-network__network-image--size-reduced'
+                    : 'mm-avatar-network__network-image'
+                }
+                onError={handleOnError}
+                src={src}
+                alt={(name && `${name} logo`) || 'network logo'}
+              />
+            )}
           </>
         )}
       </AvatarBase>

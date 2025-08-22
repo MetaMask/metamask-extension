@@ -44,15 +44,43 @@ export const mockMultichainAccountsFeatureFlag = (mockServer: Mockttp) =>
       };
     });
 
+export const mockMultichainAccountsFeatureFlagStateTwo = (
+  mockServer: Mockttp,
+) =>
+  mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [
+          {
+            enableMultichainAccounts: {
+              enabled: true,
+              featureVersion: '2',
+              minimumVersion: '12.19.0',
+            },
+          },
+        ],
+      };
+    });
+
 export async function withMultichainAccountsDesignEnabled(
   {
     title,
     testSpecificMock = mockMultichainAccountsFeatureFlag,
     accountType = AccountType.MultiSRP,
+    state = 1,
   }: {
     title?: string;
     testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint>;
     accountType?: AccountType;
+    state?: number;
   },
   test: (driver: Driver) => Promise<void>,
 ) {
@@ -86,11 +114,20 @@ export async function withMultichainAccountsDesignEnabled(
         await loginWithBalanceValidation(driver);
       }
       const homePage = new HomePage(driver);
-      await homePage.check_pageIsLoaded();
+      await homePage.checkPageIsLoaded();
       const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.openAccountMenu();
+
+      if (state === 1) {
+        await headerNavbar.openAccountMenu();
+      } else {
+        await headerNavbar.openAccountsPage();
+      }
+
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
+
+      if (state === 1) {
+        await accountListPage.checkPageIsLoaded();
+      }
       await test(driver);
     },
   );
