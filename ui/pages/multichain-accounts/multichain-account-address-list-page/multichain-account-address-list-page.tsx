@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -9,6 +9,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
+import { AccountGroupId } from '@metamask/account-api';
 import {
   Content,
   Header,
@@ -18,8 +19,7 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list';
 import {
-  getInternalAccountsFromSelectedGroup,
-  getSelectedAccountGroup,
+  getInternalAccountsFromGroupById,
   getMultichainAccountGroupById,
 } from '../../../selectors/multichain-accounts/account-tree';
 
@@ -27,11 +27,22 @@ export const MultichainAccountAddressListPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const location = useLocation();
-  const accounts = useSelector(getInternalAccountsFromSelectedGroup);
-  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const { accountGroupId } = useParams<{ accountGroupId: string }>();
+  
+  // Decode the account group ID from the URL parameter and cast to proper type
+  const decodedAccountGroupId = accountGroupId 
+    ? (decodeURIComponent(accountGroupId) as AccountGroupId) 
+    : null;
+  
+  // Get accounts for the specific group from the URL
+  const accounts = useSelector((state) =>
+    getInternalAccountsFromGroupById(state, decodedAccountGroupId),
+  );
+  
+  // Get the account group details using the URL parameter
   const accountGroup = useSelector((state) =>
-    selectedAccountGroup
-      ? getMultichainAccountGroupById(state, selectedAccountGroup)
+    decodedAccountGroupId
+      ? getMultichainAccountGroupById(state, decodedAccountGroupId)
       : null,
   );
 
