@@ -76,12 +76,7 @@ package_list="
     ca-certificates\
     unzip \
     nano \
-    locales \
-    mesa-vulkan-drivers \
-    vulkan-tools \
-    vulkan-validationlayers \
-    libvulkan1 \
-    mesa-utils"
+    locales"
 
 # Packages to attempt to install if essential tools are missing (ie: vncpasswd).
 # This is useful, at least, for Ubuntu 22.04 (jammy)
@@ -228,18 +223,6 @@ fi
 # Install X11, fluxbox and VS Code dependencies
 check_packages ${package_list}
 
-# Verify Vulkan installation
-echo "=== Vulkan Installation Verification ==="
-echo "Checking if Vulkan packages are installed..."
-dpkg -l | grep -i vulkan || echo "No Vulkan packages found"
-echo "Checking Vulkan tools..."
-which vulkaninfo || echo "vulkaninfo not found"
-echo "Checking Vulkan ICD directory..."
-ls -la /usr/share/vulkan/icd.d/ 2>/dev/null || echo "Vulkan ICD directory not found"
-echo "Checking Vulkan environment..."
-echo "VK_ICD_FILENAMES: $VK_ICD_FILENAMES"
-echo "=== End Vulkan Verification ==="
-
 # On newer versions of Ubuntu (22.04),
 # we need an additional package that isn't provided in earlier versions
 if ! type vncpasswd > /dev/null 2>&1; then
@@ -336,7 +319,6 @@ export DISPLAY=:1
 export VNC_RESOLUTION="${VNC_RESOLUTION:-1440x768x16}"
 export LANG="${LANG:-"en_US.UTF-8"}"
 export LANGUAGE="${LANGUAGE:-"en_US.UTF-8"}"
-export VK_ICD_FILENAMES="/usr/share/vulkan/icd.d/intel_icd.x86_64.json:/usr/share/vulkan/icd.d/radeon_icd.x86_64.json"
 
 # Execute the command it not already running
 startInBackgroundIfNotRunning()
@@ -442,14 +424,6 @@ fi
 
 # Clean up
 rm -rf /var/lib/apt/lists/*
-
-# Final Vulkan verification
-echo "=== Final Vulkan Verification ==="
-echo "Testing vulkaninfo..."
-vulkaninfo --summary 2>/dev/null || echo "vulkaninfo failed or not available"
-echo "Checking Vulkan drivers..."
-ls -la /usr/share/vulkan/icd.d/ 2>/dev/null || echo "No Vulkan drivers found"
-echo "=== End Final Verification ==="
 
 cat << EOF
 
