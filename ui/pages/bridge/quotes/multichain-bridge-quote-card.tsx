@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import {
   isSolanaChainId,
   BRIDGE_MM_FEE_RATE,
@@ -327,7 +328,11 @@ export const MultichainBridgeQuoteCard = ({
               color={TextColor.textAlternative}
             >
               <Text variant={TextVariant.bodyMd}>
-                {t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])}
+                {new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(
+                  0,
+                )
+                  ? t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])
+                  : ''}
               </Text>
               <ButtonLink
                 variant={TextVariant.bodyMd}
