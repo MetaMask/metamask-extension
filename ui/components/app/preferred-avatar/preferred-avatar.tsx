@@ -4,6 +4,7 @@ import {
   AvatarAccount,
   AvatarAccountProps,
   AvatarAccountVariant,
+  AvatarBaseShape,
 } from '@metamask/design-system-react';
 import { getUseBlockie } from '../../../selectors';
 
@@ -17,5 +18,11 @@ export const PreferredAvatar = (props: Omit<AvatarAccountProps, 'ref'>) => {
     ? AvatarAccountVariant.Blockies
     : AvatarAccountVariant.Jazzicon;
 
-  return <AvatarAccount {...props} variant={variant} />;
+  return (
+    <AvatarAccount
+      {...props}
+      variant={variant}
+      shape={AvatarBaseShape.Circle} // Remove once we switch to Maskicon
+    />
+  );
 };
