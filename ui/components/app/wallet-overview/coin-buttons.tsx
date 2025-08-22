@@ -24,12 +24,8 @@ import {
   isNonEvmAccount,
   getSwapsDefaultToken,
 } from '../../../selectors';
-import {
-  getIsMultichainAccountsState1Enabled,
-} from '../../../selectors/multichain-accounts/feature-flags';
-import {
-  getSelectedAccountGroup,
-} from '../../../selectors/multichain-accounts/account-tree';
+import { getIsMultichainAccountsState1Enabled } from '../../../selectors/multichain-accounts/feature-flags';
+import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import Tooltip from '../../ui/tooltip';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -108,9 +104,11 @@ const CoinButtons = ({
   >;
   const currentChainId = useSelector(getCurrentChainId);
   const displayNewIconButtons = process.env.REMOVE_GNS;
-  
+
   // Multichain accounts feature flag and selected account group
-  const isMultichainAccountsState1Enabled = useSelector(getIsMultichainAccountsState1Enabled);
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
+  );
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
   const defaultSwapsToken = useSelector((state) =>
@@ -396,12 +394,21 @@ const CoinButtons = ({
     // Check if multichain accounts feature is enabled and we have a selected account group
     if (isMultichainAccountsState1Enabled && selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
-      history.push(`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?source=receive`);
+      history.push(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?source=receive`,
+      );
     } else {
       // Show the traditional receive modal
       setShowReceiveModal(true);
     }
-  }, [isMultichainAccountsState1Enabled, selectedAccountGroup, history, trackEvent, trackingLocation, chainId]);
+  }, [
+    isMultichainAccountsState1Enabled,
+    selectedAccountGroup,
+    history,
+    trackEvent,
+    trackingLocation,
+    chainId,
+  ]);
 
   return (
     <Box
