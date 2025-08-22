@@ -51,6 +51,7 @@ jobs:
 
                   # Extract just the file paths
                   CHANGED_FILES=$(echo "$CHANGED_FILES_JSON" | jq -r '.[].path')
+                  echo "CHANGED_FILES: $CHANGED_FILES"
 
                   # Check if no files changed
                   if [[ -z "$CHANGED_FILES" ]]; then
