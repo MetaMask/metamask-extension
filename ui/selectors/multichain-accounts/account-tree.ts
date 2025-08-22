@@ -33,8 +33,7 @@ import {
   MultichainAccountGroupToScopesMap,
   MultichainAccountsState,
 } from './account-tree.types';
-import { getSanitizedChainId } from './utils';
-import { extractWalletIdFromGroupId } from './utils';
+import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
 
 /**
  * Retrieve account tree state.
