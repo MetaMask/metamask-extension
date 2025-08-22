@@ -1,11 +1,15 @@
 import React from 'react';
 import { CaipChainId } from '@metamask/utils';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
-import { MultichainSiteCellTooltip } from './multichain-site-cell-tooltip';
-import { Network } from '../tool-tip.types';
+import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
+import {
+  MultichainSiteCellTooltip,
+  SiteCellTooltipProps,
+} from './multichain-site-cell-tooltip';
 
 describe('MultichainSiteCellTooltip', () => {
   const store = configureStore({
@@ -41,35 +45,85 @@ describe('MultichainSiteCellTooltip', () => {
     },
   ] as unknown as AccountGroupWithInternalAccounts[];
 
-  const mockNetworks: Network[] = [
+  const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
     {
       name: 'Ethereum Mainnet',
       chainId: '0x1',
       caipChainId: 'eip155:1' as CaipChainId,
+      blockExplorerUrls: ['mock-mainnet-url'],
+      defaultRpcEndpointIndex: 0,
+      nativeCurrency: 'ETH',
+      rpcEndpoints: [
+        {
+          networkClientId: 'mainnet',
+          type: RpcEndpointType.Custom,
+          url: 'mock-mainnet-url',
+        },
+      ],
     },
     {
       name: 'zkSync Era Mainnet',
       chainId: '0x144',
       caipChainId: 'eip155:324' as CaipChainId,
+      blockExplorerUrls: ['mock-zksync-url'],
+      defaultRpcEndpointIndex: 0,
+      nativeCurrency: 'ETH',
+      rpcEndpoints: [
+        {
+          networkClientId: 'zksync',
+          type: RpcEndpointType.Custom,
+          url: 'mock-zksync-url',
+        },
+      ],
     },
     {
       name: 'Binance Smart Chain',
       chainId: '0x38',
       caipChainId: 'eip155:56' as CaipChainId,
+      blockExplorerUrls: ['mock-bsc-url'],
+      defaultRpcEndpointIndex: 0,
+      nativeCurrency: 'BNB',
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          type: RpcEndpointType.Custom,
+          url: 'mock-bsc-url',
+        },
+      ],
     },
     {
       name: 'Polygon',
       chainId: '0x89',
       caipChainId: 'eip155:137' as CaipChainId,
+      blockExplorerUrls: ['mock-polygon-url'],
+      defaultRpcEndpointIndex: 0,
+      nativeCurrency: 'MATIC',
+      rpcEndpoints: [
+        {
+          networkClientId: 'polygon',
+          type: RpcEndpointType.Custom,
+          url: 'mock-polygon-url',
+        },
+      ],
     },
     {
       name: 'Linea Mainnet',
       chainId: '0xe708',
       caipChainId: 'eip155:59144' as CaipChainId,
+      blockExplorerUrls: ['mock-linea-url'],
+      defaultRpcEndpointIndex: 0,
+      nativeCurrency: 'ETH',
+      rpcEndpoints: [
+        {
+          networkClientId: 'linea',
+          type: RpcEndpointType.Custom,
+          url: 'mock-linea-url',
+        },
+      ],
     },
   ];
 
-  const defaultProps = {
+  const defaultProps: SiteCellTooltipProps = {
     accountGroups: mockAccountGroups,
     networks: mockNetworks,
   };
@@ -155,11 +209,22 @@ describe('MultichainSiteCellTooltip', () => {
   });
 
   it('shows overflow indicator for many networks in avatar group', () => {
-    const manyNetworks = Array.from({ length: 10 }, (_, index) => ({
-      name: `Network ${index + 1}`,
-      chainId: `0x${index + 1}`,
-      caipChainId: `eip155:${index + 1}` as CaipChainId,
-    }));
+    const manyNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] =
+      Array.from({ length: 10 }, (_, index) => ({
+        name: `Network ${index + 1}`,
+        chainId: `0x${index + 1}`,
+        caipChainId: `eip155:${index + 1}` as CaipChainId,
+        blockExplorerUrls: [`https://explorer${index + 1}.com`],
+        defaultRpcEndpointIndex: 0,
+        nativeCurrency: `TOKEN${index + 1}`,
+        rpcEndpoints: [
+          {
+            networkClientId: `network-${index + 1}`,
+            type: RpcEndpointType.Custom,
+            url: `https://rpc${index + 1}.com`,
+          },
+        ],
+      }));
 
     const { getByTestId, container } = renderWithProvider(
       <MultichainSiteCellTooltip accountGroups={[]} networks={manyNetworks} />,

@@ -24,11 +24,11 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constan
 import { AvatarGroup } from '../../../multichain/avatar-group';
 import { AvatarType } from '../../../multichain/avatar-group/avatar-group.types';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
-import { Network } from '../tool-tip.types';
+import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
 
-type SiteCellTooltipProps = {
+export type SiteCellTooltipProps = {
   accountGroups?: AccountGroupWithInternalAccounts[];
-  networks?: Network[];
+  networks?: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
 };
 
 export const MultichainSiteCellTooltip = ({

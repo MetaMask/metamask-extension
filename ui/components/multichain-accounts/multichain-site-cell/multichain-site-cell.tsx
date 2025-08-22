@@ -23,11 +23,11 @@ import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-
 import { SiteCellConnectionListItem } from '../../multichain/pages/review-permissions-page/site-cell/site-cell-connection-list-item';
 import { MultichainEditAccountsModal } from '../permissions/edit-accounts-modal/multichain-edit-accounts-modal';
 import { AccountGroupId } from '@metamask/account-api';
-import { Network } from './tool-tip.types';
+import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
 
 type MultichainSiteCellProps = {
-  nonTestNetworks: Network[];
-  testNetworks: Network[];
+  nonTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
+  testNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
   supportedAccountGroups: AccountGroupWithInternalAccounts[];
   onSelectAccountGroupIds: (groupIds: AccountGroupId[]) => void;
   onSelectChainIds: (chainIds: CaipChainId[]) => void;

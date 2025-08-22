@@ -1,10 +1,13 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { AccountGroupType } from '@metamask/account-api';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { MultichainSiteCellTooltip } from './multichain-site-cell-tooltip';
 import type { AccountGroupId } from '@metamask/account-api';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
+import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
+import { CaipChainId } from '@metamask/utils';
 
 export default {
   title: 'Components/MultichainAccounts/MultichainSiteCellTooltip',
@@ -60,16 +63,36 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
   },
 ];
 
-const mockNetworks = [
+const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
   {
     name: 'Ethereum Mainnet',
     chainId: '0x1',
-    caipChainId: 'eip155:1' as any,
+    caipChainId: 'eip155:1' as CaipChainId,
+    blockExplorerUrls: ['mock-mainnet-url'],
+    defaultRpcEndpointIndex: 0,
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        networkClientId: 'mainnet',
+        type: RpcEndpointType.Custom,
+        url: 'mock-mainnet-url',
+      },
+    ],
   },
   {
     name: 'Polygon',
     chainId: '0x89',
-    caipChainId: 'eip155:137' as any,
+    caipChainId: 'eip155:137' as CaipChainId,
+    blockExplorerUrls: ['mock-polygon-url'],
+    defaultRpcEndpointIndex: 0,
+    nativeCurrency: 'MATIC',
+    rpcEndpoints: [
+      {
+        networkClientId: 'polygon',
+        type: RpcEndpointType.Custom,
+        url: 'mock-polygon-url',
+      },
+    ],
   },
 ];
 
