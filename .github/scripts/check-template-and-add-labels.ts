@@ -185,6 +185,15 @@ async function main(): Promise<void> {
         labelable,
         invalidPullRequestTemplateLabel,
       );
+
+      // Require changelog entry
+      if (!hasChangelogEntry(labelable.body)) {
+        const errorMessage = `PR is missing a valid "CHANGELOG entry:" line.`;
+        console.log(errorMessage);
+
+        core.setFailed(errorMessage);
+        process.exit(1);
+      }
     } else {
       const errorMessage = `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L40-L47`;
       console.log(errorMessage);
@@ -383,4 +392,37 @@ async function userBelongsToMetaMaskOrg(
   } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
 
   return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
+}
+
+// This function checks if the PR description has a changelog entry
+function hasChangelogEntry(body: string): boolean {
+  // Remove HTML comments (including multiline)
+  const uncommentedBody = body.replace(/<!--[\s\S]*?-->/g, "");
+
+  // Split body into lines
+  const lines = uncommentedBody.split(/\r?\n/);
+
+  // Find the line starting with "CHANGELOG entry:"
+  const changelogLine = lines.find(line => line.trim().startsWith("CHANGELOG entry:"));
+
+  if (!changelogLine) {
+    console.log("Changelog entry line missing");
+    return false;
+  }
+
+  // Extract text after the colon
+  const entry = changelogLine.split(":")[1]?.trim() ?? "";
+
+  if (entry === "") {
+    console.log("Changelog entry is empty");
+    return false;
+  }
+
+  if (entry.toLowerCase() === "undefined") {
+    console.log("Changelog entry is explicitly undefined");
+    return false;
+  }
+
+  console.log(`Changelog entry found: ${entry}`);
+  return true; // allow any non-empty value, including "null"
 }
