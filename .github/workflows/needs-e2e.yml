@@ -59,13 +59,15 @@ jobs:
                       exit 0
                   fi
 
+                  # Fetch base branch once for package.json diff checks
+                  BASE_REF="${{ github.event.pull_request.base.ref }}"
+                  git fetch origin "${BASE_REF}" --depth=1
+
                   # Check if ALL changed files match skip patterns
                   SKIP_E2E=true
                   while IFS= read -r file; do
+                      # Check for package.json files
                       if [[ "$file" == "package.json" ]] || [[ "$file" =~ /package\.json$ ]]; then
-                          BASE_REF="${{ github.event.pull_request.base.ref }}"
-                          git fetch origin "${BASE_REF}" --depth=1
-
                           DIFF_OUTPUT=$(git diff "origin/${BASE_REF}" HEAD -- "$file")
                           # Look for changes other than version field
                           # Filter out: diff headers (+++/---), and version-only changes
@@ -97,6 +99,10 @@ jobs:
                       echo "Changes include files that require e2e tests"
                       echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
                   fi
+              else
+                  # If changed-files.json is missing, default to running e2e tests for safety
+                  echo "Changed files JSON not found - running e2e tests to be safe"
+                  echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
               fi
           else
               echo "Push event detected - running e2e tests"
