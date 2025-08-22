@@ -1,6 +1,10 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, useHistory } from 'react-router-dom';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 import {
@@ -10,8 +14,6 @@ import {
 import {
   Button,
   ButtonVariant,
-  AvatarAccount,
-  AvatarAccountSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,

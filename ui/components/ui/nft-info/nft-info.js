@@ -1,5 +1,9 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   BackgroundColor,
@@ -7,13 +11,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Text,
-  Box,
-  ButtonLink,
-  AvatarAccount,
-  AvatarAccountSize,
-} from '../../component-library';
+import { Text, Box, ButtonLink } from '../../component-library';
 
 export default function NftInfo({ assetName, tokenAddress, tokenId }) {
   const t = useContext(I18nContext);
