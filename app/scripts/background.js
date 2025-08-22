@@ -441,6 +441,12 @@ let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
 browser.runtime.onConnect.addListener(async (port) => {
+  if (
+    inTest &&
+    getManifestFlags().testing?.simulateUnresponsiveBackground === true
+  ) {
+    return;
+  }
   // Setup listeners to respond immediately to handshake from UI.
   const synHandler = (event) => {
     if (event.name === 'handshake' && event.data?.method === 'SYN') {
