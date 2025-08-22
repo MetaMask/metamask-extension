@@ -97,6 +97,7 @@ jobs:
                       echo "Changes include files that require e2e tests"
                       echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
                   fi
+              fi
           else
               echo "Push event detected - running e2e tests"
               echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
