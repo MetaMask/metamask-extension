@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Modal,
@@ -81,19 +87,22 @@ export const MultichainEditAccountsModal: React.FC<
     JSON.stringify(defaultSelectedAccountGroups),
   ]);
 
-  const handleAccountClick = (accountGroupId: AccountGroupId) => {
-    const existingIndex = selectedAccountGroups.findIndex(
-      (selectedAccountGroupId) => selectedAccountGroupId === accountGroupId,
-    );
+  const handleAccountClick = useCallback(
+    (accountGroupId: AccountGroupId) => {
+      const existingIndex = selectedAccountGroups.findIndex(
+        (selectedAccountGroupId) => selectedAccountGroupId === accountGroupId,
+      );
 
-    if (existingIndex !== -1) {
-      const newSelection = [...selectedAccountGroups];
-      newSelection.splice(existingIndex, 1);
-      setSelectedAccountGroups(newSelection);
-    } else {
-      setSelectedAccountGroups([...selectedAccountGroups, accountGroupId]);
-    }
-  };
+      if (existingIndex !== -1) {
+        const newSelection = [...selectedAccountGroups];
+        newSelection.splice(existingIndex, 1);
+        setSelectedAccountGroups(newSelection);
+      } else {
+        setSelectedAccountGroups([...selectedAccountGroups, accountGroupId]);
+      }
+    },
+    [selectedAccountGroups],
+  );
 
   const defaultSet = new Set(defaultSelectedAccountGroups);
   const selectedSet = new Set(selectedAccountGroups);

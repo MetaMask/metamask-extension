@@ -21,6 +21,13 @@ const MOCK_GROUP_ID_2 =
 const MOCK_GROUP_ID_3 =
   'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/2' as AccountGroupId;
 
+// Test IDs
+const TEST_IDS = {
+  CONNECT_MORE_ACCOUNTS_BUTTON: 'connect-more-accounts-button',
+  MULTICHAIN_ACCOUNT_CELL: (groupId: string) =>
+    `multichain-account-cell-${groupId}`,
+} as const;
+
 const mockEvmAccount1 = createMockInternalAccount({
   id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
   name: 'EVM Account 1',
@@ -273,10 +280,12 @@ describe('MultichainEditAccountsModal', () => {
 
   it('renders connect button', () => {
     const { getByTestId } = render();
-    expect(getByTestId('connect-more-accounts-button')).toBeInTheDocument();
-    expect(getByTestId('connect-more-accounts-button')).toHaveTextContent(
-      'Connect',
-    );
+    expect(
+      getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+    ).toBeInTheDocument();
+    expect(
+      getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+    ).toHaveTextContent('Connect');
   });
 
   it('renders all account groups', () => {
@@ -293,7 +302,7 @@ describe('MultichainEditAccountsModal', () => {
 
     // The selected account should have a border indicating selection
     const selectedAccount = getByTestId(
-      `multichain-account-cell-${MOCK_GROUP_ID_1}`,
+      TEST_IDS.MULTICHAIN_ACCOUNT_CELL(MOCK_GROUP_ID_1),
     );
     expect(selectedAccount).toBeInTheDocument();
   });
@@ -306,7 +315,7 @@ describe('MultichainEditAccountsModal', () => {
     });
 
     fireEvent.click(getByText('Test Group 2'));
-    fireEvent.click(getByTestId('connect-more-accounts-button'));
+    fireEvent.click(getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON));
 
     expect(onSubmit).toHaveBeenCalledWith([MOCK_GROUP_ID_1, MOCK_GROUP_ID_2]);
   });
@@ -319,7 +328,7 @@ describe('MultichainEditAccountsModal', () => {
     });
 
     fireEvent.click(getByText('Test Group 1'));
-    fireEvent.click(getByTestId('connect-more-accounts-button'));
+    fireEvent.click(getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON));
 
     expect(onSubmit).toHaveBeenCalledWith([MOCK_GROUP_ID_2]);
   });
@@ -329,10 +338,12 @@ describe('MultichainEditAccountsModal', () => {
       defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
     });
 
-    expect(getByTestId('connect-more-accounts-button')).toBeInTheDocument();
-    expect(getByTestId('connect-more-accounts-button')).toHaveTextContent(
-      'Connect',
-    );
+    expect(
+      getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+    ).toBeInTheDocument();
+    expect(
+      getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+    ).toHaveTextContent('Connect');
   });
 
   it('calls onSubmit with selected account groups when connect button is clicked', () => {
@@ -342,7 +353,7 @@ describe('MultichainEditAccountsModal', () => {
       onSubmit,
     });
 
-    fireEvent.click(getByTestId('connect-more-accounts-button'));
+    fireEvent.click(getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON));
 
     expect(onSubmit).toHaveBeenCalledWith([MOCK_GROUP_ID_1, MOCK_GROUP_ID_2]);
   });
@@ -354,7 +365,7 @@ describe('MultichainEditAccountsModal', () => {
       onClose,
     });
 
-    fireEvent.click(getByTestId('connect-more-accounts-button'));
+    fireEvent.click(getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON));
 
     expect(onClose).toHaveBeenCalled();
   });
@@ -384,7 +395,7 @@ describe('MultichainEditAccountsModal', () => {
 
     // Initially only first account should be selected
     expect(
-      getByTestId(`multichain-account-cell-${MOCK_GROUP_ID_1}`),
+      getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(MOCK_GROUP_ID_1)),
     ).toBeInTheDocument();
 
     // Rerender with all accounts selected
@@ -404,13 +415,13 @@ describe('MultichainEditAccountsModal', () => {
 
     await waitFor(() => {
       expect(
-        getByTestId(`multichain-account-cell-${MOCK_GROUP_ID_1}`),
+        getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(MOCK_GROUP_ID_1)),
       ).toBeInTheDocument();
       expect(
-        getByTestId(`multichain-account-cell-${MOCK_GROUP_ID_2}`),
+        getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(MOCK_GROUP_ID_2)),
       ).toBeInTheDocument();
       expect(
-        getByTestId(`multichain-account-cell-${MOCK_GROUP_ID_3}`),
+        getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(MOCK_GROUP_ID_3)),
       ).toBeInTheDocument();
     });
   });
