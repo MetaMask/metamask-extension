@@ -1,6 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 
-import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
+import {
+  AccountGroupId,
+  AccountWalletId,
+  AccountWalletType,
+} from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, Text } from '../../component-library';
@@ -127,12 +131,14 @@ export const MultichainAccountList = ({
           },
         );
 
-        groupsItems.push(
-          <AddMultichainAccount
-            walletId={walletId as AccountWalletId}
-            key={`add-multichain-account-${walletId}`}
-          />,
-        );
+        if (walletData.type === AccountWalletType.Entropy) {
+          groupsItems.push(
+            <AddMultichainAccount
+              walletId={walletId as AccountWalletId}
+              key={`add-multichain-account-${walletId}`}
+            />,
+          );
+        }
 
         return [...walletsAccumulator, walletHeader, ...groupsItems];
       },

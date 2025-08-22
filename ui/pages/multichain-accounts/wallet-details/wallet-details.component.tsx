@@ -1,7 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
+import {
+  AccountGroupId,
+  AccountWalletId,
+  AccountWalletType,
+} from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -162,7 +166,7 @@ const WalletDetails = () => {
 
   const keyringId = wallet.id.split(':')[1];
 
-  const isEntropyWallet = wallet.id.includes('entropy');
+  const isEntropyWallet = wallet.type === AccountWalletType.Entropy;
   const isFirstHdKeyring = hdKeyrings[0]?.metadata?.id === keyringId;
   const shouldShowBackupReminder = !seedPhraseBackedUp && isFirstHdKeyring;
 
@@ -454,7 +458,7 @@ const WalletDetails = () => {
             borderRadius={BorderRadius.XL}
           >
             {multichainAccountCells}
-            <AddMultichainAccount walletId={decodedId} />
+            {isEntropyWallet && <AddMultichainAccount walletId={decodedId} />}
           </Box>
         )}
       </Content>

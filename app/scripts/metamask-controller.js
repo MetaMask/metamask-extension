@@ -3698,9 +3698,9 @@ export default class MetamaskController extends EventEmitter {
 
       // MultichainAccountService
       createNextMultichainAccountGroup: async (walletId) => {
-        await this.multichainAccountService.createNextMultichainAccountGroup(
-          walletId,
-        );
+        await this.multichainAccountService.createNextMultichainAccountGroup({
+          entropySource: walletId,
+        });
       },
 
       // AssetsContractController

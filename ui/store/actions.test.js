@@ -23,6 +23,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+import { stripWalletTypePrefix } from './actions';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -1395,7 +1396,8 @@ describe('Actions', () => {
 
     it('calls createNextMultichainAccountGroup in background', () => {
       const store = mockStore();
-      const walletId = 'test-wallet-id';
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+      const walletIdWithoutPrefix = stripWalletTypePrefix(walletId);
       const createNextMultichainAccountGroup = sinon.stub().resolves();
 
       background.getApi = sinon.stub().returns({
@@ -1408,7 +1410,7 @@ describe('Actions', () => {
 
       expect(createNextMultichainAccountGroup.callCount).toStrictEqual(1);
       expect(
-        createNextMultichainAccountGroup.calledWith(walletId),
+        createNextMultichainAccountGroup.calledWith(walletIdWithoutPrefix),
       ).toStrictEqual(true);
     });
   });
