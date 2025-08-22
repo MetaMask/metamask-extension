@@ -60,6 +60,7 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
+  ADDRESS_LIST_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
 } from '../../helpers/constants/routes';
@@ -141,6 +142,7 @@ import { type Confirmation } from '../confirmations/types/confirm';
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
+import { AddressList } from '../multichain-accounts/address-list';
 import { AccountList } from '../multichain-accounts/account-list';
 import {
   getConnectingLabel,
@@ -591,6 +593,11 @@ export default function Routes() {
           <Authenticated
             path={ACCOUNT_LIST_PAGE_ROUTE}
             component={AccountList}
+            exact
+          />
+          <Authenticated
+            path={`${ADDRESS_LIST_ROUTE}/:accountGroupId`}
+            component={AddressList}
             exact
           />
           <Authenticated

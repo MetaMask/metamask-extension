@@ -15,7 +15,10 @@ import {
   JustifyContent,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ADDRESS_LIST_ROUTE,
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
 import { MultichainAccountMenuItems } from '../multichain-account-menu-items/multichain-account-menu-items';
 import { MenuItemConfig } from '../multichain-account-menu-items/multichain-account-menu-items.types';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
@@ -50,6 +53,8 @@ export const MultichainAccountMenu = ({
       // TODO: Implement account addresses click handling
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+      const multichainAccountAddressesPageRoute = `${ADDRESS_LIST_ROUTE}/${encodeURIComponent(accountGroupId)}`;
+      history.push(multichainAccountAddressesPageRoute);
     };
 
     const handleAccountPinClick = (mouseEvent: React.MouseEvent) => {
@@ -86,7 +91,6 @@ export const MultichainAccountMenu = ({
         textKey: 'addresses',
         iconName: IconName.QrCode,
         onClick: handleAccountAddressesClick,
-        disabled: true,
       },
       {
         textKey: 'pin',
