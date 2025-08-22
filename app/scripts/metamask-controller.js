@@ -1179,12 +1179,11 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     if (isManifestV3 === false) {
-      const additionalKeyringTypes = [
+      const additionalNonBridgedKeyrings = [
         keyringOverrides?.lattice || LatticeKeyring,
-        QrKeyring,
       ];
 
-      const additionalBridgedKeyringTypes = [
+      const additionalBridgedKeyrings = [
         {
           keyring: keyringOverrides?.trezor || TrezorKeyring,
           bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
@@ -1199,11 +1198,11 @@ export default class MetamaskController extends EventEmitter {
         },
       ];
 
-      additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
-        keyringBuilderFactory(keyringType),
+      additionalNonBridgedKeyrings.forEach((KeyringClass) =>
+        additionalKeyrings.push(keyringBuilderFactory(KeyringClass)),
       );
 
-      additionalBridgedKeyringTypes.forEach((keyringType) =>
+      additionalBridgedKeyrings.forEach((keyringType) =>
         additionalKeyrings.push(
           hardwareKeyringBuilderFactory(
             keyringType.keyring,
