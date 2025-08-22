@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Content, Header, Page } from '../page';
 import {
@@ -8,11 +8,10 @@ import {
   IconName,
   Text,
 } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  IconColor,
   BackgroundColor,
   BlockSize,
-  Color,
   Display,
   FlexDirection,
   JustifyContent,
@@ -20,12 +19,12 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const headerRef = useRef();
 
   return (
     <Page className="main-container" data-testid="permissions-page">
@@ -36,7 +35,7 @@ export const GatorPermissionsPage = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
-            color={Color.iconDefault}
+            color={IconColor.iconDefault}
             onClick={() => history.push(DEFAULT_ROUTE)}
             size={ButtonIconSize.Sm}
           />
@@ -51,7 +50,6 @@ export const GatorPermissionsPage = () => {
         </Text>
       </Header>
       <Content padding={0}>
-        <Box ref={headerRef}></Box>
         <Box
           data-testid="no-connections"
           display={Display.Flex}
