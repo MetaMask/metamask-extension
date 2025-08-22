@@ -11,6 +11,7 @@ export type UseTrustSignalRequest = {
 };
 
 export enum TrustSignalDisplayState {
+  Loading = 'loading',
   Malicious = 'malicious',
   Petname = 'petname',
   Verified = 'verified',
@@ -48,6 +49,23 @@ export function useTrustSignals(
         value,
       );
 
+      // If no value/address provided, return Unknown (nothing to check)
+      if (!value) {
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
+      }
+
+      // If we have an address but no response cached yet, it means we're still loading
+      if (securityAlertResponse === undefined) {
+        return {
+          state: TrustSignalDisplayState.Loading,
+          label: null,
+        };
+      }
+
+      // If response is null or falsy (but not undefined), it means we checked but found nothing
       if (!securityAlertResponse) {
         return {
           state: TrustSignalDisplayState.Unknown,

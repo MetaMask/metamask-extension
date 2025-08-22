@@ -225,7 +225,26 @@ describe('useTrustSignals', () => {
     });
 
     describe('No security alert response', () => {
-      it('returns unknown state when no security alert response exists', () => {
+      it('returns unknown state when no address is provided', () => {
+        getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
+
+        const requests: UseTrustSignalRequest[] = [
+          {
+            value: '', // Empty address
+            type: NameType.ETHEREUM_ADDRESS,
+          },
+        ];
+
+        const results = useTrustSignals(requests);
+
+        expect(results).toHaveLength(1);
+        expect(results[0]).toStrictEqual({
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        });
+      });
+
+      it('returns unknown state when security alert response is null (checked but no data)', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue(null);
 
         const requests: UseTrustSignalRequest[] = [
@@ -244,7 +263,7 @@ describe('useTrustSignals', () => {
         });
       });
 
-      it('returns unknown state when security alert response is undefined', () => {
+      it('returns loading state when security alert response is undefined (not yet checked)', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
 
         const requests: UseTrustSignalRequest[] = [
@@ -258,7 +277,7 @@ describe('useTrustSignals', () => {
 
         expect(results).toHaveLength(1);
         expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Unknown,
+          state: TrustSignalDisplayState.Loading,
           label: null,
         });
       });
