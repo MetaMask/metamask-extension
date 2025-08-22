@@ -153,7 +153,7 @@ const mapStateToProps = (state, ownProps) => {
     initialBreadCrumbRoute,
     isAddressEntryPage,
     isPasswordChangePage,
-    isPopup: true,
+    isPopup,
     isRevealSrpListPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isTransactionShieldPage,

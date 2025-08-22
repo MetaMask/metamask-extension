@@ -107,7 +107,6 @@ const TransactionShield = () => {
   return (
     <Box
       className="transaction-shield-page"
-      height={BlockSize.Full}
       width={BlockSize.Full}
       flexDirection={FlexDirection.Column}
       padding={4}
