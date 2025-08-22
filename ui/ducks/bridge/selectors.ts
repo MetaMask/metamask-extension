@@ -529,30 +529,11 @@ export const getBridgeQuotes = createSelector(
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (controllerStates, sortOrder, selectedQuote) => {
-    const result = selectBridgeQuotes(controllerStates, {
+  (controllerStates, sortOrder, selectedQuote) =>
+    selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
-    });
-
-    // Temporarily add gasIncluded7702 flag when gasIncluded is true
-    // This code will be removed once backend returns gasIncluded7702 in individual quotes
-    if (result.activeQuote && result.activeQuote.quote?.gasIncluded) {
-      return {
-        ...result,
-        activeQuote: {
-          ...result.activeQuote,
-          quote: {
-            ...result.activeQuote.quote,
-            gasIncluded7702: true,
-            gasIncluded: false,
-          },
-        },
-      };
-    }
-
-    return result;
-  },
+    }),
 );
 
 export const getIsBridgeTx = createDeepEqualSelector(
