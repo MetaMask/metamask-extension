@@ -1,0 +1,48 @@
+/**
+ * Theme-aware styles for Lottie animations
+ * 
+ * This CSS targets SVG elements within lottie animations that have the 
+ * 'lottie-theme-aware' class and overrides their fill colors to use
+ * design token CSS variables that adapt to the current theme.
+ */
+
+.lottie-theme-aware {
+  /* Target all fill elements that use the old hardcoded blue color */
+  /* The color #4459ff corresponds to RGB values [0.266666666667, 0.349019607843, 1.0, 1] */
+  path[fill="#4459ff"],
+  circle[fill="#4459ff"],
+  ellipse[fill="#4459ff"],
+  rect[fill="#4459ff"],
+  polygon[fill="#4459ff"] {
+    fill: var(--color-primary-default) !important;
+  }
+
+  /* Target stroke elements as well */
+  path[stroke="#4459ff"],
+  circle[stroke="#4459ff"],
+  ellipse[stroke="#4459ff"],
+  rect[stroke="#4459ff"],
+  polygon[stroke="#4459ff"] {
+    stroke: var(--color-primary-default) !important;
+  }
+
+  /* Also target any elements with the RGB values directly in style attributes */
+  /* This is a fallback for elements that might have inline styles */
+  [style*="fill: rgb(68, 89, 255)"],
+  [style*="fill:rgb(68,89,255)"],
+  [style*="fill: rgb(68,89,255)"] {
+    fill: var(--color-primary-default) !important;
+  }
+
+  [style*="stroke: rgb(68, 89, 255)"],
+  [style*="stroke:rgb(68,89,255)"],
+  [style*="stroke: rgb(68,89,255)"] {
+    stroke: var(--color-primary-default) !important;
+  }
+}
+
+/* Ensure the animation container doesn't interfere with theming */
+.lottie-theme-aware svg {
+  /* Allow CSS to override SVG attributes */
+  color-scheme: inherit;
+}

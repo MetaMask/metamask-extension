@@ -1,0 +1,63 @@
+/**
+ * Theme-aware styles for MetaMask Smart Transaction Status Lottie animations
+ * 
+ * This CSS ensures that lottie animations adapt to the current theme by
+ * overriding hardcoded colors with design token CSS variables.
+ * 
+ * The animations use #4459ff (primary-default in light theme) which becomes
+ * #8b99ff in dark theme automatically via CSS variables.
+ */
+
+/* Target lottie animations with theme support */
+.lottie-theme-aware svg,
+.smart-transaction-animation svg {
+  /* Override any hardcoded blue colors with theme-aware variables */
+  --lottie-primary-color: var(--color-primary-default);
+}
+
+/* Specific color overrides for the blue color used in smart transaction animations */
+.lottie-theme-aware svg [fill="#4459ff"],
+.smart-transaction-animation svg [fill="#4459ff"] {
+  fill: var(--color-primary-default) !important;
+}
+
+.lottie-theme-aware svg [stroke="#4459ff"],
+.smart-transaction-animation svg [stroke="#4459ff"] {
+  stroke: var(--color-primary-default) !important;
+}
+
+/* Handle any inline styles that might override our CSS */
+.lottie-theme-aware svg [style*="fill:#4459ff"],
+.lottie-theme-aware svg [style*="fill: #4459ff"],
+.smart-transaction-animation svg [style*="fill:#4459ff"],
+.smart-transaction-animation svg [style*="fill: #4459ff"] {
+  fill: var(--color-primary-default) !important;
+}
+
+.lottie-theme-aware svg [style*="stroke:#4459ff"],
+.lottie-theme-aware svg [style*="stroke: #4459ff"],
+.smart-transaction-animation svg [style*="stroke:#4459ff"],
+.smart-transaction-animation svg [style*="stroke: #4459ff"] {
+  stroke: var(--color-primary-default) !important;
+}
+
+/* Ensure animations work well in both themes */
+[data-theme="light"] .lottie-theme-aware svg,
+[data-theme="light"] .smart-transaction-animation svg {
+  /* Light theme: use blue-500 (#4459ff) */
+  --lottie-primary-color: var(--color-primary-default);
+}
+
+[data-theme="dark"] .lottie-theme-aware svg,
+[data-theme="dark"] .smart-transaction-animation svg {
+  /* Dark theme: use blue-300 (#8b99ff) */
+  --lottie-primary-color: var(--color-primary-default);
+}
+
+/* Fallback for OS theme */
+@media (prefers-color-scheme: dark) {
+  .lottie-theme-aware svg,
+  .smart-transaction-animation svg {
+    --lottie-primary-color: var(--color-primary-default);
+  }
+}
