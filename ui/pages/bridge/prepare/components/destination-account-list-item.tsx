@@ -5,9 +5,6 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   Text,
   AvatarToken,
@@ -27,7 +24,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import {
-  getUseBlockie,
   getShouldHideZeroBalanceTokens,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
@@ -41,6 +37,7 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../../hooks/useAccou
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import {
   getMultichainNetwork,
   getMultichainIsTestnet,
@@ -62,7 +59,6 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   selected = false,
   onClick,
 }) => {
-  const useBlockie = useSelector(getUseBlockie);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -131,24 +127,13 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
       backgroundColor={
         selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
       }
-      className={classnames('multichain-account-list-item', {
+      className={classnames('multichain-account-list-item gap-2', {
         'multichain-account-list-item--selected': selected,
       })}
       onClick={onClick}
       alignItems={AlignItems.center}
     >
-      <AvatarAccount
-        borderColor={BorderColor.transparent}
-        size={AvatarAccountSize.Md}
-        address={account.address}
-        variant={
-          useBlockie
-            ? AvatarAccountVariant.Blockies
-            : AvatarAccountVariant.Jazzicon
-        }
-        marginInlineEnd={2}
-      />
-
+      <PreferredAvatar address={account.address} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

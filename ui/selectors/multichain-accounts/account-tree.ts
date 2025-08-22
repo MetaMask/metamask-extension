@@ -32,6 +32,7 @@ import {
   MultichainAccountGroupToScopesMap,
   MultichainAccountsState,
 } from './account-tree.types';
+import { getSanitizedChainId } from './utils';
 
 /**
  * Retrieve account tree state.
@@ -565,9 +566,11 @@ const getInternalAccountFromGroup = (
     return null;
   }
 
+  const sanitizedChainId = getSanitizedChainId(caipChainId);
+
   for (const account of group.accounts) {
     const internalAccount = internalAccounts[account];
-    if (internalAccount?.scopes.includes(caipChainId)) {
+    if (internalAccount?.scopes.includes(sanitizedChainId)) {
       return internalAccount;
     }
   }
