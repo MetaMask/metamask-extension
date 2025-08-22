@@ -30,14 +30,14 @@ const mapStateToProps = (state) => {
 
   const connectedAccountsWithName = connectedAccounts.map((account) => ({
     ...account,
-    name: internalAccountsMap.get(account.address)?.metadata.name,
+    name: internalAccountsMap.get(account.address)?.metadata.name, // TODO Who owns this? Wallet UX? : Migrate to new account group name
   }));
   const accountToConnectWithName = accountToConnect && {
     ...accountToConnect,
     name: internalAccounts.find(
       (internalAccount) =>
         internalAccount.address === accountToConnect?.address,
-    )?.metadata.name,
+    )?.metadata.name, // TODO Who owns this? Wallet UX? : Migrate to new account group name
   };
   const permissions = getPermissionsForActiveTab(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);

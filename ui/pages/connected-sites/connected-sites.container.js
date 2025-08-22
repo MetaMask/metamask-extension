@@ -35,7 +35,7 @@ const mapStateToProps = (state) => {
   }
 
   return {
-    accountLabel: getSelectedInternalAccount(state).metadata.name,
+    accountLabel: getSelectedInternalAccount(state).metadata.name, // TODO Who owns this? Wallet UX? : Migrate to new account group name
     connectedSubjects,
     subjects: getPermissionSubjects(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),

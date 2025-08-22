@@ -52,7 +52,7 @@ export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge<
     return internalAccounts.map((internalAccount: InternalAccount) => ({
       value: internalAccount.address,
       type: NameType.ETHEREUM_ADDRESS,
-      name: internalAccount.metadata.name,
+      name: internalAccount.metadata.name, // TODO Confirmations: Migrate to new account group name
       sourceId: undefined,
       variation: FALLBACK_VARIATION,
       origin: NameOrigin.ACCOUNT_IDENTITY,

@@ -156,6 +156,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
               style={{ maxWidth: '200px' }}
             >
               {account.metadata.name}
+              {/* // TODO Swaps: This needs to be updated to the new account group name */}
             </Text>
           </Box>
           <Box

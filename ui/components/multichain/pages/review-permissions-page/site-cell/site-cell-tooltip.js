@@ -80,6 +80,7 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
                     ellipsis
                   >
                     {acc.metadata.name || acc.label}
+                    {/* // TODO Wallet UX?: Migrate to new account group name */}
                   </Text>
                 </Box>
               );

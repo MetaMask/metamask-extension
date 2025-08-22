@@ -111,7 +111,7 @@ export const MultichainAccountList = ({
               <MultichainAccountCell
                 key={`multichain-account-cell-${groupId}`}
                 accountId={groupId as AccountGroupId}
-                accountName={groupData.metadata.name}
+                accountName={groupData.metadata.name} // TODO Accounts: Does this need to be migrated to the new account group name?
                 balance="$ n/a"
                 selected={selectedAccountGroup === groupId}
                 onClick={handleAccountClick}

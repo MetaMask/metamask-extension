@@ -84,6 +84,7 @@ class SelectedAccount extends Component {
               marginBottom={1}
             >
               {selectedAccount.metadata.name}
+              {/* // TODO Wallet UX?: Migrate to new account group name */}
             </Text>
             <Text
               data-testid="selected-account-address"

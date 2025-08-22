@@ -100,7 +100,7 @@ export const AddressQRCode = () => {
         <QrCodeView
           Qr={{ data: address as string }}
           location="Account Details Page"
-          accountName={account.metadata.name}
+          accountName={account.metadata.name} // TODO Who owns this? Wallet UX? : Migrate to new account group name
         />
       </Content>
       <Footer>

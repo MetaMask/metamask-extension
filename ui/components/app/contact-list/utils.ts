@@ -7,7 +7,7 @@ export const buildDuplicateContactMap = (
 ) => {
   const contactMap = new Map<string, string[]>(
     internalAccounts.map((account) => [
-      account.metadata.name.trim().toLowerCase(),
+      account.metadata.name.trim().toLowerCase(), // TODO Earn: Migrate to new account group name
       [`account-id-${account.id}`],
     ]),
   );
@@ -34,8 +34,9 @@ export const hasDuplicateContacts = (
     new Set(addressBook.map(({ name }) => name.toLowerCase().trim())),
   );
 
-  const hasAccountNameCollision = internalAccounts.some((account) =>
-    uniqueContactNames.includes(account.metadata.name.toLowerCase().trim()),
+  const hasAccountNameCollision = internalAccounts.some(
+    (account) =>
+      uniqueContactNames.includes(account.metadata.name.toLowerCase().trim()), // TODO Earn: Migrate to new account group name
   );
 
   return (
