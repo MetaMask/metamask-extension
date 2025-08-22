@@ -592,7 +592,7 @@ export default function Routes() {
           <Authenticated
             path={PERMISSIONS}
             component={
-              process.env.GATOR_PERMISSIONS_PAGE
+              process.env.GATOR_PERMISSIONS_PAGE === 'true'
                 ? GatorPermissionsPage
                 : PermissionsPage
             }
