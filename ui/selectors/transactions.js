@@ -414,6 +414,7 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
       txReceipt,
     } = transaction;
 
+    const nonceNetworkKey = `${nonce}-${networkClientId}`;
     // Don't group transactions by nonce if:
     // 1. Tx nonce is undefined
     // 2. Tx is incoming (deposit)
@@ -438,8 +439,8 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
           transactionGroup,
         );
       }
-    } else if (nonce in nonceToTransactionsMap) {
-      const nonceProps = nonceToTransactionsMap[nonce];
+    } else if (nonceNetworkKey in nonceToTransactionsMap) {
+      const nonceProps = nonceToTransactionsMap[nonceNetworkKey];
       insertTransactionByTime(nonceProps.transactions, transaction);
 
       const {
@@ -551,7 +552,7 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
         nonceProps.hasCancelled = true;
       }
     } else {
-      nonceToTransactionsMap[`${nonce}-${networkClientId}`] = {
+      nonceToTransactionsMap[nonceNetworkKey] = {
         nonce,
         transactions: [transaction],
         initialTransaction: transaction,
@@ -565,7 +566,7 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
           (status in PRIORITY_STATUS_HASH ||
             status === TransactionStatus.dropped),
       };
-      insertOrderedNonce(orderedNonces, `${nonce}-${networkClientId}`);
+      insertOrderedNonce(orderedNonces, nonceNetworkKey);
     }
   });
 
