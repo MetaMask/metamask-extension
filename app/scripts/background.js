@@ -440,16 +440,29 @@ let connectEip1193;
 let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
-browser.runtime.onConnect.addListener(async (...args) => {
+browser.runtime.onConnect.addListener(async (port) => {
+  // Setup listeners to respond immediately to handshake from UI.
+  const synHandler = (event) => {
+    if (event.data?.method === 'SYN') {
+      port.onMessage.removeListener(synHandler);
+      port.postMessage({
+        data: {
+          method: 'ACK',
+        },
+        name: 'handshake',
+      });
+    }
+  };
+  port.onMessage.addListener(synHandler);
+
   // Queue up connection attempts here, waiting until after initialization
   try {
     await isInitialized;
 
     // This is set in `setupController`, which is called as part of initialization
-    connectWindowPostMessage(...args);
+    connectWindowPostMessage(port);
   } catch (error) {
     sentry?.captureException(error);
-    const port = args[0];
 
     // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
     // restore from a backup, if we have one.
