@@ -169,6 +169,7 @@
     },
     "cryptocurrencies": ["btc", "sol"]
   },
+  "MultichainAccountService": "object",
   "MultichainTransactionsController": "object",
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {

@@ -83,6 +83,7 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
+    "MultichainAccountService": "object",
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networkConfigurations": "object",
