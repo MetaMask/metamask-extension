@@ -1403,6 +1403,14 @@
         "bitcoin-address-validation": true
       }
     },
+    "@metamask/multichain-account-service>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
     "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
       "packages": {
         "@metamask/account-api>@metamask/keyring-utils": true,
@@ -1502,11 +1510,12 @@
     },
     "@metamask/multichain-account-service": {
       "globals": {
+        "console.log": true,
         "console.warn": true
       },
       "packages": {
         "@metamask/account-api": true,
-        "@metamask/keyring-api": true,
+        "@metamask/multichain-account-service>@metamask/keyring-api": true,
         "@metamask/keyring-controller": true
       }
     },
