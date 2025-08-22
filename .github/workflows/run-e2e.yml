@@ -98,12 +98,14 @@ jobs:
       - name: Set GPU environment variables
         run: |
           # Set environment variables to disable GPU acceleration and avoid Vulkan driver issues
-          echo "export DISPLAY=:99" >> $GITHUB_ENV
-          echo "export MESA_GL_VERSION_OVERRIDE=3.3" >> $GITHUB_ENV
-          echo "export MESA_GLSL_VERSION_OVERRIDE=330" >> $GITHUB_ENV
-          echo "export LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
-          echo "export GALLIUM_DRIVER=llvmpipe" >> $GITHUB_ENV
-          echo "export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json" >> $GITHUB_ENV
+          {
+            echo "export DISPLAY=:99"
+            echo "export MESA_GL_VERSION_OVERRIDE=3.3"
+            echo "export MESA_GLSL_VERSION_OVERRIDE=330"
+            echo "export LIBGL_ALWAYS_SOFTWARE=1"
+            echo "export GALLIUM_DRIVER=llvmpipe"
+            echo "export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
+          } >> "$GITHUB_ENV"
 
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}
