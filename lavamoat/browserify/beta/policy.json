@@ -965,7 +965,6 @@
       "globals": {
         "CryptoKey": true,
         "btoa": true,
-        "console.log": true,
         "crypto.getRandomValues": true,
         "crypto.subtle.decrypt": true,
         "crypto.subtle.deriveKey": true,
