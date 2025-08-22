@@ -10,7 +10,7 @@ import { parseArgv } from '../utils/cli';
 describe('./utils/config.ts', () => {
   // variables logic is complex, and is "owned" mostly by the other build
   // system, so we don't check for everything, just that the interface is
-  // behaving
+  // behaving change
   describe('variables', () => {
     const originalReadFileSync = fs.readFileSync;
     function mockRc(env: Record<string, string> = {}) {

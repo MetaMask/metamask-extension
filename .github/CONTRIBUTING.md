@@ -1,4 +1,4 @@
-# Welcome to MetaMask! change
+# Welcome to MetaMask!
 
 If you're submitting code to MetaMask, there are some simple things we'd appreciate you doing to help us stay organized!
 
