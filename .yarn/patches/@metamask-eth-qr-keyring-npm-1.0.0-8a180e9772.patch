@@ -1,0 +1,20 @@
+diff --git a/dist/index.d.cts b/dist/index.d.cts
+index 9c3dd8da9c224978fac56213b8d5131e3614e591..c74af495a6270747967c87c82c9a0c9cc342abad 100644
+--- a/dist/index.d.cts
++++ b/dist/index.d.cts
+@@ -1,4 +1,4 @@
+ export { QrKeyringScannerBridge, type QrKeyringScannerBridgeOptions, } from "./qr-keyring-scanner-bridge.cjs";
+ export { QrKeyringDeferredPromiseBridge, type QrKeyringDeferredPromiseBridgeOptions, } from "./qr-keyring-deferred-promise-bridge.cjs";
+-export { QrKeyring, QR_KEYRING_TYPE, QrScanRequestType, type QrScanRequest, type QrKeyringBridge, type QrKeyringOptions, type QrSignatureRequest, type SerializedQrKeyringState, } from "./qr-keyring.cjs";
++export { QrKeyring, QR_KEYRING_TYPE, QrScanRequestType, type QrScanRequest, type QrKeyringBridge, type QrKeyringOptions, type QrSignatureRequest, type SerializedQrKeyringState, type SerializedUR, } from "./qr-keyring.cjs";
+ //# sourceMappingURL=index.d.cts.map
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+index 414c0dc7898ad5c125e793b1c784edb0388aa52b..07f8135974d6ce6084880e62ab5c69054b8ebd8e 100644
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -1,4 +1,4 @@
+ export { QrKeyringScannerBridge, type QrKeyringScannerBridgeOptions, } from "./qr-keyring-scanner-bridge.mjs";
+ export { QrKeyringDeferredPromiseBridge, type QrKeyringDeferredPromiseBridgeOptions, } from "./qr-keyring-deferred-promise-bridge.mjs";
+-export { QrKeyring, QR_KEYRING_TYPE, QrScanRequestType, type QrScanRequest, type QrKeyringBridge, type QrKeyringOptions, type QrSignatureRequest, type SerializedQrKeyringState, } from "./qr-keyring.mjs";
++export { QrKeyring, QR_KEYRING_TYPE, QrScanRequestType, type QrScanRequest, type QrKeyringBridge, type QrKeyringOptions, type QrSignatureRequest, type SerializedQrKeyringState, type SerializedUR, } from "./qr-keyring.mjs";
+ //# sourceMappingURL=index.d.mts.map

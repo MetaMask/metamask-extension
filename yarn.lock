@@ -5913,7 +5913,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-qr-keyring@npm:^1.0.0":
+"@metamask/eth-qr-keyring@npm:1.0.0":
   version: 1.0.0
   resolution: "@metamask/eth-qr-keyring@npm:1.0.0"
   dependencies:
@@ -5928,6 +5928,24 @@ __metadata:
     hdkey: "npm:^2.1.0"
     uuid: "npm:^9.0.1"
   checksum: 10/5501dcc7ba4a011a8f1cdbd2d929d3a2a86cfade5f72280fb88c2962e39e00e6952d1c94222be9594e61055242d3a31c5cbbae138d7bdaafbeecea7b58369168
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-qr-keyring@patch:@metamask/eth-qr-keyring@npm%3A1.0.0#~/.yarn/patches/@metamask-eth-qr-keyring-npm-1.0.0-8a180e9772.patch":
+  version: 1.0.0
+  resolution: "@metamask/eth-qr-keyring@patch:@metamask/eth-qr-keyring@npm%3A1.0.0#~/.yarn/patches/@metamask-eth-qr-keyring-npm-1.0.0-8a180e9772.patch::version=1.0.0&hash=5942ad"
+  dependencies:
+    "@ethereumjs/rlp": "npm:^5.0.2"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    async-mutex: "npm:^0.5.0"
+    hdkey: "npm:^2.1.0"
+    uuid: "npm:^9.0.1"
+  checksum: 10/f48fb4ffbc071939cf4c1379bf4f4f58fc3a4c4fda1edfe023759a5b5c43c6a292b95092144d7340c71c6ebff7e478a441fecb69ca05fc87a8f14ca5e2e2e43b
   languageName: node
   linkType: hard
 
@@ -31686,7 +31704,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
-    "@metamask/eth-qr-keyring": "npm:^1.0.0"
+    "@metamask/eth-qr-keyring": "patch:@metamask/eth-qr-keyring@npm%3A1.0.0#~/.yarn/patches/@metamask-eth-qr-keyring-npm-1.0.0-8a180e9772.patch"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^16.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
