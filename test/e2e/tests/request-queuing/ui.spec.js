@@ -32,30 +32,20 @@ const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   // Open the dapp
-  try {
-    console.log('openDappAndSwitchChain - openDapp');
-    await openDapp(driver, undefined, dappUrl);
+  await openDapp(driver, undefined, dappUrl);
 
-    // Connect to the dapp
-    console.log('openDappAndSwitchChain - press dapp connect');
-    await driver.clickElement({ text: 'Connect', tag: 'button' });
+  // Connect to the dapp
+  await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-    // Small delay to ensure dialog window appears
-    console.log('openDappAndSwitchChain - switch to extension connect popup');
-    await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-    console.log('openDappAndSwitchChain - connect and close popup');
-    await driver.clickElementAndWaitForWindowToClose({
-      text: 'Connect',
-      tag: 'button',
-    });
+  await driver.clickElementAndWaitForWindowToClose({
+    text: 'Connect',
+    tag: 'button',
+  });
 
-    // Switch back to the dapp
-    await driver.switchToWindowWithUrl(dappUrl);
-  } catch (error) {
-    console.error('openDappAndSwitchChain failed to connect dapp', error);
-    throw error;
-  }
+  // Switch back to the dapp
+  await driver.switchToWindowWithUrl(dappUrl);
 
   // Switch chains if necessary
   if (chainId) {

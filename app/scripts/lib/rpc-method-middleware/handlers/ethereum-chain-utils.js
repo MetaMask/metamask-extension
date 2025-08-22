@@ -13,7 +13,6 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { getValidUrl } from '../../util';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 
 export function validateChainId(chainId) {
   const lowercasedChainId =
@@ -266,30 +265,15 @@ export async function switchChain(
         KnownCaipNamespace.Eip155,
       );
       const existingChainIds = Object.keys(existingEnabledNetworks);
-
       if (!existingChainIds.includes(chainId)) {
-        // TEMP - if this fixes CI failures around request queing, then I will revisit this original
-        //        logic and try add in all popular networks instead of the append logic here.
-        const isFeaturedNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
-
-        if (isFeaturedNetwork) {
-          const featuredExistingChainIds = existingChainIds.filter((id) =>
-            FEATURED_NETWORK_CHAIN_IDS.includes(id),
-          );
-          setEnabledNetworks(
-            [...featuredExistingChainIds, chainId],
-            KnownCaipNamespace.Eip155,
-          );
-        } else {
-          setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
-        }
+        setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
       }
     } else {
       const { namespace } = parseCaipChainId(chainId);
       const existingEnabledNetworks = getEnabledNetworks(namespace);
       const existingChainIds = Object.keys(existingEnabledNetworks);
       if (!existingChainIds.includes(chainId)) {
-        setEnabledNetworks([...existingChainIds, chainId], namespace);
+        setEnabledNetworks([chainId], namespace);
       }
     }
 
