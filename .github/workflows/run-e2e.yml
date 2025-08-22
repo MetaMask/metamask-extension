@@ -100,6 +100,25 @@ jobs:
           # Set minimal environment variable to prevent Vulkan driver issues
           echo "VK_LOADER_DRIVERS_SELECT=swiftshader" >> "$GITHUB_ENV"
 
+      - name: Debug Vulkan drivers
+        run: |
+          echo "=== Checking Vulkan drivers availability ==="
+          echo "VK_LOADER_DRIVERS_SELECT: $VK_LOADER_DRIVERS_SELECT"
+          echo ""
+          echo "=== Available Vulkan ICD files ==="
+          find /usr/share/vulkan/icd.d/ -name "*.json" 2>/dev/null || echo "No Vulkan ICD files found in /usr/share/vulkan/icd.d/"
+          echo ""
+          echo "=== Checking for SwiftShader ==="
+          find /usr -name "*swiftshader*" 2>/dev/null | head -5 || echo "No SwiftShader files found"
+          echo ""
+          echo "=== Checking vulkaninfo ==="
+          if command -v vulkaninfo >/dev/null 2>&1; then
+            echo "vulkaninfo is available"
+            vulkaninfo --summary 2>&1 | head -10 || echo "vulkaninfo failed"
+          else
+            echo "vulkaninfo not available"
+          fi
+
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}
         id: download-changed-files
