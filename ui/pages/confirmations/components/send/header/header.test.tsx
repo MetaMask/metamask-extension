@@ -4,8 +4,6 @@ import { fireEvent } from '@testing-library/dom';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
-import * as BalanceFunctions from '../../../hooks/send/useBalance';
-import * as SendContext from '../../../context/send';
 import { Header } from './header';
 
 const mockHistory = {
