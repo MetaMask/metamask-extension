@@ -1,7 +1,7 @@
 {
-  "name": "metamask-crxad",
+  "name": "metamask-crx",
   "version": "13.3.0",
-  "private": true,
+  "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
