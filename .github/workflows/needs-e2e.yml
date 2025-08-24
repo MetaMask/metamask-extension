@@ -46,7 +46,7 @@ jobs:
               yarn tsx .github/scripts/git-diff-default-branch.ts
 
               # Read the changed files JSON from the file created by the git diff script
-              if [[ -f "./changed-files/changed-files.json" ]]; then
+              if [[ -f "./changed-files/changed-filess.json" ]]; then
                   CHANGED_FILES_JSON=$(cat ./changed-files/changed-files.json)
 
                   # Extract just the file paths
@@ -81,9 +81,6 @@ jobs:
                           continue
                       # Skip still true if documentation or data files
                       elif [[ "$file" =~ \.(md|mdx|csv|txt)$ ]]; then
-                          continue
-                      # Skip still true if GitHub workflow files
-                      elif [[ "$file" =~ ^\.github/.*\.(yml|yaml)$ ]]; then
                           continue
                       # Skip still true if unit tests files
                       elif [[ "$file" =~ \.test\.(js|ts|tsx|jsx)$ ]] || [[ "$file" =~ \.snap$ ]]; then
