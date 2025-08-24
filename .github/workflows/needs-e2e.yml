@@ -46,7 +46,7 @@ jobs:
               yarn tsx .github/scripts/git-diff-default-branch.ts
 
               # Read the changed files JSON from the file created by the git diff script
-              if [[ -f "./changed-files/changed-filess.json" ]]; then
+              if [[ -f "./changed-files/changed-files.json" ]]; then
                   CHANGED_FILES_JSON=$(cat ./changed-files/changed-files.json)
 
                   # Extract just the file paths
