@@ -302,7 +302,7 @@ describe('Phishing Detection', function () {
         });
 
         await driver.waitForUrl({
-          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+          url: `https://app.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
         });
       },
     );
@@ -343,7 +343,7 @@ describe('Phishing Detection', function () {
         });
 
         await driver.waitForUrl({
-          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+          url: `https://app.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
         });
       },
     );
