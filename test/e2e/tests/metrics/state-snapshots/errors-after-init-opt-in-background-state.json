@@ -151,6 +151,7 @@
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
   },
+  "MultichainAccountService": "object",
   "MultichainAssetsController": {
     "accountsAssets": "object",
     "assetsMetadata": "object"
@@ -169,7 +170,6 @@
     },
     "cryptocurrencies": ["btc", "sol"]
   },
-  "MultichainAccountService": "object",
   "MultichainTransactionsController": "object",
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {

@@ -177,7 +177,6 @@
     "historicalPrices": "object",
     "marketData": "object",
     "multichainNetworkConfigurationsByChainId": "object",
-    "MultichainAccountService": "object",
     "selectedMultichainNetworkChainId": "string",
     "isEvmSelected": "boolean",
     "networksWithTransactionActivity": "object",
@@ -379,6 +378,7 @@
     "submitHistory": "object",
     "delegations": "object",
     "accountTree": "object",
+    "MultichainAccountService": "object",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object",
     "srpSessionData": "object"

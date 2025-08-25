@@ -5998,28 +5998,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "@metamask/eth-snap-keyring@npm:16.0.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@metamask/base-controller": "npm:^7.1.1"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/keyring-api": "npm:^20.0.0"
-    "@metamask/keyring-internal-api": "npm:^8.0.0"
-    "@metamask/keyring-internal-snap-client": "npm:^6.0.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    "@types/uuid": "npm:^9.0.8"
-    uuid: "npm:^9.0.1"
-  peerDependencies:
-    "@metamask/keyring-api": ^20.0.0
-  checksum: 10/5a1d92c705251ab4cf3dc46d0e43af60ff2a8246653e1f137d27d2d0b88b9f022df77dae44c2b45d34e0cd9a27b1bc9fd25c856181922aa4ea244ede2373c92a
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-snap-keyring@npm:^16.1.0":
+"@metamask/eth-snap-keyring@npm:^16.0.0, @metamask/eth-snap-keyring@npm:^16.1.0":
   version: 16.1.0
   resolution: "@metamask/eth-snap-keyring@npm:16.1.0"
   dependencies:
@@ -6432,19 +6411,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@metamask/keyring-api@npm:20.0.0"
-  dependencies:
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/d912d388b7706a25a7369e6cb4777660b2c5810544f0a61b58374a0c8bcf0bc396e29033bca18c5e388bac3a6c1d49ef553bd042ab631ce22edc1da070d0f338
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-api@npm:^20.1.0":
+"@metamask/keyring-api@npm:^20.0.0, @metamask/keyring-api@npm:^20.1.0":
   version: 20.1.0
   resolution: "@metamask/keyring-api@npm:20.1.0"
   dependencies:
@@ -6490,18 +6457,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/keyring-internal-api@npm:8.0.0"
-  dependencies:
-    "@metamask/keyring-api": "npm:^20.0.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-  checksum: 10/6aedd45fe1a9d5e058cc098feafe68734a70c81f722d9249c2252a121dcff19442b4b92e4ebe435190a4e63770cf9ea18cd985662070849382956a988106c30b
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-internal-api@npm:^8.1.0":
+"@metamask/keyring-internal-api@npm:^8.0.0, @metamask/keyring-internal-api@npm:^8.1.0":
   version: 8.1.0
   resolution: "@metamask/keyring-internal-api@npm:8.1.0"
   dependencies:
