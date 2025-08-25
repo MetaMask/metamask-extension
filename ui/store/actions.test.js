@@ -20,10 +20,10 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
-import { stripWalletTypePrefix } from './actions';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -1397,7 +1397,7 @@ describe('Actions', () => {
     it('calls createNextMultichainAccountGroup in background', () => {
       const store = mockStore();
       const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
-      const walletIdWithoutPrefix = stripWalletTypePrefix(walletId);
+      const walletIdWithoutPrefix = stripWalletTypePrefixFromWalletId(walletId);
       const createNextMultichainAccountGroup = sinon.stub().resolves();
 
       background.getApi = sinon.stub().returns({
