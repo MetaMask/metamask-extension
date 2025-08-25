@@ -1,0 +1,29 @@
+.multichain-account-details {
+  &__row {
+    height: 52px;
+    padding-left: 4px;
+    padding-right: 4px;
+
+    &--clickable {
+      cursor: pointer;
+    }
+
+    &--default {
+      cursor: default;
+    }
+  }
+
+  &__label {
+    font-weight: 600;
+  }
+
+  &__value-container {
+    min-width: 0;
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  &__value {
+    max-width: 150px;
+  }
+}
