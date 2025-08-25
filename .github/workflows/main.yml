@@ -251,8 +251,7 @@ jobs:
       page-loads: '10'
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-      # TODO: [ffmcgee] replace with "EXTENSION_BENCHMARK_STATS_TOKEN"
-      EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
 
   needs-e2e:
     needs:
