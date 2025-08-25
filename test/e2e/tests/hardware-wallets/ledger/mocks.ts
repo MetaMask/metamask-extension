@@ -642,7 +642,7 @@ async function mockExternalAccountsAPI(mockServer: MockttpServer) {
   // Use the ACTUAL address that the test is using (from the API call logs)
   await mockServer
     .forGet(
-      'https://accounts.api.cx.metamask.io/v1/accounts/0xf68464152d7289d7ea9a2bec2e0035c45188223c/transactions',
+      'https://accounts.api.cx.metamask.io/v1/accounts/0xF68464152d7289D7eA9a2bEC2E0035c45188223c/transactions',
     )
     .withQuery({
       networks: '0x1,0x89,0x38,0xe708,0x2105,0xa,0xa4b1,0x82750,0x531',
@@ -652,7 +652,7 @@ async function mockExternalAccountsAPI(mockServer: MockttpServer) {
       {
         hash: '0xe3e223b9725765a7de557effdb2b507ace3534bcff2c1fe3a857e0791e56a518',
         chainId: 1337, // localhost chainId
-        from: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+        from: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
         to: '0x881d40237659c251811cec9c364ef91dc08d300c',
         value: '2000000000000000000', // 2 ETH
         blockNumber: 1,
@@ -670,13 +670,13 @@ async function mockExternalAccountsAPI(mockServer: MockttpServer) {
   // Also mock without query parameters as fallback
   await mockServer
     .forGet(
-      'https://accounts.api.cx.metamask.io/v1/accounts/0xf68464152d7289d7ea9a2bec2e0035c45188223c/transactions',
+      'https://accounts.api.cx.metamask.io/v1/accounts/0xF68464152d7289D7eA9a2bEC2E0035c45188223c/transactions',
     )
     .thenJson(200, [
       {
         hash: '0xe3e223b9725765a7de557effdb2b507ace3534bcff2c1fe3a857e0791e56a518',
         chainId: 1337,
-        from: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+        from: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
         to: '0x881d40237659c251811cec9c364ef91dc08d300c',
         value: '2000000000000000000',
         blockNumber: 1,
