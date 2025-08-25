@@ -20,6 +20,16 @@
     text-transform: unset;
     width: auto;
     background: transparent;
+
+    &:hover {
+      color: var(--color-warning-default);
+      border: 1px solid var(--color-warning-default);
+      background-color: var(--color-background-hover);
+    }
+
+    &:active {
+      background-color: var(--color-background-pressed);
+    }
   }
 
   .radio-group {

@@ -6,12 +6,6 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { SupportedEVMChain } from './types';
 
-// TODO: Remove when we want this enabled in production.
-export function isProdEnabled() {
-  const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
-  return isEnabled?.toString() === 'true';
-}
-
 // isSecurityAlertsEnabledByUser is a function that checks if the security alerts are enabled in the preferences controller.
 export function isSecurityAlertsEnabledByUser(
   preferencesController: PreferencesController,
@@ -60,8 +54,22 @@ export function isEthSignTypedData(req: JsonRpcRequest): boolean {
   );
 }
 
-export function isEthAccounts(req: JsonRpcRequest): boolean {
-  return req.method === MESSAGE_TYPE.ETH_ACCOUNTS;
+export function isConnected(
+  req: JsonRpcRequest & { origin?: string },
+  getPermittedAccounts: (origin: string) => string[],
+): boolean {
+  if (!req.origin || req.method !== MESSAGE_TYPE.ETH_ACCOUNTS) {
+    return false;
+  }
+  const permittedAccounts = getPermittedAccounts(req.origin);
+  return Array.isArray(permittedAccounts) && permittedAccounts.length > 0;
+}
+
+export function connectScreenHasBeenPrompted(req: JsonRpcRequest): boolean {
+  return (
+    req.method === MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS ||
+    req.method === MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS
+  );
 }
 
 export function hasValidTypedDataParams(
@@ -82,7 +90,7 @@ export function hasValidTypedDataParams(
 
 export function getChainId(
   networkController: NetworkController,
-): SupportedEVMChain {
+): SupportedEVMChain | undefined {
   const chainId = getProviderConfig({
     metamask: networkController.state,
   })?.chainId;
@@ -92,43 +100,51 @@ export function getChainId(
   return mapChainIdToSupportedEVMChain(chainId);
 }
 
-function mapChainIdToSupportedEVMChain(chainId: string): SupportedEVMChain {
-  const chainIdMap: Record<string, SupportedEVMChain> = {
-    [CHAIN_IDS.ARBITRUM]: SupportedEVMChain.Arbitrum,
-    [CHAIN_IDS.AVALANCHE]: SupportedEVMChain.Avalanche,
-    [CHAIN_IDS.BASE]: SupportedEVMChain.Base,
-    [CHAIN_IDS.BASE_SEPOLIA]: SupportedEVMChain.BaseSepolia,
-    [CHAIN_IDS.BSC]: SupportedEVMChain.Bsc,
-    [CHAIN_IDS.MAINNET]: SupportedEVMChain.Ethereum,
-    [CHAIN_IDS.OPTIMISM]: SupportedEVMChain.Optimism,
-    [CHAIN_IDS.POLYGON]: SupportedEVMChain.Polygon,
-    [CHAIN_IDS.ZKSYNC_ERA]: SupportedEVMChain.Zksync,
-    [CHAIN_IDS.ZK_SYNC_ERA_TESTNET]: SupportedEVMChain.ZksyncSepolia,
-    '0x76adf1': SupportedEVMChain.Zora,
-    [CHAIN_IDS.LINEA_MAINNET]: SupportedEVMChain.Linea,
-    [CHAIN_IDS.BLAST]: SupportedEVMChain.Blast,
-    [CHAIN_IDS.SCROLL]: SupportedEVMChain.Scroll,
-    [CHAIN_IDS.SEPOLIA]: SupportedEVMChain.EthereumSepolia,
-    '0x27bc86aa': SupportedEVMChain.Degen,
-    [CHAIN_IDS.AVALANCHE_TESTNET]: SupportedEVMChain.AvalancheFuji,
-    '0x343b': SupportedEVMChain.ImmutableZkevm,
-    '0x34a1': SupportedEVMChain.ImmutableZkevmTestnet,
-    [CHAIN_IDS.GNOSIS]: SupportedEVMChain.Gnosis,
-    '0x1e0': SupportedEVMChain.Worldchain,
-    '0x79a': SupportedEVMChain.SoneiumMinato,
-    '0x7e4': SupportedEVMChain.Ronin,
-    [CHAIN_IDS.APECHAIN_MAINNET]: SupportedEVMChain.ApeChain,
-    '0x849ea': SupportedEVMChain.ZeroNetwork,
-    [CHAIN_IDS.BERACHAIN]: SupportedEVMChain.Berachain,
-    '0x138c5': SupportedEVMChain.BerachainBartio,
-    [CHAIN_IDS.INK]: SupportedEVMChain.Ink,
-    [CHAIN_IDS.INK_SEPOLIA]: SupportedEVMChain.InkSepolia,
-    '0xab5': SupportedEVMChain.Abstract,
-    '0x2b74': SupportedEVMChain.AbstractTestnet,
-    '0x74c': SupportedEVMChain.Soneium,
-    [CHAIN_IDS.UNICHAIN]: SupportedEVMChain.Unichain,
-    [CHAIN_IDS.SEI]: SupportedEVMChain.Sei,
-    [CHAIN_IDS.FLOW]: SupportedEVMChain.FlowEvm,
-  };
-  return chainIdMap[chainId.toLowerCase()];
+const CHAIN_IDS_LOWERCASED: Record<string, SupportedEVMChain> = {
+  [CHAIN_IDS.ARBITRUM.toLowerCase()]: SupportedEVMChain.Arbitrum,
+  [CHAIN_IDS.AVALANCHE.toLowerCase()]: SupportedEVMChain.Avalanche,
+  [CHAIN_IDS.BASE.toLowerCase()]: SupportedEVMChain.Base,
+  [CHAIN_IDS.BASE_SEPOLIA.toLowerCase()]: SupportedEVMChain.BaseSepolia,
+  [CHAIN_IDS.BSC.toLowerCase()]: SupportedEVMChain.Bsc,
+  [CHAIN_IDS.MAINNET.toLowerCase()]: SupportedEVMChain.Ethereum,
+  [CHAIN_IDS.OPTIMISM.toLowerCase()]: SupportedEVMChain.Optimism,
+  [CHAIN_IDS.POLYGON.toLowerCase()]: SupportedEVMChain.Polygon,
+  [CHAIN_IDS.ZKSYNC_ERA.toLowerCase()]: SupportedEVMChain.Zksync,
+  [CHAIN_IDS.ZK_SYNC_ERA_TESTNET.toLowerCase()]:
+    SupportedEVMChain.ZksyncSepolia,
+  '0x76adf1': SupportedEVMChain.Zora,
+  [CHAIN_IDS.LINEA_MAINNET.toLowerCase()]: SupportedEVMChain.Linea,
+  [CHAIN_IDS.BLAST.toLowerCase()]: SupportedEVMChain.Blast,
+  [CHAIN_IDS.SCROLL.toLowerCase()]: SupportedEVMChain.Scroll,
+  [CHAIN_IDS.SEPOLIA.toLowerCase()]: SupportedEVMChain.EthereumSepolia,
+  '0x27bc86aa': SupportedEVMChain.Degen,
+  [CHAIN_IDS.AVALANCHE_TESTNET.toLowerCase()]: SupportedEVMChain.AvalancheFuji,
+  '0x343b': SupportedEVMChain.ImmutableZkevm,
+  '0x34a1': SupportedEVMChain.ImmutableZkevmTestnet,
+  [CHAIN_IDS.GNOSIS.toLowerCase()]: SupportedEVMChain.Gnosis,
+  '0x1e0': SupportedEVMChain.Worldchain,
+  '0x79a': SupportedEVMChain.SoneiumMinato,
+  '0x7e4': SupportedEVMChain.Ronin,
+  [CHAIN_IDS.APECHAIN_MAINNET.toLowerCase()]: SupportedEVMChain.ApeChain,
+  '0x849ea': SupportedEVMChain.ZeroNetwork,
+  [CHAIN_IDS.BERACHAIN.toLowerCase()]: SupportedEVMChain.Berachain,
+  '0x138c5': SupportedEVMChain.BerachainBartio,
+  [CHAIN_IDS.INK.toLowerCase()]: SupportedEVMChain.Ink,
+  [CHAIN_IDS.INK_SEPOLIA.toLowerCase()]: SupportedEVMChain.InkSepolia,
+  '0xab5': SupportedEVMChain.Abstract,
+  '0x2b74': SupportedEVMChain.AbstractTestnet,
+  '0x74c': SupportedEVMChain.Soneium,
+  [CHAIN_IDS.UNICHAIN.toLowerCase()]: SupportedEVMChain.Unichain,
+  [CHAIN_IDS.SEI.toLowerCase()]: SupportedEVMChain.Sei,
+  [CHAIN_IDS.FLOW.toLowerCase()]: SupportedEVMChain.FlowEvm,
+};
+
+export function mapChainIdToSupportedEVMChain(
+  chainId: string,
+): SupportedEVMChain | undefined {
+  if (typeof chainId !== 'string' || !chainId) {
+    return undefined;
+  }
+
+  return CHAIN_IDS_LOWERCASED[chainId.toLowerCase()];
 }

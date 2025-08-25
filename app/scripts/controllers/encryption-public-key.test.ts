@@ -48,13 +48,15 @@ const createMessengerMock = () =>
     subscribe: jest.fn(),
     call: jest.fn(),
     registerInitialEventPayload: jest.fn(),
-  } as unknown as jest.Mocked<EncryptionPublicKeyControllerMessenger>);
+  }) as unknown as jest.Mocked<EncryptionPublicKeyControllerMessenger>;
 
 const createManagerMessengerMock = () =>
   ({
     subscribe: jest.fn(),
-  } as unknown as jest.Mocked<EncryptionPublicKeyManagerMessenger>);
+  }) as unknown as jest.Mocked<EncryptionPublicKeyManagerMessenger>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const createEncryptionPublicKeyManagerMock = <T>() =>
   ({
     getUnapprovedMessages: jest.fn(),
@@ -68,7 +70,7 @@ const createEncryptionPublicKeyManagerMock = <T>() =>
     hub: {
       on: jest.fn(),
     },
-  } as unknown as jest.Mocked<T>);
+  }) as unknown as jest.Mocked<T>;
 
 describe('EncryptionPublicKeyController', () => {
   let encryptionPublicKeyController: EncryptionPublicKeyController;

@@ -13,6 +13,12 @@ import {
 import { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { DeepPartial } from 'redux';
+import {
+  AccountGroupType,
+  AccountWalletType,
+  toAccountWalletId,
+  toDefaultAccountGroupId,
+} from '@metamask/account-api';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
@@ -49,15 +55,29 @@ type TestState = {
     KeyringControllerState;
 };
 
+function asAccountTree(
+  accountTree: typeof mockDefaultState.metamask.accountTree,
+) {
+  // We type-cast manually as it seems that some mock values "clash" with the actual
+  // expected types... It could be because we have very strict type-constraint which
+  // are too match using a plain JSON dataset.
+  return accountTree as unknown as AccountTreeControllerState['accountTree'];
+}
+
 const MOCK_STATE: TestState = {
   ...mockDefaultState,
   metamask: {
     ...mockDefaultState.metamask,
+    accountTree: {
+      ...asAccountTree(mockDefaultState.metamask.accountTree),
+    },
     remoteFeatureFlags: {
       addBitcoinAccount: true,
     },
     permissionHistory: {
       'https://test.dapp': {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_accounts: {
           accounts: {
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
@@ -169,7 +189,11 @@ describe('MultichainAccountListMenu', () => {
     });
 
     const mockPrimaryHdKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
-    const mockWalletId1 = `entropy:${mockPrimaryHdKeyringId}`;
+    const mockWalletId1 = toAccountWalletId(
+      AccountWalletType.Entropy,
+      mockPrimaryHdKeyringId,
+    );
+    const mockGroupId1 = toDefaultAccountGroupId(mockWalletId1);
     const mockState = {
       ...mockDefaultState,
       metamask: {
@@ -194,21 +218,34 @@ describe('MultichainAccountListMenu', () => {
             metadata: { id: 'Snap Keyring', name: '' },
           },
         ],
+        accountWalletsMetadata: {},
+        accountGroupsMetadata: {},
         accountTree: {
+          selectedAccountGroup: mockGroupId1,
           wallets: {
             [mockWalletId1]: {
               id: mockWalletId1,
+              type: AccountWalletType.Entropy,
               groups: {
-                [`${mockWalletId1}:default`]: {
-                  id: `${mockWalletId1}:default`,
+                [mockGroupId1]: {
+                  id: mockGroupId1,
+                  type: AccountGroupType.MultichainAccount,
                   accounts: [mockAccount.id, mockBtcAccount.id],
                   metadata: {
                     name: 'Default',
+                    entropy: {
+                      groupIndex: 0,
+                    },
+                    pinned: false,
+                    hidden: false,
                   },
                 },
               },
               metadata: {
                 name: 'Wallet 1',
+                entropy: {
+                  id: mockPrimaryHdKeyringId,
+                },
               },
             },
           },

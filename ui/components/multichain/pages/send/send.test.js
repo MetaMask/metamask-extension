@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import {
   renderWithProvider,
   waitFor,
@@ -169,7 +170,9 @@ const baseStore = {
       showFiatInTestnets: true,
       tokenNetworkFilter: {},
     },
-    enabledNetworkMap: {},
+    enabledNetworkMap: {
+      eip155: {},
+    },
     currentCurrency: 'USD',
     nativeCurrency: 'ETH',
     featureFlags: {
@@ -298,6 +301,10 @@ describe('SendPage', () => {
             '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
           ],
           hiddenAccountList: [],
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       });
       const actions = store.getActions();
@@ -320,6 +327,10 @@ describe('SendPage', () => {
             '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
           ],
           hiddenAccountList: [],
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
         send: {
           ...baseStore.send,

@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { type BigNumber } from 'bignumber.js';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -27,21 +26,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Row } from '../layout';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
-  nativeAssetBalance,
-  srcTokenBalance,
 }: {
-  nativeAssetBalance?: BigNumber;
-  srcTokenBalance?: BigNumber;
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
 }) => {
@@ -61,29 +51,15 @@ export const BridgeCTAButton = ({
 
   const {
     isNoQuotesAvailable,
-    isInsufficientBalance: isInsufficientBalance_,
-    isInsufficientGasBalance: isInsufficientGasBalance_,
-    isInsufficientGasForQuote: isInsufficientGasForQuote_,
+    isInsufficientBalance,
+    isInsufficientGasBalance,
+    isInsufficientGasForQuote,
     isTxAlertPresent,
   } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const isTxSubmittable = useIsTxSubmittable(
-    nativeAssetBalance,
-    srcTokenBalance,
-  );
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
-  const { quoteRequestProperties } = useRequestProperties();
-  const requestMetadataProperties = useRequestMetadataProperties();
-  const tradeProperties = useTradeProperties();
-
-  const isInsufficientBalance = isInsufficientBalance_(srcTokenBalance);
-
-  const isInsufficientGasBalance =
-    isInsufficientGasBalance_(nativeAssetBalance);
-  const isInsufficientGasForQuote =
-    isInsufficientGasForQuote_(nativeAssetBalance);
+  const isTxSubmittable = useIsTxSubmittable();
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
@@ -165,18 +141,6 @@ export const BridgeCTAButton = ({
             // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page
             setIsSubmitting(true);
-
-            quoteRequestProperties &&
-              requestMetadataProperties &&
-              tradeProperties &&
-              trackCrossChainSwapsEvent({
-                event: MetaMetricsEventName.ActionSubmitted,
-                properties: {
-                  ...quoteRequestProperties,
-                  ...requestMetadataProperties,
-                  ...tradeProperties,
-                },
-              });
             await submitBridgeTransaction(activeQuote);
           } finally {
             setIsSubmitting(false);

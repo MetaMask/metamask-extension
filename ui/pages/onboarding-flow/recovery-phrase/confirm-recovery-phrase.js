@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -32,8 +38,10 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_REVEAL_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { TraceName } from '../../../../shared/lib/trace';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
@@ -68,6 +76,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedEndTrace } = trackEvent;
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const splitSecretRecoveryPhrase = useMemo(
@@ -75,9 +84,17 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     [secretRecoveryPhrase],
   );
   const searchParams = new URLSearchParams(search);
-  const isFromReminderParam = searchParams.get('isFromReminder')
-    ? '/?isFromReminder=true'
-    : '';
+  const isFromReminder = searchParams.get('isFromReminder');
+  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+
+  const queryParams = new URLSearchParams();
+  if (isFromReminder) {
+    queryParams.set('isFromReminder', isFromReminder);
+  }
+  if (isFromSettingsSecurity) {
+    queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
+  }
+  const nextRouteQueryString = queryParams.toString();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [matching, setMatching] = useState(false);
@@ -85,6 +102,16 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     generateQuizWords(splitSecretRecoveryPhrase),
   );
   const [answerSrp, setAnswerSrp] = useState('');
+
+  useEffect(() => {
+    if (!secretRecoveryPhrase) {
+      history.replace(
+        `${ONBOARDING_REVEAL_SRP_ROUTE}/${
+          nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+        }`,
+      );
+    }
+  }, [history, secretRecoveryPhrase, nextRouteQueryString]);
 
   const resetQuizWords = useCallback(() => {
     const newQuizWords = generateQuizWords(splitSecretRecoveryPhrase);
@@ -122,20 +149,33 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         hd_entropy_index: hdEntropyIndex,
       },
     });
+    bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
+    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
     const nextRoute =
-      getBrowserName() === PLATFORM_FIREFOX || isFromReminderParam
+      getBrowserName() === PLATFORM_FIREFOX || isFromReminder
         ? ONBOARDING_COMPLETION_ROUTE
         : ONBOARDING_METAMETRICS;
 
-    history.push(`${nextRoute}${isFromReminderParam}`);
-  }, [dispatch, hdEntropyIndex, history, trackEvent, isFromReminderParam]);
+    history.replace(
+      `${nextRoute}${nextRouteQueryString ? `?${nextRouteQueryString}` : ''}`,
+    );
+  }, [
+    dispatch,
+    hdEntropyIndex,
+    history,
+    trackEvent,
+    isFromReminder,
+    nextRouteQueryString,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
       gap={6}
       className="recovery-phrase recovery-phrase__confirm"
       data-testid="confirm-recovery-phrase"
@@ -170,7 +210,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           marginBottom={4}
           width={BlockSize.Full}
         >
-          {!isFromReminderParam && (
+          {!isFromReminder && (
             <Text
               variant={TextVariant.bodyMd}
               color={TextColor.textAlternative}

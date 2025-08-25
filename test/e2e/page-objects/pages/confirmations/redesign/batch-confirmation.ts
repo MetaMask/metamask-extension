@@ -27,11 +27,11 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
 
   private readonly txType = '[data-testid="tx-type"]';
 
-  async check_batchTxListIsPresent(): Promise<void> {
+  async checkBatchTxListIsPresent(): Promise<void> {
     await this.driver.isElementPresent(this.batchTxList);
   }
 
-  async check_expectedInteractingWithIsDisplayed(
+  async checkExpectedInteractingWithIsDisplayed(
     account: string,
   ): Promise<void> {
     await this.driver.isElementPresent({
@@ -40,7 +40,7 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     });
   }
 
-  async check_expectedTxTypeIsDisplayed(txType: string): Promise<void> {
+  async checkExpectedTxTypeIsDisplayed(txType: string): Promise<void> {
     await this.driver.isElementPresent({
       css: this.txType,
       text: txType,

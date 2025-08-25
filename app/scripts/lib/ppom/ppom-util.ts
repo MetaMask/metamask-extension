@@ -40,6 +40,8 @@ const log = createProjectLogger('ppom-util');
 const { sentry } = global;
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: BlockaidResultType.Errored,
   reason: BlockaidReason.errored,
 };
@@ -242,7 +244,7 @@ function normalizeSignatureRequest(request: PPOMRequest): PPOMRequest {
     return request;
   }
 
-  const typedDataMessage = parseTypedDataMessage(request.params[1].toString());
+  const typedDataMessage = parseTypedDataMessage(request.params[1]);
 
   const sanitizedMessageRecursively = sanitizeMessageRecursively(
     typedDataMessage.message,

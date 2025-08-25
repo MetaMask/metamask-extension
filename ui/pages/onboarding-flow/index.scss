@@ -20,4 +20,34 @@
     background: url('/images/welcome-page.png') no-repeat center top;
     background-color: var(--color-accent02-dark);
   }
+
+  &__container {
+    padding-inline: 24px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+    max-width: 446px;
+    min-height: 627px;
+    height: auto;
+
+    &--full {
+      padding-inline: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      max-width: none;
+      min-height: auto;
+      height: 100%;
+    }
+
+    &--popup {
+      padding-inline: 16px;
+      padding-top: 16px;
+      padding-bottom: 24px;
+      min-height: auto;
+      height: 100%;
+    }
+  }
+
+  &__x-button__icon {
+    margin-bottom: -6px;
+  }
 }

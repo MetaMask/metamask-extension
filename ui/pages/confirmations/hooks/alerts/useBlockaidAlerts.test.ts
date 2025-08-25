@@ -20,6 +20,8 @@ import useBlockaidAlert from './useBlockaidAlerts';
 const mockSecurityAlertResponse: SecurityAlertResponse = {
   securityAlertId: 'test-id-mock',
   reason: 'test-reason',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: BlockaidResultType.Malicious,
   features: ['Feature 1', 'Feature 2'],
 };

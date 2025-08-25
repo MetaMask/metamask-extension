@@ -57,7 +57,7 @@ class AccountDetailsModal {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.editableLabelButton,
@@ -158,7 +158,7 @@ class AccountDetailsModal {
    *
    * @param expectedAddress - The expected address to check.
    */
-  async check_addressInAccountDetailsModal(
+  async checkAddressInAccountDetailsModal(
     expectedAddress: string,
   ): Promise<void> {
     console.log(
@@ -171,7 +171,7 @@ class AccountDetailsModal {
     });
   }
 
-  async check_showPrivateKeyButtonIsNotDisplayed(): Promise<void> {
+  async checkShowPrivateKeyButtonIsNotDisplayed(): Promise<void> {
     console.log('Check that show private key button is not displayed');
     await this.driver.assertElementNotPresent(this.showPrivateKeyButton);
   }

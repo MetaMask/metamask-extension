@@ -971,10 +971,6 @@
   "send": {
     "message": "發送"
   },
-  "sendSpecifiedTokens": {
-    "message": "發送 $1",
-    "description": "Symbol of the specified token"
-  },
   "settings": {
     "message": "設定"
   },

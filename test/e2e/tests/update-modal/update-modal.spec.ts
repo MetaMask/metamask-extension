@@ -17,7 +17,7 @@ describe('Update modal', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsNotPresent();
+        await updateModal.checkPageIsNotPresent();
       },
     );
   });
@@ -33,14 +33,14 @@ describe('Update modal', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
           },
         },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsLoaded();
+        await updateModal.checkPageIsLoaded();
       },
     );
   });
@@ -56,16 +56,16 @@ describe('Update modal', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
           },
         },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsLoaded();
+        await updateModal.checkPageIsLoaded();
         await updateModal.close();
-        await updateModal.check_pageIsNotPresent();
+        await updateModal.checkPageIsNotPresent();
       },
     );
   });
@@ -82,7 +82,7 @@ describe('Update modal', function (this: Suite) {
         disableServerMochaToBackground: true,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
           },
         },
         // we need to mock the updating page that is opened when the user confirms the update
@@ -98,11 +98,9 @@ describe('Update modal', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsLoaded();
+        await updateModal.checkPageIsLoaded();
         await updateModal.confirm();
-        await driver.switchToWindowByTitleWithoutSocket(
-          WINDOW_TITLES.ExtensionUpdating,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionUpdating);
       },
     );
   });
@@ -119,14 +117,14 @@ describe('Update modal', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
           },
         },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsNotPresent();
+        await updateModal.checkPageIsNotPresent();
       },
     );
   });
@@ -143,14 +141,14 @@ describe('Update modal', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
           },
         },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
-        await updateModal.check_pageIsNotPresent();
+        await updateModal.checkPageIsNotPresent();
       },
     );
   });

@@ -1,3 +1,4 @@
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import {
   tokenDetectionStartPolling,
@@ -41,9 +42,15 @@ describe('useTokenDetectionPolling', () => {
         useTokenDetection: true,
         selectedNetworkClientId: 'selectedNetworkClientId',
         enabledNetworkMap: {
-          '0x1': true,
-          '0x89': true,
+          eip155: {
+            '0x1': true,
+            '0x89': true,
+          },
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
         networkConfigurationsByChainId: {
           '0x1': {
             chainId: '0x1',

@@ -1,18 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
-
-import Button from '../../../../components/ui/button/button.component';
-
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
+  Button,
+  ButtonVariant,
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
   Text,
 } from '../../../../components/component-library';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 
 import Tooltip from '../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -53,7 +52,7 @@ function ViewContact({
           paddingLeft={6}
           paddingRight={6}
         >
-          <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
+          <PreferredAvatar size={AvatarAccountSize.Lg} address={address} />
           <Text
             className="address-book__header__name"
             variant={TextVariant.bodyLgMedium}
@@ -66,7 +65,7 @@ function ViewContact({
         </Box>
         <div className="address-book__view-contact__group">
           <Button
-            type="secondary"
+            variant={ButtonVariant.Secondary}
             onClick={() => {
               history.push(`${editRoute}/${address}`);
             }}

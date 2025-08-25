@@ -39,17 +39,6 @@ describe('Global Menu', () => {
     });
   });
 
-  it('opens the support site when item is clicked', async () => {
-    // @ts-expect-error mocking platform
-    global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
-
-    const { getByTestId } = render();
-    fireEvent.click(getByTestId('global-menu-support'));
-    await waitFor(() => {
-      expect(global.platform.openTab).toHaveBeenCalled();
-    });
-  });
-
   it('disables the settings item when there is an active transaction', async () => {
     const { getByTestId } = render();
     await waitFor(() => {

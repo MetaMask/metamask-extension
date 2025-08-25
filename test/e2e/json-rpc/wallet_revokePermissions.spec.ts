@@ -19,6 +19,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -40,6 +41,8 @@ describe('Revoke Dapp Permissions', function () {
           method: 'wallet_revokePermissions',
           params: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               eth_accounts: {},
             },
           ],
@@ -77,6 +80,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -135,6 +139,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -156,6 +161,8 @@ describe('Revoke Dapp Permissions', function () {
           method: 'wallet_revokePermissions',
           params: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               eth_accounts: {},
               'endowment:permitted-chains': {},
             },
@@ -195,13 +202,16 @@ describe('Revoke Dapp Permissions', function () {
           await loginWithBalanceValidation(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
-          await driver.clickElement('#personalSign');
+          await testDapp.checkPageIsLoaded();
+          await testDapp.clickPersonalSign();
 
           const revokePermissionsRequest = JSON.stringify({
             jsonrpc: '2.0',
             method: 'wallet_revokePermissions',
             params: [
               {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 eth_accounts: {},
               },
             ],

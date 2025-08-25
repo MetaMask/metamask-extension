@@ -1,4 +1,5 @@
 import merge from 'lodash/merge';
+import { MANIFEST_DEV_KEY } from '../../../../build/constants';
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
@@ -23,6 +24,7 @@ export function transformManifest(
 ) {
   const transforms: ((
     manifest: chrome.runtime.Manifest,
+    browser?: string,
   ) => chrome.runtime.Manifest | void)[] = [];
 
   function removeLockdown(browserManifest: chrome.runtime.Manifest) {
@@ -96,6 +98,16 @@ export function transformManifest(
   if (args.test) {
     // test builds need "tabs" permission for switchToWindowWithTitle
     transforms.push(addTabsPermission);
+  }
+
+  function addManifestKey(browserManifest: chrome.runtime.Manifest) {
+    if (!browserManifest.key) {
+      browserManifest.key = MANIFEST_DEV_KEY;
+    }
+  }
+
+  if (isDevelopment || args.test) {
+    transforms.push(addManifestKey);
   }
 
   return transforms.length

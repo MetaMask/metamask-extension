@@ -15,6 +15,7 @@ import {
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
+  isValidQuoteRequest,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -51,14 +52,11 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import {} from '../../pages/bridge/utils/quote';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-  FEATURED_RPCS,
-} from '../../../shared/constants/network';
-import {
+  getMultichainBalances,
   getMultichainCoinRates,
   getMultichainProviderConfig,
-  getImageForChainId,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
 import {
@@ -66,11 +64,16 @@ import {
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
 import { toAssetId } from '../../../shared/lib/asset-utils';
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
+  getDefaultToToken,
+  toBridgeToken,
 } from './utils';
 import type { BridgeState } from './types';
 
@@ -146,6 +149,11 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
   },
 );
 
+export const getPriceImpactThresholds = createDeepEqualSelector(
+  getBridgeFeatureFlags,
+  (bridgeFeatureFlags) => bridgeFeatureFlags?.priceImpactThreshold,
+);
+
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   getBridgeFeatureFlags,
@@ -198,21 +206,25 @@ export const getTopAssetsFromFeatureFlags = (
   return bridgeFeatureFlags?.chains[formatChainIdToCaip(chainId)]?.topAssets;
 };
 
+// If the user has selected a toChainId, return it as the destination chain
+// Otherwise, use the source chain as the destination chain (default to swap params)
 export const getToChain = createSelector(
-  getToChains,
-  (state: BridgeAppState) => state.bridge?.toChainId,
-  (toChains, toChainId) =>
+  [
+    getFromChain,
+    getToChains,
+    (state: BridgeAppState) => state.bridge?.toChainId,
+  ],
+  (fromChain, toChains, toChainId) =>
     toChainId
       ? toChains.find(
           ({ chainId }) =>
             chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
         )
-      : undefined,
+      : fromChain,
 );
 
 export const getFromToken = createSelector(
-  (state: BridgeAppState) => state.bridge.fromToken,
-  getFromChain,
+  [(state: BridgeAppState) => state.bridge.fromToken, getFromChain],
   (fromToken, fromChain) => {
     if (!fromChain?.chainId) {
       return null;
@@ -223,25 +235,97 @@ export const getFromToken = createSelector(
     const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(
       fromChain.chainId,
     );
-    return {
-      ...nativeAsset,
-      chainId: formatChainIdToCaip(fromChain.chainId),
-      image:
-        CHAIN_ID_TOKEN_IMAGE_MAP[
-          fromChain.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ] ?? getImageForChainId(fromChain.chainId),
-      balance: '0',
-      string: '0',
-    };
+    const newToToken = toBridgeToken(nativeAsset);
+    return newToToken
+      ? {
+          ...newToToken,
+          chainId: formatChainIdToCaip(fromChain.chainId),
+        }
+      : newToToken;
   },
 );
 
-export const getToToken = (state: BridgeAppState) => {
-  return state.bridge.toToken;
-};
+export const getToToken = createSelector(
+  [getFromToken, getToChain, (state) => state.bridge.toToken],
+  (fromToken, toChain, toToken) => {
+    if (!toChain || !fromToken) {
+      return null;
+    }
+    // If the user has selected a token, return it
+    if (toToken) {
+      return toToken;
+    }
+    // Otherwise, determine the default token to use based on fromToken and toChain
+    const defaultToken = getDefaultToToken(toChain, fromToken);
+    return defaultToken ? toBridgeToken(defaultToken) : null;
+  },
+);
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
+
+const _getFromNativeBalance = createSelector(
+  getFromChain,
+  (state: BridgeAppState) => state.bridge.fromNativeBalance,
+  getMultichainBalances,
+  getSelectedInternalAccount,
+  (fromChain, fromNativeBalance, nonEvmBalancesByAccountId, { id }) => {
+    if (!fromChain) {
+      return null;
+    }
+
+    const { chainId } = fromChain;
+    const { decimals, address, assetId } = getNativeAssetForChainId(chainId);
+
+    // Use the balance provided by the multichain balances controller
+    if (isSolanaChainId(chainId)) {
+      const caipAssetType = isNativeAddress(address)
+        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+        : (assetId ?? address);
+      return nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ?? null;
+    }
+
+    return fromNativeBalance
+      ? Numeric.from(fromNativeBalance, 10).shiftedBy(decimals).toString()
+      : null;
+  },
+);
+
+export const getFromTokenBalance = createSelector(
+  getFromToken,
+  getFromChain,
+  (state: BridgeAppState) => state.bridge.fromTokenBalance,
+  getMultichainBalances,
+  getSelectedInternalAccount,
+  (
+    fromToken,
+    fromChain,
+    fromTokenBalance,
+    nonEvmBalancesByAccountId,
+    { id },
+  ) => {
+    if (!fromToken || !fromChain) {
+      return null;
+    }
+    const { chainId, decimals, address, assetId } = fromToken;
+
+    // Use the balance provided by the multichain balances controller
+    if (isSolanaChainId(chainId)) {
+      const caipAssetType = isNativeAddress(address)
+        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+        : (assetId ?? address);
+      return (
+        nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ??
+        fromToken.string ??
+        null
+      );
+    }
+
+    return fromTokenBalance
+      ? Numeric.from(fromTokenBalance, 10).shiftedBy(decimals).toString()
+      : null;
+  },
+);
 
 export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
 
@@ -249,17 +333,6 @@ export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask;
   return quoteRequest;
 };
-
-export const getShouldUseSnapConfirmation = createSelector(
-  getBridgeFeatureFlags,
-  getFromChain,
-  (extensionConfig, fromChain) =>
-    Boolean(
-      fromChain &&
-        extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
-          ?.isSnapConfirmationEnabled,
-    ),
-);
 
 export const getQuoteRefreshRate = createSelector(
   getBridgeFeatureFlags,
@@ -304,13 +377,13 @@ export const getFromTokenConversionRate = createSelector(
         ? Number(
             conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
           )
-        : currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null;
+        : (currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null);
       const nativeToUsdRate = isSolanaChainId(fromChain.chainId)
         ? Number(
             rates?.[fromChain.nativeCurrency.toLowerCase()]
               ?.usdConversionRate ?? null,
           )
-        : currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null;
+        : (currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null);
 
       if (isNativeAddress(fromToken.address)) {
         return {
@@ -535,6 +608,8 @@ export const getValidationErrors = createDeepEqualSelector(
     selectMinimumBalanceForRentExemptionInSOL(metamask),
   getQuoteRequest,
   getTxAlerts,
+  _getFromNativeBalance,
+  getFromTokenBalance,
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
@@ -543,7 +618,11 @@ export const getValidationErrors = createDeepEqualSelector(
     minimumBalanceForRentExemptionInSOL,
     quoteRequest,
     txAlert,
+    nativeBalance,
+    fromTokenBalance,
   ) => {
+    const { gasIncluded } = activeQuote?.quote ?? {};
+
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
     const minimumBalanceToUse =
@@ -555,35 +634,46 @@ export const getValidationErrors = createDeepEqualSelector(
       isTxAlertPresent: Boolean(txAlert),
       isNoQuotesAvailable: Boolean(
         !activeQuote &&
+          isValidQuoteRequest(quoteRequest) &&
           quotesLastFetchedMs &&
           !isLoading &&
           quotesRefreshCount > 0,
       ),
       // Shown prior to fetching quotes
-      isInsufficientGasBalance: (balance?: BigNumber) => {
-        if (balance && !activeQuote && validatedSrcAmount && fromToken) {
-          return isNativeAddress(fromToken.address)
-            ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
-            : balance.lte(0);
-        }
-        return false;
-      },
+      isInsufficientGasBalance: Boolean(
+        nativeBalance &&
+          !activeQuote &&
+          validatedSrcAmount &&
+          fromToken &&
+          !gasIncluded &&
+          (isNativeAddress(fromToken.address)
+            ? new BigNumber(nativeBalance)
+                .sub(minimumBalanceToUse)
+                .lte(validatedSrcAmount)
+            : new BigNumber(nativeBalance).lte(0)),
+      ),
       // Shown after fetching quotes
-      isInsufficientGasForQuote: (balance?: BigNumber) => {
-        if (balance && activeQuote && fromToken && fromTokenInputValue) {
-          return isNativeAddress(fromToken.address)
-            ? balance
+      isInsufficientGasForQuote: Boolean(
+        nativeBalance &&
+          activeQuote &&
+          fromToken &&
+          fromTokenInputValue &&
+          !gasIncluded &&
+          (isNativeAddress(fromToken.address)
+            ? new BigNumber(nativeBalance)
                 .sub(activeQuote.totalMaxNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
                 .sub(minimumBalanceToUse)
                 .lte(0)
-            : balance.lte(activeQuote.totalMaxNetworkFee.amount);
-        }
-        return false;
-      },
-      isInsufficientBalance: (balance?: BigNumber) =>
-        validatedSrcAmount && balance !== undefined
-          ? balance.lt(validatedSrcAmount)
+            : new BigNumber(nativeBalance).lte(
+                activeQuote.totalMaxNetworkFee.amount,
+              )),
+      ),
+      isInsufficientBalance:
+        validatedSrcAmount &&
+        fromTokenBalance &&
+        !isNaN(Number(fromTokenBalance))
+          ? new BigNumber(fromTokenBalance).lt(validatedSrcAmount)
           : false,
       isEstimatedReturnLow:
         activeQuote?.sentAmount?.valueInCurrency &&
@@ -602,21 +692,6 @@ export const getValidationErrors = createDeepEqualSelector(
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
 };
-
-/**
- * Checks if Solana is enabled as either a fromChain or toChain for bridging
- */
-export const isBridgeSolanaEnabled = createDeepEqualSelector(
-  getBridgeFeatureFlags,
-  (bridgeFeatureFlags) => {
-    const solanaChainId = MultichainNetworks.SOLANA;
-    const solanaChainIdCaip = formatChainIdToCaip(solanaChainId);
-
-    // Directly check if Solana is enabled as a source or destination chain
-    const solanaConfig = bridgeFeatureFlags?.chains?.[solanaChainIdCaip];
-    return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
-  },
-);
 
 /**
  * Checks if the destination chain is Solana and the user has no Solana accounts
@@ -702,8 +777,18 @@ export const getIsUnifiedUIEnabled = createSelector(
 
     const caipChainId = formatChainIdToCaip(chainId);
 
-    return Boolean(
-      bridgeFeatureFlags?.chains?.[caipChainId]?.isUnifiedUIEnabled,
-    );
+    // TODO remove this when bridge-controller's types are updated
+    return bridgeFeatureFlags?.chains?.[caipChainId]
+      ? Boolean(
+          'isSingleSwapBridgeButtonEnabled' in
+            bridgeFeatureFlags.chains[caipChainId]
+            ? (
+                bridgeFeatureFlags.chains[caipChainId] as unknown as {
+                  isSingleSwapBridgeButtonEnabled: boolean;
+                }
+              ).isSingleSwapBridgeButtonEnabled
+            : false,
+        )
+      : false;
   },
 );

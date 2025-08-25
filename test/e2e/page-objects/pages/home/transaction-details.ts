@@ -30,14 +30,14 @@ class TransactionDetailsPage {
     tag: 'span',
   };
 
-  async check_transactionStatus(status: string): Promise<void> {
+  async checkTransactionStatus(status: string): Promise<void> {
     await this.driver.waitForSelector({
       text: status,
       tag: 'p',
     });
   }
 
-  async check_transactionAmount(amount: string): Promise<void> {
+  async checkTransactionAmount(amount: string): Promise<void> {
     const transactionAmount = await this.driver.findElement(
       By.css('[data-testid="transaction-list-item-primary-currency"]'),
     );
@@ -45,7 +45,7 @@ class TransactionDetailsPage {
     assert.equal(transactionAmountText, amount);
   }
 
-  async check_transactionNetworkFee(networkFee: string): Promise<void> {
+  async checkTransactionNetworkFee(networkFee: string): Promise<void> {
     const transactionAmount = await this.driver.findElement(
       By.css('[data-testid="transaction-base-fee"]'),
     );
@@ -53,33 +53,33 @@ class TransactionDetailsPage {
     assert.equal(transactionAmountText, networkFee);
   }
 
-  async check_transactionFromToLink(fromToAddress: string): Promise<void> {
+  async checkTransactionFromToLink(fromToAddress: string): Promise<void> {
     await this.driver.waitForSelector(
       By.css(`a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`),
     );
   }
 
-  async check_transactionHashLink(txHash: string): Promise<void> {
+  async checkTransactionHashLink(txHash: string): Promise<void> {
     await this.driver.waitForSelector(
       By.css(`a[href='${this.solanaExplorerUrl}/tx/${txHash}']`),
     );
   }
 
-  async check_amountTransaction(amount: string): Promise<void> {
+  async checkAmountTransaction(amount: string): Promise<void> {
     await this.driver.waitForSelector({
       text: amount,
       tag: 'p',
     });
   }
 
-  async check_networkFeeTransaction(amount: string): Promise<void> {
+  async checkNetworkFeeTransaction(amount: string): Promise<void> {
     await this.driver.waitForSelector({
       text: amount,
       tag: 'p',
     });
   }
 
-  async check_transactionViewDetailsLink(): Promise<void> {
+  async checkTransactionViewDetailsLink(): Promise<void> {
     await this.driver.waitForSelector({
       text: 'View details',
       tag: 'button',

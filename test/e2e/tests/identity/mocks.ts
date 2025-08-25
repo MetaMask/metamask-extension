@@ -42,16 +42,6 @@ export async function mockIdentityServices(
   }
   if (
     !userStorageMockttpControllerInstance?.paths.get(
-      USER_STORAGE_FEATURE_NAMES.networks,
-    )
-  ) {
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_FEATURE_NAMES.networks,
-      server,
-    );
-  }
-  if (
-    !userStorageMockttpControllerInstance?.paths.get(
       USER_STORAGE_FEATURE_NAMES.addressBook,
     )
   ) {
