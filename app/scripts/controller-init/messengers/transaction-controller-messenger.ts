@@ -32,6 +32,7 @@ import {
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { BridgeStatusControllerGetStateAction } from '@metamask/bridge-status-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
