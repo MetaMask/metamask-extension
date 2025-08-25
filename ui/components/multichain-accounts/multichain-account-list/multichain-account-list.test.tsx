@@ -115,7 +115,7 @@ const mockWallets = {
 describe('MultichainAccountList', () => {
   const defaultProps: MultichainAccountListProps = {
     wallets: mockWallets,
-    selectedAccountGroup: walletOneGroupId,
+    selectedAccountGroups: [walletOneGroupId],
   };
 
   const renderComponent = (props = {}) => {
@@ -198,7 +198,7 @@ describe('MultichainAccountList', () => {
     rerender(
       <MultichainAccountList
         wallets={mockWallets}
-        selectedAccountGroup={walletTwoGroupId}
+        selectedAccountGroups={[walletTwoGroupId]}
       />,
     );
 
