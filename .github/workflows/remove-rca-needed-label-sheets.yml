@@ -1,4 +1,4 @@
-name: Remove RCA-needed Label (Google Sheets)
+name: Remove RCA-needed Label
 
 on:
   # Run every 6 hours
