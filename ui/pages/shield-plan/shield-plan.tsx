@@ -40,6 +40,13 @@ import {
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
+  AssetWithDisplayData,
+  ERC20Asset,
+  NativeAsset,
+} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
+import { AssetType } from '../../../shared/constants/transaction';
+import {
   PAYMENT_METHODS,
   PaymentMethod,
   Plan,
@@ -52,9 +59,35 @@ const ShieldPlan = () => {
   const history = useHistory();
   const t = useI18nContext();
 
+  const paymentTokens = [
+    {
+      address: '0x0000000000000000000000000000000000000000',
+      symbol: 'USDC',
+      image:
+        'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
+      type: AssetType.token,
+      chainId: '0x1',
+    },
+    {
+      address: '0x0000000000000000000000000000000000000000',
+      symbol: 'USDT',
+      image:
+        'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
+      type: AssetType.token,
+      chainId: '0x1',
+    },
+  ] as unknown as (keyof typeof AssetPickerModal)['customTokenListGenerator'];
+
   const [selectedPlan, setSelectedPlan] = useState<Plan['id']>(
     PLAN_TYPES.ANNUAL,
   );
+
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<PaymentMethod>(PAYMENT_METHODS.TOKEN);
+
+  const [selectedToken, setSelectedToken] = useState<
+    AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>
+  >(paymentTokens[0]);
 
   const handleBack = () => {
     history.goBack();
@@ -80,9 +113,6 @@ const ShieldPlan = () => {
   ];
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-
-  const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<PaymentMethod>(PAYMENT_METHODS.TOKEN);
 
   const rowsStyleProps: BoxProps<'div'> = {
     display: Display.Flex,
@@ -176,15 +206,15 @@ const ShieldPlan = () => {
                   badge={
                     <AvatarNetwork
                       size={AvatarNetworkSize.Xs}
-                      name="Avalanche"
-                      src="./images/avax-token.svg"
+                      name="Ethereum Mainnet"
+                      src="./images/eth_logo.svg"
                       borderColor={BorderColor.borderMuted}
                     />
                   }
                 >
                   <AvatarToken
-                    name="Eth"
-                    src="./images/eth_logo.svg"
+                    name={selectedToken.symbol}
+                    src={selectedToken.image}
                     borderColor={BorderColor.borderMuted}
                   />
                 </BadgeWrapper>
@@ -193,7 +223,7 @@ const ShieldPlan = () => {
               )}
               <Text variant={TextVariant.bodyLgMedium}>
                 {selectedPaymentMethod === PAYMENT_METHODS.TOKEN
-                  ? 'ETH'
+                  ? selectedToken.symbol
                   : t('shieldPlanCard')}
               </Text>
               <Icon size={IconSize.Md} name={IconName.ArrowRight} />
@@ -236,8 +266,13 @@ const ShieldPlan = () => {
         <ShieldPaymentModal
           isOpen={showPaymentModal}
           onClose={() => setShowPaymentModal(false)}
+          selectedToken={selectedToken}
           selectedPaymentMethod={selectedPaymentMethod}
           setSelectedPaymentMethod={setSelectedPaymentMethod}
+          onAssetChange={(asset) => {
+            setSelectedToken(asset);
+          }}
+          paymentTokens={paymentTokens}
         />
       </Content>
       <Footer

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import classnames from 'classnames';
 import {
   AvatarNetwork,
@@ -30,8 +30,12 @@ import {
 } from '../../helpers/constants/design-system';
 import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
 import { TabName } from '../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
-import { AssetType } from '../../../shared/constants/transaction';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import {
+  AssetWithDisplayData,
+  ERC20Asset,
+  NativeAsset,
+} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { PAYMENT_METHODS, PaymentMethod } from './types';
 
 export const ShieldPaymentModal = ({
@@ -39,17 +43,44 @@ export const ShieldPaymentModal = ({
   onClose,
   selectedPaymentMethod,
   setSelectedPaymentMethod,
+  selectedToken,
+  onAssetChange,
+  paymentTokens,
 }: {
   isOpen: boolean;
   onClose: () => void;
   selectedPaymentMethod: PaymentMethod;
   setSelectedPaymentMethod: (method: PaymentMethod) => void;
+  selectedToken:
+    | AssetWithDisplayData<ERC20Asset>
+    | AssetWithDisplayData<NativeAsset>;
+  onAssetChange: (
+    asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => void;
+  paymentTokens: (keyof typeof AssetPickerModal)['customTokenListGenerator'];
 }) => {
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
+  const selectPaymentMethod = useCallback(
+    (selectedMethod: PaymentMethod) => {
+      setSelectedPaymentMethod(selectedMethod);
+
+      if (selectedMethod === PAYMENT_METHODS.TOKEN) {
+        setShowAssetPickerModal(true);
+      } else {
+        onClose();
+      }
+    },
+    [setSelectedPaymentMethod, onClose],
+  );
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="shield-payment-modal">
+    <Modal
+      isOpen={isOpen}
+      onClose={() => undefined}
+      className="shield-payment-modal"
+    >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader onClose={onClose}>
@@ -78,8 +109,7 @@ export const ShieldPaymentModal = ({
             justifyContent={JustifyContent.spaceBetween}
             width={BlockSize.Full}
             onClick={() => {
-              setSelectedPaymentMethod(PAYMENT_METHODS.TOKEN);
-              setShowAssetPickerModal(true);
+              selectPaymentMethod(PAYMENT_METHODS.TOKEN);
             }}
           >
             {selectedPaymentMethod === PAYMENT_METHODS.TOKEN && (
@@ -111,21 +141,21 @@ export const ShieldPaymentModal = ({
                   }
                 >
                   <AvatarToken
-                    name="Eth"
-                    src="./images/eth_logo.svg"
+                    name={selectedToken.symbol}
+                    src={selectedToken.image}
                     marginTop={1}
                     borderColor={BorderColor.borderMuted}
                   />
                 </BadgeWrapper>
                 <Box textAlign={TextAlign.Left}>
                   <Text variant={TextVariant.bodyMdMedium}>
-                    {t('shieldPlanPayWithToken', ['USDT'])}
+                    {t('shieldPlanPayWithToken', [selectedToken.symbol])}
                   </Text>
                   <Text
                     variant={TextVariant.bodySm}
                     color={TextColor.textAlternative}
                   >
-                    {t('balance')}: 123.43 USDT
+                    {t('balance')}: 123.43 {selectedToken.symbol}
                   </Text>
                 </Box>
               </Box>
@@ -150,7 +180,7 @@ export const ShieldPaymentModal = ({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
             width={BlockSize.Full}
-            onClick={() => setSelectedPaymentMethod(PAYMENT_METHODS.CARD)}
+            onClick={() => selectPaymentMethod(PAYMENT_METHODS.CARD)}
           >
             {selectedPaymentMethod === PAYMENT_METHODS.CARD && (
               <Box
@@ -191,32 +221,20 @@ export const ShieldPaymentModal = ({
         </Box>
         <AssetPickerModal
           isOpen={showAssetPickerModal}
-          onClose={() => setShowAssetPickerModal(false)}
+          onClose={() => {
+            setShowAssetPickerModal(false);
+          }}
+          asset={selectedToken}
           onAssetChange={(asset) => {
-            console.log('onAssetChange', asset);
+            onAssetChange(asset);
+            setShowAssetPickerModal(false);
+            onClose();
           }}
           header="Select a token"
           autoFocus={false}
           visibleTabs={[TabName.TOKENS]}
           customTokenListGenerator={() => {
-            return [
-              {
-                address: '0x0000000000000000000000000000000000000000',
-                symbol: 'USDC',
-                image:
-                  'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
-                type: AssetType.token,
-                chainId: '0x1',
-              },
-              {
-                address: '0x0000000000000000000000000000000000000000',
-                symbol: 'USDT',
-                image:
-                  'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
-                type: AssetType.token,
-                chainId: '0x1',
-              },
-            ] as unknown as (keyof typeof AssetPickerModal)['customTokenListGenerator'];
+            return paymentTokens;
           }}
         />
       </ModalContent>
