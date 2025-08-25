@@ -98,6 +98,7 @@ import {
   getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
+import { getUseSmartAccount } from '../../confirmations/selectors/preferences';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -122,6 +123,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
+import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -214,6 +216,8 @@ const PrepareBridgePage = ({
     getIsSmartTransaction(state as never, fromChain?.chainId),
   );
 
+  const smartAccountOptIn = useSelector(getUseSmartAccount);
+
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
@@ -256,6 +260,13 @@ const PrepareBridgePage = ({
   const selectedAccount = isEvm
     ? selectedEvmAccount
     : selectedMultichainAccount;
+
+  const gasIncluded7702 = useGasIncluded7702(
+    smartAccountOptIn,
+    isSwap,
+    selectedAccount,
+    fromChain,
+  );
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -397,6 +408,7 @@ const PrepareBridgePage = ({
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
       gasIncluded: smartTransactionsEnabled && isSwap,
+      gasIncluded7702,
     }),
     [
       fromToken?.address,
@@ -411,6 +423,7 @@ const PrepareBridgePage = ({
       providerConfig?.rpcUrl,
       smartTransactionsEnabled,
       isSwap,
+      gasIncluded7702,
     ],
   );
 
