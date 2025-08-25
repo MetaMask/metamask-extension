@@ -305,31 +305,22 @@ export const getFromAccount = createSelector(
 
 export const getToAccounts = createSelector(
   [getToChain, (state) => state],
-  (toChain, state): InternalAccount[] => {
+  (toChain, state) => {
     if (!toChain) {
       return [];
     }
-    return getInternalAccountsByScope(
+    const internalAccounts = getInternalAccountsByScope(
       state,
       formatChainIdToCaip(toChain.chainId),
     );
-  },
-);
 
-export const getToAccount = createSelector(
-  [getFromAccount, (state) => getToChain(state)?.chainId, (state) => state],
-  (fromAccount, toChainId, state): InternalAccount | null => {
-    // For swaps, always use the currently selected account
-    if (!toChainId) {
-      return fromAccount;
-    }
-    // For bridges, use the appropriate account type for the destination chain
-    return getInternalAccountBySelectedAccountGroupAndCaip(
-      state,
-      isSolanaChainId(toChainId) ? SolScope.Mainnet : EthScope.Eoa,
-      // TODO: use this when selector is ready
-      // formatChainIdToCaip(toChain.chainId),
-    );
+    return internalAccounts.map((account) => ({
+      ...account,
+      isExternal: false,
+      displayName:
+        getAccountGroupNameByInternalAccount(state, account) ??
+        account.metadata.name,
+    }));
   },
 );
 
