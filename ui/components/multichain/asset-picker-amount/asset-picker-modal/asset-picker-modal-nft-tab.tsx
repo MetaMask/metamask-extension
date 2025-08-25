@@ -128,10 +128,14 @@ export function AssetPickerModalNftTab({
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    const queryParams = new URLSearchParams();
-    queryParams.append('address', nft.address);
-    queryParams.append('tokenId', nft.tokenId.toString());
-    history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
+    if (process.env.SEND_REDESIGN_ENABLED) {
+      const queryParams = new URLSearchParams();
+      queryParams.append('address', nft.address);
+      queryParams.append('tokenId', nft.tokenId.toString());
+      history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
+    } else {
+      history.push(SEND_ROUTE);
+    }
     onClose && onClose();
   };
 
