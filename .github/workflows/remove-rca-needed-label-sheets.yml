@@ -1,0 +1,64 @@
+name: Remove RCA-needed Label
+
+on:
+  # Run every 6 hours
+  schedule:
+    - cron: '0 */6 * * *'
+
+  # Allow manual triggering for testing
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (no changes made)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      spreadsheet_id:
+        description: 'Google Spreadsheet ID (optional - uses default if not provided)'
+        required: false
+        default: ''
+        type: string
+      sheet_name:
+        description: 'Sheet tab name (optional - uses default if not provided)'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  remove-rca-labels:
+    name: Remove RCA-needed Labels Based on Sheet Data
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          npm install @actions/core
+          npm install @actions/github
+          npm install googleapis
+          npm install @octokit/types
+
+      - name: Run RCA Google Sheets check
+        run: npx tsx .github/scripts/remove-rca-needed-label-sheets.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          # Google Sheet configuration - can be overridden via workflow inputs
+          SPREADSHEET_ID: ${{ github.event.inputs.spreadsheet_id || '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24' }}
+          SHEET_NAME: ${{ github.event.inputs.sheet_name || 'Form Responses 1' }}
