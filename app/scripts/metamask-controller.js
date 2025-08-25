@@ -131,6 +131,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SolScope,
+  TrxScope,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
@@ -259,7 +260,10 @@ import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
+import {
+  MultichainWalletSnapClient,
+  TRON_WALLET_SNAP_ID,
+} from '../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
@@ -1082,6 +1086,9 @@ export default class MetamaskController extends EventEmitter {
           },
           [KnownCaipNamespace.Solana]: {
             [SolScope.Mainnet]: true,
+          },
+          tron: {
+            [TrxScope.Mainnet]: true,
           },
         },
       };
@@ -5669,6 +5676,25 @@ export default class MetamaskController extends EventEmitter {
             scope: solScope,
           });
         }
+      }
+      ///: END:ONLY_INCLUDE_IF
+
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      const tronClient =
+        await this._getMultichainWalletSnapClient(TRON_WALLET_SNAP_ID);
+      const tronScope = TrxScope.Mainnet;
+      const tronAccounts = await tronClient.discoverAccounts(
+        entropySource,
+        tronScope,
+      );
+
+      discoveredAccounts.tron = tronAccounts.length;
+
+      // If none accounts got discovered, we still create the first (default) one.
+      if (tronAccounts.length === 0) {
+        await this._addSnapAccount(entropySource, tronClient, {
+          scope: tronScope,
+        });
       }
       ///: END:ONLY_INCLUDE_IF
       return discoveredAccounts;

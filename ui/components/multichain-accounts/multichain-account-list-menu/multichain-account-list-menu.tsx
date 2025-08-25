@@ -5,6 +5,7 @@ import {
   EthAccountType,
   KeyringAccountType,
   SolAccountType,
+  TrxAccountType,
 } from '@metamask/keyring-api';
 
 import { Box, TextFieldSearchSize } from '../../component-library';
@@ -60,6 +61,7 @@ export const MultichainAccountListMenu = ({
     BtcAccountType.P2wpkh,
     BtcAccountType.P2tr,
     SolAccountType.DataAccount,
+    TrxAccountType.Eoa,
   ],
 }: MultichainAccountListMenuProps) => {
   const t = useI18nContext();
