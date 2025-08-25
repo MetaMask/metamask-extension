@@ -53,7 +53,10 @@ export function useIsGaslessSupported() {
 
   // Currently requires upgraded account, can also support no `delegationAddress` in future.
   const is7702Supported = Boolean(
-    atomicBatchChainSupport?.isSupported && relaySupportsChain,
+    atomicBatchChainSupport?.isSupported &&
+      relaySupportsChain &&
+      // contract deployments can't be delegated
+      transactionMeta?.txParams.to !== undefined,
   );
 
   const isSupported = Boolean(
