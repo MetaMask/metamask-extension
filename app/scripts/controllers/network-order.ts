@@ -198,14 +198,14 @@ export class NetworkOrderController extends BaseController<
     this.#switchToEnabledNetworkIfNeeded(evmChainIds);
   }
 
-  onNetworkRemoved(networkId: Hex) {
+  onNetworkRemoved(networkId: Hex | CaipChainId) {
     const caipId: CaipChainId = isCaipChainId(networkId)
       ? networkId
       : toEvmCaipChainId(networkId);
 
     const { namespace } = parseCaipChainId(caipId);
 
-    if (namespace === (KnownCaipNamespace.Eip155 as string)) {
+    if (namespace === KnownCaipNamespace.Eip155) {
       this.update((state) => {
         delete state.enabledNetworkMap[namespace][networkId];
         if (Object.keys(state.enabledNetworkMap[namespace]).length === 0) {
@@ -240,9 +240,9 @@ export class NetworkOrderController extends BaseController<
    *
    * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
    * to be enabled. All other networks will be implicitly disabled.
-   * @param networkId - The CaipChainId of the currently selected network
+   * @param networkId - The CaipChainId namespace of the currently selected network
    */
-  setEnabledNetworks(chainIds: string | string[], networkId: CaipChainId) {
+  setEnabledNetworks(chainIds: string | string[], networkId: string) {
     if (!networkId) {
       throw new Error('networkId is required to set enabled networks');
     }
