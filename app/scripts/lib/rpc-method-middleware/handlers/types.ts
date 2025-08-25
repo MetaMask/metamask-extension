@@ -14,7 +14,6 @@ import type {
   CaveatSpecificationConstraint,
   ExtractPermission,
   OriginString,
-  PermissionController,
   PermissionSpecificationConstraint,
   PermissionsRequest,
   PermissionSubjectMetadata,
@@ -24,9 +23,9 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionController } from '@metamask/permission-controller';
 import type { InfuraNetworkType } from '@metamask/controller-utils';
-import type {
+import {
+  MetaMetricsEventOptions,
   MetaMetricsEventPayload,
-  MetaMetricsPageOptions,
 } from '../../../../../shared/constants/metametrics';
 import { MessageType } from '../../../../../shared/constants/app';
 
@@ -87,7 +86,7 @@ export type FindNetworkConfigurationBy = (
 
 export type HasPermission = (origin: OriginString) => boolean;
 
-export type GetAccounts = (options: { ignoreLock: boolean }) => Promise<Hex[]>;
+export type GetAccounts = (options?: { ignoreLock: boolean }) => Promise<Hex[]>;
 
 export type GetCurrentChainId = () => Hex;
 
@@ -99,6 +98,14 @@ export type RequestCaip25ApprovalForOrigin = (
   origin?: OriginString,
   requestedPermissions?: PermissionsRequest['permissions'],
 ) => Promise<RequestedPermissions>;
+
+export type GetCaip25PermissionFromLegacyPermissionsForOrigin = (
+  requestedPermissions?: RequestedPermissions,
+) => RequestedPermissions;
+
+export type RequestPermissionsForOrigin = (
+  requestedPermissions: RequestedPermissions,
+) => Promise<[GrantedPermissions]>;
 
 export type GrantPermissionsForOrigin = (
   approvedPermissions: RequestedPermissions,
@@ -155,7 +162,7 @@ export type RequestUserApproval = (
 
 export type SendMetrics = (
   payload: MetaMetricsEventPayload,
-  options?: MetaMetricsPageOptions,
+  options?: MetaMetricsEventOptions,
 ) => void;
 
 export type SetActiveNetwork = (
@@ -179,6 +186,7 @@ export type UpsertNetworkConfiguration = (
   networkConfiguration: NetworkConfiguration,
   options?: UpsertNetworkConfigurationOptions,
 ) => Promise<string>;
+
 type AbstractPermissionController = PermissionController<
   PermissionSpecificationConstraint,
   CaveatSpecificationConstraint

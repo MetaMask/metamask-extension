@@ -23,7 +23,11 @@ import {
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
-import { GrantedPermissions } from './types';
+import {
+  GetCaip25PermissionFromLegacyPermissionsForOrigin,
+  GrantedPermissions,
+  RequestPermissionsForOrigin,
+} from './types';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.RequestPermissions],
@@ -59,12 +63,8 @@ async function requestPermissionsImplementation(
     getCaip25PermissionFromLegacyPermissionsForOrigin,
   }: {
     getAccounts: () => string[];
-    requestPermissionsForOrigin: (
-      requestedPermissions: RequestedPermissions,
-    ) => Promise<[GrantedPermissions]>;
-    getCaip25PermissionFromLegacyPermissionsForOrigin: (
-      requestedPermissions?: RequestedPermissions,
-    ) => RequestedPermissions;
+    requestPermissionsForOrigin: RequestPermissionsForOrigin;
+    getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
   },
 ) {
   const { params } = req;
