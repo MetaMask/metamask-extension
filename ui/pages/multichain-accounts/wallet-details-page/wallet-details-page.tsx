@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -42,7 +42,10 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import SRPQuiz from '../../../components/app/srp-quiz-modal';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
 import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
@@ -61,13 +64,15 @@ export const WalletDetailsPage = () => {
     getMultichainAccountsByWalletId(state, decodedId),
   );
 
-  const handleBack = () => {
-    history.goBack();
-  };
+  useEffect(() => {
+    if (!wallet) {
+      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+    }
+  }, [wallet, history]);
 
-  const keyringId = wallet.id.split(':')[1];
+  const keyringId = wallet?.id.split(':')[1];
 
-  const isEntropyWallet = wallet.type === AccountWalletType.Entropy;
+  const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
   const isFirstHdKeyring = hdKeyrings[0]?.metadata?.id === keyringId;
   const shouldShowBackupReminder = !seedPhraseBackedUp && isFirstHdKeyring;
 
@@ -76,6 +81,10 @@ export const WalletDetailsPage = () => {
     justifyContent: JustifyContent.spaceBetween,
     alignItems: AlignItems.center,
     backgroundColor: BackgroundColor.backgroundMuted,
+  };
+
+  const handleBack = () => {
+    history.goBack();
   };
 
   const multichainAccountCells = useMemo(() => {
@@ -134,7 +143,7 @@ export const WalletDetailsPage = () => {
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
             >
-              {wallet.metadata.name}
+              {wallet?.metadata.name}
             </Text>
           </Box>
 
