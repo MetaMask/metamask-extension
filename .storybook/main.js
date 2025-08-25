@@ -21,12 +21,7 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-actions',
     '@storybook/addon-a11y',
-    '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
-    'storybook-dark-mode',
-    '@whitespace/storybook-addon-html',
-    '@storybook/addon-mdx-gfm',
-    '@storybook/addon-designs',
   ],
   staticDirs: ['../app', './images'],
   env: (config) => ({
@@ -87,6 +82,14 @@ module.exports = {
             esModule: false,
             import: false,
             url: false,
+          },
+        },
+        {
+          loader: 'postcss-loader',
+          options: {
+            postcssOptions: {
+              plugins: ['tailwindcss', 'autoprefixer'],
+            },
           },
         },
         {

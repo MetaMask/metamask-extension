@@ -1,10 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import UnlockPage from '.';
 
 const mockTryUnlockMetamask = jest.fn(() => {
@@ -75,9 +77,13 @@ describe('Unlock Page', () => {
   });
 
   it('clicks imports seed button', () => {
+    const mockStateNonUnlocked = {
+      metamask: { completedOnboarding: true },
+    };
+    const store = configureMockStore([thunk])(mockStateNonUnlocked);
     const { getByText, getByTestId } = renderWithProvider(
       <UnlockPage />,
-      mockStore,
+      store,
     );
 
     fireEvent.click(getByText('Forgot password?'));
@@ -89,6 +95,44 @@ describe('Unlock Page', () => {
     fireEvent.click(resetPasswordButton);
 
     expect(mockMarkPasswordForgotten).toHaveBeenCalled();
+  });
+
+  it('clicks use different login method button', async () => {
+    const mockStateWithUnlock = {
+      metamask: {
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
+        completedOnboarding: false,
+      },
+    };
+    const store = configureMockStore([thunk])(mockStateWithUnlock);
+
+    const history = createMemoryHistory({
+      initialEntries: [{ pathname: '/unlock' }],
+    });
+
+    jest.spyOn(history, 'replace');
+    const mockLoginWithDifferentMethod = jest.fn();
+    const mockForceUpdateMetamaskState = jest.fn();
+
+    const props = {
+      loginWithDifferentMethod: mockLoginWithDifferentMethod,
+      forceUpdateMetamaskState: mockForceUpdateMetamaskState,
+    };
+
+    const { queryByText } = renderWithProvider(
+      <Router history={history}>
+        <UnlockPage {...props} />
+      </Router>,
+      store,
+    );
+
+    fireEvent.click(queryByText('Use a different login method'));
+
+    await waitFor(() => {
+      expect(mockLoginWithDifferentMethod).toHaveBeenCalled();
+      expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
+      expect(history.replace).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
+    });
   });
 
   it('should redirect to history location when unlocked', () => {

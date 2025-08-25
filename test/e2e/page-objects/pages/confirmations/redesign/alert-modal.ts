@@ -18,7 +18,7 @@ class AlertModal {
     await this.driver.clickElementAndWaitToDisappear(this.confirmAlertButton);
   }
 
-  async check_insufficientBalanceMessageIsDisplayed(): Promise<void> {
+  async checkInsufficientBalanceMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check insufficient balance message is displayed on alert modal',
     );

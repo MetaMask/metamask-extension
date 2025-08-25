@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
 import {
@@ -6,7 +7,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Json, add0x } from '@metamask/utils';
+import { Json, add0x, createProjectLogger } from '@metamask/utils';
 import { Hex } from 'viem';
 import {
   MESSAGE_TYPE,
@@ -63,9 +64,13 @@ import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { extractRpcDomain } from '../util';
 
+const log = createProjectLogger('transaction-metrics');
+
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
 const CONTRACT_INTERACTION_TYPES = [
+  TransactionType.bridge,
+  TransactionType.bridgeApproval,
   TransactionType.contractInteraction,
   TransactionType.tokenMethodApprove,
   TransactionType.tokenMethodIncreaseAllowance,
@@ -77,6 +82,11 @@ const CONTRACT_INTERACTION_TYPES = [
   TransactionType.swapAndSend,
   TransactionType.swapApproval,
 ];
+
+enum MetricsTransactionType {
+  swap = 'mm_swap',
+  bridge = 'mm_bridge',
+}
 
 /**
  * This function is called when a transaction is added to the controller.
@@ -387,7 +397,9 @@ export const handlePostTransactionBalanceUpdate = async (
       );
 
       const quoteVsExecutionRatio = tokensReceived
-        ? `${new BigNumber(tokensReceived, 10)
+        ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `${new BigNumber(tokensReceived, 10)
             .div(transactionMeta.swapMetaData.token_to_amount, 10)
             .times(100)
             .round(2)}%`
@@ -396,7 +408,9 @@ export const handlePostTransactionBalanceUpdate = async (
       const estimatedVsUsedGasRatio =
         transactionMeta.txReceipt?.gasUsed &&
         transactionMeta.swapMetaData.estimated_gas
-          ? `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
+          ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
               .div(transactionMeta.swapMetaData.estimated_gas, 10)
               .times(100)
               .round(2)}%`
@@ -850,9 +864,6 @@ async function buildEventFragmentProperties({
     eip1559Version = '2';
   }
 
-  const contractInteractionTypes =
-    type && CONTRACT_INTERACTION_TYPES.includes(type);
-
   const contractMethodNames = {
     APPROVE: 'Approve',
   };
@@ -862,18 +873,15 @@ async function buildEventFragmentProperties({
   let transactionApprovalAmountVsProposedRatio;
   let transactionApprovalAmountVsBalanceRatio;
   let transactionContractAddress;
-  let transactionType = TransactionType.simpleSend;
   let transactionContractMethod4Byte;
-  if (type === TransactionType.swapAndSend) {
-    transactionType = TransactionType.swapAndSend;
-  } else if (type === TransactionType.cancel) {
-    transactionType = TransactionType.cancel;
-  } else if (type === TransactionType.retry && originalType) {
-    transactionType = originalType;
-  } else if (type === TransactionType.deployContract) {
-    transactionType = TransactionType.deployContract;
-  } else if (contractInteractionTypes) {
-    transactionType = TransactionType.contractInteraction;
+
+  const { transactionType, isContractInteraction } =
+    determineTransactionTypeAndContractInteraction(
+      type as TransactionType,
+      originalType,
+    );
+
+  if (isContractInteraction) {
     transactionContractMethod = contractMethodName;
     transactionContractAddress = transactionMeta.txParams?.to;
     transactionContractMethod4Byte = transactionMeta.txParams?.data?.slice(
@@ -980,6 +988,16 @@ async function buildEventFragmentProperties({
     hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
   };
 
+  let accountType;
+  try {
+    accountType = await transactionMetricsRequest.getAccountType(
+      transactionMetricsRequest.getSelectedAddress(),
+    );
+  } catch (error) {
+    accountType = 'error';
+    log('Error getting account type for transaction metrics:', error);
+  }
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -991,9 +1009,7 @@ async function buildEventFragmentProperties({
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',
     gas_estimation_failed: Boolean(simulationFails),
-    account_type: await transactionMetricsRequest.getAccountType(
-      transactionMetricsRequest.getSelectedAddress(),
-    ),
+    account_type: accountType,
     device_model: await transactionMetricsRequest.getDeviceModel(
       transactionMetricsRequest.getSelectedAddress(),
     ),
@@ -1026,9 +1042,18 @@ async function buildEventFragmentProperties({
   );
   Object.assign(properties, snapAndHardwareInfo);
 
-  if (transactionContractMethod === contractMethodNames.APPROVE) {
+  if (
+    transactionContractMethod === contractMethodNames.APPROVE ||
+    getMMSwapOrBridgeType(type as TransactionType)
+  ) {
     properties = {
       ...properties,
+      simulation_receiving_assets_total_value:
+        properties.simulation_receiving_assets_total_value ??
+        transactionMeta?.assetsFiatValues?.receiving,
+      simulation_sending_assets_total_value:
+        properties.simulation_sending_assets_total_value ??
+        transactionMeta?.assetsFiatValues?.sending,
       transaction_approval_amount_type: transactionApprovalAmountType,
     };
   }
@@ -1054,8 +1079,10 @@ async function buildEventFragmentProperties({
   if (transactionContractMethod === contractMethodNames.APPROVE) {
     sensitiveProperties = {
       ...sensitiveProperties,
+
       transaction_approval_amount_vs_balance_ratio:
         transactionApprovalAmountVsBalanceRatio,
+
       transaction_approval_amount_vs_proposed_ratio:
         transactionApprovalAmountVsProposedRatio,
     };
@@ -1153,6 +1180,8 @@ function allowanceAmountInRelationToDappProposedValue(
     originalApprovalAmount &&
     finalApprovalAmount
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return `${new BigNumber(originalApprovalAmount, 10)
       .div(finalApprovalAmount, 10)
       .times(100)
@@ -1180,6 +1209,8 @@ function allowanceAmountInRelationToTokenBalance(
     dappProposedTokenAmount &&
     currentTokenBalance
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return `${new BigNumber(dappProposedTokenAmount, 16)
       .div(currentTokenBalance, 10)
       .times(100)
@@ -1242,13 +1273,7 @@ function addGaslessProperties(
   _sensitiveProperties: Record<string, Json | undefined>,
   getAccountBalance: (account: Hex, chainId: Hex) => Hex,
 ) {
-  const {
-    batchId,
-    batchTransactions,
-    gasFeeTokens,
-    nestedTransactions,
-    selectedGasFeeToken,
-  } = transactionMeta;
+  const { gasFeeTokens, selectedGasFeeToken } = transactionMeta;
 
   properties.gas_payment_tokens_available = gasFeeTokens?.map(
     (token) => token.symbol,
@@ -1267,11 +1292,6 @@ function addGaslessProperties(
     transactionMeta,
     getAccountBalance,
   );
-
-  // Temporary pending nested transaction type support
-  if (batchId && !batchTransactions?.length && !nestedTransactions?.length) {
-    properties.transaction_type = 'gas_payment';
-  }
 }
 
 async function getNestedMethodNames(
@@ -1312,4 +1332,80 @@ function isInsufficientNativeBalance(
   const totalCost = add0x(addHexes(gasCost, value ?? '0x0'));
 
   return new Numeric(totalCost, 16).greaterThan(new Numeric(nativeBalance, 16));
+}
+
+function getMMSwapOrBridgeType(
+  type: TransactionType,
+): MetricsTransactionType | null {
+  if (type === TransactionType.swap) {
+    return MetricsTransactionType.swap;
+  } else if (type === TransactionType.bridge) {
+    return MetricsTransactionType.bridge;
+  }
+  return null;
+}
+
+/**
+ * Determines the transaction type for metrics and whether it's a contract interaction
+ *
+ * @param type - The transaction type
+ * @param originalType - The original transaction type (for retry transactions)
+ * @returns  Object containing final type and whether it's a contract interaction
+ */
+function determineTransactionTypeAndContractInteraction(
+  type: TransactionType,
+  originalType?: TransactionType,
+): {
+  transactionType: TransactionType;
+  isContractInteraction: boolean;
+} {
+  const isContractInteraction =
+    type && CONTRACT_INTERACTION_TYPES.includes(type);
+
+  // Direct type assignments
+  const directTypeMappings = [
+    TransactionType.swapAndSend,
+    TransactionType.cancel,
+    TransactionType.deployContract,
+    TransactionType.gasPayment,
+    TransactionType.batch,
+  ];
+
+  if (directTypeMappings.includes(type)) {
+    return {
+      transactionType: type,
+      isContractInteraction,
+    };
+  }
+
+  // Special case for retry transactions
+  if (type === TransactionType.retry && originalType) {
+    return {
+      transactionType: originalType,
+      isContractInteraction,
+    };
+  }
+
+  // Contract interaction types
+  if (isContractInteraction) {
+    const mmSwapOrBridgeType = getMMSwapOrBridgeType(type);
+    if (mmSwapOrBridgeType) {
+      // This doesn't have to be valid transaction type as it's required to be different values for metrics
+      return {
+        transactionType: mmSwapOrBridgeType as unknown as TransactionType,
+        isContractInteraction: true,
+      };
+    }
+
+    return {
+      transactionType: TransactionType.contractInteraction,
+      isContractInteraction: true,
+    };
+  }
+
+  // Default fallback
+  return {
+    transactionType: TransactionType.simpleSend,
+    isContractInteraction: false,
+  };
 }

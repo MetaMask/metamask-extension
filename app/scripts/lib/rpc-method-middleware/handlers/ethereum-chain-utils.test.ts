@@ -20,6 +20,7 @@ describe('Ethereum Chain Utils', () => {
       getCaveat: jest.fn(),
       requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
       setEnabledNetworks: jest.fn(),
+      getEnabledNetworks: jest.fn().mockReturnValue({ eip155: {} }),
       setTokenNetworkFilter: jest.fn(),
       rejectApprovalRequestsForOrigin: jest.fn(),
       requestUserApproval: jest.fn(),
@@ -82,7 +83,10 @@ describe('Ethereum Chain Utils', () => {
 
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
         expect(mocks.setTokenNetworkFilter).toHaveBeenCalledWith('0x1');
-        expect(mocks.setEnabledNetworks).toHaveBeenCalledWith('0x1');
+        expect(mocks.setEnabledNetworks).toHaveBeenCalledWith(
+          ['0x1'],
+          'eip155',
+        );
       });
 
       it('should throw an error if the switch chain approval is rejected', async () => {
@@ -128,7 +132,10 @@ describe('Ethereum Chain Utils', () => {
         });
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
         expect(mocks.setTokenNetworkFilter).toHaveBeenCalledWith('0x1');
-        expect(mocks.setEnabledNetworks).toHaveBeenCalledWith('0x1');
+        expect(mocks.setEnabledNetworks).toHaveBeenCalledWith(
+          ['0x1'],
+          'eip155',
+        );
       });
 
       it('requests permittedChains approval without autoApprove then switches to it if autoApprove: false', async () => {
@@ -153,7 +160,10 @@ describe('Ethereum Chain Utils', () => {
         });
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
         expect(mocks.setTokenNetworkFilter).toHaveBeenCalledWith('0x1');
-        expect(mocks.setEnabledNetworks).toHaveBeenCalledWith('0x1');
+        expect(mocks.setEnabledNetworks).toHaveBeenCalledWith(
+          ['0x1'],
+          'eip155',
+        );
       });
 
       it('check for user approval is user already has access on the chain', async () => {
@@ -321,7 +331,10 @@ describe('Ethereum Chain Utils', () => {
 
           expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
           expect(mocks.setTokenNetworkFilter).toHaveBeenCalledWith('0x1');
-          expect(mocks.setEnabledNetworks).toHaveBeenCalledWith('0x1');
+          expect(mocks.setEnabledNetworks).toHaveBeenCalledWith(
+            ['0x1'],
+            'eip155',
+          );
         });
       },
     );

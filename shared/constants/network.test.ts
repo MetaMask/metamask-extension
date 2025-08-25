@@ -36,7 +36,7 @@ describe('NetworkConstants', () => {
         'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
         'Base Mainnet': CHAIN_IDS.BASE,
         'Linea Mainnet': CHAIN_IDS.LINEA_MAINNET,
-        'Sei Network': CHAIN_IDS.SEI,
+        'Sei Mainnet': CHAIN_IDS.SEI,
       };
 
       FEATURED_RPCS.forEach((rpc) => {
@@ -64,7 +64,7 @@ describe('NetworkConstants', () => {
       const [bscRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.BSC,
       );
-      expect(bscRpc.rpcEndpoints[0].url).not.toContain('infura.io');
+      expect(bscRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
     it('optimism entry should use Infura', () => {

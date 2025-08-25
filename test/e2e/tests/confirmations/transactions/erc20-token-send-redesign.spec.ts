@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL } from '../../../constants';
-import {
-  unlockWallet,
-  veryLargeDelayMs,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
+import { Anvil } from '../../../seeder/anvil';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
@@ -43,10 +41,15 @@ describe('Confirmation Redesign ERC20 Token Send', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createWalletInitiatedTransactionAndAssertDetails(
             driver,
             contractRegistry,
+            localNodes?.[0],
           );
         },
         mocks,
@@ -60,10 +63,15 @@ describe('Confirmation Redesign ERC20 Token Send', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.legacy,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createDAppInitiatedTransactionAndAssertDetails(
             driver,
             contractRegistry,
+            localNodes?.[0],
           );
         },
         mocks,
@@ -75,10 +83,15 @@ describe('Confirmation Redesign ERC20 Token Send', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createDAppInitiatedTransactionAndAssertDetails(
             driver,
             contractRegistry,
+            localNodes?.[0],
           );
         },
         mocks,
@@ -95,8 +108,9 @@ async function mocks(server: Mockttp) {
 async function createWalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
+  localNode?: Anvil,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver, localNode);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -120,7 +134,7 @@ async function createWalletInitiatedTransactionAndAssertDetails(
   await homePage.startSendFlow();
 
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
   await sendToPage.fillAmount('1');
 
@@ -130,10 +144,10 @@ async function createWalletInitiatedTransactionAndAssertDetails(
 
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
 }
@@ -141,8 +155,9 @@ async function createWalletInitiatedTransactionAndAssertDetails(
 async function createDAppInitiatedTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
+  localNode?: Anvil,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver, localNode);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -167,10 +182,10 @@ async function createDAppInitiatedTransactionAndAssertDetails(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_dappInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkDappInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
 }

@@ -6,10 +6,10 @@ import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
 
 describe('Add Custom network', function (this: Suite) {
   it('should add mainnet network', async function () {
@@ -35,15 +35,14 @@ describe('Add Custom network', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
 
         const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.check_pageIsLoaded();
+        await addEditNetworkModal.checkPageIsLoaded();
         await addEditNetworkModal.fillNetworkNameInputField('Gnosis');
         await addEditNetworkModal.fillNetworkChainIdInputField(
           toHex(100).toString(),
@@ -53,7 +52,7 @@ describe('Add Custom network', function (this: Suite) {
 
         // Add rpc url and explorer url
         const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.check_pageIsLoaded();
+        await addRpcUrlModal.checkPageIsLoaded();
         await addRpcUrlModal.fillAddRpcUrlInput('https://responsive-rpc.test');
         await addRpcUrlModal.fillAddRpcNameInput('testName');
         await addRpcUrlModal.saveAddRpcUrl();
@@ -62,8 +61,8 @@ describe('Add Custom network', function (this: Suite) {
 
         // Validate the network was added
         const homepage = new HomePage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_addNetworkMessageIsDisplayed('Gnosis');
+        await homepage.checkPageIsLoaded();
+        await homepage.checkAddNetworkMessageIsDisplayed('Gnosis');
       },
     );
   });
@@ -91,15 +90,14 @@ describe('Add Custom network', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
 
         const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.check_pageIsLoaded();
+        await addEditNetworkModal.checkPageIsLoaded();
         await addEditNetworkModal.fillNetworkNameInputField('Ethereum mainnet');
         await addEditNetworkModal.fillNetworkChainIdInputField('1');
         await addEditNetworkModal.fillCurrencySymbolInputField('TST');
@@ -107,17 +105,17 @@ describe('Add Custom network', function (this: Suite) {
 
         // Add rpc url
         const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.check_pageIsLoaded();
+        await addRpcUrlModal.checkPageIsLoaded();
         await addRpcUrlModal.fillAddRpcUrlInput('https://responsive-rpc.test');
         await addRpcUrlModal.fillAddRpcNameInput('testName');
         await addRpcUrlModal.saveAddRpcUrl();
 
         // Check symbol warning message should be displayed
-        await addEditNetworkModal.check_currencySymbolWarningIsDisplayed(
+        await addEditNetworkModal.checkCurrencySymbolWarningIsDisplayed(
           'Suggested currency symbol:ETH',
         );
         assert.equal(
-          await addEditNetworkModal.check_saveButtonIsEnabled(),
+          await addEditNetworkModal.checkSaveButtonIsEnabled(),
           false,
         );
       },
@@ -147,15 +145,14 @@ describe('Add Custom network', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
 
         const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.check_pageIsLoaded();
+        await addEditNetworkModal.checkPageIsLoaded();
         await addEditNetworkModal.fillNetworkNameInputField(
           'Collision network',
         );
@@ -165,25 +162,25 @@ describe('Add Custom network', function (this: Suite) {
 
         // Add rpc url
         const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.check_pageIsLoaded();
+        await addRpcUrlModal.checkPageIsLoaded();
         await addRpcUrlModal.fillAddRpcUrlInput('https://responsive-rpc.test/');
         await addRpcUrlModal.fillAddRpcNameInput('testName');
         await addRpcUrlModal.saveAddRpcUrl();
 
         // Check symbol warning message should be displayed
-        await addEditNetworkModal.check_currencySymbolWarningIsDisplayed(
+        await addEditNetworkModal.checkCurrencySymbolWarningIsDisplayed(
           'Suggested currency symbol:PETH',
         );
         assert.equal(
-          await addEditNetworkModal.check_saveButtonIsEnabled(),
+          await addEditNetworkModal.checkSaveButtonIsEnabled(),
           true,
         );
         await addEditNetworkModal.saveEditedNetwork();
 
         // Validate the network was added
         const homepage = new HomePage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_addNetworkMessageIsDisplayed('Collision network');
+        await homepage.checkPageIsLoaded();
+        await homepage.checkAddNetworkMessageIsDisplayed('Collision network');
       },
     );
   });

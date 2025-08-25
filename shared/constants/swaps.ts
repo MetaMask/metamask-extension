@@ -137,7 +137,7 @@ export const SEI_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   name: 'Sei',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  // SEI using the same icon as Sei Network
+  // SEI using the same icon as Sei Mainnet
   iconUrl: SEI_IMAGE_URL,
 } as const;
 
@@ -337,13 +337,23 @@ export const SEI = 'sei';
 export const SWAPS_CLIENT_ID = 'extension';
 
 export enum TokenBucketPriority {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   owned = 'owned',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   top = 'top',
 }
 
 export enum Slippage {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   default = 2,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   high = 3,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   stable = 0.5,
 }
 

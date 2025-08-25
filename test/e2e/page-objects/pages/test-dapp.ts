@@ -40,6 +40,11 @@ class TestDapp {
 
   private readonly connectedAccount = '#accounts';
 
+  private readonly connectedNetwork = (networkId: string) => ({
+    css: '#chainId',
+    text: networkId,
+  });
+
   private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
 
   private readonly decryptButton = '#decryptButton';
@@ -74,17 +79,26 @@ class TestDapp {
 
   private readonly erc1155WatchButton = '#watchAssetButton';
 
+  private readonly erc20CreateTokenButton = '#createToken';
+
   private readonly erc20TokenAddresses = '#erc20TokenAddresses';
 
   private readonly erc20TokenTransferButton = '#transferTokens';
 
   private readonly erc20WatchAssetButton = '#watchAssets';
 
+  private readonly erc20IncreaseTokensAllowanceButton =
+    '#increaseTokenAllowance';
+
+  private readonly erc721TokenAddresses = '#erc721TokenAddresses';
+
   private readonly erc721DeployButton = '#deployNFTsButton';
 
   private readonly erc721MintButton = '#mintButton';
 
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
+
+  private readonly erc721ApproveButton = '#approveButton';
 
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
 
@@ -233,6 +247,8 @@ class TestDapp {
    * @param params - The parameters for the RPC method.
    * @returns The result of the RPC call.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async request<T>(method: string, params?: unknown[] | object): Promise<T> {
     console.log(`Sending request: ${method}`, params);
     return await this.driver.executeScript(
@@ -252,7 +268,7 @@ class TestDapp {
    * @param connectedAccounts - Account addresses to check if connected to test dapp, separated by a comma.
    * @param shouldBeConnected - Whether the accounts should be connected to test dapp. Defaults to true.
    */
-  async check_connectedAccounts(
+  async checkConnectedAccounts(
     connectedAccounts: string,
     shouldBeConnected: boolean = true,
   ) {
@@ -276,7 +292,7 @@ class TestDapp {
    *
    * @param message - The decrypted message to verify.
    */
-  async check_decryptedMessage(message: string) {
+  async checkDecryptedMessage(message: string) {
     console.log('Verify decrypted message on test dapp');
     await this.driver.waitForSelector({
       css: this.decryptedMessage,
@@ -302,7 +318,7 @@ class TestDapp {
    * @param shouldBePresent - Whether the eth_subscribe response should be present, defaults to true.
    * @param guardTime - Time to wait to check if the eth_subscribe response is present, defaults to 1000ms.
    */
-  async check_ethSubscribeResponse(
+  async checkEthSubscribeResponse(
     shouldBePresent: boolean = true,
     guardTime: number = 1000,
   ) {
@@ -322,7 +338,7 @@ class TestDapp {
    *
    * @param expectedFailedMessage - The expected failed message.
    */
-  async check_failedPersonalSign(expectedFailedMessage: string) {
+  async checkFailedPersonalSign(expectedFailedMessage: string) {
     console.log('Verify failed personal sign signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.waitForSelector({
@@ -336,7 +352,7 @@ class TestDapp {
    *
    * @param expectedFailedMessage - The expected failed message.
    */
-  async check_failedSignPermit(expectedFailedMessage: string) {
+  async checkFailedSignPermit(expectedFailedMessage: string) {
     console.log('Verify failed signPermit signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.waitForSelector({
@@ -350,7 +366,7 @@ class TestDapp {
    *
    * @param expectedFailedMessage - The expected failed message.
    */
-  async check_failedSignTypedData(expectedFailedMessage: string) {
+  async checkFailedSignTypedData(expectedFailedMessage: string) {
     console.log('Verify failed signTypedData signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.waitForSelector({
@@ -364,7 +380,7 @@ class TestDapp {
    *
    * @param expectedFailedMessage - The expected failed message.
    */
-  async check_failedSignTypedDataV3(expectedFailedMessage: string) {
+  async checkFailedSignTypedDataV3(expectedFailedMessage: string) {
     console.log('Verify failed signTypedDataV3 signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.waitForSelector({
@@ -378,7 +394,7 @@ class TestDapp {
    *
    * @param expectedFailedMessage - The expected failed message.
    */
-  async check_failedSignTypedDataV4(expectedFailedMessage: string) {
+  async checkFailedSignTypedDataV4(expectedFailedMessage: string) {
     console.log('Verify failed signTypedDataV4 signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.waitForSelector({
@@ -392,7 +408,7 @@ class TestDapp {
    *
    * @param expectedResult - The expected account address.
    */
-  async check_getAccountsResult(expectedResult: string) {
+  async checkGetAccountsResult(expectedResult: string) {
     console.log(
       'Verify get connected accounts result contains:',
       expectedResult,
@@ -409,7 +425,7 @@ class TestDapp {
    *
    * @param encryptionKey - The encryption key to display.
    */
-  async check_getEncryptionKeyResult(encryptionKey: string) {
+  async checkGetEncryptionKeyResult(encryptionKey: string) {
     console.log(
       'Verify get encryption key result on test dapp: ',
       encryptionKey,
@@ -425,7 +441,7 @@ class TestDapp {
    *
    * @param expectedPermission - The expected displayed permission.
    */
-  async check_getPermissionsResult(expectedPermission: string) {
+  async checkGetPermissionsResult(expectedPermission: string) {
     console.log('Verify get permissions result contains:', expectedPermission);
     await this.driver.waitForElementToStopMoving(this.getPermissionsButton);
     await this.driver.clickElement(this.getPermissionsButton);
@@ -435,7 +451,7 @@ class TestDapp {
     });
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.mmlogo);
     } catch (e) {
@@ -450,7 +466,7 @@ class TestDapp {
    *
    * @param expectedNumber - The expected number of providers to be displayed. Defaults to 1.
    */
-  async check_providerNumber(expectedNumber: number = 1): Promise<void> {
+  async checkProviderNumber(expectedNumber: number = 1): Promise<void> {
     console.log(
       `Wait for ${expectedNumber} providers to be displayed in test dapp`,
     );
@@ -466,7 +482,7 @@ class TestDapp {
    *
    * @param publicKey - The public key to verify the signature with.
    */
-  async check_successPersonalSign(publicKey: string) {
+  async checkSuccessPersonalSign(publicKey: string) {
     console.log('Verify successful personal sign signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.personalSignVerifyButton);
@@ -476,7 +492,7 @@ class TestDapp {
     });
   }
 
-  async check_successSign721Permit(publicKey: string) {
+  async checkSuccessSign721Permit(publicKey: string) {
     console.log('Verify successful signPermit signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.sign721PermitVerifyButton);
@@ -491,7 +507,7 @@ class TestDapp {
    *
    * @param publicKey - The public key to verify the signature with.
    */
-  async check_successSignPermit(publicKey: string) {
+  async checkSuccessSignPermit(publicKey: string) {
     console.log('Verify successful signPermit signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.signPermitVerifyButton);
@@ -506,7 +522,7 @@ class TestDapp {
    *
    * @param publicKey - The public key to verify the signature with.
    */
-  async check_successSignTypedData(publicKey: string) {
+  async checkSuccessSignTypedData(publicKey: string) {
     console.log('Verify successful signTypedData signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.signTypedDataVerifyButton);
@@ -521,7 +537,7 @@ class TestDapp {
    *
    * @param publicKey - The public key to verify the signature with.
    */
-  async check_successSignTypedDataV3(publicKey: string) {
+  async checkSuccessSignTypedDataV3(publicKey: string) {
     console.log('Verify successful signTypedDataV3 signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.signTypedDataV3VerifyButton);
@@ -536,7 +552,7 @@ class TestDapp {
    *
    * @param publicKey - The public key to verify the signature with.
    */
-  async check_successSignTypedDataV4(publicKey: string) {
+  async checkSuccessSignTypedDataV4(publicKey: string) {
     console.log('Verify successful signTypedDataV4 signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.signTypedDataV4VerifyButton);
@@ -546,7 +562,7 @@ class TestDapp {
     });
   }
 
-  async check_successSiwe(result: string) {
+  async checkSuccessSiwe(result: string) {
     console.log('Verify successful SIWE signature');
     await this.driver.waitForSelector({
       css: this.signSiweVerifyResult,
@@ -555,11 +571,24 @@ class TestDapp {
   }
 
   /**
+   * Checks the value of a token address once created.
+   *
+   * @param value - The address to be checked
+   */
+  async checkTokenAddressesValue(value: string) {
+    console.log('Verify token address');
+    await this.driver.waitForSelector({
+      css: this.erc20TokenAddresses,
+      text: value,
+    });
+  }
+
+  /**
    * Checks the count of token addresses.
    *
    * @param expectedCount - The expected count of token addresses.
    */
-  async check_TokenAddressesCount(expectedCount: number) {
+  async checkTokenAddressesCount(expectedCount: number) {
     console.log(`checking token addresses count: ${expectedCount}`);
     await this.driver.wait(async () => {
       const tokenAddressesElement = await this.driver.findElement(
@@ -572,21 +601,34 @@ class TestDapp {
     }, 10000);
   }
 
-  async verify_successSignTypedDataResult(result: string) {
+  /**
+   * Checks the value of a ERC-721 token address once created.
+   *
+   * @param value - The address to be checked
+   */
+  async checkERC721TokenAddressesValue(value: string) {
+    console.log('Verify ERC-721 token address');
+    await this.driver.waitForSelector({
+      css: this.erc721TokenAddresses,
+      text: value,
+    });
+  }
+
+  async verifySuccessSignTypedDataResult(result: string) {
     await this.driver.waitForSelector({
       css: this.signTypedDataResult,
       text: result.toLowerCase(),
     });
   }
 
-  async verify_successSignTypedDataV3Result(result: string) {
+  async verifySuccessSignTypedDataV3Result(result: string) {
     await this.driver.waitForSelector({
       css: this.signTypedDataV3Result,
       text: result.toLowerCase(),
     });
   }
 
-  async verify_successSignTypedDataV4Result(result: string) {
+  async verifySuccessSignTypedDataV4Result(result: string) {
     await this.driver.waitForSelector({
       css: this.signTypedDataV4Result,
       text: result.toLowerCase(),
@@ -660,7 +702,7 @@ class TestDapp {
     });
   }
 
-  async check_ethSignErrorMessage(): Promise<void> {
+  async checkEthSignErrorMessage(): Promise<void> {
     await this.driver.waitForSelector(this.ethSignErrorMessage);
   }
 
@@ -719,7 +761,18 @@ class TestDapp {
     await this.driver.clickElement(this.erc1155WatchButton);
   }
 
+  async clickERC20CreateTokenButton() {
+    await this.driver.clickElement(this.erc20CreateTokenButton);
+  }
+
+  async clickERC20IncreaseAllowanceButton() {
+    await this.driver.clickElement(this.erc20IncreaseTokensAllowanceButton);
+  }
+
   async clickERC20TokenTransferButton() {
+    await this.driver.waitForSelector(this.erc20TokenTransferButton, {
+      state: 'enabled',
+    });
     await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
@@ -741,6 +794,10 @@ class TestDapp {
 
   async clickERC721RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721RevokeSetApprovalForAllButton);
+  }
+
+  async clickERC721ApproveButton() {
+    await this.driver.clickElement(this.erc721ApproveButton);
   }
 
   async clickERC721SetApprovalForAllButton() {
@@ -854,7 +911,7 @@ class TestDapp {
       assert.equal(await confirmConnectDialogButton.isEnabled(), false);
     }
     if (publicAddress) {
-      await this.check_connectedAccounts(publicAddress);
+      await this.checkConnectedAccounts(publicAddress);
       await this.driver.waitForSelector({
         css: '#chainId',
         text: chainId,
@@ -881,8 +938,8 @@ class TestDapp {
     console.log('Disconnect account from test dapp');
     await this.driver.clickElement(this.revokePermissionButton);
     await this.driver.refresh();
-    await this.check_pageIsLoaded();
-    await this.check_connectedAccounts(publicAddress, false);
+    await this.checkPageIsLoaded();
+    await this.checkConnectedAccounts(publicAddress, false);
   }
 
   /**
@@ -1017,6 +1074,16 @@ class TestDapp {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
+  }
+
+  /**
+   * Check if the test dapp is connected to the specified network.
+   *
+   * @param networkId - The network id to check if the test dapp is connected to.
+   */
+  async checkNetworkIsConnected(networkId: string) {
+    console.log(`Check testdapp is connected to network ${networkId}`);
+    await this.driver.waitForSelector(this.connectedNetwork(networkId));
   }
 }
 

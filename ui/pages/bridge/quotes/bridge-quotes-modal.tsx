@@ -40,20 +40,15 @@ import {
   getBridgeSortOrder,
   getFromChain,
   getFromToken,
+  getQuoteRequest,
   getToToken,
 } from '../../../ducks/bridge/selectors';
 import { Column, Row } from '../layout';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -62,22 +57,21 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const isStxEnabled = useSelector(getSmartTransactionsEnabled);
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChain = useSelector(getFromChain);
+  const { insufficientBal } = useSelector(getQuoteRequest);
+
+  const isStxEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
+
   const { sortedQuotes, activeQuote, recommendedQuote } =
     useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
   const locale = useSelector(getIntlLocale);
-
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
-  const { quoteRequestProperties } = useRequestProperties();
-  const requestMetadataProperties = useRequestMetadataProperties();
-  const quoteListProperties = useQuoteProperties();
-  const tradeProperties = useTradeProperties();
 
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
@@ -103,41 +97,48 @@ export const BridgeQuotesModal = ({
             <ButtonLink
               key={label}
               onClick={() => {
+                dispatch(setSortOrder(sortOrderOption));
                 fromChain &&
                   recommendedQuote &&
                   dispatch(
                     trackUnifiedSwapBridgeEvent(
                       UnifiedSwapBridgeEventName.AllQuotesSorted,
                       {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        can_submit: !insufficientBal,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         sort_order: sortOrder,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         price_impact: Number(
                           recommendedQuote.quote?.priceData?.priceImpact ?? '0',
                         ),
-                        gas_included: false,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        gas_included: Boolean(
+                          recommendedQuote?.quote?.gasIncluded,
+                        ),
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_source:
                           fromToken?.symbol ??
                           getNativeAssetForChainId(fromChain.chainId).symbol,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_destination: toToken?.symbol ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         stx_enabled: isStxEnabled,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         best_quote_provider: formatProviderLabel(
                           recommendedQuote.quote,
                         ),
                       },
                     ),
                   );
-                quoteRequestProperties &&
-                  requestMetadataProperties &&
-                  quoteListProperties &&
-                  trackCrossChainSwapsEvent({
-                    event: MetaMetricsEventName.AllQuotesSorted,
-                    properties: {
-                      ...quoteRequestProperties,
-                      ...requestMetadataProperties,
-                      ...quoteListProperties,
-                      sort_order: sortOrder,
-                    },
-                  });
-                dispatch(setSortOrder(sortOrderOption));
               }}
               startIconName={
                 sortOrder === sortOrderOption && sortOrder === SortOrder.ETA_ASC
@@ -189,7 +190,7 @@ export const BridgeQuotesModal = ({
                 toTokenAmount,
                 cost,
                 sentAmount,
-                quote: { destAsset, bridges, requestId },
+                quote: { destAsset, bridges, requestId, gasIncluded },
               } = quote;
               const isQuoteActive = requestId === activeQuote?.quote.requestId;
               const isRecommendedQuote =
@@ -203,48 +204,46 @@ export const BridgeQuotesModal = ({
                     isQuoteActive ? BackgroundColor.primaryMuted : undefined
                   }
                   onClick={() => {
-                    quote &&
-                      dispatch(
-                        trackUnifiedSwapBridgeEvent(
-                          UnifiedSwapBridgeEventName.QuoteSelected,
-                          {
-                            is_best_quote: isRecommendedQuote,
-                            best_quote_provider: formatProviderLabel(
-                              quote?.quote,
-                            ),
-                            usd_quoted_gas: Number(quote.gasFee.usd),
-                            quoted_time_minutes:
-                              quote.estimatedProcessingTimeInSeconds / 60,
-                            usd_quoted_return: Number(quote.toTokenAmount.usd),
-                            provider: formatProviderLabel(quote.quote),
-                            price_impact: Number(
-                              // TODO remove this once we bump to the latest version of the bridge controller
-                              (
-                                quote.quote as unknown as {
-                                  priceData: { priceImpact: string };
-                                }
-                              )?.priceData?.priceImpact ?? '0',
-                            ),
-                            gas_included: false,
-                          },
-                        ),
-                      );
                     dispatch(setSelectedQuote(quote));
-                    // Emit QuoteSelected event after dispatching setSelectedQuote
-                    quoteRequestProperties &&
-                      requestMetadataProperties &&
-                      quoteListProperties &&
-                      tradeProperties &&
-                      trackCrossChainSwapsEvent({
-                        event: MetaMetricsEventName.QuoteSelected,
-                        properties: {
-                          ...quoteRequestProperties,
-                          ...requestMetadataProperties,
-                          ...quoteListProperties,
-                          ...tradeProperties,
+                    dispatch(
+                      trackUnifiedSwapBridgeEvent(
+                        UnifiedSwapBridgeEventName.QuoteSelected,
+                        {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          can_submit: !insufficientBal,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           is_best_quote: isRecommendedQuote,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          best_quote_provider: formatProviderLabel(
+                            quote?.quote,
+                          ),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          usd_quoted_gas: Number(
+                            quote.gasFee?.effective?.usd ?? 0,
+                          ),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          quoted_time_minutes:
+                            quote.estimatedProcessingTimeInSeconds / 60,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          usd_quoted_return: Number(quote.toTokenAmount.usd),
+                          provider: formatProviderLabel(quote.quote),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          price_impact: Number(
+                            quote.quote?.priceData?.priceImpact ?? '0',
+                          ),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          gas_included: Boolean(quote.quote?.gasIncluded),
                         },
-                      });
+                      ),
+                    );
                     onClose();
                   }}
                   paddingInline={4}
@@ -267,28 +266,49 @@ export const BridgeQuotesModal = ({
                   )}
                   <Column>
                     <Text variant={TextVariant.bodyMd}>
-                      {cost.valueInCurrency &&
-                        formatCurrencyAmount(cost.valueInCurrency, currency, 2)}
+                      {gasIncluded
+                        ? formatCurrencyAmount(
+                            new BigNumber(sentAmount.valueInCurrency ?? 0)
+                              .minus(toTokenAmount.valueInCurrency ?? 0)
+                              .toString(),
+                            currency,
+                            2,
+                          )
+                        : formatCurrencyAmount(
+                            cost.valueInCurrency,
+                            currency,
+                            2,
+                          )}
                     </Text>
                     {[
-                      totalNetworkFee?.valueInCurrency &&
-                      sentAmount?.valueInCurrency
+                      gasIncluded && sentAmount?.valueInCurrency
                         ? t('quotedTotalCost', [
                             formatCurrencyAmount(
-                              new BigNumber(totalNetworkFee.valueInCurrency)
-                                .plus(sentAmount.valueInCurrency)
-                                .toString(),
+                              sentAmount.valueInCurrency,
                               currency,
                               2,
                             ),
                           ])
-                        : t('quotedTotalCost', [
-                            formatTokenAmount(
-                              locale,
-                              totalNetworkFee.amount,
-                              nativeCurrency,
-                            ),
-                          ]),
+                        : undefined,
+                      !gasIncluded &&
+                        (totalNetworkFee?.valueInCurrency &&
+                        sentAmount?.valueInCurrency
+                          ? t('quotedTotalCost', [
+                              formatCurrencyAmount(
+                                new BigNumber(totalNetworkFee.valueInCurrency)
+                                  .plus(sentAmount.valueInCurrency)
+                                  .toString(),
+                                currency,
+                                2,
+                              ),
+                            ])
+                          : t('quotedTotalCost', [
+                              formatTokenAmount(
+                                locale,
+                                totalNetworkFee.amount,
+                                nativeCurrency,
+                              ),
+                            ])),
                       t('quotedReceiveAmount', [
                         formatCurrencyAmount(
                           toTokenAmount.valueInCurrency,
@@ -301,15 +321,17 @@ export const BridgeQuotesModal = ({
                             destAsset.symbol,
                           ),
                       ]),
-                    ].map((content) => (
-                      <Text
-                        key={content}
-                        variant={TextVariant.bodyXsMedium}
-                        color={TextColor.textAlternative}
-                      >
-                        {content}
-                      </Text>
-                    ))}
+                    ]
+                      .filter(Boolean)
+                      .map((content) => (
+                        <Text
+                          key={content}
+                          variant={TextVariant.bodyXsMedium}
+                          color={TextColor.textAlternative}
+                        >
+                          {content}
+                        </Text>
+                      ))}
                   </Column>
                   <Column alignItems={AlignItems.flexEnd}>
                     <Text variant={TextVariant.bodyMd}>

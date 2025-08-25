@@ -1,0 +1,35 @@
+diff --git a/PATCH.txt b/PATCH.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..ce3b18534f055ee00aa5821793f855fd300fb72c
+--- /dev/null
++++ b/PATCH.txt
+@@ -0,0 +1,4 @@
++We remove lookupNetwork from initializeProvider in the network controller to prevent network requests before user onboarding is completed.
++The network lookup is done after onboarding is completed, and when the extension reloads if onboarding has been completed.
++This patch is part of a temporary fix that will be reverted soon to make way for a more permanent solution. https://github.com/MetaMask/metamask-extension/pull/23005
++You can see the changes before compilation on this branch: https://github.com/MetaMask/core/compare/pnf/ext-23622-review?expand=1
+\ No newline at end of file
+diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
+index 3ee78a58bfc13c0698224ddb5ea8acc92cc9bfe7..e28320942021ab97e141728873780b8a996f6cbd 100644
+--- a/dist/NetworkController.cjs
++++ b/dist/NetworkController.cjs
+@@ -566,7 +566,6 @@ class NetworkController extends base_controller_1.BaseController {
+      */
+     async initializeProvider() {
+         __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_applyNetworkSelection).call(this, this.state.selectedNetworkClientId);
+-        await this.lookupNetwork();
+     }
+     /**
+      * Refreshes the network meta with EIP-1559 support and the network status
+diff --git a/dist/NetworkController.mjs b/dist/NetworkController.mjs
+index ce3973cfd949f64ad63265f980d832d2d05d3146..b1747b9075244eae3358a62008fa364bb894d8ff 100644
+--- a/dist/NetworkController.mjs
++++ b/dist/NetworkController.mjs
+@@ -542,7 +542,6 @@ export class NetworkController extends BaseController {
+      */
+     async initializeProvider() {
+         __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_applyNetworkSelection).call(this, this.state.selectedNetworkClientId);
+-        await this.lookupNetwork();
+     }
+     /**
+      * Refreshes the network meta with EIP-1559 support and the network status

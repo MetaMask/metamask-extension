@@ -60,27 +60,27 @@ describe('App Installed Events', function () {
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.checkPageIsLoaded();
           await onboardingMetricsPage.clickIAgreeButton();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.checkBannerPageIsLoaded();
         await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
 
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-        await onboardingPasswordPage.check_pageIsLoaded();
+        await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
 
         const secureWalletPage = new SecureWalletPage(driver);
-        await secureWalletPage.check_pageIsLoaded();
+        await secureWalletPage.checkPageIsLoaded();
         await secureWalletPage.revealAndConfirmSRP();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.checkPageIsLoaded();
           await onboardingMetricsPage.clickIAgreeButton();
         }
 
@@ -89,7 +89,11 @@ describe('App Installed Events', function () {
         assert.deepStrictEqual(events[0].properties, {
           category: 'App',
           locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'background',
         });
       },
@@ -112,27 +116,27 @@ describe('App Installed Events', function () {
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.checkPageIsLoaded();
           await onboardingMetricsPage.clickNoThanksButton();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.checkBannerPageIsLoaded();
         await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
 
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-        await onboardingPasswordPage.check_pageIsLoaded();
+        await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
 
         const secureWalletPage = new SecureWalletPage(driver);
-        await secureWalletPage.check_pageIsLoaded();
+        await secureWalletPage.checkPageIsLoaded();
         await secureWalletPage.revealAndConfirmSRP();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.checkPageIsLoaded();
           await onboardingMetricsPage.clickNoThanksButton();
         }
 

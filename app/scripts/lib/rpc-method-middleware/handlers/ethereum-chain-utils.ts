@@ -7,13 +7,21 @@ import {
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
 import type { NetworkConfiguration } from '@metamask/network-controller';
-import type { Hex, Json, JsonRpcResponse } from '@metamask/utils';
+import {
+  type Hex,
+  type Json,
+  type JsonRpcResponse,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 import type MetamaskController from '../../../metamask-controller';
 import { getValidUrl } from '../../util';
 import {
@@ -212,6 +220,7 @@ type SwitchChainOptions = {
   }>;
   requestPermittedChainsPermissionIncrementalForOrigin: MetamaskController['requestPermittedChainsPermissionIncremental'];
   setTokenNetworkFilter: (chainId: Hex) => void;
+  getEnabledNetworks: MetamaskController['getEnabledNetworks'];
   setEnabledNetworks: MetamaskController['setEnabledNetworks'];
   rejectApprovalRequestsForOrigin: RejectApprovalRequestsForOrigin;
   requestUserApproval: RequestUserApproval;
@@ -238,6 +247,7 @@ type SwitchChainOptions = {
  * @param hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
  * @param hooks.setTokenNetworkFilter - The callback to set the token network filter.
  * @param hooks.setEnabledNetworks - The callback to set the enabled networks.
+ * @param hooks.getEnabledNetworks - The callback to get the current enabled networks for a namespace.
  * @param hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
  * @param hooks.requestUserApproval - The callback to trigger user approval flow.
  * @param hooks.hasApprovalRequestsForOrigin - Function to check if there are pending approval requests from the origin.
@@ -260,6 +270,7 @@ export async function switchChain<Result extends Json = never>(
     requestPermittedChainsPermissionIncrementalForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
+    getEnabledNetworks,
     rejectApprovalRequestsForOrigin,
     requestUserApproval,
     hasApprovalRequestsForOrigin,
@@ -289,7 +300,11 @@ export async function switchChain<Result extends Json = never>(
           autoApprove,
           metadata,
         });
-      } else if (hasApprovalRequestsForOrigin?.() && !isAddFlow) {
+      } else if (
+        hasApprovalRequestsForOrigin?.() &&
+        !isAddFlow &&
+        !autoApprove
+      ) {
         await requestUserApproval({
           origin,
           type: ApprovalType.SwitchEthereumChain,
@@ -308,11 +323,46 @@ export async function switchChain<Result extends Json = never>(
       });
     }
 
-    rejectApprovalRequestsForOrigin?.();
+    if (!isSnapId(origin)) {
+      rejectApprovalRequestsForOrigin?.();
+    }
 
     await setActiveNetwork(networkClientId);
+
+    // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
+    // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
     setTokenNetworkFilter(chainId);
-    setEnabledNetworks(chainId);
+
+    if (isPrefixedFormattedHexString(chainId)) {
+      const existingEnabledNetworks = getEnabledNetworks(
+        KnownCaipNamespace.Eip155,
+      );
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+
+      if (!existingChainIds.includes(chainId)) {
+        const isFeaturedNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
+
+        if (isFeaturedNetwork) {
+          const featuredExistingChainIds = existingChainIds.filter((id) =>
+            FEATURED_NETWORK_CHAIN_IDS.includes(id),
+          );
+          setEnabledNetworks(
+            [...featuredExistingChainIds, chainId],
+            KnownCaipNamespace.Eip155,
+          );
+        } else {
+          setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
+        }
+      }
+    } else {
+      const { namespace } = parseCaipChainId(chainId);
+      const existingEnabledNetworks = getEnabledNetworks(namespace);
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+      if (!existingChainIds.includes(chainId)) {
+        setEnabledNetworks([...existingChainIds, chainId], namespace);
+      }
+    }
+
     response.result = null;
     return end();
   } catch (error) {

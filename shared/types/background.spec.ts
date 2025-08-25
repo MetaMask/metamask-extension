@@ -4,6 +4,8 @@ import type {
   FlattenedBackgroundStateProxy,
 } from './background';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type _ = {
   readonly _: unique symbol;
 };
@@ -11,14 +13,14 @@ type _ = {
 /**
  * The purpose of this function is to cause a compiler error to be emitted if the types are not equivalent.
  */
-type Expect<
-  X extends IsEquivalent<X, V> extends true ? V : V & _,
-  V = true,
-> = IsEquivalent<V, never> extends true
-  ? X
-  : IsEquivalent<X, never> extends true
-  ? Expect<X, V>
-  : X;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+type Expect<X extends IsEquivalent<X, V> extends true ? V : V & _, V = true> =
+  IsEquivalent<V, never> extends true
+    ? X
+    : IsEquivalent<X, never> extends true
+      ? Expect<X, V>
+      : X;
 
 /**
  * If this type triggers the following error
@@ -28,6 +30,8 @@ type Expect<
  * 2) One or more properties need to be marked as optional (`?:`).
  * Superfluous properties will trigger an error in `ControllerStatePropertiesEnumerated` itself.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type Test_FlattenedBackgroundStateProxy = Expect<
   FlattenedBackgroundStateProxy,
   { isInitialized: boolean } & ControllerStatePropertiesEnumerated

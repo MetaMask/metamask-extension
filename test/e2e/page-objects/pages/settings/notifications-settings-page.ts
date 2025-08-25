@@ -45,7 +45,7 @@ class NotificationsSettingsPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.notificationsSettingsPageTitle,
@@ -67,7 +67,7 @@ class NotificationsSettingsPage {
     await this.driver.waitForSelector(this.notificationToggleOff);
   }
 
-  async check_notificationSectionIsHidden(): Promise<void> {
+  async checkNotificationSectionIsHidden(): Promise<void> {
     console.log('Checking if notifications section is hidden');
     const selectors = [
       this.allowProductAnnouncementToggle,
@@ -97,7 +97,7 @@ class NotificationsSettingsPage {
    * @param options.expectedState - The expected state of the toggle ('enabled' or 'disabled')
    * @throws {Error} If toggle state doesn't match expected state or if the toggle element cannot be found
    */
-  async check_notificationState({
+  async checkNotificationState({
     toggleType,
     address,
     expectedState,
@@ -126,6 +126,8 @@ class NotificationsSettingsPage {
         selector = this.allowNotificationsAddressToggle(address, 'input');
         break;
       default:
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`Invalid toggle type: ${toggleType}`);
     }
 
@@ -200,6 +202,8 @@ class NotificationsSettingsPage {
         console.log(`Clicking notifications toggle for address ${address}`);
         break;
       default:
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`Invalid toggle type: ${toggleType}`);
     }
 
@@ -216,12 +220,12 @@ class NotificationsSettingsPage {
 
   async assertMainNotificationSettingsTogglesEnabled(driver: Driver) {
     const notificationsSettingsPage = new NotificationsSettingsPage(driver);
-    await notificationsSettingsPage.check_pageIsLoaded();
-    await notificationsSettingsPage.check_notificationState({
+    await notificationsSettingsPage.checkPageIsLoaded();
+    await notificationsSettingsPage.checkNotificationState({
       toggleType: 'general',
       expectedState: 'enabled',
     });
-    await notificationsSettingsPage.check_notificationState({
+    await notificationsSettingsPage.checkNotificationState({
       toggleType: 'product',
       expectedState: 'enabled',
     });

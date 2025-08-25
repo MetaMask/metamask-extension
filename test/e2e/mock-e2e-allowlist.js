@@ -28,10 +28,10 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/snap-simple-keyring/1.1.6/page-data/app-data.json',
   'https://metamask.github.io/snap-simple-keyring/1.1.6/page-data/index/page-data.json',
   'https://metamask.github.io/snap-simple-keyring/1.1.6/webpack-runtime-f26b9ef4aabef2136bf7.js',
-  'https://metamask.github.io/snaps/test-snaps/2.24.0',
-  'https://metamask.github.io/snaps/test-snaps/2.24.0/',
-  'https://metamask.github.io/snaps/test-snaps/2.24.0/main.js',
-  'https://metamask.github.io/snaps/test-snaps/2.24.0/test-data.json',
+  'https://metamask.github.io/snaps/test-snaps/2.28.1',
+  'https://metamask.github.io/snaps/test-snaps/2.28.1/',
+  'https://metamask.github.io/snaps/test-snaps/2.28.1/main.js',
+  'https://metamask.github.io/snaps/test-snaps/2.28.1/test-data.json',
   // Swaps
   'https://swap.api.cx.metamask.io/networks/1',
   'https://swap.api.cx.metamask.io/networks/1/trades?destinationToken=0x6b175474e89094c44da98b954eedeac495271d0f&sourceToken=0x0000000000000000000000000000000000000000&sourceAmount=1000000000000000&slippage=2&timeout=10000&walletAddress=0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
@@ -46,6 +46,4 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/vault-decryptor/bundle.js',
 ];
 
-const ALLOWLISTED_HOSTS = ['token.api.cx.metamask.io'];
-
-module.exports = { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS };
+module.exports = { ALLOWLISTED_URLS };

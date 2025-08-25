@@ -113,7 +113,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   const amountChangeCrossChains =
     totalCrossChainBalance - crossChainTotalBalance1dAgo;
   const percentageChangeCrossChains =
-    (amountChangeCrossChains / crossChainTotalBalance1dAgo) * 100 || 0;
+    crossChainTotalBalance1dAgo === 0
+      ? 0
+      : (amountChangeCrossChains / crossChainTotalBalance1dAgo) * 100;
 
   const formattedPercentChangeCrossChains = formatValue(
     amountChangeCrossChains === 0 ? 0 : percentageChangeCrossChains,

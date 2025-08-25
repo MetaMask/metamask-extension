@@ -87,6 +87,8 @@ export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 export const PORTFOLIO_PAGE_TITLE = 'MetaMask Portfolio';
 
 /* Account types */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum ACCOUNT_TYPE {
   Ethereum,
   Bitcoin,
@@ -117,3 +119,13 @@ export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
 
 /* The password for the wallet used in e2e tests*/
 export const WALLET_PASSWORD = 'correct horse battery staple';
+
+export const MOCK_AUTH_CONNECTION_ID = 'torus-test-health';
+export const MOCK_GROUPED_AUTH_CONNECTION_ID = 'torus-test-health-aggregate';
+
+/* Mock Google account used in Social login flow e2e tests*/
+export const MOCK_GOOGLE_ACCOUNT = 'e2e-user-mock@gmail.com';
+export const MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS =
+  '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
+/* Mock Apple account used in Social login flow e2e tests*/
+export const MOCK_APPLE_ACCOUNT = 'e2e-user-mock@appleid.com';
