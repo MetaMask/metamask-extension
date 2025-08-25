@@ -195,7 +195,14 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      history.push(SEND_ROUTE);
+      if (process.env.SEND_REDESIGN_ENABLED) {
+        const queryParams = new URLSearchParams();
+        queryParams.append('chainId', token.chainId);
+        queryParams.append('address', token.address);
+        history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
+      } else {
+        history.push(SEND_ROUTE);
+      }
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

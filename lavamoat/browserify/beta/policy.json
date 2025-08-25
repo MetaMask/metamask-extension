@@ -1991,7 +1991,8 @@
         "crypto": true,
         "document.body.appendChild": true,
         "document.createElement": true,
-        "fetch": true
+        "fetch": true,
+        "navigator": true
       },
       "packages": {
         "@metamask/snaps-sdk>@metamask/key-tree": true,
