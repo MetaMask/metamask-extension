@@ -1,5 +1,5 @@
 import type browser from 'webextension-polyfill';
-import { isObject, hasProperty } from '@metamask/utils';
+import { isObject, hasProperty, createDeferredPromise } from '@metamask/utils';
 import log from 'loglevel';
 import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../../shared/constants/state-corruption';
 import type { ErrorLike } from '../../../shared/constants/errors';
@@ -12,6 +12,10 @@ import {
   displayCriticalError,
   CriticalErrorTranslationKey,
 } from './display-critical-error';
+
+// This should be long enough that it doesn't trigger when the popup is opened soon after startup.
+// The extension can take a few seconds to start up after a reload.
+const BACKGROUND_CONNECTION_TIMEOUT = 10_000; // 10 Seconds
 
 type Message = {
   data: {
@@ -36,6 +40,42 @@ export class CriticalStartupErrorHandler {
   constructor(port: browser.Runtime.Port, container: HTMLElement) {
     this.#port = port;
     this.#container = container;
+  }
+
+  /**
+   * Verify that the background connection is operational.
+   */
+  async #connectionHandshake() {
+    const { promise: handshake, resolve: handshakeCompleted } =
+      createDeferredPromise();
+    const ackHandler: Parameters<
+      browser.Runtime.Port['onMessage']['addListener']
+    >[0] = (event) => {
+      if (event.name === 'handshake' && event.data?.method === 'ACK') {
+        this.#port.onMessage.removeListener(ackHandler);
+        handshakeCompleted();
+      }
+    };
+    this.#port.onMessage.addListener(ackHandler);
+    this.#port.postMessage({ data: { method: 'SYN' }, name: 'handshake' });
+
+    const timeoutPromise = new Promise((_resolve, reject) => {
+      setTimeout(
+        () => reject(new Error('Background connection unresponsive')),
+        BACKGROUND_CONNECTION_TIMEOUT,
+      );
+    });
+    try {
+      await Promise.race([handshake, timeoutPromise]);
+    } catch (error) {
+      await displayCriticalError(
+        this.#container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        // This cast is safe because `handshake` can't throw, and `timeoutPromise` only throws an
+        // error.
+        error as ErrorLike,
+      );
+    }
   }
 
   /**
@@ -105,15 +145,24 @@ export class CriticalStartupErrorHandler {
   };
 
   /**
-   * Connects error listeners to the provided port to handle state corruption errors.
-   * This function listens for messages from the background script and displays
-   * a state corruption error if the appropriate message is received.
+   * Detect and react to critical errors such as state corruption.
+   *
+   * This function attempts to verify that the connection to the background is active, displaying
+   * a critical error if it's not.
+   *
+   * It also attaches an error listener to the provided port to handle state corruption errors.
+   * This function listens for messages from the background script and displays a state corruption
+   * error if the appropriate message is received.
    *
    * Critical error messages are transferred over a raw browser `Port`, not with
    * `PortStream` wrapper. We want to be as close to the "metal" as possible here,
    * it minimize abstractions that could cause further issues.
    */
   install() {
+    // Called without `await` intentionally to ensure listeners for other messages are added as
+    // quickly as possible.
+    this.#connectionHandshake();
+
     this.#port.onMessage.addListener(this.#handler);
   }
 

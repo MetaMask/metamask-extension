@@ -18,7 +18,6 @@ import browser from 'webextension-polyfill';
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
-import { createDeferredPromise } from '@metamask/utils';
 import launchMetaMaskUi, {
   CriticalStartupErrorHandler,
   connectToBackground,
@@ -39,10 +38,6 @@ import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
-
-// This should be long enough that it doesn't trigger when the popup is opened soon after startup.
-// The extension can take a few seconds to start up after a reload.
-const BACKGROUND_CONNECTION_TIMEOUT = 10 * 1000; // 10 Seconds
 
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
@@ -66,40 +61,6 @@ class PhishingWarningPageTimeoutError extends Error {
 }
 
 start().catch(log.error);
-
-/**
- * Establish that the background connection is working.
- *
- * @param {chrome.runtime.Port} extensionPort - The Port object for the background process.
- */
-async function connectionHandshake(extensionPort) {
-  const { promise: handshake, resolve: handshakeCompleted } =
-    createDeferredPromise();
-  const ackHandler = (event) => {
-    if (event.name === 'handshake' && event.data?.method === 'ACK') {
-      extensionPort.onMessage.removeListener(ackHandler);
-      handshakeCompleted();
-    }
-  };
-  extensionPort.onMessage.addListener(ackHandler);
-  extensionPort.postMessage({ data: { method: 'SYN' }, name: 'handshake' });
-
-  const timeoutPromise = new Promise((_resolve, reject) => {
-    setTimeout(
-      () => reject(new Error('Background connection unresponsive')),
-      BACKGROUND_CONNECTION_TIMEOUT,
-    );
-  });
-  try {
-    await Promise.race([handshake, timeoutPromise]);
-  } catch (error) {
-    await displayCriticalError(
-      container,
-      CriticalErrorTranslationKey.TroubleStarting,
-      error,
-    );
-  }
-}
 
 async function start() {
   const startTime = performance.now();
@@ -128,12 +89,6 @@ async function start() {
 
   // setup stream to background
   const extensionPort = browser.runtime.connect({ name: windowType });
-
-  // Verify that background connection is active, displaying critical error otherwise.
-  //
-  // Called without `await` intentionally to ensure listeners for other messages are added as
-  // quickly as possible.
-  connectionHandshake(extensionPort);
 
   // Set up error handlers as early as possible to ensure we are ready to
   // handle any errors that occur at any time
