@@ -9,9 +9,9 @@ import {
 } from './keyring-snaps-permissions';
 
 const PORTFOLIO_ORIGINS: string[] = [
-  'https://portfolio.metamask.io',
-  'https://dev.portfolio.metamask.io',
-  'https://ramps-dev.portfolio.metamask.io',
+  'https://app.metamask.io',
+  'https://dev.app.metamask.io',
+  'https://ramps-dev.app.metamask.io',
 ];
 
 describe('keyringSnapPermissionsBuilder', () => {
@@ -21,7 +21,7 @@ describe('keyringSnapPermissionsBuilder', () => {
       registerActionHandler: jest.fn(),
       registerInitialEventPayload: jest.fn(),
       publish: jest.fn(),
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
     state: {},
@@ -32,6 +32,7 @@ describe('keyringSnapPermissionsBuilder', () => {
   });
 
   describe('Portfolio origin', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(PORTFOLIO_ORIGINS)(
       'returns the methods that can be called by %s',
       (origin: string) => {
@@ -48,6 +49,7 @@ describe('keyringSnapPermissionsBuilder', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(PORTFOLIO_ORIGINS)(
       '%s cannot create an account',
       (origin: string) => {
@@ -59,6 +61,7 @@ describe('keyringSnapPermissionsBuilder', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(PORTFOLIO_ORIGINS)('%s can submit a request', (origin: string) => {
       const permissions = keyringSnapPermissionsBuilder(mockController, origin);
       expect(permissions()).toContain(KeyringRpcMethod.SubmitRequest);
@@ -110,6 +113,7 @@ describe('keyringSnapPermissionsBuilder', () => {
     expect(permissions()).toStrictEqual([]);
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     '',
     'null',
@@ -126,7 +130,7 @@ describe('keyringSnapPermissionsBuilder', () => {
   ])('"%s" cannot call any methods', (origin: unknown) => {
     const permissions = keyringSnapPermissionsBuilder(
       mockController,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       origin as any,
     );
@@ -135,6 +139,7 @@ describe('keyringSnapPermissionsBuilder', () => {
 });
 
 describe('isProtocolAllowed', () => {
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['http://some-dapp.com', true],
     ['https://some-dapp.com', true],
@@ -149,7 +154,7 @@ describe('isProtocolAllowed', () => {
     [1, false],
     [0, false],
     [-1, false],
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ])('"%s" cannot call any methods', (origin: any, expected: boolean) => {
     expect(isProtocolAllowed(origin)).toBe(expected);

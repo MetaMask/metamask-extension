@@ -1,7 +1,10 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getIsSmartTransaction } from '../../../../../../../../shared/modules/selectors';
+import {
+  getIsSmartTransaction,
+  type SmartTransactionsState,
+} from '../../../../../../../../shared/modules/selectors';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
@@ -33,7 +36,12 @@ const NonceDetails = () => {
       currentConfirmation &&
       !isSignatureTransactionType(currentConfirmation)
     ) {
-      dispatch(getNextNonce(currentConfirmation.txParams.from));
+      dispatch(
+        getNextNonce(
+          currentConfirmation.txParams.from,
+          currentConfirmation.networkClientId,
+        ),
+      );
     }
   }, [currentConfirmation, dispatch]);
 
@@ -54,7 +62,10 @@ const NonceDetails = () => {
     );
 
   const displayedNonce = customNonceValue || nextNonce;
-  const isSmartTransactionsEnabled = useSelector(getIsSmartTransaction);
+  const isSmartTransactionsEnabled = useSelector(
+    (state: SmartTransactionsState) =>
+      getIsSmartTransaction(state, currentConfirmation?.chainId),
+  );
 
   return (
     <ConfirmInfoSection data-testid="advanced-details-nonce-section">

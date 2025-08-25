@@ -1,6 +1,4 @@
 import { useSelector } from 'react-redux';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
-import { useMemo } from 'react';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -12,7 +10,6 @@ import {
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { useMultichainSelector } from '../useMultichainSelector';
 import { useIsMultichainSwap } from '../../pages/bridge/hooks/useIsMultichainSwap';
-import useLatestBalance from './useLatestBalance';
 
 export const useIsTxSubmittable = () => {
   const fromToken = useSelector(getFromToken);
@@ -27,14 +24,8 @@ export const useIsTxSubmittable = () => {
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
+    isTxAlertPresent,
   } = useSelector(getValidationErrors);
-
-  const balanceAmount = useLatestBalance(fromToken);
-  const nativeAsset = useMemo(
-    () => getNativeAssetForChainId(fromChainId),
-    [fromChainId],
-  );
-  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   return Boolean(
     fromToken &&
@@ -43,8 +34,9 @@ export const useIsTxSubmittable = () => {
       (isSwap || toChain) &&
       fromAmount &&
       activeQuote &&
-      !isInsufficientBalance(balanceAmount) &&
-      !isInsufficientGasBalance(nativeAssetBalance) &&
-      !isInsufficientGasForQuote(nativeAssetBalance),
+      !isInsufficientBalance &&
+      !isInsufficientGasBalance &&
+      !isInsufficientGasForQuote &&
+      !isTxAlertPresent,
   );
 };

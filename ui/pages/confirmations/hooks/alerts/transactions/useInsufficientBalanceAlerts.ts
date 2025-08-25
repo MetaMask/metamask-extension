@@ -1,38 +1,46 @@
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
 import { TransactionMeta } from '@metamask/transaction-controller';
+
+import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
+  getMultichainNetworkConfigurationsByChainId,
+  getUseTransactionSimulations,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
   selectTransactionValue,
 } from '../../../../../selectors';
-import { getMultichainNativeCurrency } from '../../../../../selectors/multichain';
-import { isBalanceSufficient } from '../../../send/send.utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
+import { isBalanceSufficient } from '../../../send-legacy/send.utils';
 import { useConfirmContext } from '../../../context/confirm';
-import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 
-export function useInsufficientBalanceAlerts(): Alert[] {
+export function useInsufficientBalanceAlerts({
+  ignoreGasFeeToken,
+}: {
+  ignoreGasFeeToken?: boolean;
+} = {}): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
     id: transactionId,
     chainId,
     selectedGasFeeToken,
+    gasFeeTokens,
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
     currentConfirmation?.nestedTransactions?.map(
       (trxn) => (trxn.value as Hex) ?? 0x0,
     ) ?? [];
+
+  const isSimulationEnabled = useSelector(getUseTransactionSimulations);
 
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId, chainId),
@@ -48,7 +56,13 @@ export function useInsufficientBalanceAlerts(): Alert[] {
     selectTransactionFeeById(state, transactionId),
   );
 
-  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const [multichainNetworks, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+
+  const nativeCurrency = (
+    multichainNetworks[chainId as CaipChainId] ?? evmNetworks[chainId]
+  )?.nativeCurrency;
 
   const insufficientBalance = !isBalanceSufficient({
     amount: totalValue,
@@ -56,7 +70,14 @@ export function useInsufficientBalanceAlerts(): Alert[] {
     balance,
   });
 
-  const showAlert = insufficientBalance && !selectedGasFeeToken;
+  const canSkipSimulationChecks = ignoreGasFeeToken || !isSimulationEnabled;
+  const hasGaslessSimulationFinished =
+    canSkipSimulationChecks || Boolean(gasFeeTokens);
+
+  const showAlert =
+    insufficientBalance &&
+    hasGaslessSimulationFinished &&
+    (ignoreGasFeeToken || !selectedGasFeeToken);
 
   return useMemo(() => {
     if (!showAlert) {

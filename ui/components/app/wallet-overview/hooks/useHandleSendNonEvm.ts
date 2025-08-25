@@ -11,10 +11,9 @@ import {
   getMemoizedUnapprovedTemplatedConfirmations,
   getSelectedInternalAccount,
 } from '../../../../selectors';
+import { getSelectedMultichainNetworkConfiguration } from '../../../../selectors/multichain/networks';
 import { isMultichainWalletSnap } from '../../../../../shared/lib/accounts/snaps';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { getMultichainNativeAssetType } from '../../../../selectors/assets';
 
 /**
  * Use this hook to trigger the send flow for non-EVM accounts.
@@ -26,7 +25,9 @@ import { getMultichainNativeAssetType } from '../../../../selectors/assets';
  * @returns A function that triggers the send flow for non-EVM accounts.
  */
 export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
-  const nativeAssetType = useMultichainSelector(getMultichainNativeAssetType);
+  const { nativeCurrency } = useSelector(
+    getSelectedMultichainNetworkConfiguration,
+  );
 
   const account = useSelector(getSelectedInternalAccount);
   const history = useHistory();
@@ -77,13 +78,13 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
         return caipAssetType;
       }
 
-      if (!nativeAssetType) {
+      if (!nativeCurrency) {
         throw new Error(
           'No CAIP asset type provided, and could not find a fallback native asset for the selected account',
         );
       }
 
-      return nativeAssetType;
+      return nativeCurrency as CaipAssetType;
     })();
 
     const { chainId } = parseCaipAssetType(assetTypeToUse);

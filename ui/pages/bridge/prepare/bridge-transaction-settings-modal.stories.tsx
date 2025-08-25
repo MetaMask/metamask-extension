@@ -1,8 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { BridgeTransactionSettingsModal } from './bridge-transaction-settings-modal';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 
 const storybook = {
   title: 'Pages/Bridge/TransactionSettingsModal',
@@ -18,15 +18,14 @@ DefaultStory.decorators = [
   (Story) => (
     <Provider
       store={configureStore(
-        createBridgeMockStore(
-          {},
-          {
+        createBridgeMockStore({
+          bridgeSliceOverrides: {
             toNativeExchangeRate: 1,
             toTokenExchangeRate: 0.99,
             slippage: 0.5,
           },
-          { quotes: [] },
-          {
+          bridgeStateOverrides: { quotes: [] },
+          metamaskStateOverrides: {
             currencyRates: {
               ETH: { conversionRate: 2514.5 },
             },
@@ -40,7 +39,7 @@ DefaultStory.decorators = [
               },
             },
           },
-        ),
+        }),
       )}
     >
       <Story />

@@ -22,6 +22,9 @@ const addEthereumChain = {
     getCaveat: true,
     requestPermittedChainsPermissionIncrementalForOrigin: true,
     rejectApprovalRequestsForOrigin: true,
+    setTokenNetworkFilter: true,
+    setEnabledNetworks: true,
+    getEnabledNetworks: true,
   },
 };
 
@@ -42,6 +45,9 @@ async function addEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermissionIncrementalForOrigin,
     rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    setEnabledNetworks,
+    getEnabledNetworks,
   },
 ) {
   let validParams;
@@ -192,5 +198,8 @@ async function addEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermissionIncrementalForOrigin,
     rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    setEnabledNetworks,
+    getEnabledNetworks,
   });
 }

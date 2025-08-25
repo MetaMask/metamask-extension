@@ -79,13 +79,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
+        await driver.clickElement('[data-testid="sort-by-networks"]');
         await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
+          text: 'Custom',
+          tag: 'button',
         });
+        await driver.clickElement('[data-testid="Localhost 8546"]');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -150,22 +149,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           tag: 'button',
         });
 
-        // Switch back to the extension
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-
-        // Check for transaction
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        // Wait for the first dapp's connect confirmation to disappear
+        await driver.waitUntilXWindowHandles(3);
       },
     );
   });
@@ -239,13 +224,13 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
+        await driver.clickElement('[data-testid="sort-by-networks"]');
         await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
+          text: 'Custom',
+          tag: 'button',
         });
+        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await driver.clickElement('[data-testid="modal-header-close-button"]');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two

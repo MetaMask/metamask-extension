@@ -13,6 +13,7 @@ import {
   getSnapInsightsControllerMessenger,
   getSnapInterfaceControllerMessenger,
   getSnapsRegistryMessenger,
+  getWebSocketServiceMessenger,
 } from './snaps';
 import {
   getTransactionControllerMessenger,
@@ -40,6 +41,19 @@ import {
   getNotificationServicesControllerMessenger,
   getNotificationServicesPushControllerMessenger,
 } from './notifications';
+import { getDeFiPositionsControllerMessenger } from './defi-positions';
+import { getDeFiPositionsControllerInitMessenger } from './defi-positions/defi-positions-controller-messenger';
+import {
+  getDelegationControllerInitMessenger,
+  getDelegationControllerMessenger,
+} from './delegation/delegation-controller-messenger';
+import {
+  getAccountTreeControllerMessenger,
+  getAccountTreeControllerInitMessenger,
+  getMultichainAccountServiceMessenger,
+} from './accounts';
+import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
+import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -49,6 +63,14 @@ export const CONTROLLER_MESSENGERS = {
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
+  },
+  DeFiPositionsController: {
+    getMessenger: getDeFiPositionsControllerMessenger,
+    getInitMessenger: getDeFiPositionsControllerInitMessenger,
+  },
+  DelegationController: {
+    getMessenger: getDelegationControllerMessenger,
+    getInitMessenger: getDelegationControllerInitMessenger,
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
@@ -89,6 +111,10 @@ export const CONTROLLER_MESSENGERS = {
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
     getInitMessenger: getRateLimitControllerInitMessenger,
+  },
+  SeedlessOnboardingController: {
+    getMessenger: getSeedlessOnboardingControllerMessenger,
+    getInitMessenger: noop,
   },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
@@ -132,6 +158,22 @@ export const CONTROLLER_MESSENGERS = {
   },
   AssetsContractController: {
     getMessenger: getAssetsContractControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AccountTreeController: {
+    getMessenger: getAccountTreeControllerMessenger,
+    getInitMessenger: getAccountTreeControllerInitMessenger,
+  },
+  WebSocketService: {
+    getMessenger: getWebSocketServiceMessenger,
+    getInitMessenger: noop,
+  },
+  SmartTransactionsController: {
+    getMessenger: getSmartTransactionsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainAccountService: {
+    getMessenger: getMultichainAccountServiceMessenger,
     getInitMessenger: noop,
   },
 } as const;

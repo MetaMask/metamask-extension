@@ -15,9 +15,9 @@
 @import 'connected-sites-list/index';
 @import 'create-new-vault/create-new-vault.scss';
 @import 'flask/experimental-area/index';
-@import 'snaps/snap-content-footer/index';
 @import 'snaps/snap-install-warning/index';
 @import 'snaps/snap-ui-renderer/index';
+@import 'snaps/snap-ui-account-selector/index';
 @import 'snaps/snap-ui-markdown/index';
 @import 'snaps/snap-ui-button/index';
 @import 'snaps/snap-ui-input/index';
@@ -50,12 +50,14 @@
 @import 'multichain-bridge-transaction-details-modal/index';
 @import 'multichain-bridge-transaction-list-item/index';
 @import 'srp-input/srp-input';
+@import 'srp-input-import/srp-input-import';
 @import 'snaps/snap-privacy-warning/index';
 @import 'tab-bar/index';
 @import 'assets/asset-list/asset-list-control-bar/index';
 @import 'assets/asset-list/sort-control/index';
 @import 'assets/token-cell/token-cell';
 @import 'assets/nfts/nft-grid/index';
+@import 'toast-master/index';
 @import 'transaction-activity-log/index';
 @import 'transaction-breakdown/index';
 @import 'transaction-icon/transaction-icon';

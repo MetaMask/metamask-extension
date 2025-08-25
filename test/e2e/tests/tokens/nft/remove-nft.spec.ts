@@ -45,12 +45,16 @@ describe('Remove NFT', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints, contractRegistry }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        localNodes,
+        mockedEndpoint: mockedEndpoints,
+        contractRegistry,
+      }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
 
         // Open the NFT details page and click to remove NFT
         await new Homepage(driver).goToNftTab();
@@ -58,12 +62,12 @@ describe('Remove NFT', function () {
         await nftListPage.clickNFTIconOnActivityList();
 
         const nftDetailsPage = new NFTDetailsPage(driver);
-        await nftDetailsPage.check_pageIsLoaded();
+        await nftDetailsPage.checkPageIsLoaded();
         await nftDetailsPage.removeNFT();
 
         // Check the success remove NFT toaster is displayed and the NFT is removed from the NFT tab
-        await nftListPage.check_successRemoveNftMessageIsDisplayed();
-        await nftListPage.check_noNftInfoIsDisplayed();
+        await nftListPage.checkSuccessRemoveNftMessageIsDisplayed();
+        await nftListPage.checkNoNftInfoIsDisplayed();
 
         // Check if event was emitted
         const events = await getEventPayloads(driver, mockedEndpoints);

@@ -11,6 +11,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
+import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import {
   showAccountCreationDialog,
   showAccountNameSuggestionDialog,
@@ -20,7 +22,6 @@ import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderMessenger,
 } from './types';
-import { getSnapName, isSnapPreinstalled } from './snaps';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
@@ -68,9 +69,13 @@ const mockInternalAccount = {
   },
 };
 
-jest.mock('./snaps', () => ({
-  ...jest.requireActual('./snaps'),
+jest.mock('../../../../shared/lib/snaps/snaps', () => ({
+  ...jest.requireActual('../../../../shared/lib/snaps/snaps'),
   isSnapPreinstalled: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/accounts/snaps', () => ({
+  ...jest.requireActual('../../../../shared/lib/accounts/snaps'),
   getSnapName: jest.fn(),
 }));
 
@@ -105,6 +110,8 @@ const createControllerMessenger = ({
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     // This mock implementation does not have a nice discriminate union where types/parameters can be correctly inferred
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [actionType, ...params]: any[] = args;
 
@@ -290,8 +297,14 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AddSnapAccountSuccessViewed,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
         },
       });
@@ -299,8 +312,14 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AddSnapAccountSuccessClicked,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
         },
       });
@@ -308,9 +327,17 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AccountAdded,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_suggested_name: false,
         },
       });
@@ -351,9 +378,17 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AccountAdded,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_suggested_name: false,
         },
       });
@@ -406,8 +441,14 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AddSnapAccountSuccessViewed,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
         },
       });
@@ -415,8 +456,14 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AddSnapAccountSuccessClicked,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
         },
       });
@@ -424,9 +471,17 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AccountAdded,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_suggested_name: true,
         },
       });
@@ -474,9 +529,17 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AccountAdded,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_suggested_name: true,
         },
       });
@@ -533,8 +596,14 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AddSnapAccountSuccessViewed,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
         },
       });
@@ -542,8 +611,14 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AddSnapAccountSuccessClicked,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
         },
       });
@@ -551,9 +626,17 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AccountAdded,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_suggested_name: true,
         },
       });

@@ -189,6 +189,13 @@ describe('ImportTokensModal', () => {
       );
       expect(getByText('Next')).not.toBeDisabled();
 
+      // wait for the symbol input to be in the document
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-symbol'),
+        ).toBeInTheDocument(),
+      );
+
       const tokenSymbol = 'META';
 
       fireEvent.change(getByTestId('import-tokens-modal-custom-symbol'), {

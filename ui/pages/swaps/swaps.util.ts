@@ -17,6 +17,7 @@ import {
   OPTIMISM,
   POLYGON,
   ZKSYNC_ERA,
+  SEI,
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
@@ -101,7 +102,7 @@ const AGGREGATOR_METADATA_VALIDATORS: Validator[] = [
   },
 ];
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isValidDecimalNumber = (string: any): boolean =>
   !isNaN(string) && string.match(/^[.0-9]+$/u) && !isNaN(parseFloat(string));
@@ -126,7 +127,8 @@ const SWAP_GAS_PRICE_VALIDATOR: Validator[] = [
 
 export async function fetchToken(
   contractAddress: string,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chainId: any,
 ): Promise<Json> {
@@ -140,6 +142,7 @@ export async function fetchToken(
 }
 
 export async function fetchBlockedTokens(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chainId: any,
 ): Promise<string[]> {
@@ -179,7 +182,7 @@ export async function fetchTokens(
   ];
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
   const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', chainId);
@@ -189,7 +192,8 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
     cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     functionName: 'fetchAggregatorMetadata',
   });
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filteredAggregators = {} as any;
   for (const aggKey in aggregators) {
@@ -209,6 +213,13 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
 export async function fetchTopAssetsList(
   chainId: string,
 ): Promise<{ address: Hex }[]> {
+  if (
+    !Object.values(CHAIN_IDS).includes(
+      chainId as (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS],
+    )
+  ) {
+    return [];
+  }
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
     (await fetchWithCache({
@@ -236,7 +247,7 @@ export async function fetchTopAssets(
   return topAssetsMap;
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchSwapsFeatureFlags(): Promise<any> {
   const v2ApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
@@ -252,7 +263,7 @@ export async function fetchSwapsFeatureFlags(): Promise<any> {
 
 export async function fetchTokenPrice(
   tokenContractAddress: string,
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   const query = `spot-prices?tokenAddresses=${tokenContractAddress}&vsCurrency=eth&includeMarketData=false`;
@@ -268,10 +279,10 @@ export async function fetchTokenPrice(
   return prices?.[tokenContractAddress]?.eth;
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchSwapsGasPrices(chainId: any): Promise<
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | any
   | {
@@ -321,6 +332,8 @@ export const getFeeForSmartTransaction = ({
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
   currentCurrency: string;
   conversionRate: number;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   USDConversionRate?: number;
   nativeCurrencySymbol: string;
   feeInWeiDec: number;
@@ -381,6 +394,8 @@ export function getRenderableNetworkFeesForQuote({
   gasPriceApprove: string;
   currentCurrency: string;
   conversionRate: number;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   USDConversionRate?: number;
   tradeValue: number;
   sourceSymbol: string;
@@ -405,6 +420,8 @@ export function getRenderableNetworkFeesForQuote({
   const gasTotalInWeiHex = sumHexes(
     tradeGasFeeTotalHex,
     approveGasFeeTotalHex,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     multiLayerL1FeeTotal || '0x0',
   );
 
@@ -444,6 +461,8 @@ export function getRenderableNetworkFeesForQuote({
   }
 
   const chainCurrencySymbolToUse =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
 
   return {
@@ -475,14 +494,16 @@ export function quotesToRenderableData({
   conversionRate: number;
   currentCurrency: string;
   approveGas: string;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tokenConversionRates: Record<string, any>;
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
   smartTransactionEstimatedGas: IndividualTxFees;
   nativeCurrencySymbol: string;
   multiLayerL1ApprovalFeeTotal: string | null;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }): Record<string, any> {
   return Object.values(quotes).map((quote) => {
@@ -696,6 +717,8 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return LINEA;
     case CHAIN_IDS.BASE:
       return BASE;
+    case CHAIN_IDS.SEI:
+      return SEI;
     default:
       return '';
   }
@@ -709,10 +732,11 @@ export const getNetworkNameByChainId = (chainId: string): string => {
  * @returns object with 2 items: "swapsFeatureIsLive"
  */
 export const getSwapsLivenessForNetwork = (
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chainId: any,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   swapsFeatureFlags: any = {},
 ) => {
@@ -745,7 +769,8 @@ export const getSwapsLivenessForNetwork = (
  * @param value
  * @returns number
  */
-// TODO: Replace `any` with type
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const countDecimals = (value: any): number => {
   if (!value || Math.floor(value) === value) {
@@ -755,7 +780,7 @@ export const countDecimals = (value: any): number => {
 };
 
 export const showRemainingTimeInMinAndSec = (
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   remainingTimeInSec: any,
 ): string => {
@@ -768,14 +793,21 @@ export const showRemainingTimeInMinAndSec = (
 };
 
 export enum StxErrorTypes {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   unavailable = 'unavailable',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   notEnoughFunds = 'not_enough_funds',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   regularTxPending = 'regular_tx_pending',
 }
 
 export const getTranslatedStxErrorMessage = (
   errorType: StxErrorTypes,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t: (...args: any[]) => string,
 ): string => {

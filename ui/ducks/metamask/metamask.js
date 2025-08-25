@@ -24,6 +24,7 @@ import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 const initialState = {
   isInitialized: false,
@@ -171,6 +172,18 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.RESET_SOCIAL_LOGIN_ONBOARDING: {
+      return {
+        ...metamaskState,
+        userId: undefined,
+        accessToken: undefined,
+        refreshToken: undefined,
+        socialLoginEmail: undefined,
+        authConnection: undefined,
+        nodeAuthTokens: undefined,
+      };
+    }
+
     default:
       return metamaskState;
   }
@@ -228,7 +241,18 @@ export const getWeb3ShimUsageAlertEnabledness = (state) =>
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
-export const getTokens = (state) => state.metamask.tokens;
+export const getTokens = (state) => {
+  const { allTokens } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const { chainId } = getProviderConfig(state);
+  return allTokens?.[chainId]?.[selectedAddress] || [];
+};
+
+export const getTokensByChainId = (state, chainId) => {
+  const { allTokens } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  return allTokens?.[chainId]?.[selectedAddress] || [];
+};
 
 export function getNftsDropdownState(state) {
   return state.metamask.nftsDropdownState;
@@ -283,6 +307,10 @@ export function getNativeCurrency(state) {
 export function getConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.conversionRate;
+}
+
+export function getConversionRateByTicker(state, ticker) {
+  return state.metamask.currencyRates[ticker]?.conversionRate;
 }
 
 export function getCurrencyRates(state) {
@@ -498,6 +526,33 @@ export function getIsUnlocked(state) {
 
 export function getSeedPhraseBackedUp(state) {
   return state.metamask.seedPhraseBackedUp;
+}
+
+/**
+ * Check whether the first (primary) seed phrase which was created during onboarding, is backed up.
+ *
+ * Returns true if the first (primary) seed phrase is backed up when the user creates a new wallet.
+ *
+ * @param {object} state - the redux state object
+ * @returns {boolean} true if the first (primary) seed phrase is backed up when the user creates a new wallet, or the user has imported/restored a wallet.
+ */
+export function getIsPrimarySeedPhraseBackedUp(state) {
+  // when user imports/restores a seed phrase, we can assume that user has already backed up the seed phrase.
+  if (state.metamask.firstTimeFlowType !== FirstTimeFlowType.create) {
+    return true;
+  }
+
+  return state.metamask.seedPhraseBackedUp;
+}
+
+/**
+ * Retrieves the outdated status of the seedless password.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {boolean} True if the seedless password is considered outdated, false otherwise.
+ */
+export function getIsSeedlessPasswordOutdated(state) {
+  return Boolean(state.metamask.passwordOutdatedCache?.isExpiredPwd);
 }
 
 /**

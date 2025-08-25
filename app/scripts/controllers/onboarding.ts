@@ -6,6 +6,7 @@ import {
 } from '@metamask/base-controller';
 import log from 'loglevel';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 
 // Unique name for the controller
 const controllerName = 'OnboardingController';
@@ -207,4 +208,22 @@ export default class OnboardingController extends BaseController<
       });
     }
   };
+
+  /**
+   * Check if the user onboarding flow is Social login flow or not.
+   *
+   * @returns true if the user onboarding flow is Social loing flow, otherwise false.
+   */
+  getIsSocialLoginFlow(): boolean {
+    const isSocialLoginFeatureEnabled = getIsSeedlessOnboardingFeatureEnabled();
+    if (!isSocialLoginFeatureEnabled) {
+      return false;
+    }
+
+    const { firstTimeFlowType } = this.state;
+    return (
+      firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+      firstTimeFlowType === FirstTimeFlowType.socialImport
+    );
+  }
 }

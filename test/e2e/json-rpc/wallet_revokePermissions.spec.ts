@@ -19,6 +19,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -40,6 +41,8 @@ describe('Revoke Dapp Permissions', function () {
           method: 'wallet_revokePermissions',
           params: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               eth_accounts: {},
             },
           ],
@@ -77,6 +80,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -135,6 +139,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -156,6 +161,8 @@ describe('Revoke Dapp Permissions', function () {
           method: 'wallet_revokePermissions',
           params: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               eth_accounts: {},
               'endowment:permitted-chains': {},
             },
@@ -192,41 +199,42 @@ describe('Revoke Dapp Permissions', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
-            await loginWithBalanceValidation(driver);
-            const testDapp = new TestDapp(driver);
-            await testDapp.openTestDappPage();
-            await driver.clickElement('#personalSign');
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+          await testDapp.clickPersonalSign();
 
-            const revokePermissionsRequest = JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'wallet_revokePermissions',
-              params: [
-                {
-                  eth_accounts: {},
-                },
-              ],
-            });
+          const revokePermissionsRequest = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'wallet_revokePermissions',
+            params: [
+              {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                eth_accounts: {},
+              },
+            ],
+          });
 
-            const revokePermissionsResult = await driver.executeScript(
-              `return window.ethereum.request(${revokePermissionsRequest})`,
-            );
-            assert.deepEqual(revokePermissionsResult, null);
+          const revokePermissionsResult = await driver.executeScript(
+            `return window.ethereum.request(${revokePermissionsRequest})`,
+          );
+          assert.deepEqual(revokePermissionsResult, null);
 
-            await driver.waitUntilXWindowHandles(2);
+          await driver.waitUntilXWindowHandles(2);
 
-            const afterGetPermissionsRequest = JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'wallet_getPermissions',
-            });
-            const afterGetPermissionsResult = await driver.executeScript(
-              `return window.ethereum.request(${afterGetPermissionsRequest})`,
-            );
-            const afterGetPermissionsNames = afterGetPermissionsResult.map(
-              (permission: PermissionConstraint) => permission.parentCapability,
-            );
-            assert.deepEqual(afterGetPermissionsNames, []);
-          }
+          const afterGetPermissionsRequest = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'wallet_getPermissions',
+          });
+          const afterGetPermissionsResult = await driver.executeScript(
+            `return window.ethereum.request(${afterGetPermissionsRequest})`,
+          );
+          const afterGetPermissionsNames = afterGetPermissionsResult.map(
+            (permission: PermissionConstraint) => permission.parentCapability,
+          );
+          assert.deepEqual(afterGetPermissionsNames, []);
         },
       );
     });

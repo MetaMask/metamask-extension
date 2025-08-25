@@ -5,6 +5,7 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import {
   buildApproveTransactionData,
   buildIncreaseAllowanceTransactionData,
+  buildPermit2ApproveTransactionData,
 } from '../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
 import {
@@ -19,6 +20,8 @@ import {
 
 const DATA_MOCK = '0x12345678';
 const ADDRESS_MOCK = '0x1234567890123456789012345678901234567890';
+const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
+const EXPIRATION_MOCK = 1234567890;
 const AMOUNT_MOCK = 123;
 
 describe('Transaction.utils', function () {
@@ -39,7 +42,29 @@ describe('Transaction.utils', function () {
     it('should not throw errors when called without arguments', () => {
       expect(() => parseStandardTokenTransactionData()).not.toThrow();
     });
+
+    it('decodes Permit2 function', () => {
+      const result = parseStandardTokenTransactionData(
+        buildPermit2ApproveTransactionData(
+          ADDRESS_MOCK,
+          ADDRESS_2_MOCK,
+          AMOUNT_MOCK,
+          EXPIRATION_MOCK,
+        ),
+      );
+
+      expect(result.name).toBe('approve');
+      expect(result.args).toStrictEqual(
+        expect.objectContaining({
+          token: ADDRESS_MOCK,
+          spender: ADDRESS_2_MOCK,
+          expiration: EXPIRATION_MOCK,
+        }),
+      );
+      expect(result.args.amount.toString()).toBe(AMOUNT_MOCK.toString());
+    });
   });
+
   describe('isEIP1559Transaction', function () {
     it('should return true if both maxFeePerGas and maxPriorityFeePerGas are hex strings', () => {
       expect(
@@ -401,29 +426,94 @@ describe('Transaction.utils', function () {
     });
 
     describe('parseTypedDataMessage', () => {
-      it('parses data passed correctly', () => {
-        const result = parseTypedDataMessage('{"test": "dummy"}');
-        expect(result.test).toBe('dummy');
+      const domainTypes = [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ];
+
+      const baseObject = {
+        types: {
+          EIP712Domain: domainTypes,
+        },
+        primaryType: 'Mail',
+      };
+
+      const makeFullMessage = (message) => ({
+        ...baseObject,
+        message,
       });
 
-      it('parses message.value as a string', () => {
-        const result = parseTypedDataMessage(
-          '{"test": "dummy", "message": { "value": 3000123} }',
-        );
-        expect(result.message.value).toBe('3000123');
+      const parse = (input) => parseTypedDataMessage(input);
+
+      describe('valid JSON strings', () => {
+        it('parses basic JSON string', () => {
+          const result = parse('{"test": "dummy"}');
+          expect(result.test).toBe('dummy');
+        });
+
+        it('parses message.value and coerces to string (small number)', () => {
+          const input = '{"message": { "value": 3000123 }}';
+          const result = parse(input);
+          expect(result.message.value).toBe('3000123');
+        });
+
+        it('parses message.value without losing precision (large number)', () => {
+          const input = '{"message": { "value": 30001231231212312138768 }}';
+          const result = parse(input);
+          expect(result.message.value).toBe('30001231231212312138768');
+        });
+
+        it('parses and retains nested message structure', () => {
+          const input = JSON.stringify(
+            makeFullMessage({ nested: { field: 'value' } }),
+          );
+          const result = parse(input);
+          expect(result).toStrictEqual(
+            makeFullMessage({ nested: { field: 'value' } }),
+          );
+        });
+
+        it('preserves message.value if already a string', () => {
+          const inputObject = makeFullMessage({ value: '123' });
+          const result = parse(JSON.stringify(inputObject));
+          expect(result).toStrictEqual(inputObject);
+        });
       });
 
-      it('parses message.value such that it does not lose precision', () => {
-        const result = parseTypedDataMessage(
-          '{"test": "dummy", "message": { "value": 30001231231212312138768} }',
-        );
-        expect(result.message.value).toBe('30001231231212312138768');
+      describe('primitive non-object inputs', () => {
+        it.each([
+          ['number', 123],
+          ['boolean', true],
+        ])('returns input when input is %s', (_, value) => {
+          const result = parse(value);
+          expect(result).toBe(value);
+        });
       });
 
-      it('throw error for invalid typedDataMessage', () => {
-        expect(() => {
-          parseTypedDataMessage('');
-        }).toThrow(new Error('Unexpected end of JSON input'));
+      describe('object input', () => {
+        it('returns the input directly if it is already an object', () => {
+          const obj = makeFullMessage({
+            from: { name: 'Alice', wallet: '0x123' },
+            to: { name: 'Bob', wallet: '0x456' },
+            contents: 'Hello, Bob!',
+          });
+          const result = parse(obj);
+          expect(result).toBe(obj);
+        });
+      });
+
+      describe('invalid inputs', () => {
+        it('throws on empty string', () => {
+          expect(() => parse('')).toThrow('Unexpected end of JSON input');
+        });
+
+        it('throws on non-JSON string', () => {
+          expect(() => parse('invalid-json')).toThrow(
+            `Unexpected token 'i', "invalid-json" is not valid JSON`,
+          );
+        });
       });
     });
   });
@@ -458,6 +548,9 @@ describe('Transaction.utils', function () {
         amountOrTokenId: new BigNumber(AMOUNT_MOCK),
         isApproveAll: false,
         isRevokeAll: false,
+        name: 'approve',
+        spender: '0x1234567890123456789012345678901234567890',
+        tokenAddress: undefined,
       });
     });
 
@@ -470,6 +563,9 @@ describe('Transaction.utils', function () {
         amountOrTokenId: new BigNumber(AMOUNT_MOCK),
         isApproveAll: false,
         isRevokeAll: false,
+        name: 'increaseAllowance',
+        spender: ADDRESS_MOCK,
+        tokenAddress: undefined,
       });
     });
 
@@ -482,6 +578,9 @@ describe('Transaction.utils', function () {
         amountOrTokenId: undefined,
         isApproveAll: true,
         isRevokeAll: false,
+        name: 'setApprovalForAll',
+        spender: ADDRESS_MOCK,
+        tokenAddress: undefined,
       });
     });
 
@@ -494,6 +593,29 @@ describe('Transaction.utils', function () {
         amountOrTokenId: undefined,
         isApproveAll: false,
         isRevokeAll: true,
+        name: 'setApprovalForAll',
+        spender: ADDRESS_MOCK,
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data if Permit2 approve', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildPermit2ApproveTransactionData(
+            ADDRESS_MOCK,
+            ADDRESS_2_MOCK,
+            AMOUNT_MOCK,
+            EXPIRATION_MOCK,
+          ),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'approve',
+        spender: ADDRESS_2_MOCK,
+        tokenAddress: ADDRESS_MOCK,
       });
     });
   });

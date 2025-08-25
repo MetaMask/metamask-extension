@@ -10,6 +10,10 @@ on:
       - labeled
       - unlabeled
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master') || contains(github.ref, 'refs/heads/stable')) }}
+
 jobs:
   check-pr-labels:
     runs-on: ubuntu-latest
@@ -22,6 +26,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Check PR has required labels
         env:

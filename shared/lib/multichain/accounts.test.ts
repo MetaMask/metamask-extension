@@ -27,6 +27,7 @@ const SOL_ADDRESSES = [
 
 describe('multichain', () => {
   describe('isBtcMainnetAddress', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(BTC_MAINNET_ADDRESSES)(
       'returns true if address is compatible with BTC mainnet: %s',
       (address: string) => {
@@ -34,6 +35,7 @@ describe('multichain', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([...BTC_TESTNET_ADDRESSES, ...ETH_ADDRESSES, ...SOL_ADDRESSES])(
       'returns false if address is not compatible with BTC mainnet: %s',
       (address: string) => {
@@ -43,6 +45,7 @@ describe('multichain', () => {
   });
 
   describe('isBtcTestnetAddress', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(BTC_TESTNET_ADDRESSES)(
       'returns true if address is compatible with BTC testnet: %s',
       (address: string) => {
@@ -50,6 +53,7 @@ describe('multichain', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([...BTC_MAINNET_ADDRESSES, ...ETH_ADDRESSES, ...SOL_ADDRESSES])(
       'returns false if address is compatible with BTC testnet: %s',
       (address: string) => {
@@ -59,6 +63,7 @@ describe('multichain', () => {
   });
 
   describe('isSolanaAddress', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(SOL_ADDRESSES)(
       'returns true if address is a valid Solana address: %s',
       (address: string) => {
@@ -71,9 +76,10 @@ describe('multichain', () => {
     });
   });
 
-  describe('getChainTypeFromAddress', () => {
+  describe('getCaipNamespaceFromAddress', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([...BTC_MAINNET_ADDRESSES, ...BTC_TESTNET_ADDRESSES])(
-      'returns KnownCaipNamespace.Bitcoin for bitcoin address: %s',
+      'returns KnownCaipNamespace.Bip122 for bitcoin address: %s',
       (address: string) => {
         expect(getCaipNamespaceFromAddress(address)).toBe(
           KnownCaipNamespace.Bip122,
@@ -81,8 +87,9 @@ describe('multichain', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(ETH_ADDRESSES)(
-      'returns KnownCaipNamespace.Ethereum for ethereum address: %s',
+      'returns KnownCaipNamespace.Eip155 for ethereum address: %s',
       (address: string) => {
         expect(getCaipNamespaceFromAddress(address)).toBe(
           KnownCaipNamespace.Eip155,
@@ -90,6 +97,7 @@ describe('multichain', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(SOL_ADDRESSES)(
       'returns KnownCaipNamespace.Solana for non-supported address: %s',
       (address: string) => {

@@ -1,11 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  KeyringMetadata,
-  KeyringObject,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -24,7 +20,6 @@ import {
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
-  getMetaMaskKeyringsMetadata,
   getUseBlockie,
 } from '../../../selectors';
 import {
@@ -74,6 +69,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       keyring: { type: keyringType },
     },
     options: { entropySource },
+    type,
   } = account;
 
   const snapId = account.metadata.snap?.id;
@@ -85,9 +81,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   showModal = !showHoldToReveal && !srpQuizModalVisible;
 
   const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
-  const keyringsMetadata: KeyringMetadata[] = useSelector(
-    getMetaMaskKeyringsMetadata,
-  );
 
   // Snap accounts have an entropy source that is the id of the hd keyring
   const keyringId =
@@ -95,7 +88,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     isMultichainWalletSnap(snapId) &&
     entropySource
       ? entropySource
-      : findKeyringId(keyrings, keyringsMetadata, {
+      : findKeyringId(keyrings, {
           address,
         });
 
@@ -159,6 +152,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
               <AccountDetailsDisplay
                 accounts={accounts}
                 accountName={name}
+                accountType={type}
                 address={address}
                 onExportClick={(attemptExportMode: AttemptExportState) => {
                   if (attemptExportMode === AttemptExportState.SRP) {
@@ -166,7 +160,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
                   }
                   setAttemptingExport(attemptExportMode);
                 }}
-                onClose={onClose}
               />
             )}
             {attemptingExport === AttemptExportState.PrivateKey && (
@@ -214,7 +207,11 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             category: MetaMetricsEventCategory.Keys,
             event: MetaMetricsEventName.KeyExportCanceled,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               key_type: MetaMetricsEventKeyType.Pkey,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
             },
           });

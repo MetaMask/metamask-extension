@@ -1,18 +1,17 @@
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
 import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
-  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
-} from '../../pages/confirmations/send/send.constants';
+} from '../../pages/confirmations/send-legacy/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
@@ -25,7 +24,7 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   generateERC20TransferData,
   generateERC721TransferData,
-} from '../../pages/confirmations/send/send.utils';
+} from '../../pages/confirmations/send-legacy/send.utils';
 import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
 import {
   getInitialSendStateWithExistingTxState,
@@ -107,10 +106,12 @@ describe('Send Slice', () => {
   beforeEach(() => {
     setBackgroundConnection({
       addPollingTokenToAppState: jest.fn(),
-      addTransaction: jest.fn((_u, _v, cb) => {
-        cb(null, { transactionMeta: null });
+      addTransaction: jest.fn((_u, _v) => {
+        return Promise.resolve({ transactionMeta: null });
       }),
-      updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
+      updateTransactionSendFlowHistory: jest.fn((_x, _y, _z) => {
+        return Promise.resolve();
+      }),
     });
 
     jest.useFakeTimers();
@@ -950,34 +951,6 @@ describe('Send Slice', () => {
     });
 
     describe('validateAmountField', () => {
-      it('should error with insufficient funds when amount asset value plust gas is higher than asset balance', () => {
-        const nativeAssetState = getInitialSendStateWithExistingTxState({
-          amount: {
-            value: '0x6fc23ac0', // 1875000000
-          },
-          sendAsset: {
-            type: AssetType.native,
-            balance: '0x77359400', // 2000000000
-          },
-          gas: {
-            gasTotal: '0x8f0d180', // 150000000
-          },
-        });
-
-        const action = {
-          type: 'send/validateAmountField',
-        };
-
-        const result = sendReducer(nativeAssetState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.amount.error).toStrictEqual(
-          INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
-        );
-        expect(draftTransaction.status).toBe(SEND_STATUSES.INVALID);
-      });
-
       it('should error with insufficient tokens when amount value of tokens is higher than asset balance of token', () => {
         const tokenAssetState = getInitialSendStateWithExistingTxState({
           amount: {
@@ -1105,49 +1078,6 @@ describe('Send Slice', () => {
         delete tokenAssetState.draftTransactions['test-uuid'];
 
         expect(() => sendReducer(tokenAssetState, action)).not.toThrow();
-      });
-    });
-
-    describe('validateGasField', () => {
-      it('should error when total amount of gas is higher than account balance', () => {
-        const gasFieldState = getInitialSendStateWithExistingTxState({
-          account: {
-            balance: '0x0',
-          },
-          gas: {
-            gasTotal: '0x1319718a5000', // 21000000000000
-          },
-        });
-
-        const action = {
-          type: 'send/validateGasField',
-        };
-
-        const result = sendReducer(gasFieldState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.gas.error).toStrictEqual(
-          INSUFFICIENT_FUNDS_ERROR,
-        );
-      });
-      it('should not throw error when draft transaction does not exist', () => {
-        const gasFieldState = getInitialSendStateWithExistingTxState({
-          account: {
-            balance: '0x0',
-          },
-          gas: {
-            gasTotal: '0x1319718a5000', // 21000000000000
-          },
-        });
-
-        delete gasFieldState.draftTransactions['test-uuid'];
-
-        const action = {
-          type: 'send/validateGasField',
-        };
-
-        expect(() => sendReducer(gasFieldState, action)).not.toThrow();
       });
     });
 
@@ -1548,6 +1478,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1572,29 +1503,33 @@ describe('Send Slice', () => {
             },
             ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
             useTokenDetection: true,
-            tokenList: {
-              '0x514910771af9ca656af840dff83e8264ecf986ca': {
-                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
-                symbol: 'LINK',
-                decimals: 18,
-                name: 'Chainlink',
-                iconUrl:
-                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
-                aggregators: [
-                  'airswapLight',
-                  'bancor',
-                  'cmc',
-                  'coinGecko',
-                  'kleros',
-                  'oneInch',
-                  'paraswap',
-                  'pmm',
-                  'totle',
-                  'zapper',
-                  'zerion',
-                  'zeroEx',
-                ],
-                occurrences: 12,
+            tokensChainsCache: {
+              [CHAIN_IDS.GOERLI]: {
+                data: {
+                  '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                    address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                    symbol: 'LINK',
+                    decimals: 18,
+                    name: 'Chainlink',
+                    iconUrl:
+                      'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                    aggregators: [
+                      'airswapLight',
+                      'bancor',
+                      'cmc',
+                      'coinGecko',
+                      'kleros',
+                      'oneInch',
+                      'paraswap',
+                      'pmm',
+                      'totle',
+                      'zapper',
+                      'zerion',
+                      'zeroEx',
+                    ],
+                    occurrences: 12,
+                  },
+                },
               },
             },
           },
@@ -1732,12 +1667,16 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
               selectedAccount: 'mock-id',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.MAINNET]: {},
+            },
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           },
           send: getInitialSendStateWithExistingTxState({
@@ -1803,12 +1742,16 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
               selectedAccount: 'mock-id',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.MAINNET]: {},
+            },
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           },
           send: getInitialSendStateWithExistingTxState({
@@ -1868,6 +1811,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1944,12 +1888,16 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
               selectedAccount: 'mock-id',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.MAINNET]: {},
+            },
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           },
           send: getInitialSendStateWithExistingTxState({
@@ -2014,12 +1962,16 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
               selectedAccount: 'mock-id',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.MAINNET]: {},
+            },
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           },
           send: getInitialSendStateWithExistingTxState({
@@ -2076,6 +2028,7 @@ describe('Send Slice', () => {
                 },
                 options: {},
                 methods: ETH_EOA_METHODS,
+                scopes: [EthScope.Eoa],
                 type: EthAccountType.Eoa,
               },
             },
@@ -2316,28 +2269,33 @@ describe('Send Slice', () => {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           tokens: [],
           useTokenDetection: true,
-          tokenList: {
-            '0x514910771af9ca656af840dff83e8264ecf986ca': {
-              address: '0x514910771af9ca656af840dff83e8264ecf986ca',
-              symbol: 'LINK',
-              decimals: 18,
-              name: 'Chainlink',
-              iconUrl: 'https://s3.amazonaws.com/airswap-token-images/LINK.png',
-              aggregators: [
-                'airswapLight',
-                'bancor',
-                'cmc',
-                'coinGecko',
-                'kleros',
-                'oneInch',
-                'paraswap',
-                'pmm',
-                'totle',
-                'zapper',
-                'zerion',
-                'zeroEx',
-              ],
-              occurrences: 12,
+          tokensChainsCache: {
+            [CHAIN_IDS.MAINNET]: {
+              data: {
+                '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                  address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                  symbol: 'LINK',
+                  decimals: 18,
+                  name: 'Chainlink',
+                  iconUrl:
+                    'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                  aggregators: [
+                    'airswapLight',
+                    'bancor',
+                    'cmc',
+                    'coinGecko',
+                    'kleros',
+                    'oneInch',
+                    'paraswap',
+                    'pmm',
+                    'totle',
+                    'zapper',
+                    'zerion',
+                    'zeroEx',
+                  ],
+                  occurrences: 12,
+                },
+              },
             },
           },
           internalAccounts: {
@@ -2353,6 +2311,7 @@ describe('Send Slice', () => {
                 },
                 options: {},
                 methods: ETH_EOA_METHODS,
+                scopes: [EthScope.Eoa],
                 type: EthAccountType.Eoa,
               },
             },
@@ -2463,6 +2422,9 @@ describe('Send Slice', () => {
             addressBook: {},
             internalAccounts: {
               accounts: {},
+              accountsByChainId: {
+                [CHAIN_IDS.MAINNET]: {},
+              },
               selectedAccount: '',
             },
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -2566,6 +2528,9 @@ describe('Send Slice', () => {
             addressBook: {},
             internalAccounts: {
               accounts: {},
+              accountsByChainId: {
+                [CHAIN_IDS.MAINNET]: {},
+              },
               selectedAccount: '',
             },
             blockGasLimit: '',
@@ -2618,29 +2583,33 @@ describe('Send Slice', () => {
 
             tokens: [],
             useTokenDetection: true,
-            tokenList: {
-              '0x514910771af9ca656af840dff83e8264ecf986ca': {
-                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
-                symbol: 'LINK',
-                decimals: 18,
-                name: 'Chainlink',
-                iconUrl:
-                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
-                aggregators: [
-                  'airswapLight',
-                  'bancor',
-                  'cmc',
-                  'coinGecko',
-                  'kleros',
-                  'oneInch',
-                  'paraswap',
-                  'pmm',
-                  'totle',
-                  'zapper',
-                  'zerion',
-                  'zeroEx',
-                ],
-                occurrences: 12,
+            tokensChainsCache: {
+              [CHAIN_IDS.MAINNET]: {
+                data: {
+                  '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                    address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                    symbol: 'LINK',
+                    decimals: 18,
+                    name: 'Chainlink',
+                    iconUrl:
+                      'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                    aggregators: [
+                      'airswapLight',
+                      'bancor',
+                      'cmc',
+                      'coinGecko',
+                      'kleros',
+                      'oneInch',
+                      'paraswap',
+                      'pmm',
+                      'totle',
+                      'zapper',
+                      'zerion',
+                      'zeroEx',
+                    ],
+                    occurrences: 12,
+                  },
+                },
               },
             },
             internalAccounts: {
@@ -2656,12 +2625,16 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
               selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.MAINNET]: {},
+            },
           },
           send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
         };
@@ -2885,12 +2858,16 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
               selectedAccount: 'mock-id',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.GOERLI]: {},
+            },
           },
         };
         const store = mockStore(sendMaxModeState);
@@ -3071,12 +3048,10 @@ describe('Send Slice', () => {
           const history = { push: jest.fn() };
 
           setBackgroundConnection({
-            addPollingTokenToAppState: jest.fn(),
-            addTransaction: jest.fn((_u, _v) => {
-              throw new Error(ERROR);
-            }),
-            updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) =>
-              cb(null),
+            addPollingTokenToAppState: jest.fn(() => Promise.resolve()),
+            addTransaction: jest.fn((_u, _v) => Promise.reject(ERROR)),
+            updateTransactionSendFlowHistory: jest.fn((_x, _y, _z) =>
+              Promise.resolve(),
             ),
           });
 
@@ -3235,7 +3210,11 @@ describe('Send Slice', () => {
             gasFeeEstimates: {},
             ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
 
-            tokens: [],
+            allTokens: {
+              [CHAIN_IDS.GOERLI]: {
+                mockAddress1: [],
+              },
+            },
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
             },
@@ -3252,6 +3231,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3268,7 +3248,11 @@ describe('Send Slice', () => {
                 [mockAddress1]: { balance: '0x0' },
               },
             },
-            tokenList: {},
+            tokensChainsCache: {
+              [CHAIN_IDS.GOERLI]: {
+                data: {},
+              },
+            },
             transactions: [
               {
                 id: 1,
@@ -3332,6 +3316,7 @@ describe('Send Slice', () => {
               },
               options: {},
               methods: ETH_EOA_METHODS,
+              scopes: [EthScope.Eoa],
               type: EthAccountType.Eoa,
               balance: '0x0',
             },
@@ -3431,6 +3416,7 @@ describe('Send Slice', () => {
                   },
                   options: {},
                   methods: ETH_EOA_METHODS,
+                  scopes: [EthScope.Eoa],
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3441,7 +3427,11 @@ describe('Send Slice', () => {
                 [mockAddress1]: { balance: '0x0' },
               },
             },
-            tokenList: {},
+            tokensChainsCache: {
+              [CHAIN_IDS.GOERLI]: {
+                data: {},
+              },
+            },
             transactions: [
               {
                 id: 1,
@@ -3504,6 +3494,7 @@ describe('Send Slice', () => {
               },
               options: {},
               methods: ETH_EOA_METHODS,
+              scopes: [EthScope.Eoa],
               type: EthAccountType.Eoa,
               balance: '0x0',
             },
@@ -3615,6 +3606,7 @@ describe('Send Slice', () => {
                 id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 options: {},
                 methods: ETH_EOA_METHODS,
+                scopes: [EthScope.Eoa],
                 type: EthAccountType.Eoa,
                 metadata: {
                   name: 'Test Account',
@@ -3634,10 +3626,14 @@ describe('Send Slice', () => {
               symbol: 'SYMB',
             },
           ],
-          tokenList: {
-            '0xTokenAddress': {
-              symbol: 'SYMB',
-              address: '0xTokenAddress',
+          tokensChainsCache: {
+            [CHAIN_IDS.GOERLI]: {
+              data: {
+                '0xTokenAddress': {
+                  symbol: 'SYMB',
+                  address: '0xTokenAddress',
+                },
+              },
             },
           },
           addressBook: {
@@ -3725,6 +3721,7 @@ describe('Send Slice', () => {
             },
             options: {},
             methods: ETH_EOA_METHODS,
+            scopes: [EthScope.Eoa],
             type: EthAccountType.Eoa,
             balance: '0x0',
           },
@@ -3832,6 +3829,7 @@ describe('Send Slice', () => {
                 id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 options: {},
                 methods: ETH_EOA_METHODS,
+                scopes: [EthScope.Eoa],
                 type: EthAccountType.Eoa,
                 metadata: {
                   name: 'Test Account',
@@ -3850,10 +3848,14 @@ describe('Send Slice', () => {
               symbol: 'SYMB',
             },
           ],
-          tokenList: {
-            '0xTokenAddress': {
-              symbol: 'SYMB',
-              address: '0xTokenAddress',
+          tokensChainsCache: {
+            [CHAIN_IDS.GOERLI]: {
+              data: {
+                '0xTokenAddress': {
+                  symbol: 'SYMB',
+                  address: '0xTokenAddress',
+                },
+              },
             },
           },
           addressBook: {
@@ -3968,6 +3970,7 @@ describe('Send Slice', () => {
                   'eth_signTypedData_v4',
                 ],
                 options: {},
+                scopes: ['eip155:0'],
                 type: 'eip155:eoa',
               },
               gas: {

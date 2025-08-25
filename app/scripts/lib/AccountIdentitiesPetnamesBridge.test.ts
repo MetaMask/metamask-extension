@@ -104,7 +104,7 @@ function createNameControllerMock(
   return {
     state,
     setName: jest.fn(),
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
@@ -112,13 +112,13 @@ function createNameControllerMock(
 function simulateSubscribe(
   messenger: jest.Mocked<AccountIdentitiesPetnamesBridgeMessenger>,
   stateChange: AccountsControllerState,
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   patch: any[],
 ) {
   const listener = messenger.subscribe.mock.calls[0][1] as (
     stateChange: AccountsControllerState,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     patch: any[],
   ) => void;
@@ -204,6 +204,7 @@ describe('AccountIdentitiesPetnamesBridge', () => {
   });
 
   describe('shouldSyncPetname', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       {
         origin: NameOrigin.ACCOUNT_IDENTITY,

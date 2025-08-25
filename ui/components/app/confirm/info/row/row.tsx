@@ -23,6 +23,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { SizeNumber } from '../../../../ui/box/box';
 import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {
@@ -32,17 +33,19 @@ export enum ConfirmInfoRowVariant {
 }
 
 export type ConfirmInfoRowProps = {
-  label: string;
   children?: React.ReactNode | string;
-  tooltip?: string;
-  variant?: ConfirmInfoRowVariant;
-  style?: React.CSSProperties;
-  labelChildren?: React.ReactNode;
+  collapsed?: boolean;
   color?: TextColor;
   copyEnabled?: boolean;
   copyText?: string;
   'data-testid'?: string;
-  collapsed?: boolean;
+  label: string;
+  labelChildren?: React.ReactNode;
+  style?: React.CSSProperties;
+  tooltip?: string;
+  tooltipIcon?: IconName;
+  tooltipIconColor?: IconColor;
+  variant?: ConfirmInfoRowVariant;
 };
 
 const BACKGROUND_COLORS = {
@@ -85,10 +88,15 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   copyText,
   'data-testid': dataTestId,
   collapsed,
+  tooltipIcon,
+  tooltipIconColor,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
   const isCollapsible = collapsed !== undefined;
+
+  const contentPaddingRight = ((copyEnabled ? 6 : 0) +
+    (isCollapsible ? 6 : 0)) as SizeNumber;
 
   return (
     <ConfirmInfoRowContext.Provider value={{ variant }}>
@@ -105,7 +113,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         marginTop={2}
         marginBottom={2}
         paddingLeft={2}
-        paddingRight={copyEnabled ? 5 : 2}
+        paddingRight={2}
         color={TEXT_COLORS[variant] as TextColor}
         style={{
           overflowWrap: OverflowWrap.Anywhere,
@@ -142,6 +150,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.flexStart}
           color={color}
+          paddingRight={contentPaddingRight || null}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
@@ -155,9 +164,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
                 style={{ display: 'flex' }}
               >
                 <Icon
-                  name={TOOLTIP_ICONS[variant]}
+                  name={tooltipIcon ?? TOOLTIP_ICONS[variant]}
                   marginLeft={1}
-                  color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+                  color={
+                    tooltipIconColor ??
+                    (TOOLTIP_ICON_COLORS[variant] as unknown as IconColor)
+                  }
                   size={IconSize.Sm}
                   {...(dataTestId
                     ? { 'data-testid': `${dataTestId}-tooltip` }

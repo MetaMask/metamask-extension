@@ -33,10 +33,14 @@ export interface ButtonPrimaryStyleUtilityProps
   size?: ButtonPrimarySize;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ButtonPrimaryProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ButtonPrimaryStyleUtilityProps>;
 
 export type ButtonPrimaryComponent = <
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType = 'button' | 'a',
 >(
   props: ButtonPrimaryProps<C>,

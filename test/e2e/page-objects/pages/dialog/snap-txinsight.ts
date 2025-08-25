@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import { veryLargeDelayMs } from '../../../helpers';
 
 class SnapTxInsights {
   private driver: Driver;
@@ -17,7 +16,7 @@ class SnapTxInsights {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.insightTitle,
@@ -30,15 +29,17 @@ class SnapTxInsights {
       );
       throw e;
     }
-    console.log('Snap txInsight section is loaded under transaction confirmation dialog');
+    console.log(
+      'Snap txInsight section is loaded under transaction confirmation dialog',
+    );
   }
 
-  async check_transactionInsightsTitle() {
+  async checkTransactionInsightsTitle() {
     console.log('Checking transaction insights title');
     await this.driver.waitForSelector(this.insightTitle);
   }
 
-  async check_transactionInsightsType(transactionType: string) {
+  async checkTransactionInsightsType(transactionType: string) {
     console.log('Checking transaction insights type');
     await this.driver.waitForSelector({
       css: this.transactionType,
@@ -46,7 +47,7 @@ class SnapTxInsights {
     });
   }
 
-  async check_transactionAddress(address: string) {
+  async checkTransactionAddress(address: string) {
     console.log('Checking transaction address');
     await this.driver.waitForSelector({
       css: this.transactionAddress,

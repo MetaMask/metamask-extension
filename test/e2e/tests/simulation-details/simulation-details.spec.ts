@@ -6,10 +6,10 @@ import FixtureBuilder from '../../fixture-builder';
 import {
   createDappTransaction,
   Fixtures,
-  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import {
   BUY_ERC1155_REQUEST_1_MOCK,
@@ -54,7 +54,9 @@ async function withFixturesForSimulationDetails(
     inputChainId?: string;
     mockRequests: (mockServer: MockttpServer) => Promise<void>;
   },
-  runTestWithFixtures: (args: Pick<Fixtures, 'driver' | 'mockServer'>) => Promise<void>,
+  runTestWithFixtures: (
+    args: Pick<Fixtures, 'driver' | 'mockServer'>,
+  ) => Promise<void>,
 ) {
   await withFixtures(
     {
@@ -70,7 +72,7 @@ async function withFixturesForSimulationDetails(
       },
     },
     async ({ driver, mockServer }) => {
-      await unlockWallet(driver);
+      await loginWithBalanceValidation(driver);
       await runTestWithFixtures({ driver, mockServer });
     },
   );
@@ -170,8 +172,14 @@ describe('Simulation Details', function () {
 
   it('renders buy ERC1155 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
-      await mockRequest(mockServer, BUY_ERC1155_REQUEST_1_MOCK);
-      await mockRequest(mockServer, BUY_ERC1155_REQUEST_2_MOCK);
+      await mockRequest(
+        mockServer,
+        BUY_ERC1155_REQUEST_1_MOCK as MockRequestResponse,
+      );
+      await mockRequest(
+        mockServer,
+        BUY_ERC1155_REQUEST_2_MOCK as MockRequestResponse,
+      );
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },

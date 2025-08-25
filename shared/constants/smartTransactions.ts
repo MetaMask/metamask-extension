@@ -13,6 +13,7 @@ const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_DEVELOPMENT: string[] = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.BSC,
   CHAIN_IDS.BASE,
+  CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.LINEA_SEPOLIA,
 ];
@@ -20,9 +21,9 @@ const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_DEVELOPMENT: string[] = [
 const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_PRODUCTION: string[] = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.BSC,
-  // CHAIN_IDS.BASE, // TODO: Add base to production when ready
-  // CHAIN_IDS.LINEA_MAINNET, // TODO: Add linea mainnet to production when ready
-  // CHAIN_IDS.LINEA_SEPOLIA, // TODO: Add linea sepolia to production when ready
+  CHAIN_IDS.BASE,
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.LINEA_MAINNET,
 ];
 
 export const getAllowedSmartTransactionsChainIds = (): string[] => {
@@ -37,3 +38,6 @@ export const CANCEL_GAS_LIMIT_DEC = 21000;
 
 export const SMART_TRANSACTIONS_LEARN_MORE_URL =
   'https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/';
+
+export const SMART_ACCOUNT_LEARN_MORE_URL =
+  'https://support.metamask.io/configure/accounts/what-is-a-smart-account/#what-are-metamask-smart-accounts';

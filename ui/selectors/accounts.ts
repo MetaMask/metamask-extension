@@ -2,26 +2,19 @@ import {
   EthAccountType,
   BtcAccountType,
   SolAccountType,
+  CaipChainId,
+  EthScope,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
-import {
-  isBtcMainnetAddress,
-  isBtcTestnetAddress,
-} from '../../shared/lib/multichain/accounts';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
 };
-
-function isBtcAccount(account: InternalAccount) {
-  const { P2wpkh } = BtcAccountType;
-
-  return Boolean(account && account.type === P2wpkh);
-}
 
 export function isSolanaAccount(account: InternalAccount) {
   const { DataAccount } = SolAccountType;
@@ -30,11 +23,12 @@ export function isSolanaAccount(account: InternalAccount) {
 }
 
 export function isNonEvmAccount(account: InternalAccount) {
-  const { P2wpkh } = BtcAccountType;
   const { DataAccount } = SolAccountType;
 
   return Boolean(
-    account && (account.type === P2wpkh || account.type === DataAccount),
+    account &&
+      (Object.values(BtcAccountType).includes(account.type as BtcAccountType) ||
+        account.type === DataAccount),
   );
 }
 
@@ -42,6 +36,11 @@ export const getInternalAccounts = createSelector(
   (state: AccountsState) =>
     Object.values(state.metamask.internalAccounts.accounts),
   (accounts) => accounts,
+);
+
+export const getInternalAccountsObject = createSelector(
+  (state: AccountsState) => state.metamask.internalAccounts.accounts,
+  (internalAccounts) => internalAccounts,
 );
 
 export const getMemoizedInternalAccountByAddress = createDeepEqualSelector(
@@ -65,33 +64,64 @@ export function isSelectedInternalAccountEth(state: AccountsState) {
   return Boolean(account && (account.type === Eoa || account.type === Erc4337));
 }
 
-export function isSelectedInternalAccountBtc(state: AccountsState) {
-  return isBtcAccount(getSelectedInternalAccount(state));
-}
-
 export function isSelectedInternalAccountSolana(state: AccountsState) {
   return isSolanaAccount(getSelectedInternalAccount(state));
-}
-
-function hasCreatedBtcAccount(
-  state: AccountsState,
-  isAddressCallback: (address: string) => boolean,
-) {
-  const accounts = getInternalAccounts(state);
-  return accounts.some((account) => {
-    return isBtcAccount(account) && isAddressCallback(account.address);
-  });
-}
-
-export function hasCreatedBtcMainnetAccount(state: AccountsState) {
-  return hasCreatedBtcAccount(state, isBtcMainnetAddress);
-}
-
-export function hasCreatedBtcTestnetAccount(state: AccountsState) {
-  return hasCreatedBtcAccount(state, isBtcTestnetAddress);
 }
 
 export function hasCreatedSolanaAccount(state: AccountsState) {
   const accounts = getInternalAccounts(state);
   return accounts.some((account) => isSolanaAccount(account));
 }
+
+/**
+ * Returns all internal accounts that declare support for the provided CAIP scope.
+ * The scope should be a CAIP-2 scope string (e.g., 'eip155:0', 'bip122:...').
+ *
+ * @param _state - Redux state (unused; required for selector signature)
+ * @param scope - The CAIP scope string to filter accounts by
+ */
+export const getInternalAccountsByScope = createDeepEqualSelector(
+  [getInternalAccounts, (_state: AccountsState, scope: CaipChainId) => scope],
+  (accounts, scope): InternalAccount[] => {
+    if (!Array.isArray(accounts) || accounts.length === 0) {
+      return [];
+    }
+
+    let namespace: string;
+    let reference: string;
+    try {
+      const parsed = parseCaipChainId(scope);
+      namespace = parsed.namespace;
+      reference = parsed.reference;
+    } catch {
+      return [];
+    }
+
+    if (namespace === KnownCaipNamespace.Eip155) {
+      // If requesting eip155:0 (wildcard), include any account that has any EVM scope
+      if (reference === '0') {
+        return accounts.filter(
+          (account) =>
+            Array.isArray(account.scopes) &&
+            account.scopes.some((s) =>
+              s.startsWith(`${KnownCaipNamespace.Eip155}:`),
+            ),
+        );
+      }
+
+      // For a specific EVM chain, include accounts that either have the exact scope or the wildcard
+      return accounts.filter(
+        (account) =>
+          Array.isArray(account.scopes) &&
+          (account.scopes.includes(scope) ||
+            account.scopes.includes(EthScope.Eoa)),
+      );
+    }
+
+    // Non-EVM: exact scope match only
+    return accounts.filter(
+      (account) =>
+        Array.isArray(account.scopes) && account.scopes.includes(scope),
+    );
+  },
+);

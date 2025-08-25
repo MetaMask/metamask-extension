@@ -1,3 +1,4 @@
+import { SolScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   sendMultichainTransaction,
@@ -5,6 +6,7 @@ import {
 } from '../../../../store/actions';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/solana-wallet-snap';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
+import { mockMultichainNetworkState } from '../../../../../test/stub/networks';
 import { useHandleSendNonEvm } from './useHandleSendNonEvm';
 
 jest.mock('../../../../store/actions', () => ({
@@ -32,6 +34,7 @@ jest.mock('react-router-dom', () => ({
 
 const mockState = {
   metamask: {
+    ...mockMultichainNetworkState(),
     internalAccounts: {
       accounts: {
         '5132883f-598e-482c-a02b-84eeaa352f5b': {
@@ -64,6 +67,12 @@ const mockState = {
       },
     ],
     defaultHomeActiveTabName: 'activity',
+    selectedMultichainNetworkChainId: SolScope.Mainnet,
+    isEvmSelected: false,
+    remoteFeatureFlags: {
+      addSolanaAccount: true,
+      addBitcoinAccount: true,
+    },
   },
 };
 
@@ -231,6 +240,16 @@ describe('useHandleSendNonEvm', () => {
                 // No native asset
                 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
               ],
+            },
+            multichainNetworkConfigurationsByChainId: {
+              ...mockState.metamask.multichainNetworkConfigurationsByChainId,
+              [SolScope.Mainnet]: {
+                chainId: SolScope.Mainnet,
+                name: 'Solana',
+                // Intentionally omit attribute to force error
+                // nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
+                isEvm: false,
+              },
             },
           },
         };

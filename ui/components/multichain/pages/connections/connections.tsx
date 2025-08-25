@@ -87,17 +87,19 @@ export const Connections = () => {
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const activeTabOrigin = decodeURIComponent(urlParams.origin);
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
   const siteMetadata = useSelector(getSubjectMetadata);
   const connectedSiteMetadata = siteMetadata[activeTabOrigin];
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id } = useSelector((state: any) => state.activeTab);
   const unconnectedAccounts = useSelector((state) =>
@@ -110,13 +112,15 @@ export const Connections = () => {
 
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as { [key: string]: any[] };
   const subjects = useSelector(getPermissionSubjects);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let tabToConnect: { origin: any } = { origin: null };
   if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
@@ -128,6 +132,8 @@ export const Connections = () => {
     const requestId = await dispatch(
       requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
@@ -163,7 +169,7 @@ export const Connections = () => {
 
   // In the connectedAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
   const latestSelected = connectedAccounts.findIndex(
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_account: any, index: any) => {
       return (
@@ -172,7 +178,8 @@ export const Connections = () => {
           (
             indexOfAccountWIthHighestLastSelected: number,
             currentAccountToCompare: AccountType,
-            // TODO: Replace `any` with type
+
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             i: any,
           ) => {
@@ -207,6 +214,7 @@ export const Connections = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onClick={() => (history as any).goBack()}
             size={ButtonIconSize.Sm}
@@ -246,7 +254,7 @@ export const Connections = () => {
       <Content padding={0}>
         {permittedAccounts.length > 0 && connectedAccounts.length > 0 ? (
           <Box>
-            {/* TODO: Replace `any` with type */}
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973 */}
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {connectedAccounts.map((account: AccountType, index: any) => {
               const connectedSites: ConnectedSites = {};
@@ -389,6 +397,8 @@ export const Connections = () => {
               size={ButtonPrimarySize.Lg}
               block
               data-test-id="no-connections-button"
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={() => requestAccountsPermission()}
             >
               {t('connectAccounts')}

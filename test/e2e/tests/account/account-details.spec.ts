@@ -19,15 +19,15 @@ describe('Show account details', function () {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.openAccountDetailsModal('Account 1');
         const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.revealPrivateKeyAndVerify(
-          {
-            expectedPrivateKey: '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
-          },
-        );
+        await accountDetailsModal.checkPageIsLoaded();
+        await accountDetailsModal.goToDetailsTab();
+        await accountDetailsModal.revealPrivateKeyAndVerify({
+          expectedPrivateKey:
+            '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
+        });
       },
     );
   });
@@ -42,7 +42,7 @@ describe('Show account details', function () {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // Create and focus on different account
         await accountListPage.addAccount({
@@ -50,19 +50,19 @@ describe('Show account details', function () {
           accountName: '2nd account',
         });
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('2nd account');
+        await headerNavbar.checkAccountLabel('2nd account');
 
         // Reveal private key for Account 1
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.openAccountDetailsModal('Account 1');
         const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.revealPrivateKeyAndVerify(
-          {
-            expectedPrivateKey: '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
-          },
-        );
+        await accountDetailsModal.checkPageIsLoaded();
+        await accountDetailsModal.goToDetailsTab();
+        await accountDetailsModal.revealPrivateKeyAndVerify({
+          expectedPrivateKey:
+            '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
+        });
       },
     );
   });
@@ -77,12 +77,12 @@ describe('Show account details', function () {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openAccountDetailsModal();
         const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.revealPrivateKeyAndVerify(
-          {
-            expectedPrivateKey: '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
-          },
-        );
+        await accountDetailsModal.checkPageIsLoaded();
+        await accountDetailsModal.goToDetailsTab();
+        await accountDetailsModal.revealPrivateKeyAndVerify({
+          expectedPrivateKey:
+            '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
+        });
       },
     );
   });
@@ -97,7 +97,7 @@ describe('Show account details', function () {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // Create and focus on second account
         await accountListPage.addAccount({
@@ -105,17 +105,17 @@ describe('Show account details', function () {
           accountName: '2nd account',
         });
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('2nd account');
+        await headerNavbar.checkAccountLabel('2nd account');
 
         // Reveal private key for Account 2
         await headerNavbar.openAccountDetailsModal();
         const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.revealPrivateKeyAndVerify(
-          {
-            expectedPrivateKey: 'f444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8',
-          },
-        );
+        await accountDetailsModal.checkPageIsLoaded();
+        await accountDetailsModal.goToDetailsTab();
+        await accountDetailsModal.revealPrivateKeyAndVerify({
+          expectedPrivateKey:
+            'f444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8',
+        });
       },
     );
   });
@@ -131,14 +131,16 @@ describe('Show account details', function () {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.openAccountDetailsModal('Account 1');
         const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.check_pageIsLoaded();
+        await accountDetailsModal.checkPageIsLoaded();
+        await accountDetailsModal.goToDetailsTab();
 
         // Attempt to reveal private key from account menu with a wrong password and verify the error message
         await accountDetailsModal.revealPrivateKeyAndVerify({
-          expectedPrivateKey: 'f444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8',
+          expectedPrivateKey:
+            'f444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8',
           password: wrongPassword,
           expectedPasswordError: true,
         });

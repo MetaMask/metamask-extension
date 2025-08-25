@@ -15,7 +15,7 @@ exports[`Token Cell should match snapshot 1`] = `
         style="align-self: center;"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full"
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-full"
         >
           <img
             alt="TEST logo"
@@ -27,7 +27,7 @@ exports[`Token Cell should match snapshot 1`] = `
           class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
           >
             <img
               alt="network logo"
@@ -44,24 +44,36 @@ exports[`Token Cell should match snapshot 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+          <div
+            class="mm-box mm-box--display-flex"
           >
-            TEST
-          </p>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+              data-testid="multichain-token-list-item-token-name"
+            >
+              TEST
+            </p>
+          </div>
           <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-normal mm-text--text-align-end mm-box--color-text-default"
             data-testid="multichain-token-list-item-secondary-value"
-          />
+            style="white-space: nowrap; padding-inline-start: 8px;"
+          >
+            No conversion rate available
+          </p>
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
           >
+            <span
+              class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-success-default"
+              style="mask-image: url('./images/icons/triangle-up.svg');"
+            />
             <p
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
               data-testid="token-increase-decrease-percentage-0xAnotherToken"
             />
           </div>

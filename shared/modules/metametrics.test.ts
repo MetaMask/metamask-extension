@@ -12,6 +12,8 @@ const txHash =
   '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356';
 const address = '0x1678a085c290ebd122dc42cba69373b5953b831d';
 const providerResultStub = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_getCode: '0x123',
 };
 const { provider } = createTestProviderTools({
@@ -35,7 +37,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getTokenStandardAndDetails: jest.fn(),
     getTransaction: jest.fn(),
     provider: provider as Provider,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     snapAndHardwareMessenger: jest.fn() as any,
     trackEvent: jest.fn(),
@@ -44,6 +46,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getMethodData: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
     getHDEntropyIndex: jest.fn(),
+    getNetworkRpcUrl: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;
 };
@@ -72,6 +75,8 @@ const createTransactionMeta = () => {
     hash: txHash,
     error: null,
     swapMetaData: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_included: true,
     },
   };
@@ -102,15 +107,23 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
 
     expect(result).toStrictEqual({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_included: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_smart_transaction: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       smart_transaction_proxied: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       smart_transaction_timed_out: true,
     });
   });
@@ -123,12 +136,14 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
 
     expect(result).toStrictEqual({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_smart_transaction: false,
     });
   });
@@ -146,13 +161,17 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
 
     expect(result).toStrictEqual({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_smart_transaction: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_included: true,
     });
   });

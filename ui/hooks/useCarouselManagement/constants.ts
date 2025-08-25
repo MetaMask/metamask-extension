@@ -1,10 +1,26 @@
-export const REMOTE_MODE_SLIDE = {
-  id: 'remoteMode',
-  title: 'slideRemoteModeTitle',
-  description: 'slideRemoteModeDescription',
-  // TODO: Update image once we have a remote mode icon
-  image: './images/slide-fund-icon.svg',
-  href: '/home.html#remote',
+import { DOWNLOAD_MOBILE_APP_SLIDE_ID } from '../../../shared/constants/app';
+
+export const BASIC_FUNCTIONALITY_SLIDE = {
+  id: 'basic_functionality',
+  title: 'basicConfigurationBannerTitle',
+  description: 'enableIt',
+  image: './images/basic-functionality.svg',
+};
+
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+export const SOLANA_SLIDE = {
+  id: 'solana',
+  title: 'slideSolanaTitle',
+  description: 'slideSolanaDescription',
+  image: './images/slide-solana-icon.svg',
+};
+///: END:ONLY_INCLUDE_IF
+
+export const SMART_ACCOUNT_UPGRADE_SLIDE = {
+  id: 'smartAccountUpgrade',
+  title: 'slideSmartAccountUpgradeTitle',
+  description: 'slideSmartAccountUpgradeDescription',
+  image: './images/smart-account-upgrade.png',
 };
 
 export const SWEEPSTAKES_SLIDE = {
@@ -12,7 +28,7 @@ export const SWEEPSTAKES_SLIDE = {
   title: 'slideSweepStakeTitle',
   description: 'slideSweepStakeDescription',
   image: './images/sweepstakes.png',
-  href: 'https://portfolio.metamask.io/explore/nfts?event=012e19e2',
+  href: 'https://app.metamask.io/explore/nfts?event=012e19e2',
 };
 
 export const FUND_SLIDE = {
@@ -20,24 +36,22 @@ export const FUND_SLIDE = {
   title: 'slideFundWalletTitle',
   description: 'slideFundWalletDescription',
   image: './images/slide-fund-icon.svg',
-  href: 'https://portfolio.metamask.io/buy/build-quote',
+  href: 'https://app.metamask.io/buy/build-quote',
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 export const BRIDGE_SLIDE = {
   id: 'bridge',
   title: 'slideBridgeTitle',
   description: 'slideBridgeDescription',
   image: './images/slide-bridge-icon.svg',
 };
-///: END:ONLY_INCLUDE_IF
 
 export const CARD_SLIDE = {
   id: 'card',
   title: 'slideDebitCardTitle',
   description: 'slideDebitCardDescription',
   image: './images/slide-card-icon.svg',
-  href: 'https://portfolio.metamask.io/card',
+  href: 'https://app.metamask.io/card',
 };
 
 export const CASH_SLIDE = {
@@ -45,7 +59,7 @@ export const CASH_SLIDE = {
   title: 'slideCashOutTitle',
   description: 'slideCashOutDescription',
   image: './images/slide-sell-icon.svg',
-  href: 'https://portfolio.metamask.io/sell',
+  href: 'https://app.metamask.io/sell',
 };
 
 export const MULTI_SRP_SLIDE = {
@@ -53,6 +67,21 @@ export const MULTI_SRP_SLIDE = {
   title: 'slideMultiSrpTitle',
   description: 'slideMultiSrpDescription',
   image: './images/slide-multi-srp-icon.svg',
+  href: '/home.html#import-srp',
+};
+
+export const BACKUPANDSYNC_SLIDE = {
+  id: 'backupAndSync',
+  title: 'backupAndSyncSlideTitle',
+  description: 'backupAndSyncSlideDescription',
+  image: './images/slide-backup-and-sync-icon.png',
+};
+
+export const DOWNLOAD_MOBILE_APP_SLIDE = {
+  id: DOWNLOAD_MOBILE_APP_SLIDE_ID,
+  title: 'slideDownloadMobileAppTitle',
+  description: 'slideDownloadMobileAppDescription',
+  image: './images/slide-metamask-icon.svg',
 };
 
 export const ZERO_BALANCE = '0x0';

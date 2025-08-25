@@ -1,11 +1,15 @@
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import {
+  GasFeeToken,
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { toHex } from '@metamask/controller-utils';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateAndApproveTx } from '../../../../store/actions';
 import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
+import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
 jest.mock('../../../../../shared/modules/selectors');
@@ -16,19 +20,6 @@ jest.mock('../../../../store/actions', () => ({
 }));
 
 const CUSTOM_NONCE_VALUE = '1234';
-
-const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
-  amount: toHex(1000),
-  balance: toHex(2345),
-  decimals: 3,
-  gas: '0x3',
-  maxFeePerGas: '0x4',
-  maxPriorityFeePerGas: '0x5',
-  rateWei: toHex('1798170000000000000'),
-  recipient: '0x1234567890123456789012345678901234567890',
-  symbol: 'TEST',
-  tokenAddress: '0x1234567890123456789012345678901234567890',
-};
 
 const TRANSACTION_META_MOCK =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -115,9 +106,11 @@ describe('useTransactionConfirm', () => {
         )}0000000000000000000000000000000000000000000000000000000000000${GAS_FEE_TOKEN_MOCK.amount.slice(
           2,
         )}`,
+        gas: GAS_FEE_TOKEN_MOCK.gasTransfer,
         maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
         maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
         to: GAS_FEE_TOKEN_MOCK.tokenAddress,
+        type: TransactionType.gasPayment,
       },
     ]);
   });

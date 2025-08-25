@@ -29,8 +29,8 @@ describe('View ERC1155 NFT details', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockIPFSRequest,
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Click to open the NFT details page and check displayed account
         await new Homepage(driver).goToNftTab();
@@ -39,13 +39,13 @@ describe('View ERC1155 NFT details', function () {
 
         // Check the NFT details are correctly displayed on NFT details page
         const nftDetailsPage = new NFTDetailsPage(driver);
-        await nftDetailsPage.check_pageIsLoaded();
-        await nftDetailsPage.check_nftNameIsDisplayed('Rocks');
-        await nftDetailsPage.check_nftDescriptionIsDisplayed(
+        await nftDetailsPage.checkPageIsLoaded();
+        await nftDetailsPage.checkNftNameIsDisplayed('Rocks');
+        await nftDetailsPage.checkNftDescriptionIsDisplayed(
           'This is a collection of Rock NFTs.',
         );
-        await nftDetailsPage.check_nftImageContainerIsDisplayed();
-        await nftDetailsPage.check_nftDetailsAddressIsDisplayed(
+        await nftDetailsPage.checkNftImageContainerIsDisplayed();
+        await nftDetailsPage.checkNftDetailsAddressIsDisplayed(
           '0x581c3...45947',
         );
       },

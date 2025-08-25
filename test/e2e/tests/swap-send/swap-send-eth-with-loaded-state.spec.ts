@@ -12,14 +12,8 @@ import AdvancedSettings from '../../page-objects/pages/settings/advanced-setting
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
-import fs from 'fs';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
-  const BRIDGE_GET_ALL_FEATURE_FLAGS_PATH =
-    'test/e2e/mock-response-data/bridge-get-all-feature-flags.json';
-  const BRIDGE_GET_ALL_FEATURE_FLAGS = fs.readFileSync(
-    BRIDGE_GET_ALL_FEATURE_FLAGS_PATH,
-  );
   return [
     await mockServer
       .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
@@ -27,15 +21,6 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
         statusCode: 200,
         json: {},
       })),
-
-    await mockServer
-      .forGet('https://bridge.dev-api.cx.metamask.io/getAllFeatureFlags')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: JSON.parse(BRIDGE_GET_ALL_FEATURE_FLAGS.toString()),
-        };
-      }),
 
     await mockServer
       .forGet(
@@ -223,6 +208,11 @@ describe('Swap-Send ETH', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true, // Ethereum Mainnet
+              },
+            })
             .withTokensController({
               allTokens: {
                 '0x1': {
@@ -258,20 +248,20 @@ describe('Swap-Send ETH', function () {
           await logInWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedTokenBalanceIsDisplayed('50', 'WETH');
-          await homePage.check_expectedTokenBalanceIsDisplayed('25', 'ETH');
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedTokenBalanceIsDisplayed('50', 'WETH');
+          await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
           // disable smart transactions
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_pageIsLoaded();
+          await headerNavbar.checkPageIsLoaded();
           await headerNavbar.openSettingsPage();
 
           const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.clickAdvancedTab();
           const advancedSettingsPage = new AdvancedSettings(driver);
-          await advancedSettingsPage.check_pageIsLoaded();
+          await advancedSettingsPage.checkPageIsLoaded();
           await advancedSettingsPage.toggleSmartTransactions();
           await settingsPage.closeSettingsPage();
 
@@ -322,16 +312,16 @@ describe('Swap-Send ETH', function () {
 
           await swapSendPage.submitSwap();
           await swapSendPage.verifyHistoryEntry(
-            'Send ETH as WETH',
+            'Sent ETH as WETH',
             'Confirmed',
             '-10 ETH',
             '',
           );
 
           await homePage.goToTokensTab();
-          await homePage.check_expectedTokenBalanceIsDisplayed('60', 'WETH');
+          await homePage.checkExpectedTokenBalanceIsDisplayed('60', 'WETH');
           // https://github.com/MetaMask/metamask-extension/issues/31427
-          // await homePage.check_expectedTokenBalanceIsDisplayed(
+          // await homePage.checkExpectedTokenBalanceIsDisplayed(
           //   '14.99994',
           //   'ETH',
           // );

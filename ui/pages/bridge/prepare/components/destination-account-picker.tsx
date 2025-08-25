@@ -22,8 +22,7 @@ import {
   JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
+import { t } from '../../../../../shared/lib/translate';
 import { DestinationAccount } from '../types';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
@@ -92,6 +91,7 @@ export const DestinationAccountPicker = ({
         <Box
           className="destination-account-picker__selected"
           width={BlockSize.Full}
+          style={{ flex: 1, minWidth: 0 }}
         >
           <DestinationSelectedAccountListItem
             account={selectedSwapToAccount}

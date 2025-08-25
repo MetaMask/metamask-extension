@@ -1,5 +1,5 @@
 import { SnapController } from '@metamask/snaps-controllers';
-import { hasProperty } from '@metamask/utils';
+import { hasProperty, Json } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -14,6 +14,15 @@ import {
 } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
 
+// Copied from `@metamask/snaps-controllers`, since it is not exported.
+type TrackingEventPayload = {
+  event: string;
+  category: string;
+  properties: Record<string, Json | undefined>;
+};
+
+type TrackEventHook = (event: TrackingEventPayload) => void;
+
 /**
  * Initialize the Snap controller.
  *
@@ -26,6 +35,7 @@ import { getBooleanFlag } from '../../lib/util';
  * @param request.removeAllConnections - Function to remove all connections for
  * a given origin.
  * @param request.preinstalledSnaps - The list of preinstalled Snaps.
+ * @param request.trackEvent - Event tracking hook.
  * @returns The initialized controller.
  */
 export const SnapControllerInit: ControllerInitFunction<
@@ -38,12 +48,19 @@ export const SnapControllerInit: ControllerInitFunction<
   persistedState,
   removeAllConnections,
   preinstalledSnaps,
+  trackEvent,
 }) => {
   const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
   const rejectInvalidPlatformVersion = getBooleanFlag(
     process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION,
   );
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const forcePreinstalledSnaps = getBooleanFlag(
+    process.env.FORCE_PREINSTALLED_SNAPS,
+  );
+  ///: END:ONLY_INCLUDE_IF
 
   async function getMnemonicSeed() {
     const keyrings = initMessenger.call(
@@ -98,6 +115,10 @@ export const SnapControllerInit: ControllerInitFunction<
       allowLocalSnaps,
       requireAllowlist,
       rejectInvalidPlatformVersion,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      forcePreinstalledSnaps,
+      ///: END:ONLY_INCLUDE_IF
+      useCaip25Permission: true,
     },
 
     // @ts-expect-error: `encryptorFactory` is not compatible with the expected
@@ -109,6 +130,11 @@ export const SnapControllerInit: ControllerInitFunction<
 
     preinstalledSnaps,
     getFeatureFlags,
+
+    // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
+    // properties, but `MetaMetricsEventPayload` uses `Json`, even though
+    // `undefined` is supported.
+    trackEvent: trackEvent as TrackEventHook,
   });
 
   return {

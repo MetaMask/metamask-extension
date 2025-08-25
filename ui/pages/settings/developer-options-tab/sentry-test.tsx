@@ -32,6 +32,8 @@ function sleep(ms: number) {
 
 const SentryTest = () => {
   const currentLocale: string =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     useSelector(getCurrentLocale) || FALLBACK_LOCALE;
 
   return (
@@ -42,6 +44,8 @@ const SentryTest = () => {
       <div className="settings-page__content-padded">
         <GenerateUIError />
         <GenerateBackgroundError />
+        <CaptureUIError />
+        <CaptureBackgroundError />
         <GenerateTrace />
         <GeneratePageCrash currentLocale={currentLocale} />
       </div>
@@ -49,6 +53,8 @@ const SentryTest = () => {
   );
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GenerateUIError() {
   const handleClick = useCallback(async () => {
     await window.stateHooks.throwTestError?.('Developer Options');
@@ -68,6 +74,8 @@ function GenerateUIError() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GenerateBackgroundError() {
   const handleClick = useCallback(async () => {
     await window.stateHooks.throwTestBackgroundError?.('Developer Options');
@@ -87,6 +95,48 @@ function GenerateBackgroundError() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function CaptureUIError() {
+  const handleClick = useCallback(async () => {
+    await window.stateHooks.captureTestError?.('Developer Options');
+  }, []);
+
+  return (
+    <TestButton
+      name="Capture UI Error"
+      description={
+        <span>
+          Capture a <b>TestError</b> in this window.
+        </span>
+      }
+      onClick={handleClick}
+    />
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function CaptureBackgroundError() {
+  const handleClick = useCallback(async () => {
+    await window.stateHooks.captureBackgroundError?.('Developer Options');
+  }, []);
+
+  return (
+    <TestButton
+      name="Capture Background Error"
+      description={
+        <span>
+          Capture a <b>TestError</b> in the service worker.
+        </span>
+      }
+      onClick={handleClick}
+    />
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GenerateTrace() {
   const handleClick = useCallback(async () => {
     await trace(
@@ -132,6 +182,8 @@ function GenerateTrace() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
   const dispatch = useDispatch();
   const handleClick = async () => {
@@ -162,6 +214,8 @@ function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function TestButton({
   name,
   description,
@@ -186,6 +240,8 @@ function TestButton({
       hasError = true;
       throw error;
     } finally {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       if (expectError || !hasError) {
         setIsComplete(true);
       }
@@ -206,6 +262,8 @@ function TestButton({
       <div className="settings-page__content-item-col">
         <Button
           variant={ButtonVariant.Primary}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={handleClick}
           size={ButtonSize.Lg}
           data-testid={testId}

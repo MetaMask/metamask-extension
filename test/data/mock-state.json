@@ -61,6 +61,10 @@
   },
   "metamask": {
     "allTokens": {},
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": {},
+    "enforcedSimulationsSlippage": 10,
+    "enforcedSimulationsSlippageForTransactions": {},
     "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
@@ -70,6 +74,9 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
+    "isUpdateAvailable": false,
+    "updateModalLastDismissedAt": null,
+    "lastUpdatedAt": null,
     "gasFeeEstimatesByChainId": {
       "0x5": {
         "gasEstimateType": "fee-market",
@@ -462,8 +469,197 @@
           }
         ],
         "blockExplorerUrls": []
+      },
+      "0xaa36a7": {
+        "chainId": "0xaa36a7",
+        "name": "Sepolia",
+        "nativeCurrency": "ETH",
+        "defaultRpcEndpointIndex": 0,
+        "ticker": "ETH",
+        "rpcEndpoints": [
+          {
+            "type": "custom",
+            "url": "https://sepolia.com",
+            "networkClientId": "sepolia"
+          }
+        ],
+        "blockExplorerUrls": []
+      },
+      "0x38": {
+        "blockExplorerUrls": ["https://bscscan.com/"],
+        "chainId": "0x38",
+        "defaultBlockExplorerUrlIndex": 0,
+        "defaultRpcEndpointIndex": 0,
+        "lastUpdatedAt": 1738689643708,
+        "name": "Binance Smart Chain",
+        "nativeCurrency": "BNB",
+        "rpcEndpoints": [
+          {
+            "networkClientId": "ae8c8c36-7478-42bf-9b1a-610c81380000",
+            "type": "custom",
+            "url": "https://bsc-dataseed.binance.org/"
+          }
+        ]
+      },
+      "0x89": {
+        "blockExplorerUrls": ["https://polygonscan.com/"],
+        "chainId": "0x89",
+        "defaultBlockExplorerUrlIndex": 0,
+        "defaultRpcEndpointIndex": 0,
+        "lastUpdatedAt": 1738689655105,
+        "name": "Polygon Mainnet",
+        "nativeCurrency": "POL",
+        "rpcEndpoints": [
+          {
+            "networkClientId": "b46d8e79-ebf2-4fdc-8cb9-45610e990000",
+            "type": "custom",
+            "url": "https://polygon-mainnet.infura.io/v3/"
+          }
+        ]
+      },
+      "0xa4b1": {
+        "blockExplorerUrls": ["https://explorer.arbitrum.io"],
+        "chainId": "0xa4b1",
+        "defaultBlockExplorerUrlIndex": 0,
+        "defaultRpcEndpointIndex": 0,
+        "lastUpdatedAt": 1738689624782,
+        "name": "Arbitrum One",
+        "nativeCurrency": "ETH",
+        "rpcEndpoints": [
+          {
+            "networkClientId": "100849a6-a63c-4ebd-9bbe-0c84134d0000",
+            "type": "custom",
+            "url": "https://arbitrum-mainnet.infura.io/v3/"
+          }
+        ]
       }
     },
+    "accountTree": {
+      "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+      "wallets": {
+        "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
+          "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
+          "type": "entropy",
+          "groups": {
+            "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
+              "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+              "type": "multichain-account",
+              "accounts": [
+                "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
+                "07c2cfec-36c9-46c4-8115-3836d3ac9047"
+              ],
+              "metadata": {
+                "name": "Account 1",
+                "entropy": {
+                  "groupIndex": 0
+                },
+                "hidden": false,
+                "pinned": false
+              }
+            }
+          },
+          "metadata": {
+            "name": "Wallet 1",
+            "entropy": {
+              "id": "01JKAF3DSGM3AB87EM9N0K41AJ"
+            }
+          }
+        },
+        "entropy:01JKAF3PJ247KAM6C03G5Q0NP8": {
+          "id": "entropy:01JKAF3PJ247KAM6C03G5Q0NP8",
+          "type": "entropy",
+          "groups": {
+            "entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0": {
+              "id": "entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0",
+              "type": "multichain-account",
+              "accounts": ["784225f4-d30b-4e77-a900-c8bbce735b88"],
+              "metadata": {
+                "name": "Account 2",
+                "hidden": false,
+                "pinned": false,
+                "entropy": {
+                  "groupIndex": 0
+                }
+              }
+            }
+          },
+          "metadata": {
+            "name": "Wallet 2",
+            "entropy": {
+              "id": "01JKAF3PJ247KAM6C03G5Q0NP8"
+            }
+          }
+        },
+        "keyring:Ledger Hardware": {
+          "id": "keyring:Ledger Hardware",
+          "type": "keyring",
+          "groups": {
+            "keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+              "id": "keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+              "type": "single-account",
+              "accounts": ["15e69915-2a1a-4019-93b3-916e11fd432f"],
+              "metadata": {
+                "name": "Ledger Account 1",
+                "hidden": false,
+                "pinned": false
+              }
+            }
+          },
+          "metadata": {
+            "name": "Ledger Hardware",
+            "keyring": {
+              "type": "Ledger Hardware"
+            }
+          }
+        },
+        "snap:local:custody:test": {
+          "id": "snap:local:custody:test",
+          "type": "snap",
+          "groups": {
+            "snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+              "id": "snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+              "type": "single-account",
+              "accounts": ["694225f4-d30b-4e77-a900-c8bbce735b42"],
+              "metadata": {
+                "name": "Another Snap Account 1",
+                "hidden": false,
+                "pinned": false
+              }
+            }
+          },
+          "metadata": {
+            "name": "Custody test",
+            "snap": {
+              "id": "local:custody:test"
+            }
+          }
+        },
+        "snap:local:snap-id": {
+          "id": "snap:local:snap-id",
+          "type": "snap",
+          "groups": {
+            "snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
+              "id": "snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+              "type": "single-account",
+              "accounts": ["c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3"],
+              "metadata": {
+                "name": "Snap Account 1",
+                "hidden": false,
+                "pinned": false
+              }
+            }
+          },
+          "metadata": {
+            "name": "Snap: snap-name",
+            "snap": {
+              "id": "local:snap-id"
+            }
+          }
+        }
+      }
+    },
+    "accountGroupsMetadata": {},
+    "accountWalletsMetadata": {},
     "internalAccounts": {
       "accounts": {
         "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
@@ -476,7 +672,9 @@
               "type": "HD Key Tree"
             }
           },
-          "options": {},
+          "options": {
+            "entropySource": "01JKAF3DSGM3AB87EM9N0K41AJ"
+          },
           "methods": [
             "personal_sign",
             "eth_signTransaction",
@@ -497,7 +695,9 @@
               "type": "HD Key Tree"
             }
           },
-          "options": {},
+          "options": {
+            "entropySource": "01JKAF3DSGM3AB87EM9N0K41AJ"
+          },
           "methods": [
             "personal_sign",
             "eth_signTransaction",
@@ -539,7 +739,9 @@
               "type": "HD Key Tree"
             }
           },
-          "options": {},
+          "options": {
+            "entropySource": "01JKAF3PJ247KAM6C03G5Q0NP8"
+          },
           "methods": [
             "personal_sign",
             "eth_signTransaction",
@@ -607,45 +809,43 @@
         "accounts": [
           "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
           "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
-        ]
+        ],
+        "metadata": {
+          "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
+          "name": ""
+        }
       },
       {
         "type": "Ledger Hardware",
-        "accounts": ["0xc42edfcc21ed14dda456aa0756c153f7985d8813"]
+        "accounts": ["0xc42edfcc21ed14dda456aa0756c153f7985d8813"],
+        "metadata": {
+          "id": "01JKAF3KP7VPAG0YXEDTDRB6ZV",
+          "name": ""
+        }
       },
       {
         "type": "Simple Key Pair",
-        "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
+        "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"],
+        "metadata": {
+          "id": "01JKAF3PJ247KAM6C03G5Q0NP8",
+          "name": ""
+        }
       },
       {
         "type": "Snap Keyring",
-        "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
+        "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"],
+        "metadata": {
+          "id": "01JKAF3SSWRQK818R830GE8PHX",
+          "name": ""
+        }
       },
       {
         "type": "Custody test",
-        "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
-      }
-    ],
-    "keyringsMetadata": [
-      {
-        "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
-        "name": ""
-      },
-      {
-        "id": "01JKAF3KP7VPAG0YXEDTDRB6ZV",
-        "name": ""
-      },
-      {
-        "id": "01JKAF3PJ247KAM6C03G5Q0NP8",
-        "name": ""
-      },
-      {
-        "id": "01JKAF3SSWRQK818R830GE8PHX",
-        "name": ""
-      },
-      {
-        "id": "01JKAF3WYGWF7JX6PC4YYVSK2Q",
-        "name": ""
+        "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"],
+        "metadata": {
+          "id": "01JKAF3WYGWF7JX6PC4YYVSK2Q",
+          "name": ""
+        }
       }
     ],
     "identities": {
@@ -682,15 +882,25 @@
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "bip122:000000000019d6689c085ae165831e93",
-        "name": "Bitcoin Mainnet",
+        "name": "Bitcoin",
         "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0",
         "isEvm": false
       },
       "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
         "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-        "name": "Solana Mainnet",
+        "name": "Solana",
         "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
         "isEvm": false
+      }
+    },
+    "networksWithTransactionActivity": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "namespace": "eip155",
+        "activeChain": ["0x5"]
+      },
+      "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+        "namespace": "solana",
+        "activeChain": []
       }
     },
     "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
@@ -729,7 +939,28 @@
     "accountsByChainId": {
       "0x5": {
         "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-          "balance": "0x15f6f0b9d4f8d000"
+          "balance": "0x346ba7725f412cbfdb",
+          "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+        },
+        "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
+          "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+          "balance": "0x0"
+        },
+        "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+          "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "balance": "0x0"
+        },
+        "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
+          "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+          "balance": "0x0"
+        },
+        "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+          "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+          "balance": "0x0"
+        },
+        "0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
+          "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+          "balance": "0x0"
         }
       }
     },
@@ -876,6 +1107,7 @@
     "useNftDetection": true,
     "openSeaEnabled": true,
     "orderedNetworkList": [],
+    "enabledNetworkMap": {},
     "pinnedAccountList": [],
     "hiddenAccountList": [],
     "advancedGasFee": {
@@ -1126,50 +1358,54 @@
         ]
       }
     },
-    "tokenList": {
-      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
-        "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-        "symbol": "WBTC",
-        "decimals": 8,
-        "name": "Wrapped Bitcoin",
-        "iconUrl": "https://s3.amazonaws.com/airswap-token-images/WBTC.png",
-        "aggregators": [
-          "airswapLight",
-          "bancor",
-          "cmc",
-          "coinGecko",
-          "kleros",
-          "oneInch",
-          "paraswap",
-          "pmm",
-          "totle",
-          "zapper",
-          "zerion",
-          "zeroEx"
-        ],
-        "occurrences": 12
-      },
-      "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e": {
-        "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
-        "symbol": "YFI",
-        "decimals": 18,
-        "name": "yearn.finance",
-        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png",
-        "aggregators": [
-          "airswapLight",
-          "bancor",
-          "cmc",
-          "coinGecko",
-          "kleros",
-          "oneInch",
-          "paraswap",
-          "pmm",
-          "totle",
-          "zapper",
-          "zerion",
-          "zeroEx"
-        ],
-        "occurrences": 12
+    "tokensChainsCache": {
+      "0x5": {
+        "data": {
+          "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
+            "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+            "symbol": "WBTC",
+            "decimals": 8,
+            "name": "Wrapped Bitcoin",
+            "iconUrl": "https://s3.amazonaws.com/airswap-token-images/WBTC.png",
+            "aggregators": [
+              "airswapLight",
+              "bancor",
+              "cmc",
+              "coinGecko",
+              "kleros",
+              "oneInch",
+              "paraswap",
+              "pmm",
+              "totle",
+              "zapper",
+              "zerion",
+              "zeroEx"
+            ],
+            "occurrences": 12
+          },
+          "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e": {
+            "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
+            "symbol": "YFI",
+            "decimals": 18,
+            "name": "yearn.finance",
+            "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png",
+            "aggregators": [
+              "airswapLight",
+              "bancor",
+              "cmc",
+              "coinGecko",
+              "kleros",
+              "oneInch",
+              "paraswap",
+              "pmm",
+              "totle",
+              "zapper",
+              "zerion",
+              "zeroEx"
+            ],
+            "occurrences": 12
+          }
+        }
       }
     },
     "transactions": [
@@ -1968,8 +2204,6 @@
     ],
     "addSnapAccountEnabled": false,
     "watchEthereumAccountEnabled": false,
-    "bitcoinSupportEnabled": false,
-    "bitcoinTestnetSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
@@ -2099,10 +2333,9 @@
         }
       }
     },
-    "bridgeStatusState": {
-      "txHistory": {}
-    },
-    "throttledOrigins": {}
+    "txHistory": {},
+    "throttledOrigins": {},
+    "delegations": {}
   },
   "ramps": {
     "buyableChains": [

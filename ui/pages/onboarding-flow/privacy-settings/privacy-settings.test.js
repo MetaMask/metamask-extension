@@ -49,20 +49,16 @@ describe('Privacy Settings Onboarding View', () => {
   const store = configureMockStore([thunk])(mockStore);
   const setFeatureFlagStub = jest.fn();
   const setUse4ByteResolutionStub = jest.fn();
-  const setUseTokenDetectionStub = jest.fn();
-  const setUseCurrencyRateCheckStub = jest.fn();
-  const setIpfsGatewayStub = jest.fn();
-  const completeOnboardingStub = jest
-    .fn()
-    .mockImplementation(() => Promise.resolve());
-  const setUseMultiAccountBalanceCheckerStub = jest.fn();
-  const setUseAddressBarEnsResolutionStub = jest.fn();
+  const setUseTokenDetectionStub = jest.fn().mockResolvedValue();
+  const setUseCurrencyRateCheckStub = jest.fn().mockResolvedValue();
+  const setIpfsGatewayStub = jest.fn().mockResolvedValue();
+  const completeOnboardingStub = jest.fn().mockResolvedValue();
+  const setUseMultiAccountBalanceCheckerStub = jest.fn().mockResolvedValue();
+  const setUseAddressBarEnsResolutionStub = jest.fn().mockResolvedValue();
   const onboardingToggleBasicFunctionalityOnStub = jest.fn();
   const toggleExternalServicesStub = jest.fn();
   const setUseTransactionSimulationsStub = jest.fn();
   const setPreferenceStub = jest.fn();
-  const enableProfileSyncingStub = jest.fn();
-  const disableProfileSyncingStub = jest.fn();
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
@@ -78,8 +74,6 @@ describe('Privacy Settings Onboarding View', () => {
       onboardingToggleBasicFunctionalityOnStub,
     setUseTransactionSimulations: setUseTransactionSimulationsStub,
     setPreference: setPreferenceStub,
-    enableProfileSyncing: enableProfileSyncingStub,
-    disableProfileSyncing: disableProfileSyncingStub,
   });
 
   it('should update the default settings from each category', () => {

@@ -23,6 +23,7 @@
   display: flex;
   justify-content: center;
   width: 100%;
+  padding-top: 16px;
 
   @include design-system.screen-sm-min {
     z-index: 12;

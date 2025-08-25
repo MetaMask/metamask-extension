@@ -1,3 +1,7 @@
+const {
+  switchToNetworkFromSendFlow,
+} = require('../../page-objects/flows/network.flow');
+
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -10,13 +14,18 @@ const {
 } = require('../../helpers');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
-  it('should switch to the dapps network automatically when handling sendTransaction calls', async function () {
+  it('should be possible to send requests from different dapps on different networks', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withEnabledNetworks({
+            eip155: {
+              '0x53a': true,
+            },
+          })
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
@@ -56,13 +65,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -121,11 +124,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Click Unconfirmed Tx
         await driver.clickElement('.transaction-list-item--unconfirmed');
-
-        await driver.assertElementNotPresent({
-          tag: 'p',
-          text: 'Network switched to Localhost 8546',
-        });
 
         // Confirm Tx
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

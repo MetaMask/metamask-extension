@@ -6,7 +6,7 @@ exports[`create-snap-account confirmation should match snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="mm-box confirmation-page__content mm-box--padding-4"
+      class="mm-box confirmation-page__content mm-box--padding-0"
       style="overflow-y: auto;"
     >
       <div
@@ -61,14 +61,14 @@ exports[`create-snap-account confirmation should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
           style="flex-grow: 1;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-box--padding-bottom-4"
+              class="mm-box mm-box--padding-bottom-6"
             >
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-icon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
@@ -80,7 +80,7 @@ exports[`create-snap-account confirmation should match snapshot 1`] = `
               </div>
             </div>
             <h2
-              class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--color-text-default"
+              class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-bottom-2 mm-box--color-text-default"
               data-testid="create-snap-account-content-title"
             >
               Create account
@@ -114,15 +114,14 @@ exports[`create-snap-account confirmation should match snapshot 1`] = `
         style="border-top: 0;"
       >
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
           data-testid="confirmation-cancel-button"
         >
           Cancel
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           data-testid="confirmation-submit-button"
-          data-theme="light"
         >
           Create
         </button>

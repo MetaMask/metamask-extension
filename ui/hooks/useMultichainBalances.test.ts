@@ -1,4 +1,4 @@
-import { createBridgeMockStore } from '../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../test/data/bridge/mock-bridge-store';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { useMultichainBalances } from './useMultichainBalances';
 

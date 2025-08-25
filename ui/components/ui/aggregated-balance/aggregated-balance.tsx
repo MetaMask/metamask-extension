@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import {
   AlignItems,
   Display,
@@ -22,14 +23,24 @@ import {
 } from '../../../ducks/metamask/metamask';
 import {
   getAccountAssets,
+  getAssetsRates,
   getMultichainAggregatedBalance,
   getMultichainNativeTokenBalance,
 } from '../../../selectors/assets';
-import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  getEnabledNetworksByNamespace,
+  getPreferences,
+  getSelectedInternalAccount,
+  isGlobalNetworkSelectorRemoved,
+} from '../../../selectors';
+import {
+  getMultichainNetwork,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import Spinner from '../spinner';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export const AggregatedBalance = ({
   classPrefix,
@@ -51,9 +62,22 @@ export const AggregatedBalance = ({
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, selectedAccount),
   );
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
+  const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
+    ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
+    : showNativeTokenAsMainBalance;
+
   const multichainNativeTokenBalance = useSelector((state) =>
     getMultichainNativeTokenBalance(state, selectedAccount),
   );
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    selectedAccount,
+  );
+
+  const multichainAssetsRates = useSelector(getAssetsRates);
+  const isNonEvmRatesAvailable = Object.keys(multichainAssetsRates).length > 0;
 
   const formattedFiatDisplay = formatWithThreshold(
     multichainAggregatedBalance,
@@ -71,7 +95,8 @@ export const AggregatedBalance = ({
     locale,
     {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 5,
+      maximumFractionDigits:
+        MULTICHAIN_NETWORK_DECIMAL_PLACES[currentNetwork.chainId] || 5,
     },
   );
 
@@ -96,7 +121,7 @@ export const AggregatedBalance = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
         >
-          {showNativeTokenAsMainBalance
+          {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? formattedTokenDisplay
             : formattedFiatDisplay}
         </SensitiveText>
@@ -105,7 +130,7 @@ export const AggregatedBalance = ({
           variant={TextVariant.inherit}
           isHidden={privacyMode}
         >
-          {showNativeTokenAsMainBalance
+          {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? currentNetwork.network.ticker
             : currentCurrency.toUpperCase()}
         </SensitiveText>

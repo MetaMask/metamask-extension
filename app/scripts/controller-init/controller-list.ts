@@ -1,3 +1,4 @@
+import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { NetworkController } from '@metamask/network-controller';
@@ -9,10 +10,10 @@ import {
 import { PPOMController } from '@metamask/ppom-validator';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
-import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   AssetsContractController,
+  DeFiPositionsController,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
@@ -29,6 +30,7 @@ import {
   SnapController,
   SnapInsightsController,
   SnapInterfaceController,
+  WebSocketService,
 } from '@metamask/snaps-controllers';
 import {
   RateLimitController,
@@ -38,6 +40,12 @@ import { Controller as AuthenticationController } from '@metamask/profile-sync-c
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
 import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
+import { DelegationController } from '@metamask/delegation-controller';
+
+import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
+import { AccountTreeController } from '@metamask/account-tree-controller';
+import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-controller';
+import { EncryptionKey } from '@metamask/browser-passworder';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -49,6 +57,8 @@ import { InstitutionalSnapController } from '../controllers/institutional-snap/I
 export type Controller =
   | AuthenticationController
   | CronjobController
+  | DelegationController
+  | DeFiPositionsController
   | ExecutionService
   | GasFeeController
   | JsonSnapsRegistry
@@ -69,29 +79,32 @@ export type Controller =
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
+  | SeedlessOnboardingController<EncryptionKey>
   | SmartTransactionsController
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
   | TransactionController
-  | (TransactionUpdateController & {
-      name: 'TransactionUpdateController';
-      state: Record<string, unknown>;
-    })
   | InstitutionalSnapController
   | UserStorageController
   | TokenRatesController
   | NftController
   | NftDetectionController
-  | AssetsContractController;
+  | AssetsContractController
+  | AccountTreeController
+  | WebSocketService
+  | MultichainAccountService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
 export type ControllerFlatState = AccountsController['state'] &
+  AccountTreeController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
+  DeFiPositionsController['state'] &
+  DelegationController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
@@ -108,6 +121,7 @@ export type ControllerFlatState = AccountsController['state'] &
   >['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
+  SeedlessOnboardingController<EncryptionKey>['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
@@ -117,4 +131,5 @@ export type ControllerFlatState = AccountsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
-  NftDetectionController['state'];
+  NftDetectionController['state'] &
+  RemoteFeatureFlagController['state'];

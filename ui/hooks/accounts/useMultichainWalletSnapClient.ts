@@ -1,36 +1,37 @@
-import { Sender } from '@metamask/keyring-snap-client';
-import { HandlerType } from '@metamask/snaps-utils';
-import { CaipChainId, Json, JsonRpcRequest } from '@metamask/utils';
-import { SnapId } from '@metamask/snaps-sdk';
-import { useMemo } from 'react';
 import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
+import { KeyringAccount } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { Sender } from '@metamask/keyring-snap-client';
+import { SnapId } from '@metamask/snaps-sdk';
+import { HandlerType } from '@metamask/snaps-utils';
+import { Json, JsonRpcRequest } from '@metamask/utils';
+import { useMemo } from 'react';
 import {
-  createSnapAccount,
-  handleSnapRequest,
-  multichainUpdateBalance,
-  multichainUpdateTransactions,
-} from '../../store/actions';
+  getNextAvailableSnapAccountName,
+  SnapAccountNameOptions,
+  WalletSnapClient,
+  CreateAccountSnapOptions,
+} from '../../../shared/lib/accounts';
 import {
-  BITCOIN_WALLET_SNAP_ID,
   BITCOIN_WALLET_NAME,
+  BITCOIN_WALLET_SNAP_ID,
 } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import {
-  SOLANA_WALLET_SNAP_ID,
   SOLANA_WALLET_NAME,
+  SOLANA_WALLET_SNAP_ID,
 } from '../../../shared/lib/accounts/solana-wallet-snap';
+import {
+  createSnapAccount,
+  getNextAvailableAccountName,
+  handleSnapRequest,
+} from '../../store/actions';
 
 export enum WalletClientType {
   Bitcoin = 'bitcoin-wallet-snap',
   Solana = 'solana-wallet-snap',
 }
 
-export type MultichainWalletSnapOptions = {
-  scope: CaipChainId;
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  entropySource?: string;
-  accountNameSuggestion?: string;
-  ///: END:ONLY_INCLUDE_IF
-};
+export const EVM_WALLET_TYPE = 'evm' as const;
 
 const WALLET_SNAP_MAP: Record<WalletClientType, { id: SnapId; name: string }> =
   {
@@ -72,7 +73,7 @@ export function useMultichainWalletSnapSender(snapId: SnapId) {
   return client;
 }
 
-export class MultichainWalletSnapClient {
+export class MultichainWalletSnapClient implements WalletSnapClient {
   readonly #snapId: SnapId;
 
   readonly #snapName: string;
@@ -95,23 +96,21 @@ export class MultichainWalletSnapClient {
   }
 
   async createAccount(
-    options: MultichainWalletSnapOptions,
+    options: CreateAccountSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
-  ) {
+  ): Promise<KeyringAccount> {
     // This will trigger the Snap account creation flow (+ account renaming)
-    const account = await createSnapAccount(
+    return await createSnapAccount(this.#snapId, options, internalOptions);
+  }
+
+  async getNextAvailableAccountName(
+    options?: SnapAccountNameOptions,
+  ): Promise<string> {
+    return getNextAvailableSnapAccountName(
+      async () => getNextAvailableAccountName(KeyringTypes.snap),
       this.#snapId,
       options,
-      internalOptions,
     );
-
-    // NOTE: The account's balance is going to be tracked automatically on when the new account
-    // will be added to the Snap bridge keyring (see `MultichainBalancesController:#handleOnAccountAdded`).
-    // However, the balance won't be fetched right away. To workaround this, we trigger the
-    // fetch explicitly here (since we are already in a `async` call) and wait for it to be updated!
-    await multichainUpdateBalance(account.id);
-    // TODO: Remove this and the above line once Snap account creation flow is async
-    await multichainUpdateTransactions(account.id);
   }
 }
 

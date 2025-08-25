@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
@@ -6,16 +9,20 @@ import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
-import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
+import {
+  getIsSmartTransaction,
+  type SmartTransactionsState,
+} from '../../../../../shared/modules/selectors';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
-
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+  const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
+    getIsSmartTransaction(state, transactionMeta?.chainId),
+  );
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -28,7 +35,10 @@ export function useTransactionConfirm() {
     }
 
     newTransactionMeta.batchTransactions = [
-      selectedGasFeeToken.transferTransaction,
+      {
+        ...selectedGasFeeToken.transferTransaction,
+        type: TransactionType.gasPayment,
+      },
     ];
 
     newTransactionMeta.txParams.gas = selectedGasFeeToken.gas;
@@ -51,15 +61,15 @@ export function useTransactionConfirm() {
       handleGasless7702();
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
-    ///: END:ONLY_INCLUDE_IF
   }, [
+    customNonceValue,
     dispatch,
     handleGasless7702,
     handleSmartTransaction,
     isSmartTransaction,
     newTransactionMeta,
+    selectedGasFeeToken,
   ]);
 
   return {

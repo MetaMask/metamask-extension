@@ -1,7 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
-import { captureException } from '@sentry/browser';
 import React, { useMemo } from 'react';
+import { captureException } from '../../../../../../../../../shared/lib/sentry';
 import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
@@ -28,11 +28,9 @@ import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import {
-  DAI_CONTRACT_ADDRESS,
-  TOKEN_VALUE_UNLIMITED_THRESHOLD,
-} from '../../../shared/constants';
+import { DAI_CONTRACT_ADDRESS } from '../../../shared/constants';
 import { getAmountColors } from '../../../utils';
+import { isSpendingCapUnlimited } from '../../../approve/hooks/use-approve-token-simulation';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */
@@ -118,8 +116,10 @@ const PermitSimulationValueDisplay: React.FC<
 
       const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
-      const showUnlimitedDueToPermitValue =
-        Number(value) > TOKEN_VALUE_UNLIMITED_THRESHOLD;
+      const showUnlimitedDueToPermitValue = isSpendingCapUnlimited(
+        value,
+        tokenDecimals,
+      );
 
       return {
         tokenValue: formatAmount('en-US', tokenAmount),

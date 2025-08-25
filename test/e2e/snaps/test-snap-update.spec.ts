@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { Driver } from '../webdriver/driver';
@@ -5,12 +6,24 @@ import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  mockWebpackPluginOldSnap,
+  mockWebpackPluginSnap,
+} from '../mock-response-data/snaps/snap-binary-mocks';
+
+async function mockSnapExamples(mockServer: Mockttp) {
+  return [
+    await mockWebpackPluginOldSnap(mockServer),
+    await mockWebpackPluginSnap(mockServer),
+  ];
+}
 
 describe('Test Snap update', function () {
   it('can install an old and then updated version', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSnapExamples,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -21,7 +34,7 @@ describe('Test Snap update', function () {
 
         // Navigate to test snaps page, connect update, complete installation and validate
         await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectUpdateButton',
           'Reconnect to Update Snap',
         );
@@ -30,14 +43,13 @@ describe('Test Snap update', function () {
         await testSnaps.scrollAndClickButton('connectUpdateNewButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: 'Update request' });
-        await snapInstall.check_pageIsLoaded();
+        await snapInstall.checkPageIsLoaded();
         await snapInstall.updateScrollAndClickConfirmButton();
-        await snapInstall.waitForNextButton();
-        await snapInstall.clickNextButton();
+        await snapInstall.clickOkButton();
 
         // Switch to test snap page and validate the version text
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.check_messageResultSpan('updateVersionSpan', '"2.1.3"');
+        await testSnaps.checkMessageResultSpan('updateVersionSpan', '"2.1.3"');
       },
     );
   });

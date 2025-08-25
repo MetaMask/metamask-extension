@@ -156,6 +156,7 @@ describe('migration #95', () => {
       });
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['undefined', undefined],
       ['empty', {}],

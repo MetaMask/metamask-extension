@@ -98,8 +98,14 @@ async function withController<ReturnValue>(
   } = rest;
   const { provider } = createTestProviderTools({
     scaffold: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBalance: UPDATE_BALANCE,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBlockByNumber: { gasLimit: GAS_LIMIT },
     },
     networkId: currentNetworkId,
@@ -112,16 +118,24 @@ async function withController<ReturnValue>(
     ({
       id: 'accountId',
       address: SELECTED_ADDRESS,
-    } as InternalAccount);
+    }) as InternalAccount;
   messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getSelectedAccount || getSelectedAccountStub,
   );
 
   const { provider: providerFromHook } = createTestProviderTools({
     scaffold: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBalance: UPDATE_BALANCE_HOOK,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBlockByNumber: { gasLimit: GAS_LIMIT_HOOK },
     },
     networkId: 'selectedNetworkId',
@@ -146,6 +160,8 @@ async function withController<ReturnValue>(
   });
   messenger.registerActionHandler(
     'NetworkController:getNetworkClientById',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getNetworkClientById || getNetworkClientByIdStub,
   );
 
@@ -504,8 +520,14 @@ describe('AccountTrackerController', () => {
       });
       const providerFromHook = createTestProviderTools({
         scaffold: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_getBalance: UPDATE_BALANCE_HOOK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_getBlockByNumber: { gasLimit: GAS_LIMIT_HOOK },
         },
         networkId: '0x1',

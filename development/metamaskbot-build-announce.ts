@@ -1,8 +1,18 @@
-import { execFileSync } from 'child_process';
 import startCase from 'lodash/startCase';
 import { version as VERSION } from '../package.json';
 
 start().catch(console.error);
+
+const benchmarkPlatforms = ['chrome', 'firefox'];
+const buildTypes = ['browserify', 'webpack'];
+
+type BenchmarkResults = Record<
+  (typeof benchmarkPlatforms)[number],
+  Record<
+    (typeof buildTypes)[number],
+    Record<string, Record<string, Record<string, string>>>
+  >
+>;
 
 function getHumanReadableSize(bytes: number): string {
   if (!bytes) {
@@ -34,20 +44,19 @@ function getPercentageChange(from: number, to: number): number {
  * @returns True if the artifact exists, false if it doesn't
  */
 async function artifactExists(url: string): Promise<boolean> {
-  // Using a regular GET request here rather than HEAD because for some reason CircleCI always
-  // returns 404 for HEAD requests.
-  const response = await fetch(url);
+  const response = await fetch(url, { method: 'HEAD' });
   return response.ok;
 }
 
 async function start(): Promise<void> {
   const {
     PR_COMMENT_TOKEN,
+    OWNER,
+    REPOSITORY,
+    RUN_ID,
     PR_NUMBER,
     HEAD_COMMIT_HASH,
     MERGE_BASE_COMMIT_HASH,
-    CIRCLE_BUILD_NUM,
-    CIRCLE_WORKFLOW_JOB_ID,
     HOST_URL,
   } = process.env as Record<string, string>;
 
@@ -57,7 +66,6 @@ async function start(): Promise<void> {
   }
 
   const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
-  const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
 
   type BuildType = {
     chrome?: string;
@@ -67,43 +75,26 @@ async function start(): Promise<void> {
   // links to extension builds
   const buildMap: Record<string, BuildType> = {
     builds: {
-      chrome: `${BUILD_LINK_BASE}/builds/metamask-chrome-${VERSION}.zip`,
-      firefox: `${BUILD_LINK_BASE}/builds-mv2/metamask-firefox-${VERSION}.zip`,
+      chrome: `${HOST_URL}/build-dist-browserify/builds/metamask-chrome-${VERSION}.zip`,
+      firefox: `${HOST_URL}/build-dist-mv2-browserify/builds/metamask-firefox-${VERSION}.zip`,
+    },
+    'builds (beta)': {
+      chrome: `${HOST_URL}/build-beta-browserify/builds/metamask-beta-chrome-${VERSION}-beta.0.zip`,
+      firefox: `${HOST_URL}/build-beta-mv2-browserify/builds/metamask-beta-firefox-${VERSION}-beta.0.zip`,
     },
     'builds (flask)': {
-      chrome: `${BUILD_LINK_BASE}/builds-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
-      firefox: `${BUILD_LINK_BASE}/builds-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+      chrome: `${HOST_URL}/build-flask-browserify/builds/metamask-flask-chrome-${VERSION}-flask.0.zip`,
+      firefox: `${HOST_URL}/build-flask-mv2-browserify/builds/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
     'builds (test)': {
-      chrome: `${BUILD_LINK_BASE}/builds-test/metamask-chrome-${VERSION}.zip`,
-      firefox: `${BUILD_LINK_BASE}/builds-test-mv2/metamask-firefox-${VERSION}.zip`,
+      chrome: `${HOST_URL}/build-test-browserify/builds/metamask-chrome-${VERSION}.zip`,
+      firefox: `${HOST_URL}/build-test-mv2-browserify/builds/metamask-firefox-${VERSION}.zip`,
     },
     'builds (test-flask)': {
-      chrome: `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
-      firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+      chrome: `${HOST_URL}/build-test-flask-browserify/builds/metamask-flask-chrome-${VERSION}-flask.0.zip`,
+      firefox: `${HOST_URL}/build-test-flask-mv2-browserify/builds/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
   };
-
-  const commitMessage = execFileSync('git', [
-    'show',
-    '-s',
-    '--format=%s',
-    HEAD_COMMIT_HASH,
-  ])
-    .toString()
-    .trim();
-
-  const betaVersionRegex = /Version v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+/u;
-  const betaMatch = commitMessage.match(betaVersionRegex);
-
-  // only include beta build link if a beta version is detected in the commit message
-  if (betaMatch) {
-    const betaVersion = betaMatch[0].split('-beta.')[1];
-    console.log(`Beta version ${betaVersion} detected, adding beta build link`);
-    buildMap['builds (beta)'] = {
-      chrome: `${HOST_URL}/builds-beta/metamask-beta-chrome-${VERSION}-beta.${betaVersion}.zip`,
-    };
-  }
 
   const buildContentRows = Object.entries(buildMap).map(([label, builds]) => {
     const buildLinks = Object.entries(builds).map(([platform, url]) => {
@@ -114,7 +105,6 @@ async function start(): Promise<void> {
 
   // links to bundle browser builds
   const bundles: Record<string, string[]> = {};
-  const sourceMapRoot = '/build-artifacts/source-map-explorer/';
   const fileRoots = [
     'background',
     'common',
@@ -126,14 +116,14 @@ async function start(): Promise<void> {
   for (const fileRoot of fileRoots) {
     bundles[fileRoot] = [];
     let fileIndex = 0;
-    let url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
+    let url = `${HOST_URL}/source-map-explorer/${fileRoot}-${fileIndex}.html`;
     console.log(`Verifying ${url}`);
     while (await artifactExists(url)) {
       const link = `<a href="${url}">${fileIndex}</a>`;
       bundles[fileRoot].push(link);
 
       fileIndex += 1;
-      url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
+      url = `${HOST_URL}/source-map-explorer/${fileRoot}-${fileIndex}.html`;
       console.log(`Verifying ${url}`);
     }
     console.log(`Not found: ${url}`);
@@ -149,11 +139,10 @@ async function start(): Promise<void> {
   const storybookUrl = `${HOST_URL}/storybook-build/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
-  const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
+  const tsMigrationDashboardUrl = `${HOST_URL}/ts-migration-dashboard/index.html`;
   const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
 
-  // links to bundle browser builds
-  const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
+  const depVizUrl = `${HOST_URL}/lavamoat-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
 
   const bundleSizeStatsUrl = `${HOST_URL}/bundle-size/bundle_size.json`;
@@ -162,8 +151,7 @@ async function start(): Promise<void> {
   const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">User Actions Stats</a>`;
 
-  // link to artifacts
-  const allArtifactsUrl = `https://app.circleci.com/pipelines/github/MetaMask/metamask-extension/jobs/${CIRCLE_BUILD_NUM}/artifacts/`;
+  const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
 
   const contentRows = [
     ...buildContentRows,
@@ -172,7 +160,7 @@ async function start(): Promise<void> {
     `user-actions-benchmark: ${userActionsStatsLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
-    `<a href="${allArtifactsUrl}">all CircleCI artifacts</a>`,
+    `<a href="${allArtifactsUrl}">all artifacts</a>`,
     `<details>
        <summary>bundle viz:</summary>
        ${bundleMarkup}
@@ -183,17 +171,6 @@ async function start(): Promise<void> {
     .join('\n')}</ul>`;
   const exposedContent = `Builds ready [${SHORT_SHA1}]`;
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
-
-  const benchmarkPlatforms = ['chrome', 'firefox'];
-  const buildTypes = ['browserify', 'webpack'];
-
-  type BenchmarkResults = Record<
-    (typeof benchmarkPlatforms)[number],
-    Record<
-      (typeof buildTypes)[number],
-      Record<string, Record<string, Record<string, string>>>
-    >
-  >;
 
   const benchmarkResults: BenchmarkResults = {};
   for (const platform of benchmarkPlatforms) {
@@ -211,6 +188,8 @@ async function start(): Promise<void> {
         benchmarkResults[platform][buildType] = benchmark;
       } catch (error) {
         console.error(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Error encountered processing benchmark data for '${platform}': '${error}'`,
         );
       }
@@ -313,9 +292,13 @@ async function start(): Promise<void> {
         .join('')}</tr></thead>`;
       const benchmarkTableBody = `<tbody>${tableRows.join('')}</tbody>`;
       const benchmarkTable = `<table>${benchmarkTableHeader}${benchmarkTableBody}</table>`;
-      const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>\n\n`;
+      const benchmarkWarnings = await runBenchmarkGate(benchmarkResults);
+      const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}${benchmarkWarnings}</details>\n\n`;
+
       commentBody += `${benchmarkBody}`;
     } catch (error) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.error(`Error constructing benchmark results: '${error}'`);
     }
   } else {
@@ -345,18 +328,24 @@ async function start(): Promise<void> {
       common: prBundleSizeStats.common.size,
     };
 
-    const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
-      sizes[part as keyof typeof prSizes] =
-        devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
-      return sizes;
-    }, {} as Record<keyof typeof prSizes, number>);
+    const devSizes = Object.keys(prSizes).reduce(
+      (sizes, part) => {
+        sizes[part as keyof typeof prSizes] =
+          devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
+        return sizes;
+      },
+      {} as Record<keyof typeof prSizes, number>,
+    );
 
-    const diffs = Object.keys(prSizes).reduce((output, part) => {
-      output[part] =
-        prSizes[part as keyof typeof prSizes] -
-        devSizes[part as keyof typeof prSizes];
-      return output;
-    }, {} as Record<string, number>);
+    const diffs = Object.keys(prSizes).reduce(
+      (output, part) => {
+        output[part] =
+          prSizes[part as keyof typeof prSizes] -
+          devSizes[part as keyof typeof prSizes];
+        return output;
+      },
+      {} as Record<string, number>,
+    );
 
     const sizeDiffRows = Object.keys(diffs).map(
       (part) =>
@@ -386,23 +375,107 @@ async function start(): Promise<void> {
 
     commentBody += sizeDiffBody;
   } catch (error) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
-  const POST_COMMENT_URI = `https://api.github.com/repos/metamask/metamask-extension/issues/${PR_NUMBER}/comments`;
+  const POST_COMMENT_URI = `https://api.github.com/repos/${OWNER}/${REPOSITORY}/issues/${PR_NUMBER}/comments`;
   console.log(`Announcement:\n${commentBody}`);
-  console.log(`Posting to: ${POST_COMMENT_URI}`);
 
-  const response = await fetch(POST_COMMENT_URI, {
-    method: 'POST',
-    body: JSON_PAYLOAD,
-    headers: {
-      'User-Agent': 'metamaskbot',
-      Authorization: `token ${PR_COMMENT_TOKEN}`,
-    },
-  });
-  if (!response.ok) {
-    throw new Error(`Post comment failed with status '${response.statusText}'`);
+  if (PR_COMMENT_TOKEN) {
+    console.log(`Posting to: ${POST_COMMENT_URI}`);
+
+    const response = await fetch(POST_COMMENT_URI, {
+      method: 'POST',
+      body: JSON_PAYLOAD,
+      headers: {
+        'User-Agent': 'metamaskbot',
+        Authorization: `token ${PR_COMMENT_TOKEN}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(
+        `Post comment failed with status '${response.statusText}'`,
+      );
+    }
   }
+}
+
+async function runBenchmarkGate(
+  benchmarkResults: BenchmarkResults,
+): Promise<string> {
+  const benchmarkGateUrl = `${process.env.CLOUDFRONT_REPO_URL}/benchmark-gate/benchmark-gate.json`;
+  const exceededSums = { mean: 0, p95: 0 };
+  let benchmarkGateBody = '';
+
+  console.log(`Fetching benchmark gate from ${benchmarkGateUrl}`);
+  try {
+    const benchmarkResponse = await fetch(benchmarkGateUrl);
+    if (!benchmarkResponse.ok) {
+      throw new Error(
+        `Failed to fetch benchmark gate data, status ${benchmarkResponse.statusText}`,
+      );
+    }
+
+    const { gates, pingThresholds } = await benchmarkResponse.json();
+
+    // Compare benchmarkResults with benchmark-gate.json
+    for (const platform of Object.keys(gates)) {
+      for (const buildType of Object.keys(gates[platform])) {
+        for (const page of Object.keys(gates[platform][buildType])) {
+          for (const measure of Object.keys(gates[platform][buildType][page])) {
+            for (const metric of Object.keys(
+              gates[platform][buildType][page][measure],
+            )) {
+              const benchmarkValue =
+                benchmarkResults[platform][buildType][page][measure][metric];
+
+              const gateValue =
+                gates[platform][buildType][page][measure][metric];
+
+              if (benchmarkValue > gateValue) {
+                const ceiledValue = Math.ceil(parseFloat(benchmarkValue));
+
+                if (measure === 'mean') {
+                  exceededSums.mean += ceiledValue - gateValue;
+                } else if (measure === 'p95') {
+                  exceededSums.p95 += ceiledValue - gateValue;
+                }
+
+                benchmarkGateBody += `Benchmark value ${ceiledValue} exceeds gate value ${gateValue} for ${platform} ${buildType} ${page} ${measure} ${metric}<br>\n`;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (benchmarkGateBody) {
+      benchmarkGateBody += `<b>Sum of mean exceeds: ${
+        exceededSums.mean
+      }ms | Sum of p95 exceeds: ${
+        exceededSums.p95
+      }ms<br>\nSum of all benchmark exceeds: ${
+        exceededSums.mean + exceededSums.p95
+      }ms</b><br>\n`;
+
+      if (
+        exceededSums.mean > pingThresholds.mean ||
+        exceededSums.p95 > pingThresholds.p95 ||
+        exceededSums.mean + exceededSums.p95 >
+          pingThresholds.mean + pingThresholds.p95
+      ) {
+        // Soft gate, just pings @HowardBraham
+        benchmarkGateBody = `cc: @HowardBraham<br>\n${benchmarkGateBody}`;
+      }
+    }
+  } catch (error) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    console.error(`Error encountered fetching benchmark gate data: '${error}'`);
+  }
+
+  return benchmarkGateBody;
 }

@@ -12,10 +12,14 @@ const { SourceMapSource, RawSource } = sources;
 
 type Assets = { [k: string]: unknown };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type Combination<T> = {
   [P in keyof T]: T[P] extends readonly (infer U)[] ? U : never;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function generateCases<T extends object>(obj: T): Combination<T>[] {
   return Object.entries(obj).reduce(
     (acc, [key, value]) => {
@@ -33,21 +37,24 @@ export function mockWebpack(
   maps: (string | null)[],
   devtool: 'source-map' | 'hidden-source-map' | false = 'source-map',
 ) {
-  const assets = files.reduce((acc, name, i) => {
-    const source = contents[i];
-    const map = maps?.[i];
-    const webpackSource = map
-      ? new SourceMapSource(source, name, map)
-      : new RawSource(source);
-    acc[name] = {
-      name,
-      info: {
-        size: webpackSource.size(),
-      },
-      source: webpackSource,
-    };
-    return acc;
-  }, {} as Record<string, Asset>);
+  const assets = files.reduce(
+    (acc, name, i) => {
+      const source = contents[i];
+      const map = maps?.[i];
+      const webpackSource = map
+        ? new SourceMapSource(source, name, map)
+        : new RawSource(source);
+      acc[name] = {
+        name,
+        info: {
+          size: webpackSource.size(),
+        },
+        source: webpackSource,
+      };
+      return acc;
+    },
+    {} as Record<string, Asset>,
+  );
   let done: () => void;
   const promise = new Promise<void>((resolve) => {
     done = resolve;

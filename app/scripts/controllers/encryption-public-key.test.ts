@@ -48,13 +48,15 @@ const createMessengerMock = () =>
     subscribe: jest.fn(),
     call: jest.fn(),
     registerInitialEventPayload: jest.fn(),
-  } as unknown as jest.Mocked<EncryptionPublicKeyControllerMessenger>);
+  }) as unknown as jest.Mocked<EncryptionPublicKeyControllerMessenger>;
 
 const createManagerMessengerMock = () =>
   ({
     subscribe: jest.fn(),
-  } as unknown as jest.Mocked<EncryptionPublicKeyManagerMessenger>);
+  }) as unknown as jest.Mocked<EncryptionPublicKeyManagerMessenger>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const createEncryptionPublicKeyManagerMock = <T>() =>
   ({
     getUnapprovedMessages: jest.fn(),
@@ -68,7 +70,7 @@ const createEncryptionPublicKeyManagerMock = <T>() =>
     hub: {
       on: jest.fn(),
     },
-  } as unknown as jest.Mocked<T>);
+  }) as unknown as jest.Mocked<T>;
 
 describe('EncryptionPublicKeyController', () => {
   let encryptionPublicKeyController: EncryptionPublicKeyController;
@@ -94,19 +96,23 @@ describe('EncryptionPublicKeyController', () => {
     );
 
     encryptionPublicKeyController = new EncryptionPublicKeyController({
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messenger: messengerMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getEncryptionPublicKey: getEncryptionPublicKeyMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getAccountKeyringType: getAccountKeyringTypeMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getState: getStateMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
       managerMessenger: managerMessengerMock,
@@ -129,7 +135,8 @@ describe('EncryptionPublicKeyController', () => {
       encryptionPublicKeyController.update(() => ({
         unapprovedEncryptionPublicKeyMsgs: {
           [messageIdMock]: messageMock,
-          // TODO: Replace `any` with type
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
         unapprovedEncryptionPublicKeyMsgCount: 1,
@@ -151,14 +158,14 @@ describe('EncryptionPublicKeyController', () => {
         [messageIdMock2]: messageMock,
       };
       encryptionPublicKeyManagerMock.getUnapprovedMessages.mockReturnValueOnce(
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         messages as any,
       );
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       encryptionPublicKeyController.update(() => ({
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         unapprovedEncryptionPublicKeyMsgs: messages as any,
       }));
@@ -191,6 +198,7 @@ describe('EncryptionPublicKeyController', () => {
   });
 
   describe('newRequestEncryptionPublicKey', () => {
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['Ledger', KeyringType.ledger],
       ['Trezor', KeyringType.trezor],

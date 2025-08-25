@@ -1,16 +1,15 @@
-import {
-  clickNestedButton,
-  openActionMenuAndStartSendFlow,
-  withFixtures,
-} from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixture-builder';
+import { Driver } from '../../../webdriver/driver';
+import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
+import { Anvil } from '../../../seeder/anvil';
+
+import AssetPicker from '../../../page-objects/pages/asset-picker';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
+import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import { Driver } from '../../../webdriver/driver';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
 
 describe('Send NFTs', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -19,31 +18,39 @@ describe('Send NFTs', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: {
+              showTestNetworks: true,
+            },
+          })
+          .withNftControllerERC721()
+          .build(),
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-        const nftListPage = new NftListPage(driver);
-
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
+        const homepage = new Homepage(driver);
 
         await new Homepage(driver).goToNftTab();
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Ethereum Mainnet',
-        );
+        await homepage.startSendFlow();
 
-        await openActionMenuAndStartSendFlow(driver);
-        await clickNestedButton(driver, 'Account 1');
-        await driver.clickElement('[data-testid="asset-picker-button"]');
-        await clickNestedButton(driver, 'NFTs');
-
-        await nftListPage.check_noNftInfoIsDisplayed();
+        const sendToPage = new SendTokenPage(driver);
+        await sendToPage.checkPageIsLoaded();
+        await sendToPage.selectRecipientAccount('Account 1');
+        await sendToPage.clickAssetPickerButton();
+        const assetPicker = new AssetPicker(driver);
+        await assetPicker.openNftAssetPicker();
+        await assetPicker.checkNoNftInfoIsDisplayed();
       },
     );
   });
@@ -56,22 +63,27 @@ describe('Send NFTs', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
+        const homepage = new Homepage(driver);
+        await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);
+        await nftListPage.checkPageIsLoaded();
+        await homepage.startSendFlow();
 
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
-
-        await new Homepage(driver).goToNftTab();
-
-        await openActionMenuAndStartSendFlow(driver);
-        await clickNestedButton(driver, 'Account 1');
-        await driver.clickElement('[data-testid="asset-picker-button"]');
-        await clickNestedButton(driver, 'NFTs');
-
-        await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #1');
+        const sendToPage = new SendTokenPage(driver);
+        await sendToPage.checkPageIsLoaded();
+        await sendToPage.selectRecipientAccount('Account 1');
+        await sendToPage.clickAssetPickerButton();
+        const assetPicker = new AssetPicker(driver);
+        await assetPicker.openNftAssetPicker();
+        await assetPicker.checkNftNameIsDisplayed('Test Dapp NFTs #1');
       },
     );
   });

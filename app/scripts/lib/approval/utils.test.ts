@@ -12,6 +12,11 @@ import { rejectAllApprovals, rejectOriginApprovals } from './utils';
 const ID_MOCK = '123';
 const ID_MOCK_2 = '456';
 const INTERFACE_ID_MOCK = '789';
+const REJECT_ALL_APPROVALS_DATA = {
+  data: {
+    cause: 'rejectAllApprovals',
+  },
+};
 
 function createApprovalControllerMock(
   pendingApprovals: Partial<ApprovalRequest<Record<string, Json>>>[],
@@ -40,14 +45,15 @@ describe('Approval Utils', () => {
       expect(approvalController.reject).toHaveBeenCalledTimes(2);
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK,
-        providerErrors.userRejectedRequest(),
+        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK_2,
-        providerErrors.userRejectedRequest(),
+        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ApprovalType.SnapDialogAlert,
       ApprovalType.SnapDialogPrompt,
@@ -63,6 +69,7 @@ describe('Approval Utils', () => {
       expect(approvalController.accept).toHaveBeenCalledWith(ID_MOCK, null);
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ApprovalType.SnapDialogConfirmation,
       SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
@@ -79,6 +86,7 @@ describe('Approval Utils', () => {
       expect(approvalController.accept).toHaveBeenCalledWith(ID_MOCK, false);
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ApprovalType.SnapDialogAlert,
       ApprovalType.SnapDialogPrompt,
@@ -119,7 +127,7 @@ describe('Approval Utils', () => {
       expect(approvalController.reject).toHaveBeenCalledTimes(1);
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK,
-        providerErrors.userRejectedRequest(),
+        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
     });
   });

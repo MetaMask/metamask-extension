@@ -88,14 +88,14 @@ export default class Migrator extends EventEmitter {
    * Returns the initial state for the migrator
    *
    * @param {object} [data] - The data for the initial state
-   * @returns {{meta: {version: number}, data: any}}
+   * @returns {{data: object, meta: {version: number}}}
    */
   generateInitialState(data) {
     return {
+      data,
       meta: {
         version: this.defaultVersion,
       },
-      data,
     };
   }
 }

@@ -19,13 +19,35 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
 import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
+import { useOriginTrustSignals } from '../../../../../hooks/useOriginTrustSignals';
+import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 
 export type ConfirmInfoRowUrlProps = {
   url: string;
 };
 
+const HttpWarning = () => (
+  <Text
+    variant={TextVariant.bodySm}
+    display={Display.Flex}
+    alignItems={AlignItems.center}
+    borderRadius={BorderRadius.SM}
+    backgroundColor={BackgroundColor.warningMuted}
+    paddingLeft={1}
+    paddingRight={1}
+    color={TextColor.warningDefault}
+  >
+    <Icon
+      name={IconName.Danger}
+      color={IconColor.warningDefault}
+      size={IconSize.Sm}
+      marginInlineEnd={1}
+    />
+    HTTP
+  </Text>
+);
+
 export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
-  let urlObject;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handlePillClick = useCallback(
     () => setIsModalOpen(true),
@@ -36,6 +58,9 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     [setIsModalOpen],
   );
 
+  const originTrustSignals = useOriginTrustSignals(url);
+
+  // Check if it's a Snap ID first to avoid unnecessary processing
   if (isSnapId(url)) {
     return (
       <>
@@ -49,6 +74,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     );
   }
 
+  let urlObject;
   try {
     urlObject = new URL(url);
   } catch (e) {
@@ -56,8 +82,50 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
   }
 
   const isHTTP = urlObject?.protocol === 'http:';
-
   const urlWithoutProtocol = url?.replace(/https?:\/\//u, '');
+
+  const renderIcon = () => {
+    // Priority 1: Malicious
+    if (originTrustSignals.state === TrustSignalDisplayState.Malicious) {
+      return (
+        <Icon
+          name={IconName.Danger}
+          color={IconColor.errorDefault}
+          size={IconSize.Sm}
+        />
+      );
+    }
+
+    // Priority 2: HTTP Warning
+    if (isHTTP) {
+      return <HttpWarning />;
+    }
+
+    // Priority 3: Warning
+    if (originTrustSignals.state === TrustSignalDisplayState.Warning) {
+      return (
+        <Icon
+          name={IconName.Danger}
+          color={IconColor.warningDefault}
+          size={IconSize.Sm}
+        />
+      );
+    }
+
+    // Priority 4: Verified
+    if (originTrustSignals.state === TrustSignalDisplayState.Verified) {
+      return (
+        <Icon
+          name={IconName.VerifiedFilled}
+          color={IconColor.infoDefault}
+          size={IconSize.Sm}
+        />
+      );
+    }
+
+    // Priority 5: No icon (Unknown state)
+    return null;
+  };
 
   return (
     <Box
@@ -66,26 +134,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
       flexWrap={FlexWrap.Wrap}
       gap={2}
     >
-      {isHTTP && (
-        <Text
-          variant={TextVariant.bodySm}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          borderRadius={BorderRadius.SM}
-          backgroundColor={BackgroundColor.warningMuted}
-          paddingLeft={1}
-          paddingRight={1}
-          color={TextColor.warningDefault}
-        >
-          <Icon
-            name={IconName.Danger}
-            color={IconColor.warningDefault}
-            size={IconSize.Sm}
-            marginInlineEnd={1}
-          />
-          HTTP
-        </Text>
-      )}
+      {renderIcon()}
       <Text color={TextColor.inherit}>{urlWithoutProtocol}</Text>
     </Box>
   );

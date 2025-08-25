@@ -7,6 +7,12 @@ class ActivityListPage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
 
+  private readonly completedTransactionItems =
+    '.transaction-list__completed-transactions .activity-list-item';
+
+  private readonly activityTab =
+    '[data-testid="account-overview__activity-tab"]';
+
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
   private readonly confirmedTransactions = {
@@ -23,6 +29,9 @@ class ActivityListPage {
 
   private readonly bridgeTransactionCompleted =
     '.transaction-status-label--confirmed';
+
+  private readonly bridgeTransactionPending =
+    '.bridge-transaction-details__segment--pending';
 
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
@@ -48,9 +57,14 @@ class ActivityListPage {
     this.driver = driver;
   }
 
+  async openActivityTab(): Promise<void> {
+    console.log('Opening activity tab');
+    await this.driver.clickElement(this.activityTab);
+  }
+
   /**
    * This function clicks on the activity at the specified index.
-   * Note: this function need to be called after check_completedTxNumberDisplayedInActivity to reduce flakiness.
+   * Note: this function need to be called after checkCompletedTxNumberDisplayedInActivity to reduce flakiness.
    *
    * @param expectedNumber - The 1-based index of the activity to be clicked.
    */
@@ -80,7 +94,7 @@ class ActivityListPage {
    * @param expectedNumber - The number of completed transactions expected to be displayed in the activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of completed transactions is displayed within the timeout period.
    */
-  async check_completedTxNumberDisplayedInActivity(
+  async checkCompletedTxNumberDisplayedInActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
     console.log(
@@ -104,7 +118,7 @@ class ActivityListPage {
    * @param expectedNumber - The number of confirmed transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of confirmed transactions is displayed within the timeout period.
    */
-  async check_confirmedTxNumberDisplayedInActivity(
+  async checkConfirmedTxNumberDisplayedInActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
     console.log(
@@ -115,7 +129,7 @@ class ActivityListPage {
         this.confirmedTransactions,
       );
       return confirmedTxs.length === expectedNumber;
-    }, 10000);
+    }, 60000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
@@ -128,7 +142,7 @@ class ActivityListPage {
    * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
    */
-  async check_failedTxNumberDisplayedInActivity(
+  async checkFailedTxNumberDisplayedInActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
     console.log(
@@ -137,30 +151,53 @@ class ActivityListPage {
     await this.driver.wait(async () => {
       const failedTxs = await this.driver.findElements(this.failedTransactions);
       return failedTxs.length === expectedNumber;
-    }, 10000);
+    }, 60000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
     );
   }
 
-  async check_noTxInActivity(): Promise<void> {
+  async checkNoTxInActivity(): Promise<void> {
     await this.driver.assertElementNotPresent(this.completedTransactions);
   }
 
-  async check_txAction(expectedAction: string, expectedNumber: number = 1) {
+  async checkTxAction(expectedAction: string, expectedNumber: number = 1) {
     const transactionActions = await this.driver.findElements(
       this.activityListAction,
     );
 
     await this.driver.wait(async () => {
-      const transactionActionText = await transactionActions[
-        expectedNumber - 1
-      ].getText();
+      const transactionActionText =
+        await transactionActions[expectedNumber - 1].getText();
       return transactionActionText === expectedAction;
-    });
+    }, 60000);
 
     console.log(
       `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
+    );
+  }
+
+  /**
+   * This function checks the specified number of pending Birdge transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of pending transactions to be visible.
+   *
+   * @param expectedNumber - The number of pending Bridge transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of Bridge pending transactions is displayed within the timeout period.
+   */
+  async checkPendingBridgeTransactionActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} Bridge pending transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const completedTxs = await this.driver.findElements(
+        this.bridgeTransactionPending,
+      );
+      return completedTxs.length === expectedNumber;
+    }, 60000);
+    console.log(
+      `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
     );
   }
 
@@ -171,7 +208,7 @@ class ActivityListPage {
    * @param expectedNumber - The number of completed Bridge transactions expected to be displayed in the activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of Bridge completed transactions is displayed within the timeout period.
    */
-  async check_completedBridgeTransactionActivity(
+  async checkCompletedBridgeTransactionActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
     console.log(
@@ -198,18 +235,18 @@ class ActivityListPage {
    * The promise is rejected if the amounts do not match or if an error occurs during the process.
    * @example
    * // To check if the third transaction in the activity list displays an amount of '2 ETH'
-   * await check_txAmountInActivity('2 ETH', 3);
+   * await checkTxAmountInActivity('2 ETH', 3);
    */
-  async check_txAmountInActivity(
+  async checkTxAmountInActivity(
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
+    await this.driver.waitForSelector(this.transactionAmountsInActivity);
     const transactionAmounts = await this.driver.findElements(
       this.transactionAmountsInActivity,
     );
-    const transactionAmountsText = await transactionAmounts[
-      expectedNumber - 1
-    ].getText();
+    const transactionAmountsText =
+      await transactionAmounts[expectedNumber - 1].getText();
     assert.equal(
       transactionAmountsText,
       expectedAmount,
@@ -227,7 +264,7 @@ class ActivityListPage {
    * @returns A promise that resolves if the warning message matches the expected text.
    * @throws Assertion error if the warning message does not match the expected text.
    */
-  async check_warningMessage(warningText: string): Promise<void> {
+  async checkWarningMessage(warningText: string): Promise<void> {
     console.log(
       `Check warning message "${warningText}" is displayed on activity list`,
     );
@@ -237,7 +274,42 @@ class ActivityListPage {
     });
   }
 
-  async check_noFailedTransactions(): Promise<void> {
+  async checkCompletedTransactionItems(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Check ${expectedNumber} completed transaction items are displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const confirmedTxes = await this.driver.findElements(
+        this.completedTransactionItems,
+      );
+      return confirmedTxes.length === expectedNumber;
+    }, 10000);
+  }
+
+  async getAllTransactionAmounts(): Promise<string[]> {
+    console.log('Getting all transaction amounts');
+    const transactionAmounts = await this.driver.findElements(
+      this.transactionAmountsInActivity,
+    );
+    const amounts = await Promise.all(
+      transactionAmounts.map(async (amount) => await amount.getText()),
+    );
+
+    console.log('Transaction amounts found', amounts);
+    return amounts;
+  }
+
+  async checkTransactionAmount(transactionAmount: string): Promise<void> {
+    console.log('Validate transaction amount');
+    await this.driver.waitForSelector({
+      css: this.transactionAmountsInActivity,
+      text: transactionAmount,
+    });
+  }
+
+  async checkNoFailedTransactions(): Promise<void> {
     try {
       await this.driver.findElement(this.failedTransactions, 1);
     } catch (error) {
@@ -266,25 +338,41 @@ class ActivityListPage {
     );
   }
 
-  async click_transactionListItem() {
+  async clickTransactionListItem() {
     await this.driver.clickElement(this.completedTransactions);
   }
 
-  async click_cancelTransaction() {
+  async clickCancelTransaction() {
     await this.driver.clickElement(this.cancelTransactionButton);
   }
 
-  async click_speedUpTransaction() {
+  async clickSpeedUpTransaction() {
     await this.driver.clickElement(this.speedupButton);
   }
 
-  async click_confirmTransactionReplacement() {
-    await this.driver.clickElementAndWaitToDisappear(this.confirmTransactionReplacementButton);
+  async clickConfirmTransactionReplacement() {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmTransactionReplacementButton,
+    );
   }
 
-  async check_waitForTransactionStatus(status: 'confirmed' | 'cancelled') {
+  async checkWaitForTransactionStatus(status: 'confirmed' | 'cancelled') {
     await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
       timeout: 5000,
+    });
+  }
+
+  /**
+   * Checks for the presence of a transaction activity item in the activity list by matching the provided text.
+   *
+   * @param txnText - The text to search for within the transaction activity list. (e.g., "Swap SOL to USDC")
+   * @returns A promise that resolves when the transaction activity with the specified text is found.
+   */
+  async checkTransactionActivityByText(txnText: string): Promise<void> {
+    console.log(`Check transaction activity with text: ${txnText}`);
+    await this.driver.waitForSelector({
+      text: txnText,
+      css: this.activityListAction,
     });
   }
 }

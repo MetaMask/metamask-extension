@@ -1,5 +1,6 @@
 import { Messenger } from '@metamask/base-controller';
 import {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
@@ -7,13 +8,15 @@ import {
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import { AddApprovalRequest } from '@metamask/approval-controller';
+import { PhishingControllerBulkScanUrlsAction } from '@metamask/phishing-controller';
 
 type Actions =
   | AddApprovalRequest
   | NetworkControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
-  | NetworkControllerGetNetworkClientByIdAction;
-
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | PhishingControllerBulkScanUrlsAction;
 type Events =
   | PreferencesControllerStateChangeEvent
   | NetworkControllerStateChangeEvent;
@@ -43,6 +46,8 @@ export function getNftDetectionControllerMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'AccountsController:getSelectedAccount',
+      'NetworkController:findNetworkClientIdByChainId',
+      'PhishingController:bulkScanUrls',
     ],
   });
 }

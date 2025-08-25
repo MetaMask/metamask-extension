@@ -1,13 +1,3 @@
-export const PREINSTALLED_SNAPS = [
-  'npm:@metamask/message-signing-snap',
-  'npm:@metamask/ens-resolver-snap',
-  'npm:@metamask/institutional-wallet-snap',
-  'npm:@metamask/account-watcher',
-  'npm:@metamask/preinstalled-example-snap',
-  'npm:@metamask/bitcoin-wallet-snap',
-  'npm:@metamask/solana-wallet-snap',
-];
-
 // Needed for webpack to analyze the preinstalled snaps
 export const PREINSTALLED_SNAPS_URLS = [
   new URL(

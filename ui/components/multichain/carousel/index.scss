@@ -16,15 +16,15 @@
 
   /* !important needed to override react-responsive-carousel default padding */
   padding: 0 !important;
-  background-color: var(--color-background-muted);
+  background-color: var(--color-background-section);
 
   &:hover {
-    background-color: var(--color-background-muted-hover);
+    background-color: var(--color-background-subsection);
   }
 
   &:active,
   &.active {
-    background-color: var(--color-background-muted-pressed);
+    background-color: var(--color-background-default-pressed);
   }
 }
 
@@ -36,6 +36,8 @@
   background-size: cover;
   background-position: center;
   height: 100%;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
 
   /* !important needed to override react-responsive-carousel default width */
   width: 60px !important;

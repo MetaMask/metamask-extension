@@ -49,10 +49,13 @@ describe('SnapControllerInit', () => {
         allowLocalSnaps: false,
         rejectInvalidPlatformVersion: false,
         requireAllowlist: false,
+        useCaip25Permission: true,
+        forcePreinstalledSnaps: false,
       },
       getFeatureFlags: expect.any(Function),
       getMnemonicSeed: expect.any(Function),
       preinstalledSnaps: expect.any(Array),
+      trackEvent: expect.any(Function),
     });
   });
 });

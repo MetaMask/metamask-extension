@@ -6,6 +6,7 @@ import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
+import { Anvil } from '../../../seeder/anvil';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -18,8 +19,14 @@ describe('View NFT details', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Click to open the NFT details page and check title
         await new Homepage(driver).goToNftTab();
@@ -28,13 +35,13 @@ describe('View NFT details', function () {
 
         // Check the NFT details are correctly displayed on NFT details page
         const nftDetailsPage = new NFTDetailsPage(driver);
-        await nftDetailsPage.check_pageIsLoaded();
-        await nftDetailsPage.check_nftNameIsDisplayed('Test Dapp NFTs #1');
-        await nftDetailsPage.check_nftDescriptionIsDisplayed(
+        await nftDetailsPage.checkPageIsLoaded();
+        await nftDetailsPage.checkNftNameIsDisplayed('Test Dapp NFTs #1');
+        await nftDetailsPage.checkNftDescriptionIsDisplayed(
           'Test Dapp NFTs for testing.',
         );
-        await nftDetailsPage.check_nftImageContainerIsDisplayed();
-        await nftDetailsPage.check_nftDetailsAddressIsDisplayed(
+        await nftDetailsPage.checkNftImageContainerIsDisplayed();
+        await nftDetailsPage.checkNftDetailsAddressIsDisplayed(
           '0x581c3...45947',
         );
       },

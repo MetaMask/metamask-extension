@@ -1,11 +1,8 @@
 const fs = require('fs');
+const path = require('path');
+const { escapeRegExp } = require('lodash');
 
 const {
-  BRIDGE_DEV_API_BASE_URL,
-  BRIDGE_PROD_API_BASE_URL,
-} = require('../../shared/constants/bridge');
-const {
-  ACCOUNTS_DEV_API_BASE_URL,
   ACCOUNTS_PROD_API_BASE_URL,
 } = require('../../shared/constants/accounts');
 const {
@@ -14,13 +11,10 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
-const { MOCK_META_METRICS_ID } = require('./constants');
+const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
-const {
-  DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
-} = require('./tests/bridge/constants');
 
-const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
+const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -39,22 +33,51 @@ const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
-const BRIDGE_GET_ALL_FEATURE_FLAGS_PATH =
-  'test/e2e/mock-response-data/bridge-get-all-feature-flags.json';
 const CHAIN_ID_NETWORKS_PATH =
   'test/e2e/mock-response-data/chain-id-network-chains.json';
 const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
   'test/e2e/mock-response-data/client-side-detection-blocklist.json';
 const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
+const TEST_DAPP_STYLES_1_PATH =
+  'test/e2e/mock-response-data/test-dapp-styles-1.txt';
+const TEST_DAPP_STYLES_2_PATH =
+  'test/e2e/mock-response-data/test-dapp-styles-2.txt';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
+
+const snapsExecutionEnvBasePath = path.dirname(
+  require.resolve('@metamask/snaps-execution-environments/package.json'),
+);
+const snapsExecutionEnvHtmlPath = path.join(
+  snapsExecutionEnvBasePath,
+  'dist',
+  'webpack',
+  'iframe',
+  'index.html',
+);
+const snapsExecutionEnvHtml = fs.readFileSync(
+  snapsExecutionEnvHtmlPath,
+  'utf-8',
+);
+
+const snapsExecutionEnvJsPath = path.join(
+  snapsExecutionEnvBasePath,
+  'dist',
+  'webpack',
+  'iframe',
+  'bundle.js',
+);
+const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
-  'goerli.infura.io',
-  'mainnet.infura.io',
-  'sepolia.infura.io',
+  'bsc-dataseed.binance.org',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
+  'testnet-rpc.monad.xyz',
+  'carrot.megaeth.com',
+  'sei-mainnet.infura.io',
+  'mainnet.infura.io',
+  'sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -67,6 +90,7 @@ const emptyHtmlPage = () => `<!DOCTYPE html>
 <head>
     <meta charset="utf-8">
     <title>E2E Test Page</title>
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgo=">
   </head>
   <body data-testid="empty-page-body">
     Empty page by MetaMask
@@ -133,10 +157,7 @@ async function setupMocking(
         return {
           url: 'http://localhost:8545',
         };
-      } else if (
-        ALLOWLISTED_URLS.includes(url) ||
-        ALLOWLISTED_HOSTS.includes(host)
-      ) {
+      } else if (ALLOWLISTED_URLS.includes(url)) {
         // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
         console.log('Request going to a live server ============', url);
         return {};
@@ -153,6 +174,28 @@ async function setupMocking(
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
+
+  // User Profile Lineage
+  await server
+    .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          lineage: [
+            {
+              agent: 'mobile',
+              metametrics_id: '0xdeadbeef',
+              created_at: '2021-01-01',
+              updated_at: '2021-01-01',
+              counter: 1,
+            },
+          ],
+          created_at: '2025-07-16T10:03:57Z',
+          profile_id: '0deaba86-4b9d-4137-87d7-18bc5bf7708d',
+        },
+      };
+    });
 
   // Account link
   const accountLinkRegex =
@@ -264,8 +307,9 @@ async function setupMocking(
       };
     });
 
+  const targetChainId = chainId === 1337 ? 1 : chainId;
   await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
+    .forGet(`${GAS_API_BASE_URL}/networks/${targetChainId}/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -390,64 +434,23 @@ async function setupMocking(
       };
     });
 
-  [
-    `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
-    `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
-  ].forEach(
-    async (url) =>
-      await server.forGet(url).thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
-        };
-      }),
-  );
-
-  [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
-  ].forEach(
-    async (url) =>
-      await server.forGet(url).thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            userId: '0x123',
-            surveys: {},
-          },
-        };
-      }),
-  );
-
-  let surveyCallCount = 0;
-  [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
-  ].forEach(
-    async (url) =>
-      await server.forGet(url).thenCallback(() => {
-        const surveyId = surveyCallCount > 2 ? 2 : surveyCallCount;
-        surveyCallCount += 1;
-        return {
-          statusCode: 200,
-          json: {
-            userId: '0x123',
-            surveys: {
-              url: 'https://example.com',
-              description: `Test survey ${surveyId}`,
-              cta: 'Take survey',
-              id: surveyId,
-            },
-          },
-        };
-      }),
-  );
+  // Surveys
+  await server
+    .forGet(
+      new RegExp(
+        `${escapeRegExp(ACCOUNTS_PROD_API_BASE_URL)}/v1/users/[^/]+/surveys`,
+        'u',
+      ),
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          userId: '0x123',
+          surveys: {},
+        },
+      };
+    });
 
   await server
     .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
@@ -676,20 +679,6 @@ async function setupMocking(
       };
     });
 
-  await server
-    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-    .withQuery({ fsyms: 'ETH,MegaETH', tsyms: 'usd' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          ETH: {
-            USD: ethConversionInUsd,
-          },
-        },
-      };
-    });
-
   const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
   const PPOM_VERSION_HEADERS = fs.readFileSync(PPOM_VERSION_HEADERS_PATH);
   const CDN_CONFIG = fs.readFileSync(CDN_CONFIG_PATH);
@@ -886,20 +875,7 @@ async function setupMocking(
       };
     });
 
-  // Bridge Feature Flags
-  const BRIDGE_GET_ALL_FEATURE_FLAGS = fs.readFileSync(
-    BRIDGE_GET_ALL_FEATURE_FLAGS_PATH,
-  );
-  await server
-    .forGet('https://bridge.api.cx.metamask.io/getAllFeatureFlags')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(BRIDGE_GET_ALL_FEATURE_FLAGS),
-      };
-    });
-
-  // Client Side Detecition: Request Blocklist
+  // Client Side Detection: Request Blocklist
   const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
     CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
   );
@@ -911,6 +887,21 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: JSON.parse(CLIENT_SIDE_DETECTION_BLOCKLIST),
+      };
+    });
+
+  // Nft API: tokens
+  await server
+    .forGet(
+      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+          continuation: null,
+        },
       };
     });
 
@@ -927,12 +918,75 @@ async function setupMocking(
       };
     });
 
+  // Snaps: Execution environment html
+  await server
+    .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/index\.html$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapsExecutionEnvHtml,
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      };
+    });
+
+  // Snaps: Execution environment js
+  await server
+    .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/bundle\.js$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapsExecutionEnvJs,
+        headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+      };
+    });
+
+  // Test Dapp Styles
+  const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
+  const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);
+  await server
+    .forGet(
+      'https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.14.1/css/mdb.min.css',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: TEST_DAPP_STYLES_1,
+      };
+    });
+
+  await server
+    .forGet(
+      'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: TEST_DAPP_STYLES_2,
+      };
+    });
+
   // Token Icons
   await server
     .forGet('https://static.cx.metamask.io/api/v1/tokenIcons')
     .thenCallback(() => {
       return {
         statusCode: 200,
+      };
+    });
+
+  // Dynamic Banner Content
+  await server
+    .forGet(/^https:\/\/(cdn|preview)\.contentful\.com\/.*$/u)
+    .withQuery({
+      content_type: 'promotionalBanner',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          items: [],
+          includes: { Asset: [] },
+        },
       };
     });
 
@@ -953,7 +1007,7 @@ async function setupMocking(
    * @param request
    */
   const portfolioRequestsMatcher = (request) =>
-    request.headers.referer === 'https://portfolio.metamask.io/';
+    request.headers.referer === 'https://app.metamask.io/';
 
   /**
    * Tests a request against private domains and returns a set of generic hostnames that

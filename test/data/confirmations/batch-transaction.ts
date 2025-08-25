@@ -1,4 +1,10 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  GasFeeEstimateType,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+
+import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
 
 export const upgradeAccountConfirmation = {
   batchId: '0x6046131032d748a6bfac42fd5117479f',
@@ -21,6 +27,8 @@ export const upgradeAccountConfirmation = {
   networkClientId: 'sepolia',
   securityAlertResponse: {
     block: 8082431,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'Benign',
     reason: '',
     description: '',
@@ -35,7 +43,7 @@ export const upgradeAccountConfirmation = {
     authorizationList: [
       { address: '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' },
     ],
-    data: '0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000c54fccd2e384b4bb6f2e405bf5cbc15a017aafb000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000066543654365430000000000000000000000000000000000000000000000000000000000000000000000000000bc2114a988e9cef5ba63548d432024f34b487048000000000000000000000000000000000000000000000000000000001dcd6500000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000067890789078900000000000000000000000000000000000000000000000000000',
+    data: '0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000c54fccd2e384b4bb6f2e405bf5cbc15a017aafb000000000000000000000000000000000000000000000000000000003b9aca00000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000066543654365430000000000000000000000000000000000000000000000000000000000000000000000000000bc2114a988e9cef5ba63548d432024f34b487048000000000000000000000000000000000000000000000000000000001dcd650000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000006789789078900000000000000000000000000000000000000000000000000000',
     gas: '0x1a209',
     to: '0x8a0bbcd42cf79e7cee834e7808eb2fef1cebdb87',
     value: '0x0',
@@ -196,9 +204,9 @@ export const upgradeAccountConfirmation = {
     },
     tokenBalanceChanges: [],
   },
-};
+} as Confirmation;
 
-export const RevokeDelegation = {
+export const downgradeAccountConfirmation = {
   actionId: 1743757606797.6257,
   chainId: '0xaa36a7',
   delegationAddress: '0xcd8d6c5554e209fbb0dec797c6293cf7eae13454',
@@ -304,6 +312,119 @@ export const RevokeDelegation = {
     low: { maxFeePerGas: '0x9374a3b7', maxPriorityFeePerGas: '0x3b9aca00' },
     medium: { maxFeePerGas: '0xd0017b51', maxPriorityFeePerGas: '0x59682f00' },
     high: { maxFeePerGas: '0x10c8e52eb', maxPriorityFeePerGas: '0x77359400' },
+  },
+  gasFeeEstimatesLoaded: true,
+  gasFeeTokens: [],
+  simulationData: { tokenBalanceChanges: [] },
+};
+
+export const upgradeAccountConfirmationOnly = {
+  actionId: '1745326968248.2673',
+  chainId: '0xaa36a7',
+  id: '171998b0-1f7a-11f0-8c59-f7ce445fc54e',
+  networkClientId: 'sepolia',
+  origin: 'metamask',
+  status: TransactionStatus.unapproved,
+  time: 1745326968251,
+  txParams: {
+    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    authorizationList: [
+      { address: '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' },
+    ],
+    gas: '0x10fc5',
+    to: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    value: '0x0',
+    maxFeePerGas: '0x579740946',
+    maxPriorityFeePerGas: '0x59682f00',
+    type: '0x4',
+  },
+  type: TransactionType.batch,
+  userEditedGasLimit: false,
+  verifiedOnBlockchain: false,
+  gasLimitNoBuffer: '0xb52e',
+  originalGasEstimate: '0x10fc5',
+  defaultGasEstimates: {
+    gas: '0x10fc5',
+    maxFeePerGas: '0x52a009bc5',
+    maxPriorityFeePerGas: '0x59682f00',
+    estimateType: 'medium',
+  },
+  userFeeLevel: 'medium',
+  sendFlowHistory: [],
+  history: [
+    {
+      actionId: '1745326968248.2673',
+      chainId: '0xaa36a7',
+      id: '171998b0-1f7a-11f0-8c59-f7ce445fc54e',
+      networkClientId: 'sepolia',
+      origin: 'metamask',
+      status: TransactionStatus.unapproved,
+      time: 1745326968251,
+      txParams: {
+        from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+        authorizationList: [
+          { address: '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' },
+        ],
+        to: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+        type: '0x4',
+        value: '0x0',
+        gas: '0x10fc5',
+        maxFeePerGas: '0x52a009bc5',
+        maxPriorityFeePerGas: '0x59682f00',
+      },
+      type: TransactionType.batch,
+      userEditedGasLimit: false,
+      verifiedOnBlockchain: false,
+      gasLimitNoBuffer: '0xb52e',
+      originalGasEstimate: '0x10fc5',
+      defaultGasEstimates: {
+        gas: '0x10fc5',
+        maxFeePerGas: '0x52a009bc5',
+        maxPriorityFeePerGas: '0x59682f00',
+        estimateType: 'medium',
+      },
+      userFeeLevel: 'medium',
+      sendFlowHistory: [],
+    },
+    [
+      {
+        op: 'add',
+        path: '/gasFeeEstimates',
+        value: {
+          type: 'fee-market',
+          low: {
+            maxFeePerGas: '0x3cca3666c',
+            maxPriorityFeePerGas: '0x3b9aca00',
+          },
+          medium: {
+            maxFeePerGas: '0x52a009bc5',
+            maxPriorityFeePerGas: '0x59682f00',
+          },
+          high: {
+            maxFeePerGas: '0x6875dd11e',
+            maxPriorityFeePerGas: '0x77359400',
+          },
+        },
+        note: 'TransactionController#updateSimulationData - Update simulation data',
+        timestamp: 1745326970973,
+      },
+      { op: 'add', path: '/gasFeeEstimatesLoaded', value: true },
+      { op: 'add', path: '/gasFeeTokens', value: [] },
+      {
+        op: 'add',
+        path: '/simulationData',
+        value: { tokenBalanceChanges: [] },
+      },
+    ],
+  ],
+  gasFeeEstimates: {
+    type: GasFeeEstimateType.FeeMarket,
+    low: { maxFeePerGas: '0x4077da492', maxPriorityFeePerGas: '0x3b9aca00' },
+    medium: {
+      maxFeePerGas: '0x579740946',
+      maxPriorityFeePerGas: '0x59682f00',
+    },
+    high: { maxFeePerGas: '0x6eb6a6df9', maxPriorityFeePerGas: '0x77359400' },
   },
   gasFeeEstimatesLoaded: true,
   gasFeeTokens: [],

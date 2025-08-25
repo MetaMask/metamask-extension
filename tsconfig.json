@@ -27,10 +27,7 @@
   "exclude": [
     // don't typecheck stories, as they don't yet pass the type checker.
     "**/*.stories.tsx",
-    "**/*.stories.ts",
-    // E2E test specs have their own tsconfig in test/e2e/tsconfig.json
-    "test/e2e/**/*.js",
-    "test/e2e/**/*.ts"
+    "**/*.stories.ts"
   ],
   // this should match our node version in .nvmrc
   "extends": "@tsconfig/node22/tsconfig.json",

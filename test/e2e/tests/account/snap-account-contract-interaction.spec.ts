@@ -13,6 +13,7 @@ import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Snap Account Contract interaction', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
@@ -27,6 +28,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           hardfork: 'london',
         },
         smartContract,
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -50,7 +52,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('SSK Account');
+        await headerNavbar.checkAccountLabel('SSK Account');
 
         // Open Dapp with contract
         const testDapp = new TestDapp(driver);
@@ -58,7 +60,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
         await testDapp.openTestDappPage({ contractAddress });
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.createDepositTransaction();
 
         // Confirm the transaction in activity list on MetaMask
@@ -66,11 +68,11 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity();
-        await activityList.check_txAmountInActivity('-4 ETH');
+        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        await activityList.checkTxAmountInActivity('-4 ETH');
       },
     );
   });

@@ -8,6 +8,11 @@ import {
   setCompletedOnboarding,
   toggleExternalServices,
 } from '../../../store/actions';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PinExtension from './pin-extension';
 
 jest.mock('../../../store/actions', () => ({
@@ -30,17 +35,37 @@ jest.mock('react-redux', () => ({
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
+  useHistory: jest.fn(() => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+  })),
 }));
+
+const pushMock = jest.fn();
+const replaceMock = jest.fn();
 
 describe('Creation Successful Onboarding View', () => {
   const arrangeMocks = (
     stateOverrides = {
       metamask: {
-        isProfileSyncingEnabled: false,
+        isBackupAndSyncEnabled: false,
         participateInMetaMetrics: true,
         isSignedIn: false,
         useExternalServices: true,
+        internalAccounts: {
+          accounts: {
+            accountId: {
+              address: '0x0000000000000000000000000000000000000000',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                  accounts: ['0x0000000000000000000000000000000000000000'],
+                },
+              },
+            },
+          },
+          selectedAccount: 'accountId',
+        },
       },
       appState: {
         externalServicesOnboardingToggleState: true,
@@ -63,11 +88,10 @@ describe('Creation Successful Onboarding View', () => {
     toggleExternalServices.mockClear();
     setCompletedOnboarding.mockClear();
 
-    const pushMock = jest.fn();
     jest
       .spyOn(reactRouterDom, 'useHistory')
       .mockImplementation()
-      .mockReturnValue({ push: pushMock });
+      .mockReturnValue({ push: pushMock, replace: replaceMock });
 
     return store;
   };
@@ -77,13 +101,42 @@ describe('Creation Successful Onboarding View', () => {
       const store = arrangeMocks();
 
       const { getByText } = renderWithProvider(<PinExtension />, store);
-      const nextButton = getByText('Next');
-      fireEvent.click(nextButton);
-      const gotItButton = getByText('Done');
-      fireEvent.click(gotItButton);
+      const doneButton = getByText('Done');
+
+      fireEvent.click(doneButton);
+
       await Promise.all(mockPromises);
       expect(toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(setCompletedOnboarding).toHaveBeenCalledTimes(1);
+      expect(pushMock).toHaveBeenCalledTimes(1);
+      expect(pushMock).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+  });
+
+  describe('When the user has not created a wallet', () => {
+    it('should redirect to the onboarding welcome route', () => {
+      const mockState = {
+        metamask: {
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: ['0x0000000000000000000000000000000000000000'],
+            },
+          ],
+          firstTimeFlowType: FirstTimeFlowType.create,
+          seedPhraseBackedUp: true,
+        },
+      };
+
+      const store = arrangeMocks(mockState);
+      renderWithProvider(<PinExtension />, store);
+
+      expect(replaceMock).toHaveBeenCalledTimes(1);
+      expect(replaceMock).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
     });
   });
 });

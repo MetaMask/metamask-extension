@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { captureException } from '@sentry/browser';
 
+import { captureException } from '../../../shared/lib/sentry';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import * as actionConstants from '../../store/actionConstants';
 import {
@@ -64,13 +64,13 @@ const slice = createSlice({
       state.state = ALERT_STATE.OPEN;
     },
   },
-  extraReducers: {
-    [actionConstants.SELECTED_ADDRESS_CHANGED]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(actionConstants.SELECTED_ADDRESS_CHANGED, (state) => {
       // close the alert if the account is switched while it's open
       if (state.state === ALERT_STATE.OPEN) {
         state.state = ALERT_STATE.CLOSED;
       }
-    },
+    });
   },
 });
 

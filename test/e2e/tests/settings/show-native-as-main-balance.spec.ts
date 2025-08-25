@@ -1,15 +1,17 @@
-import { strict as assert } from 'assert';
 import { expect } from '@playwright/test';
-import {
-  withFixtures,
-  logInWithBalanceValidation,
-  unlockWallet,
-  getEventPayloads,
-} from '../../helpers';
+import { getEventPayloads, withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { Driver } from '../../webdriver/driver';
-
 import FixtureBuilder from '../../fixture-builder';
+import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 
 async function mockSegment(mockServer: Mockttp) {
   return [
@@ -27,29 +29,21 @@ async function mockSegment(mockServer: Mockttp) {
 }
 
 describe('Settings: Show native token as main balance', function () {
-  it('Should show balance in crypto when toggle is on', async function () {
+  it('Should show balance in crypto when toggle is off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await logInWithBalanceValidation(driver);
-
-        await driver.clickElement(
-          '[data-testid="account-overview__asset-tab"]',
-        );
-        const tokenValue = '25 ETH';
-        const tokenListAmount = await driver.findElement(
-          '[data-testid="multichain-token-list-item-value"]',
-        );
-        await driver.waitForNonEmptyElement(tokenListAmount);
-        assert.equal(await tokenListAmount.getText(), tokenValue);
+        await loginWithBalanceValidation(driver);
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkTokenAmountIsDisplayed('25 ETH');
       },
     );
   });
 
-  it('Should show balance in fiat when toggle is OFF', async function () {
+  it('Should show balance in fiat when toggle is on', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -59,35 +53,23 @@ describe('Settings: Show native token as main balance', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await homePage.headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.clickAdvancedTab();
+        const advancedSettingsPage = new AdvancedSettings(driver);
+        await advancedSettingsPage.checkPageIsLoaded();
+        await advancedSettingsPage.toggleShowConversionOnTestnets();
+        await settingsPage.closeSettingsPage();
 
-        await driver.clickElement({
-          text: 'Advanced',
-          tag: 'div',
-        });
-        await driver.clickElement('.show-fiat-on-testnets-toggle');
-
-        await driver.delay(1000);
-
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
-        // close popover
-        await driver.clickElement('[data-testid="popover-close"]');
-
-        await driver.clickElement(
-          '[data-testid="account-overview__asset-tab"]',
-        );
-
-        const tokenListAmount = await driver.findElement(
-          '.eth-overview__primary-container',
-        );
-        assert.equal(await tokenListAmount.getText(), '$42,500.00\nUSD');
+        // assert amount displayed
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkTokenFiatAmountIsDisplayed('$42,500.00');
       },
     );
   });
@@ -102,37 +84,25 @@ describe('Settings: Show native token as main balance', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await homePage.headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.clickAdvancedTab();
+        const advancedSettingsPage = new AdvancedSettings(driver);
+        await advancedSettingsPage.checkPageIsLoaded();
+        await advancedSettingsPage.toggleShowConversionOnTestnets();
+        await settingsPage.closeSettingsPage();
 
-        await driver.clickElement({
-          text: 'Advanced',
-          tag: 'div',
-        });
-        await driver.clickElement('.show-fiat-on-testnets-toggle');
-
-        await driver.delay(1000);
-
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
-        // close popover for the first time
-        await driver.clickElement('[data-testid="popover-close"]');
         // go to setting and back to home page and make sure popover is not shown again
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        // close setting
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
-        // assert popover does not exist
-        await driver.assertElementNotPresent('[data-testid="popover-close"]');
+        await homePage.headerNavbar.openSettingsPage();
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.closeSettingsPage();
+        await homePage.checkPageIsLoaded();
       },
     );
   });
@@ -156,25 +126,24 @@ describe('Settings: Show native token as main balance', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint[];
       }) => {
-        await unlockWallet(driver);
-
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({
-          text: 'General',
-          tag: 'div',
-        });
-        await driver.clickElement('.show-native-token-as-main-balance');
+        await loginWithBalanceValidation(driver);
+        await new HeaderNavbar(driver).openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.toggleBalanceSetting();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         expect(events[0].properties).toMatchObject({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           show_native_token_as_main_balance: false,
           category: 'Settings',
           locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
         });
       },
@@ -201,25 +170,28 @@ describe('Settings: Show native token as main balance', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint[];
       }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({
-          text: 'General',
-          tag: 'div',
-        });
-        await driver.clickElement('.show-native-token-as-main-balance');
+        await homePage.headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.toggleBalanceSetting();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         expect(events[0].properties).toMatchObject({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           show_native_token_as_main_balance: true,
           category: 'Settings',
           locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
         });
       },

@@ -11,8 +11,9 @@ describe('sortBalanceChanges', () => {
     ({
       fiatAmount,
       asset: { standard },
-    } as BalanceChange);
+    }) as BalanceChange;
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     {
       criteria: 'fiat amount',

@@ -3,16 +3,14 @@ import { Driver } from '../../../webdriver/driver';
 class SecureWalletPage {
   private driver: Driver;
 
-  private readonly confirmPasswordButton = {
-    text: 'Confirm',
-    tag: 'button',
-  };
+  private readonly confirmPasswordButton =
+    '[data-testid="reveal-recovery-phrase-continue"]';
 
   private readonly confirmRecoveryPhraseButton =
     '[data-testid="recovery-phrase-confirm"]';
 
   private readonly confirmSecretRecoveryPhraseMessage = {
-    text: 'Confirm Secret Recovery Phrase',
+    text: 'Confirm your Secret Recovery Phrase',
     tag: 'h2',
   };
 
@@ -21,17 +19,8 @@ class SecureWalletPage {
   private readonly recoveryPhraseChips =
     '[data-testid="recovery-phrase-chips"]';
 
-  private readonly recoveryPhraseInputIndex2 =
-    '[data-testid="recovery-phrase-input-2"]';
-
-  private readonly recoveryPhraseInputIndex3 =
-    '[data-testid="recovery-phrase-input-3"]';
-
-  private readonly recoveryPhraseInputIndex7 =
-    '[data-testid="recovery-phrase-input-7"]';
-
-  private readonly recoveryPhraseNextButton =
-    '[data-testid="recovery-phrase-next"]';
+  private readonly recoveryPhraseContinueButton =
+    '[data-testid="recovery-phrase-continue"]';
 
   private readonly revealSecretRecoveryPhraseButton =
     '[data-testid="recovery-phrase-reveal"]';
@@ -53,21 +42,29 @@ class SecureWalletPage {
   };
 
   private readonly skipSRPBackupCheckbox =
-    '[data-testid="skip-srp-backup-popover-checkbox"]';
+    '[data-testid="skip-srp-backup-checkbox"]';
 
   private readonly skipSRPBackupConfirmButton =
-    '[data-testid="skip-srp-backup"]';
+    '[data-testid="skip-srp-backup-button"]';
 
   private readonly writeDownSecretRecoveryPhraseMessage = {
-    text: 'Write down your Secret Recovery Phrase',
+    text: 'Save your Secret Recovery Phrase',
     tag: 'h2',
   };
+
+  private readonly confirmSrpSuccessMessage = {
+    text: 'Perfect',
+    tag: 'h2',
+  };
+
+  private readonly confirmSrpConfirmButton =
+    '[data-testid="confirm-srp-modal-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.secureWalletMessage,
@@ -86,11 +83,10 @@ class SecureWalletPage {
 
   /**
    * Reveal and confirm SRP on secure wallet page during onboarding
+   *
    * @param needEnterPassword - Whether to enter the password
    */
-  async revealAndConfirmSRP(
-    needEnterPassword: string = '',
-  ): Promise<void> {
+  async revealAndConfirmSRP(needEnterPassword: string = ''): Promise<void> {
     console.log(
       'Reveal and confirm SRP on secure wallet page during onboarding',
     );
@@ -106,28 +102,53 @@ class SecureWalletPage {
     ]);
 
     // click reveal button to reveal SRP
-    await this.driver.clickElement(this.revealSecretRecoveryPhraseButton);
-    await this.driver.waitForSelector(this.recoveryPhraseChips);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.revealSecretRecoveryPhraseButton,
+    );
+    await this.driver.clickElementAndWaitToDisappear(
+      this.recoveryPhraseContinueButton,
+    );
 
-    let finalWords: string[] = [];
-    await this.driver.wait(async () => {
-      const recoveryPhraseChips = await this.driver.findElement(
-        this.recoveryPhraseChips,
-      );
-      const recoveryPhrase = await recoveryPhraseChips.getText();
-      const words = recoveryPhrase.split(/\s*(?:[0-9)]+|\n|\.|^$|$)\s*/u);
-      finalWords = words.filter((str) => str !== '');
-      return finalWords.length === 12;
-    }, this.driver.timeout);
-    await this.driver.clickElement(this.recoveryPhraseNextButton);
+    await this.driver.waitForMultipleSelectors([
+      this.confirmSecretRecoveryPhraseMessage,
+      this.recoveryPhraseChips,
+    ]);
+
+    let quizWordsString = '';
+    const recoveryPhraseChips = await this.driver.findElement(
+      this.recoveryPhraseChips,
+    );
+    quizWordsString = await recoveryPhraseChips.getAttribute('data-quiz-words');
 
     // confirm SRP
-    await this.driver.waitForSelector(this.confirmSecretRecoveryPhraseMessage);
-    await this.driver.fill(this.recoveryPhraseInputIndex2, finalWords[2]);
-    await this.driver.fill(this.recoveryPhraseInputIndex3, finalWords[3]);
-    await this.driver.fill(this.recoveryPhraseInputIndex7, finalWords[7]);
+    const quizWords = JSON.parse(quizWordsString).sort(
+      (
+        a: { word: string; index: number },
+        b: { word: string; index: number },
+      ) => a.index - b.index,
+    );
+    const quizInputSelector0 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[0].index}"]`;
+    const quizInputSelector1 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[1].index}"]`;
+    const quizInputSelector2 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[2].index}"]`;
+
+    await this.driver.waitForMultipleSelectors([
+      quizInputSelector0,
+      quizInputSelector1,
+      quizInputSelector2,
+    ]);
+    await this.driver.clickElement(quizInputSelector0);
+    await this.driver.clickElement(quizInputSelector1);
+    await this.driver.clickElement(quizInputSelector2);
+
+    await this.driver.clickElement(this.confirmRecoveryPhraseButton);
+
+    await this.driver.waitForMultipleSelectors([
+      this.confirmSrpSuccessMessage,
+      this.confirmSrpConfirmButton,
+    ]);
+
     await this.driver.clickElementAndWaitToDisappear(
-      this.confirmRecoveryPhraseButton,
+      this.confirmSrpConfirmButton,
     );
   }
 
@@ -141,7 +162,9 @@ class SecureWalletPage {
     ]);
 
     // click reveal button to reveal SRP
-    await this.driver.clickElement(this.revealSecretRecoveryPhraseButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.revealSecretRecoveryPhraseButton,
+    );
     await this.driver.waitForSelector(this.recoveryPhraseChips);
 
     let finalWords: string[] = [];
@@ -149,12 +172,16 @@ class SecureWalletPage {
       const recoveryPhraseChips = await this.driver.findElement(
         this.recoveryPhraseChips,
       );
-      const recoveryPhrase = await recoveryPhraseChips.getText();
-      const words = recoveryPhrase.split(/\s*(?:[0-9)]+|\n|\.|^$|$)\s*/u);
+      const recoveryPhrase = await recoveryPhraseChips.getAttribute(
+        'data-recovery-phrase',
+      );
+      const words = recoveryPhrase.split(':');
       finalWords = words.filter((str) => str !== '');
       return finalWords.length === 12;
     }, this.driver.timeout);
-    await this.driver.clickElement(this.recoveryPhraseNextButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.recoveryPhraseContinueButton,
+    );
   }
 
   async skipSRPBackup(): Promise<void> {

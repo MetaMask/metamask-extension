@@ -25,6 +25,8 @@ import {
   FontWeight,
   TextAlign,
   TextVariant,
+  FlexDirection,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -60,7 +62,6 @@ import EditGasPopover from '../../../pages/confirmations/components/edit-gas-pop
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
@@ -86,17 +87,24 @@ function TransactionListItemInner({
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
   const dispatch = useDispatch();
 
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const { bridgeTxHistoryItem, isBridgeComplete, showBridgeTxDetails } =
-    useBridgeTxHistoryData({
-      transactionGroup,
-      isEarliestNonce,
-    });
+  const {
+    bridgeTxHistoryItem,
+    isBridgeComplete,
+    showBridgeTxDetails,
+    isBridgeFailed,
+  } = useBridgeTxHistoryData({
+    transactionGroup,
+    isEarliestNonce,
+  });
+  const isUnifiedSwapTx =
+    (isBridgeTx ||
+      transactionGroup.initialTransaction.type === TransactionType.swap) &&
+    bridgeTxHistoryItem;
 
   const getTestNetworkBackgroundColor = (networkId) => {
     switch (true) {
@@ -179,10 +187,16 @@ function TransactionListItemInner({
     primaryCurrency,
     recipientAddress,
     secondaryCurrency,
-    displayedStatusKey,
+    displayedStatusKey: displayedStatusKeyFromSrcTransaction,
     isPending,
     senderAddress,
+    detailsTitle,
+    remoteSignerAddress,
   } = useTransactionDisplayData(transactionGroup);
+  const displayedStatusKey =
+    isBridgeTx && isBridgeFailed
+      ? TransactionStatus.failed
+      : displayedStatusKeyFromSrcTransaction;
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
     'MMM d, y',
@@ -191,10 +205,19 @@ function TransactionListItemInner({
   const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
-  const isSwap = [
-    TransactionGroupCategory.swap,
-    TransactionGroupCategory.swapAndSend,
-  ].includes(category);
+
+  /**
+   * Disabling the retry button until further notice
+   *
+   * @see {@link https://github.com/MetaMask/metamask-extension/issues/28615}
+   */
+  // const isSwap = [
+  //   TransactionGroupCategory.swap,
+  //   TransactionGroupCategory.swapAndSend,
+  // ].includes(category);
+  // const showRetry =
+  //   status === TransactionStatus.failed && !isSwap && !isSmartTransaction;
+
   const isSigning = status === TransactionStatus.approved;
   const isSubmitting = status === TransactionStatus.signed;
 
@@ -267,7 +290,7 @@ function TransactionListItemInner({
       <ActivityListItem
         data-testid="activity-list-item"
         onClick={
-          isBridgeTx && showBridgeTxDetails
+          isUnifiedSwapTx && showBridgeTxDetails
             ? showBridgeTxDetails
             : toggleShowDetails
         }
@@ -295,7 +318,8 @@ function TransactionListItemInner({
         subtitle={
           !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
           isBridgeTx &&
-          !isBridgeComplete ? (
+          !(isBridgeComplete || isBridgeFailed) &&
+          bridgeTxHistoryItem ? (
             <BridgeActivityItemTxSegments
               bridgeTxHistoryItem={bridgeTxHistoryItem}
               transactionGroup={transactionGroup}
@@ -315,18 +339,24 @@ function TransactionListItemInner({
           !isSignatureReq &&
           !isApproval && (
             <>
-              <Text
-                variant={TextVariant.bodyLgMedium}
-                fontWeight={FontWeight.Medium}
-                color={Color.textDefault}
-                title={primaryCurrency}
-                textAlign={TextAlign.Right}
-                data-testid="transaction-list-item-primary-currency"
-                className="activity-list-item__primary-currency"
-                ellipsis
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+                alignItems={AlignItems.center}
               >
-                {primaryCurrency}
-              </Text>
+                <Text
+                  variant={TextVariant.bodyLgMedium}
+                  fontWeight={FontWeight.Medium}
+                  color={Color.textDefault}
+                  title={primaryCurrency}
+                  textAlign={TextAlign.Right}
+                  data-testid="transaction-list-item-primary-currency"
+                  className="activity-list-item__primary-currency"
+                  ellipsis
+                >
+                  {primaryCurrency}
+                </Text>
+              </Box>
               <Text
                 variant={TextVariant.bodyMd}
                 color={Color.textAlternative}
@@ -357,18 +387,14 @@ function TransactionListItemInner({
       </ActivityListItem>
       {showDetails && (
         <TransactionListItemDetails
-          title={title}
+          title={detailsTitle}
           onClose={toggleShowDetails}
           transactionGroup={transactionGroup}
           primaryCurrency={primaryCurrency}
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={
-            status === TransactionStatus.failed &&
-            !isSwap &&
-            !isSmartTransaction
-          }
+          // showRetry={showRetry}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
@@ -383,6 +409,7 @@ function TransactionListItemInner({
             />
           )}
           chainId={chainId}
+          remoteSignerAddress={remoteSignerAddress}
         />
       )}
       {!supportsEIP1559 && showRetryEditGasPopover && (

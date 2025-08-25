@@ -2,8 +2,8 @@ import React from 'react';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
-type DynamicImportType = () => Promise<{ default: React.ComponentType }>;
-type ModuleWithDefaultType = {
+export type DynamicImportType = () => Promise<ModuleWithDefaultType>;
+export type ModuleWithDefaultType = {
   default: React.ComponentType;
 };
 
@@ -42,6 +42,8 @@ export function mmLazy(fn: DynamicImportType) {
 
 // There can be a lot of different types here, and we're basically doing type-checking in the code,
 // so I don't think TypeScript safety on `importedModule` is worth it in this function
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseImportedComponent(importedModule: any): {
   componentName: string; // TODO: in many circumstances, the componentName gets minified

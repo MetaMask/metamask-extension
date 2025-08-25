@@ -47,9 +47,8 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
           </button>
         </div>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md confirm_nav__reject_all mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-3 mm-box--padding-left-3 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md confirm_nav__reject_all mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-3 mm-box--padding-left-3 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           data-testid="confirm-nav__reject-all"
-          data-theme="light"
           type="secondary"
         >
           <span
@@ -61,14 +60,14 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirmation-page__content mm-box--padding-4"
+      class="mm-box confirmation-page__content mm-box--padding-0"
       style="overflow-y: auto;"
     >
       <div
-        class="mm-box name-snap-account-page mm-box--padding-4"
+        class="mm-box name-snap-account-page mm-box--padding-6"
       >
         <header
-          class="mm-box mm-header-base mm-modal-header mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          class="mm-box mm-header-base mm-modal-header mm-box--padding-top-2 mm-box--padding-right-0 mm-box--padding-bottom-4 mm-box--padding-left-0 mm-box--display-flex mm-box--justify-content-space-between"
         >
           <div
             class="mm-box mm-box--width-full"
@@ -102,13 +101,13 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
             data-testid="account-name-input"
           >
             <label
-              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
               for="account-name"
             >
               Account name
             </label>
             <div
-              class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             >
               <input
                 autocomplete="off"
@@ -121,7 +120,7 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
               />
             </div>
             <p
-              class="mm-box mm-text mm-help-text mm-form-text-field__help-text mm-text--body-xs mm-box--margin-top-1 mm-box--color-text-default"
+              class="mm-box mm-text mm-help-text mm-form-text-field__help-text mm-text--body-sm mm-box--margin-top-1 mm-box--color-text-default"
             >
               ​
             </p>
@@ -130,16 +129,15 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
             class="mm-box mm-box--margin-top-1 mm-box--display-flex mm-box--gap-2"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
               data-testid="cancel-add-account-with-name"
               type="button"
             >
               Cancel
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
               data-testid="submit-add-account-with-name"
-              data-theme="light"
               type="submit"
             >
               Add account

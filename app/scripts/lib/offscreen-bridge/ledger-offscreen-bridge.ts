@@ -3,17 +3,25 @@ import {
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
+import { TransportStatusError } from '@ledgerhq/errors';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
 
+const MESSAGE_TIMEOUT = 4000;
+
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge
  * doesn't require any options to be passed in.
  */
 type LedgerOffscreenBridgeOptions = Record<never, never>;
+
+type IFrameMessage<TAction extends LedgerAction> = {
+  action: TAction;
+  params?: Readonly<Record<string, unknown>>;
+};
 
 /**
  * This class is used as a custom bridge for the Ledger connection. Every
@@ -57,133 +65,114 @@ export class LedgerOffscreenBridge
     return Promise.resolve();
   }
 
-  attemptMakeApp() {
-    return new Promise<boolean>((resolve, reject) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.makeApp,
-        },
-        (response) => {
-          if (response.success) {
-            resolve(true);
-          } else if (response.error) {
-            reject(response.error);
-          } else {
-            reject(new Error('Unknown error occurred'));
-          }
-        },
-      );
+  attemptMakeApp(): Promise<boolean> {
+    return this.#sendMessage(
+      {
+        action: LedgerAction.makeApp,
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
+  }
+
+  updateTransportMethod(transportType: string): Promise<boolean> {
+    return this.#sendMessage(
+      {
+        action: LedgerAction.updateTransport,
+        params: { transportType },
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
+  }
+
+  getPublicKey(params: { hdPath: string }): Promise<{
+    publicKey: string;
+    address: string;
+    chainCode?: string;
+  }> {
+    return this.#sendMessage({
+      action: LedgerAction.getPublicKey,
+      params,
     });
   }
 
-  updateTransportMethod(transportType: string) {
-    return new Promise<boolean>((resolve, reject) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.updateTransport,
-          params: { transportType },
-        },
-        (response) => {
-          if (response.success) {
-            resolve(true);
-          } else {
-            reject(new Error('Ledger transport could not be updated'));
-          }
-        },
-      );
+  deviceSignTransaction(params: { hdPath: string; tx: string }): Promise<{
+    v: string;
+    s: string;
+    r: string;
+  }> {
+    return this.#sendMessage({
+      action: LedgerAction.signTransaction,
+      params,
     });
   }
 
-  getPublicKey(params: { hdPath: string }) {
-    return new Promise<{
-      publicKey: string;
-      address: string;
-      chainCode?: string;
-    }>((resolve, reject) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.getPublicKey,
-          params,
-        },
-        (response) => {
-          if (response.success) {
-            resolve(response.payload);
-          } else {
-            reject(response.payload.error);
-          }
-        },
-      );
-    });
-  }
-
-  deviceSignTransaction(params: { hdPath: string; tx: string }) {
-    return new Promise<{
-      v: string;
-      s: string;
-      r: string;
-    }>((resolve, reject) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.signTransaction,
-          params,
-        },
-        (response) => {
-          if (response.success) {
-            resolve(response.payload);
-          } else {
-            reject(response.payload.error);
-          }
-        },
-      );
-    });
-  }
-
-  deviceSignMessage(params: { hdPath: string; message: string }) {
-    return new Promise<{
-      v: number;
-      s: string;
-      r: string;
-    }>((resolve, reject) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.signPersonalMessage,
-          params,
-        },
-        (response) => {
-          if (response.success) {
-            resolve(response.payload);
-          } else {
-            reject(response.payload.error);
-          }
-        },
-      );
+  deviceSignMessage(params: {
+    hdPath: string;
+    message: string;
+  }): Promise<{ v: number; s: string; r: string }> {
+    return this.#sendMessage({
+      action: LedgerAction.signPersonalMessage,
+      params,
     });
   }
 
   deviceSignTypedData(
     params: LedgerSignTypedDataParams,
   ): Promise<LedgerSignTypedDataResponse> {
-    return new Promise<{
-      v: number;
-      s: string;
-      r: string;
-    }>((resolve, reject) => {
+    return this.#sendMessage({
+      action: LedgerAction.signTypedData,
+      params,
+    });
+  }
+
+  async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
+    message: IFrameMessage<TAction>,
+    { timeout }: { timeout?: number } = {},
+  ): Promise<ResponsePayload> {
+    return new Promise((resolve, reject) => {
+      let responseTimeout: ReturnType<typeof setTimeout>;
+
+      if (timeout) {
+        responseTimeout = setTimeout(() => {
+          reject(new Error('Ledger iframe timeout'));
+        }, timeout);
+      }
+
       chrome.runtime.sendMessage(
         {
+          ...message,
           target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.signTypedData,
-          params,
         },
         (response) => {
-          if (response.success) {
-            resolve(response.payload);
+          clearTimeout(responseTimeout);
+          if (response?.success) {
+            resolve(response.payload || response.success);
           } else {
-            reject(response.payload.error);
+            // Need to process the payload to get the error
+            // and then reject with the error
+            const error = response?.payload?.error;
+
+            if (
+              error &&
+              typeof error.statusCode === 'number' &&
+              error.statusCode > 0
+            ) {
+              // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
+              // TransportStatusError will regenerate the error message based on the statusCode
+              const transportStatusError = new TransportStatusError(
+                error.statusCode,
+              );
+              reject(transportStatusError);
+            } else if (error?.message) {
+              // Regenerate the error based on the SerializedLedgerError
+              const newError = new Error(error.message, {
+                cause: error,
+              });
+              reject(newError);
+            } else {
+              // Fallback for unknown Ledger errors when error information is not available
+              reject(new Error('Unknown Ledger error occurred'));
+            }
           }
         },
       );

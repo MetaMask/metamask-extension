@@ -1,40 +1,67 @@
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
+import {
+  getIsSmartTransaction,
+  type SmartTransactionsState,
+} from '../../../../../shared/modules/selectors';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
+import {
+  isRelaySupported,
+  isSendBundleSupported,
+} from '../../../../store/actions';
 
 export function useIsGaslessSupported() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
+  const { chainId, txParams } = transactionMeta ?? {};
+  const { from } = txParams ?? {};
 
-  const { chainId, txParams } = transactionMeta;
-  const { from } = txParams;
-
-  const { value: atomicBatchSupportResult } = useAsyncResult(
-    async () =>
-      isAtomicBatchSupported({
-        address: from as Hex,
-        chainIds: [chainId],
-      }),
-    [chainId, from],
+  const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
+    getIsSmartTransaction(state, chainId),
   );
+
+  const { value: atomicBatchSupportResult } = useAsyncResult(async () => {
+    if (isSmartTransaction) {
+      return undefined;
+    }
+
+    return isAtomicBatchSupported({
+      address: from as Hex,
+      chainIds: [chainId],
+    });
+  }, [chainId, from, isSmartTransaction]);
+
+  const { value: relaySupportsChain } = useAsyncResult(async () => {
+    if (isSmartTransaction) {
+      return undefined;
+    }
+
+    return isRelaySupported(chainId);
+  }, [chainId, isSmartTransaction]);
+
+  const { value: sendBundleSupportsChain } = useAsyncResult(async () => {
+    return isSendBundleSupported(chainId);
+  }, [chainId]);
 
   const atomicBatchChainSupport = atomicBatchSupportResult?.find(
     (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
   );
 
-  const supportsGaslessBundle = isSmartTransaction;
+  // Currently requires upgraded account, can also support no `delegationAddress` in future.
+  const is7702Supported = Boolean(
+    atomicBatchChainSupport?.isSupported && relaySupportsChain,
+  );
 
-  const supportsGasless7702 =
-    process.env.TRANSACTION_RELAY_API_URL &&
-    Boolean(atomicBatchChainSupport) &&
-    (atomicBatchChainSupport?.isSupported ||
-      !atomicBatchChainSupport?.delegationAddress);
+  const isSupported = Boolean(
+    (isSmartTransaction && sendBundleSupportsChain) || is7702Supported,
+  );
 
-  return supportsGaslessBundle || supportsGasless7702;
+  return {
+    isSupported,
+    isSmartTransaction,
+  };
 }

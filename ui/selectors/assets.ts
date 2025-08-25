@@ -1,4 +1,5 @@
 import {
+  DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
@@ -20,11 +21,7 @@ import { calculateTokenFiatAmount } from '../components/app/assets/util/calculat
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { getSelectedInternalAccount } from './accounts';
-import {
-  getMultichainBalances,
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from './multichain';
+import { getMultichainBalances, getMultichainIsEvm } from './multichain';
 import {
   getCurrencyRates,
   getCurrentNetwork,
@@ -35,6 +32,7 @@ import {
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
+import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -42,6 +40,10 @@ export type AssetsState = {
 
 export type AssetsRatesState = {
   metamask: MultichainAssetsRatesControllerState;
+};
+
+export type DefiState = {
+  metamask: DeFiPositionsControllerState;
 };
 
 /**
@@ -72,6 +74,28 @@ export function getAssetsMetadata(state: AssetsState) {
  */
 export function getAssetsRates(state: AssetsRatesState) {
   return state.metamask.conversionRates;
+}
+
+/**
+ * Gets DeFi positions
+ *
+ * @param state - Redux state object.
+ * @returns An object containing defi positions for all accounts
+ */
+export function getDefiPositions(
+  state: DefiState,
+): DeFiPositionsControllerState['allDeFiPositions'] {
+  return state?.metamask?.allDeFiPositions;
+}
+
+/**
+ * Gets non-EVM assets historical prices.
+ *
+ * @param state - Redux state object.
+ * @returns An object containing non-EVM assets historical prices per asset types (CAIP-19).
+ */
+export function getHistoricalPrices(state: AssetsRatesState) {
+  return state.metamask.historicalPrices;
 }
 
 export const getTokenBalancesEvm = createDeepEqualSelector(
@@ -124,6 +148,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               decimals,
               nativeBalances,
               selectedAccountTokenBalancesAcrossChains,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             }) || '0';
 
           const tokenFiatAmount = calculateTokenFiatAmount({
@@ -153,6 +179,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
             if (token.isNative) {
               title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
             } else {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               title = token.name || token.symbol;
             }
 
@@ -199,8 +227,11 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const { chainId, assetNamespace } = parseCaipAssetType(assetId);
       const isNative = assetNamespace === 'slip44';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
-      const rate = assetRates?.[assetId]?.rate || '0';
-      const balanceInFiat = new BigNumber(balance.amount).times(rate);
+      const rate = assetRates?.[assetId]?.rate;
+
+      const balanceInFiat = rate
+        ? new BigNumber(balance.amount).times(rate).toNumber()
+        : null;
 
       const assetMetadataFallback = {
         name: balance.unit,
@@ -221,9 +252,9 @@ export const getMultiChainAssets = createDeepEqualSelector(
           chainId,
           isNative,
           primary: balance.amount,
-          secondary: balanceInFiat.toNumber(),
+          secondary: balanceInFiat,
           string: '',
-          tokenFiatAmount: balanceInFiat.toNumber(), // for now we are keeping this is to satisfy sort, this should be fiat amount
+          tokenFiatAmount: balanceInFiat,
           isStakeable: false,
         });
       }
@@ -285,34 +316,143 @@ const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
-  getMultichainNetwork,
   getMultichainBalances,
   getAccountAssets,
   getAssetsRates,
-  (
-    selectedAccountAddress,
-    currentNetwork,
-    multichainBalances,
-    accountAssets,
-    assetRates,
-  ) => {
-    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
-    const balances = multichainBalances?.[selectedAccountAddress.id];
+  (selectedAccountAddress, multichainBalances, accountAssets, assetRates) => {
+    const { id } = selectedAccountAddress ?? {};
+    const assetIds = id ? accountAssets?.[id] || [] : [];
+    const balances = id ? multichainBalances?.[id] : {};
 
     let aggregatedBalance = new BigNumber(0);
 
     assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId } = parseCaipAssetType(assetId);
-      if (chainId === currentNetwork.chainId) {
-        const balance = balances?.[assetId] || zeroBalanceAssetFallback;
-        const rate = assetRates?.[assetId]?.rate || '0';
-        const balanceInFiat = new BigNumber(balance.amount).times(rate);
+      const balance = balances?.[assetId] || zeroBalanceAssetFallback;
+      const rate = assetRates?.[assetId]?.rate || '0';
+      const balanceInFiat = new BigNumber(balance.amount).times(rate);
 
-        aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
-      }
+      aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
     });
 
     return aggregatedBalance.toNumber();
+  },
+);
+
+export type HistoricalBalanceData = {
+  balance: number;
+  percentChange: number;
+  amountChange: number;
+};
+
+export type HistoricalBalances = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  PT1H: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  P1D: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  P7D: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  P14D: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  P30D: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  P200D: HistoricalBalanceData;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  P1Y: HistoricalBalanceData;
+};
+
+export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
+  (_state, selectedAccount: { id: string }) => selectedAccount,
+  getMultichainBalances,
+  getAccountAssets,
+  getAssetsRates,
+  (
+    selectedAccountAddress: { id: string },
+    multichainBalances: Record<
+      string,
+      Record<string, { amount: string; unit: string }>
+    >,
+    accountAssets: Record<string, string[]>,
+    assetRates: ReturnType<typeof getAssetsRates>,
+  ) => {
+    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
+    const balances = multichainBalances?.[selectedAccountAddress.id];
+
+    // Initialize historical balances object with zeros
+    const historicalBalances: HistoricalBalances = {
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    };
+
+    // Track total current balance for calculating overall percent changes
+    let totalCurrentBalance = new BigNumber(0);
+
+    assetIds.forEach((assetId: string) => {
+      const balance = balances?.[assetId] || zeroBalanceAssetFallback;
+      const assetRate = assetRates?.[assetId as keyof typeof assetRates];
+
+      if (!assetRate?.marketData?.pricePercentChange) {
+        return;
+      }
+
+      if (assetRate.rate) {
+        const { pricePercentChange } = assetRate.marketData;
+        // Calculate current balance in fiat
+        const currentBalanceInFiat = new BigNumber(balance.amount).times(
+          assetRate.rate || '0',
+        );
+
+        // Add to total current balance
+        totalCurrentBalance = totalCurrentBalance.plus(currentBalanceInFiat);
+
+        // For each time period, reconstruct the historical balance for that period, based on current balance and percent change
+        Object.entries(pricePercentChange).forEach(
+          ([period, percentChange]) => {
+            if (period in historicalBalances) {
+              // Calculate historical balance by adjusting current balance by the percent change
+              const historicalBalance = currentBalanceInFiat
+                .div(Number((1 + (percentChange as number) / 100).toFixed(8)))
+                .toNumber();
+
+              // aggregated the historical balance for that period with the running balance from the other balance
+              historicalBalances[period as keyof HistoricalBalances].balance +=
+                historicalBalance;
+            }
+          },
+        );
+      }
+    });
+
+    // Calculate overall percent and amount change for each historical period
+    const totalCurrentBalanceNum = totalCurrentBalance.toNumber();
+
+    Object.entries(historicalBalances).forEach(([_period, data]) => {
+      if (totalCurrentBalanceNum !== 0) {
+        // Calculate amount change (current - historical)
+        const amountChange = totalCurrentBalanceNum - data.balance;
+
+        // Calculate percent change relative to historical balance
+        const percentChange = (amountChange / data.balance) * 100;
+
+        // Round to 8 decimal places for precision
+        data.amountChange = Number(amountChange.toFixed(8));
+        data.percentChange = Number(percentChange.toFixed(8));
+      }
+    });
+
+    return historicalBalances;
   },
 );
 
@@ -326,11 +466,13 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
 export const getMultichainNativeAssetType = createDeepEqualSelector(
   getSelectedInternalAccount,
   getAccountAssets,
-  getMultichainNetwork,
+  getSelectedMultichainNetworkConfiguration,
   (
     selectedAccount: ReturnType<typeof getSelectedInternalAccount>,
     accountAssets: ReturnType<typeof getAccountAssets>,
-    currentNetwork: ReturnType<typeof getMultichainNetwork>,
+    currentNetwork: ReturnType<
+      typeof getSelectedMultichainNetworkConfiguration
+    >,
   ) => {
     const assetTypes = accountAssets?.[selectedAccount.id] || [];
     const nativeAssetType = assetTypes.find((assetType) => {

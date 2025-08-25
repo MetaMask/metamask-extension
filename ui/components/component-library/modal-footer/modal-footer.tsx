@@ -12,6 +12,8 @@ import { Container, ContainerMaxWidth } from '../container';
 import { ModalFooterProps, ModalFooterComponent } from './modal-footer.types';
 
 export const ModalFooter: ModalFooterComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'footer'>(
     {
       className = '',
@@ -55,6 +57,8 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
               size={ButtonSize.Lg} // TODO: There is a type issue with using variant, size and spreading props after size
               className={classnames(
                 'mm-modal-footer__button',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 cancelButtonProps?.className || '',
               )}
             />
@@ -67,6 +71,8 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
               {...submitButtonProps}
               className={classnames(
                 'mm-modal-footer__button',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 submitButtonProps?.className || '',
               )}
             />

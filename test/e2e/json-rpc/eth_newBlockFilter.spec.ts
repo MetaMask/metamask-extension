@@ -5,7 +5,7 @@ import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 
 describe('eth_newBlockFilter', function () {
-  const ganacheOptions: { blockTime: number } = {
+  const localNodeOptions: { blockTime: number } = {
     blockTime: 0.1,
   };
   it('executes a new block filter call', async function () {
@@ -15,7 +15,7 @@ describe('eth_newBlockFilter', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: ganacheOptions,
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

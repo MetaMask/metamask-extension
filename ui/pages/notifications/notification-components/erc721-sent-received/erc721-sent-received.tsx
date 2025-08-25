@@ -1,9 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
+import { t } from '../../../../../shared/lib/translate';
 
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
@@ -12,8 +9,6 @@ import {
 } from '../types/notifications/notifications';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
-
 import {
   createTextItems,
   formatIsoDateString,
@@ -61,6 +56,8 @@ const title = (n: ERC721Notification) =>
 
 const getTitle = (n: ERC721Notification) => {
   const address = shortenAddress(isSent(n) ? n.data.to : n.data.from);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const items = createTextItems([title(n) || '', address], TextVariant.bodySm);
   return items;
 };
@@ -114,9 +111,8 @@ export const components: NotificationComponent<ERC721Notification> = {
     body: {
       type: NotificationComponentType.OnChainBody,
       Image: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencyName } =
-          getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+          getNetworkDetailsByChainId(notification.chain_id);
         return (
           <NotificationDetailNft
             networkSrc={nativeCurrencyLogo}
@@ -150,14 +146,17 @@ export const components: NotificationComponent<ERC721Notification> = {
             color: TextColor.successDefault,
             backgroundColor: BackgroundColor.successMuted,
           }}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           label={t('notificationItemStatus') || ''}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           detail={t('notificationItemConfirmed') || ''}
         />
       ),
       Asset: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
+          notification.chain_id,
         );
         return (
           <NotificationDetailCollection
@@ -165,21 +164,24 @@ export const components: NotificationComponent<ERC721Notification> = {
               src: notification.data.nft.image,
               badgeSrc: nativeCurrencyLogo,
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationItemCollection') || ''}
             collection={`${notification.data.nft.collection.name} (${notification.data.nft.token_id})`}
           />
         );
       },
       Network: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencyName } =
-          getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+          getNetworkDetailsByChainId(notification.chain_id);
 
         return (
           <NotificationDetailAsset
             icon={{
               src: nativeCurrencyLogo,
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />

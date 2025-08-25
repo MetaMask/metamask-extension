@@ -54,10 +54,9 @@ export const CreateSolanaAccountModal = ({
             <CreateSnapAccount
               onActionComplete={async (confirmed: boolean) => {
                 if (confirmed) {
-                  onClose();
-                } else {
                   setShowCreateAccount(false);
                 }
+                onClose();
               }}
               selectedKeyringId={selectedKeyringId}
               onSelectSrp={() => {

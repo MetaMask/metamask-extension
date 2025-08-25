@@ -14,11 +14,16 @@ import { AlertMetricsProvider } from '../../../../../../../components/app/alert-
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
-import { RevokeDelegation } from '../../../../../../../../test/data/confirmations/batch-transaction';
+import {
+  downgradeAccountConfirmation,
+  upgradeAccountConfirmationOnly,
+} from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { Confirmation } from '../../../../../types/confirm';
-import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
+import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
 import { BatchSimulationDetails } from './batch-simulation-details';
+
+jest.mock('../../../../../../../../shared/lib/transactions/approvals');
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(),
@@ -34,10 +39,6 @@ jest.mock(
     updateAtomicBatchData: jest.fn(),
   }),
 );
-
-jest.mock('../../../../../confirm-approve/confirm-approve.util', () => ({
-  getCustomTxParamsData: jest.fn(),
-}));
 
 const ADDRESS_MOCK = '0x1234567891234567891234567891234567891234';
 const ADDRESS_SHORT_MOCK = '0x12345...91234';
@@ -60,6 +61,7 @@ const BALANCE_CHANGE_ERC20_MOCK: ApprovalBalanceChange = {
   isAllApproval: false,
   isUnlimitedApproval: false,
   nestedTransactionIndex: 0,
+  usdAmount: null,
 };
 
 const BALANCE_CHANGE_ERC721_MOCK: ApprovalBalanceChange = {
@@ -75,6 +77,7 @@ const BALANCE_CHANGE_ERC721_MOCK: ApprovalBalanceChange = {
   isAllApproval: false,
   isUnlimitedApproval: false,
   nestedTransactionIndex: 0,
+  usdAmount: null,
 };
 
 const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
@@ -90,6 +93,7 @@ const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
   isAllApproval: false,
   isUnlimitedApproval: false,
   nestedTransactionIndex: 0,
+  usdAmount: null,
 };
 
 function render(transaction?: Confirmation) {
@@ -116,7 +120,7 @@ function render(transaction?: Confirmation) {
 describe('BatchSimulationDetails', () => {
   const useBalanceChangesMock = jest.mocked(useBalanceChanges);
   const updateAtomicBatchDataMock = jest.mocked(updateAtomicBatchData);
-  const getCustomTxParamsDataMock = jest.mocked(getCustomTxParamsData);
+  const updateApprovalAmountMock = jest.mocked(updateApprovalAmount);
 
   const useBatchApproveBalanceChangesMock = jest.mocked(
     useBatchApproveBalanceChanges,
@@ -262,7 +266,7 @@ describe('BatchSimulationDetails', () => {
       value: [BALANCE_CHANGE_ERC20_MOCK],
     });
 
-    getCustomTxParamsDataMock.mockReturnValue(DATA_MOCK);
+    updateApprovalAmountMock.mockReturnValue(DATA_MOCK);
 
     const { getByTestId, getByText } = render();
 
@@ -283,7 +287,12 @@ describe('BatchSimulationDetails', () => {
   });
 
   it('return null for transaction of type revokeDelegation', () => {
-    const { container } = render(RevokeDelegation);
+    const { container } = render(downgradeAccountConfirmation);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('return null for upgrade transaction if there are no nested transactions', () => {
+    const { container } = render(upgradeAccountConfirmationOnly);
     expect(container.firstChild).toBeNull();
   });
 });

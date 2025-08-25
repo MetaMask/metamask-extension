@@ -20,7 +20,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../selectors/identity/backup-and-sync';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { Box, Text } from '../../components/component-library';
 import {
@@ -36,6 +36,8 @@ import {
   NotificationsSettingsType,
 } from '../../components/multichain';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsSettingsAllowNotifications({
   loading,
   setLoading,
@@ -59,12 +61,14 @@ export function NotificationsSettingsAllowNotifications({
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   const { enableNotifications, error: errorEnableNotifications } =
     useEnableNotifications();
   const { disableNotifications, error: errorDisableNotifications } =
     useDisableNotifications();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const error = errorEnableNotifications || errorDisableNotifications;
 
   useEffect(() => {
@@ -88,9 +92,17 @@ export function NotificationsSettingsAllowNotifications({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           settings_type: 'notifications',
-          was_profile_syncing_on: isProfileSyncingEnabled,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          was_profile_syncing_on: isBackupAndSyncEnabled,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           old_value: true,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_value: false,
         },
       });
@@ -100,9 +112,17 @@ export function NotificationsSettingsAllowNotifications({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           settings_type: 'notifications',
-          was_profile_syncing_on: isProfileSyncingEnabled,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          was_profile_syncing_on: isBackupAndSyncEnabled,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           old_value: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_value: true,
         },
       });
@@ -116,6 +136,8 @@ export function NotificationsSettingsAllowNotifications({
     disableNotifications,
     enableNotifications,
     toggleValue,
+    isBackupAndSyncEnabled,
+    trackEvent,
   ]);
 
   const privacyLink = useMemo(
@@ -147,6 +169,8 @@ export function NotificationsSettingsAllowNotifications({
     >
       <NotificationsSettingsBox
         value={toggleValue}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onToggle={toggleNotifications}
         disabled={disabled}
         loading={loading}

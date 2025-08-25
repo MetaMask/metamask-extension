@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { DAPP_URL, unlockWallet, WINDOW_TITLES } from '../../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
+import { Anvil } from '../../../seeder/anvil';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
@@ -32,10 +34,15 @@ describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createTransactionAssertDetailsAndConfirm(
             driver,
             contractRegistry,
+            localNodes?.[0],
           );
         },
         mocks,
@@ -52,8 +59,9 @@ async function mocks(server: Mockttp) {
 async function createTransactionAssertDetailsAndConfirm(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
+  localNode?: Anvil,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver, localNode);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -69,8 +77,8 @@ async function createTransactionAssertDetailsAndConfirm(
   const setApprovalForAllConfirmation =
     new SetApprovalForAllTransactionConfirmation(driver);
 
-  await setApprovalForAllConfirmation.check_setApprovalForAllTitle();
-  await setApprovalForAllConfirmation.check_setApprovalForAllSubHeading();
+  await setApprovalForAllConfirmation.checkSetApprovalForAllTitle();
+  await setApprovalForAllConfirmation.checkSetApprovalForAllSubHeading();
 
   await setApprovalForAllConfirmation.clickScrollToBottomButton();
   await setApprovalForAllConfirmation.clickFooterConfirmButton();

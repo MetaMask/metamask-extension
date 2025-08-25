@@ -1,6 +1,10 @@
-import { delimiter, join } from 'path';
 import { execSync } from 'child_process';
-import { createAnvil, Anvil as AnvilType } from '@viem/anvil';
+import { delimiter, join } from 'path';
+import {
+  Anvil as AnvilType,
+  createAnvil,
+  CreateAnvilOptions,
+} from '@viem/anvil';
 import { createAnvilClients } from './anvil-clients';
 
 type Hardfork =
@@ -29,7 +33,7 @@ const defaultOptions = {
   chainId: 1337,
   gasLimit: 30000000,
   gasPrice: 2000000000,
-  hardfork: 'Muirglacier' as Hardfork,
+  hardfork: 'Prague' as Hardfork,
   host: '127.0.0.1',
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
@@ -54,7 +58,7 @@ export class Anvil {
       noMining?: boolean;
     } = {},
   ): Promise<void> {
-    const options = { ...defaultOptions, ...opts };
+    const options: CreateAnvilOptions = { ...defaultOptions, ...opts };
 
     // Set blockTime if noMining is disabled, as those 2 options are incompatible
     if (!opts?.noMining && !opts?.blockTime) {
@@ -135,7 +139,7 @@ export class Anvil {
 
     if (!provider) {
       console.log('No provider found');
-      return;
+      return undefined;
     }
     const { publicClient } = provider;
 
@@ -153,10 +157,7 @@ export class Anvil {
     return Number(fiatBalance);
   }
 
-  async setAccountBalance(
-    address: Hex,
-    balance: string,
-  ): Promise<void> {
+  async setAccountBalance(address: Hex, balance: string): Promise<void> {
     const provider = this.getProvider();
     const { testClient } = provider;
 

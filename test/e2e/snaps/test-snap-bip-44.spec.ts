@@ -1,10 +1,11 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { mockBip44Snap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 const publicKeyBip44 =
   '"0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e08d1"';
@@ -20,29 +21,29 @@ describe('Test Snap bip-44', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
+        testSpecificMock: mockBip44Snap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        // We explicitly choose to await balances to prevent flakiness due to long login times.
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to `test-snaps` page, and install the Snap.
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectBip44Button',
-          true,
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectBip44Button', {
+          withWarning: true,
+        });
 
         // check the installation status
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectBip44Button',
           'Reconnect to BIP-44 Snap',
         );
 
         // Click bip44 button to get private key and validate the result
         await testSnaps.scrollAndClickButton('publicKeyBip44Button');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip44ResultSpan',
           publicKeyBip44,
         );
@@ -51,7 +52,7 @@ describe('Test Snap bip-44', function () {
         await testSnaps.fillMessage('messageBip44Input', '1234');
         await testSnaps.clickButton('signBip44MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip44SignResultSpan',
           publicKeyBip44Sign,
         );
@@ -64,7 +65,7 @@ describe('Test Snap bip-44', function () {
         await testSnaps.fillMessage('messageBip44Input', 'foo bar');
         await testSnaps.clickButton('signBip44MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip44SignResultSpan',
           publicKeyGeneratedWithEntropySourceSRP1,
         );
@@ -77,7 +78,7 @@ describe('Test Snap bip-44', function () {
         await testSnaps.fillMessage('messageBip44Input', 'foo bar');
         await testSnaps.clickButton('signBip44MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip44SignResultSpan',
           publicKeyGeneratedWithEntropySourceSRP2,
         );

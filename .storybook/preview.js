@@ -13,9 +13,8 @@ import * as allLocales from './locales';
 import { I18nProvider, LegacyI18nProvider } from './i18n';
 import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
 import { MemoryRouter } from 'react-router-dom';
+import { CompatRouter } from 'react-router-dom-v5-compat';
 import { setBackgroundConnection } from '../ui/store/background-connection';
 import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
@@ -109,7 +108,6 @@ export const getNewState = (state, props) => {
 };
 
 export const store = configureStore(testData);
-const history = createBrowserHistory();
 const proxiedBackground = new Proxy(
   {},
   {
@@ -150,23 +148,25 @@ const metamaskDecorator = (story, context) => {
   return (
     <Provider store={store}>
       <MemoryRouter>
-        <MetaMetricsProviderStorybook>
-          <AlertMetricsProvider
-            metrics={{
-              trackAlertActionClicked: () => undefined,
-              trackAlertRender: () => undefined,
-              trackInlineAlertClicked: () => undefined,
-            }}
-          >
-            <I18nProvider
-              currentLocale={currentLocale}
-              current={current}
-              en={allLocales.en}
+        <CompatRouter>
+          <MetaMetricsProviderStorybook>
+            <AlertMetricsProvider
+              metrics={{
+                trackAlertActionClicked: () => undefined,
+                trackAlertRender: () => undefined,
+                trackInlineAlertClicked: () => undefined,
+              }}
             >
-              <LegacyI18nProvider>{story()}</LegacyI18nProvider>
-            </I18nProvider>
-          </AlertMetricsProvider>
-        </MetaMetricsProviderStorybook>
+              <I18nProvider
+                currentLocale={currentLocale}
+                current={current}
+                en={allLocales.en}
+              >
+                <LegacyI18nProvider>{story()}</LegacyI18nProvider>
+              </I18nProvider>
+            </AlertMetricsProvider>
+          </MetaMetricsProviderStorybook>
+        </CompatRouter>
       </MemoryRouter>
     </Provider>
   );

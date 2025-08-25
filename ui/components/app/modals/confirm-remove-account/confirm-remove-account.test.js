@@ -10,6 +10,7 @@ import { MultichainNetworks } from '../../../../../shared/constants/multichain/n
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmRemoveAccount from '.';
 
+// @ts-expect-error mocking platform
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
 const mockAccount = createMockInternalAccount({
