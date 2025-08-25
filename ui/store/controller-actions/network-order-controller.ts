@@ -20,7 +20,7 @@ export function enableAllPopularNetworks(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     const [caipNetworkConfigMap] =
       getMultichainNetworkConfigurationsByChainId(state);
@@ -28,7 +28,7 @@ export function enableAllPopularNetworks(): ThunkAction<
     const evmPopularNetworkChainIds = FEATURED_NETWORK_CHAIN_IDS.filter(
       (chainId) => toEvmCaipChainId(chainId) in caipNetworkConfigMap,
     );
-    dispatch(
+    await dispatch(
       setEnabledNetworks(evmPopularNetworkChainIds, KnownCaipNamespace.Eip155),
     );
   };
@@ -37,7 +37,7 @@ export function enableAllPopularNetworks(): ThunkAction<
 export function enableSingleNetwork(
   chainId: Hex | CaipChainId,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch) => {
+  return async (dispatch) => {
     const caipChainId = isCaipChainId(chainId)
       ? chainId
       : toEvmCaipChainId(chainId);
@@ -45,13 +45,13 @@ export function enableSingleNetwork(
 
     // EVM
     if (namespace === KnownCaipNamespace.Eip155) {
-      dispatch(
+      await dispatch(
         setEnabledNetworks([toHex(reference)], KnownCaipNamespace.Eip155),
       );
       return;
     }
 
     // Non-EVM
-    dispatch(setEnabledNetworks([caipChainId], namespace));
+    await dispatch(setEnabledNetworks([caipChainId], namespace));
   };
 }

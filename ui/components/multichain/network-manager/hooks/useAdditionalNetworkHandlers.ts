@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { UpdateNetworkFields } from '@metamask/network-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { Hex } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
@@ -14,8 +15,8 @@ export const useAdditionalNetworkHandlers = () => {
   // Memoize the additional network click handler
   const handleAdditionalNetworkClick = useCallback(
     async (network: UpdateNetworkFields) => {
-      dispatch(hideModal());
-      await dispatch(
+      await dispatch(hideModal());
+      const requestResult = (await dispatch(
         requestUserApproval({
           origin: ORIGIN_METAMASK,
           type: ApprovalType.AddEthereumChain,
@@ -43,8 +44,12 @@ export const useAdditionalNetworkHandlers = () => {
             source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
           },
         }),
-      );
-      await dispatch(enableSingleNetwork(network.chainId));
+      )) as unknown as { chainId: Hex } | null;
+
+      // Only switch chains if user confirms request to change network.
+      if (requestResult) {
+        await dispatch(enableSingleNetwork(network.chainId));
+      }
     },
     [dispatch],
   );

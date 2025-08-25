@@ -6159,7 +6159,7 @@ export function requestUserApproval({
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('requestUserApproval', [
+      return await submitRequestToBackground('requestUserApproval', [
         {
           origin,
           type,
@@ -6169,6 +6169,7 @@ export function requestUserApproval({
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had trouble requesting user approval'));
+      return null;
     }
   };
 }
