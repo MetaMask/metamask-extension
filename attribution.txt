@@ -5113,7 +5113,7 @@ THE SOFTWARE.
 ******************************
 
 cipher-base
-1.0.4 <https://github.com/crypto-browserify/cipher-base>
+1.0.6 <https://github.com/crypto-browserify/cipher-base>
 The MIT License (MIT)
 
 Copyright (c) 2017 crypto-browserify contributors
@@ -36522,7 +36522,7 @@ SOFTWARE.
 ******************************
 
 sha.js
-2.4.11 <https://github.com/crypto-browserify/sha.js>
+2.4.12 <https://github.com/crypto-browserify/sha.js>
 Copyright (c) 2013-2018 sha.js contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

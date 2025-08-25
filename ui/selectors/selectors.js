@@ -122,7 +122,6 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
@@ -2291,9 +2290,7 @@ export const getSnapInsights = createDeepEqualSelector(
  * @returns {object}
  */
 function getAllowedAnnouncementIds() {
-  return {
-    [NOTIFICATION_SOLANA_ON_METAMASK]: true,
-  };
+  return {};
 }
 
 /**

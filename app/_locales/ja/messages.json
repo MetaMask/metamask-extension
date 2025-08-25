@@ -3004,9 +3004,6 @@
   "learnMoreAboutPrivacy": {
     "message": "プライバシーのベストプラクティスに関する詳細をご覧ください。"
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Solanaアカウントの詳細"
-  },
   "learnMoreKeystone": {
     "message": "詳細"
   },
@@ -3765,9 +3762,6 @@
   },
   "notEnoughGas": {
     "message": "ガスが不足しています"
-  },
-  "notNow": {
-    "message": "また後で"
   },
   "notificationDetail": {
     "message": "詳細"
@@ -5710,27 +5704,6 @@
   "solanaAccountRequired": {
     "message": "このサイトへの接続には、Solanaアカウントが必要です。"
   },
-  "solanaImportAccounts": {
-    "message": "Solanaアカウントをインポート"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "シークレットリカバリーフレーズをインポートして、他のウォレットからSolanaアカウントを移行します。"
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "他の機能も近日追加予定"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFT、ハードウェアウォレットのサポート、その他機能も近日追加予定。"
-  },
-  "solanaOnMetaMask": {
-    "message": "MetaMaskでSolana"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "トークンの送金、受取、スワップ"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "SOLやUSDCなどのトークンでの送金・取引。"
-  },
   "someNetworks": {
     "message": "$1個のネットワーク"
   },
@@ -7054,9 +7027,6 @@
   },
   "viewOnOpensea": {
     "message": "Openseaで表示"
-  },
-  "viewSolanaAccount": {
-    "message": "Solanaアカウントを表示"
   },
   "viewTransaction": {
     "message": "トランザクションを表示"

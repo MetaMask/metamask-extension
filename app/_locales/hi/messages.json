@@ -3004,9 +3004,6 @@
   "learnMoreAboutPrivacy": {
     "message": "गोपनीयता की सर्वोत्तम प्रथाओं के बारे में और जानें।"
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Solana एकाउंट्स के बारे में अधिक जानें"
-  },
   "learnMoreKeystone": {
     "message": "और अधिक जानें"
   },
@@ -3765,9 +3762,6 @@
   },
   "notEnoughGas": {
     "message": "गैस कम है"
-  },
-  "notNow": {
-    "message": "अभी नहीं"
   },
   "notificationDetail": {
     "message": "विवरण"
@@ -5710,27 +5704,6 @@
   "solanaAccountRequired": {
     "message": "इस साइट से कनेक्ट करने के लिए एक Solana अकाउंट आवश्यक है।"
   },
-  "solanaImportAccounts": {
-    "message": "Solana एकाउंट्स इंपोर्ट करें"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "अपने Solana अकाउंट को किसी अन्य वॉलेट से स्थानांतरित करने के लिए एक सीक्रेट रिकवरी फ्रेज़ इंपोर्ट करें।"
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "जल्द ही और फीचर्स उपलब्ध होंगे"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFTs, हार्डवेयर वॉलेट सपोर्ट और बहुत कुछ जल्द ही आ रहा है।"
-  },
-  "solanaOnMetaMask": {
-    "message": "MetaMask पर Solana"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "टोकन भेजें, प्राप्त करें और स्वैप करें"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "SOL, USDC आदि जैसे टोकन के साथ ट्रांसफर और लेनदेन करें।"
-  },
   "someNetworks": {
     "message": "$1 नेटवर्क"
   },
@@ -7054,9 +7027,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea पर देखें"
-  },
-  "viewSolanaAccount": {
-    "message": "Solana अकाउंट देखें"
   },
   "viewTransaction": {
     "message": "ट्रांसेक्शन देखें"

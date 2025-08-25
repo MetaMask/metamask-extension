@@ -3004,9 +3004,6 @@
   "learnMoreAboutPrivacy": {
     "message": "En iyi gizlilik uygulamaları hakkında daha fazla bilgi edinin."
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Solana hesapları hakkında daha fazla bilgi edinin"
-  },
   "learnMoreKeystone": {
     "message": "Daha Fazla Bilgi"
   },
@@ -3765,9 +3762,6 @@
   },
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
-  },
-  "notNow": {
-    "message": "Şimdi değil"
   },
   "notificationDetail": {
     "message": "Ayrıntılar"
@@ -5710,27 +5704,6 @@
   "solanaAccountRequired": {
     "message": "Bu siteye bağlanmak için bir Solana hesabı gereklidir."
   },
-  "solanaImportAccounts": {
-    "message": "Solana hesaplarını içe aktar"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Başka bir cüzdandan Solana hesabınızı taşımak için bir Gizli Kurtarma İfadesini içe aktarın."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Daha fazla özellik çok yakında"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFT'ler, donanım cüzdanı desteği ve daha fazlası çok yakında."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana MetaMask'te"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Token gönder, al ve swap yap"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "SOL, USDC ve daha fazlası gibi token'lar ile transfer ve işlem gerçekleştir."
-  },
   "someNetworks": {
     "message": "$1 ağ"
   },
@@ -7054,9 +7027,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea'de görüntüle"
-  },
-  "viewSolanaAccount": {
-    "message": "Solana hesabını görüntüle"
   },
   "viewTransaction": {
     "message": "İşlemi görüntüle"
