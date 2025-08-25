@@ -136,6 +136,7 @@ export const MultichainAddressRowsList = ({
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             textAlign={TextAlign.Center}
+            paddingTop={8}
             data-testid="multichain-address-rows-list-empty-message"
           >
             {searchPattern ? t('noNetworksFound') : t('noNetworksAvailable')}

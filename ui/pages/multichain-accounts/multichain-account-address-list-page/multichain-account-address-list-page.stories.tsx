@@ -228,3 +228,26 @@ export const ReceivingAddress: Story = {
     },
   ],
 };
+
+export const EmptyNetworksState: Story = {
+  decorators: [
+    (Story) => {
+      const accounts = createMultichainAccounts();
+      const mockStateWithEmptyNetworks = createMockState(
+        accounts,
+        'Multichain Account',
+      );
+      // Remove all multichain networks to show empty state
+      mockStateWithEmptyNetworks.metamask.multichainNetworkConfigurationsByChainId = {};
+      
+      const store = mockStore(mockStateWithEmptyNetworks);
+      return (
+        <Provider store={store}>
+          <Wrapper>
+            <Story />
+          </Wrapper>
+        </Provider>
+      );
+    },
+  ],
+};

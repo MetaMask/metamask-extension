@@ -12,24 +12,35 @@ import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
 
 const mockHistoryGoBack = jest.fn();
+const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
     goBack: mockHistoryGoBack,
   }),
+  useParams: () => mockUseParams(),
+  useLocation: () => mockUseLocation(),
 }));
 
 describe('MultichainAccountAddressListPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({ search: '' });
   });
 
   const renderComponent = (
     selectedAccount = MOCK_ACCOUNT_EOA,
     groupName = 'Test Account',
+    accountGroupId?: string,
   ) => {
     const groupId = 'test-wallet/0' as AccountGroupId;
+    
+    // Mock URL parameters - pass the raw group ID (component will decode it)
+    mockUseParams.mockReturnValue({
+      accountGroupId: accountGroupId || groupId,
+    });
 
     const store = configureStore({
       metamask: {
@@ -89,6 +100,7 @@ describe('MultichainAccountAddressListPage', () => {
           back: 'Back',
           account: 'Account',
           addresses: 'Addresses',
+          receivingAddress: 'Receiving address',
         },
       },
     });
@@ -175,6 +187,7 @@ describe('MultichainAccountAddressListPage', () => {
           back: 'Back',
           account: 'Account',
           addresses: 'Addresses',
+          receivingAddress: 'Receiving address',
         },
       },
     });
@@ -201,5 +214,59 @@ describe('MultichainAccountAddressListPage', () => {
     fireEvent.click(backButton);
 
     expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows receiving address title in receive mode', () => {
+    mockUseLocation.mockReturnValue({ search: '?source=receive' });
+    
+    const mockAccount = {
+      ...MOCK_ACCOUNT_EOA,
+      metadata: {
+        ...MOCK_ACCOUNT_EOA.metadata,
+        name: 'Individual Account',
+      },
+    };
+
+    renderComponent(mockAccount, 'Test Multichain Account');
+
+    expect(screen.getByText('Receiving address')).toBeInTheDocument();
+  });
+
+  it('shows empty networks state', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        accountTree: {
+          wallets: {},
+        },
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {},
+          selectedAccount: '',
+        },
+        multichainNetworkConfigurationsByChainId: {}, // Empty networks
+      },
+      localeMessages: {
+        currentLocale: 'en',
+        current: {
+          back: 'Back',
+          account: 'Account',
+          addresses: 'Addresses',
+          receivingAddress: 'Receiving address',
+        },
+      },
+    });
+
+    // Mock no account group ID in URL params
+    mockUseParams.mockReturnValue({ accountGroupId: undefined });
+
+    renderWithProvider(<MultichainAccountAddressListPage />, store);
+
+    // Should show fallback header
+    expect(screen.getByText('Account / Addresses')).toBeInTheDocument();
+
+    // MultichainAddressRowsList should render with empty networks
+    const addressList = screen.getByTestId('multichain-address-rows-list');
+    expect(addressList).toBeInTheDocument();
   });
 });
