@@ -1,9 +1,8 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import reactRouterDom from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
@@ -11,16 +10,14 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import DownloadApp from './download-app';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => ({
-    push: jest.fn(),
-    replace: jest.fn(),
-  })),
-}));
+const mockUseNavigate = jest.fn();
 
-const pushMock = jest.fn();
-const replaceMock = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 type StateOverrides = {
   metamask: {
@@ -94,15 +91,14 @@ const arrangeMocks = (stateOverrides: StateOverrides = initialState) => {
   };
   const store = configureMockStore([thunk])(mockStore);
 
-  jest
-    .spyOn(reactRouterDom, 'useHistory')
-    .mockImplementation()
-    .mockReturnValue({ push: pushMock, replace: replaceMock });
-
   return store;
 };
 
 describe('Download App Onboarding View', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('When the "Done" button is clicked', () => {
     it('should redirect to the onboarding pin extension route', async () => {
       const store = arrangeMocks();
@@ -112,8 +108,10 @@ describe('Download App Onboarding View', () => {
 
       fireEvent.click(continueButton);
 
-      expect(pushMock).toHaveBeenCalledTimes(1);
-      expect(pushMock).toHaveBeenCalledWith(ONBOARDING_PIN_EXTENSION_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_PIN_EXTENSION_ROUTE,
+      );
     });
   });
 
@@ -139,8 +137,10 @@ describe('Download App Onboarding View', () => {
       const store = arrangeMocks(mockState);
       renderWithProvider(<DownloadApp />, store);
 
-      expect(replaceMock).toHaveBeenCalledTimes(1);
-      expect(replaceMock).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+        replace: true,
+      });
     });
   });
 });
