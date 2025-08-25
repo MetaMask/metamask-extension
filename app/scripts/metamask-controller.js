@@ -766,10 +766,11 @@ export default class MetamaskController extends EventEmitter {
     );
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointDegraded',
-      async ({ chainId, endpointUrl }) => {
+      async ({ chainId, endpointUrl, error }) => {
         onRpcEndpointDegraded({
           chainId,
           endpointUrl,
+          error,
           infuraProjectId: opts.infuraProjectId,
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
