@@ -118,7 +118,7 @@ describe('useRamps', () => {
     const { result } = renderHook(() => useRamps(), { wrapper });
 
     const buyURI = result.current.getBuyURI('0x1');
-    expect(buyURI).toBe('https://portfolio.metamask.io/buy');
+    expect(buyURI).toBe('https://app.metamask.io/buy');
 
     process.env.PORTFOLIO_URL = originalPortfolioUrl;
     jest.resetModules();

@@ -541,6 +541,18 @@ describe('Multichain Accounts Selectors', () => {
       );
     });
 
+    it('sanitizes an EIP-155 chain ID and returns the internal account for a group', () => {
+      const result = getInternalAccountByGroupAndCaip(
+        typedMockState,
+        ENTROPY_GROUP_1_ID as AccountGroupId,
+        'eip155:1',
+      );
+
+      expect(result).toStrictEqual(
+        typedMockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+      );
+    });
+
     it('returns null if the group is not found', () => {
       const result = getInternalAccountByGroupAndCaip(
         typedMockState,
@@ -557,6 +569,17 @@ describe('Multichain Accounts Selectors', () => {
       const result = getInternalAccountBySelectedAccountGroupAndCaip(
         typedMockState,
         EIP155_MAINNET_SCOPE,
+      );
+
+      expect(result).toStrictEqual(
+        typedMockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+      );
+    });
+
+    it('sanitizes an EIP-155 chain ID and returns the internal account for a selected account group', () => {
+      const result = getInternalAccountBySelectedAccountGroupAndCaip(
+        typedMockState,
+        'eip155:1',
       );
 
       expect(result).toStrictEqual(
