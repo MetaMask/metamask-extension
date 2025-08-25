@@ -2,6 +2,8 @@ import {
   BridgeBackgroundAction,
   type BridgeController,
   BridgeUserAction,
+  formatChainIdToCaip,
+  isNativeAddress,
   isSolanaChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
@@ -12,6 +14,7 @@ import type {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   forceUpdateMetamaskState,
   setActiveNetworkWithError,
@@ -25,6 +28,8 @@ import {
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setTxAlerts,
+  setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
+  setEVMSrcNativeBalance,
 } from './bridge';
 import { isNetworkAdded } from './utils';
 import type { TokenPayload } from './types';
@@ -55,6 +60,7 @@ export {
   setWasTxDeclined,
   setSlippage,
   setTxAlerts,
+  setEVMSrcNativeBalance,
 };
 
 const callBridgeControllerMethod = (
@@ -112,6 +118,31 @@ export const updateQuoteRequestParams = (
   };
 };
 
+export const setEVMSrcTokenBalance = (
+  token: TokenPayload['payload'],
+  selectedAddress?: string,
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    if (token) {
+      trace({
+        name: TraceName.BridgeBalancesUpdated,
+        data: {
+          srcChainId: formatChainIdToCaip(token.chainId),
+          isNative: isNativeAddress(token.address),
+        },
+        startTime: Date.now(),
+      });
+      await dispatch(
+        setEVMSrcTokenBalance_({
+          selectedAddress,
+          tokenAddress: token.address,
+          chainId: token.chainId,
+        }),
+      );
+    }
+  };
+};
+
 export const setFromChain = ({
   networkConfig,
   selectedSolanaAccount,
@@ -141,9 +172,23 @@ export const setFromChain = ({
             .networkClientId || networkConfig.chainId,
         ),
       );
+      trace({
+        name: TraceName.BridgeBalancesUpdated,
+        data: {
+          srcChainId: formatChainIdToCaip(networkConfig.chainId),
+          isNative: true,
+        },
+        startTime: Date.now(),
+      });
+      await dispatch(
+        setEVMSrcNativeBalance({
+          selectedAddress: selectedEvmAccount.address,
+          chainId: networkConfig.chainId,
+        }),
+      );
     }
     if (token) {
-      await dispatch(setFromToken(token));
+      dispatch(setFromToken(token));
     }
   };
 };

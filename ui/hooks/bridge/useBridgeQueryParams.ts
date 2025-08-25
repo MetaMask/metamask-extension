@@ -9,6 +9,7 @@ import {
 import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  isCrossChain,
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
@@ -20,6 +21,8 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
+  setEVMSrcTokenBalance,
+  setEVMSrcNativeBalance,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
@@ -302,4 +305,31 @@ export const useBridgeQueryParams = (
       }
     }
   }, [parsedAmount, parsedFromAssetId, fromToken]);
+
+  // Set src token balance after url params are applied
+  useEffect(() => {
+    if (
+      // Wait for url params to be applied
+      !parsedFromAssetId &&
+      !searchParams.get(BridgeQueryParams.FROM) &&
+      fromToken &&
+      // Wait for network to be changed if needed
+      !isCrossChain(fromToken.chainId, fromChain?.chainId) &&
+      selectedEvmAccount
+    ) {
+      dispatch(setEVMSrcTokenBalance(fromToken, selectedEvmAccount.address));
+      dispatch(
+        setEVMSrcNativeBalance({
+          selectedAddress: selectedEvmAccount.address,
+          chainId: fromToken.chainId,
+        }),
+      );
+    }
+  }, [
+    parsedFromAssetId,
+    selectedEvmAccount,
+    fromToken,
+    fromChain,
+    searchParams,
+  ]);
 };

@@ -6,6 +6,7 @@ import {
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -229,7 +230,11 @@ export async function switchChain(
           autoApprove,
           metadata,
         });
-      } else if (hasApprovalRequestsForOrigin?.() && !isAddFlow) {
+      } else if (
+        hasApprovalRequestsForOrigin?.() &&
+        !isAddFlow &&
+        !autoApprove
+      ) {
         await requestUserApproval({
           origin,
           type: ApprovalType.SwitchEthereumChain,
@@ -246,7 +251,9 @@ export async function switchChain(
       });
     }
 
-    rejectApprovalRequestsForOrigin?.();
+    if (!isSnapId(origin)) {
+      rejectApprovalRequestsForOrigin?.();
+    }
 
     await setActiveNetwork(networkClientId);
 

@@ -331,6 +331,10 @@
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
   },
+  "addresses": {
+    "message": "Addresses",
+    "description": "Multichain account menu item for linking to addresses page"
+  },
   "advanced": {
     "message": "Advanced"
   },
@@ -1788,6 +1792,9 @@
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
+  },
+  "deepLink_theSwapsRampsPage": {
+    "message": "the Swaps/Ramps page"
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
@@ -4603,6 +4610,10 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "pin": {
+    "message": "Pin",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "Pin to top"
   },
@@ -4895,6 +4906,10 @@
   },
   "removeSnapDescription": {
     "message": "This action will delete the snap, its data and revoke your given permissions."
+  },
+  "rename": {
+    "message": "Rename",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "replace"

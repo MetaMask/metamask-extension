@@ -31,6 +31,12 @@ const networkConfigs: NetworkConfig[] = [
     fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
     testTitle: 'MegaETH Network Connection Tests',
   },
+  {
+    name: 'Sei',
+    tokenSymbol: 'SEI',
+    fixtureMethod: (builder) => builder.withNetworkControllerOnSei(),
+    testTitle: 'Sei Network Connection Tests',
+  },
 ];
 
 // Helper function to perform Dapp action and verify
@@ -59,6 +65,7 @@ networkConfigs.forEach((config) => {
               eip155: {
                 [CHAIN_IDS.MONAD_TESTNET]: true,
                 [CHAIN_IDS.MEGAETH_TESTNET]: true,
+                [CHAIN_IDS.SEI]: true,
               },
             })
             .build(),

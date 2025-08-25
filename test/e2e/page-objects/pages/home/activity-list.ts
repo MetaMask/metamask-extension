@@ -7,6 +7,12 @@ class ActivityListPage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
 
+  private readonly completedTransactionItems =
+    '.transaction-list__completed-transactions .activity-list-item';
+
+  private readonly activityTab =
+    '[data-testid="account-overview__activity-tab"]';
+
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
   private readonly confirmedTransactions = {
@@ -49,6 +55,11 @@ class ActivityListPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async openActivityTab(): Promise<void> {
+    console.log('Opening activity tab');
+    await this.driver.clickElement(this.activityTab);
   }
 
   /**
@@ -260,6 +271,41 @@ class ActivityListPage {
     await this.driver.waitForSelector({
       tag: 'div',
       text: warningText,
+    });
+  }
+
+  async checkCompletedTransactionItems(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Check ${expectedNumber} completed transaction items are displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const confirmedTxes = await this.driver.findElements(
+        this.completedTransactionItems,
+      );
+      return confirmedTxes.length === expectedNumber;
+    }, 10000);
+  }
+
+  async getAllTransactionAmounts(): Promise<string[]> {
+    console.log('Getting all transaction amounts');
+    const transactionAmounts = await this.driver.findElements(
+      this.transactionAmountsInActivity,
+    );
+    const amounts = await Promise.all(
+      transactionAmounts.map(async (amount) => await amount.getText()),
+    );
+
+    console.log('Transaction amounts found', amounts);
+    return amounts;
+  }
+
+  async checkTransactionAmount(transactionAmount: string): Promise<void> {
+    console.log('Validate transaction amount');
+    await this.driver.waitForSelector({
+      css: this.transactionAmountsInActivity,
+      text: transactionAmount,
     });
   }
 

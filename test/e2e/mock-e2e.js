@@ -75,6 +75,7 @@ const blocklistedHosts = [
   'linea-sepolia.infura.io',
   'testnet-rpc.monad.xyz',
   'carrot.megaeth.com',
+  'sei-mainnet.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
 ];
@@ -1006,7 +1007,7 @@ async function setupMocking(
    * @param request
    */
   const portfolioRequestsMatcher = (request) =>
-    request.headers.referer === 'https://portfolio.metamask.io/';
+    request.headers.referer === 'https://app.metamask.io/';
 
   /**
    * Tests a request against private domains and returns a set of generic hostnames that

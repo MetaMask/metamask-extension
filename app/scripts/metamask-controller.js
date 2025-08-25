@@ -2088,10 +2088,8 @@ export default class MetamaskController extends EventEmitter {
           const selectedAddress =
             this.accountsController.getSelectedAccount().address;
           return selectedAddress ? [selectedAddress] : [];
-        } else if (this.isUnlocked()) {
-          return this.getPermittedAccounts(innerOrigin);
         }
-        return []; // changing this is a breaking change
+        return this.getPermittedAccounts(innerOrigin);
       },
       // tx signing
       processTransaction: (transactionParams, dappRequest) =>
@@ -5497,6 +5495,11 @@ export default class MetamaskController extends EventEmitter {
       // depends only on keyrings `:stateChange`.
       await this.accountsController.updateAccounts();
 
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      // Init multichain accounts after creating internal accounts.
+      this.multichainAccountService.init();
+      ///: END:ONLY_INCLUDE_IF
+
       // And we re-init the account tree controller too, to use the
       // newly created accounts.
       // TODO: Remove this once the `accounts-controller` once only
@@ -6398,18 +6401,13 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Gets the sorted permitted accounts for the specified origin. Returns an empty
-   * array if no accounts are permitted or the wallet is locked. Returns any permitted
-   * accounts if the wallet is locked and `ignoreLock` is true. This lock bypass is needed
-   * for the `eth_requestAccounts` & `wallet_getPermission` handlers both of which
-   * return permissioned accounts to the dapp when the wallet is locked.
+   * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
-   * @param {object} [options] - The options object
-   * @param {boolean} [options.ignoreLock] - If accounts should be returned even if the wallet is locked.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  getPermittedAccounts(origin, { ignoreLock } = {}) {
+  getPermittedAccounts(origin) {
     let caveat;
     try {
       caveat = this.permissionController.getCaveat(
@@ -6424,10 +6422,6 @@ export default class MetamaskController extends EventEmitter {
         return [];
       }
       throw err;
-    }
-
-    if (!this.isUnlocked() && !ignoreLock) {
-      return [];
     }
 
     const ethAccounts = getEthAccounts(caveat.value);
@@ -6727,6 +6721,14 @@ export default class MetamaskController extends EventEmitter {
       securityAlertsEnabled:
         this.preferencesController.state?.securityAlertsEnabled,
       updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
+      getSecurityAlertResponse:
+        this.appStateController.getAddressSecurityAlertResponse.bind(
+          this.appStateController,
+        ),
+      addSecurityAlertResponse:
+        this.appStateController.addAddressSecurityAlertResponse.bind(
+          this.appStateController,
+        ),
       ...otherParams,
     };
   }
@@ -7633,10 +7635,6 @@ export default class MetamaskController extends EventEmitter {
 
         // Miscellaneous
         metamaskState: this.getState(),
-        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
-          this.appStateController,
-        ),
-
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),

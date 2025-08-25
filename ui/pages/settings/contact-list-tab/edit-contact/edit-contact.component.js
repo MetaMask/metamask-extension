@@ -1,8 +1,10 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, useHistory } from 'react-router-dom';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -10,8 +12,6 @@ import {
 import {
   Button,
   ButtonVariant,
-  AvatarAccount,
-  AvatarAccountSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -95,7 +95,7 @@ const EditContact = ({
           style={{ overflow: 'hidden' }}
           paddingRight={2}
         >
-          <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
+          <PreferredAvatar size={AvatarAccountSize.Lg} address={address} />
           <Text
             className="address-book__header__name"
             variant={TextVariant.bodyLgMedium}
