@@ -28,6 +28,15 @@ type HistoricalBenchmarkData = {
 };
 
 /**
+ * Key metrics to be tracked and shared in bot PR commentary
+ */
+enum KeyMetrics {
+  PageLoadTime = 'pageLoadTime',
+  FirstContentfulPaint = 'firstContentfulPaint',
+  LargestContentfulPaint = 'largestContentfulPaint',
+}
+
+/**
  * Fetches the latest benchmark data from the main branch of the extension_benchmark_stats repository
  */
 async function fetchLatestMainBenchmarkData(): Promise<BenchmarkOutput | null> {
@@ -101,9 +110,9 @@ function formatStandardDeviation(mean: number, stdDev: number): string {
  */
 function getEmojiForMetric(metric: string, value: number): string {
   const thresholds: Record<string, { good: number; warning: number }> = {
-    pageLoadTime: { good: 1000, warning: 2000 },
-    firstContentfulPaint: { good: 800, warning: 1500 },
-    largestContentfulPaint: { good: 1200, warning: 2500 },
+    [KeyMetrics.PageLoadTime]: { good: 1000, warning: 2000 },
+    [KeyMetrics.FirstContentfulPaint]: { good: 800, warning: 1500 },
+    [KeyMetrics.LargestContentfulPaint]: { good: 1200, warning: 2500 },
   };
 
   const threshold = thresholds[metric];
@@ -136,16 +145,26 @@ function getComparisonEmoji(current: number, reference: number): string {
 }
 
 /**
- * Checks if a metric has increased by 25% or more compared to the reference value
+ * Checks if a metric has increased a significant amount compared to the reference value
  *
+ * @param metric - Name of the metric to compare
  * @param current - Current metric value
  * @param reference - Reference metric value
- * @returns True if the metric has increased by 25% or more
+ * @returns True if the metric has increased by a significant amount
  */
-function hasSignificantIncrease(current: number, reference: number): boolean {
+function hasSignificantIncrease(
+  metric: KeyMetrics,
+  current: number,
+  reference: number,
+): boolean {
+  const significantPercentIncreaseThresholds: Record<string, number> = {
+    [KeyMetrics.PageLoadTime]: 0.25,
+    [KeyMetrics.FirstContentfulPaint]: 1.5,
+    [KeyMetrics.LargestContentfulPaint]: 0.4,
+  };
   const diff = current - reference;
   const percentIncrease = diff / reference;
-  return percentIncrease >= 0.25;
+  return percentIncrease >= significantPercentIncreaseThresholds[metric];
 }
 
 /**
@@ -244,7 +263,7 @@ function getMetricValues(
  * @returns Formatted metric row string
  */
 function processMetricForComparison(
-  metric: string,
+  metric: KeyMetrics,
   currentValues: { mean: number; stdDev: number },
   page: string,
   significantIncreases: {
@@ -270,7 +289,9 @@ function processMetricForComparison(
     return formatMetricRow(metric, currentValues.mean, currentValues.stdDev);
   }
 
-  if (hasSignificantIncrease(currentValues.mean, referenceValues.mean)) {
+  if (
+    hasSignificantIncrease(metric, currentValues.mean, referenceValues.mean)
+  ) {
     const percentIncrease =
       ((currentValues.mean - referenceValues.mean) / referenceValues.mean) *
       100;
@@ -335,13 +356,7 @@ function generateBenchmarkComment(
     // Create summary section with key metrics
     comment += `#### Summary\n`;
 
-    const keyMetrics = [
-      'pageLoadTime',
-      'firstContentfulPaint',
-      'largestContentfulPaint',
-    ];
-
-    for (const metric of keyMetrics) {
+    for (const metric of Object.values(KeyMetrics)) {
       const currentValues = getMetricValues(pageSummary, metric);
       if (!currentValues) {
         continue;
@@ -388,7 +403,7 @@ function generateBenchmarkComment(
   if (significantIncreases.length > 0) {
     comment += `## ⚠️ Performance Warning\n\n`;
     comment += `**🚨 Significant performance regression detected!**\n\n`;
-    comment += `The following metrics have increased by 20% or more compared to the reference commit. This should be investigated before proceeding with this PR:\n\n`;
+    comment += `The following metrics have increased by a significant amount compared to the reference commit. This should be investigated before proceeding with this PR:\n\n`;
 
     for (const increase of significantIncreases) {
       const currentFormatted = formatTime(increase.current);
