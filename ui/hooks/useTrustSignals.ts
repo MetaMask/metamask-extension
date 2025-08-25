@@ -44,11 +44,6 @@ export function useTrustSignals(
         };
       }
 
-      const securityAlertResponse = getAddressSecurityAlertResponse(
-        state,
-        value,
-      );
-
       // If no value/address provided, return Unknown (nothing to check)
       if (!value) {
         return {
@@ -56,6 +51,11 @@ export function useTrustSignals(
           label: null,
         };
       }
+
+      const securityAlertResponse = getAddressSecurityAlertResponse(
+        state,
+        value,
+      );
 
       // If we have an address but no response cached yet, it means we're still loading
       if (securityAlertResponse === undefined) {
