@@ -27,11 +27,14 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const recipient = (txParams?.to ?? '0x') as Hex;
 
   const isInternalAccount = internalAccounts.some(
-    (account) => account.address?.toLowerCase() === to?.toLowerCase(),
+    (account) =>
+      account.address?.toLowerCase() === (to || recipient)?.toLowerCase(),
   );
 
+  const addressToCheck = to || recipient;
+
   const { state: trustSignalDisplayState } = useTrustSignal(
-    to || '',
+    addressToCheck || '',
     NameType.ETHEREUM_ADDRESS,
   );
 
