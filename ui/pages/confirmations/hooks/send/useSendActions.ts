@@ -42,7 +42,6 @@ export const useSendActions = () => {
         );
         history.push(CONFIRM_TRANSACTION_ROUTE);
       } else {
-        updateCurrentPage(SendPages.LOADER);
         history.push(`${SEND_ROUTE}/${SendPages.LOADER}`);
         await sendMultichainTransactionForReview(
           fromAccount as InternalAccount,
