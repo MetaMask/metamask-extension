@@ -32,11 +32,7 @@ type HistoricalBenchmarkData = {
  * For now, hardcoded to fetch the specific commit "9558e5ed8b4c3e14f57825ef3bafffa640051c87"
  */
 async function fetchLatestMainBenchmarkData(): Promise<BenchmarkOutput | null> {
-  // For now, hardcode the reference commit
-  const REFERENCE_COMMIT = '9558e5ed8b4c3e14f57825ef3bafffa640051c87';
-
   try {
-    // TODO: In the future, fetch the actual latest commit from main branch
     const response = await fetch(
       'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/page_load_data.json',
     );
@@ -49,17 +45,16 @@ async function fetchLatestMainBenchmarkData(): Promise<BenchmarkOutput | null> {
     }
 
     const data: HistoricalBenchmarkData = await response.json();
-    const referenceData = data[REFERENCE_COMMIT];
+    const referenceCommit = Object.keys(data).at(-1) ?? '';
+    const referenceData = data[referenceCommit];
 
     if (!referenceData) {
-      console.warn(
-        `No benchmark data found for reference commit: ${REFERENCE_COMMIT}`,
-      );
+      console.warn('No benchmark data found');
       return null;
     }
 
     console.log(
-      `Successfully fetched benchmark data for reference commit: ${REFERENCE_COMMIT}`,
+      `Successfully fetched benchmark data for reference commit: ${referenceCommit}`,
     );
     return referenceData;
   } catch (error) {
@@ -153,7 +148,10 @@ function getComparisonEmoji(current: number, reference: number): string {
 function hasSignificantIncrease(current: number, reference: number): boolean {
   const diff = current - reference;
   const percentIncrease = diff / reference;
-  return percentIncrease >= 0.2; // 20% or more increase
+  // TODO: [ffmcgee] testing out layout, remove this after
+  console.log({ percentIncrease });
+  return true;
+  // return percentIncrease >= 0.2; // 20% or more increase
 }
 
 /**
@@ -380,7 +378,6 @@ function generateBenchmarkComment(
  * @throws {Error} When GitHub API request fails or required environment variables are missing
  */
 async function main(): Promise<void> {
-  // TODO: [ffmcgee] retrieve `GITHUB_SHA` from `process.env` to use when saving historical data
   const { PR_COMMENT_TOKEN, OWNER, REPOSITORY, PR_NUMBER } =
     process.env as Record<string, string>;
 
