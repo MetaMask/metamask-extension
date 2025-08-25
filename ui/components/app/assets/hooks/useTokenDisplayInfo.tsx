@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import {
+  getIsMultichainAccountsState2Enabled,
   getIsTestnet,
   getSelectedAccount,
   getShowFiatInTestnets,
@@ -35,10 +36,14 @@ export const useTokenDisplayInfo = ({
   const locale = useSelector(getIntlLocale);
   const tokenChainImage = getImageForChainId(token.chainId);
   const selectedAccount = useSelector(getSelectedAccount);
-  const showFiat = useMultichainSelector(
-    makeGetMultichainShouldShowFiatByChainId(token.chainId),
-    selectedAccount,
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
   );
+  const showFiat =
+    useMultichainSelector(
+      makeGetMultichainShouldShowFiatByChainId(token.chainId),
+      selectedAccount,
+    ) || isMultichainAccountsState2Enabled;
 
   const isTestnet = useSelector(getIsTestnet);
 
@@ -67,7 +72,7 @@ export const useTokenDisplayInfo = ({
       : undefined;
 
   const formattedPrimary = formatWithThreshold(
-    Number(isEvm ? token.string : token.primary),
+    Number((isEvm ? token.string : token.primary) ?? token.balance),
     0.00001,
     locale,
     {
@@ -80,9 +85,13 @@ export const useTokenDisplayInfo = ({
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
 
   const isStakeable =
-    token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
+    token.isStakeable ||
+    (isEvmMainnet &&
+      isEvm &&
+      (!token.type || token.type.startsWith('eip155')) &&
+      token.isNative);
 
-  if (isEvm) {
+  if (isEvm && (!token.type || token.type.startsWith('eip155'))) {
     const tokenData = Object.values(tokenList).find(
       (tokenToFind) =>
         isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&
