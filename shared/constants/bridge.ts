@@ -10,7 +10,9 @@ const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MultichainNetworks.SOLANA,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
   MultichainNetworks.BITCOIN,
+  ///: END:ONLY_INCLUDE_IF
 ];
 
 const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
