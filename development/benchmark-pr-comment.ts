@@ -10,8 +10,8 @@ import {
  * Contains aggregated performance data and raw measurement results.
  */
 type BenchmarkOutput = {
-  /** ISO timestamp when the benchmark was executed */
-  timestamp: string;
+  /** Timestamp when the benchmark was executed */
+  timestamp: number;
   /** Git commit SHA (shortened) */
   commit: string;
   /** Statistical summary for each tested page */
@@ -19,6 +19,54 @@ type BenchmarkOutput = {
   /** Raw benchmark measurements for detailed analysis */
   rawResults: unknown[];
 };
+
+/**
+ * Structure for historical benchmark data from the stats repository
+ */
+type HistoricalBenchmarkData = {
+  [commitHash: string]: BenchmarkOutput;
+};
+
+/**
+ * Fetches the latest benchmark data from the main branch of the extension_benchmark_stats repository
+ * For now, hardcoded to fetch the specific commit "9558e5ed8b4c3e14f57825ef3bafffa640051c87"
+ */
+async function fetchLatestMainBenchmarkData(): Promise<BenchmarkOutput | null> {
+  // For now, hardcode the reference commit
+  const REFERENCE_COMMIT = '9558e5ed8b4c3e14f57825ef3bafffa640051c87';
+
+  try {
+    // TODO: In the future, fetch the actual latest commit from main branch
+    const response = await fetch(
+      'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/page_load_data.json',
+    );
+
+    if (!response.ok) {
+      console.warn(
+        `Failed to fetch historical benchmark data: ${response.statusText}`,
+      );
+      return null;
+    }
+
+    const data: HistoricalBenchmarkData = await response.json();
+    const referenceData = data[REFERENCE_COMMIT];
+
+    if (!referenceData) {
+      console.warn(
+        `No benchmark data found for reference commit: ${REFERENCE_COMMIT}`,
+      );
+      return null;
+    }
+
+    console.log(
+      `Successfully fetched benchmark data for reference commit: ${REFERENCE_COMMIT}`,
+    );
+    return referenceData;
+  } catch (error) {
+    console.warn('Error fetching historical benchmark data:', error);
+    return null;
+  }
+}
 
 /**
  * Formats a time value in milliseconds to a human-readable string.
@@ -78,7 +126,72 @@ function getEmojiForMetric(metric: string, value: number): string {
 }
 
 /**
- * Formats a single metric row for the benchmark summary comment.
+ * Returns a comparison emoji based on whether the current value is better, worse, or similar to the reference value
+ *
+ * @param current - Current metric value
+ * @param reference - Reference metric value
+ * @returns Comparison emoji: ⬇️ (better), ⬆️ (worse), or ➡️ (similar)
+ */
+function getComparisonEmoji(current: number, reference: number): string {
+  const diff = current - reference;
+  const percentDiff = Math.abs(diff) / reference;
+
+  if (percentDiff < 0.05) {
+    // Less than 5% difference
+    return '➡️';
+  }
+  return diff < 0 ? '⬇️' : '⬆️'; // Down arrow for better (lower), up arrow for worse (higher)
+}
+
+/**
+ * Checks if a metric has increased by 20% or more compared to the reference value
+ *
+ * @param current - Current metric value
+ * @param reference - Reference metric value
+ * @returns True if the metric has increased by 20% or more
+ */
+function hasSignificantIncrease(current: number, reference: number): boolean {
+  const diff = current - reference;
+  const percentIncrease = diff / reference;
+  return percentIncrease >= 0.2; // 20% or more increase
+}
+
+/**
+ * Formats a single metric row for the benchmark summary comment with comparison.
+ * Includes metric name, formatted mean values for both current and reference commits, and performance emojis.
+ *
+ * @param metricName - Name of the performance metric
+ * @param currentMean - Current commit mean value in milliseconds
+ * @param currentStdDev - Current commit standard deviation in milliseconds
+ * @param referenceMean - Reference commit mean value in milliseconds
+ * @param referenceStdDev - Reference commit standard deviation in milliseconds
+ * @returns Formatted markdown row string
+ */
+function formatMetricRowWithComparison(
+  metricName: string,
+  currentMean: number,
+  currentStdDev: number,
+  referenceMean: number,
+  referenceStdDev: number,
+): string {
+  const currentEmoji = getEmojiForMetric(metricName, currentMean);
+  const comparisonEmoji = getComparisonEmoji(currentMean, referenceMean);
+  const currentFormatted = formatTime(currentMean);
+  const currentStdDevFormatted = formatStandardDeviation(
+    currentMean,
+    currentStdDev,
+  );
+  const referenceFormatted = formatTime(referenceMean);
+  const referenceStdDevFormatted = formatStandardDeviation(
+    referenceMean,
+    referenceStdDev,
+  );
+
+  return `- **${metricName}**: ${currentFormatted}${currentStdDevFormatted} ${currentEmoji} vs ${referenceFormatted}${referenceStdDevFormatted} ${comparisonEmoji}`;
+}
+
+/**
+ * Formats a single metric row for the benchmark summary comment (original version without comparison).
  * Includes metric name, formatted mean value, standard deviation, and performance emoji.
  *
  * @param metricName - Name of the performance metric
@@ -103,9 +216,13 @@ function formatMetricRow(
  * Creates a structured report with summary metrics, detailed statistics, and performance indicators.
  *
  * @param benchmarkData - Benchmark results data containing summary and metadata
+ * @param referenceData - Reference benchmark data from main branch for comparison
  * @returns Formatted markdown comment string ready for posting to GitHub
  */
-function generateBenchmarkComment(benchmarkData: BenchmarkOutput): string {
+function generateBenchmarkComment(
+  benchmarkData: BenchmarkOutput,
+  referenceData?: BenchmarkOutput | null,
+): string {
   const { summary, commit, timestamp } = benchmarkData;
 
   if (!summary || summary.length === 0) {
@@ -114,9 +231,19 @@ function generateBenchmarkComment(benchmarkData: BenchmarkOutput): string {
 
   const shortCommit = commit.slice(0, 7);
   const date = new Date(timestamp).toLocaleDateString();
+  const referenceCommit = referenceData?.commit?.slice(0, 7);
 
   let comment = `## 📊 Page Load Benchmark Results\n\n`;
-  comment += `**Commit**: \`${shortCommit}\` | **Date**: ${date}\n\n`;
+  comment += `**Current Commit**: \`${shortCommit}\` | **Reference Commit**: \`${referenceCommit}\` | **Date**: ${date}\n\n`;
+
+  // Track significant increases for warning
+  const significantIncreases: {
+    page: string;
+    metric: string;
+    current: number;
+    reference: number;
+    percentIncrease: number;
+  }[] = [];
 
   for (const pageSummary of summary) {
     const { page, samples, mean, standardDeviation } = pageSummary;
@@ -141,7 +268,50 @@ function generateBenchmarkComment(benchmarkData: BenchmarkOutput): string {
           metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
         ];
 
+      // TODO: [ffmcgee] this is some 💩 nesting code, improve this
       if (typeof meanValue === 'number') {
+        if (referenceData) {
+          // Find the corresponding page in reference data
+          const referencePage = referenceData.summary?.find(
+            (ref) => ref.page === page,
+          );
+          if (referencePage) {
+            const refMeanValue =
+              referencePage.mean[
+                metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+              ];
+            const refStdDevValue =
+              referencePage.standardDeviation[
+                metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+              ];
+
+            if (typeof refMeanValue === 'number') {
+              // Check for significant increase
+              if (hasSignificantIncrease(meanValue, refMeanValue)) {
+                const percentIncrease =
+                  ((meanValue - refMeanValue) / refMeanValue) * 100;
+                significantIncreases.push({
+                  page,
+                  metric,
+                  current: meanValue,
+                  reference: refMeanValue,
+                  percentIncrease,
+                });
+              }
+
+              comment += `${formatMetricRowWithComparison(
+                metric,
+                meanValue,
+                stdDevValue || 0,
+                refMeanValue,
+                refStdDevValue || 0,
+              )}\n`;
+              continue;
+            }
+          }
+        }
+
+        // Fallback to original format if no reference data or matching page
         comment += `${formatMetricRow(metric, meanValue, stdDevValue || 0)}\n`;
       }
     }
@@ -174,6 +344,21 @@ function generateBenchmarkComment(benchmarkData: BenchmarkOutput): string {
     }
 
     comment += `\n</details>\n\n`;
+  }
+
+  // Add warning section if there are significant increases
+  if (significantIncreases.length > 0) {
+    comment += `## ⚠️ Performance Warning\n\n`;
+    comment += `**🚨 Significant performance regression detected!**\n\n`;
+    comment += `The following metrics have increased by 20% or more compared to the reference commit. This should be investigated before proceeding with this PR:\n\n`;
+
+    for (const increase of significantIncreases) {
+      const currentFormatted = formatTime(increase.current);
+      const referenceFormatted = formatTime(increase.reference);
+      comment += `- **${increase.page} - ${increase.metric}**: ${currentFormatted} vs ${referenceFormatted} (**+${increase.percentIncrease.toFixed(1)}%**)\n`;
+    }
+
+    comment += `\n`;
   }
 
   comment += `---\n\n`;
@@ -229,8 +414,11 @@ async function main(): Promise<void> {
     return;
   }
 
+  // Fetch reference benchmark data from main branch
+  const referenceData = await fetchLatestMainBenchmarkData();
+
   // Generate comment
-  const commentBody = generateBenchmarkComment(benchmarkData);
+  const commentBody = generateBenchmarkComment(benchmarkData, referenceData);
   console.log('Generated comment:');
   console.log(commentBody);
 

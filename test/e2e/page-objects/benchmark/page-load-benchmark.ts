@@ -69,8 +69,8 @@ export type BenchmarkResult = {
   run: number;
   /** Performance metrics collected during this test run */
   metrics: BenchmarkMetrics;
-  /** ISO timestamp when this measurement was taken */
-  timestamp: string;
+  /** Timestamp when this measurement was taken */
+  timestamp: number;
 };
 
 /**
@@ -264,7 +264,7 @@ export class PageLoadBenchmark {
       page: url,
       run: runNumber,
       metrics,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().getTime(),
     };
 
     this.results.push(result);
@@ -439,7 +439,7 @@ export class PageLoadBenchmark {
     });
 
     const output = {
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().getTime(),
       summary: this.calculateStatistics(),
       commit: commitSha,
       rawResults: this.results,
