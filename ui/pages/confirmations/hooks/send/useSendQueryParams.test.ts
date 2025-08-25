@@ -132,4 +132,15 @@ describe('useSendQueryParams', () => {
     renderHook();
     expect(mockUpdateAsset).toHaveBeenCalledWith(SOLANA_ASSET);
   });
+
+  it('does not update asset if it is already defined in send context', () => {
+    const mockUpdateAsset = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateAsset: mockUpdateAsset,
+      updateCurrentPage: jest.fn(),
+      asset: EVM_ASSET,
+    } as unknown as SendContext.SendContextType);
+    renderHook();
+    expect(mockUpdateAsset).not.toHaveBeenCalled();
+  });
 });
