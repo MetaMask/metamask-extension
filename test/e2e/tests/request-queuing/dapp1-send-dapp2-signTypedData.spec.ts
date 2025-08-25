@@ -50,7 +50,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Open and connect Dapp One
         const testDappOne = new TestDapp(driver);
         await testDappOne.openTestDappPage({ url: DAPP_URL });
-        await testDappOne.check_pageIsLoaded();
+        await testDappOne.checkPageIsLoaded();
         await testDappOne.connectAccount({});
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -58,7 +58,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Open and connect to Dapp Two
         const testDappTwo = new TestDapp(driver);
         await testDappTwo.openTestDappPage({ url: DAPP_ONE_URL });
-        await testDappTwo.check_pageIsLoaded();
+        await testDappTwo.checkPageIsLoaded();
         await testDappTwo.connectAccount({});
 
         // Switch Dapp Two to Localhost 8546
@@ -74,7 +74,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
-        await testDappTwo.check_networkIsConnected('0x53a');
+        await testDappTwo.checkNetworkIsConnected('0x53a');
 
         // Should auto switch without prompt since already approved via connect
 
@@ -92,7 +92,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequestDappOne})`,
         );
-        await testDappOne.check_networkIsConnected('0x3e8');
+        await testDappOne.checkNetworkIsConnected('0x3e8');
         // Should auto switch without prompt since already approved via connect
 
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -109,9 +109,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the send confirmation.
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.check_networkIsDisplayed(
-          'Localhost 7777',
-        );
+        await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
         await transactionConfirmation.clickFooterConfirmButton();
 
@@ -119,7 +117,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the signTypedData confirmation.
         const signTypedDataConfirmation = new SignTypedDataConfirmation(driver);
-        await signTypedDataConfirmation.check_networkIsDisplayed(
+        await signTypedDataConfirmation.checkNetworkIsDisplayed(
           'Localhost 8546',
         );
 

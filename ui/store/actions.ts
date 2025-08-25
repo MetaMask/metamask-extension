@@ -60,6 +60,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { AccountGroupId } from '@metamask/account-api';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -152,7 +153,6 @@ import {
   getUseSmartAccount,
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -376,30 +376,12 @@ export function changePassword(
   newPassword: string,
   oldPassword: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (
-    dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
-  ) => {
-    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
-    const isSeedlessOnboardingFeatureEnabled =
-      getIsSeedlessOnboardingFeatureEnabled();
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await keyringChangePassword(newPassword);
-      if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
-        try {
-          await socialSyncChangePassword(newPassword, oldPassword);
-
-          // store the keyring encryption key in the seedless onboarding controller
-          const keyringEncryptionKey = await exportEncryptionKey();
-          await storeKeyringEncryptionKey(keyringEncryptionKey);
-        } catch (error) {
-          // revert the keyring password change
-          await keyringChangePassword(oldPassword);
-          const revertedKeyringEncryptionKey = await exportEncryptionKey();
-          await storeKeyringEncryptionKey(revertedKeyringEncryptionKey);
-          throw error;
-        }
-      }
+      await submitRequestToBackground('changePassword', [
+        newPassword,
+        oldPassword,
+      ]);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
@@ -413,10 +395,6 @@ export function storeKeyringEncryptionKey(
   return submitRequestToBackground('storeKeyringEncryptionKey', [
     encryptionKey,
   ]);
-}
-
-export function exportEncryptionKey(): Promise<string> {
-  return submitRequestToBackground('exportEncryptionKey');
 }
 
 export function tryUnlockMetamask(
@@ -714,20 +692,6 @@ export function verifyPassword(password: string): Promise<boolean> {
       resolve(true);
     });
   });
-}
-
-export function socialSyncChangePassword(
-  newPassword: string,
-  currentPassword: string,
-): Promise<void> {
-  return submitRequestToBackground('socialSyncChangePassword', [
-    newPassword,
-    currentPassword,
-  ]);
-}
-
-export function keyringChangePassword(newPassword: string): Promise<void> {
-  return submitRequestToBackground('keyringChangePassword', [newPassword]);
 }
 
 export async function getSeedPhrase(password: string, keyringId?: string) {
@@ -2240,6 +2204,32 @@ async function _setSelectedInternalAccount(accountId: string): Promise<void> {
 }
 
 /**
+ * Update the selected multichain account.
+ *
+ * @param accountGroupId - ID of an account group representing the multichain account.
+ */
+export function setSelectedMultichainAccount(
+  accountGroupId: AccountGroupId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch, _getState) => {
+    log.debug(`background.setSelectedMultichainAccount`);
+    try {
+      dispatch(showLoadingIndication());
+      await submitRequestToBackground('setSelectedMultichainAccount', [
+        accountGroupId,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
  * Sets the selected internal account.
  *
  * @param accountId - The ID of the account to set as selected.
@@ -2656,6 +2646,17 @@ export async function getBalancesInSingleCall(
     selectedAddress,
     tokensToDetect,
     networkClientId,
+  ]);
+}
+
+/**
+ * Find networkClientId for the chainId passed.
+ *
+ * @param chainId - chainId of the network
+ */
+export async function findNetworkClientIdByChainId(chainId: string): string {
+  return await submitRequestToBackground('findNetworkClientIdByChainId', [
+    chainId,
   ]);
 }
 
@@ -5282,19 +5283,22 @@ export function setNextNonce(nextNonce: string): PayloadAction<string> {
  * accidental usage of a stale nonce as the call to getNextNonce only works for
  * the currently selected address.
  *
- * @param address - address for which nonce lock shouuld be obtained.
+ * @param address - address for which nonce lock should be obtained.
+ * @param networkClientId - networkClientId for network for which nonce lock is needed.
  * @returns
  */
 export function getNextNonce(
   address,
+  networkClientId,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
-    const networkClientId = getSelectedNetworkClientId(getState());
+    const networkClientIdValue =
+      networkClientId ?? getSelectedNetworkClientId(getState());
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
         address,
-        networkClientId,
+        networkClientIdValue,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));

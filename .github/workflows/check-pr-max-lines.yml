@@ -13,6 +13,10 @@ on:
       - Version-v*
       - release/*
 
+permissions:
+  contents: read
+  pull-requests: write # Required for the called workflow to manage labels
+
 jobs:
   check-pr-max-lines:
     uses: metamask/github-tools/.github/workflows/pr-line-check.yml@main
