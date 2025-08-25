@@ -31,8 +31,6 @@ cd temp
 
 git fetch origin main:main
 
-echo "Fetching main branch"
-
 git checkout main
 
 BENCHMARK_FILE="../test-artifacts/benchmarks/benchmark-results.json"
@@ -57,9 +55,10 @@ jq . "${BENCHMARK_FILE}" > /dev/null || {
 # Check if the SHA already exists in the stats file
 if jq -e "has(\"${GITHUB_SHA}\")" "${STATS_FILE}" > /dev/null; then
     echo "SHA ${GITHUB_SHA} already exists in stats file. Updating existing entry."
+    exit 0
 fi
 
-# Append or update benchmark data correctly using jq
+# Append new benchmark data correctly using jq
 jq --arg sha "${GITHUB_SHA}" --argjson data "$(cat "${BENCHMARK_FILE}")" \
     '. + {($sha): $data}' "${STATS_FILE}" > "${TEMP_FILE}"
 

@@ -29,7 +29,6 @@ type HistoricalBenchmarkData = {
 
 /**
  * Fetches the latest benchmark data from the main branch of the extension_benchmark_stats repository
- * For now, hardcoded to fetch the specific commit "9558e5ed8b4c3e14f57825ef3bafffa640051c87"
  */
 async function fetchLatestMainBenchmarkData(): Promise<BenchmarkOutput | null> {
   try {
@@ -137,16 +136,16 @@ function getComparisonEmoji(current: number, reference: number): string {
 }
 
 /**
- * Checks if a metric has increased by 20% or more compared to the reference value
+ * Checks if a metric has increased by 25% or more compared to the reference value
  *
  * @param current - Current metric value
  * @param reference - Reference metric value
- * @returns True if the metric has increased by 20% or more
+ * @returns True if the metric has increased by 25% or more
  */
 function hasSignificantIncrease(current: number, reference: number): boolean {
   const diff = current - reference;
   const percentIncrease = diff / reference;
-  return percentIncrease >= 0.2; // 20% or more increase
+  return percentIncrease >= 0.25;
 }
 
 /**

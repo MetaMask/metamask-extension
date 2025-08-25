@@ -3,6 +3,23 @@ import { execSync } from 'child_process';
 import path from 'path';
 import { chromium, type BrowserContext, Browser } from '@playwright/test';
 
+declare global {
+  /**
+   * We override Performance interface to make sure Typescript allows us to access memory property without
+   * any type issues, and to make sure we do not need to typecast when accessing said property which is deprecated and not supported in some browsers
+   * since our benchmark runs on Chrome only for now, that is not an issue, since Chrome fully supports the API
+   * docs: https://developer.mozilla.org/en-US/docs/Web/API/Performance/memory#browser_compatibility
+   */
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface Performance {
+    memory: {
+      usedJSHeapSize: number;
+      totalJSHeapSize: number;
+      jsHeapSizeLimit: number;
+    };
+  }
+}
+
 /**
  * Performance metrics collected during page load benchmarking.
  * All time values are in milliseconds unless otherwise specified.
@@ -238,15 +255,11 @@ export class PageLoadBenchmark {
           paint.find((p) => p.name === 'first-contentful-paint')?.startTime ||
           0,
         largestContentfulPaint: lcp?.startTime || 0,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        memoryUsage: (performance as any).memory
+        memoryUsage: performance.memory
           ? {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
+              usedJSHeapSize: performance.memory.usedJSHeapSize,
+              totalJSHeapSize: performance.memory.totalJSHeapSize,
+              jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
             }
           : undefined,
       };
