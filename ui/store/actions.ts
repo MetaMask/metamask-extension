@@ -2649,6 +2649,17 @@ export async function getBalancesInSingleCall(
   ]);
 }
 
+/**
+ * Find networkClientId for the chainId passed.
+ *
+ * @param chainId - chainId of the network
+ */
+export async function findNetworkClientIdByChainId(chainId: string): string {
+  return await submitRequestToBackground('findNetworkClientIdByChainId', [
+    chainId,
+  ]);
+}
+
 export function addNft(
   address: string,
   tokenID: string,
