@@ -9,7 +9,7 @@ import { ConfirmContextProvider } from '../../../../../context/confirm';
 const store = configureStore(getMockApproveConfirmState());
 
 const Story = {
-  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/ApproveDetails',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Approve/ApproveDetails',
   component: ApproveDetails,
   decorators: [
     (story: () => Meta<typeof ApproveDetails>) => (

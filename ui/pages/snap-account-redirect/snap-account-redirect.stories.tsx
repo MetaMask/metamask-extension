@@ -4,7 +4,7 @@ import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../../test/e2e/constan
 import SnapAccountRedirect from './snap-account-redirect';
 
 export default {
-  title: 'Components/UI/SnapAccountRedirect',
+  title: 'Pages/SnapAccountRedirect',
   argTypes: {
     snapName: {
       control: {

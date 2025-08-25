@@ -7,7 +7,7 @@ import { SLIPPAGE_HIGH_ERROR } from '../../../../shared/constants/swaps';
 import SlippageNotificationModal from './slippage-notification-modal';
 
 export default {
-  title: 'Pages/Swaps/SlippageNotificationModal',
+  title: 'Pages/Swaps/PrepareSwapPage/SlippageNotificationModal',
   component: SlippageNotificationModal,
   argTypes: {
     isShowingModal: {

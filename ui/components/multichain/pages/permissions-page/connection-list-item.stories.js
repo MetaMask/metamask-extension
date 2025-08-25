@@ -4,7 +4,7 @@ import { ETH_TOKEN_IMAGE_URL } from '../../../../../shared/constants/network';
 import { ConnectionListItem } from './connection-list-item';
 
 export default {
-  title: 'Components/Multichain/ConnectionListItem',
+  title: 'Components/Multichain/Pages/PermissionsPage/ConnectionListItem',
   component: ConnectionListItem,
   argTypes: {
     connection: {

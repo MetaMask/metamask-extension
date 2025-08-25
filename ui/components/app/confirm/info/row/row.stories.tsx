@@ -2,7 +2,7 @@ import React from 'react';
 import { ConfirmInfoRow, ConfirmInfoRowVariant } from './row';
 
 const ConfirmInfoRowStory = {
-  title: 'Components/App/Confirm/InfoRow',
+  title: 'Components/App/Confirm/Info/Row',
 
   component: ConfirmInfoRow,
   argTypes: {
@@ -36,7 +36,7 @@ CopyEnabledStory.args = {
   label: 'Key',
   children: 'Value',
   copyEnabled: true,
-  copyText: 'Some copy text'
+  copyText: 'Some copy text',
 };
 
 export default ConfirmInfoRowStory;

@@ -1,10 +1,6 @@
 import React from 'react';
 import { Severity } from '../../../../helpers/constants/design-system';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '../../../component-library';
+import { ButtonLink, ButtonLinkSize, Text } from '../../../component-library';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import GeneralAlert from './general-alert';
 
@@ -30,7 +26,7 @@ const MockDetailsList = () => (
 );
 
 export default {
-  title: 'Confirmations/Components/GeneralAlert',
+  title: 'Components/App/AlertSystem/GeneralAlert',
   component: GeneralAlert,
   argTypes: {
     description: {

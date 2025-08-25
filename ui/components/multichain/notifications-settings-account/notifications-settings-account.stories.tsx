@@ -7,8 +7,7 @@ import {
 } from './notifications-settings-account';
 
 export default {
-  title:
-    'Components/Multichain/Notification/NotificationsSettingsBox/NotificationsSettingsAccount',
+  title: 'Components/Multichain/NotificationsSettingsAccount',
   component: NotificationsSettingsAccount,
 } as Meta;
 

@@ -6,7 +6,7 @@ import { Severity } from '../../../helpers/constants/design-system';
 import { Menu, MenuItem } from '.';
 
 export default {
-  title: 'Components/UI/Menu',
+  title: 'Components/UI/Menu (deprecated)',
 };
 
 const Deprecated = ({ children }) => (

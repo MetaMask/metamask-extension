@@ -9,7 +9,7 @@ import SetApprovalForAll from './set-approval-for-all-info';
 const store = configureStore(getMockApproveConfirmState());
 
 const Story = {
-  title: 'Components/App/Confirm/info/SetApprovalForAll',
+  title: 'Pages/Confirmations/Components/Confirm/Info/SetApprovalForAllInfo',
   component: SetApprovalForAll,
   decorators: [
     (story: () => Meta<typeof SetApprovalForAll>) => (

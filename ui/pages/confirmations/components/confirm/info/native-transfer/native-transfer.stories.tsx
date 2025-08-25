@@ -15,7 +15,7 @@ import NativeTransferInfo from './native-transfer';
 const store = configureStore(getMockTokenTransferConfirmState({}));
 
 const Story = {
-  title: 'Components/App/Confirm/info/NativeTransferInfo',
+  title: 'Pages/Confirmations/Components/Confirm/Info/NativeTransfer',
   component: NativeTransferInfo,
   decorators: [
     (story: () => any) => (

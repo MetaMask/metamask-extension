@@ -8,7 +8,7 @@ import SnapList from './snap-list';
 const store = configureStore(testData);
 
 export default {
-  title: 'Pages/Settings/SnapList',
+  title: 'Pages/Snaps/SnapsList/SnapList',
 
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argTypes: {

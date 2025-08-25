@@ -9,7 +9,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ERC20Asset } from './types';
 
 const storybook = {
-  title: 'Components/Multichain/AssetPickerModal',
+  title: 'Components/Multichain/AssetPickerAmount/AssetPickerModal',
   component: AssetPickerModal,
 };
 

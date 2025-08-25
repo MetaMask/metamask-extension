@@ -10,7 +10,7 @@ import PersonalSignInfo from './personal-sign';
 const store = configureStore(getMockPersonalSignConfirmState());
 
 const Story = {
-  title: 'Components/App/Confirm/info/PersonalSignInfo',
+  title: 'Pages/Confirmations/Components/Confirm/Info/PersonalSign',
   component: PersonalSignInfo,
   decorators: [
     (story: () => any) => (

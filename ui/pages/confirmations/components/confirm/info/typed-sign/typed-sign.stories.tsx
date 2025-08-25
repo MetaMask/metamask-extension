@@ -10,7 +10,7 @@ import TypedSignInfo from './typed-sign';
 const store = configureStore(getMockTypedSignConfirmState());
 
 const Story = {
-  title: 'Components/App/Confirm/info/TypedSignInfo',
+  title: 'Pages/Confirmations/Components/Confirm/Info/TypedSign',
   component: TypedSignInfo,
   decorators: [
     (story: () => any) => (

@@ -8,7 +8,7 @@ import SnapUpdate from '.';
 const store = configureStore(mockState);
 
 export default {
-  title: 'Pages/Snaps/SnapUpdate',
+  title: 'Pages/PermissionsConnect/Snaps/SnapUpdate',
 
   component: SnapUpdate,
   argTypes: {},

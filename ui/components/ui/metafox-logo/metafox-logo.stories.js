@@ -4,7 +4,7 @@ import { Text } from '../../component-library';
 import MetaFoxLogo from '.';
 
 export default {
-  title: 'Components/UI/MetaFoxLogo',
+  title: 'Components/UI/MetafoxLogo',
 
   argTypes: {
     onClick: {

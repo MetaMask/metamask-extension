@@ -42,24 +42,24 @@ export default meta;
 type Story = StoryObj<typeof SnapInstallWarning>;
 
 export const Default: Story = {
-  render:(args) => {
-  const [showWarning, setShowWarning] = useState(false);
+  render: (args) => {
+    const [showWarning, setShowWarning] = useState(false);
 
-  const handleOpen = () => {
-    setShowWarning(true);
-  };
+    const handleOpen = () => {
+      setShowWarning(true);
+    };
 
-  return (
-    <div>
-      <Button onClick={handleOpen}>Open Warning Modal</Button>
-      {showWarning && (
-        <SnapInstallWarning
-          {...args}
-          onCancel={() => setShowWarning(false)}
-          onSubmit={() => setShowWarning(false)}
-        />
-      )}
-    </div>
-  );
+    return (
+      <div>
+        <Button onClick={handleOpen}>Open Warning Modal</Button>
+        {showWarning && (
+          <SnapInstallWarning
+            {...args}
+            onCancel={() => setShowWarning(false)}
+            onSubmit={() => setShowWarning(false)}
+          />
+        )}
+      </div>
+    );
   },
 };

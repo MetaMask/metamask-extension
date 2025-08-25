@@ -18,7 +18,7 @@ const store = (chainId, rpcUrl) =>
   });
 
 export default {
-  title: 'Components/UI/DeprecatedNetworks',
+  title: 'Components/UI/DeprecatedNetworks (deprecated)',
 };
 
 export const GoerliStory = () => <DeprecatedNetworks />;

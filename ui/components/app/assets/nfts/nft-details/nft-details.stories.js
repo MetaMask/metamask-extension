@@ -21,7 +21,7 @@ const nft = {
 const nftChainId = '0x1';
 
 export default {
-  title: 'Components/App/NftsDetail',
+  title: 'Components/App/Assets/Nfts/NftDetails',
 
   argTypes: {
     nft: {

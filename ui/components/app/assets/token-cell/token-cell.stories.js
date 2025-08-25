@@ -2,7 +2,7 @@ import React from 'react';
 import TokenCell from './token-cell';
 
 export default {
-  title: 'Components/App/TokenCell',
+  title: 'Components/App/Assets/TokenCell',
   argTypes: {
     address: {
       control: 'text',

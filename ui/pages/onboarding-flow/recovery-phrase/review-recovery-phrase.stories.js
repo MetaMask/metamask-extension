@@ -2,7 +2,7 @@ import React from 'react';
 import RecoveryPhrase from './review-recovery-phrase';
 
 export default {
-  title: 'Pages/OnboardingFlow/RecoveryPhrase/ReviewRecoveryPhrase',
+  title: 'Pages/OnboardingFlow/RecoveryPhrase',
   component: RecoveryPhrase,
   argTypes: {
     secretRecoveryPhrase: {

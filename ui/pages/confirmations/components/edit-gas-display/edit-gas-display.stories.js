@@ -2,7 +2,7 @@ import React from 'react';
 import EditGasDisplay from '.';
 
 export default {
-  title: 'Confirmations/Components/EditGasDisplay',
+  title: 'Pages/Confirmations/Components/EditGasDisplay',
 
   args: {
     transaction: {},

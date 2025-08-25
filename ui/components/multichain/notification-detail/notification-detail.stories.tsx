@@ -12,8 +12,7 @@ import {
 } from './notification-detail';
 
 export default {
-  title:
-    'Components/Multichain/Notification/NotificationDetail/NotificationDetail',
+  title: 'Components/Multichain/NotificationDetail',
   component: NotificationDetail,
   argTypes: {
     icon: { control: 'object' },

@@ -5,7 +5,7 @@ import { BannerAlert } from '../../component-library';
 import IconBorder from './icon-border';
 
 export default {
-  title: 'Components/UI/IconBorder',
+  title: 'Components/UI/IconBorder (deprecated)',
   component: IconBorder,
   argTypes: {
     className: {

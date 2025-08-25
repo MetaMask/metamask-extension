@@ -13,7 +13,7 @@ const store = configureStore(
 );
 
 const Story = {
-  title: 'Components/App/Confirm/Info/TypedSignInfoV1',
+  title: 'Pages/Confirmations/Components/Confirm/Info/TypedSignV1',
   component: TypedSignInfoV1,
   decorators: [
     (story: () => any) => (

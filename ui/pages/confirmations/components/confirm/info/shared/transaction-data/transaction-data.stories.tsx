@@ -66,7 +66,7 @@ function Template({
 }
 
 export default {
-  title: 'Components/App/Confirm/Info/Shared/TransactionData',
+  title: 'Pages/Confirmations/Components/Confirm/Info/Shared/TransactionData',
   component: TransactionData,
   decorators: [(story: () => Meta<typeof TransactionData>) => story()],
 };
