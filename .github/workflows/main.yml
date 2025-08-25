@@ -104,12 +104,13 @@ jobs:
   #     - prep-deps
   #   uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
-  build-dist-browserify:
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-dist-browserify
-      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build prod' || 'yarn build dist' }}
-    secrets: inherit
+  # TEMPORARILY DISABLED - validate-lavamoat-policy-webapp:
+  # build-dist-browserify:
+  #   uses: ./.github/workflows/run-build.yml
+  #   with:
+  #     build-name: build-dist-browserify
+  #     build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build prod' || 'yarn build dist' }}
+  #   secrets: inherit
 
   # TEMPORARILY DISABLED - build-dist-mv2-browserify:
   #   uses: ./.github/workflows/run-build.yml
@@ -242,8 +243,8 @@ jobs:
   #         path: test-artifacts/chrome
 
   benchmark-pr:
-    needs:
-      - build-dist-browserify
+    # needs:
+    #   - build-dist-browserify
     if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
     uses: ./.github/workflows/benchmark-pr.yml
     with:
