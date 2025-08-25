@@ -93,6 +93,7 @@ export const MultichainEditAccountsModal: React.FC<
         (selectedAccountGroupId) => selectedAccountGroupId === accountGroupId,
       );
 
+      // eslint-disable-next-line no-negated-condition: Checking explicitly for -1
       if (existingIndex !== -1) {
         const newSelection = [...selectedAccountGroups];
         newSelection.splice(existingIndex, 1);
