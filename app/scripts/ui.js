@@ -313,6 +313,7 @@ function connectSubstreams(connectionStream) {
 
   const controllerSubstream = mx.createStream('controller');
   const providerSubstream = mx.createStream('provider');
+  mx.ignoreStream('background-liveness');
 
   return {
     controller: controllerSubstream,

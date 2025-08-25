@@ -26,6 +26,10 @@ import {
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import {
+  BACKGROUND_LIVENESS_REQUEST,
+  BACKGROUND_LIVENESS_RESPONSE,
+} from '../../shared/constants/background-liveness-check';
+import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
   MetaMetricsEventCategory,
@@ -440,16 +444,38 @@ let connectEip1193;
 let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
-browser.runtime.onConnect.addListener(async (...args) => {
+browser.runtime.onConnect.addListener(async (port) => {
+  if (
+    inTest &&
+    getManifestFlags().testing?.simulateUnresponsiveBackground === true
+  ) {
+    return;
+  }
+  // Setup listeners to respond immediately to liveness check from UI.
+  const livenessCheckHandler = (event) => {
+    if (
+      event.name === 'background-liveness' &&
+      event.data?.method === BACKGROUND_LIVENESS_REQUEST
+    ) {
+      port.onMessage.removeListener(livenessCheckHandler);
+      port.postMessage({
+        data: {
+          method: BACKGROUND_LIVENESS_RESPONSE,
+        },
+        name: 'background-liveness',
+      });
+    }
+  };
+  port.onMessage.addListener(livenessCheckHandler);
+
   // Queue up connection attempts here, waiting until after initialization
   try {
     await isInitialized;
 
     // This is set in `setupController`, which is called as part of initialization
-    connectWindowPostMessage(...args);
+    connectWindowPostMessage(port);
   } catch (error) {
     sentry?.captureException(error);
-    const port = args[0];
 
     // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
     // restore from a backup, if we have one.
