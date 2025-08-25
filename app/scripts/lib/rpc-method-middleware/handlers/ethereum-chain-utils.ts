@@ -2,15 +2,19 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
-  Caip25CaveatValue,
+  type Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
+  requestPermittedChainsPermissionIncremental,
 } from '@metamask/chain-agnostic-permission';
 import type { NetworkConfiguration } from '@metamask/network-controller';
 import {
+  type CaipChainId,
   type Hex,
   type Json,
   type JsonRpcResponse,
+  isCaipChainId,
+  isStrictHexString,
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
@@ -22,9 +26,12 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
-import type MetamaskController from '../../../metamask-controller';
+import type {
+  NetworkOrderControllerState,
+  NetworkOrderController,
+} from '../../../controllers/network-order';
 import { getValidUrl } from '../../util';
-import {
+import type {
   EndApprovalFlow,
   GetCaveat,
   GetChainPermissionsFeatureFlag,
@@ -218,10 +225,17 @@ type SwitchChainOptions = {
   getCaveat: GetCaveat<{
     value: Pick<Caip25CaveatValue, 'requiredScopes' | 'optionalScopes'>;
   }>;
-  requestPermittedChainsPermissionIncrementalForOrigin: MetamaskController['requestPermittedChainsPermissionIncremental'];
+  requestPermittedChainsPermissionIncrementalForOrigin: (
+    options: Omit<
+      Parameters<typeof requestPermittedChainsPermissionIncremental>[0],
+      'hooks'
+    >,
+  ) => ReturnType<typeof requestPermittedChainsPermissionIncremental>;
   setTokenNetworkFilter: (chainId: Hex) => void;
-  getEnabledNetworks: MetamaskController['getEnabledNetworks'];
-  setEnabledNetworks: MetamaskController['setEnabledNetworks'];
+  getEnabledNetworks: (
+    namespace: string,
+  ) => NetworkOrderControllerState['enabledNetworkMap'][keyof NetworkOrderControllerState['enabledNetworkMap']];
+  setEnabledNetworks: NetworkOrderController['setEnabledNetworks'];
   rejectApprovalRequestsForOrigin: RejectApprovalRequestsForOrigin;
   requestUserApproval: RequestUserApproval;
   hasApprovalRequestsForOrigin: () => boolean;
@@ -258,7 +272,7 @@ type SwitchChainOptions = {
 export async function switchChain<Result extends Json = never>(
   response: JsonRpcResponse<Result | null> & { result?: Result | null },
   end: JsonRpcEngineEndCallback,
-  chainId: Hex,
+  chainId: Hex | CaipChainId,
   networkClientId: string,
   {
     origin,
@@ -279,72 +293,85 @@ export async function switchChain<Result extends Json = never>(
   }: SwitchChainOptions,
 ) {
   try {
+    if (isCaipChainId(chainId)) {
+      const { namespace } = parseCaipChainId(chainId);
+      const existingEnabledNetworks = getEnabledNetworks(namespace);
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+      if (!existingChainIds.includes(chainId)) {
+        setEnabledNetworks([...existingChainIds, chainId], namespace);
+      }
+    }
+
     const caip25Caveat = getCaveat({
       target: Caip25EndowmentPermissionName,
       caveatType: Caip25CaveatType,
     });
 
-    let metadata = {};
-    if (caip25Caveat) {
-      const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
+    let metadata = { options: {} };
+    if (isPrefixedFormattedHexString(chainId) && isStrictHexString(chainId)) {
+      if (caip25Caveat) {
+        const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
-      if (!ethChainIds.includes(chainId)) {
-        if (isSwitchFlow) {
-          metadata = {
-            isSwitchEthereumChain: true,
-          };
+        if (!ethChainIds.find((ethChainId) => ethChainId === chainId)) {
+          if (isSwitchFlow) {
+            metadata = {
+              options: { isSwitchEthereumChain: true },
+            };
+          }
+          await requestPermittedChainsPermissionIncrementalForOrigin({
+            origin,
+            chainId,
+            autoApprove,
+            metadata,
+          });
+        } else if (
+          hasApprovalRequestsForOrigin?.() &&
+          !isAddFlow &&
+          !autoApprove
+        ) {
+          await requestUserApproval({
+            origin,
+            type: ApprovalType.SwitchEthereumChain,
+            requestData: {
+              toNetworkConfiguration,
+              fromNetworkConfiguration,
+            },
+          });
         }
+      } else {
         await requestPermittedChainsPermissionIncrementalForOrigin({
           origin,
           chainId,
           autoApprove,
           metadata,
         });
-      } else if (
-        hasApprovalRequestsForOrigin?.() &&
-        !isAddFlow &&
-        !autoApprove
-      ) {
-        await requestUserApproval({
-          origin,
-          type: ApprovalType.SwitchEthereumChain,
-          requestData: {
-            toNetworkConfiguration,
-            fromNetworkConfiguration,
-          },
-        });
       }
-    } else {
-      await requestPermittedChainsPermissionIncrementalForOrigin({
-        origin,
-        chainId,
-        autoApprove,
-        metadata,
-      });
-    }
 
-    if (!isSnapId(origin)) {
-      rejectApprovalRequestsForOrigin?.();
-    }
+      if (!isSnapId(origin)) {
+        rejectApprovalRequestsForOrigin?.();
+      }
 
-    await setActiveNetwork(networkClientId);
+      await setActiveNetwork(networkClientId);
 
-    // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
-    // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
-    setTokenNetworkFilter(chainId);
+      // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
+      // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
+      setTokenNetworkFilter(chainId);
 
-    if (isPrefixedFormattedHexString(chainId)) {
       const existingEnabledNetworks = getEnabledNetworks(
         KnownCaipNamespace.Eip155,
       );
       const existingChainIds = Object.keys(existingEnabledNetworks);
 
       if (!existingChainIds.includes(chainId)) {
-        const isFeaturedNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
+        const isFeaturedNetwork = FEATURED_NETWORK_CHAIN_IDS.find(
+          (featuredChainId) => featuredChainId === chainId,
+        );
 
         if (isFeaturedNetwork) {
           const featuredExistingChainIds = existingChainIds.filter((id) =>
-            FEATURED_NETWORK_CHAIN_IDS.includes(id),
+            FEATURED_NETWORK_CHAIN_IDS.find(
+              (featuredChainId) => featuredChainId === id,
+            ),
           );
           setEnabledNetworks(
             [...featuredExistingChainIds, chainId],
@@ -353,13 +380,6 @@ export async function switchChain<Result extends Json = never>(
         } else {
           setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
         }
-      }
-    } else {
-      const { namespace } = parseCaipChainId(chainId);
-      const existingEnabledNetworks = getEnabledNetworks(namespace);
-      const existingChainIds = Object.keys(existingEnabledNetworks);
-      if (!existingChainIds.includes(chainId)) {
-        setEnabledNetworks([...existingChainIds, chainId], namespace);
       }
     }
 
