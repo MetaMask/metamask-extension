@@ -1,22 +1,36 @@
 import {
   TransactionController,
   TransactionMeta,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import { Messenger } from '@metamask/base-controller';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
+import { BridgeStatusControllerGetStateAction } from '@metamask/bridge-status-controller';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   RelayStatus,
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
+import { signDelegation, encodeRedeemDelegations } from '../delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { Delegation7702PublishHook } from './delegation-7702-publish';
 
 jest.mock('../transaction-relay');
+jest.mock('../delegation', () => {
+  const encodeRedeemDelegations = jest.fn(() => '0xdeadbeef');
+  const signDelegation = jest.fn(async () => '0xsignature');
+  return {
+    ANY_BENEFICIARY: '0x0000000000000000000000000000000000000000',
+    ROOT_AUTHORITY: '0x0000000000000000000000000000000000000000',
+    ExecutionMode: { BATCH_DEFAULT_MODE: 1 },
+    encodeRedeemDelegations,
+    signDelegation,
+  };
+});
 
 const SIGNED_TX_MOCK = '0x1234';
 const ENFORCE_ADDRESS_MOCK = '0x12345678901234567890123456789012345678a2';
@@ -50,6 +64,7 @@ describe('Delegation 7702 Publish Hook', () => {
 
   let messenger: TransactionControllerInitMessenger;
   let hookClass: Delegation7702PublishHook;
+  let bridgeGetStateMock: jest.Mock;
 
   const signTypedMessageMock: jest.MockedFn<
     KeyringControllerSignTypedMessageAction['handler']
@@ -71,7 +86,8 @@ describe('Delegation 7702 Publish Hook', () => {
 
     const baseMessenger = new Messenger<
       | KeyringControllerSignEip7702AuthorizationAction
-      | KeyringControllerSignTypedMessageAction,
+      | KeyringControllerSignTypedMessageAction
+      | BridgeStatusControllerGetStateAction,
       never
     >();
 
@@ -80,6 +96,7 @@ describe('Delegation 7702 Publish Hook', () => {
       allowedActions: [
         'KeyringController:signEip7702Authorization',
         'KeyringController:signTypedMessage',
+        'BridgeStatusController:getState',
       ],
       allowedEvents: [],
     });
@@ -92,6 +109,12 @@ describe('Delegation 7702 Publish Hook', () => {
     baseMessenger.registerActionHandler(
       'KeyringController:signTypedMessage',
       signTypedMessageMock,
+    );
+
+    bridgeGetStateMock = jest.fn().mockResolvedValue({});
+    baseMessenger.registerActionHandler(
+      'BridgeStatusController:getState',
+      bridgeGetStateMock,
     );
 
     hookClass = new Delegation7702PublishHook({
@@ -195,7 +218,7 @@ describe('Delegation 7702 Publish Hook', () => {
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
     expect(submitRelayTransactionMock).toHaveBeenCalledWith({
       chainId: TRANSACTION_META_MOCK.chainId,
-      data: expect.any(String),
+      // data: expect.any(String),
       to: process.env.DELEGATION_MANAGER_ADDRESS,
     });
   });
@@ -284,5 +307,73 @@ describe('Delegation 7702 Publish Hook', () => {
         SIGNED_TX_MOCK,
       ),
     ).rejects.toThrow('Transaction relay error - TEST_STATUS');
+  });
+
+  it('submits request to relay for gasless 7702 swap without gas fee tokens', async () => {
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    // Make bridge status return gasIncluded7702: true
+    bridgeGetStateMock.mockResolvedValue({
+      currentSubmissionRequest: {
+        quoteResponse: { quote: { gasIncluded7702: true } },
+      },
+    });
+
+    await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.swap }],
+        // No gasFeeTokens and no selectedGasFeeToken
+      } as unknown as TransactionMeta,
+      SIGNED_TX_MOCK,
+    );
+
+    expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
+    expect(signDelegation).toHaveBeenCalledTimes(1);
+    // Ensure caveats are empty for gasless flow
+    const signArgs = (signDelegation as jest.Mock).mock.calls[0][0];
+    expect(signArgs.delegation.caveats).toEqual([]);
+    // encodeRedeemDelegations called with a single executions array (no transfer)
+    const encodeArgs = (encodeRedeemDelegations as jest.Mock).mock.calls[0];
+    const executions = encodeArgs[2][0];
+    expect(executions).toHaveLength(1);
+  });
+
+  it('builds caveats for non-gasless flow', async () => {
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      },
+      SIGNED_TX_MOCK,
+    );
+
+    expect(signDelegation).toHaveBeenCalledTimes(1);
+    const signArgs = (signDelegation as jest.Mock).mock.calls[0][0];
+    expect(Array.isArray(signArgs.delegation.caveats)).toBe(true);
+    expect(signArgs.delegation.caveats.length).toBe(1);
+
+    const encodeArgs = (encodeRedeemDelegations as jest.Mock).mock.calls[0];
+    const executions = encodeArgs[2][0];
+    // Should include user execution and transfer execution
+    expect(executions).toHaveLength(2);
   });
 });

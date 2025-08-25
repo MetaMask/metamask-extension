@@ -7,6 +7,7 @@ import {
   PublishHookResult,
   TransactionMeta,
   TransactionParams,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex, add0x, createProjectLogger, remove0x } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
@@ -106,26 +107,43 @@ export class Delegation7702PublishHook {
     const { delegationAddress, upgradeContractAddress } =
       atomicBatchChainSupport;
 
-    if (!selectedGasFeeToken || !gasFeeTokens?.length) {
+    const isSwapTransaction =
+      transactionMeta.type === TransactionType.batch &&
+      transactionMeta.nestedTransactions?.find(
+        nestedTx =>
+          nestedTx.type === TransactionType.swap ||
+          nestedTx.type === TransactionType.swapApproval
+      );
+
+    const isGasless7702 = await this.#isBridgeTxGasless7702();
+
+    const isGasless7702SwapTx = isSwapTransaction && isGasless7702;
+
+    if ((!selectedGasFeeToken || !gasFeeTokens?.length) && !isGasless7702SwapTx) {
       log('Skipping as no selected gas fee token');
       return EMPTY_RESULT;
     }
 
-    const gasFeeToken = gasFeeTokens.find(
+    const gasFeeToken = !isGasless7702SwapTx ? gasFeeTokens?.find(
       (token) =>
-        token.tokenAddress.toLowerCase() === selectedGasFeeToken.toLowerCase(),
-    );
+        token.tokenAddress.toLowerCase() === selectedGasFeeToken?.toLowerCase(),
+    ) : undefined;
 
-    if (!gasFeeToken) {
+    if (!gasFeeToken && !isGasless7702SwapTx) {
       throw new Error('Selected gas fee token not found');
     }
 
     const delegation = await this.#buildDelegation(
       transactionMeta,
       gasFeeToken,
+      isGasless7702SwapTx,
     );
 
-    const executions = this.#buildExecutions(transactionMeta, gasFeeToken);
+    const executions = this.#buildExecutions(
+      transactionMeta,
+      gasFeeToken,
+      isGasless7702SwapTx,
+    );
 
     const transactionData = encodeRedeemDelegations(
       [[delegation]],
@@ -165,9 +183,26 @@ export class Delegation7702PublishHook {
     };
   }
 
+  async #isBridgeTxGasless7702(): Promise<boolean> {
+    try {
+      const state = (await this.#messenger.call(
+        'BridgeStatusController:getState',
+      )) as any;
+      const gasIncluded7702 = state?.currentSubmissionRequest?.quoteResponse?.quote?.gasIncluded7702;
+      return Boolean(gasIncluded7702);
+    } catch (error) {
+      log(
+        'Failed to determine whether the quoted transaction is intended to be gasless through EIP-7702',
+        error
+      );
+      return false;
+    }
+  }
+
   #buildExecutions(
     transactionMeta: TransactionMeta,
-    gasFeeToken: GasFeeToken,
+    gasFeeToken: GasFeeToken | undefined,
+    isGasless7702SwapTx: boolean,
   ): Execution[] {
     const { txParams } = transactionMeta;
     const { data, to, value } = txParams;
@@ -177,6 +212,14 @@ export class Delegation7702PublishHook {
       value: (value as Hex) ?? '0x0',
       callData: (data as Hex) ?? EMPTY_HEX,
     };
+
+    if (isGasless7702SwapTx) {
+      return [userExecution];
+    }
+
+    if (!gasFeeToken) {
+      throw new Error('Selected gas fee token not found');
+    }
 
     const transferExecution: Execution = {
       target: gasFeeToken.tokenAddress,
@@ -192,12 +235,13 @@ export class Delegation7702PublishHook {
 
   async #buildDelegation(
     transactionMeta: TransactionMeta,
-    gasFeeToken: GasFeeToken,
+    gasFeeToken: GasFeeToken | undefined,
+    isGasless7702SwapTx: boolean,
   ): Promise<Delegation> {
     const { chainId, txParams } = transactionMeta;
     const { from } = txParams;
 
-    const caveats = this.#buildCaveats(txParams, gasFeeToken);
+    const caveats = this.#buildCaveats(txParams, gasFeeToken, isGasless7702SwapTx);
 
     log('Caveats', caveats);
 
@@ -228,8 +272,17 @@ export class Delegation7702PublishHook {
 
   #buildCaveats(
     txParams: TransactionParams,
-    gasFeeToken: GasFeeToken,
+    gasFeeToken: GasFeeToken | undefined,
+    isGasless7702SwapTx: boolean,
   ): Caveat[] {
+    if (isGasless7702SwapTx) {
+      return [];
+    }
+
+    if (!gasFeeToken) {
+      throw new Error('Selected gas fee token not found');
+    }
+
     const { amount, recipient, tokenAddress } = gasFeeToken;
     const { data, to } = txParams;
     const tokenAmountPadded = add0x(remove0x(amount).padStart(64, '0'));
