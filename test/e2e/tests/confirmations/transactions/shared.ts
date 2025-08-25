@@ -5,12 +5,9 @@ import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
-const {
-  logInWithBalanceValidation,
-  openDapp,
-  WINDOW_TITLES,
-} = require('../../../helpers');
+const { openDapp, WINDOW_TITLES } = require('../../../helpers');
 const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
@@ -24,12 +21,13 @@ export async function openDAppWithContract(
   driver: Driver,
   contractRegistry: ContractAddressRegistry | undefined,
   smartContract: string,
+  localNode: Anvil | undefined,
 ) {
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
   ).getContractAddress(smartContract);
 
-  await logInWithBalanceValidation(driver);
+  await loginWithBalanceValidation(driver, localNode);
 
   await openDapp(driver, contractAddress);
 }
