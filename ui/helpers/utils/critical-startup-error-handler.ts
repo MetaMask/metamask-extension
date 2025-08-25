@@ -4,6 +4,10 @@ import log from 'loglevel';
 import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../../shared/constants/state-corruption';
 import type { ErrorLike } from '../../../shared/constants/errors';
 import {
+  BACKGROUND_LIVENESS_REQUEST,
+  BACKGROUND_LIVENESS_RESPONSE,
+} from '../../../shared/constants/background-liveness-check';
+import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
 } from '../../../shared/constants/start-up-errors';
@@ -29,9 +33,9 @@ export class CriticalStartupErrorHandler {
 
   #container: HTMLElement;
 
-  #handshakeTimeoutId?: NodeJS.Timeout;
+  #livenessCheckTimeoutId?: NodeJS.Timeout;
 
-  #onHandshakeCompleted?: () => void;
+  #onLivenessCheckCompleted?: () => void;
 
   /**
    * Creates an instance of CriticalStartupErrorHandler.
@@ -49,32 +53,35 @@ export class CriticalStartupErrorHandler {
   /**
    * Verify that the background connection is operational.
    */
-  async #startHandshake() {
-    const { promise: handshake, resolve: onHandshakeCompleted } =
+  async #startLivenessCheck() {
+    const { promise: livenessCheck, resolve: onLivenessCheckCompleted } =
       createDeferredPromise();
     // This is called later in `#handle` when the response is received.
-    this.#onHandshakeCompleted = onHandshakeCompleted;
+    this.#onLivenessCheckCompleted = onLivenessCheckCompleted;
 
-    this.#port.postMessage({ data: { method: 'SYN' }, name: 'handshake' });
+    this.#port.postMessage({
+      data: { method: BACKGROUND_LIVENESS_REQUEST },
+      name: 'background-liveness',
+    });
     const timeoutPromise = new Promise((_resolve, reject) => {
-      this.#handshakeTimeoutId = setTimeout(
+      this.#livenessCheckTimeoutId = setTimeout(
         () => reject(new Error('Background connection unresponsive')),
         BACKGROUND_CONNECTION_TIMEOUT,
       );
     });
 
     try {
-      await Promise.race([handshake, timeoutPromise]);
+      await Promise.race([livenessCheck, timeoutPromise]);
     } catch (error) {
       await displayCriticalError(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
-        // This cast is safe because `handshake` can't throw, and `timeoutPromise` only throws an
+        // This cast is safe because `livenessCheck` can't throw, and `timeoutPromise` only throws an
         // error.
         error as ErrorLike,
       );
     } finally {
-      clearTimeout(this.#handshakeTimeoutId);
+      clearTimeout(this.#livenessCheckTimeoutId);
     }
   }
 
@@ -98,14 +105,14 @@ export class CriticalStartupErrorHandler {
     const { method } = data;
     // Currently, we only handle ACK, RELOAD_WINDOW, and the state corruption error
     // message, but we will be adding more in the future.
-    if (method === 'ACK') {
-      if (this.#onHandshakeCompleted) {
-        this.#onHandshakeCompleted();
+    if (method === BACKGROUND_LIVENESS_RESPONSE) {
+      if (this.#onLivenessCheckCompleted) {
+        this.#onLivenessCheckCompleted();
       } else {
         await displayCriticalError(
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
-          new Error('Unreachable error, handshake not initialized'),
+          new Error('Unreachable error, liveness check not initialized'),
         );
       }
     } else if (method === RELOAD_WINDOW) {
@@ -171,17 +178,17 @@ export class CriticalStartupErrorHandler {
   install() {
     // Called without `await` intentionally to ensure listeners for other messages are added as
     // quickly as possible.
-    this.#startHandshake();
+    this.#startLivenessCheck();
 
     this.#port.onMessage.addListener(this.#handler);
   }
 
   /**
-   * Uninstall the error listeners from the port, and cancel any ongoing handshake.
+   * Uninstall the error listeners from the port, and cancel any ongoing liveness check.
    */
   uninstall() {
     this.#port.onMessage.removeListener(this.#handler);
-    this.#onHandshakeCompleted = undefined;
-    clearTimeout(this.#handshakeTimeoutId);
+    this.#onLivenessCheckCompleted = undefined;
+    clearTimeout(this.#livenessCheckTimeoutId);
   }
 }

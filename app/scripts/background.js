@@ -26,6 +26,10 @@ import {
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import {
+  BACKGROUND_LIVENESS_REQUEST,
+  BACKGROUND_LIVENESS_RESPONSE,
+} from '../../shared/constants/background-liveness-check';
+import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
   MetaMetricsEventCategory,
@@ -447,15 +451,18 @@ browser.runtime.onConnect.addListener(async (port) => {
   ) {
     return;
   }
-  // Setup listeners to respond immediately to handshake from UI.
+  // Setup listeners to respond immediately to liveness check from UI.
   const synHandler = (event) => {
-    if (event.name === 'handshake' && event.data?.method === 'SYN') {
+    if (
+      event.name === 'background-liveness' &&
+      event.data?.method === BACKGROUND_LIVENESS_REQUEST
+    ) {
       port.onMessage.removeListener(synHandler);
       port.postMessage({
         data: {
-          method: 'ACK',
+          method: BACKGROUND_LIVENESS_RESPONSE,
         },
-        name: 'handshake',
+        name: 'background-liveness',
       });
     }
   };
