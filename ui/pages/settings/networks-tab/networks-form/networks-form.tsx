@@ -6,7 +6,7 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Hex, isStrictHexString, parseCaipChainId } from '@metamask/utils';
+import { Hex, isStrictHexString } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -34,7 +34,6 @@ import {
   addNetwork,
   setActiveNetwork,
   setEditedNetwork,
-  setEnabledNetworks,
   setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
@@ -76,7 +75,7 @@ import {
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
-import { getSelectedMultichainNetworkChainId } from '../../../../selectors/multichain/networks';
+import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -137,11 +136,6 @@ export const NetworksForm = ({
   const [fetchedChainId, setFetchedChainId] = useState<string>();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
-
-  const currentMultichainChainId = useSelector(
-    getSelectedMultichainNetworkChainId,
-  );
-  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const templateInfuraRpc = (endpoint: string) =>
     endpoint.endsWith('{infuraProjectId}')
@@ -303,9 +297,7 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
-            await dispatch(
-              setEnabledNetworks([existingNetwork.chainId], namespace),
-            );
+            await dispatch(enableSingleNetwork(existingNetwork.chainId));
           }
         } else {
           const addedNetworkConfiguration = (await dispatch(
@@ -318,9 +310,7 @@ export const NetworksForm = ({
             ]?.networkClientId;
 
           await dispatch(setActiveNetwork(networkClientId));
-          await dispatch(
-            setEnabledNetworks([networkPayload.chainId], namespace),
-          );
+          await dispatch(enableSingleNetwork(networkPayload.chainId));
         }
 
         trackEvent({

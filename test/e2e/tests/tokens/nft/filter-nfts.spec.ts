@@ -5,6 +5,9 @@ import FixtureBuilder from '../../../fixture-builder';
 import { Driver } from '../../../webdriver/driver';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
+import NetworkManager, {
+  NetworkId,
+} from '../../../page-objects/pages/network-manager';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -93,22 +96,33 @@ describe('View NFT details', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
+        const networkManager = new NetworkManager(driver);
+
         // Click to open the NFT details page and check title
         const homePage = new Homepage(driver);
         await homePage.goToNftTab();
 
+        // Show Ethereum NFTs
         const nftListPage = new NftListPage(driver);
-        await nftListPage.toggleLineaEnablement();
+        await networkManager.openNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
         await nftListPage.checkNumberOfNftsDisplayed(2);
+
         await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );
         await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #2 on mainnet',
         );
-        await nftListPage.toggleLineaEnablement();
+
+        // Show All NFTs
+        await networkManager.openNetworkManager();
+        await networkManager.selectAllNetworks();
+
         await nftListPage.checkNumberOfNftsDisplayed(3);
+
         await nftListPage.checkNftNameIsDisplayed('Test Dapp NFTs #1');
+
         await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );

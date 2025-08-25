@@ -4842,6 +4842,9 @@ export function updateAccountsList(
  * This method updates the enabledNetworkMap to mark specified networks as enabled.
  * It can handle both a single chain ID or an array of chain IDs.
  *
+ * @deprecated - this unsafely sets the EnabledNetworkMap,
+ * - we want to have better control on how we enable networks (either single network or all, not in between)
+ * Please use controller-actions/network-order-controller.ts actions
  * @param chainIds - A single chainId (e.g. 'eip155:1') or an array of chain IDs
  * to be enabled. All other networks will be implicitly disabled.
  * @param networkId - The CAIP-2 chain ID of the currently selected network
@@ -6167,7 +6170,7 @@ export function requestUserApproval({
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('requestUserApproval', [
+      return await submitRequestToBackground('requestUserApproval', [
         {
           origin,
           type,
@@ -6177,6 +6180,7 @@ export function requestUserApproval({
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had trouble requesting user approval'));
+      return null;
     }
   };
 }

@@ -3569,9 +3569,6 @@
   "networkIsBusy": {
     "message": "Jaringan sibuk. Harga gas tinggi dan estimasinya kurang akurat."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Harus memiliki minimal satu jaringan aktif"
-  },
   "networkMenu": {
     "message": "Menu Jaringan"
   },

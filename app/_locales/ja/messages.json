@@ -3536,9 +3536,6 @@
   "networkIsBusy": {
     "message": "ネットワークが混み合っています。ガス代が高く、見積もりはあまり正確ではありません。"
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "1つ以上のネットワークを有効にする必要があります"
-  },
   "networkMenu": {
     "message": "ネットワークメニュー"
   },

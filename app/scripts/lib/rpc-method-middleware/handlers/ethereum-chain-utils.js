@@ -12,7 +12,6 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 import { getValidUrl } from '../../util';
 
 export function validateChainId(chainId) {
@@ -266,28 +265,15 @@ export async function switchChain(
         KnownCaipNamespace.Eip155,
       );
       const existingChainIds = Object.keys(existingEnabledNetworks);
-
       if (!existingChainIds.includes(chainId)) {
-        const isFeaturedNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
-
-        if (isFeaturedNetwork) {
-          const featuredExistingChainIds = existingChainIds.filter((id) =>
-            FEATURED_NETWORK_CHAIN_IDS.includes(id),
-          );
-          setEnabledNetworks(
-            [...featuredExistingChainIds, chainId],
-            KnownCaipNamespace.Eip155,
-          );
-        } else {
-          setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
-        }
+        setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
       }
     } else {
       const { namespace } = parseCaipChainId(chainId);
       const existingEnabledNetworks = getEnabledNetworks(namespace);
       const existingChainIds = Object.keys(existingEnabledNetworks);
       if (!existingChainIds.includes(chainId)) {
-        setEnabledNetworks([...existingChainIds, chainId], namespace);
+        setEnabledNetworks([chainId], namespace);
       }
     }
 
