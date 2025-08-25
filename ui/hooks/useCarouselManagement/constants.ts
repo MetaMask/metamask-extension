@@ -1,15 +1,10 @@
+import { DOWNLOAD_MOBILE_APP_SLIDE_ID } from '../../../shared/constants/app';
+
 export const BASIC_FUNCTIONALITY_SLIDE = {
   id: 'basic_functionality',
   title: 'basicConfigurationBannerTitle',
   description: 'enableIt',
   image: './images/basic-functionality.svg',
-};
-export const REMOTE_MODE_SLIDE = {
-  id: 'remoteMode',
-  title: 'slideRemoteModeTitle',
-  description: 'slideRemoteModeDescription',
-  image: './images/slide-cold-storage.svg',
-  href: '/home.html#remote',
 };
 
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
@@ -33,7 +28,7 @@ export const SWEEPSTAKES_SLIDE = {
   title: 'slideSweepStakeTitle',
   description: 'slideSweepStakeDescription',
   image: './images/sweepstakes.png',
-  href: 'https://portfolio.metamask.io/explore/nfts?event=012e19e2',
+  href: 'https://app.metamask.io/explore/nfts?event=012e19e2',
 };
 
 export const FUND_SLIDE = {
@@ -41,7 +36,7 @@ export const FUND_SLIDE = {
   title: 'slideFundWalletTitle',
   description: 'slideFundWalletDescription',
   image: './images/slide-fund-icon.svg',
-  href: 'https://portfolio.metamask.io/buy/build-quote',
+  href: 'https://app.metamask.io/buy/build-quote',
 };
 
 export const BRIDGE_SLIDE = {
@@ -56,7 +51,7 @@ export const CARD_SLIDE = {
   title: 'slideDebitCardTitle',
   description: 'slideDebitCardDescription',
   image: './images/slide-card-icon.svg',
-  href: 'https://portfolio.metamask.io/card',
+  href: 'https://app.metamask.io/card',
 };
 
 export const CASH_SLIDE = {
@@ -64,7 +59,7 @@ export const CASH_SLIDE = {
   title: 'slideCashOutTitle',
   description: 'slideCashOutDescription',
   image: './images/slide-sell-icon.svg',
-  href: 'https://portfolio.metamask.io/sell',
+  href: 'https://app.metamask.io/sell',
 };
 
 export const MULTI_SRP_SLIDE = {
@@ -80,6 +75,13 @@ export const BACKUPANDSYNC_SLIDE = {
   title: 'backupAndSyncSlideTitle',
   description: 'backupAndSyncSlideDescription',
   image: './images/slide-backup-and-sync-icon.png',
+};
+
+export const DOWNLOAD_MOBILE_APP_SLIDE = {
+  id: DOWNLOAD_MOBILE_APP_SLIDE_ID,
+  title: 'slideDownloadMobileAppTitle',
+  description: 'slideDownloadMobileAppDescription',
+  image: './images/slide-metamask-icon.svg',
 };
 
 export const ZERO_BALANCE = '0x0';

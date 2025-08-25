@@ -38,7 +38,7 @@ export const AssetCellBadge = React.memo(
             size={AvatarNetworkSize.Xs}
             name={allNetworks?.[chainId as Hex]?.name}
             src={badgeWrapperSrc}
-            backgroundColor={BackgroundColor.backgroundMuted}
+            backgroundColor={BackgroundColor.backgroundSection}
             borderWidth={2}
           />
         }
@@ -47,7 +47,7 @@ export const AssetCellBadge = React.memo(
       >
         <AvatarToken
           name={symbol}
-          backgroundColor={BackgroundColor.backgroundMuted}
+          backgroundColor={BackgroundColor.backgroundSection}
           src={avatarTokenSrc}
         />
       </BadgeWrapper>

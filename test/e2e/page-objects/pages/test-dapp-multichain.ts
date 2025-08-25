@@ -44,10 +44,14 @@ class TestDappMultichain {
   }
 
   addCustomAccountAddressInput(i: number) {
+    // Not a hex color value
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
     return `#add-custom-caip\\ address-button-${i}`;
   }
 
   addCustomScopeButton(i: number) {
+    // Not a hex color value
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
     return `#add-custom-scope-button-${i}`;
   }
 
@@ -59,7 +63,7 @@ class TestDappMultichain {
     return `#custom-Scope-input-${i}`;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.dappTitle);
     } catch (e) {
@@ -218,7 +222,7 @@ class TestDappMultichain {
    * @param index - The index of the wallet session changed result. 0-based index.
    * @returns The wallet session changed result.
    */
-  async get_walletSessionChangedResult(index: number): Promise<string> {
+  async getWalletSessionChangedResult(index: number): Promise<string> {
     console.log(
       `Getting wallet session changed result for index ${index} on multichain test dapp.`,
     );
@@ -387,7 +391,7 @@ class TestDappMultichain {
    *
    * @param scope - The CAIP-2 scope.
    */
-  async check_walletNotifyResult(scope: string): Promise<void> {
+  async checkWalletNotifyResult(scope: string): Promise<void> {
     console.log(
       `Checking wallet notify result for scope ${scope} on multichain test dapp.`,
     );

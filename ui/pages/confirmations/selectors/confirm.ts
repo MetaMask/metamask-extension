@@ -37,8 +37,28 @@ export const oldestPendingConfirmationSelector = createDeepEqualSelector(
   (firstPendingConfirmation) => firstPendingConfirmation,
 );
 
-export function getUpgradeSplashPageAcknowledgedForAccounts(
+export function selectEnableEnforcedSimulations(
   state: ConfirmMetamaskState,
-): string[] {
-  return state.metamask.upgradeSplashPageAcknowledgedForAccounts ?? [];
+  transactionId: string,
+): boolean {
+  return (
+    state.metamask.enableEnforcedSimulationsForTransactions[transactionId] ??
+    state.metamask.enableEnforcedSimulations
+  );
+}
+
+export function selectEnforcedSimulationsDefaultSlippage(
+  state: ConfirmMetamaskState,
+): number {
+  return state.metamask.enforcedSimulationsSlippage;
+}
+
+export function selectEnforcedSimulationsSlippage(
+  state: ConfirmMetamaskState,
+  transactionId: string,
+): number {
+  return (
+    state.metamask.enforcedSimulationsSlippageForTransactions[transactionId] ??
+    state.metamask.enforcedSimulationsSlippage
+  );
 }

@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "如果问题仍然存在，请重启 MetaMask。",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "加载时间比平时长。",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "错误"
   },
@@ -80,6 +88,16 @@
   "accountActivityText": {
     "message": "选择您想要接收通知的账户："
   },
+  "accountAlreadyExistsLogin": {
+    "message": "登录"
+  },
+  "accountAlreadyExistsLoginDescription": {
+    "message": "使用 “$1” 的钱包已存在。是否改为尝试登录？",
+    "description": "$1 is the account email"
+  },
+  "accountAlreadyExistsTitle": {
+    "message": "钱包已存在"
+  },
   "accountDetails": {
     "message": "账户详情"
   },
@@ -99,6 +117,16 @@
   "accountNameReserved": {
     "message": "此账户名已被保留",
     "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
+  },
+  "accountNotFoundCreateOne": {
+    "message": "是，创建新钱包"
+  },
+  "accountNotFoundDescription": {
+    "message": "我们找不到 “$1” 的钱包。您想使用此登录名创建新钱包吗？",
+    "description": "$1 is the account email"
+  },
+  "accountNotFoundTitle": {
+    "message": "未找到钱包"
   },
   "accountOptions": {
     "message": "账户选项"
@@ -154,6 +182,9 @@
   "addAccountFromNetwork": {
     "message": "添加 $1 账户",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
+  },
+  "addAccountOrWallet": {
+    "message": "添加账户或钱包"
   },
   "addAccountToMetaMask": {
     "message": "向 MetaMask 添加账户"
@@ -287,7 +318,7 @@
     "message": "地址"
   },
   "addressCopied": {
-    "message": "地址已复制！"
+    "message": "地址已复制"
   },
   "addressMismatch": {
     "message": "网站地址不匹配"
@@ -299,6 +330,10 @@
   "addressMismatchPunycode": {
     "message": "Punycode 版本：$1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "地址",
+    "description": "Multichain account menu item for linking to addresses page"
   },
   "advanced": {
     "message": "高级"
@@ -361,11 +396,17 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "更新燃料选项"
   },
+  "alertContentMultipleApprovals": {
+    "message": "您正在授权他人提取您的代币，尽管本次交易无需要此操作。"
+  },
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
   },
   "alertMessageAddressMismatchWarning": {
     "message": "攻击者有时会通过对网站地址进行细微更改来模仿网站。在继续操作之前，请确保您是与目标网站进行交互。"
+  },
+  "alertMessageAddressTrustSignal": {
+    "message": "如果您确认此请求，您的资产可能会被骗子窃取。"
   },
   "alertMessageChangeInSimulationResults": {
     "message": "此交易的预计更改已更新。继续之前请仔细审查。"
@@ -390,6 +431,12 @@
   },
   "alertMessageNoGasPrice": {
     "message": "您手动更新费用后，我们才能继续进行此交易。"
+  },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "已确定其为恶意。我们建议不要与此网站交互。"
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "已确定其为可疑。我们建议不要与此网站交互。"
   },
   "alertMessageSignInDomainMismatch": {
     "message": "提出请求的网站不是您正在登录的网站。这可能试图窃取您的登录凭据。"
@@ -424,11 +471,20 @@
   "alertReasonInsufficientBalance": {
     "message": "资金不足"
   },
+  "alertReasonMultipleApprovals": {
+    "message": "非必要权限"
+  },
   "alertReasonNetworkBusy": {
     "message": "网络繁忙"
   },
   "alertReasonNoGasPrice": {
     "message": "无法使用费用估算"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "恶意网站"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "可疑网站"
   },
   "alertReasonPendingTransactions": {
     "message": "待定交易"
@@ -586,6 +642,9 @@
   "back": {
     "message": "返回"
   },
+  "backup": {
+    "message": "备份"
+  },
   "backupAndSync": {
     "message": "备份与同步"
   },
@@ -612,6 +671,9 @@
   },
   "backupAndSyncFeatureAccounts": {
     "message": "账户"
+  },
+  "backupAndSyncFeatureContacts": {
+    "message": "联系方式"
   },
   "backupAndSyncManageWhatYouSync": {
     "message": "管理同步内容"
@@ -686,9 +748,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "开启基本功能"
-  },
-  "bestPrice": {
-    "message": "最优价格"
   },
   "beta": {
     "message": "测试版"
@@ -855,11 +914,29 @@
   "bridgeNetCost": {
     "message": "净成本"
   },
+  "bridgePriceImpact": {
+    "message": "价格影响"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "价格影响反映了您的兑换订单如何影响资产的市场价格。如果您未持有足够的资金支付燃料费，系统将自动分配部分源代币来抵扣费用，这将导致实际兑换数量减少。MetaMask 不会干预或控制价格影响。"
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "价格影响反映您的兑换订单对资产市场价格的影响程度。它取决于交易规模及资金池中的可用流动性。MetaMask 不会干预或控制价格影响。"
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "价格影响"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "价格影响警告"
+  },
   "bridgeQuoteExpired": {
     "message": "您的报价已超时。"
   },
   "bridgeSelectDestinationAccount": {
     "message": "选择目标账户"
+  },
+  "bridgeSelectDifferentQuote": {
+    "message": "请选择其他报价。"
   },
   "bridgeSelectNetwork": {
     "message": "选择网络"
@@ -901,18 +978,12 @@
     "message": "正在用 $1 兑换 $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "条款"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 分钟",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "桥接至"
-  },
-  "bridgeToChain": {
-    "message": "桥接至 $1"
   },
   "bridgeTokenCannotVerifyDescription": {
     "message": "如果您手动添加了此代币，请务必在桥接之前了解资金面临的风险。"
@@ -922,6 +993,9 @@
   },
   "bridgeTransactionProgress": {
     "message": "交易 $1（共 2 笔）"
+  },
+  "bridgeTxDetailsBridged": {
+    "message": "已桥接"
   },
   "bridgeTxDetailsBridging": {
     "message": "桥接"
@@ -940,6 +1014,12 @@
   },
   "bridgeTxDetailsStatus": {
     "message": "状态"
+  },
+  "bridgeTxDetailsSwapped": {
+    "message": "已兑换"
+  },
+  "bridgeTxDetailsSwapping": {
+    "message": "正在兑换"
   },
   "bridgeTxDetailsTimestamp": {
     "message": "时间戳"
@@ -967,6 +1047,12 @@
   "bridgeValidationInsufficientGasTitle": {
     "message": "需要更多的 $1 用于燃料"
   },
+  "bridged": {
+    "message": "已桥接"
+  },
+  "bridgedToChain": {
+    "message": "已桥接至 $1"
+  },
   "bridging": {
     "message": "桥接"
   },
@@ -978,9 +1064,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask 是在世界各地设计和建造的。"
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "忙碌中"
@@ -1029,6 +1112,18 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "此代币符号与输入的网络名称或链 ID 不匹配。许多热门代币使用类似的符号，骗子可能会使用这些符号来欺骗您，让您向他们发送更有价值的代币作为回报。在您继续之前请先验证所有信息。"
+  },
+  "changePasswordLoading": {
+    "message": "正在更改密码……"
+  },
+  "changePasswordLoadingNote": {
+    "message": "此过程不会持续太久"
+  },
+  "changePasswordWarning": {
+    "message": "您确定吗？"
+  },
+  "changePasswordWarningDescription": {
+    "message": "在此处更改密码将锁定您正在使用的其他设备上的 MetaMask。您需要使用新密码重新登录。"
   },
   "chooseYourNetwork": {
     "message": "选择您的网络"
@@ -1171,8 +1266,26 @@
   "confirmRecoveryPhrase": {
     "message": "确认私钥助记词"
   },
+  "confirmRecoveryPhraseDetails": {
+    "message": "按正确顺序选择缺失的单词。"
+  },
+  "confirmRecoveryPhraseTitle": {
+    "message": "确认私钥助记词"
+  },
   "confirmSimulationApprove": {
     "message": "您批准"
+  },
+  "confirmSrpErrorDescription": {
+    "message": "请仔细检查您的私钥助记词，然后重试。"
+  },
+  "confirmSrpErrorTitle": {
+    "message": "不完全正确"
+  },
+  "confirmSrpSuccessDescription": {
+    "message": "没错！记住：切勿与任何人分享该助记词。"
+  },
+  "confirmSrpSuccessTitle": {
+    "message": "完美"
   },
   "confirmTitleAccountTypeSwitch": {
     "message": "账户升级"
@@ -1370,6 +1483,12 @@
   "connectionRequest": {
     "message": "连接请求"
   },
+  "connectionsRemovedModalDescription": {
+    "message": "由于此设备长期未使用，部分连接项（如硬件钱包和 Snap）已被移除。您可随时在“设置”中重新添加这些连接项。"
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "连接项已移除"
+  },
   "contactUs": {
     "message": "联系我们"
   },
@@ -1432,7 +1551,16 @@
     "message": "创建新账户"
   },
   "createPassword": {
+    "message": "MetaMask 密码"
+  },
+  "createPasswordCreate": {
     "message": "创建密码"
+  },
+  "createPasswordDetails": {
+    "message": "仅在此设备上解锁 MetaMask。"
+  },
+  "createPasswordDetailsSocial": {
+    "message": "使用此功能在所有设备上恢复钱包。"
   },
   "createSnapAccountDescription": {
     "message": "$1 想在 MetaMask 添加一个新账户。"
@@ -1508,6 +1636,9 @@
   "customGasSettingToolTipMessage": {
     "message": "使用$1来定制燃料价格。如果您不熟悉这可能会引起混淆。操作风险自付。",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
+  },
+  "customNetworks": {
+    "message": "自定义网络"
   },
   "customSlippage": {
     "message": "自定义"
@@ -1612,6 +1743,56 @@
   "decryptRequest": {
     "message": "解密请求"
   },
+  "deepLink_Caution": {
+    "message": "请谨慎行事"
+  },
+  "deepLink_Continue": {
+    "message": "继续"
+  },
+  "deepLink_ContinueDescription": {
+    "message": "如果继续，将打开 $1。",
+    "description": "$1 is the name of the page they'll be redirected to if they click the Continue button. Examples of $1: 'the home page'; 'the buy page'; 'the swaps page'; 'the notifications page'"
+  },
+  "deepLink_DontRemindMeAgain": {
+    "message": "不再提示我"
+  },
+  "deepLink_Error404Description": {
+    "message": "我们找不到您要查找的页面。"
+  },
+  "deepLink_Error404Title": {
+    "message": "此页面不存在"
+  },
+  "deepLink_ErrorMissingUrl": {
+    "message": "未提供可导航的 URL。"
+  },
+  "deepLink_ErrorOtherDescription": {
+    "message": "这是一个错误，应向 MetaMask 报告。"
+  },
+  "deepLink_ErrorOtherTitle": {
+    "message": "处理深度链接时出错"
+  },
+  "deepLink_GoToTheHomePageButton": {
+    "message": "返回主页"
+  },
+  "deepLink_RedirectingToMetaMask": {
+    "message": "重定向至 MetaMask"
+  },
+  "deepLink_ThirdPartyDescription": {
+    "message": "您由第三方（而非 MetaMask）引导至此。$1",
+    "description": "$1 is the message 'deepLink_ContinueDescription'"
+  },
+  "deepLink_theBuyPage": {
+    "message": "购买页面"
+  },
+  "deepLink_theHomePage": {
+    "message": "主页"
+  },
+  "deepLink_theNotificationsPage": {
+    "message": "通知页面"
+  },
+  "deepLink_theSwapsPage": {
+    "message": "兑换页面"
+  },
   "defaultRpcUrl": {
     "message": "默认 RPC（远程过程调用）URL"
   },
@@ -1687,6 +1868,9 @@
   "descriptionFromSnap": {
     "message": "来自 $1 的描述",
     "description": "$1 represents the name of the snap"
+  },
+  "deselectAll": {
+    "message": "全部取消选择"
   },
   "destinationAccountPickerNoEligible": {
     "message": "未找到符合条件的账户"
@@ -1795,17 +1979,29 @@
   "downArrow": {
     "message": "向下箭头"
   },
+  "downloadAppDescription": {
+    "message": "通过移动应用程序，让您可以随时随地随身携带 MetaMask。此外，开启面容 ID 功能后，即使忘记密码也能随时访问。"
+  },
+  "downloadAppTitle": {
+    "message": "扫描二维码并下载应用程序"
+  },
   "downloadGoogleChrome": {
     "message": "下载 Google Chrome 浏览器"
+  },
+  "downloadMetaMaskMobileDescription": {
+    "message": "即使忘记密码，也能通过面容 ID 轻松登录我们的应用。MetaMask 伴您随身畅行！"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "扫描此二维码开始。"
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "下载我们的移动应用程序"
   },
   "downloadNow": {
     "message": "立即下载"
   },
   "downloadStateLogs": {
     "message": "下载状态日志"
-  },
-  "dragAndDropBanner": {
-    "message": "您可以拖动网络以对其进行重新排序。 "
   },
   "dropped": {
     "message": "失败"
@@ -1856,6 +2052,9 @@
   },
   "editANickname": {
     "message": "编辑昵称"
+  },
+  "editAccountName": {
+    "message": "编辑账户名"
   },
   "editAccounts": {
     "message": "编辑账户"
@@ -1936,6 +2135,9 @@
   "editInPortfolio": {
     "message": "在 Portfolio 上编辑"
   },
+  "editNetwork": {
+    "message": "编辑网络"
+  },
   "editNetworkLink": {
     "message": "编辑原始网络"
   },
@@ -1977,6 +2179,15 @@
   },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
+  },
+  "enableIt": {
+    "message": " 启用它"
+  },
+  "enableSmartContractAccount": {
+    "message": "启用智能合约账户"
+  },
+  "enableSmartContractAccountDescription": {
+    "message": "您可以在支持的网络上启用智能账户功能。"
   },
   "enableSnap": {
     "message": "启用"
@@ -2041,6 +2252,9 @@
   "enterPasswordContinue": {
     "message": "输入密码继续"
   },
+  "enterPasswordCurrent": {
+    "message": "输入您的当前密码"
+  },
   "enterRpcUrl": {
     "message": "输入 RPC（远程过程调用）URL"
   },
@@ -2053,9 +2267,19 @@
   "enterYourPassword": {
     "message": "输入您的密码"
   },
+  "enterYourPasswordContinue": {
+    "message": "输入密码继续"
+  },
+  "enterYourPasswordSocialLoginFlow": {
+    "message": "输入 MetaMask 密码"
+  },
   "errorCode": {
     "message": "代码：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
+  },
+  "errorDetails": {
+    "message": "错误详情",
+    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "获取安全链列表时出错，请谨慎继续。"
@@ -2229,9 +2453,6 @@
   "floatAmountToken": {
     "message": "代币金额必须是整数"
   },
-  "followUsOnTwitter": {
-    "message": "在 Twitter 上关注我们"
-  },
   "forbiddenIpfsGateway": {
     "message": "禁用的 IPFS 网关：请指定一个 CID 网关"
   },
@@ -2240,6 +2461,32 @@
   },
   "forgotPassword": {
     "message": "忘记密码了？"
+  },
+  "forgotPasswordModalButton": {
+    "message": "重设钱包"
+  },
+  "forgotPasswordModalDescription1": {
+    "message": "MetaMask 无法恢复您的密码。"
+  },
+  "forgotPasswordModalDescription2": {
+    "message": "您可以通过输入设置钱包时使用的私钥助记词来重设钱包。"
+  },
+  "forgotPasswordModalTitle": {
+    "message": "忘记密码了？"
+  },
+  "forgotPasswordSocialDescription": {
+    "message": "MetaMask 无法恢复您的密码。"
+  },
+  "forgotPasswordSocialStep1": {
+    "message": "如果您在启用了 $1（如面容 ID）的设备上已登录 MetaMask，您可以在此处重设密码。",
+    "description": "$1 is bold biometrics turned on"
+  },
+  "forgotPasswordSocialStep1Biometrics": {
+    "message": "生物识别已启用"
+  },
+  "forgotPasswordSocialStep2": {
+    "message": "如果您有 $1，您可以重设当前钱包并使用私钥助记词重新导入。",
+    "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
     "message": "表格"
@@ -2326,6 +2573,9 @@
   },
   "genericExplorerView": {
     "message": "在$1查看账户"
+  },
+  "getTheNewestFeatures": {
+    "message": "获取最新功能"
   },
   "goToSite": {
     "message": "转到网站"
@@ -2476,9 +2726,6 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "处理交易所需的预估费用。最大费用为 $1。"
-  },
   "howQuotesWork": {
     "message": "报价如何运作"
   },
@@ -2501,6 +2748,9 @@
     "message": "导入",
     "description": "Button to import an account from a selected file"
   },
+  "importAWallet": {
+    "message": "导入钱包"
+  },
   "importAccountError": {
     "message": "导入账户时出错。"
   },
@@ -2521,6 +2771,13 @@
   },
   "importAccountMsg": {
     "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "导入的私钥会备份到您的账户中，并在您使用相同的 Google 或 Apple 账户登录时自动同步。"
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "通过 $1 了解导入密钥的工作原理",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "导入 NFT"
@@ -2713,6 +2970,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "输入无效！私钥助记词须区分大小写。"
   },
+  "invalidSeedPhraseNotFound": {
+    "message": "未找到私钥助记词。"
+  },
   "ipfsGateway": {
     "message": "IPFS网关"
   },
@@ -2809,9 +3069,6 @@
   "learnMoreAboutPrivacy": {
     "message": "了解有关隐私最佳实践的更多信息。"
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "了解有关 Solana 账户的更多详情"
-  },
   "learnMoreKeystone": {
     "message": "了解更多"
   },
@@ -2859,6 +3116,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "以太坊交易输入数据填充不足。"
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "我们在连接 Ledger 时遇到问题。请查看我们的 "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " 了解如何连接硬件钱包，然后重试。"
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger 不再支持 Firefox，因此您可能需要使用其他浏览器。"
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "指南"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "不支持 Firefox"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live 应用程序"
@@ -2933,6 +3205,37 @@
   "lockTimeInvalid": {
     "message": "锁定时间必须是 0 到 10080 之间的数字"
   },
+  "loginErrorConnectButton": {
+    "message": "重试"
+  },
+  "loginErrorConnectDescription": {
+    "message": "您的互联网连接不稳定。请检查您的网络连接，然后重试。"
+  },
+  "loginErrorConnectTitle": {
+    "message": "无法连接"
+  },
+  "loginErrorGenericButton": {
+    "message": "重试"
+  },
+  "loginErrorGenericDescription": {
+    "message": "登录时发生错误。请重试，若问题仍存在，请联系 $1。",
+    "description": "$1 is the key 'loginErrorGenericSupport'"
+  },
+  "loginErrorGenericSupport": {
+    "message": "MetaMask 支持团队"
+  },
+  "loginErrorGenericTitle": {
+    "message": "出错了"
+  },
+  "loginErrorSessionExpiredButton": {
+    "message": "登录"
+  },
+  "loginErrorSessionExpiredDescription": {
+    "message": "您的会话已过期。请重新登录以继续。"
+  },
+  "loginErrorSessionExpiredTitle": {
+    "message": "会话已过期"
+  },
   "logo": {
     "message": "$1标志",
     "description": "$1 is the name of the ticker"
@@ -2967,7 +3270,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
-    "message": "管理默认隐私设置"
+    "message": "管理默认设置"
   },
   "manageInstitutionalWallets": {
     "message": "管理机构钱包"
@@ -3125,6 +3428,14 @@
   "nameAlreadyInUse": {
     "message": "名称已占用"
   },
+  "nameFooterTrustWarning": {
+    "message": "仅保存您信任的地址。",
+    "description": "Footer warning text shown in name modal for malicious and warning addresses."
+  },
+  "nameInstructionsMalicious": {
+    "message": "已确定其为恶意。我们建议不要与此地址交互。",
+    "description": "Instruction text in name component modal when address is malicious."
+  },
   "nameInstructionsNew": {
     "message": "如果您知道此地址，则为其添加昵称，以便将来识别。",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -3137,6 +3448,10 @@
     "message": "您以前为此地址添加过昵称。您可以编辑或查看其他建议的昵称。",
     "description": "Instruction text in name component modal when value is saved."
   },
+  "nameInstructionsWarning": {
+    "message": "已确定其为可疑。如果您信任此作者，请设置个人显示名称以便日后辨别。",
+    "description": "Instruction text in name component modal when address has warning signals."
+  },
   "nameLabel": {
     "message": "昵称",
     "description": "Label above name input field in name component modal."
@@ -3144,6 +3459,10 @@
   "nameModalMaybeProposedName": {
     "message": "可能：$1",
     "description": "$1 is the proposed name"
+  },
+  "nameModalTitleMalicious": {
+    "message": "恶意地址",
+    "description": "Title of the modal created by the name component when address is identified as malicious."
   },
   "nameModalTitleNew": {
     "message": "未知地址",
@@ -3156,6 +3475,14 @@
   "nameModalTitleSaved": {
     "message": "已保存的地址",
     "description": "Title of the modal created by the name component when value is saved."
+  },
+  "nameModalTitleVerified": {
+    "message": "已验证地址",
+    "description": "Title of the modal created by the name component when address is verified."
+  },
+  "nameModalTitleWarning": {
+    "message": "可疑地址",
+    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "由 $1 提议",
@@ -3176,6 +3503,10 @@
   "nameSetPlaceholder": {
     "message": "选择昵称......",
     "description": "Placeholder text for name input field in name component modal."
+  },
+  "nameSetPlaceholderSuggested": {
+    "message": "建议：$1",
+    "description": "$1 is the proposed name"
   },
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 请求您的批准，以便：",
@@ -3237,6 +3568,9 @@
   },
   "networkIsBusy": {
     "message": "网络繁忙。燃料价格较高，估值较不准确。"
+  },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "必须至少启用一个网络"
   },
   "networkMenu": {
     "message": "网络菜单"
@@ -3374,7 +3708,10 @@
     "message": "NFT已成功添加！"
   },
   "newPassword": {
-    "message": "新密码（至少 8 个字符）"
+    "message": "新密码"
+  },
+  "newPasswordCreate": {
+    "message": "创建新密码"
   },
   "newPrivacyPolicyActionButton": {
     "message": "了解更多"
@@ -3453,7 +3790,7 @@
     "message": "无可用汇率"
   },
   "noDeFiPositions": {
-    "message": "暂无持仓"
+    "message": "找不到您要查找的内容吗？"
   },
   "noDomainResolution": {
     "message": "没有提供域名解析。"
@@ -3464,8 +3801,14 @@
   "noNFTs": {
     "message": "尚无 NFT"
   },
+  "noNetworksAvailable": {
+    "message": "无可用网络"
+  },
   "noNetworksFound": {
     "message": "未找到符合搜索查询条件的网络"
+  },
+  "noNetworksSelected": {
+    "message": "未选择网络"
   },
   "noOptionsAvailableMessage": {
     "message": "此交易路径目前不可用。请尝试更改金额、网络或者代币，我们会找到最佳选项。"
@@ -3508,9 +3851,6 @@
   },
   "notEnoughGas": {
     "message": "燃料不足"
-  },
-  "notNow": {
-    "message": "暂时不"
   },
   "notificationDetail": {
     "message": "详情"
@@ -3749,27 +4089,31 @@
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "选择您的网络"
   },
+  "onboardingContinueWith": {
+    "message": "使用 $1 继续",
+    "description": "$1 is the type of login used Google, Apple, etc."
+  },
   "onboardingCreateWallet": {
     "message": "创建新钱包"
   },
   "onboardingImportWallet": {
-    "message": "导入现有钱包"
+    "message": "我已有一个钱包"
   },
   "onboardingMetametricsAgree": {
     "message": "我同意"
   },
   "onboardingMetametricsDescription": {
-    "message": "我们希望收集基本的使用和诊断数据，以改进 MetaMask。请注意，我们绝不会出卖您在此处提供的数据。"
+    "message": "我们希望通过收集基本使用情况和诊断数据来改进 MetaMask。它将始终是："
   },
   "onboardingMetametricsInfuraTerms": {
-    "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",
+    "message": "如果我们决定将这些数据用于其他目的，将通知您。您可以随时查看我们的 $1 以了解更多信息（我们绝不会出售您在此处提供的数据）。",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "隐私政策"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 会存储点击量和应用程序的浏览量，但不会存储其他详情（如您的公钥）。",
+    "message": "$1 应用中的点击量和浏览量会被存储，但不会存储其他详情（如您的公钥）。",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
@@ -3783,7 +4127,7 @@
     "message": "通用："
   },
   "onboardingMetametricsNeverSellData": {
-    "message": "$1 您可以随时决定是否通过设置共享或删除您的使用数据。",
+    "message": "$1 您可以随时通过设置决定是否共享或删除您的使用数据。",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
@@ -3795,18 +4139,56 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "我们将使用此数据来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点）。"
   },
+  "onboardingOptionIcon": {
+    "message": "$1 图标",
+    "description": "$1 is the icon name"
+  },
+  "onboardingOptionTitle": {
+    "message": "选择一个选项继续"
+  },
+  "onboardingPinExtensionAltLaunch": {
+    "message": "启动扩展程序"
+  },
+  "onboardingPinExtensionAltPin": {
+    "message": "固定扩展程序"
+  },
   "onboardingPinExtensionDescription": {
     "message": "在您的浏览器上固定 MetaMask，以便访问并轻松查看交易确认。"
   },
   "onboardingPinExtensionDescription2": {
-    "message": "您可以通过点击扩展程序打开 MetaMask，并一键访问您的钱包。"
+    "message": "点击扩展程序，即可一键访问您的 MetaMask 钱包。"
   },
   "onboardingPinExtensionDescription3": {
-    "message": "点击浏览器扩展程序图标即可即时访问它",
+    "message": "点击 $1 扩展程序图标即可即时访问它",
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "您的 MetaMask 安装完成！"
+    "message": "安装完成！"
+  },
+  "onboardingSignInWith": {
+    "message": "使用 $1 登录",
+    "description": "$1 is the type of login used Google, Apple, etc"
+  },
+  "onboardingSrpCreate": {
+    "message": "使用私钥助记词"
+  },
+  "onboardingSrpImport": {
+    "message": "使用私钥助记词导入"
+  },
+  "onboardingSrpImportError": {
+    "message": "仅使用小写字母，检查拼写，并按原始顺序排列单词。"
+  },
+  "onboardingSrpInputClearAll": {
+    "message": "清除全部"
+  },
+  "onboardingSrpInputHideAll": {
+    "message": "隐藏全部"
+  },
+  "onboardingSrpInputPlaceholder": {
+    "message": "在每个单词之间添加一个空格，确保无人看到。"
+  },
+  "onboardingSrpInputShowAll": {
+    "message": "显示全部"
   },
   "onekey": {
     "message": "OneKey"
@@ -3830,6 +4212,9 @@
   },
   "options": {
     "message": "期权"
+  },
+  "or": {
+    "message": "或"
   },
   "origin": {
     "message": "来源"
@@ -3875,8 +4260,14 @@
   "password": {
     "message": "密码"
   },
+  "passwordChangedRecently": {
+    "message": "您的密码已更改"
+  },
+  "passwordChangedRecentlyDescription": {
+    "message": "输入您的新密码以保持登录 MetaMask。"
+  },
   "passwordNotLongEnough": {
-    "message": "密码长度不足"
+    "message": "密码必须至少包含 8 个字符"
   },
   "passwordStrength": {
     "message": "密码强度：$1",
@@ -3886,10 +4277,22 @@
     "message": "强密码可以提高钱包的安全性，以防设备被盗或被入侵。"
   },
   "passwordTermsWarning": {
-    "message": "我明白 MetaMask 无法为我恢复此密码。$1"
+    "message": "如果我忘记该密码，MetaMask 将无法为我重设。"
+  },
+  "passwordTermsWarningSocial": {
+    "message": "如果我忘记该密码，我将永久失去钱包的访问权限。MetaMask 无法为我重设该密码。"
+  },
+  "passwordToggleHide": {
+    "message": "隐藏密码"
+  },
+  "passwordToggleShow": {
+    "message": "显示密码"
   },
   "passwordsDontMatch": {
     "message": "密码不匹配"
+  },
+  "paste": {
+    "message": "粘贴"
   },
   "pastePrivateKey": {
     "message": "请粘贴您的私钥:",
@@ -4204,6 +4607,10 @@
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
   },
+  "pin": {
+    "message": "置顶",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "置顶"
   },
@@ -4224,9 +4631,6 @@
   },
   "popularNetworks": {
     "message": "热门网络"
-  },
-  "portfolio": {
-    "message": "Portfolio"
   },
   "preparingSwap": {
     "message": "正在准备交换......"
@@ -4289,6 +4693,9 @@
   },
   "proposedApprovalLimit": {
     "message": "拟议的审批上限"
+  },
+  "protocolNotSupported": {
+    "message": "我们可能尚不支持您的协议。"
   },
   "provide": {
     "message": "提供"
@@ -4401,6 +4808,9 @@
   "receiveCrypto": {
     "message": "接收加密货币"
   },
+  "received": {
+    "message": "已收到"
+  },
   "recipientAddressPlaceholderNew": {
     "message": "输入公钥 (0x) 或域名"
   },
@@ -4408,28 +4818,16 @@
     "message": "建议"
   },
   "recoveryPhraseReminderBackupStart": {
-    "message": "从这里开始"
+    "message": "立即备份"
   },
   "recoveryPhraseReminderConfirm": {
-    "message": "明白了"
-  },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "始终将您的账户私钥助记词保存在安全和秘密的地方"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "需要再次备份您的账户私钥助记词？"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "切勿与任何人分享您的账户私钥助记词"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask 团队绝对不会索要您的账户私钥助记词"
+    "message": "稍后提醒我"
   },
   "recoveryPhraseReminderSubText": {
-    "message": "您的账户私钥助记词控制您的所有账户。"
+    "message": "如果您不备份钱包，那么当您无法登录应用程序或更换新设备时，将无法访问资金。"
   },
   "recoveryPhraseReminderTitle": {
-    "message": "保护您的资金"
+    "message": "保护您的钱包"
   },
   "redeposit": {
     "message": "重新存入"
@@ -4467,6 +4865,14 @@
   "removeAccountDescription": {
     "message": "该账户将从您的钱包中删除。在继续操作前，确认您已拥有该导入账户的原始账户私钥助记词或私钥。您可以通过账户下拉菜单再次导入或创建账户。 "
   },
+  "removeAccountModalBannerDescription": {
+    "message": "删除之前，请确保您拥有此账户的私钥助记词或私钥。",
+    "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
+  },
+  "removeAccountModalBannerTitle": {
+    "message": "此账户将从 MetaMask 中删除。",
+    "description": "Title of a banner alert used on account remove modal."
+  },
   "removeKeyringSnap": {
     "message": "去除此Snap，会同时将以下账户从MetaMask中去除："
   },
@@ -4497,6 +4903,10 @@
   },
   "removeSnapDescription": {
     "message": "此操作将会删除snap及其数据，并撤销您获授予的权限。"
+  },
+  "rename": {
+    "message": "重命名",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "替换"
@@ -4534,16 +4944,34 @@
     "message": "重置"
   },
   "resetWallet": {
-    "message": "重置钱包"
+    "message": "重设您的钱包"
   },
   "resetWalletSubHeader": {
     "message": "MetaMask不会保留密码的副本。如果您在解锁账户时遇到问题，需要重置您的钱包。您可以提供设置钱包时使用的私钥助记词，以进行重置。"
   },
+  "resetWalletSubHeaderSocial": {
+    "message": "MetaMask 不会保存您的密码副本。若您遇到账户解锁问题，则需要重设钱包。若您持有私钥助记词，可使用它从本设备中清除当前钱包及账户列表。"
+  },
   "resetWalletUsingSRP": {
     "message": "此操作将从此设备中删除您当前的钱包和私钥助记词，以及您编制的账户列表。使用助记词进行重置后，您将会看到一个账户列表（基于用于重置的助记词）。这个新列表将自动包括有余额的账户。您还可以使用之前创建的$1。您导入的自定义账户需要是$2，添加到账户中的任何自定义代币也需要是$3。"
   },
+  "resetWalletUsingSRPSocial": {
+    "message": "使用私钥助记词重设后，您将看到一个新的账户列表。此列表包含有余额的账户。您可以执行此前的 $1 操作。但您需要重新添加所有已导入的 $2 和 $3。 "
+  },
+  "resetWalletUsingSRPSocialAccounts": {
+    "message": "重新添加任何其他账户"
+  },
+  "resetWalletUsingSRPSocialCustomAccounts": {
+    "message": "自定义账户"
+  },
+  "resetWalletUsingSRPSocialCustomTokens": {
+    "message": "自定义代币"
+  },
   "resetWalletWarning": {
     "message": "在继续之前，请确保您所使用的私钥助记词正确无误。您将无法撤消此操作。"
+  },
+  "resetWalletWarningSocial": {
+    "message": "重设前请务必使用正确的私钥助记词。此操作无法撤销。"
   },
   "restartMetamask": {
     "message": "重新启动MetaMask"
@@ -4573,7 +5001,7 @@
     "message": "此处的代币使用了与您关注的另一种代币相同的符号，这可能会让人感到困惑或具有欺骗性。"
   },
   "revealSecretRecoveryPhrase": {
-    "message": "显示私钥助记词"
+    "message": "私钥助记词"
   },
   "revealSeedWords": {
     "message": "显示私钥助记词"
@@ -4667,6 +5095,9 @@
   "searchAccounts": {
     "message": "搜索账户"
   },
+  "searchNetworks": {
+    "message": "搜索网络"
+  },
   "searchNfts": {
     "message": "搜索 NFT"
   },
@@ -4686,6 +5117,19 @@
   "secureWallet": {
     "message": "安全钱包"
   },
+  "secureWalletGetStartedButton": {
+    "message": "开始使用"
+  },
+  "secureWalletRemindLaterButton": {
+    "message": "稍后提醒我"
+  },
+  "secureWalletWalletRecover": {
+    "message": "如果您无法登录应用程序或更换新设备，这是恢复钱包的唯一方法。"
+  },
+  "secureWalletWalletSaveSrp": {
+    "message": "不要冒损失资金的风险。把 $1 储存在您信任的地方，以保护您的钱包。",
+    "description": "The $1 is the button text 'Secret Recovery Phrase'"
+  },
   "security": {
     "message": "安全"
   },
@@ -4702,8 +5146,33 @@
   "securityAndPrivacy": {
     "message": "安全和隐私"
   },
+  "securityChangePassword": {
+    "message": "更改密码"
+  },
+  "securityChangePasswordDescription": {
+    "message": "请选择一个强密码来解锁您设备上的 MetaMask 应用程序。如果您忘记此密码，需要使用您的私钥助记词来重新导入钱包。"
+  },
+  "securityChangePasswordTitle": {
+    "message": "密码"
+  },
+  "securityChangePasswordToastError": {
+    "message": "密码无法更改。请重试。"
+  },
+  "securityChangePasswordToastSuccess": {
+    "message": "新密码已保存"
+  },
   "securityDescription": {
     "message": "减少您加入不安全网络的机会并保护您的账户"
+  },
+  "securityLoginWithSocial": {
+    "message": "使用 $1 登录",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securityLoginWithSrpBackedUp": {
+    "message": "私钥助记词已备份"
+  },
+  "securityLoginWithSrpNotBackedUp": {
+    "message": "备份私钥助记词"
   },
   "securityMessageLinkForNetworks": {
     "message": "网络欺诈和安全风险"
@@ -4711,6 +5180,26 @@
   "securityProviderPoweredBy": {
     "message": "由 $1 提供支持",
     "description": "The security provider that is providing data"
+  },
+  "securitySocialLoginEnabled": {
+    "message": "已启用"
+  },
+  "securitySocialLoginEnabledDescription": {
+    "message": "使用您的 $1 登录信息和 MetaMask 密码来恢复账户及私钥助记词。",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securitySocialLoginLabel": {
+    "message": "$1 找回",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securitySrpDescription": {
+    "message": "备份您的私钥助记词，这样您永远不会失去对钱包的访问权限。请务必将其存储在一个只有您能接触到且不会遗忘的安全位置。"
+  },
+  "securitySrpLabel": {
+    "message": "私钥助记词"
+  },
+  "securitySrpWalletRecovery": {
+    "message": "管理找回方法"
   },
   "seeAllPermissions": {
     "message": "查看所有许可",
@@ -4724,6 +5213,16 @@
   },
   "seedPhraseReq": {
     "message": "私钥助记词包含 12、15、18、21 或 24 个字词"
+  },
+  "seedPhraseReviewDetails": {
+    "message": "这是您的 $1。按正确顺序写下来，保存在安全的地方。如果他人拥有您的私钥助记词，便可获得您的钱包访问权限。$2",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+  },
+  "seedPhraseReviewDetails2": {
+    "message": "切勿与任何人分享此助记词。"
+  },
+  "seedPhraseReviewTitle": {
+    "message": "保存您的私钥助记词"
   },
   "select": {
     "message": "选择"
@@ -4795,16 +5294,8 @@
   "sendSelectSendAsset": {
     "message": "选择要发送的资产"
   },
-  "sendSpecifiedTokens": {
-    "message": "发送 $1",
-    "description": "Symbol of the specified token"
-  },
   "sendSwapSubmissionWarning": {
     "message": "点击此按钮将立即启动您的兑换交易。在继续操作之前，请查看您的交易详情。"
-  },
-  "sendTokenAsToken": {
-    "message": "将 $1 作为 $2 发送",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sendingAsset": {
     "message": "正在发送 $1"
@@ -4819,6 +5310,17 @@
   "sendingToTokenContractWarning": {
     "message": "警告：您将要发送到代币合约，这可能会导致资金损失。$1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
+  "sent": {
+    "message": "已发送"
+  },
+  "sentSpecifiedTokens": {
+    "message": "已发送 $1",
+    "description": "Symbol of the specified token"
+  },
+  "sentTokenAsToken": {
+    "message": "将 $1 作为 $2 发送",
+    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
   },
   "sepolia": {
     "message": "Sepolia测试网络"
@@ -4953,8 +5455,14 @@
   "simulationDetailsTitle": {
     "message": "预计变化"
   },
+  "simulationDetailsTitleEnforced": {
+    "message": "余额变化"
+  },
   "simulationDetailsTitleTooltip": {
     "message": "预计变化是指您完成该交易可能发生的变化。这只是一个预测，而不是保证。"
+  },
+  "simulationDetailsTitleTooltipEnforced": {
+    "message": "将确保余额变动生效。若无法达成此结果，则中止交易。"
   },
   "simulationDetailsTotalFiat": {
     "message": "总计 = $1",
@@ -4968,6 +5476,21 @@
   },
   "simulationErrorMessageV2": {
     "message": "我们无法估算燃料。合约中可能存在错误，这笔交易可能会失败。"
+  },
+  "simulationSettingsModalEnforceSlippage": {
+    "message": "滑移容差"
+  },
+  "simulationSettingsModalEnforceSlippageDescription": {
+    "message": "设置一个您能接受的余额变化差额。若差额超过该值，交易将无法完成。"
+  },
+  "simulationSettingsModalEnforceToggle": {
+    "message": "强制执行余额变动"
+  },
+  "simulationSettingsModalEnforceToggleDescription": {
+    "message": "为保障您的资金安全，若发生余额变动或未能满足滑移容差范围，这笔交易将无法完成。"
+  },
+  "simulationSettingsModalTitle": {
+    "message": "交易设置"
   },
   "simulationsSettingDescription": {
     "message": "开启此选项，以便在确认交易和签名之前预估交易余额的变化。这并不能保证交易的最终结果。$1"
@@ -4997,7 +5520,19 @@
     "message": "跳过账户安全？"
   },
   "skipAccountSecurityDetails": {
-    "message": "我明白，在我备份我的账户私钥助记词之前，我可能会丢失我的账户及其所有资产。"
+    "message": "如果您丢失此私钥助记词，将无法访问该钱包。"
+  },
+  "skipAccountSecuritySecureNow": {
+    "message": "立即获取"
+  },
+  "skipAccountSecuritySkip": {
+    "message": "跳过"
+  },
+  "skipDeepLinkInterstitial": {
+    "message": "打开深度链接时不显示插页式屏幕"
+  },
+  "skipDeepLinkInterstitialDescription": {
+    "message": "启用此选项将跳过在 MetaMask 中打开深度链接时显示的插页式屏幕。“深度链接”（如 https://link.metamask.io/home）会直接唤起 MetaMask 启动；此类链接可能被他人伪装处理。插页式屏幕旨在防止您误开 MetaMask 内可能显示账户、代币、交易记录、余额、设置及其他敏感信息的页面。此设置仅适用于由 MetaMask 签名的链接。"
   },
   "slideBridgeDescription": {
     "message": "横跨 9 条链，一切尽在您的钱包"
@@ -5017,6 +5552,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMask 借记卡"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "钱包随身，随行随付"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "下载 MetaMask 移动版"
+  },
   "slideFundWalletDescription": {
     "message": "添加或转入代币即可开始使用"
   },
@@ -5028,12 +5569,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "添加多个助记词"
-  },
-  "slideRemoteModeDescription": {
-    "message": "无线使用您的冷钱包"
-  },
-  "slideRemoteModeTitle": {
-    "message": "冷存储，快速访问"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "地址相同，功能更加智能化"
@@ -5052,6 +5587,15 @@
   },
   "slideSweepStakeTitle": {
     "message": "参与 $5000 USDC 赢奖活动！"
+  },
+  "slippage": {
+    "message": "滑移"
+  },
+  "slippageAuto": {
+    "message": "自动"
+  },
+  "slippageEditAriaLabel": {
+    "message": "编辑滑移"
   },
   "smartAccountAccept": {
     "message": "使用智能账户"
@@ -5077,14 +5621,20 @@
   "smartAccountReject": {
     "message": "不使用智能账户"
   },
-  "smartAccountRequestFor": {
-    "message": "请求"
-  },
   "smartAccountSameAccount": {
     "message": "账户相同，功能更加智能化。"
   },
+  "smartAccountSplashInfo": {
+    "message": "智能账户"
+  },
   "smartAccountSplashTitle": {
     "message": "使用智能账户？"
+  },
+  "smartAccountUpdateSuccessMessage": {
+    "message": "您的账户将在下次交易时更新为智能账户。"
+  },
+  "smartAccountUpdateSuccessTitle": {
+    "message": "成功！"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "地址相同。功能更加智能化。"
@@ -5234,6 +5784,9 @@
   "snapResultSuccessDescription": {
     "message": "$1已可以使用"
   },
+  "snapUIAccountSelectorTitle": {
+    "message": "选择账户"
+  },
   "snapUIAssetSelectorTitle": {
     "message": "选择一种资产"
   },
@@ -5301,27 +5854,6 @@
   },
   "solanaAccountRequired": {
     "message": "连接到此网站需要 Solana 账户。"
-  },
-  "solanaImportAccounts": {
-    "message": "导入 Solana 账户"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "导入私钥助记词以将 Solana 账户从其他钱包迁移。"
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "即将推出更多功能"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFT、硬件钱包支持等功能即将上线。"
-  },
-  "solanaOnMetaMask": {
-    "message": "MetaMask 支持 Solana"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "发送、接收和兑换代币"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "使用 SOL、USDC 等代币进行转账和交易。"
   },
   "someNetworks": {
     "message": "$1 网络"
@@ -5416,6 +5948,27 @@
   "spendingCaps": {
     "message": "支出上限"
   },
+  "srpDesignImageAlt": {
+    "message": "私钥助记词保管库图像"
+  },
+  "srpDetailsDescription": {
+    "message": "私钥助记词（又称助记词）是一组用于访问和控制加密货币钱包的关键词。若需将钱包迁移至 MetaMask，您必须提供该助记词。"
+  },
+  "srpDetailsOwnsAccessListItemOne": {
+    "message": "拿走您的全部资金"
+  },
+  "srpDetailsOwnsAccessListItemThree": {
+    "message": "修改您的登录信息"
+  },
+  "srpDetailsOwnsAccessListItemTwo": {
+    "message": "确认交易"
+  },
+  "srpDetailsOwnsAccessListTitle": {
+    "message": "拥有您的私钥助记词的任何人都可以："
+  },
+  "srpDetailsTitle": {
+    "message": "什么是私钥助记词？"
+  },
   "srpInputNumberOfWords": {
     "message": "我有一个包含$1个单词的私钥助记词",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
@@ -5435,12 +5988,18 @@
     "message": "$1 个账户",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
   },
+  "srpListStateBackedUp": {
+    "message": "显示"
+  },
+  "srpListStateNotBackedUp": {
+    "message": "备份"
+  },
   "srpPasteFailedTooManyWords": {
     "message": "粘贴失败，因为它包含超过24个单词。一个私钥助记词最多可包含24个单词。",
     "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
-    "message": "您可以将整个私钥助记词粘贴到任何字段中",
+    "message": "您可以将整个私钥助记词粘贴到任何字段。",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
@@ -5524,8 +6083,44 @@
   "standardAccountLabel": {
     "message": "标准账户"
   },
-  "startEarning": {
-    "message": "开始赚取"
+  "stateCorruptionAreYouSure": {
+    "message": "您确定要继续吗？"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "在决定恢复您的保管库之前，您可根据以下 $1 先尝试手动复制并恢复状态文件。",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "在决定重设 MetaMask 之前，您可根据以下 $1 先尝试手动复制并恢复状态文件。",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "您的保管库无法自动恢复。"
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "您的保管库可通过自动备份恢复。自动恢复将删除当前设置和偏好，仅恢复保管库内容。​"
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "内部错误：无法访问数据库"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "重设 MetaMask 状态"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "正在重设数据库…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "恢复账户"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "正在恢复数据库…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "这些说明",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "如何恢复私钥助记词"
   },
   "stateLogError": {
     "message": "检索状态日志时出错。"
@@ -5544,9 +6139,6 @@
   },
   "statusNotConnected": {
     "message": "未连接"
-  },
-  "statusNotConnectedAccount": {
-    "message": "未连接任何账户"
   },
   "step1LatticeWallet": {
     "message": "关联您的 Lattice1"
@@ -5575,6 +6167,10 @@
   "step2LedgerWalletMsg": {
     "message": "将您的 Ledger 直接插入电脑，然后解锁并打开以太坊应用程序。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "stepOf": {
+    "message": "第 $1 步，共 $2 步",
+    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "仍然收到此消息？"
@@ -5723,6 +6319,10 @@
   },
   "swapDecentralizedExchange": {
     "message": "去中心化交易所"
+  },
+  "swapDetailsTitle": {
+    "message": "兑换详情",
+    "description": "Title for the modal showing details about a swap transaction."
   },
   "swapDirectContract": {
     "message": "直接合约"
@@ -5927,6 +6527,9 @@
   "swapShowLatestQuotes": {
     "message": "显示最新报价"
   },
+  "swapSlippageAutoDescription": {
+    "message": "自动"
+  },
   "swapSlippageHighDescription": {
     "message": "输入的滑点（$1%）被认为是很高的，可能会因而得到较差的汇率",
     "description": "$1 is the amount of % for slippage"
@@ -6049,6 +6652,9 @@
   "switch": {
     "message": "切换"
   },
+  "switchBack": {
+    "message": "切换回"
+  },
   "switchEthereumChainConfirmationDescription": {
     "message": "这将切换 MetaMask 中选定的网络到以前添加的网络："
   },
@@ -6071,17 +6677,6 @@
   "switchToThisAccount": {
     "message": "切换到该账户"
   },
-  "switchedNetworkToastDecline": {
-    "message": "不再显示此内容"
-  },
-  "switchedNetworkToastMessage": {
-    "message": "$1 现已在 $2 上激活",
-    "description": "$1 represents the account name, $2 represents the network name"
-  },
-  "switchedNetworkToastMessageNoOrigin": {
-    "message": "您现在使用的是 $1",
-    "description": "$1 represents the network name"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "切换网络将取消所有待处理的确认"
   },
@@ -6090,6 +6685,12 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
+  },
+  "tapToReveal": {
+    "message": "点击以显示"
+  },
+  "tapToRevealNote": {
+    "message": "确保没人在看您的屏幕。"
   },
   "tenPercentIncreased": {
     "message": "增加10%"
@@ -6100,14 +6701,17 @@
   "termsOfService": {
     "message": "服务条款"
   },
+  "termsOfUseAgree": {
+    "message": "同意"
+  },
   "termsOfUseAgreeText": {
-    "message": "我同意适用于我使用MetaMask及其所有功能的使用条款"
+    "message": "我同意《使用条款》，该条款适用于我对 MetaMask 及其所有功能的使用。"
   },
   "termsOfUseFooterText": {
     "message": "请滚动以阅读所有章节"
   },
   "termsOfUseTitle": {
-    "message": "我们的使用条款已更新"
+    "message": "查看我们的使用条款"
   },
   "testNetworks": {
     "message": "测试网络"
@@ -6339,8 +6943,11 @@
     "message": "我们在连接您的 $1 时遇到问题，尝试检查 $2 并重试。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleStarting": {
-    "message": "MetaMask无法启动。可能发生间歇性错误，因此请尝试重新启动扩展程序。"
+  "troubleStartingMessage": {
+    "message": "此错误可能是间歇性的，因此请尝试重启扩展程序。"
+  },
+  "troubleStartingTitle": {
+    "message": "MetaMask 启动时出现问题。"
   },
   "tryAgain": {
     "message": "重试"
@@ -6387,6 +6994,12 @@
   "twelveHrTitle": {
     "message": "12小时："
   },
+  "txAlertTitle": {
+    "message": "该交易将撤销"
+  },
+  "typeYourSRP": {
+    "message": "输入您的私钥助记词"
+  },
   "u2f": {
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
@@ -6395,7 +7008,7 @@
     "message": "未批准"
   },
   "unexpectedBehavior": {
-    "message": "此行为属于异常情况，即使您的账户已成功恢复，也应作为错误上报。请通过下方链接向 MetaMask 提交错误报告。"
+    "message": "该行为属异常行为，即使账户已成功恢复，仍须作为漏洞提交报告。"
   },
   "units": {
     "message": "单位"
@@ -6418,6 +7031,12 @@
   },
   "unlock": {
     "message": "登录"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "密码不正确。请重试。"
+  },
+  "unlockPageTooManyFailedAttempts": {
+    "message": "尝试次数过多。请在以下时间之后重试： "
   },
   "unpin": {
     "message": "取消置顶"
@@ -6445,6 +7064,9 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "此网站正在请求更新您的默认网络 URL。您可以随时编辑默认值和网络信息。"
   },
+  "updateInformation": {
+    "message": "我们已对钱包进行全方位升级，安全性更高、运行更流畅，并新增多项功能。立即更新，即可获得最新防护措施并体验最新优化功能。"
+  },
   "updateNetworkConfirmationTitle": {
     "message": "更新 $1",
     "description": "$1 represents network name"
@@ -6454,6 +7076,9 @@
   },
   "updateRequest": {
     "message": "更新请求"
+  },
+  "updateToTheLatestVersion": {
+    "message": "更新至最新版本"
   },
   "updatedRpcForNetworks": {
     "message": "网络 RPC（远程过程调用）已更新"
@@ -6469,6 +7094,9 @@
   },
   "use4ByteResolution": {
     "message": "对智能合约进行解码"
+  },
+  "useDifferentLoginMethod": {
+    "message": "使用其他登录方法"
   },
   "useMultiAccountBalanceChecker": {
     "message": "账户余额分批请求"
@@ -6498,6 +7126,12 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
+  "useSmartAccountDescription": {
+    "message": "启用此功能后，当相关功能（如更快的交易速度、更低的网络费用及灵活的支付方式）可用时，系统将自动把 MetaMask 内创建的账户切换为智能账户。"
+  },
+  "useSmartAccountTitle": {
+    "message": "使用智能账户"
+  },
   "useTokenDetectionPrivacyDesc": {
     "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将拥有您的IP地址的访问权限。"
   },
@@ -6510,6 +7144,9 @@
   "userOpContractDeployError": {
     "message": "不支持从智能合约账户进行合约部署"
   },
+  "value": {
+    "message": "值"
+  },
   "version": {
     "message": "版本"
   },
@@ -6518,6 +7155,10 @@
   },
   "viewActivity": {
     "message": "查看活动"
+  },
+  "viewAddressOnExplorer": {
+    "message": "在 $1 上查看",
+    "description": "$1 is the block explorer name"
   },
   "viewAllQuotes": {
     "message": "查看所有报价"
@@ -6547,9 +7188,6 @@
   },
   "viewOnOpensea": {
     "message": "在 Opensea 上查看"
-  },
-  "viewSolanaAccount": {
-    "message": "查看 Solana 账户"
   },
   "viewTransaction": {
     "message": "查看交易"
@@ -6581,6 +7219,42 @@
   },
   "walletConnectionGuide": {
     "message": "我们的硬件钱包连接指南"
+  },
+  "walletDetails": {
+    "message": "钱包详情"
+  },
+  "walletName": {
+    "message": "钱包名称"
+  },
+  "walletNotFoundDescription": {
+    "message": "未找到 ID 为 $1 的钱包。",
+    "description": "$1 is the wallet ID"
+  },
+  "walletNotFoundTitle": {
+    "message": "未找到钱包"
+  },
+  "walletReadyLearn": {
+    "message": "$1 您需要妥善保管该助记词，这样永远不会失去对您的资金的访问权限。",
+    "description": "$1 is the link to Learn how"
+  },
+  "walletReadyLearnRemind": {
+    "message": "您可以备份钱包，或在“设置”>“安全与密码”中查看您的私钥助记词。"
+  },
+  "walletReadyLoseSrp": {
+    "message": "如果您丢失私钥助记词，将无法使用该钱包。"
+  },
+  "walletReadyLoseSrpFromReminder": {
+    "message": "如果您忘记密码或失去登录权限，此私钥助记词可以帮助您重新获得访问权限。"
+  },
+  "walletReadyLoseSrpRemind": {
+    "message": "如果您不备份私钥助记词，那么当您无法登录应用程序或更换新设备时，将无法访问资金。"
+  },
+  "walletReadySocialDetails1": {
+    "message": "您可以随时使用您的 $1 账户和密码登录钱包。",
+    "description": "$1 is the social login type. e.g Google, Apple, etc."
+  },
+  "walletReadySocialDetails2": {
+    "message": "如果您忘记密码，将无法访问钱包。"
   },
   "wantToAddThisNetwork": {
     "message": "想要添加此网络吗？"
@@ -6627,6 +7301,15 @@
   "welcomeBack": {
     "message": "欢迎回来"
   },
+  "welcomeDescription": {
+    "message": "广受数百万人信赖的 MetaMask 是一款安全钱包，让每个人都能轻松进入 Web3 的世界。"
+  },
+  "welcomeGetStarted": {
+    "message": "开始使用"
+  },
+  "welcomeTitle": {
+    "message": "欢迎使用 MetaMask"
+  },
   "welcomeToMetaMask": {
     "message": "让我们开始吧"
   },
@@ -6638,6 +7321,9 @@
   },
   "willApproveAmountForBridgingHardware": {
     "message": "您将需要在您的硬件钱包上确认两笔交易。"
+  },
+  "willApproveAmountForSwapping": {
+    "message": "这将会批准 $1 用于兑换。"
   },
   "withdrawing": {
     "message": "提取"
@@ -6690,6 +7376,12 @@
     "message": "在区块链上确认之前，我们无法取消您的交易。"
   },
   "yourWalletIsReady": {
-    "message": "您的钱包已准备就绪"
+    "message": "您的钱包已准备就绪！"
+  },
+  "yourWalletIsReadyFromReminder": {
+    "message": "请妥善保管您的私钥助记词！"
+  },
+  "yourWalletIsReadyRemind": {
+    "message": "我们会稍后提醒您"
   }
 }

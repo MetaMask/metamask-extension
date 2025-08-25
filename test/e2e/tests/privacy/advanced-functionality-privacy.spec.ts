@@ -62,8 +62,8 @@ describe('MetaMask onboarding ', function () {
         await importSRPOnboardingFlow({ driver });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
@@ -73,17 +73,17 @@ describe('MetaMask onboarding ', function () {
         await onboardingPrivacySettingsPage.toggleAssetsSettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
-        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
         // Refresh tokens before asserting to mitigate flakiness
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed();
         await homePage.refreshErc20TokenList();
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openAccountMenu();
-        await new AccountList(driver).check_pageIsLoaded();
+        await new AccountList(driver).checkPageIsLoaded();
 
         for (const m of mockedEndpoint) {
           const requests = await m.getSeenRequests();
@@ -101,7 +101,11 @@ describe('MetaMask onboarding ', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
-          .withEnabledNetworks({ '0x1': true })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
@@ -111,12 +115,12 @@ describe('MetaMask onboarding ', function () {
 
         // Refresh tokens before asserting to mitigate flakiness
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed();
         await homePage.refreshErc20TokenList();
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openAccountMenu();
-        await new AccountList(driver).check_pageIsLoaded();
+        await new AccountList(driver).checkPageIsLoaded();
 
         // intended delay to allow for network requests to complete
         await driver.delay(1000);

@@ -5,48 +5,62 @@ import { RawLocator } from '../../../common';
 class Confirmation {
   protected driver: Driver;
 
-  private scrollToBottomButton: RawLocator;
-
-  private footerConfirmButton: RawLocator;
-
-  private headerAccountDetailsButton: RawLocator;
+  private confirmationHeadingTitle: RawLocator;
 
   private footerCancelButton: RawLocator;
 
-  private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
+  private footerConfirmButton: RawLocator;
+
+  private formComboFieldInputSelector = '.form-combo-field input';
+
+  private formComboFieldOptionPrimarySelector =
+    '.form-combo-field__option-primary';
+
+  private formComboFieldOptionSecondarySelector =
+    '.form-combo-field__option-secondary';
+
+  private formComboFieldSelector = '.form-combo-field';
+
+  private headerAccountDetailsButton: RawLocator;
 
   private inlineAlertButton = {
     css: '[data-testid="inline-alert"]',
     text: 'Alert',
   };
 
+  private nameSelector = '.name';
+
+  private navigationTitle: RawLocator;
+
   private nextPageButton: RawLocator;
 
   private previousPageButton: RawLocator;
 
-  private navigationTitle: RawLocator;
-
   private rejectAllButton: RawLocator;
 
-  private confirmationHeadingTitle: RawLocator;
+  private saveButtonSelector = { text: 'Save', tag: 'button' };
+
+  private scrollToBottomButton: RawLocator;
+
+  private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
 
-    this.scrollToBottomButton = '.confirm-scroll-to-bottom__button';
+    this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
+    this.footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
     this.footerConfirmButton = '[data-testid="confirm-footer-button"]';
     this.headerAccountDetailsButton =
       '[data-testid="header-info__account-details-button"]';
-    this.footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
+    this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
     this.nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
     this.previousPageButton =
       '[data-testid="confirm-nav__previous-confirmation"]';
-    this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
     this.rejectAllButton = '[data-testid="confirm-nav__reject-all"]';
-    this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
+    this.scrollToBottomButton = '.confirm-scroll-to-bottom__button';
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.footerCancelButton,
@@ -77,10 +91,24 @@ class Confirmation {
     await accountDetailsButton.sendKeys(Key.RETURN);
   }
 
+  async clickFooterCancelButton() {
+    await this.driver.clickElement(this.footerCancelButton);
+  }
+
+  async clickFooterConfirmButtonAndAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.footerConfirmButton,
+    );
+  }
+
   async clickFooterCancelButtonAndAndWaitForWindowToClose() {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.footerCancelButton,
     );
+  }
+
+  async clickFooterCancelButtonAndWaitToDisappear() {
+    await this.driver.clickElementAndWaitToDisappear(this.footerCancelButton);
   }
 
   async clickCollapseSectionButton() {
@@ -99,12 +127,12 @@ class Confirmation {
     await this.driver.clickElement(this.previousPageButton);
   }
 
-  async check_pageNumbers(
+  async checkPageNumbers(
     currentPage: number,
     totalPages: number,
   ): Promise<void> {
     try {
-      await this.driver.findElement({
+      await this.driver.waitForSelector({
         css: this.navigationTitle,
         text: `${currentPage} of ${totalPages}`,
       });
@@ -122,6 +150,86 @@ class Confirmation {
     console.log('Verify confirmation heading title is Confirmation Dialog');
     await this.driver.waitForSelector(this.confirmationHeadingTitle);
   }
-}
 
+  async verifyRejectAllButtonNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.rejectAllButton, {
+      timeout: 5000,
+    });
+  }
+
+  async checkNameIsDisplayed(
+    expectedValue: string,
+    isSaved: boolean,
+  ): Promise<void> {
+    const containerClass = isSaved ? 'name__saved' : 'name__missing';
+    const valueClass = isSaved ? 'name__name' : 'name__value';
+
+    await this.driver.findElement({
+      css: `.${containerClass} .${valueClass}`,
+      text: expectedValue,
+    });
+  }
+
+  async clickName(value: string): Promise<void> {
+    console.log(`Clicking on name: ${value}`);
+    await this.driver.clickElement({
+      css: this.nameSelector,
+      text: value,
+    });
+  }
+
+  async saveName({
+    value,
+    name,
+    proposedName,
+  }: {
+    value: string;
+    name?: string;
+    proposedName?: string;
+  }): Promise<void> {
+    await this.clickName(value);
+    console.log(
+      `Saving name for value: ${value}, name: ${name}, proposedName: ${proposedName}`,
+    );
+    await this.driver.clickElement(this.formComboFieldSelector);
+
+    if (proposedName) {
+      await this.driver.clickElement({
+        css: this.formComboFieldOptionPrimarySelector,
+        text: proposedName,
+      });
+    }
+
+    if (name) {
+      await this.driver.fill(this.formComboFieldInputSelector, name);
+      // Pressing enter before saving is needed for firefox to get the dropdown to go away.
+      await this.driver.press(
+        this.formComboFieldInputSelector,
+        this.driver.Key.ENTER,
+      );
+    }
+
+    await this.driver.clickElement(this.saveButtonSelector);
+  }
+
+  async checkProposedNames(
+    value: string,
+    options: [string, string][],
+  ): Promise<void> {
+    await this.clickName(value);
+    await this.driver.clickElement(this.formComboFieldSelector);
+
+    for (const option of options) {
+      await this.driver.findElement({
+        css: this.formComboFieldOptionPrimarySelector,
+        text: option[0],
+      });
+
+      await this.driver.findElement({
+        css: this.formComboFieldOptionSecondarySelector,
+        text: option[1],
+      });
+    }
+  }
+}
 export default Confirmation;

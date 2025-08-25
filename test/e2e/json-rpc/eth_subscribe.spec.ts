@@ -3,6 +3,7 @@ import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
+import TestDapp from '../page-objects/pages/test-dapp';
 
 describe('eth_subscribe', function () {
   it('executes a subscription event', async function () {
@@ -18,7 +19,9 @@ describe('eth_subscribe', function () {
         await loginWithBalanceValidation(driver);
 
         // eth_subscribe
-        await driver.openNewPage(`http://127.0.0.1:8080`);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         const subscribeRequest: string = JSON.stringify({
           jsonrpc: '2.0',

@@ -1,11 +1,10 @@
 import * as path from 'path';
-import { Browser, By } from 'selenium-webdriver';
+import { Browser } from 'selenium-webdriver';
 import {
   KnownRpcMethods,
   KnownNotifications,
 } from '@metamask/chain-agnostic-permission';
 import { JsonRpcRequest } from '@metamask/utils';
-import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import {
   CONTENT_SCRIPT,
@@ -76,66 +75,15 @@ export const addAccountInWalletAndAuthorize = async (
 ): Promise<void> => {
   console.log('Adding account in wallet and authorizing');
   const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.openEditAccountsModal();
 
   const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
-  await editConnectedAccountsModal.check_pageIsLoaded();
+  await editConnectedAccountsModal.checkPageIsLoaded();
   await editConnectedAccountsModal.addNewEthereumAccount();
 
-  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.confirmConnect();
-};
-
-/**
- * Update Multichain network edit form so that only matching networks are selected.
- *
- * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
- * @param selectedNetworkNames
- */
-export const updateNetworkCheckboxes = async (
-  driver: Driver,
-  selectedNetworkNames: string[],
-): Promise<void> => {
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[1].click();
-  await driver.delay(regularDelayMs);
-
-  const networkListItems = await driver.findElements(
-    '.multichain-network-list-item',
-  );
-
-  for (const item of networkListItems) {
-    const networkName = await item.getText();
-    const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
-    const isChecked = await checkbox.isSelected();
-
-    const isSelectedNetwork = selectedNetworkNames.some((selectedNetworkName) =>
-      networkName.includes(selectedNetworkName),
-    );
-
-    const shouldNotBeChecked = isChecked && !isSelectedNetwork;
-    const shouldBeChecked = !isChecked && isSelectedNetwork;
-
-    if (shouldNotBeChecked || shouldBeChecked) {
-      await checkbox.click();
-      await driver.delay(regularDelayMs);
-    }
-  }
-  await driver.clickElement({ text: 'Update', tag: 'button' });
-};
-
-/**
- * Password locks user's metamask extension.
- *
- * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
- */
-export const passwordLockMetamaskExtension = async (
-  driver: Driver,
-): Promise<void> => {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElementSafe('[data-testid="account-options-menu-button"]');
-  await driver.clickElementSafe('[data-testid="global-menu-lock"]');
 };
 
 /**

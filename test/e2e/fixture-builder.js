@@ -53,7 +53,12 @@ function onboardingFixture() {
       },
       NetworkOrderController: {
         enabledNetworkMap: {
-          '0x539': true,
+          eip155: {
+            [CHAIN_IDS.LOCALHOST]: true,
+          },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+          },
         },
       },
       NotificationServicesController: {},
@@ -122,7 +127,6 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MEGAETH_TESTNET]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MONAD_TESTNET]: true,
         },
-        skipDeepLinkInterstitial: false,
       },
       SelectedNetworkController: {
         domains: {},
@@ -198,8 +202,9 @@ class FixtureBuilder {
   withEnabledNetworks(data) {
     merge(this.fixture.data.NetworkOrderController, {
       networkOrder: this.fixture.data.NetworkOrderController?.networkOrder,
-      enabledNetworkMap: data,
     });
+    // Replace instead of merge for enabledNetworkMap
+    this.fixture.data.NetworkOrderController.enabledNetworkMap = data;
     return this;
   }
 
@@ -447,6 +452,26 @@ class FixtureBuilder {
     });
   }
 
+  withNetworkControllerOnSei() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'sei',
+      networkConfigurations: {
+        sei: {
+          chainId: CHAIN_IDS.SEI,
+          nickname: 'Sei',
+          rpcUrl: 'https://sei-mainnet.infura.io/v3/',
+          ticker: 'SEI',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://seitrace.com',
+          },
+          id: 'sei',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
   withNftController(data) {
     merge(
       this.fixture.data.NftController
@@ -631,6 +656,7 @@ class FixtureBuilder {
   withPermissionControllerConnectedToMultichainTestDapp({
     account = '',
     useLocalhostHostname = false,
+    value = null,
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     const subjects = {
@@ -641,7 +667,7 @@ class FixtureBuilder {
             caveats: [
               {
                 type: 'authorizedScopes',
-                value: {
+                value: value ?? {
                   requiredScopes: {},
                   optionalScopes: {
                     'eip155:1337': {
@@ -670,6 +696,7 @@ class FixtureBuilder {
         },
       },
     };
+
     return this.withPermissionController({
       subjects,
     });
@@ -1873,6 +1900,25 @@ class FixtureBuilder {
         },
       },
     });
+  }
+
+  withBackupAndSyncSettings(options = {}) {
+    const {
+      isProfileSyncingEnabled = true,
+      isAccountSyncingEnabled = true,
+      isProfileSyncingUpdateLoading = false,
+      isAccountSyncingUpdateLoading = false,
+      hasAccountSyncingSyncedAtLeastOnce = false,
+    } = options;
+
+    merge(this.fixture.data.UserStorageController, {
+      isProfileSyncingEnabled,
+      isAccountSyncingEnabled,
+      isProfileSyncingUpdateLoading,
+      isAccountSyncingUpdateLoading,
+      hasAccountSyncingSyncedAtLeastOnce,
+    });
+    return this;
   }
 
   build() {

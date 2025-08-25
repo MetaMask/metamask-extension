@@ -17,6 +17,15 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
+import {
+  SupportedEVMChain,
+  ResultType,
+  AddAddressSecurityAlertResponse,
+  GetAddressSecurityAlertResponse,
+} from '../trust-signals/types';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -26,6 +35,7 @@ import {
 } from './util';
 
 jest.mock('../ppom/ppom-util');
+jest.mock('../trust-signals/security-alerts-api');
 
 jest.mock('uuid', () => {
   const actual = jest.requireActual('uuid');
@@ -97,8 +107,11 @@ describe('Transaction Utils', () => {
   let dappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
   let userOperationController: jest.Mocked<UserOperationController>;
+  let getAddressSecurityAlertResponseMock: jest.Mock;
+  let addAddressSecurityAlertResponseMock: jest.Mock;
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
+  const scanAddressAndAddToCacheMock = jest.mocked(scanAddressAndAddToCache);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -106,6 +119,14 @@ describe('Transaction Utils', () => {
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
+    getAddressSecurityAlertResponseMock = jest.fn();
+    addAddressSecurityAlertResponseMock = jest.fn();
+
+    scanAddressAndAddToCacheMock.mockResolvedValue({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Benign,
+      label: 'Safe address',
+    });
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -129,6 +150,8 @@ describe('Transaction Utils', () => {
     request.transactionController = transactionController;
     request.userOperationController = userOperationController;
     request.updateSecurityAlertResponse = jest.fn();
+    request.getSecurityAlertResponse = getAddressSecurityAlertResponseMock;
+    request.addSecurityAlertResponse = addAddressSecurityAlertResponseMock;
 
     dappRequest = {
       ...request,
@@ -399,6 +422,8 @@ describe('Transaction Utils', () => {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
             reason: BlockaidReason.inProgress,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: BlockaidResultType.Loading,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
@@ -501,6 +526,80 @@ describe('Transaction Utils', () => {
         });
 
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    describe('adds trust signals', () => {
+      beforeEach(() => {
+        request.transactionOptions.origin = ORIGIN_METAMASK;
+        request.transactionParams.to =
+          '0x1234567890123456789012345678901234567890';
+        request.addSecurityAlertResponse =
+          jest.fn() as AddAddressSecurityAlertResponse;
+        request.getSecurityAlertResponse =
+          jest.fn() as GetAddressSecurityAlertResponse;
+      });
+
+      it('calls scanAddressAndAddToCache', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
+          '0x1234567890123456789012345678901234567890',
+          request.getSecurityAlertResponse,
+          request.addSecurityAlertResponse,
+          SupportedEVMChain.Ethereum,
+        );
+      });
+
+      it('does not call scanAddressAndAddToCache when security alerts are disabled', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: false,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+      });
+
+      it('does not call scanAddressAndAddToCache when origin is not ORIGIN_METAMASK', async () => {
+        request.transactionOptions.origin = 'https://example.com';
+
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+      });
+
+      it('does not call scanAddressAndAddToCache when to address is not a string', async () => {
+        request.transactionParams.to = undefined;
+
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+      });
+
+      it('does not call scanAddressAndAddToCache when chain is not supported', async () => {
+        // Test with a chain ID that the real function doesn't support
+        const transactionMeta = await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: '0xfake-chain-id', // This will return undefined from the real function
+        });
+
+        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+        expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
       });
     });
   });

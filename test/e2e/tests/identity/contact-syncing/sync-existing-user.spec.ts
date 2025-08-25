@@ -11,7 +11,7 @@ import {
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
-import { completeOnboardFlowIdentity, getSRP } from '../flows';
+import { completeOnboardFlowIdentity } from '../flows';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
@@ -115,8 +115,6 @@ describe('Contact Syncing - Existing User', function () {
         userStorageMockttpController,
       } = await arrange();
 
-      let walletSrp: string;
-
       // PHASE 1: First device - Complete contact lifecycle
       await withFixtures(
         {
@@ -164,7 +162,7 @@ describe('Contact Syncing - Existing User', function () {
 
           // Set up UI navigation
           const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
+          await header.checkPageIsLoaded();
 
           // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
@@ -180,13 +178,12 @@ describe('Contact Syncing - Existing User', function () {
           // STEP 2: Add new contact
           console.log('STEP 2: Adding new contact...');
           await header.openSettingsPage();
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.goToContactsSettings();
-          await contactsSettings.check_pageIsLoaded();
+          await contactsSettings.checkPageIsLoaded();
           await contactsSettings.addContact(
             newContact.name,
             newContact.address,
-            'button',
           );
 
           // Debug: Check if contact syncing is still enabled and not in progress
@@ -236,10 +233,8 @@ describe('Contact Syncing - Existing User', function () {
           console.log('STEP 3: Modifying existing contact...');
 
           // Navigate back to contacts list first
-          await header.openSettingsPage();
-          await settingsPage.check_pageIsLoaded();
           await settingsPage.goToContactsSettings();
-          await contactsSettings.check_pageIsLoaded();
+          await contactsSettings.checkPageIsLoaded();
 
           await contactsSettings.editContact({
             existingContactName: 'Alice Smith',
@@ -258,10 +253,8 @@ describe('Contact Syncing - Existing User', function () {
 
           // STEP 4: Delete existing contact (Bob)
           console.log('STEP 4: Deleting existing contact...');
-          await header.openSettingsPage();
-          await settingsPage.check_pageIsLoaded();
           await settingsPage.goToContactsSettings();
-          await contactsSettings.check_pageIsLoaded();
+          await contactsSettings.checkPageIsLoaded();
 
           await contactsSettings.deleteContact('Bob Johnson');
 
@@ -275,9 +268,6 @@ describe('Contact Syncing - Existing User', function () {
           console.log('✅ Contact deletion synced');
 
           console.log('PHASE 1 complete - proceeding to second device test');
-
-          // Store SRP for second device test
-          walletSrp = await getSRP(driver);
         },
       );
 
@@ -296,7 +286,7 @@ describe('Contact Syncing - Existing User', function () {
         },
         async ({ driver }) => {
           // Complete onboarding with existing SRP to get synced contacts
-          await completeOnboardFlowIdentity(driver, walletSrp);
+          await completeOnboardFlowIdentity(driver, IDENTITY_TEAM_SEED_PHRASE);
 
           const { waitUntilSyncedContactsNumberEquals, getCurrentContacts } =
             arrangeContactSyncingTestUtils(

@@ -10,9 +10,17 @@ import { useSignatureEventFragment } from './useSignatureEventFragment';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
 export type AlertMetricsProperties = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_visualized: string[];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_visualized_count: number;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_key_clicked: string[];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_action_clicked: string[];
 };
 
@@ -28,6 +36,8 @@ export const ALERTS_NAME_METRICS: Record<AlertsName | string, string> = {
   [AlertsName.Blockaid]: 'blockaid',
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function uniqueFreshArrayPush<T>(array: T[], value: T): T[] {
   return [...new Set([...array, value])];
 }
@@ -39,7 +49,7 @@ function getAlertNames(alerts: Alert[]): string[] {
 function getAlertName(alertKey: string): string {
   return isUuid(alertKey)
     ? ALERTS_NAME_METRICS[AlertsName.Blockaid]
-    : ALERTS_NAME_METRICS[alertKey] ?? alertKey;
+    : (ALERTS_NAME_METRICS[alertKey] ?? alertKey);
 }
 
 export function useConfirmationAlertMetrics() {
@@ -51,20 +61,36 @@ export function useConfirmationAlertMetrics() {
 
   const [metricsProperties, setMetricsProperties] =
     useState<AlertMetricsProperties>({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       alert_visualized: [],
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       alert_visualized_count: 0,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       alert_key_clicked: [],
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       alert_action_clicked: [],
     });
 
   const properties =
     alerts.length > 0
       ? {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           alert_triggered_count: alerts.length,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           alert_triggered: getAlertNames(alerts),
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           alert_resolved_count: alerts.filter((alert) =>
             isAlertConfirmed(alert.key),
           ).length,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           alert_resolved: getAlertNames(
             alerts.filter((alert) => isAlertConfirmed(alert.key)),
           ),

@@ -17,6 +17,8 @@ async function mockedDappViewedEndpointFirstVisit(mockServer: Mockttp) {
           type: 'track',
           event: MetaMetricsEventName.DappViewed,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_first_visit: true,
           },
         },
@@ -38,6 +40,8 @@ async function mockedDappViewedEndpointReVisit(mockServer: Mockttp) {
           type: 'track',
           event: MetaMetricsEventName.DappViewed,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_first_visit: false,
           },
         },
@@ -92,7 +96,7 @@ describe('Dapp viewed Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
@@ -124,7 +128,7 @@ describe('Dapp viewed Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
@@ -163,13 +167,13 @@ describe('Dapp viewed Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
         // open dapp in a new page
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         const events = await getEventPayloads(driver, mockedEndpoints);
         // events are original dapp viewed, new dapp viewed when refresh, and permission approved
         const dappViewedEventProperties = events[1].properties;
@@ -205,13 +209,13 @@ describe('Dapp viewed Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
         // refresh dapp
         await driver.refresh();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         // events are original dapp viewed, navigate to dapp, new dapp viewed when refresh, new dapp viewed when navigate and permission approved
@@ -250,13 +254,13 @@ describe('Dapp viewed Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
         // open dapp in a new page and switch to second connected dapp
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         // events are original dapp viewed, navigate to dapp, new dapp viewed when refresh, new dapp viewed when navigate and permission approved
@@ -293,14 +297,14 @@ describe('Dapp viewed Event', function () {
         // connect to dapp and disconnect
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
         await testDapp.disconnectAccount(DEFAULT_FIXTURE_ACCOUNT);
 
         // reconnect again on test dapp
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });

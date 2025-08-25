@@ -18,6 +18,8 @@ import {
 } from './avatar-favicon.types';
 
 export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       size = AvatarFaviconSize.Md,

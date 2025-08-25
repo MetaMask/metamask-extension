@@ -74,6 +74,14 @@ export const Carousel = React.forwardRef(
         return !slide.dismissed || slide.undismissable;
       })
       .sort((a, b) => {
+        // Prioritize Contentful Priority slides
+        if (a.priorityPlacement === true && b.priorityPlacement !== true) {
+          return -1;
+        }
+        if (a.priorityPlacement !== true && b.priorityPlacement === true) {
+          return 1;
+        }
+
         if (!useExternalServices) {
           if (a.id === BASIC_FUNCTIONALITY_SLIDE.id) {
             return -1;
@@ -161,10 +169,20 @@ export const Carousel = React.forwardRef(
           event: MetaMetricsEventName.BannerNavigated,
           category: MetaMetricsEventCategory.Banner,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             from_banner: previousSlide.id,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             to_banner: nextSlide.id,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             from_banner_title: previousSlide.title,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             to_banner_title: nextSlide.title,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             navigation_method:
               Math.abs(selectedIndex - index) === 1 ? 'swipe' : 'dot',
           },

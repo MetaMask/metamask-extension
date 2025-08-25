@@ -20,7 +20,7 @@ describe('Restore vault Component', () => {
       }),
     );
 
-    expect(getByText('Reset wallet')).toBeInTheDocument();
+    expect(getByText('Reset your wallet')).toBeInTheDocument();
     expect(
       getByText(
         'MetaMask does not keep a copy of your password. If you’re having trouble unlocking your account, you will need to reset your wallet. You can do this by providing the Secret Recovery Phrase you used when you set up your wallet.',
