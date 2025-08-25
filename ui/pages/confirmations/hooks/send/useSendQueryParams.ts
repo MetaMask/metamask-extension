@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { useLocation, useSearchParams } from 'react-router-dom-v5-compat';
 
+import useMultiChainAssets from '../../../../components/app/assets/hooks/useMultichainAssets';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { SendPages } from '../../constants/send';
@@ -11,9 +12,10 @@ export const useSendQueryParams = () => {
   const { updateCurrentPage, updateAsset } = useSendContext();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
+  const multiChainAssets = useMultiChainAssets();
 
-  const chainId = searchParams.get('chainId');
   const address = searchParams.get('address');
+  const chainId = searchParams.get('chainId');
   const tokenId = searchParams.get('tokenId');
 
   useEffect(() => {
@@ -24,11 +26,16 @@ export const useSendQueryParams = () => {
   useAsyncResult(async () => {
     let asset;
     if (address) {
-      asset = await getTokenStandardAndDetails(
-        address,
-        undefined,
-        tokenId ?? undefined,
+      asset = multiChainAssets.find(
+        ({ address: assetAddress }) => assetAddress === address,
       );
+      if (!asset) {
+        asset = await getTokenStandardAndDetails(
+          address,
+          undefined,
+          tokenId ?? undefined,
+        );
+      }
     } else if (chainId) {
       asset = getNativeAssetForChainId(chainId);
     }
@@ -36,5 +43,6 @@ export const useSendQueryParams = () => {
       updateAsset(asset);
     }
     return asset;
-  }, [address, chainId, tokenId, updateAsset]);
+    // using only multiChainAssets as dependency causes infinite loading
+  }, [address, chainId, multiChainAssets?.length, tokenId, updateAsset]);
 };
