@@ -1,0 +1,50 @@
+name: Remove RCA-needed Label (Google Sheets)
+
+on:
+  # Run every 6 hours
+  schedule:
+    - cron: '0 */6 * * *'
+
+  # Allow manual triggering for testing
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (no changes made)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check-rca-sheets:
+    name: Check RCA Responses in Google Sheets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          npm install @actions/core
+          npm install @actions/github
+          npm install googleapis
+          npm install @octokit/types
+
+      - name: Run RCA Google Sheets check
+        run: npx tsx .github/scripts/remove-rca-needed-label-sheets.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
