@@ -1,11 +1,59 @@
-import { rpcErrors } from '@metamask/rpc-errors';
+import type {
+  JsonRpcParams,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
+import type {
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+} from '@metamask/json-rpc-engine';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
+import type {
+  GetAccounts,
+  HandlerWrapper,
+  SendMetrics,
+} from './handlers-helper';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { shouldEmitDappViewedEvent } from '../../util';
+import type { MetaMaskReduxState } from '../../../../../ui/store/store';
 
+type RequestEthereumAccountsOptions = {
+  getAccounts: GetAccounts;
+  sendMetrics: SendMetrics;
+  metamaskState: MetaMaskReduxState['metamask'];
+  getCaip25PermissionFromLegacyPermissionsForOrigin: unknown;
+  requestPermissionsForOrigin: unknown;
+};
+
+type RequestEthereumAccountsConstraint<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = {
+  implementation: (
+    _req: JsonRpcRequest<Params>,
+    res: PendingJsonRpcResponse<string[]>,
+    _next: JsonRpcEngineNextCallback,
+    end: JsonRpcEngineEndCallback,
+    {
+      getAccounts,
+      sendMetrics,
+      metamaskState,
+      getCaip25PermissionFromLegacyPermissionsForOrigin,
+      requestPermissionsForOrigin,
+    }: RequestEthereumAccountsOptions,
+  ) => Promise<void>;
+} & HandlerWrapper;
+
+/**
+ * This method attempts to retrieve the Ethereum accounts available to the
+ * requester, or initiate a request for account access if none are currently
+ * available. It is essentially a wrapper of wallet_requestPermissions that
+ * only errors if the user rejects the request. We maintain the method for
+ * backwards compatibility reasons.
+ */
 const requestEthereumAccounts = {
   methodNames: [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS],
   implementation: requestEthereumAccountsHandler,
@@ -16,45 +64,41 @@ const requestEthereumAccounts = {
     getCaip25PermissionFromLegacyPermissionsForOrigin: true,
     requestPermissionsForOrigin: true,
   },
-};
+} satisfies RequestEthereumAccountsConstraint;
 export default requestEthereumAccounts;
 
 // Used to rate-limit pending requests to one per origin
 const locks = new Set();
 
 /**
- * This method attempts to retrieve the Ethereum accounts available to the
- * requester, or initiate a request for account access if none are currently
- * available. It is essentially a wrapper of wallet_requestPermissions that
- * only errors if the user rejects the request. We maintain the method for
- * backwards compatibility reasons.
  *
- * @param req - The JsonRpcEngine request
- * @param res - The JsonRpcEngine result object
- * @param _next - JsonRpcEngine next() callback - unused
- * @param end - JsonRpcEngine end() callback
- * @param options - Method hooks passed to the method implementation
- * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
- * @param options.sendMetrics - A hook that helps track metric events.
- * @param options.metamaskState - The MetaMask app state.
+ * @param _req - The JSON-RPC request object.
+ * @param res - The JSON-RPC response object.
+ * @param _next - The json-rpc-engine 'next' callback.
+ * @param end - The json-rpc-engine 'end' callback.
+ * @param options - The RPC method hooks.
+ * @param options.getAccounts - Gets the accounts for the requesting origin.
+ * @param options.sendMetrics - submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
+ * @param options.metamaskState
  * @param options.getCaip25PermissionFromLegacyPermissionsForOrigin - A hook that returns a CAIP-25 permission from a legacy `eth_accounts` and `endowment:permitted-chains` permission.
  * @param options.requestPermissionsForOrigin - A hook that requests CAIP-25 permissions for the origin.
- * @returns A promise that resolves to nothing
  */
-async function requestEthereumAccountsHandler(
-  req,
-  res,
-  _next,
-  end,
+async function requestEthereumAccountsHandler<
+  Params extends JsonRpcParams = JsonRpcParams,
+>(
+  _req: JsonRpcRequest<Params> & { origin: string },
+  res: PendingJsonRpcResponse<string[]>,
+  _next: JsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
   {
     getAccounts,
     sendMetrics,
     metamaskState,
     getCaip25PermissionFromLegacyPermissionsForOrigin,
     requestPermissionsForOrigin,
-  },
-) {
-  const { origin } = req;
+  }: RequestEthereumAccountsOptions,
+): Promise<void> {
+  const { origin } = _req;
   if (locks.has(origin)) {
     res.error = rpcErrors.resourceUnavailable(
       `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
@@ -94,7 +138,7 @@ async function requestEthereumAccountsHandler(
   // first time connection to dapp will lead to no log in the permissionHistory
   // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
   // we will leverage that to identify `is_first_visit` for metrics
-  if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
+  if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId ?? '')) {
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
