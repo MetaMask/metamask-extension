@@ -29,6 +29,7 @@ import {
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
+  type Browser,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -37,6 +38,7 @@ import { getSwcLoader } from './utils/loaders/swcLoader';
 import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
+import { lavamoatPlugin } from './utils/plugins/LavamoatPlugin';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -46,9 +48,6 @@ if (args.dryRun) {
 }
 
 // #region short circuit for unsupported build configurations
-if (args.lavamoat) {
-  throw new Error("The webpack build doesn't support LavaMoat yet. So sorry.");
-}
 if (args.manifest_version === 3) {
   throw new Error(
     "The webpack build doesn't support manifest_version version 3 yet. So sorry.",
@@ -179,6 +178,9 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
+if (args.lavamoat) {
+  plugins.push(lavamoatPlugin);
+}
 // enable React Refresh in 'development' mode when `watch` is enabled
 if (__HMR_READY__ && isDevelopment && args.watch) {
   const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
@@ -469,4 +471,65 @@ const config = {
   },
 } as const satisfies Configuration;
 
-export default config;
+// Transpile a bootstrap script that runs before LavaMoat
+// Emits dist/<browser>/bootstrap.js so HTML can reference it as /bootstrap.js.
+const bootstrapConfig = {
+  name: 'bootstrap',
+  dependencies: [config.name],
+  mode: args.env,
+  context,
+  entry: args.browser.reduce(
+    (acc, browser) => {
+      acc[browser] = './scripts/load/bootstrap.ts';
+      return acc;
+    },
+    {} as Record<Browser, './scripts/load/bootstrap.ts'>,
+  ),
+  target: `browserslist:${browsersListPath}:defaults`,
+  devtool: args.devtool === 'none' ? false : args.devtool,
+  output: {
+    path: join(context, '..', 'dist'),
+    publicPath: '',
+    filename: '[name]/bootstrap.js',
+    clean: false,
+    crossOriginLoading: 'anonymous',
+    pathinfo: false,
+  },
+  resolve: {
+    symlinks: false,
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      fs: false,
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      path: require.resolve('path-browserify'),
+      stream: require.resolve('stream-browserify'),
+      vm: false,
+      zlib: false,
+    },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(?:ts|mts|tsx)$/u,
+        exclude: NODE_MODULES_RE,
+        use: [tsxLoader],
+      },
+      {
+        test: /\.(?:js|mjs|jsx)$/u,
+        exclude: NODE_MODULES_RE,
+        use: [jsxLoader],
+      },
+    ],
+  },
+  performance: { maxAssetSize: 1 << 22 },
+  cache: false,
+  stats: args.stats ? 'normal' : 'none',
+  watch: args.watch,
+  watchOptions: { aggregateTimeout: 5, ignored: NODE_MODULES_RE },
+} as const satisfies Configuration;
+
+const configs = [config, bootstrapConfig];
+
+export default configs;

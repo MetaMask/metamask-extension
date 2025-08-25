@@ -17,7 +17,7 @@ const AnvilSeeder = require('./seeder/anvil-seeder');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { setManifestFlags } = require('./set-manifest-flags');
+const { readManifest, setManifestFlags } = require('./set-manifest-flags');
 const {
   DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   ERC_4337_ACCOUNT,
@@ -944,6 +944,13 @@ async function openMenuSafe(driver) {
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
+// TODO(34913): remove this function when browserify builds are removed
+// the file should be deleted, and the script should be removed from the manifest
+const isWebpack = () => {
+  const manifest = readManifest();
+  return !manifest.content_scripts[0].js.includes('scripts/disable-console.js');
+};
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -992,4 +999,5 @@ module.exports = {
   openMenuSafe,
   sentryRegEx,
   createWebSocketConnection,
+  isWebpack,
 };
