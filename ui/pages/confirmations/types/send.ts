@@ -1,10 +1,13 @@
 import BN from 'bn.js';
 
 export type Asset = {
-  standard?: string;
-  tokenURI?: string | undefined;
-  symbol?: string | undefined;
-  name?: string | undefined;
+  address?: string;
+  balance?: BN | string | undefined;
+  chainId?: string | number;
   decimals?: string | number | undefined;
-  balance?: BN | undefined;
+  name?: string | undefined;
+  standard?: string;
+  symbol?: string | undefined;
+  tokenId?: string;
+  tokenURI?: string | undefined;
 };
