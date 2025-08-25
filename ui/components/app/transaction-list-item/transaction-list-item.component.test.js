@@ -34,6 +34,7 @@ import {
   getTokenExchangeRates,
   getSelectedInternalAccount,
   getMarketData,
+  accountSupportsCancelSpeedup,
 } from '../../../selectors';
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
@@ -158,6 +159,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     };
   } else if (selector === getMarketData) {
     return opts.marketData ?? {};
+  } else if (selector === accountSupportsCancelSpeedup) {
+    return opts.supportsCancelSpeedup ?? true;
   }
   return undefined;
 };
@@ -276,6 +279,21 @@ describe('TransactionListItem', () => {
 
     const { queryByTestId } = renderWithProvider(
       <TransactionListItem transactionGroup={transactionGroupSigning} />,
+    );
+
+    const speedUpButton = queryByTestId('speed-up-button');
+    expect(speedUpButton).not.toBeInTheDocument();
+  });
+
+  it('hides speed up button if account does not support cancel or speed up', () => {
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        supportsCancelSpeedup: false,
+      }),
+    );
+
+    const { queryByTestId } = renderWithProvider(
+      <TransactionListItem transactionGroup={transactionGroup} />,
     );
 
     const speedUpButton = queryByTestId('speed-up-button');
