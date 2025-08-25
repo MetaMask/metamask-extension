@@ -1,6 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 
-import { AccountGroupId } from '@metamask/account-api';
+import {
+  AccountGroupId,
+  AccountWalletId,
+  AccountWalletType,
+} from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, Text } from '../../component-library';
@@ -31,6 +35,7 @@ import {
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
+import { AddMultichainAccount } from '../add-multichain-account';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -125,6 +130,15 @@ export const MultichainAccountList = ({
             ];
           },
         );
+
+        if (walletData.type === AccountWalletType.Entropy) {
+          groupsItems.push(
+            <AddMultichainAccount
+              walletId={walletId as AccountWalletId}
+              key={`add-multichain-account-${walletId}`}
+            />,
+          );
+        }
 
         return [...walletsAccumulator, walletHeader, ...groupsItems];
       },

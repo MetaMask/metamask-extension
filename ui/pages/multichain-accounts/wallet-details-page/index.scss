@@ -1,0 +1,28 @@
+.multichain-wallet-details-page {
+  max-width: 600px;
+
+  .multichain-wallet-details-page__rows-container {
+    .multichain-wallet-details-page__row {
+      margin-bottom: 1px;
+
+      p {
+        font-weight: 600;
+      }
+
+      &.multichain-wallet-details-page__srp-button {
+        cursor: pointer;
+        border: none;
+      }
+
+      &.multichain-wallet-details-page__row--first {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+
+      &.multichain-wallet-details-page__row--last {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+    }
+  }
+}
