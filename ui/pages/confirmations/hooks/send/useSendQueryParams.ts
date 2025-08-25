@@ -3,9 +3,9 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { useLocation, useSearchParams } from 'react-router-dom-v5-compat';
 
 import useMultiChainAssets from '../../../../components/app/assets/hooks/useMultichainAssets';
-import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { SendPages } from '../../constants/send';
+import { memoizedGetTokenStandardAndDetails } from '../../utils/token';
 import { useSendContext } from '../../context/send';
 
 export const useSendQueryParams = () => {
@@ -30,7 +30,7 @@ export const useSendQueryParams = () => {
         ({ address: assetAddress }) => assetAddress === address,
       );
       if (!asset) {
-        asset = await getTokenStandardAndDetails(
+        asset = await memoizedGetTokenStandardAndDetails(
           address,
           undefined,
           tokenId ?? undefined,

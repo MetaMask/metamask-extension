@@ -1,14 +1,14 @@
 export const EVM_ASSET = {
   id: 'evm-account-id',
   address: '0xeDd1935e28b253C7905Cf5a944f0B5830FFA916a',
-  chainId: '0x1',
+  chainId: 5,
   metadata: {},
 };
 
 export const EVM_NATIVE_ASSET = {
   address: '0x0000000000000000000000000000000000000000',
   assetId: 'eip155:11155111/slip44:60',
-  chainId: 11155111,
+  chainId: 5,
   decimals: 18,
   iconUrl: '',
   name: 'Ether',

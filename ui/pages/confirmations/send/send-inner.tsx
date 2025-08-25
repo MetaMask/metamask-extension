@@ -3,7 +3,7 @@ import React from 'react';
 import { Amount } from '../components/send/amount';
 import { Asset } from '../components/send/asset';
 import { SendPages } from '../constants/send';
-import { SendTo } from '../components/send/send-to';
+import { Recipient } from '../components/send/recipient';
 import { useSendContext } from '../context/send';
 import { useSendQueryParams } from '../hooks/send/useSendQueryParams';
 
@@ -18,7 +18,7 @@ export const SendInner = () => {
     return <Amount />;
   }
   if (currentPage === SendPages.RECIPIENT) {
-    return <SendTo />;
+    return <Recipient />;
   }
 
   return null;
