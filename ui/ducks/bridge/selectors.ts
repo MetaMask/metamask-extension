@@ -52,7 +52,6 @@ import {
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
-import {} from '../../pages/bridge/utils/quote';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainBalances,
@@ -72,8 +71,10 @@ import {
   getSelectedInternalAccount,
 } from '../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import type { AccountTreeState } from '../../selectors/multichain-accounts/account-tree.types';
+import {
+  getAllAccountGroups,
+  getInternalAccountBySelectedAccountGroupAndCaip,
+} from '../../selectors/multichain-accounts/account-tree';
 
 import {
   exchangeRateFromMarketData,
@@ -83,13 +84,17 @@ import {
   toBridgeToken,
 } from './utils';
 import type { BridgeState } from './types';
+import {
+  type AccountGroupObject,
+  type AccountTreeControllerState,
+} from '@metamask/account-tree-controller';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
     GasFeeState &
     NetworkState &
     AccountsControllerState &
-    AccountTreeState &
+    AccountTreeControllerState &
     MultichainAssetsRatesControllerState &
     TokenRatesControllerState &
     RatesControllerState &
@@ -269,6 +274,19 @@ export const getToToken = createSelector(
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
+
+export const getAccountGroupNameByInternalAccount = createSelector(
+  [getAllAccountGroups, (_, account: InternalAccount | null) => account],
+  (accountGroups: AccountGroupObject[], account) => {
+    if (!account?.id) {
+      return null;
+    }
+    return (
+      accountGroups.find(({ accounts }) => accounts.includes(account.id))
+        ?.metadata.name ?? account?.metadata?.name
+    );
+  },
+);
 
 export const getFromAccount = createSelector(
   [(state) => getFromChain(state)?.chainId, (state) => state],
