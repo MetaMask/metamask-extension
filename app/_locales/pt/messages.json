@@ -672,12 +672,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Saiba como protegemos sua privacidade"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Faça backup de suas contas e configurações de sincronização."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Apresentando o backup e a sincronização"
-  },
   "backupApprovalInfo": {
     "message": "Esse código secreto é obrigatório para recuperar sua carteira caso você perca seu dispositivo, esqueça sua senha, precise reinstalar a MetaMask ou queira acessar sua carteira em outro dispositivo."
   },
@@ -701,9 +695,6 @@
   },
   "basic": {
     "message": "Básico"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "A funcionalidade básica está desativada"
   },
   "basicConfigurationDescription": {
     "message": "A MetaMask oferece recursos básicos como detalhes de token e configurações de gás por meio de serviços de internet. Quando você usa serviços de internet, seu endereço IP é compartilhado, neste caso com a MetaMask. É exatamente igual a quando você visita qualquer site. A MetaMask usa esses dados temporariamente e nunca os vende. Você pode usar uma VPN ou desligar esses serviços, mas isso poderá afetar sua experiência com a MetaMask. Para saber mais, leia nossa $1.",
@@ -5492,60 +5483,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Ativar esta opção fará com que a tela intersticial seja ignorada ao abrir links profundos (deep links) na MetaMask. Um link profundo é um link como https://link.metamask.io/home, que abre a MetaMask automaticamente. Esses links podem ser ocultados ou manipulados por terceiros. A tela intersticial existe para proteger você contra o acesso acidental a páginas dentro da MetaMask que possam exibir informações sensíveis, como suas contas, tokens, histórico, saldos ou configurações. Essa configuração se aplica apenas a links assinados pela própria MetaMask."
-  },
-  "slideBridgeDescription": {
-    "message": "Transite por 9 cadeias, tudo dentro da sua carteira"
-  },
-  "slideBridgeTitle": {
-    "message": "Pronto para fazer a ponte?"
-  },
-  "slideCashOutDescription": {
-    "message": "Venda suas criptodivisas por dinheiro"
-  },
-  "slideCashOutTitle": {
-    "message": "Saque com a MetaMask"
-  },
-  "slideDebitCardDescription": {
-    "message": "Disponível em regiões selecionadas"
-  },
-  "slideDebitCardTitle": {
-    "message": "Cartão de débito MetaMask"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Leve sua carteira aonde você for"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "Baixe a MetaMask para celular"
-  },
-  "slideFundWalletDescription": {
-    "message": "Adicione ou transfira tokens para começar"
-  },
-  "slideFundWalletTitle": {
-    "message": "Adicione valores à sua carteira"
-  },
-  "slideMultiSrpDescription": {
-    "message": "Importe e use múltiplas carteiras na MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Adicione múltiplas Frases de Recuperação Secretas"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Mesmo endereço, recursos mais inteligentes"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Comece a usar contas inteligentes"
-  },
-  "slideSolanaDescription": {
-    "message": "Crie uma conta Solana para começar"
-  },
-  "slideSolanaTitle": {
-    "message": "Agora compatível com Solana"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Cunhe um NFT agora para concorrer"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Participe do sorteio de $5000 em USDC!"
   },
   "smartAccountAccept": {
     "message": "Usar conta inteligente"

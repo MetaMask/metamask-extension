@@ -672,12 +672,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Gizliliğinizi nasıl koruduğumuzu öğrenin"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Hesaplarınızı yedekleyin ve ayarları senkronize edin."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Yedekleme ve senkronizasyon hizmetinizde"
-  },
   "backupApprovalInfo": {
     "message": "Bu gizli kod, cihazınızı kaybetmeniz, şifrenizi unutmanız, MetaMask'ı yeniden kurmanızın gerektiği ya da cüzdanınıza başka bir cihazdan oturum açmak istemeniz durumunda cüzdanınıza erişim sağlamak için gereklidir."
   },
@@ -701,9 +695,6 @@
   },
   "basic": {
     "message": "Temel"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "Temel işlevsellik kapalı"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask, internet hizmetleri üzerinden token bilgileri ve gaz ayarları gibi temel özellikler sunar. İnternet hizmetlerini kullandığınızda IP adresiniz, bu durumda MetaMask ile, paylaşılır. Bu tıpkı herhangi bir web sitesini ziyaret ettiğinizde olduğu gibidir. MetaMask bu verileri geçici olarak kullanır ve verilerinizi hiçbir zaman satmaz. Bir VPN kullanabilir veya bu hizmetleri kapatabilirsiniz ancak bu durum MetaMask deneyiminizi etkileyebilir. Daha fazla bilgi için $1 bölümümüzü okuyun.",
@@ -5492,60 +5483,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Bu seçenek etkinleştirildiğinde MetaMask'te derin bağlantıları açarken gösterilen geçiş ekranı atlanacaktır. \"Derin bağlantı\", MetaMask'in açılmasına sebep olan https://link.metamask.io/home gibi bir bağlantıdır; bu bağlantılar başkaları tarafından gizlenebilir. Geçiş ekranı, sizi MetaMask dahilinde hesaplarınızı, token'larınızı, geçmişinizi, bakiyelerinizi, ayarlarınızı ve hassas olma potansiyeli olan diğer bilgilerinizi gösterebilecek kazara açılan sayfalardan korumak amacıyla tasarlanmıştır. Bu ayar yalnızca MetaMask tarafından imzalanan bağlantılar için geçerlidir."
-  },
-  "slideBridgeDescription": {
-    "message": "Tamamı cüzdanınız dahilinde olmak üzere 9 zincirde ilerleyin"
-  },
-  "slideBridgeTitle": {
-    "message": "Köprü yapmaya hazır mısınız?"
-  },
-  "slideCashOutDescription": {
-    "message": "Kriptonuzu satarak nakde dönüştürün"
-  },
-  "slideCashOutTitle": {
-    "message": "MetaMask ile paraya çevirin"
-  },
-  "slideDebitCardDescription": {
-    "message": "Belirli bölgelerde mevcuttur"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMask banka kartı"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Cüzdanınızı gittiğiniz her yere götürün"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "MetaMask mobili indirin"
-  },
-  "slideFundWalletDescription": {
-    "message": "Başlamak için token ekleyin veya transfer edin"
-  },
-  "slideFundWalletTitle": {
-    "message": "Cüzdanınıza para ekleyin"
-  },
-  "slideMultiSrpDescription": {
-    "message": "MetaMask'te birden fazla cüzdanı içe aktarın ve kullanın"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Birden fazla Gizli Kurtarma İfadesi ekleyin"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Aynı adres, daha akıllı özellikler"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Akıllı hesapları kullanmaya başlayın"
-  },
-  "slideSolanaDescription": {
-    "message": "Başlamak için bir Solana hesabı oluşturun"
-  },
-  "slideSolanaTitle": {
-    "message": "Solana artık destekleniyor"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Kazanma şansı için şimdi bir NFT mint edin"
-  },
-  "slideSweepStakeTitle": {
-    "message": "$5000 USDC Çekilişine katılın!"
   },
   "smartAccountAccept": {
     "message": "Akıllı hesap kullanın"
