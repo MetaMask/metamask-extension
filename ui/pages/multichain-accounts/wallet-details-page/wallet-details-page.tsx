@@ -87,6 +87,15 @@ export const WalletDetailsPage = () => {
     history.goBack();
   };
 
+  const handleSrpBackupClick = () => {
+    if (shouldShowBackupReminder) {
+      const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
+      history.push(backUpSRPRoute);
+    } else {
+      setSrpQuizModalVisible(true);
+    }
+  };
+
   const multichainAccountCells = useMemo(() => {
     return Object.entries(multichainAccounts || {}).flatMap(
       ([groupId, groupData]) => {
@@ -178,14 +187,7 @@ export const WalletDetailsPage = () => {
               textAlign={TextAlign.Left}
               {...rowStylesProps}
               as="button"
-              onClick={() => {
-                if (shouldShowBackupReminder) {
-                  const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
-                  history.push(backUpSRPRoute);
-                } else {
-                  setSrpQuizModalVisible(true);
-                }
-              }}
+              onClick={handleSrpBackupClick}
             >
               <Box>
                 <Text
