@@ -80,6 +80,7 @@ export const ShieldPaymentModal = ({
       isOpen={isOpen}
       onClose={() => undefined}
       className="shield-payment-modal"
+      data-testid="shield-payment-modal"
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
@@ -92,6 +93,7 @@ export const ShieldPaymentModal = ({
           width={BlockSize.Full}
         >
           <Box
+            data-testid="shield-payment-method-token-button"
             as="button"
             className={classnames('payment-method-item', {
               'payment-method-item--selected':
@@ -164,6 +166,7 @@ export const ShieldPaymentModal = ({
             </Box>
           </Box>
           <Box
+            data-testid="shield-payment-method-card-button"
             as="button"
             className={classnames('payment-method-item', {
               'payment-method-item--selected':
