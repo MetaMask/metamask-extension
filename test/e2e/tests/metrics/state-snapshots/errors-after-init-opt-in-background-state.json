@@ -151,7 +151,6 @@
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
   },
-  "MultichainAccountService": "object",
   "MultichainAssetsController": {
     "accountsAssets": "object",
     "assetsMetadata": "object"

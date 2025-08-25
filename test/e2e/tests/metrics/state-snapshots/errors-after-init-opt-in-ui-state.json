@@ -378,7 +378,6 @@
     "submitHistory": "object",
     "delegations": "object",
     "accountTree": "object",
-    "MultichainAccountService": "object",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object",
     "srpSessionData": "object"
