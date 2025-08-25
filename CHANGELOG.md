@@ -36,6 +36,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: use a static list of words for blurred SRP to prevent any potential possibility of a 'blur reversal attack' (#34288)
 - fix: revert 'set default theme to dark' (#34274)
 
+## [13.1.1]
+### Fixed
+- fix: remove the Solana new feature modal from the onboarding flow (#34988)
+- fix: hide swap fee info line if quote does not include a MetaMask fee (#35278)
+
 ## [13.1.0]
 ### Added
 - feat: inform users using social login when their password got updated in another instance of the wallet (#34757)
@@ -461,7 +466,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.2.0...HEAD
-[13.2.0]: https://github.com/MetaMask/metamask-extension/compare/v13.1.0...v13.2.0
+[13.2.0]: https://github.com/MetaMask/metamask-extension/compare/v13.1.1...v13.2.0
+[13.1.1]: https://github.com/MetaMask/metamask-extension/compare/v13.1.0...v13.1.1
 [13.1.0]: https://github.com/MetaMask/metamask-extension/compare/v13.0.1...v13.1.0
 [13.0.1]: https://github.com/MetaMask/metamask-extension/compare/v13.0.0...v13.0.1
 [13.0.0]: https://github.com/MetaMask/metamask-extension/compare/v12.23.1...v13.0.0
