@@ -187,38 +187,38 @@ describe('Test Snap revoke permission', function () {
         // delay added for rendering time (deflake)
         await driver.delay(500);
 
-        // switch to metamask dialog with error handling
+        // switch to metamask dialog
         try {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // wait for and click next
+          await driver.waitForSelector({
+            text: 'Next',
+            tag: 'button',
+          });
+          await driver.clickElement({
+            text: 'Next',
+            tag: 'button',
+          });
+
+          // delay added for rendering time (deflake)
+          await driver.delay(500);
+
+          // wait for and click confirm and wait for window to close
+          await driver.waitForSelector({
+            text: 'Confirm',
+            tag: 'button',
+          });
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Confirm',
+            tag: 'button',
+          });
         } catch (error) {
-          console.log('Dialog window may not have appeared, continuing...');
-          // If there's no dialog, the permission might have been revoked without confirmation
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-          return;
+          console.log(
+            'Dialog window may not have appeared, permission may have been revoked directly',
+          );
+          // Continue with test - the final verification will determine if revocation worked
         }
-
-        // wait for and click next
-        await driver.waitForSelector({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-
-        // delay added for rendering time (deflake)
-        await driver.delay(500);
-
-        // wait for and click confirm and wait for window to close
-        await driver.waitForSelector({
-          text: 'Confirm',
-          tag: 'button',
-        });
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
-          tag: 'button',
-        });
 
         // switch to test snap page
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
