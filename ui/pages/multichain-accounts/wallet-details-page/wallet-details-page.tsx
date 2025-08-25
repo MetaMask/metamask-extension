@@ -34,35 +34,27 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { getMetaMaskHdKeyrings } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getMultichainAccountsByWalletId,
-  getWalletsWithAccounts,
-} from '../../../selectors/multichain-accounts/account-tree';
-import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
 import SRPQuiz from '../../../components/app/srp-quiz-modal';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
 import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
+import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
 
 export const WalletDetailsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const { id } = useParams();
-  const decodedId = decodeURIComponent(id as string) as AccountWalletId;
+  const walletId = decodeURIComponent(id as string) as AccountWalletId;
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
-  const seedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
-  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
-  const wallet = walletsWithAccounts[decodedId as AccountWalletId];
-  const multichainAccounts = useSelector((state: MultichainAccountsState) =>
-    getMultichainAccountsByWalletId(state, decodedId),
-  );
+  const wallet = walletsWithAccounts[walletId as AccountWalletId];
+  const { multichainAccounts, keyringId, isSRPBackedUp } =
+    useWalletInfo(walletId);
 
   useEffect(() => {
     if (!wallet) {
@@ -70,11 +62,8 @@ export const WalletDetailsPage = () => {
     }
   }, [wallet, history]);
 
-  const keyringId = wallet?.id.split(':')[1];
-
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
-  const isFirstHdKeyring = hdKeyrings[0]?.metadata?.id === keyringId;
-  const shouldShowBackupReminder = !seedPhraseBackedUp && isFirstHdKeyring;
+  const shouldShowBackupReminder = isSRPBackedUp === false;
 
   const rowStylesProps = {
     display: Display.Flex,
@@ -96,21 +85,19 @@ export const WalletDetailsPage = () => {
     }
   };
 
-  const multichainAccountCells = useMemo(() => {
-    return Object.entries(multichainAccounts || {}).flatMap(
-      ([groupId, groupData]) => {
-        return [
-          <MultichainAccountCell
-            key={`multichain-account-cell-${groupId}`}
-            accountId={groupId as AccountGroupId}
-            accountName={groupData.metadata.name}
-            balance="$ n/a"
-            disableHoverEffect={true}
-          />,
-        ];
-      },
-    );
-  }, [multichainAccounts]);
+  const multichainAccountCells = useMemo(
+    () =>
+      multichainAccounts.map((group) => (
+        <MultichainAccountCell
+          key={`multichain-account-cell-${group.id}`}
+          accountId={group.id as AccountGroupId}
+          accountName={group.metadata.name}
+          balance="$ n/a"
+          disableHoverEffect={true}
+        />
+      )),
+    [multichainAccounts],
+  );
 
   return (
     <Page className="multichain-wallet-details-page">
@@ -227,7 +214,7 @@ export const WalletDetailsPage = () => {
           borderRadius={BorderRadius.XL}
         >
           {multichainAccountCells}
-          {isEntropyWallet && <AddMultichainAccount walletId={decodedId} />}
+          {isEntropyWallet && <AddMultichainAccount walletId={walletId} />}
         </Box>
       </Content>
       {isEntropyWallet && srpQuizModalVisible && (

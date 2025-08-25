@@ -153,6 +153,7 @@ import {
   getUseSmartAccount,
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
+import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -2230,24 +2231,6 @@ export function setSelectedMultichainAccount(
 }
 
 /**
- * Strips the type prefix from a wallet ID
- * Examples:
- * - "entropy:01JKAF3DSGM3AB87EM9N0K41AJ" -> "01JKAF3DSGM3AB87EM9N0K41AJ"
- *
- * @param id - The wallet ID with a type prefix
- * @returns The wallet ID without the type prefix
- */
-export function stripWalletTypePrefix(id: AccountWalletId): string {
-  const firstColonIndex = id.indexOf(':');
-
-  if (firstColonIndex !== -1) {
-    return id.slice(firstColonIndex + 1);
-  }
-
-  return id;
-}
-
-/**
  * Create a new multichain account.
  *
  * @param walletId - ID of a wallet.
@@ -2258,7 +2241,8 @@ export function createMultichainAccount(
   return async () => {
     log.debug(`background.createNextMultichainAccountGroup`);
     try {
-      const walletIdWithoutTypePrefix = stripWalletTypePrefix(walletId);
+      const walletIdWithoutTypePrefix =
+        stripWalletTypePrefixFromWalletId(walletId);
       await submitRequestToBackground('createNextMultichainAccountGroup', [
         walletIdWithoutTypePrefix,
       ]);
