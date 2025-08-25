@@ -27,9 +27,15 @@ git config --global user.name "MetaMask Bot"
 
 git clone --depth 1 https://github.com/MetaMask/extension_benchmark_stats.git temp
 
-BENCHMARK_FILE="test-artifacts/benchmarks/benchmark-results.json"
-STATS_FILE="temp/stats/page_load_data.json"
-TEMP_FILE="temp/stats/page_load_data.temp.json"
+cd temp
+
+git fetch --all
+
+git checkout main
+
+BENCHMARK_FILE="../test-artifacts/benchmarks/benchmark-results.json"
+STATS_FILE="stats/page_load_data.json"
+TEMP_FILE="stats/page_load_data.temp.json"
 
 # Ensure the JSON file exists
 if [[ ! -f "${STATS_FILE}" ]]; then
@@ -58,8 +64,6 @@ jq --arg sha "${GITHUB_SHA}" --argjson data "$(cat "${BENCHMARK_FILE}")" \
 # Overwrite the original JSON file with the corrected version
 mv "${TEMP_FILE}" "${STATS_FILE}"
 
-cd temp
-
 # Only add the JSON file
 git add stats/page_load_data.json
 
@@ -67,7 +71,7 @@ git commit --message "Adding page load benchmark data at commit: ${GITHUB_SHA}"
 
 repo_slug="${GITHUB_REPOSITORY_OWNER}/extension_benchmark_stats"
 
-git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" gh-pages
+git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" main
 
 cd ..
 
