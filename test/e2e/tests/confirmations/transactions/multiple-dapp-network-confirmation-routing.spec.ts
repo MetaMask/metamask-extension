@@ -52,7 +52,7 @@ describe('Routing confirmstions from Multiple Dapps and different networks', fun
           const connectAccountConfirmation1 = new ConnectAccountConfirmation(
             driver,
           );
-          await connectAccountConfirmation1.check_pageIsLoaded();
+          await connectAccountConfirmation1.checkPageIsLoaded();
           await connectAccountConfirmation1.confirmConnect();
 
           // Wait for the first dapp's connect confirmation to disappear
@@ -69,7 +69,7 @@ describe('Routing confirmstions from Multiple Dapps and different networks', fun
           const connectAccountConfirmation2 = new ConnectAccountConfirmation(
             driver,
           );
-          await connectAccountConfirmation2.check_pageIsLoaded();
+          await connectAccountConfirmation2.checkPageIsLoaded();
           await connectAccountConfirmation2.confirmConnect();
 
           // Switch network on DAPP 2

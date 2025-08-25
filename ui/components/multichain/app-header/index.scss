@@ -35,25 +35,9 @@
       width: fit-content;
     }
 
-    border-bottom: 1px solid #858b9a33;
-
-    &-layout-old-grid {
-      padding: 16px;
-      display: grid;
-      grid-template-columns: 1fr 2fr 1fr;
-
-      @include design-system.screen-sm-max {
-        height: $height-screen-sm-max;
-
-        /* Ensures network picker column and icons column are always the same size */
-        grid-template-columns: 64px 2fr 64px;
-      }
-    }
-
-    &-layout-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
+    border-bottom: 1px solid var(--color-border-muted);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 
   &__address-copy-button {

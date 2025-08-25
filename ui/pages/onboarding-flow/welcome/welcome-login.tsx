@@ -1,17 +1,16 @@
 import EventEmitter from 'events';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import classnames from 'classnames';
 import Mascot from '../../../components/ui/mascot';
 import {
   Box,
-  ButtonBase,
-  ButtonBaseSize,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   Text,
 } from '../../../components/component-library';
 import {
   AlignItems,
-  BackgroundColor,
-  BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
@@ -20,16 +19,19 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WelcomeLogin({
   onLogin,
 }: {
   onLogin: (loginType: LoginType, loginOption: string) => Promise<void>;
 }) {
   const t = useI18nContext();
-  const [eventEmitter] = useState(new EventEmitter());
+  const animationEventEmitter = useRef(new EventEmitter());
   const [showLoginOptions, setShowLoginOptions] = useState(false);
   const [loginOption, setLoginOption] = useState<LoginOptionType | null>(null);
   const isSeedlessOnboardingFeatureEnabled =
@@ -47,7 +49,11 @@ export default function WelcomeLogin({
       );
     }
     return (
-      <Mascot animationEventEmitter={eventEmitter} width="268" height="268" />
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width="268"
+        height="268"
+      />
     );
   };
 
@@ -100,12 +106,17 @@ export default function WelcomeLogin({
         </Text>
       </Box>
 
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
-        <ButtonBase
+      <Box
+        data-theme={ThemeType.light}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+      >
+        <Button
           data-testid="onboarding-create-wallet"
-          width={BlockSize.Full}
-          size={ButtonBaseSize.Lg}
-          className="welcome-login__create-button"
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          block
           onClick={async () => {
             setShowLoginOptions(true);
             setLoginOption(LOGIN_OPTION.NEW);
@@ -115,13 +126,12 @@ export default function WelcomeLogin({
           }}
         >
           {t('onboardingCreateWallet')}
-        </ButtonBase>
-        <ButtonBase
+        </Button>
+        <Button
           data-testid="onboarding-import-wallet"
-          width={BlockSize.Full}
-          size={ButtonBaseSize.Lg}
-          backgroundColor={BackgroundColor.transparent}
-          className="welcome-login__import-button"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          block
           onClick={async () => {
             setShowLoginOptions(true);
             setLoginOption(LOGIN_OPTION.EXISTING);
@@ -133,7 +143,7 @@ export default function WelcomeLogin({
           {isSeedlessOnboardingFeatureEnabled
             ? t('onboardingImportWallet')
             : t('onboardingSrpImport')}
-        </ButtonBase>
+        </Button>
       </Box>
       {isSeedlessOnboardingFeatureEnabled &&
         showLoginOptions &&

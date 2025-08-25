@@ -72,18 +72,26 @@ class HomePage {
     testId: 'refreshList',
   };
 
+  private readonly surveyToast = '[data-testid="survey-toast"]';
+
   private readonly tokensTab = {
     testId: 'account-overview__asset-tab',
   };
 
+  private readonly closeSurveyToastBannerButton =
+    '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
+
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
+  private readonly connectionsRemovedModal =
+    '[data-testid="connections-removed-modal"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.sendButton,
@@ -95,6 +103,15 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  async closeSurveyToast(surveyName: string): Promise<void> {
+    console.log(`Close survey toast for ${surveyName}`);
+    await this.driver.waitForSelector({
+      css: this.surveyToast,
+      text: surveyName,
+    });
+    await this.driver.clickElement(this.closeSurveyToastBannerButton);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {
@@ -177,7 +194,7 @@ class HomePage {
    *
    * @param networkName - The name of the network that was added.
    */
-  async check_addNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+  async checkAddNetworkMessageIsDisplayed(networkName: string): Promise<void> {
     console.log(
       `Check the toaster message for adding network ${networkName} is displayed on homepage`,
     );
@@ -187,24 +204,24 @@ class HomePage {
     });
   }
 
-  async check_backupReminderIsNotDisplayed(): Promise<void> {
+  async checkBackupReminderIsNotDisplayed(): Promise<void> {
     console.log('Check backup reminder is not displayed on homepage');
     await this.driver.assertElementNotPresent(
       this.backupSecretRecoveryPhraseNotification,
     );
   }
 
-  async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
+  async checkBasicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check if basic functionality off warning message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
   }
 
-  async check_disabledButtonTooltip(tooltipText: string): Promise<void> {
+  async checkDisabledButtonTooltip(tooltipText: string): Promise<void> {
     console.log(`Check if disabled button tooltip is displayed on homepage`);
     await this.driver.waitForSelector(
-      `.icon-button-round--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
+      `.icon-button--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
     );
   }
 
@@ -213,9 +230,7 @@ class HomePage {
    *
    * @param networkName - The name of the network that was edited.
    */
-  async check_editNetworkMessageIsDisplayed(
-    networkName: string,
-  ): Promise<void> {
+  async checkEditNetworkMessageIsDisplayed(networkName: string): Promise<void> {
     console.log(
       `Check the toaster message for editing network ${networkName} is displayed on homepage`,
     );
@@ -231,7 +246,7 @@ class HomePage {
    * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
    */
-  async check_expectedBalanceIsDisplayed(
+  async checkExpectedBalanceIsDisplayed(
     expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
@@ -258,7 +273,7 @@ class HomePage {
    * @param expectedTokenBalance - The expected balance to be displayed.
    * @param symbol - The symbol of the currency or token.
    */
-  async check_expectedTokenBalanceIsDisplayed(
+  async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
@@ -271,7 +286,7 @@ class HomePage {
   /**
    * This function checks if account syncing has been successfully completed at least once.
    */
-  async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
+  async checkHasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
     console.log('Check if account syncing has synced at least once');
     await this.driver.wait(async () => {
       const uiState = await getCleanAppState(this.driver);
@@ -279,7 +294,7 @@ class HomePage {
     }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
-  async check_ifBridgeButtonIsClickable(): Promise<boolean> {
+  async checkIfBridgeButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.bridgeButton, {
         timeout: 1000,
@@ -292,7 +307,7 @@ class HomePage {
     return true;
   }
 
-  async check_ifSendButtonIsClickable(): Promise<boolean> {
+  async checkIfSendButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.sendButton, {
         timeout: 1000,
@@ -305,7 +320,7 @@ class HomePage {
     return true;
   }
 
-  async check_ifSwapButtonIsClickable(): Promise<boolean> {
+  async checkIfSwapButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.swapButton, {
         timeout: 1000,
@@ -318,7 +333,7 @@ class HomePage {
     return true;
   }
 
-  async check_localNodeBalanceIsDisplayed(
+  async checkLocalNodeBalanceIsDisplayed(
     localNode?: Ganache | Anvil,
     address = null,
   ): Promise<void> {
@@ -328,18 +343,23 @@ class HomePage {
     } else {
       expectedBalance = '25';
     }
-    await this.check_expectedBalanceIsDisplayed(expectedBalance);
+    await this.checkExpectedBalanceIsDisplayed(expectedBalance);
   }
 
-  async check_newSrpAddedToastIsDisplayed(
-    srpNumber: number = 2,
-  ): Promise<void> {
+  async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {
     await this.driver.waitForSelector({
       text: `Secret Recovery Phrase ${srpNumber} imported`,
     });
   }
 
-  async check_portfolioLinkIsDisplayed(): Promise<void> {
+  async checkNoSurveyToastIsDisplayed(): Promise<void> {
+    console.log('Check no survey toast is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.surveyToast, {
+      timeout: 5000,
+    });
+  }
+
+  async checkPortfolioLinkIsDisplayed(): Promise<void> {
     console.log('Check if portfolio link is displayed on homepage');
     await this.driver.waitForSelector(this.portfolioLink);
   }
@@ -349,7 +369,7 @@ class HomePage {
    *
    * @param message - The message to be displayed.
    */
-  async check_warningMessageIsDisplayed(message: string): Promise<void> {
+  async checkWarningMessageIsDisplayed(message: string): Promise<void> {
     console.log(`Check if warning message ${message} is displayed on homepage`);
     await this.driver.waitForSelector({
       text: message,
@@ -365,6 +385,10 @@ class HomePage {
       this.copyAddressButton,
     );
     return accountAddress.getText();
+  }
+
+  async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.connectionsRemovedModal);
   }
 }
 

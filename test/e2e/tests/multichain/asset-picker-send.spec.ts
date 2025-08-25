@@ -10,7 +10,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TokenList from '../../page-objects/pages/token-list';
-import { AssetPicker } from '../../page-objects/pages/asset-picker';
+import AssetPicker from '../../page-objects/pages/asset-picker';
 
 describe('AssetPickerSendFlow', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -38,25 +38,25 @@ describe('AssetPickerSendFlow', function () {
         const settingsPage = new SettingsPage(driver);
         const homePage = new HomePage(driver);
         await new HeaderNavbar(driver).openSettingsPage();
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
         await new PrivacySettingsPage(driver).toggleAutoDetectTokens();
         await settingsPage.closeSettingsPage();
 
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         await homePage.startSendFlow();
         const sendToPage = new SendTokenPage(driver);
-        await sendToPage.check_pageIsLoaded();
+        await sendToPage.checkPageIsLoaded();
         await sendToPage.fillRecipient(RECIPIENT_ADDRESS_MOCK);
         await sendToPage.fillAmount('2');
         const tokenDetailsList = new TokenList(driver);
 
         await sendToPage.clickOnAssetPicker(driver, 'dest');
 
-        await tokenDetailsList.check_tokenName('Ethereum');
-        await tokenDetailsList.check_tokenBalanceWithName('$250,000.00');
-        await tokenDetailsList.check_tokenMarketValue('25 ETH');
+        await tokenDetailsList.checkTokenName('Ethereum');
+        await tokenDetailsList.checkTokenBalanceWithName('$250,000.00');
+        await tokenDetailsList.checkTokenMarketValue('25 ETH');
 
         // Search for CHZ and check that CHZ is disabled
         const assetPicker = new AssetPicker(driver);

@@ -12,7 +12,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
@@ -28,8 +28,8 @@ describe('MetaMask Responsive UI', function (this: Suite) {
 
         // assert balance
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
       },
     );
   });
@@ -46,19 +46,19 @@ describe('MetaMask Responsive UI', function (this: Suite) {
 
         // Click forgot password button and reset password
         const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
         await loginPage.gotoResetPasswordPage();
 
         // Import secret recovery phrase to reset password
         const resetPasswordPage = new ResetPasswordPage(driver);
-        await resetPasswordPage.check_pageIsLoaded();
+        await resetPasswordPage.checkPageIsLoaded();
         await resetPasswordPage.resetPassword(E2E_SRP, WALLET_PASSWORD);
         await resetPasswordPage.waitForSeedPhraseInputToNotBeVisible();
 
         // Check balance renders correctly
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed();
       },
     );
   });
@@ -69,7 +69,6 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
             eip155: {
-              [CHAIN_IDS.MAINNET]: true,
               [CHAIN_IDS.LOCALHOST]: true,
             },
           })
@@ -86,7 +85,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           amount: '1',
         });
-        await new HomePage(driver).check_pageIsLoaded();
+        await new HomePage(driver).checkPageIsLoaded();
 
         // Network Selector
         if (isGlobalNetworkSelectorRemoved) {
@@ -103,8 +102,8 @@ describe('MetaMask Responsive UI', function (this: Suite) {
 
         // check confirmed transaction is displayed in activity list
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
-        await activityList.check_txAmountInActivity('-1 ETH');
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAmountInActivity('-1 ETH');
       },
     );
   });

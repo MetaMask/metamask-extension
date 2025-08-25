@@ -14,7 +14,7 @@ class UpdateNetworkConfirmation {
   /**
    * @param networkName - The name of the network to update for in the confirmation page
    */
-  async check_pageIsLoaded(networkName: string): Promise<void> {
+  async checkPageIsLoaded(networkName: string): Promise<void> {
     try {
       await this.driver.waitForSelector({
         text: `Update ${networkName}`,
@@ -50,7 +50,7 @@ class UpdateNetworkConfirmation {
   /**
    * Checks if the approve button is enabled on update network confirmation page.
    */
-  async check_isApproveButtonEnabled(): Promise<boolean> {
+  async checkIsApproveButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.approveButton, {
         timeout: 1000,
@@ -63,7 +63,7 @@ class UpdateNetworkConfirmation {
     return true;
   }
 
-  async check_warningMessageIsDisplayed(message: string) {
+  async checkWarningMessageIsDisplayed(message: string) {
     console.log(
       `Checking if warning message ${message} is displayed on update network confirmation page`,
     );

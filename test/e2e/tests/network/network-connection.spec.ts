@@ -3,14 +3,11 @@ import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TokenList from '../../page-objects/pages/token-list';
 import ConfirmAlertModal from '../../page-objects/pages/dialog/confirm-alert';
 import { WALLET_ADDRESS } from '../confirmations/signatures/signature-helpers';
 import { Driver } from '../../webdriver/driver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 
 // Network configuration type
 type NetworkConfig = {
@@ -33,6 +30,12 @@ const networkConfigs: NetworkConfig[] = [
     tokenSymbol: 'ETH',
     fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
     testTitle: 'MegaETH Network Connection Tests',
+  },
+  {
+    name: 'Sei',
+    tokenSymbol: 'SEI',
+    fixtureMethod: (builder) => builder.withNetworkControllerOnSei(),
+    testTitle: 'Sei Network Connection Tests',
   },
 ];
 
@@ -62,6 +65,7 @@ networkConfigs.forEach((config) => {
               eip155: {
                 [CHAIN_IDS.MONAD_TESTNET]: true,
                 [CHAIN_IDS.MEGAETH_TESTNET]: true,
+                [CHAIN_IDS.SEI]: true,
               },
             })
             .build(),
@@ -70,28 +74,22 @@ networkConfigs.forEach((config) => {
         async ({ driver }: { driver: Driver }) => {
           await loginWithBalanceValidation(driver);
 
-          const headerNavbar = new HeaderNavbar(driver);
           const tokenList = new TokenList(driver);
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
-          if (!isGlobalNetworkSelectorRemoved) {
-            // Verify network is selected
-            await headerNavbar.check_currentSelectedNetwork(config.name);
-          }
-
           // Verify token is displayed
-          await tokenList.check_tokenName(config.tokenSymbol);
+          await tokenList.checkTokenName(config.tokenSymbol);
 
           // Open the test dapp and verify balance
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
           // Verify dapp can access the account
-          await testDapp.check_getAccountsResult(WALLET_ADDRESS.toLowerCase());
+          await testDapp.checkGetAccountsResult(WALLET_ADDRESS.toLowerCase());
 
           // Test various Dapp functionalities
           await performDappActionAndVerify(

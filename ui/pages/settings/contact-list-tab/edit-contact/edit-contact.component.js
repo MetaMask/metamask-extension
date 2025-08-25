@@ -1,8 +1,10 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, useHistory } from 'react-router-dom';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -10,8 +12,6 @@ import {
 import {
   Button,
   ButtonVariant,
-  AvatarAccount,
-  AvatarAccountSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -95,7 +95,7 @@ const EditContact = ({
           style={{ overflow: 'hidden' }}
           paddingRight={2}
         >
-          <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
+          <PreferredAvatar size={AvatarAccountSize.Lg} address={address} />
           <Text
             className="address-book__header__name"
             variant={TextVariant.bodyLgMedium}
@@ -176,41 +176,39 @@ const EditContact = ({
             margin="dense"
           />
         </div>
-        {process.env.REMOVE_GNS ? (
-          <div className="address-book__view-contact__group">
-            <div className="address-book__view-contact__group__label">
-              {t('network')}
-            </div>
-            <Box
-              as="button"
-              padding={3}
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              backgroundColor={BackgroundColor.transparent}
-              borderColor={BorderColor.borderDefault}
-              justifyContent={JustifyContent.spaceBetween}
-              borderRadius={BorderRadius.XL}
-              onClick={() => setShowModal(true)}
-              className="network-selector"
-              data-testid="network-selector"
-              marginTop={2}
-            >
-              <Box display={Display.Flex} gap={2}>
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Sm}
-                  src={getImageForChainId(selectedChainId) || undefined}
-                  name={networks?.[selectedChainId]?.name}
-                />
-                <Text>{networks?.[selectedChainId]?.name}</Text>
-              </Box>
-              <Icon
-                name={IconName.ArrowDown}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            </Box>
+        <div className="address-book__view-contact__group">
+          <div className="address-book__view-contact__group__label">
+            {t('network')}
           </div>
-        ) : null}
+          <Box
+            as="button"
+            padding={3}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            backgroundColor={BackgroundColor.transparent}
+            borderColor={BorderColor.borderDefault}
+            justifyContent={JustifyContent.spaceBetween}
+            borderRadius={BorderRadius.XL}
+            onClick={() => setShowModal(true)}
+            className="network-selector"
+            data-testid="network-selector"
+            marginTop={2}
+          >
+            <Box display={Display.Flex} gap={2}>
+              <AvatarNetwork
+                size={AvatarNetworkSize.Sm}
+                src={getImageForChainId(selectedChainId) || undefined}
+                name={networks?.[selectedChainId]?.name}
+              />
+              <Text>{networks?.[selectedChainId]?.name}</Text>
+            </Box>
+            <Icon
+              name={IconName.ArrowDown}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          </Box>
+        </div>
       </div>
       <PageContainerFooter
         cancelText={t('cancel')}

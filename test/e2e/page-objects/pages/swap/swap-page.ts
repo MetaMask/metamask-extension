@@ -97,7 +97,7 @@ class SwapPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.swapAmount,

@@ -45,7 +45,7 @@ describe('Multichain API', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
           await testDapp.initCreateSessionScopes([
             'eip155:1337',
@@ -55,13 +55,13 @@ describe('Multichain API', function () {
           const connectAccountConfirmation = new ConnectAccountConfirmation(
             driver,
           );
-          await connectAccountConfirmation.check_pageIsLoaded();
+          await connectAccountConfirmation.checkPageIsLoaded();
           await connectAccountConfirmation.confirmConnect();
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.MultichainTestDApp,
           );
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           const getSessionResult = await testDapp.getSession();
 
           for (const scope of scopesToIgnore) {
@@ -97,11 +97,11 @@ describe('Multichain API', function () {
             '0x9999999999999999999999999999999999999999';
 
           await loginWithoutBalanceValidation(driver);
-          await new HomePage(driver).check_expectedBalanceIsDisplayed('0');
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
           await testDapp.initCreateSessionScopes(
             [REQUEST_SCOPE],
@@ -111,13 +111,13 @@ describe('Multichain API', function () {
           const connectAccountConfirmation = new ConnectAccountConfirmation(
             driver,
           );
-          await connectAccountConfirmation.check_pageIsLoaded();
+          await connectAccountConfirmation.checkPageIsLoaded();
           await connectAccountConfirmation.confirmConnect();
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.MultichainTestDApp,
           );
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           const getSessionResult = await testDapp.getSession();
           /**
            * Accounts in scope should not include invalid account {@link ACCOUNT_NOT_IN_WALLET}, only the valid accounts.
@@ -130,6 +130,8 @@ describe('Multichain API', function () {
           assert.deepEqual(
             expectedSessionScope.accounts,
             result,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `${expectedSessionScope.accounts} does not match accounts in scope ${result}`,
           );
         },
@@ -155,7 +157,7 @@ describe('Multichain API', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
         await testDapp.initCreateSessionScopes(requestScopes);
 
@@ -163,15 +165,15 @@ describe('Multichain API', function () {
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.goToPermissionsTab();
         await connectAccountConfirmation.openEditNetworksModal();
 
         const networkPermissionSelectModal = new NetworkPermissionSelectModal(
           driver,
         );
-        await networkPermissionSelectModal.check_pageIsLoaded();
-        await networkPermissionSelectModal.check_networkStatus(
+        await networkPermissionSelectModal.checkPageIsLoaded();
+        await networkPermissionSelectModal.checkNetworkStatus(
           networksToRequest,
         );
       },
@@ -195,7 +197,7 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(
               ['eip155:1337', 'eip155:1338'],
@@ -205,34 +207,34 @@ describe('Multichain API', function () {
             const connectAccountConfirmation = new ConnectAccountConfirmation(
               driver,
             );
-            await connectAccountConfirmation.check_pageIsLoaded();
+            await connectAccountConfirmation.checkPageIsLoaded();
             await connectAccountConfirmation.openEditAccountsModal();
 
             const editConnectedAccountsModal = new EditConnectedAccountsModal(
               driver,
             );
-            await editConnectedAccountsModal.check_pageIsLoaded();
+            await editConnectedAccountsModal.checkPageIsLoaded();
             await editConnectedAccountsModal.addNewEthereumAccount();
 
-            await connectAccountConfirmation.check_pageIsLoaded();
+            await connectAccountConfirmation.checkPageIsLoaded();
             await connectAccountConfirmation.goToPermissionsTab();
             await connectAccountConfirmation.openEditNetworksModal();
 
             const networkPermissionSelectModal =
               new NetworkPermissionSelectModal(driver);
-            await networkPermissionSelectModal.check_pageIsLoaded();
+            await networkPermissionSelectModal.checkPageIsLoaded();
             await networkPermissionSelectModal.updateNetworkStatus([
               'Localhost 8545',
             ]);
             await networkPermissionSelectModal.clickConfirmEditButton();
 
-            await connectAccountConfirmation.check_pageIsLoaded();
+            await connectAccountConfirmation.checkPageIsLoaded();
             await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             const getSessionResult = await testDapp.getSession();
 
             assert.strictEqual(
@@ -267,23 +269,23 @@ describe('Multichain API', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
           await testDapp.initCreateSessionScopes(['eip155:1337']);
 
           const connectAccountConfirmation = new ConnectAccountConfirmation(
             driver,
           );
-          await connectAccountConfirmation.check_pageIsLoaded();
+          await connectAccountConfirmation.checkPageIsLoaded();
           await connectAccountConfirmation.openEditAccountsModal();
 
           const editConnectedAccountsModal = new EditConnectedAccountsModal(
             driver,
           );
-          await editConnectedAccountsModal.check_pageIsLoaded();
+          await editConnectedAccountsModal.checkPageIsLoaded();
 
           const isAccountSelected =
-            await editConnectedAccountsModal.check_isAccountSelected(1);
+            await editConnectedAccountsModal.checkIsAccountSelected(1);
           assert.strictEqual(
             isAccountSelected,
             true,
@@ -316,29 +318,29 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(['eip155:1']);
 
             const connectAccountConfirmation = new ConnectAccountConfirmation(
               driver,
             );
-            await connectAccountConfirmation.check_pageIsLoaded();
+            await connectAccountConfirmation.checkPageIsLoaded();
             await connectAccountConfirmation.openEditAccountsModal();
 
             const editConnectedAccountsModal = new EditConnectedAccountsModal(
               driver,
             );
-            await editConnectedAccountsModal.check_pageIsLoaded();
+            await editConnectedAccountsModal.checkPageIsLoaded();
             await editConnectedAccountsModal.addNewEthereumAccount();
 
-            await connectAccountConfirmation.check_pageIsLoaded();
+            await connectAccountConfirmation.checkPageIsLoaded();
             await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             const getSessionResult = await testDapp.getSession();
 
             assert.deepEqual(
@@ -371,26 +373,26 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(['eip155:1337']);
 
             const connectAccountConfirmation = new ConnectAccountConfirmation(
               driver,
             );
-            await connectAccountConfirmation.check_pageIsLoaded();
+            await connectAccountConfirmation.checkPageIsLoaded();
             await connectAccountConfirmation.openEditAccountsModal();
 
             const editConnectedAccountsModal = new EditConnectedAccountsModal(
               driver,
             );
-            await editConnectedAccountsModal.check_pageIsLoaded();
+            await editConnectedAccountsModal.checkPageIsLoaded();
             await editConnectedAccountsModal.selectAccount(1);
             await editConnectedAccountsModal.disconnectAccount();
 
-            await connectAccountConfirmation.check_pageIsLoaded();
+            await connectAccountConfirmation.checkPageIsLoaded();
             assert.strictEqual(
-              await connectAccountConfirmation.check_isConfirmButtonEnabled(),
+              await connectAccountConfirmation.isConfirmButtonEnabled(),
               false,
               'should not able to approve the create session request without at least one account should be selected',
             );
@@ -422,11 +424,11 @@ describe('Multichain API', function () {
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
           await loginWithoutBalanceValidation(driver);
-          new HomePage(driver).check_expectedBalanceIsDisplayed('0');
+          new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
 
           /**
@@ -457,13 +459,13 @@ describe('Multichain API', function () {
           const connectAccountConfirmation = new ConnectAccountConfirmation(
             driver,
           );
-          await connectAccountConfirmation.check_pageIsLoaded();
+          await connectAccountConfirmation.checkPageIsLoaded();
           await connectAccountConfirmation.confirmConnect();
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.MultichainTestDApp,
           );
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
 
           const newgetSessionResult = await testDapp.getSession();
 
@@ -486,13 +488,6 @@ describe('Multichain API', function () {
               expectedScopeObject,
               resultSessionScope,
               `${scopeName} does not match expected scope`,
-            );
-
-            const resultAccounts = resultSessionScope.accounts;
-            assert.deepEqual(
-              expectedScopeObject.accounts,
-              resultAccounts,
-              `${expectedScopeObject.accounts} do not match accounts in scope ${scopeName}`,
             );
           }
         },

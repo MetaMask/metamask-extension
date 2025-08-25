@@ -15,8 +15,8 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
 
-  async check_pageIsLoaded(amount: string = ''): Promise<void> {
-    await super.check_pageIsLoaded();
+  async checkPageIsLoaded(amount: string = ''): Promise<void> {
+    await super.checkPageIsLoaded();
     await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     if (amount) {
       await this.driver.wait(async () => {
@@ -59,10 +59,7 @@ class NonEvmHomepage extends HomePage {
    * @param balance
    * @param token
    */
-  async check_getBalance(
-    balance: string,
-    token: string = 'SOL',
-  ): Promise<void> {
+  async checkGetBalance(balance: string, token: string = 'SOL'): Promise<void> {
     await this.driver.waitForSelector(
       {
         text: balance,
@@ -83,7 +80,7 @@ class NonEvmHomepage extends HomePage {
   /**
    * Checks if the receive button is enabled on a non-evm account homepage.
    */
-  async check_isReceiveButtonEnabled(): Promise<boolean> {
+  async checkIsReceiveButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.waitForSelector(this.receiveButton, { timeout: 5000 });
     } catch (e) {
@@ -97,7 +94,7 @@ class NonEvmHomepage extends HomePage {
   /**
    * Checks if the buy/sell button is enabled on a non-evm account homepage.
    */
-  async check_ifBuySellButtonIsClickable(): Promise<boolean> {
+  async checkIfBuySellButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.waitForSelector(this.buySellButton, { timeout: 5000 });
       const buySellButton = await this.driver.findClickableElement(

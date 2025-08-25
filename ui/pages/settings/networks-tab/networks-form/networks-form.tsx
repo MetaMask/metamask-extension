@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   type UpdateNetworkFields,
+  NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString, parseCaipChainId } from '@metamask/utils';
@@ -31,6 +32,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
+  setActiveNetwork,
   setEditedNetwork,
   setEnabledNetworks,
   setTokenNetworkFilter,
@@ -150,8 +152,8 @@ export const NetworksForm = ({
   useEffect(() => {
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedName = chainIdHex
-      ? NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
-        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name
+      ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
+        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
       : undefined;
 
     const mismatch = expectedName && expectedName !== name;
@@ -171,11 +173,11 @@ export const NetworksForm = ({
   useEffect(() => {
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedSymbol = chainIdHex
-      ? CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+      ? (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
           chainIdHex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
         ] ??
         safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)
-          ?.nativeCurrency?.symbol
+          ?.nativeCurrency?.symbol)
       : undefined;
 
     const mismatch = expectedSymbol && expectedSymbol !== ticker;
@@ -306,7 +308,16 @@ export const NetworksForm = ({
             );
           }
         } else {
-          await dispatch(addNetwork(networkPayload));
+          const addedNetworkConfiguration = (await dispatch(
+            addNetwork(networkPayload),
+          )) as unknown as NetworkConfiguration;
+
+          const networkClientId =
+            addedNetworkConfiguration?.rpcEndpoints?.[
+              addedNetworkConfiguration.defaultRpcEndpointIndex
+            ]?.networkClientId;
+
+          await dispatch(setActiveNetwork(networkClientId));
           await dispatch(
             setEnabledNetworks([networkPayload.chainId], namespace),
           );
@@ -316,14 +327,24 @@ export const NetworksForm = ({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             block_explorer_url:
               blockExplorers?.blockExplorerUrls?.[
                 blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
               ],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: chainIdHex,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             network_name: name,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             source_connection_method:
               MetaMetricsNetworkEventSource.CustomNetworkForm,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: ticker,
           },
           sensitiveProperties: {

@@ -23,7 +23,7 @@ class NetworkPermissionSelectModal {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.editNetworksModalTitle,
@@ -113,7 +113,7 @@ class NetworkPermissionSelectModal {
    *
    * @param expectedSelectedNetworks - Array of network names that should be selected
    */
-  async check_networkStatus(expectedSelectedNetworks: string[]): Promise<void> {
+  async checkNetworkStatus(expectedSelectedNetworks: string[]): Promise<void> {
     console.log(
       'Validating network selection in edit network permission modal',
     );

@@ -17,6 +17,7 @@ import {
   craftRegressionLabel,
   externalContributorLabel,
   needsTriageLabel,
+  areaSentryLabel,
   flakyTestsLabel,
   invalidIssueTemplateLabel,
   invalidPullRequestTemplateLabel,
@@ -98,8 +99,9 @@ async function main(): Promise<void> {
     labelable.body,
   );
 
-  // If labelable's author is a bot we skip the template checks as bots don't use templates
-  if (knownBots.includes(labelable.author)) {
+  // If labelable's author is a bot we skip the rest of the script, including the template checks as bots don't use templates.
+  // Exception: For issues created the 'sentry-io' bot, we don't skip the rest of the script because there's a specific handling for those issues.
+  if (knownBots.includes(labelable.author) && labelable.author !== 'sentry-io') {
     console.log(
       `${
         labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'
@@ -109,17 +111,35 @@ async function main(): Promise<void> {
   }
 
   if (labelable.type === LabelableType.Issue) {
-    // If labelable is a flaky test report, no template is needed (we just add a link to circle.ci in the description), we skip the template checks
+    // If labelable is a flaky test report, no template is needed (we just add a link to ci in the description), we skip the template checks
     const flakyTestsLabelFound = findLabel(labelable, flakyTestsLabel);
     if (flakyTestsLabelFound?.id) {
       console.log(
-        `Issue ${labelable?.number} was created to report a flaky test. Issue's description doesn't need to match issue template in that case as the issue's description only includes a link redirecting to circle.ci. Skip template checks.`,
+        `Issue ${labelable?.number} was created to report a flaky test. Issue's description doesn't need to match issue template in that case as the issue's description only includes a link redirecting to ci. Skip template checks.`,
       );
       await removeLabelFromLabelableIfPresent(
         octokit,
         labelable,
         invalidIssueTemplateLabel,
       );
+      process.exit(0); // Stop the process and exit with a success status code
+    }
+
+    if (labelable.author === 'sentry-io') {
+      console.log(
+        `Issue ${labelable?.number} was created through Sentry. Issue's description doesn't need to match issue template in that case. Skip template checks.`,
+      );
+      await removeLabelFromLabelableIfPresent(
+        octokit,
+        labelable,
+        invalidIssueTemplateLabel,
+      );
+      // Add needs triage label ONLY if issue is created (not updated)
+      if (context.payload.action === 'opened') {
+        await addNeedsTriageLabelToIssue(octokit, labelable);
+      }
+      // Add area-Sentry label to the bug report issue
+      await addAreaSentryLabelToIssue(octokit, labelable);
       process.exit(0); // Stop the process and exit with a success status code
     }
 
@@ -139,10 +159,12 @@ async function main(): Promise<void> {
       );
 
       // Add regression label to the bug report issue
-      addRegressionLabelToIssue(octokit, labelable);
+      await addRegressionLabelToIssue(octokit, labelable);
 
-      // Add needs triage label to the bug report issue
-      addNeedsTriageLabelToIssue(octokit, labelable);
+      // Add needs triage label ONLY if issue is created (not updated)
+      if (context.payload.action === 'opened') {
+        await addNeedsTriageLabelToIssue(octokit, labelable);
+      }
     } else {
       const errorMessage =
         "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
@@ -252,9 +274,14 @@ function extractReleaseVersionFromBugReportIssueBody(
   const cleanedBody = body.replace(/\r?\n/g, ' ');
 
   // Extract version from the cleaned body
-  const regex = /### Version\s+((.*?)(?=  |$))/;
+  const regex = /### Version\s+(.*?)(?=\s+###|$)/;
   const versionMatch = cleanedBody.match(regex);
-  const version = versionMatch?.[1];
+  const fullVersionString = versionMatch?.[1]?.trim();
+
+  // Extract just the x.x.x part from the full version string
+  const versionRegex = /(\d+\.\d+\.\d+)/;
+  const semanticVersionMatch = fullVersionString?.match(versionRegex);
+  const version = semanticVersionMatch?.[1];
 
   // Check if version is in the format x.y.z
   if (version && !/^(\d+\.)?(\d+\.)?(\*|\d+)$/.test(version)) {
@@ -270,6 +297,13 @@ async function addNeedsTriageLabelToIssue(
   issue: Labelable,
 ): Promise<void> {
   await addLabelToLabelable(octokit, issue, needsTriageLabel);
+}
+// This function adds the "area-Sentry" label to the issue if it doesn't have it
+async function addAreaSentryLabelToIssue(
+  octokit: InstanceType<typeof GitHub>,
+  issue: Labelable,
+): Promise<void> {
+  await addLabelToLabelable(octokit, issue, areaSentryLabel);
 }
 // This function adds the correct regression label to the issue, and removes other ones
 async function addRegressionLabelToIssue(

@@ -15,7 +15,7 @@ class AddRpcProviderDialog {
   /**
    * @param networkName - The name of the network for adding RPC provider
    */
-  async check_pageIsLoaded(networkName: string): Promise<void> {
+  async checkPageIsLoaded(networkName: string): Promise<void> {
     try {
       await this.driver.waitForSelector(this.addRpcProviderButton);
       await this.driver.waitForSelector({

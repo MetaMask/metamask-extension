@@ -80,6 +80,25 @@ export class Common {
   isActivatedEIP() {
     return true;
   }
+
+  /**
+   * Returns the value of a parameter for the current hardfork.
+   * This is a minimal implementation that returns default values for common parameters.
+   *
+   * @param {string} param - The parameter name.
+   * @returns {any} The parameter value.
+   */
+  param(param) {
+    // Return default values for common parameters that @ethereumjs/tx might request
+    const defaults = {
+      gasLimitBoundDivisor: 1024,
+      baseFeeChangeDenominator: 8,
+      elasticityMultiplier: 2,
+      maxPriorityFeePerGas: 0,
+      maxFeePerGas: 0,
+    };
+    return defaults[param] || 0;
+  }
 }
 
 /**

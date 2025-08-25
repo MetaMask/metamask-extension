@@ -12,11 +12,6 @@ jest.mock('react-router-dom', () => ({
   useHistory: () => ({
     replace: mockReplace,
   }),
-  useLocation: jest.fn(() => {
-    return {
-      pathname: '/swaps/prepare-swap-page',
-    };
-  }),
 }));
 
 describe('SmartAccountUpdateSuccess', () => {

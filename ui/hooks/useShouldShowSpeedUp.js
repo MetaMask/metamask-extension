@@ -41,10 +41,13 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
       if (Date.now() - submittedTime > SECOND * 5) {
         setSpeedUpEnabled(true);
       } else {
-        timeoutId = setTimeout(() => {
-          setSpeedUpEnabled(true);
-          clearTimeout(timeoutId);
-        }, 5001 - (Date.now() - submittedTime));
+        timeoutId = setTimeout(
+          () => {
+            setSpeedUpEnabled(true);
+            clearTimeout(timeoutId);
+          },
+          5001 - (Date.now() - submittedTime),
+        );
       }
     }
     // Anytime the effect is re-ran, make sure to remove a previously set timeout

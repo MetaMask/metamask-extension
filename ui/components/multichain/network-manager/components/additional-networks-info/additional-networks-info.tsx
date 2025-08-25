@@ -74,8 +74,9 @@ export const AdditionalNetworksInfo = memo(() => {
           </Text>
 
           {/* Info icon with hover trigger for popover */}
-          <Box onMouseEnter={handleMouseEnter} marginTop={1}>
+          <Box marginTop={1}>
             <Icon
+              onMouseEnter={handleMouseEnter}
               className="add-network__warning-icon"
               name={IconName.Info}
               color={IconColor.iconMuted}

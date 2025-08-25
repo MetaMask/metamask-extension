@@ -51,7 +51,7 @@ export function useNftsCollections() {
       return nftsFromEnabledNetworks;
     }
     return isTokenNetworkFilterEqualCurrentNetwork
-      ? allUserNfts?.[chainId] ?? []
+      ? (allUserNfts?.[chainId] ?? [])
       : allUserNfts;
   }, [
     isTokenNetworkFilterEqualCurrentNetwork,

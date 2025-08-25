@@ -13,6 +13,7 @@ import {
   mockInitialFullScan,
   mockRampsDynamicFeatureFlag,
 } from './mocks';
+import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 
 export async function withBtcAccountSnap(
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
@@ -41,6 +42,8 @@ export async function withBtcAccountSnap(
         await mockRampsDynamicFeatureFlag(mockServer, 'api'),
         // See: UAT_RAMP_API_BASE_URL
         await mockRampsDynamicFeatureFlag(mockServer, 'uat-api'),
+        await mockPriceMulti(mockServer),
+        await mockPriceMultiBtcAndSol(mockServer),
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
@@ -48,7 +51,7 @@ export async function withBtcAccountSnap(
       // create one BTC account
       await new HeaderNavbar(driver).openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
+      await accountListPage.checkPageIsLoaded();
       await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
       await test(driver, mockServer);
     },

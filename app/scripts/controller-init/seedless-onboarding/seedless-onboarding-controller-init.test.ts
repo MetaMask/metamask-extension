@@ -66,6 +66,9 @@ describe('SeedlessOnboardingControllerInit', () => {
         encryptWithDetail: expect.any(Function),
         importKey: expect.any(Function),
       },
+      passwordOutdatedCacheTTL: expect.any(Number),
+      refreshJWTToken: requestMock.refreshOAuthToken,
+      revokeRefreshToken: requestMock.revokeAndGetNewRefreshToken,
     });
   });
 });

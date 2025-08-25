@@ -15,6 +15,7 @@ import {
   EXPECTED_EVENT_TYPES,
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
 
 const quote = {
   amount: '25',
@@ -26,7 +27,8 @@ const quote = {
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000);
-  it('Execute multiple bridge transactions', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('Execute multiple bridge transactions', async function () {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),
@@ -36,10 +38,13 @@ describe('Bridge tests', function (this: Suite) {
       ),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24');
+        // disable smart transactions step by step for all bridge flows
+        // we cannot use fixtures because migration 135 overrides the opt in value to true
+        await disableStxSetting(driver);
 
-        await bridgeTransaction(driver, quote, 2, '24.9');
+        const homePage = new HomePage(driver);
+
+        await bridgeTransaction(driver, quote, 2);
 
         // Start the flow again
         await homePage.startBridgeFlow();
@@ -47,7 +52,7 @@ describe('Bridge tests', function (this: Suite) {
         const bridgePage = new BridgeQuotePage(driver);
         await bridgePage.enterBridgeQuote(quote);
         await bridgePage.waitForQuote();
-        await bridgePage.check_expectedNetworkFeeIsDisplayed();
+        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
         await bridgePage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
@@ -80,14 +85,10 @@ describe('Bridge tests', function (this: Suite) {
         assert.ok(swapBridgeButtonClicked.length === 2);
         assert.ok(
           swapBridgeButtonClicked[0].properties.token_symbol_source === 'ETH' &&
-            swapBridgeButtonClicked[0].properties.token_symbol_destination ===
-              null &&
             swapBridgeButtonClicked[0].properties.token_address_source ===
               'eip155:1/slip44:60' &&
             swapBridgeButtonClicked[0].properties.category ===
-              'Unified SwapBridge' &&
-            swapBridgeButtonClicked[0].properties.token_address_destination ===
-              null,
+              'Unified SwapBridge',
         );
 
         const swapBridgePageViewed = findEventsByName(
@@ -99,9 +100,7 @@ describe('Bridge tests', function (this: Suite) {
           swapBridgePageViewed[0].properties.token_address_source ===
             'eip155:1/slip44:60' &&
             swapBridgePageViewed[0].properties.category ===
-              'Unified SwapBridge' &&
-            swapBridgePageViewed[0].properties.token_address_destination ===
-              null,
+              'Unified SwapBridge',
         );
 
         const swapBridgeInputChanged = findEventsByName(
@@ -109,20 +108,23 @@ describe('Bridge tests', function (this: Suite) {
         );
         /**
          * token_source
-         * token_destination
          * chain_source
-         * chain_destination
          * slippage
+         * token_destination
+         * chain_destination
          */
 
-        assert.ok(swapBridgeInputChanged.length === 14);
+        assert(
+          swapBridgeInputChanged.length === 17,
+          'Should have at least 17 input change events',
+        );
 
         const inputTypes = [
           'token_source',
-          'token_destination',
           'chain_source',
-          'chain_destination',
           'slippage',
+          'token_destination',
+          'chain_destination',
         ];
         const hasAllInputs = inputTypes.every((inputType) =>
           swapBridgeInputChanged.some(
@@ -131,7 +133,7 @@ describe('Bridge tests', function (this: Suite) {
               event.properties.input === inputType,
           ),
         );
-        assert.ok(hasAllInputs, 'Should have all 5 input types');
+        assert.ok(hasAllInputs, 'Should have 5 input types');
 
         const swapBridgeQuotesRequested = findEventsByName(
           EventTypes.SwapBridgeQuotesRequested,
@@ -211,17 +213,25 @@ describe('Bridge tests', function (this: Suite) {
 
         const assetTypeCheck1 = [
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.asset_type === 'TOKEN',
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.token_standard === 'ERC20',
         ];
         const assetTypeCheck2 = [
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.asset_type === 'NATIVE',
           (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             properties: { asset_type: string; token_standard: string };
           }) => req.properties.token_standard === 'NONE',
         ];

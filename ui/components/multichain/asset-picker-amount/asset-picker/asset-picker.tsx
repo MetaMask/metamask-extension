@@ -27,7 +27,7 @@ import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
+import { ellipsify } from '../../../../pages/confirmations/send-legacy/send.utils';
 import {
   AssetWithDisplayData,
   ERC20Asset,
@@ -93,6 +93,8 @@ export type AssetPickerProps = {
 >;
 
 // A component that lets the user pick from a list of assets.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPicker({
   children,
   header,
@@ -141,9 +143,9 @@ export function AssetPicker({
   // This is used to determine which tokens to display when isMultiselectEnabled=true
   const [selectedChainIds, setSelectedChainIds] = useState<string[]>(
     isMultiselectEnabled
-      ? allNetworksToUse
+      ? (allNetworksToUse
           ?.map(({ chainId }) => chainId)
-          .sort((a, b) => balanceByChainId[b] - balanceByChainId[a]) ?? []
+          .sort((a, b) => balanceByChainId[b] - balanceByChainId[a]) ?? [])
       : [],
   );
   const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);

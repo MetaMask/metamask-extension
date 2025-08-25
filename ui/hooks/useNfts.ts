@@ -38,6 +38,10 @@ export function useNfts({
       // Filter NFTs to only include those from enabled networks
       const nftsFromEnabledNetworks: Record<string, NFT[]> = {};
 
+      if (overridePopularNetworkFilter) {
+        return allUserNfts?.[chainId] ?? [];
+      }
+
       Object.entries(allUserNfts ?? {}).forEach(
         ([networkChainId, networkNfts]) => {
           if (
@@ -54,7 +58,7 @@ export function useNfts({
     trace({ name: TraceName.LoadCollectibles });
     const nftList =
       isTokenNetworkFilterEqualCurrentNetwork || overridePopularNetworkFilter
-        ? allUserNfts?.[chainId] ?? []
+        ? (allUserNfts?.[chainId] ?? [])
         : allUserNfts;
 
     endTrace({ name: TraceName.LoadCollectibles });

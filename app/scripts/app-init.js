@@ -3,8 +3,7 @@
 // We don't usually `import` files into `app-init.js` because we need to load
 // "chunks" via `importScripts`; but in this case `promise-with-resolvers` file
 // is so small we won't ever have a problem with these two files being "split".
-// Import to set up global `Promise.withResolvers` polyfill
-import '../../shared/lib/promise-with-resolvers';
+import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
@@ -200,7 +199,7 @@ const registerInPageContentScript = async () => {
  *
  * @type {PromiseWithResolvers<chrome.runtime.InstalledDetails>}
  */
-const deferredOnInstalledListener = Promise.withResolvers();
+const deferredOnInstalledListener = withResolvers();
 globalThis.stateHooks.onInstalledListener = deferredOnInstalledListener.promise;
 
 /**

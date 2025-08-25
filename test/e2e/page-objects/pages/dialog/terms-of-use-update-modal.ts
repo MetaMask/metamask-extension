@@ -24,7 +24,7 @@ class TermsOfUseUpdateModal {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.termsOfUseModalTitle);
     } catch (e) {

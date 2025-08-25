@@ -18,12 +18,14 @@ describe('wallet_requestPermissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // wallet_requestPermissions
         const requestPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_requestPermissions',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: [{ eth_accounts: {} }],
         });
         await driver.executeScript(

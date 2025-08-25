@@ -50,9 +50,13 @@ export interface AvatarAccountStyleUtilityProps
    */
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AvatarAccountProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, AvatarAccountStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AvatarAccountComponent = <C extends React.ElementType = 'div'>(
   props: AvatarAccountProps<C>,
 ) => React.ReactElement | null;

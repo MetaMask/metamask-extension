@@ -1,4 +1,4 @@
-import { Tooltip } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -9,7 +9,7 @@ import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIncrementedGasFees } from '../../../pages/confirmations/hooks/useIncrementedGasFees';
-import { isBalanceSufficient } from '../../../pages/confirmations/send/send.utils';
+import { isBalanceSufficient } from '../../../pages/confirmations/send-legacy/send.utils';
 import { getSelectedAccount } from '../../../selectors';
 
 export default function CancelButton({

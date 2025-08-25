@@ -294,12 +294,11 @@ describe('Account Tracker API polling', function () {
       async ({ driver, mockedEndpoint }) => {
         await loginWithoutBalanceValidation(driver);
         const homepage = new HomePage(driver);
-        await homepage.check_pageIsLoaded();
+        await homepage.checkPageIsLoaded();
         // Want to wait long enough  to pull requests relevant to a single loop cycle
         await driver.delay(DELAY_UNTIL_NEXT_POLL);
-        const infuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
-          mockedEndpoint,
-        );
+        const infuraJsonRpcRequests =
+          await getAllInfuraJsonRpcRequests(mockedEndpoint);
 
         // TODO: expecting the length of infuraJsonRpcRequests would be more accurate
         if (process.env.PORTFOLIO_VIEW) {
@@ -380,7 +379,7 @@ describe('Account Tracker API polling', function () {
         async ({ driver, mockedEndpoint: mockedEndpoints }) => {
           await loginWithoutBalanceValidation(driver);
           const homepage = new HomePage(driver);
-          await homepage.check_pageIsLoaded();
+          await homepage.checkPageIsLoaded();
           await driver.delay(DELAY_UNTIL_NEXT_POLL);
 
           for (const single of mockedEndpoints) {
