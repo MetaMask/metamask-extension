@@ -32,9 +32,10 @@ permissions:
   contents: read
 
 jobs:
-  check-rca-sheets:
-    name: Check RCA Responses in Google Sheets
+  remove-rca-labels:
+    name: Remove RCA-needed Labels Based on Sheet Data
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
