@@ -187,35 +187,81 @@ describe('Test Snap revoke permission', function () {
         // delay added for rendering time (deflake)
         await driver.delay(500);
 
-        // switch to metamask dialog
+        // switch to metamask dialog with explicit timeout for CI environment
+        let dialogHandled = false;
+        const dialogTimeout = 15000; // 15 seconds timeout
+        const startTime = Date.now();
+
         try {
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          // Wait a bit for dialog to potentially appear
+          await driver.delay(1000);
 
-          // wait for and click next
-          await driver.waitForSelector({
-            text: 'Next',
-            tag: 'button',
-          });
-          await driver.clickElement({
-            text: 'Next',
-            tag: 'button',
-          });
+          // Check if dialog window exists with timeout and manual window scanning
+          while (Date.now() - startTime < dialogTimeout && !dialogHandled) {
+            try {
+              const windowHandles = await driver.getAllWindowHandles();
+              let dialogFound = false;
 
-          // delay added for rendering time (deflake)
-          await driver.delay(500);
+              for (const handle of windowHandles) {
+                await driver.driver.switchTo().window(handle);
+                const title = await driver.driver.getTitle();
+                if (title === WINDOW_TITLES.Dialog) {
+                  dialogFound = true;
+                  break;
+                }
+              }
 
-          // wait for and click confirm and wait for window to close
-          await driver.waitForSelector({
-            text: 'Confirm',
-            tag: 'button',
-          });
-          await driver.clickElementAndWaitForWindowToClose({
-            text: 'Confirm',
-            tag: 'button',
-          });
+              if (dialogFound) {
+                // wait for and click next
+                await driver.waitForSelector(
+                  {
+                    text: 'Next',
+                    tag: 'button',
+                  },
+                  3000,
+                );
+                await driver.clickElement({
+                  text: 'Next',
+                  tag: 'button',
+                });
+
+                // delay added for rendering time (deflake)
+                await driver.delay(500);
+
+                // wait for and click confirm and wait for window to close
+                await driver.waitForSelector(
+                  {
+                    text: 'Confirm',
+                    tag: 'button',
+                  },
+                  3000,
+                );
+                await driver.clickElementAndWaitForWindowToClose({
+                  text: 'Confirm',
+                  tag: 'button',
+                });
+
+                dialogHandled = true;
+                console.log('Dialog window handled successfully');
+              } else {
+                // Dialog not found, wait a bit and try again
+                await driver.delay(500);
+              }
+            } catch (innerError) {
+              // Error during dialog handling, wait and retry
+              await driver.delay(500);
+            }
+          }
+
+          if (!dialogHandled) {
+            console.log(
+              'Dialog window did not appear within timeout, continuing test',
+            );
+          }
         } catch (error) {
           console.log(
-            'Dialog window may not have appeared, permission may have been revoked directly',
+            'Error during dialog handling, permission may have been revoked directly:',
+            error.message,
           );
           // Continue with test - the final verification will determine if revocation worked
         }
