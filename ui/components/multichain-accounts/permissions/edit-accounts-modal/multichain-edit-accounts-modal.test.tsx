@@ -10,11 +10,7 @@ import { renderWithProvider } from '../../../../../test/jest/rendering';
 import configureStore from '../../../../store/store';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { MultichainEditAccountsModal } from './multichain-edit-accounts-modal';
-import {
-  AccountGroupWithInternalAccounts,
-  AccountTreeState,
-  InternalAccountsState,
-} from '../../../../selectors/multichain-accounts/account-tree.types';
+import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockMultichainAccountsState } from '../../../../selectors/multichain-accounts/test-utils';
 
 const MOCK_WALLET_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
@@ -144,93 +140,102 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
 ];
 
 const createMockState = (overrides = {}) => {
-  return {
-    metamask: {
-      accountTree: {
-        selectedAccountGroup: MOCK_GROUP_ID_1,
-        wallets: {
-          [MOCK_WALLET_ID]: {
-            id: MOCK_WALLET_ID,
-            type: AccountWalletType.Entropy,
+  const accountTreeState = {
+    selectedAccountGroup: MOCK_GROUP_ID_1,
+    wallets: {
+      [MOCK_WALLET_ID]: {
+        id: MOCK_WALLET_ID,
+        type: AccountWalletType.Entropy,
+        metadata: {
+          name: 'Test Wallet 1',
+          entropy: {
+            id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+          },
+        },
+        groups: {
+          [MOCK_GROUP_ID_1]: {
+            id: MOCK_GROUP_ID_1,
+            type: AccountGroupType.MultichainAccount,
             metadata: {
-              name: 'Test Wallet 1',
+              name: 'Test Group 1',
+              pinned: false,
+              hidden: false,
               entropy: {
-                id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                groupIndex: 0,
               },
             },
-            groups: {
-              [MOCK_GROUP_ID_1]: {
-                id: MOCK_GROUP_ID_1,
-                type: AccountGroupType.MultichainAccount,
-                metadata: {
-                  name: 'Test Group 1',
-                  pinned: false,
-                  hidden: false,
-                  entropy: {
-                    groupIndex: 0,
-                  },
-                },
-                accounts: [mockEvmAccount1.id, mockSolAccount1.id],
-              },
-              [MOCK_GROUP_ID_2]: {
-                id: MOCK_GROUP_ID_2,
-                type: AccountGroupType.MultichainAccount,
-                metadata: {
-                  name: 'Test Group 2',
-                  pinned: false,
-                  hidden: false,
-                  entropy: {
-                    groupIndex: 1,
-                  },
-                },
-                accounts: [mockEvmAccount2.id, mockSolAccount2.id],
-              },
-              [MOCK_GROUP_ID_3]: {
-                id: MOCK_GROUP_ID_3,
-                type: AccountGroupType.MultichainAccount,
-                metadata: {
-                  name: 'Test Group 3',
-                  pinned: false,
-                  hidden: false,
-                  entropy: {
-                    groupIndex: 2,
-                  },
-                },
-                accounts: [mockEvmAccount3.id, mockSolAccount3.id],
+            accounts: [mockEvmAccount1.id, mockSolAccount1.id],
+          },
+          [MOCK_GROUP_ID_2]: {
+            id: MOCK_GROUP_ID_2,
+            type: AccountGroupType.MultichainAccount,
+            metadata: {
+              name: 'Test Group 2',
+              pinned: false,
+              hidden: false,
+              entropy: {
+                groupIndex: 1,
               },
             },
+            accounts: [mockEvmAccount2.id, mockSolAccount2.id],
+          },
+          [MOCK_GROUP_ID_3]: {
+            id: MOCK_GROUP_ID_3,
+            type: AccountGroupType.MultichainAccount,
+            metadata: {
+              name: 'Test Group 3',
+              pinned: false,
+              hidden: false,
+              entropy: {
+                groupIndex: 2,
+              },
+            },
+            accounts: [mockEvmAccount3.id, mockSolAccount3.id],
           },
         },
       },
-      internalAccounts: {
-        accounts: {
-          [mockEvmAccount1.id]: {
-            ...mockEvmAccount1,
-            scopes: ['eip155:1'],
-          },
-          [mockEvmAccount2.id]: {
-            ...mockEvmAccount2,
-            scopes: ['eip155:1'],
-          },
-          [mockEvmAccount3.id]: {
-            ...mockEvmAccount3,
-            scopes: ['eip155:1'],
-          },
-          [mockSolAccount1.id]: {
-            ...mockSolAccount1,
-            scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
-          },
-          [mockSolAccount2.id]: {
-            ...mockSolAccount2,
-            scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
-          },
-          [mockSolAccount3.id]: {
-            ...mockSolAccount3,
-            scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
-          },
-        },
-        selectedAccount: mockEvmAccount1.id,
+    },
+  };
+
+  const internalAccountsState = {
+    accounts: {
+      [mockEvmAccount1.id]: {
+        ...mockEvmAccount1,
+        scopes: ['eip155:1'],
       },
+      [mockEvmAccount2.id]: {
+        ...mockEvmAccount2,
+        scopes: ['eip155:1'],
+      },
+      [mockEvmAccount3.id]: {
+        ...mockEvmAccount3,
+        scopes: ['eip155:1'],
+      },
+      [mockSolAccount1.id]: {
+        ...mockSolAccount1,
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+      [mockSolAccount2.id]: {
+        ...mockSolAccount2,
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+      [mockSolAccount3.id]: {
+        ...mockSolAccount3,
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+    },
+    selectedAccount: mockEvmAccount1.id,
+  };
+
+  const mockMultichainState = createMockMultichainAccountsState(
+    accountTreeState as any,
+    internalAccountsState as any,
+  );
+
+  return {
+    ...mockMultichainState,
+    metamask: {
+      ...mockMultichainState.metamask,
       keyrings: [],
       defaultHomeActiveTabName: 'activity',
       ...overrides,

@@ -80,25 +80,15 @@ export const MultichainEditAccountsModal: React.FC<
     return Object.fromEntries(walletMap);
   }, [accountTree.wallets, supportedAccountGroups]);
 
-  useEffect(() => {
-    setSelectedAccountGroups(defaultSelectedAccountGroups);
-  }, [
-    // TODO: Fix the source of this prop value to be the same array instance each render
-    JSON.stringify(defaultSelectedAccountGroups),
-  ]);
-
   const handleAccountClick = useCallback(
     (accountGroupId: AccountGroupId) => {
-      const existingIndex = selectedAccountGroups.findIndex(
-        (selectedAccountGroupId) => selectedAccountGroupId === accountGroupId,
-      );
-
-      // eslint-disable-next-line no-negated-condition: Checking explicitly for -1
-      if (existingIndex !== -1) {
-        const newSelection = [...selectedAccountGroups];
-        newSelection.splice(existingIndex, 1);
-        setSelectedAccountGroups(newSelection);
+      if (selectedAccountGroups.includes(accountGroupId)) {
+        // Remove item if it exists
+        setSelectedAccountGroups(
+          selectedAccountGroups.filter((id) => id !== accountGroupId),
+        );
       } else {
+        // Add item if it doesn't exist
         setSelectedAccountGroups([...selectedAccountGroups, accountGroupId]);
       }
     },
