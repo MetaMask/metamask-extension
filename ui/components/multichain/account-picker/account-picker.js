@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  FontWeight,
   IconColor,
   Size,
   TextColor,
@@ -25,7 +26,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { trace, TraceName } from '../../../../shared/lib/trace';
-import { getUseBlockie } from '../../../selectors';
+import {
+  getIsMultichainAccountsState2Enabled,
+  getUseBlockie,
+} from '../../../selectors';
 
 const AccountMenuStyle = { height: 'auto' };
 
@@ -49,6 +53,25 @@ export const AccountPicker = ({
   const shortenedAddress = address
     ? shortenAddress(toChecksumHexAddress(address))
     : '';
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  const accountNameStyling = useMemo(
+    () => ({
+      ...labelProps.style,
+      fontWeight: isMultichainAccountsState2Enabled ? 600 : FontWeight.Medium,
+    }),
+    [isMultichainAccountsState2Enabled, labelProps.style],
+  );
+
+  const accountNameFontVariant = useMemo(
+    () =>
+      isMultichainAccountsState2Enabled
+        ? TextVariant.bodyLgMedium
+        : TextVariant.bodyMdMedium,
+    [isMultichainAccountsState2Enabled],
+  );
 
   return (
     <Box
@@ -106,12 +129,13 @@ export const AccountPicker = ({
           <Text
             as="span"
             ellipsis
-            variant={TextVariant.bodyMdMedium}
+            variant={accountNameFontVariant}
             {...labelProps}
             className={classnames(
               'multichain-account-picker__label',
               labelProps.className ?? '',
             )}
+            style={accountNameStyling}
           >
             {name}
             {showAddress ? (

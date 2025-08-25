@@ -933,20 +933,6 @@ export enum MetaMetricsEventName {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   sendTokenModalOpened = 'Send Token Modal Opened',
-  // Cross Chain Swaps
-  ActionCompleted = 'Action Completed',
-  ActionFailed = 'Action Failed',
-  ActionButtonClicked = 'Action Button Clicked',
-  ActionPageViewed = 'Action Page Viewed',
-  ActionSubmitted = 'Action Submitted',
-  AllQuotesOpened = 'All Quotes Opened',
-  AllQuotesSorted = 'All Quotes Sorted',
-  InputChanged = 'Input Changed',
-  InputSourceDestinationFlipped = 'Source and Destination Flipped',
-  CrossChainSwapsQuoteError = 'Cross-chain Quote Error',
-  QuoteSelected = 'Quote Selected',
-  CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
-  CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
   Wallet5792Called = 'EIP-5792 API Called',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',

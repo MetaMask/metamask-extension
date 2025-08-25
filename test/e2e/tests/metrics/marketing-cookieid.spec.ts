@@ -75,7 +75,7 @@ describe('Marketing cookieId', function (this: Suite) {
         assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openThreeDotMenu();
         const events = await getEventPayloads(
           driver,
@@ -120,7 +120,7 @@ describe('Marketing cookieId', function (this: Suite) {
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openThreeDotMenu();
         const events = await getEventPayloads(
           driver,
@@ -160,7 +160,7 @@ describe('Marketing cookieId', function (this: Suite) {
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openThreeDotMenu();
         const events = await getEventPayloads(
           driver,
@@ -204,7 +204,7 @@ describe('Marketing cookieId', function (this: Suite) {
         assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openSettingsPage();
 
         const events = await getEventPayloads(
@@ -217,10 +217,10 @@ describe('Marketing cookieId', function (this: Suite) {
 
         // opt out data collection for marketing on privacy settings page
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.optOutDataCollectionForMarketing();
 
         // waiting for marketingCampaignCookieId to update in state

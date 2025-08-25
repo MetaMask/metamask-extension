@@ -145,13 +145,13 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           // Assert Notification Account Settings have persisted
           // The second account was switched off from the initial run
           const [{ a: account1 }, { a: account2 }] = notificationsMockAccounts;
-          await notificationsSettingsPage.check_notificationState({
+          await notificationsSettingsPage.checkNotificationState({
             address: account1,
             toggleType: 'address',
             expectedState: 'enabled',
           });
 
-          await notificationsSettingsPage.check_notificationState({
+          await notificationsSettingsPage.checkNotificationState({
             address: account2,
             toggleType: 'address',
             expectedState: 'disabled',
@@ -162,7 +162,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
     async function assertAllAccountsEnabled(driver: Driver) {
       const notificationsSettingsPage = new NotificationsSettingsPage(driver);
       for (const { a: address } of notificationsMockAccounts) {
-        await notificationsSettingsPage.check_notificationState({
+        await notificationsSettingsPage.checkNotificationState({
           address,
           toggleType: 'address',
           expectedState: 'enabled',

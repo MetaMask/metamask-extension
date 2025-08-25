@@ -2,32 +2,37 @@ import { Messenger } from '@metamask/base-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
+import { WALLET_PASSWORD } from '../../../test/e2e/constants';
 import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
+import { withAddressBook } from './with-address-book';
 import { FIXTURES_APP_STATE } from './with-app-state';
+import { withConfirmedTransactions } from './with-confirmed-transactions';
+import { FIXTURES_ERC20_TOKENS } from './with-erc20-tokens';
 import { FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
-import { FIXTURES_ERC20_TOKENS } from './with-erc20-tokens';
-import { withAddressBook } from './with-address-book';
-import { withConfirmedTransactions } from './with-confirmed-transactions';
 import { withUnreadNotifications } from './with-unread-notifications';
 
-const FIXTURES_CONFIG = process.env.WITH_STATE
-  ? JSON.parse(process.env.WITH_STATE)
-  : {};
+let FIXTURES_CONFIG = {};
 
 /**
  * Generates the wallet state based on the fixtures set in the environment variable.
  *
- * @returns {Promise<object>} The generated wallet state.
+ * @param {object} withState - The fixture configuration state
+ * @param {boolean} fromTest - Whether this is being called from a test
+ * @returns {Promise<FixtureBuilder>} The generated FixtureBuilder object
  */
-export async function generateWalletState() {
+export async function generateWalletState(withState, fromTest) {
   const fixtureBuilder = new FixtureBuilder({ inputChainId: '0xaa36a7' });
+
+  if (withState) {
+    FIXTURES_CONFIG = withState;
+  }
 
   const { vault, accounts } = await generateVaultAndAccount(
     process.env.TEST_SRP || E2E_SRP,
-    process.env.PASSWORD,
+    fromTest ? WALLET_PASSWORD : process.env.PASSWORD,
   );
 
   fixtureBuilder
@@ -44,7 +49,7 @@ export async function generateWalletState() {
     .withTokensController(generateTokensControllerState(accounts[0]))
     .withTransactionController(generateTransactionControllerState(accounts[0]));
 
-  return fixtureBuilder.fixture.data;
+  return fixtureBuilder;
 }
 
 /**
@@ -52,7 +57,7 @@ export async function generateWalletState() {
  *
  * @param {string} encodedSeedPhrase - The encoded seed phrase.
  * @param {string} password - The password for the vault.
- * @returns {Promise<{vault: object, account: string}>} The generated vault and account.
+ * @returns {Promise<{vault: object, accounts: Array<string>}>} The generated vault and account.
  */
 async function generateVaultAndAccount(encodedSeedPhrase, password) {
   const messenger = new Messenger();
@@ -109,7 +114,7 @@ function generateKeyringControllerState(vault) {
 /**
  * Generates the state for the AccountsController.
  *
- * @param {string} accounts - The account addresses.
+ * @param {Array<string>} accounts - The account addresses.
  * @returns {object} The generated AccountsController state.
  */
 function generateAccountsControllerState(accounts) {
@@ -240,7 +245,7 @@ function generateNetworkControllerState() {
 /**
  * Generates the state for the PreferencesController.
  *
- * @param {string} accounts - The account addresses.
+ * @param {Array<string>} accounts - The account addresses.
  * @returns {object} The generated PreferencesController state.
  */
 function generatePreferencesControllerState(accounts) {

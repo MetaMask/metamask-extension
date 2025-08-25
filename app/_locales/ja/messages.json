@@ -175,6 +175,9 @@
     "message": "$1アカウントを追加",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "アカウントまたはウォレットを追加"
+  },
   "addAccountToMetaMask": {
     "message": "MetaMaskにアカウントを追加する"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "アドレス"
   },
+  "addressCopied": {
+    "message": "アドレスをコピーしました"
+  },
   "addressMismatch": {
     "message": "サイトアドレスの不一致"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "手数料を手動で更新するまでこのトランザクションを進めることができません。"
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "このサイトは悪意があると判断されたため、やり取りしないことをお勧めします。"
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "このサイトは不審であると判断されたため、やり取りしないことをお勧めします。"
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "要求元のサイトはサインインしようとしているサイトではありません。ログイン情報を盗もうとしている可能性があります。"
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "手数料の見積もりが利用できません"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "悪意のあるサイト"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "不審なサイト"
   },
   "alertReasonPendingTransactions": {
     "message": "保留中のトランザクション"
@@ -719,9 +737,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "基本機能をオンにする"
   },
-  "bestPrice": {
-    "message": "最適な価格"
-  },
   "beta": {
     "message": "ベータ版"
   },
@@ -936,9 +951,6 @@
     "message": "$1を$2にスワップしています",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "利用規約"
-  },
   "bridgeTimingMinutes": {
     "message": "$1分",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1037,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "ビジー状態"
@@ -1446,6 +1455,12 @@
   },
   "connectionRequest": {
     "message": "接続リクエスト"
+  },
+  "connectionsRemovedModalDescription": {
+    "message": "このデバイス上で一定期間ご利用がなかったため、一部の接続 (ハードウェアウォレットやSnapなど) が解除されました。これらはいつでも「設定」から再追加できます。"
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "接続が解除されました"
   },
   "contactUs": {
     "message": "お問い合わせ"
@@ -1940,6 +1955,15 @@
   "downloadGoogleChrome": {
     "message": "Google Chromeをダウンロード"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "当社のアプリのFace IDならパスワードを忘れてもログインできます。MetaMaskをどこからでもご利用ください！"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "開始するにはこのQRコードをスキャンしてください。"
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "モバイルアプリを入手"
+  },
   "downloadNow": {
     "message": "今すぐダウンロード"
   },
@@ -2220,6 +2244,10 @@
     "message": "コード: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
+  "errorDetails": {
+    "message": "エラーの詳細",
+    "description": "Label for the error details field in the error screen."
+  },
   "errorGettingSafeChainList": {
     "message": "安全なチェーンリストの取得中にエラーが発生しました。慎重に続けてください。"
   },
@@ -2424,7 +2452,7 @@
     "message": "生体認証がオンになっています"
   },
   "forgotPasswordSocialStep2": {
-    "message": "$1をお持ちの場合は、現在のウォレットをリセットし、$1を使用して再インポートできます。",
+    "message": "$1をお持ちの場合は、現在のウォレットをリセットし、シークレットリカバリーフレーズを使用して再インポートできます。",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
@@ -2665,9 +2693,6 @@
   "honeypotTitle": {
     "message": "ハニーポット"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "トランザクションの処理に必要な手数料の見積もりです。最大手数料は$1です。"
-  },
   "howQuotesWork": {
     "message": "クォートの仕組み"
   },
@@ -2713,6 +2738,13 @@
   },
   "importAccountMsg": {
     "message": "インポートされたアカウントは、MetaMaskアカウントのシークレットリカバリーフレーズと関連付けられません。インポートされたアカウントの詳細を表示"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "インポートした秘密鍵はアカウントにバックアップされ、同じGoogleまたはAppleのログイン情報でサインインすると自動的に同期されます。"
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "インポートされた鍵の仕組みについては、$1",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "NFTをインポート"
@@ -3051,6 +3083,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "イーサリアムトランザクションの入力データが十分にパディングされていません。"
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Ledgerへの接続に問題が発生しました。こちらをご覧ください: "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": "ハードウェアウォレットの接続方法を確認し、再試行してください。"
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": "LedgerはFirefoxのサポートを終了したため、他のブラウザをお試しください。"
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "ガイド"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefoxはサポートされていません"
   },
   "ledgerLiveApp": {
     "message": "Ledger Liveアプリ"
@@ -3489,6 +3536,9 @@
   "networkIsBusy": {
     "message": "ネットワークが混み合っています。ガス代が高く、見積もりはあまり正確ではありません。"
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "1つ以上のネットワークを有効にする必要があります"
+  },
   "networkMenu": {
     "message": "ネットワークメニュー"
   },
@@ -3706,6 +3756,9 @@
   "noConversionRateAvailable": {
     "message": "利用可能な換算レートがありません"
   },
+  "noDeFiPositions": {
+    "message": "お探しのものが見つかりませんか？"
+  },
   "noDomainResolution": {
     "message": "指定されたドメインの名前解決ができません。"
   },
@@ -3714,6 +3767,9 @@
   },
   "noNFTs": {
     "message": "NFTはまだありません"
+  },
+  "noNetworksAvailable": {
+    "message": "利用できるネットワークがありません"
   },
   "noNetworksFound": {
     "message": "入力された検索クエリでネットワークが見つかりません"
@@ -4081,7 +4137,7 @@
     "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
-    "message": "シークレットリカバリーフレーズで続ける"
+    "message": "シークレットリカバリーフレーズを使用する"
   },
   "onboardingSrpImport": {
     "message": "シークレットリカバリーフレーズを使用してインポートする"
@@ -4188,6 +4244,9 @@
     "message": "強力なパスワードは、デバイスが盗まれたり侵入されたりした場合に、ウォレットのセキュリティを高めます。"
   },
   "passwordTermsWarning": {
+    "message": "このパスワードを忘れた場合、MetaMask側でリセットすることはできません。"
+  },
+  "passwordTermsWarningSocial": {
     "message": "このパスワードを忘れると、ウォレットに永久にアクセスできなくなります。MetaMask側ではパスワードをリセットできません。"
   },
   "passwordToggleHide": {
@@ -4598,6 +4657,9 @@
   "proposedApprovalLimit": {
     "message": "提案された承認限度額"
   },
+  "protocolNotSupported": {
+    "message": "お使いのプロトコルはまだサポートされていない可能性があります。"
+  },
   "provide": {
     "message": "提供"
   },
@@ -4841,16 +4903,34 @@
     "message": "リセット"
   },
   "resetWallet": {
-    "message": "ウォレットをリセット"
+    "message": "ウォレットをリセットする"
   },
   "resetWalletSubHeader": {
     "message": "MetaMaskはパスワードのコピーを保管しません。アカウントのロックを解除できない場合は、ウォレットをリセットする必要があります。これは、ウォレットのセットアップ時に使用したシークレットリカバリーフレーズを入力することで行えます。"
   },
+  "resetWalletSubHeaderSocial": {
+    "message": "MetaMaskはパスワードのコピーを保存しません。アカウントのロック解除で問題が発生している場合は、ウォレットをリセットする必要があります。シークレットリカバリーフレーズをお持ちの場合は、それを使用してこのデバイスから現在のウォレットとアカウントリストを削除できます。"
+  },
   "resetWalletUsingSRP": {
     "message": "この操作により、このデバイスから現在のウォレットとシークレットリカバリーフレーズ、および作成されたアカウントのリストが削除されます。シークレットリカバリーフレーズでリセットすると、リセットに使用されたシークレットリカバリーフレーズに基づくアカウントのリストが表示されます。この新しいリストには、残高のあるアカウントが自動的に含まれます。また、以前作成された$1することもできます。インポートしたカスタムアカウントは$2である必要があり、アカウントに追加されたカスタムトークンも$3である必要があります。"
   },
+  "resetWalletUsingSRPSocial": {
+    "message": "シークレットリカバリーフレーズを使ってリセットを行うと、新しいアカウントリストが表示されます。このリストには、残高のあるアカウントが含まれます。以前作成した$1することもできます。ただし、インポートした$2や$3は再度追加する必要があります。"
+  },
+  "resetWalletUsingSRPSocialAccounts": {
+    "message": "他のアカウントを再追加"
+  },
+  "resetWalletUsingSRPSocialCustomAccounts": {
+    "message": "カスタムアカウント"
+  },
+  "resetWalletUsingSRPSocialCustomTokens": {
+    "message": "カスタムトークン"
+  },
   "resetWalletWarning": {
     "message": "続行する前に、正しいシークレットリカバリーフレーズを使用していることを確認してください。これは元に戻せません。"
+  },
+  "resetWalletWarningSocial": {
+    "message": "リセットを行う前に、正しいシークレットリカバリーフレーズを使用していることを確認してください。この操作は元に戻すことができません。"
   },
   "restartMetamask": {
     "message": "MetaMask を再起動"
@@ -4974,6 +5054,9 @@
   "searchAccounts": {
     "message": "アカウントを検索"
   },
+  "searchNetworks": {
+    "message": "ネットワークを検索"
+  },
   "searchNfts": {
     "message": "NFTを検索"
   },
@@ -5061,7 +5144,7 @@
     "message": "有効"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "このメールアドレスとMetaMaskパスワードは、アカウントとリカバリーフレーズの復元に役立ちます。",
+    "message": "$1のログイン情報とMetaMaskのパスワードを使って、アカウントとシークレットリカバリーフレーズを復元することができます。",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
@@ -5353,6 +5436,12 @@
   "simulationErrorMessageV2": {
     "message": "ガス代を見積もることができませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
   },
+  "simulationSettingsModalEnforceSlippage": {
+    "message": "最大スリッページ"
+  },
+  "simulationSettingsModalEnforceSlippageDescription": {
+    "message": "残高の変動幅について許容できる値を設定してください。この変動幅を超える場合、トランザクションは実行されません。"
+  },
   "simulationSettingsModalEnforceToggle": {
     "message": "残高変更の実施"
   },
@@ -5422,6 +5511,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMaskデビットカード"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "ウォレットをどこからでも利用できます"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "MetaMask Mobileをダウンロード"
+  },
   "slideFundWalletDescription": {
     "message": "トークンを追加または送金して開始します"
   },
@@ -5478,6 +5573,9 @@
   },
   "smartAccountSameAccount": {
     "message": "同じアカウントでよりスマートな機能。"
+  },
+  "smartAccountSplashInfo": {
+    "message": "スマートアカウント"
   },
   "smartAccountSplashTitle": {
     "message": "スマートアカウントを使用しますか？"
@@ -5635,6 +5733,9 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1を使用する準備が整いました"
+  },
+  "snapUIAccountSelectorTitle": {
+    "message": "アカウントを選択"
   },
   "snapUIAssetSelectorTitle": {
     "message": "資産の選択"
@@ -5848,7 +5949,7 @@
     "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
-    "message": "シークレットリカバリーフレーズ全体をいずれかのフィールドに張り付けできます。",
+    "message": "シークレットリカバリーフレーズ全体を任意のフィールドに貼り付けることができます。",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
@@ -6554,7 +6655,7 @@
     "message": "同意"
   },
   "termsOfUseAgreeText": {
-    "message": "MetaMaskおよびそのすべての機能の利用に適用される利用規約に同意します"
+    "message": "MetaMaskおよびそのすべての機能の利用に適用される利用規約に同意します。"
   },
   "termsOfUseFooterText": {
     "message": "スクロールしてすべてのセクションをお読みください"
@@ -6792,6 +6893,12 @@
     "message": "$1に接続できませんでした。$2を確認してから、もう一度実行してください。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStartingMessage": {
+    "message": "このエラーは一時的な可能性があるため、拡張機能を再起動してみてください。"
+  },
+  "troubleStartingTitle": {
+    "message": "MetaMaskの起動中に問題が発生しました。"
+  },
   "tryAgain": {
     "message": "再試行"
   },
@@ -6879,7 +6986,7 @@
     "message": "パスワードが正しくありません。もう一度お試しください。"
   },
   "unlockPageTooManyFailedAttempts": {
-    "message": "試行回数の上限に達しました。次の時間が経過してから再試行してください: "
+    "message": "試行回数の上限に達しました。再試行できるまであと"
   },
   "unpin": {
     "message": "ピン留めを解除"
@@ -6998,6 +7105,10 @@
   },
   "viewActivity": {
     "message": "アクティビティを表示"
+  },
+  "viewAddressOnExplorer": {
+    "message": "$1で表示",
+    "description": "$1 is the block explorer name"
   },
   "viewAllQuotes": {
     "message": "すべてのクォートを表示"

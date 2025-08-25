@@ -359,12 +359,10 @@
         "@ethersproject/providers>bech32": true
       }
     },
-    "@ethersproject/providers>@ethersproject/random": {
+    "ethers>@ethersproject/random": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "ethers>@ethersproject/random": {
+      },
       "packages": {
         "@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true
@@ -860,7 +858,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
+        "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/account-api>@metamask/keyring-utils": true,
@@ -916,7 +914,7 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/keyring-api": true,
+        "@metamask/assets-controllers>@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller": true,
@@ -947,14 +945,6 @@
       }
     },
     "@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/announcement-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
       },
@@ -1039,11 +1029,6 @@
         "browserify>buffer": true
       }
     },
-    "eth-keyring-controller>@metamask/browser-passworder": {
-      "globals": {
-        "crypto": true
-      }
-    },
     "@metamask/chain-agnostic-permission": {
       "packages": {
         "@metamask/chain-agnostic-permission>@metamask/api-specs": true,
@@ -1078,6 +1063,21 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/design-system-react": {
+      "globals": {
+        "__import__": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/jazzicon": true,
+        "@metamask/utils": true,
+        "@metamask/design-system-react>@radix-ui/react-slot": true,
+        "@solana/addresses": true,
+        "@metamask/design-system-react>blo": true,
+        "react": true,
+        "@metamask/design-system-react>tailwind-merge": true
       }
     },
     "@metamask/ens-controller": {
@@ -1245,26 +1245,6 @@
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "console.info": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-internal-api": true,
-        "@metamask/keyring-internal-snap-client": true,
-        "@metamask/account-api>@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "webpack>events": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
-      }
-    },
     "@metamask/eth-token-tracker": {
       "globals": {
         "console.warn": true
@@ -1415,6 +1395,14 @@
         "bitcoin-address-validation": true
       }
     },
+    "@metamask/assets-controllers>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
     "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
       "packages": {
         "@metamask/account-api>@metamask/keyring-utils": true,
@@ -1513,6 +1501,9 @@
       }
     },
     "@metamask/multichain-account-service": {
+      "globals": {
+        "console.warn": true
+      },
       "packages": {
         "@metamask/account-api": true,
         "@metamask/keyring-api": true,
@@ -2269,6 +2260,17 @@
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
       }
     },
+    "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": {
+      "packages": {
+        "react": true
+      }
+    },
+    "@metamask/design-system-react>@radix-ui/react-slot": {
+      "packages": {
+        "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": true,
+        "react": true
+      }
+    },
     "@reduxjs/toolkit": {
       "globals": {
         "AbortController": true,
@@ -2867,6 +2869,11 @@
       }
     },
     "blo": {
+      "globals": {
+        "btoa": true
+      }
+    },
+    "@metamask/design-system-react>blo": {
       "globals": {
         "btoa": true
       }
@@ -4081,7 +4088,7 @@
         "react-markdown>remark-parse>mdast-util-from-markdown>mdast-util-to-string": true,
         "react-markdown>remark-parse>mdast-util-from-markdown>micromark": true,
         "react-syntax-highlighter>refractor>parse-entities": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>unist-util-stringify-position": true
+        "react-markdown>vfile>unist-util-stringify-position": true
       }
     },
     "react-markdown>remark-rehype>mdast-util-to-hast": {
@@ -4176,71 +4183,11 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/approval-controller>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/notification-controller>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/permission-controller>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/rpc-methods>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/rpc-methods-flask>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/snaps-controllers>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/snaps-controllers-flask>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "depcheck>@vue/compiler-sfc>postcss>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "dependency-tree>precinct>detective-postcss>postcss>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "node-fetch": {
       "globals": {
         "Headers": true,
         "Request": true,
         "Response": true,
-        "fetch": true
-      }
-    },
-    "@metamask/controllers>web3-provider-engine>cross-fetch>node-fetch": {
-      "globals": {
-        "fetch": true
-      }
-    },
-    "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware>node-fetch": {
-      "globals": {
         "fetch": true
       }
     },
@@ -4462,11 +4409,6 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
-    "ethereumjs-wallet>randombytes": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "crypto-browserify>randomfill": {
       "globals": {
         "crypto": true,
@@ -4528,24 +4470,6 @@
       "packages": {
         "@babel/runtime": true,
         "react": true
-      }
-    },
-    "react-devtools": {
-      "packages": {
-        "react-devtools>react-devtools-core": true
-      }
-    },
-    "react-devtools>react-devtools-core": {
-      "globals": {
-        "WebSocket": true,
-        "setTimeout": true
-      }
-    },
-    "react-dnd-html5-backend": {
-      "globals": {
-        "addEventListener": true,
-        "clearTimeout": true,
-        "removeEventListener": true
       }
     },
     "react-dom": {
@@ -5361,11 +5285,6 @@
         "crypto": true
       }
     },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
     "@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
@@ -5419,16 +5338,6 @@
       },
       "packages": {
         "browserify>util": true
-      }
-    },
-    "web3": {
-      "globals": {
-        "XMLHttpRequest": true
-      }
-    },
-    "@metamask/controllers>web3": {
-      "globals": {
-        "XMLHttpRequest": true
       }
     },
     "webextension-polyfill": {

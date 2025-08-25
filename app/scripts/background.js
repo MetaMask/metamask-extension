@@ -35,16 +35,10 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
-import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
-import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
-import {
-  FakeLedgerBridge,
-  FakeTrezorBridge,
-} from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
@@ -78,7 +72,6 @@ import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
-import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
@@ -590,6 +583,10 @@ async function initialize(backup) {
   // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
   // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
   if (process.env.IN_TEST && window.navigator?.webdriver) {
+    const { getSocketBackgroundToMocha } =
+      // Use `require` to make it easier to exclude this test code from the Browserify build.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+      require('../../test/e2e/background-socket/socket-background-to-mocha');
     getSocketBackgroundToMocha();
   }
 
@@ -615,8 +612,14 @@ async function initialize(backup) {
   const overrides = inTest
     ? {
         keyrings: {
-          trezorBridge: FakeTrezorBridge,
-          ledgerBridge: FakeLedgerBridge,
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          trezorBridge: require('../../test/stub/keyring-bridge')
+            .FakeTrezorBridge,
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          ledgerBridge: require('../../test/stub/keyring-bridge')
+            .FakeLedgerBridge,
         },
       }
     : {};
@@ -770,7 +773,14 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence(backup) {
   if (process.env.WITH_STATE) {
-    const stateOverrides = await generateWalletState();
+    const withState = JSON.parse(process.env.WITH_STATE);
+
+    // Use `require` to make it easier to exclude this test code from the Browserify build.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+    const { generateWalletState } = require('./fixtures/generate-wallet-state');
+    const fixtureBuilder = await generateWalletState(withState, false);
+
+    const stateOverrides = fixtureBuilder.fixture.data;
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
@@ -809,7 +819,8 @@ export async function loadStateFromPersistence(backup) {
   const migrator = new Migrator({
     migrations,
     defaultVersion: process.env.WITH_STATE
-      ? FIXTURE_STATE_METADATA_VERSION
+      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
       : null,
   });
 
