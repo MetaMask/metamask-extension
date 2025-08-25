@@ -188,7 +188,12 @@ export class CriticalStartupErrorHandler {
    */
   uninstall() {
     this.#port.onMessage.removeListener(this.#handler);
-    this.#onLivenessCheckCompleted = undefined;
+
     clearTimeout(this.#livenessCheckTimeoutId);
+    if (this.#onLivenessCheckCompleted) {
+      // Resolve just to allow any unresolved Promise to be garbage collected.
+      this.#onLivenessCheckCompleted();
+      this.#onLivenessCheckCompleted = undefined;
+    }
   }
 }
