@@ -1,11 +1,11 @@
-import { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
-import {
+import type { JsonRpcParams, JsonRpcRequest, Hex, Json } from '@metamask/utils';
+import type {
   AddApprovalOptions,
   ApprovalFlowStartResult,
   EndFlowOptions,
   StartFlowOptions,
 } from '@metamask/approval-controller';
-import {
+import type {
   NetworkClientId,
   NetworkConfiguration,
 } from '@metamask/network-controller';
@@ -22,9 +22,8 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import { PermissionController } from '@metamask/permission-controller';
-import type { Hex, Json } from '@metamask/utils';
-import { InfuraNetworkType } from '@metamask/controller-utils';
-import {
+import type { InfuraNetworkType } from '@metamask/controller-utils';
+import type {
   MetaMetricsEventPayload,
   MetaMetricsPageOptions,
 } from '../../../../../shared/constants/metametrics';
