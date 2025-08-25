@@ -52,6 +52,7 @@ jobs:
           BENCHMARK_PAGE_LOADS: ${{ inputs.page-loads }}
 
       - name: Compare and comment
+        if: ${{ github.event_name == 'pull_request' }}
         run: yarn tsx development/benchmark-pr-comment.ts
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
