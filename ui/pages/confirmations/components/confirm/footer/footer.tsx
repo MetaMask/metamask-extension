@@ -36,6 +36,7 @@ import { getConfirmationSender } from '../utils';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import OriginThrottleModal from './origin-throttle-modal';
+import { useHistory } from 'react-router-dom';
 
 export type OnCancelHandler = ({
   location,
@@ -159,6 +160,7 @@ const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const { onTransactionConfirm } = useTransactionConfirm();
+  const history = useHistory();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -215,6 +217,7 @@ const Footer = () => {
 
       rejectApproval({ location });
       resetTransactionState();
+      history.goBack();
     },
     [currentConfirmation, rejectApproval, resetTransactionState],
   );

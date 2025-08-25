@@ -4,8 +4,8 @@ import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import * as SendContext from '../context/send';
-import { SendInner } from './send-inner';
 import { SendPages } from '../constants/send';
+import { SendInner } from './send-inner';
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
@@ -21,7 +21,6 @@ const render = () => {
 
 describe('SendInner', () => {
   it('render asset page when current page in path is asset', () => {
-    const mockUpdateCurrentPage = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       currentPage: SendPages.ASSET,
       updateCurrentPage: jest.fn(),
@@ -32,7 +31,6 @@ describe('SendInner', () => {
   });
 
   it('render amount page when current page in path is amount', () => {
-    const mockUpdateCurrentPage = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       currentPage: SendPages.AMOUNT,
       updateCurrentPage: jest.fn(),
@@ -43,7 +41,6 @@ describe('SendInner', () => {
   });
 
   it('render recipient page when current page in path is recipient', () => {
-    const mockUpdateCurrentPage = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       currentPage: SendPages.RECIPIENT,
       updateCurrentPage: jest.fn(),
