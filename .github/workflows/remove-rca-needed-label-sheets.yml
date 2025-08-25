@@ -56,8 +56,8 @@ jobs:
         run: npx tsx .github/scripts/remove-rca-needed-label-sheets.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           # Google Sheet configuration - can be overridden via workflow inputs
-          SPREADSHEET_ID: ${{ github.event.inputs.spreadsheet_id || '1C_T3Y4if37r9foXyWBnIKF-0HTcJGVN2sNk6z7xkmQY' }} # '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24'
+          SPREADSHEET_ID: ${{ github.event.inputs.spreadsheet_id || '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24' }}
           SHEET_NAME: ${{ github.event.inputs.sheet_name || 'Form Responses 1' }}
