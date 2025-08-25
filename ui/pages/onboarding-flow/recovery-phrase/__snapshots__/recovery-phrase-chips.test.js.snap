@@ -3,190 +3,208 @@
 exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
 <div>
   <div
-    class="box recovery-phrase__secret box--margin-bottom-4 box--padding-4 box--display-grid box--flex-direction-row box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
+    class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
   >
     <div
-      class="recovery-phrase__chips"
-      data-testid="recovery-phrase-chips"
+      class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
     >
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+        data-quiz-words="[]"
+        data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
+        data-testid="recovery-phrase-chips"
       >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          1.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-0"
         >
-          debris
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            1
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            debris
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          2.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-1"
         >
-          dizzy
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            2
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            dizzy
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          3.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-2"
         >
-          just
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            3
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            just
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          4.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-3"
         >
-          program
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            4
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            program
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          5.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-4"
         >
-          just
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            5
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            just
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          6.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-5"
         >
-          float
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            6
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            float
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          7.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-6"
         >
-          decrease
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            7
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            decrease
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          8.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-7"
         >
-          vacant
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            8
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            vacant
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          9.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-8"
         >
-          alarm
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            9
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            alarm
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          10.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-9"
         >
-          reduce
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            10
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            reduce
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          11.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-10"
         >
-          speak
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            11
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            speak
+          </p>
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
-        >
-          12.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+          class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           data-testid="recovery-phrase-chip-11"
         >
-          stadium
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            12
+            .
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            stadium
+          </p>
         </div>
       </div>
     </div>
@@ -197,202 +215,256 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
 exports[`Recovery Phrase Chips Component should match snapshot of confirm recovery phrase with inputs of indicies to check 1`] = `
 <div>
   <div
-    class="box recovery-phrase__secret box--margin-bottom-4 box--padding-4 box--display-grid box--flex-direction-row box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
+    class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
   >
     <div
-      class="recovery-phrase__chips"
-      data-testid="recovery-phrase-chips"
+      class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
     >
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+        data-quiz-words="[]"
+        data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
+        data-testid="recovery-phrase-chips"
       >
         <div
-          class="recovery-phrase__chip-item__number"
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          1.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
-          data-testid="recovery-phrase-chip-0"
-        >
-          debris
-        </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
-        <div
-          class="recovery-phrase__chip-item__number"
-        >
-          2.
-        </div>
-        <div
-          class="recovery-phrase__chip--with-input chip--with-input chip chip--border-color-primary-default chip--background-color-undefined chip--max-content"
-        >
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            1
+            .
+          </p>
           <input
-            class="chip__input"
-            data-testid="recovery-phrase-input-1"
-            type="text"
-            value=""
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-0"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="debris"
           />
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          3.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
-          data-testid="recovery-phrase-chip-2"
-        >
-          just
-        </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
-        <div
-          class="recovery-phrase__chip-item__number"
-        >
-          4.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
-          data-testid="recovery-phrase-chip-3"
-        >
-          program
-        </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
-        <div
-          class="recovery-phrase__chip-item__number"
-        >
-          5.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
-          data-testid="recovery-phrase-chip-4"
-        >
-          just
-        </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
-        <div
-          class="recovery-phrase__chip-item__number"
-        >
-          6.
-        </div>
-        <div
-          class="recovery-phrase__chip--with-input chip--with-input chip chip--border-color-primary-default chip--background-color-undefined chip--max-content"
-        >
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            2
+            .
+          </p>
           <input
-            class="chip__input"
-            data-testid="recovery-phrase-input-5"
-            type="text"
-            value=""
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-1"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="dizzy"
           />
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          7.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
-          data-testid="recovery-phrase-chip-6"
-        >
-          decrease
-        </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
-        <div
-          class="recovery-phrase__chip-item__number"
-        >
-          8.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
-          data-testid="recovery-phrase-chip-7"
-        >
-          vacant
-        </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
-        <div
-          class="recovery-phrase__chip-item__number"
-        >
-          9.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
-          data-testid="recovery-phrase-chip-8"
-        >
-          alarm
-        </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
-        <div
-          class="recovery-phrase__chip-item__number"
-        >
-          10.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
-          data-testid="recovery-phrase-chip-9"
-        >
-          reduce
-        </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
-        <div
-          class="recovery-phrase__chip-item__number"
-        >
-          11.
-        </div>
-        <div
-          class="recovery-phrase__chip--with-input chip--with-input chip chip--border-color-primary-default chip--background-color-undefined chip--max-content"
-        >
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            3
+            .
+          </p>
           <input
-            class="chip__input"
-            data-testid="recovery-phrase-input-10"
-            type="text"
-            value=""
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-2"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="just"
           />
         </div>
-      </div>
-      <div
-        class="recovery-phrase__chip-item"
-      >
         <div
-          class="recovery-phrase__chip-item__number"
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          12.
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            4
+            .
+          </p>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-3"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="program"
+          />
         </div>
         <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
-          data-testid="recovery-phrase-chip-11"
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
         >
-          stadium
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            5
+            .
+          </p>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-4"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="just"
+          />
+        </div>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+        >
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            6
+            .
+          </p>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-5"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="float"
+          />
+        </div>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+        >
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            7
+            .
+          </p>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-6"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="decrease"
+          />
+        </div>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+        >
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            8
+            .
+          </p>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-7"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="vacant"
+          />
+        </div>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+        >
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            9
+            .
+          </p>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-8"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="alarm"
+          />
+        </div>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+        >
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            10
+            .
+          </p>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-9"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="reduce"
+          />
+        </div>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+        >
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            11
+            .
+          </p>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-10"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="speak"
+          />
+        </div>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+        >
+          <p
+            class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+          >
+            12
+            .
+          </p>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="recovery-phrase-chip-11"
+            disabled=""
+            focused="false"
+            readonly=""
+            type="password"
+            value="stadium"
+          />
         </div>
       </div>
     </div>

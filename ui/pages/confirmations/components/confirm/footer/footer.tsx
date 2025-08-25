@@ -22,28 +22,20 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  doesAddressRequireLedgerHidConnection,
-  getCustomNonceValue,
-} from '../../../../../selectors';
+import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
   setNextNonce,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  updateAndApproveTx,
-  ///: END:ONLY_INCLUDE_IF
   updateCustomNonce,
 } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
-import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
-import { useSelectedGasFeeToken } from '../info/hooks/useGasFeeToken';
-import { UpgradeCancelModal } from './upgrade-cancel-modal';
+import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
+import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import OriginThrottleModal from './origin-throttle-modal';
-import { Acknowledge } from './acknowledge';
 
 export type OnCancelHandler = ({
   location,
@@ -166,12 +158,12 @@ const ConfirmButton = ({
 const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const customNonceValue = useSelector(getCustomNonceValue);
-  const selectedGasFeeToken = useSelectedGasFeeToken();
-  const [isUpgradeCancelModalOpen, setUpgradeCancelModalOpen] = useState(false);
+  const { onTransactionConfirm } = useTransactionConfirm();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
+
+  const { isGaslessLoading } = useIsGaslessLoading();
 
   const { from } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
@@ -180,20 +172,19 @@ const Footer = () => {
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
-      return doesAddressRequireLedgerHidConnection(state, from);
+      const inE2e =
+        process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
+      return inE2e ? false : doesAddressRequireLedgerHidConnection(state, from);
     }
     return false;
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
-  const isUpgradeTransaction = useIsUpgradeTransaction();
-  const [isAcknowledged, setIsAcknowledged] = useState(false);
-  const isAcknowledgeRequired = isUpgradeTransaction;
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection ||
-    (isAcknowledgeRequired && !isAcknowledged);
+    isGaslessLoading;
 
   const rejectApproval = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation } = {}) => {
@@ -222,47 +213,11 @@ const Footer = () => {
         return;
       }
 
-      if (isUpgradeTransaction) {
-        setUpgradeCancelModalOpen(true);
-        return;
-      }
-
       rejectApproval({ location });
       resetTransactionState();
     },
-    [
-      currentConfirmation,
-      isUpgradeTransaction,
-      rejectApproval,
-      resetTransactionState,
-    ],
+    [currentConfirmation, rejectApproval, resetTransactionState],
   );
-
-  const onTransactionSubmit = useCallback(() => {
-    const transactionMeta = currentConfirmation as TransactionMeta;
-
-    const finalTransactionMeta: TransactionMeta = {
-      ...transactionMeta,
-      batchTransactions: selectedGasFeeToken
-        ? [selectedGasFeeToken.transferTransaction]
-        : undefined,
-      customNonceValue,
-      txParams: {
-        ...transactionMeta.txParams,
-        ...(selectedGasFeeToken
-          ? {
-              gas: selectedGasFeeToken.gas,
-              maxFeePerGas: selectedGasFeeToken.maxFeePerGas,
-              maxPriorityFeePerGas: selectedGasFeeToken.maxPriorityFeePerGas,
-            }
-          : {}),
-      },
-    };
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    dispatch(updateAndApproveTx(finalTransactionMeta, true, ''));
-    ///: END:ONLY_INCLUDE_IF
-  }, [currentConfirmation, customNonceValue, dispatch, selectedGasFeeToken]);
 
   const onSubmit = useCallback(() => {
     if (!currentConfirmation) {
@@ -274,7 +229,7 @@ const Footer = () => {
     );
 
     if (isTransactionConfirmation) {
-      onTransactionSubmit();
+      onTransactionConfirm();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
@@ -282,7 +237,7 @@ const Footer = () => {
   }, [
     currentConfirmation,
     dispatch,
-    onTransactionSubmit,
+    onTransactionConfirm,
     resetTransactionState,
   ]);
 
@@ -303,15 +258,6 @@ const Footer = () => {
         isOpen={showOriginThrottleModal}
         onConfirmationCancel={onCancel}
       />
-      <UpgradeCancelModal
-        isOpen={isUpgradeCancelModalOpen}
-        onClose={() => setUpgradeCancelModalOpen(false)}
-        onReject={rejectApproval}
-      />
-      <Acknowledge
-        isAcknowledged={isAcknowledged}
-        onAcknowledgeToggle={setIsAcknowledged}
-      />
       <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
         <Button
           block
@@ -319,7 +265,6 @@ const Footer = () => {
           onClick={handleFooterCancel}
           size={ButtonSize.Lg}
           variant={ButtonVariant.Secondary}
-          endIconName={isUpgradeTransaction ? IconName.ArrowDown : undefined}
         >
           {t('cancel')}
         </Button>

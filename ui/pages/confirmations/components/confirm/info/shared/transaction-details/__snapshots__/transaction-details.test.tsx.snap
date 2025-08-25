@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<TransactionDetails /> does not render component for transaction details 1`] = `
+exports[`Transaction Details <TransactionDetails /> does not render component for transaction details 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -9,7 +9,7 @@ exports[`<TransactionDetails /> does not render component for transaction detail
 </div>
 `;
 
-exports[`<TransactionDetails /> renders component for transaction details 1`] = `
+exports[`Transaction Details <TransactionDetails /> renders component for transaction details 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"

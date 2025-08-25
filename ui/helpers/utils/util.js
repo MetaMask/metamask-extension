@@ -411,6 +411,20 @@ export function checkExistingAddresses(address, list = []) {
   return list.some(matchesAddress);
 }
 
+export function checkExistingAllTokens(
+  address,
+  chainId,
+  accountAddress,
+  list = {},
+) {
+  if (!address) {
+    return false;
+  }
+  return list?.[chainId]?.[accountAddress]?.some(
+    (obj) => obj.address.toLowerCase() === address.toLowerCase(),
+  );
+}
+
 export function bnGreaterThan(a, b) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
@@ -690,8 +704,11 @@ export const getDedupedSnaps = (request, permissions) => {
 
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
+const REGEX_LTR_OVERRIDE = /\u202D/giu;
+const REGEX_RTL_OVERRIDE = /\u202E/giu;
+
 /**
- * The method escape RTL character in string
+ * The method escapes LTR and RTL override unicode in the string
  *
  * @param {*} value
  * @returns {(string|*)} escaped string or original param value
@@ -703,8 +720,10 @@ export const sanitizeString = (value) => {
   if (!lodash.isString(value)) {
     return value;
   }
-  const regex = /\u202E/giu;
-  return value.replace(regex, '\\u202E');
+
+  return value
+    .replace(REGEX_LTR_OVERRIDE, '\\u202D')
+    .replace(REGEX_RTL_OVERRIDE, '\\u202E');
 };
 
 /**
@@ -921,5 +940,5 @@ export const getCalculatedTokenAmount1dAgo = (
 ) => {
   return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
     ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
-    : tokenFiatBalance ?? 0;
+    : (tokenFiatBalance ?? 0);
 };

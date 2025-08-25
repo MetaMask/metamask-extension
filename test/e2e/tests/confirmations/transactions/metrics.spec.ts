@@ -15,7 +15,6 @@ import {
 } from './shared';
 
 const {
-  defaultGanacheOptionsForType2Transactions,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -36,7 +35,6 @@ describe('Metrics', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        localNodeOptions: defaultGanacheOptionsForType2Transactions,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
       },

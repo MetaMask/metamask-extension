@@ -2,32 +2,19 @@
 
 @import 'components/';
 
-.multichain-app-header-logo + .multichain-page {
-  $height-screen-sm-min: 720px;
-
-  @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-    padding-top: 0;
-  }
-}
-
 .multichain-page {
-  // TODO: Add page sizes
   $height-screen-sm-min: 720px;
 
   transition: padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out;
 
-  @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-    padding-top: 32px;
-    padding-bottom: 32px;
+  &:not(.multichain-page--has-app-header) {
+    @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
   }
 
   &--has-app-header {
-    @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-      // multichain-page UI here flows from the dashboard page which doesn't have padding-bottom. We can consider adding padding bottom here and to the .main-container-wrapper.
-      padding-top: 0;
-      padding-bottom: 0;
-    }
-
     & .multichain-page__inner-container {
       border-radius: 0 0 2px 2px;
       border: 0;
@@ -40,5 +27,22 @@
     border: 1px solid var(--color-border-muted);
     border-radius: 2px;
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  }
+}
+
+.multichain-app-header-logo + .multichain-page {
+  $height-screen-sm-min: 720px;
+
+  @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
+    padding-top: 0;
+  }
+}
+
+.snap-view > .multichain-page {
+  $height-screen-sm-min: 720px;
+
+  @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }

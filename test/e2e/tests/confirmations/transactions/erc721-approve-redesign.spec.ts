@@ -9,10 +9,7 @@ import {
   toggleAdvancedDetails,
 } from './shared';
 
-const {
-  defaultGanacheOptionsForType2Transactions,
-  withFixtures,
-} = require('../../../helpers');
+const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -27,6 +24,9 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
+          localNodeOptions: {
+            hardfork: 'muirGlacier',
+          },
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -52,7 +52,6 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -75,6 +74,8 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
 async function mocked4Bytes(mockServer: MockttpServer) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x095ea7b3' })
     .thenCallback(() => ({
       statusCode: 200,
@@ -85,9 +86,17 @@ async function mocked4Bytes(mockServer: MockttpServer) {
         results: [
           {
             id: 149,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             created_at: '2016-07-09T03:58:29.617584Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             text_signature: 'approve(address,uint256)',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hex_signature: '0x095ea7b3',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             bytes_signature: '\t^§³',
           },
         ],
@@ -104,7 +113,7 @@ async function createMintTransaction(driver: Driver) {
   await driver.clickElement('#mintButton');
 }
 
-export async function confirmMintTransaction(driver: Driver) {
+async function confirmMintTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({

@@ -1,6 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTokenNetworkFilter } from '../../../../../store/actions';
+import {
+  setEnabledNetworks,
+  setTokenNetworkFilter,
+} from '../../../../../store/actions';
 import {
   getCurrentNetwork,
   getShouldHideZeroBalanceTokens,
@@ -8,9 +11,11 @@ import {
   getAllChainsToPoll,
   getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
+  getEnabledNetworksByNamespace,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
+  getIsAllNetworksFilterEnabled,
   getNetworkConfigurationsByChainId,
 } from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -37,14 +42,19 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
 
 type SortControlProps = {
   handleClose: () => void;
+  handleFilterNetwork?: (chainFilters: Record<string, boolean>) => void;
+  networkFilter?: Record<string, boolean>;
   showTokenFiatBalance?: boolean;
 };
 
 const NetworkFilter = ({
   handleClose,
+  handleFilterNetwork,
+  networkFilter,
   showTokenFiatBalance = true,
 }: SortControlProps) => {
   const t = useI18nContext();
@@ -54,6 +64,7 @@ const NetworkFilter = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -88,16 +99,19 @@ const NetworkFilter = ({
     );
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
-    dispatch(setTokenNetworkFilter(chainFilters));
+    if (handleFilterNetwork) {
+      handleFilterNetwork(chainFilters);
+    } else {
+      isGlobalNetworkSelectorRemoved
+        ? dispatch(setEnabledNetworks(Object.keys(chainFilters), chainId))
+        : dispatch(setTokenNetworkFilter(chainFilters));
+    }
 
     // TODO Add metrics
     handleClose();
   };
 
-  const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks || {}).forEach((chain) => {
-    allOpts[chain] = true;
-  });
+  const allOpts = useSelector(getIsAllNetworksFilterEnabled);
 
   const allAddedPopularNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
     (chain) => allOpts[chain],
@@ -105,10 +119,21 @@ const NetworkFilter = ({
     return allNetworks[chain].name;
   });
 
+  const networks = isGlobalNetworkSelectorRemoved
+    ? enabledNetworksByNamespace
+    : tokenNetworkFilter;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const filter = networkFilter || networks;
+
   return (
     <>
       <SelectableListItem
-        isSelected={!isTokenNetworkFilterEqualCurrentNetwork}
+        isSelected={
+          networkFilter
+            ? Object.keys(networkFilter).length > 1 && networkFilter[chainId]
+            : !isTokenNetworkFilterEqualCurrentNetwork
+        }
         onClick={() => handleFilter(allOpts)}
         testId="network-filter-all"
       >
@@ -172,10 +197,7 @@ const NetworkFilter = ({
         </Box>
       </SelectableListItem>
       <SelectableListItem
-        isSelected={
-          Object.keys(tokenNetworkFilter).length === 1 &&
-          tokenNetworkFilter[chainId]
-        }
+        isSelected={Object.keys(filter).length === 1 && filter[chainId]}
         onClick={() => handleFilter({ [chainId]: true })}
         testId="network-filter-current"
       >
@@ -211,6 +233,8 @@ const NetworkFilter = ({
           </Box>
           <AvatarNetwork
             size={AvatarNetworkSize.Sm}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             name={currentNetwork?.nickname || ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />

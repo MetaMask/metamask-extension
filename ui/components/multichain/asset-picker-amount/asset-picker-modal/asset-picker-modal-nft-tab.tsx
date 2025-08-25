@@ -38,6 +38,7 @@ import {
   getSendAnalyticProperties,
   updateSendAsset,
 } from '../../../../ducks/send';
+import { getNftImage } from '../../../../helpers/utils/nfts';
 import { NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
@@ -51,6 +52,8 @@ type AssetPickerModalNftTabProps = {
   renderSearch: () => void;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPickerModalNftTab({
   searchQuery,
   onClose,
@@ -65,7 +68,10 @@ export function AssetPickerModalNftTab({
     getNftIsStillFetchingIndication,
   );
 
-  const { currentlyOwnedNfts } = useNfts();
+  const { currentlyOwnedNfts } = useNfts({
+    overridePopularNetworkFilter: true,
+  });
+
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
@@ -90,25 +96,46 @@ export function AssetPickerModalNftTab({
         event: MetaMetricsEventName.sendAssetSelected,
         category: MetaMetricsEventCategory.Send,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_destination_asset_picker_modal: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_nft: true,
         },
         sensitiveProperties: {
           ...sendAnalytics,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_asset_symbol: nft.name,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_asset_address: nft.address,
         },
       },
       { excludeMetaMetricsId: false },
     );
+
+    const nftWithSimplifiedImage = {
+      ...nft,
+      image: getNftImage(nft.image),
+    };
+
     await dispatch(
       updateSendAsset({
         type: AssetType.NFT,
-        details: nft,
+        details: nftWithSimplifiedImage,
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    history.push(SEND_ROUTE);
+    if (process.env.SEND_REDESIGN_ENABLED) {
+      const queryParams = new URLSearchParams();
+      queryParams.append('address', nft.address);
+      queryParams.append('tokenId', nft.tokenId.toString());
+      history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
+    } else {
+      history.push(SEND_ROUTE);
+    }
     onClose && onClose();
   };
 
@@ -129,6 +156,8 @@ export function AssetPickerModalNftTab({
       {hasAnyNfts ? (
         <>
           <Box>
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879 */}
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <NftGrid nfts={filteredNfts} handleNftClick={handleNftClick} />
           </Box>
           {nftsStillFetchingIndication && (

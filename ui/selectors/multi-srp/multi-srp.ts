@@ -1,15 +1,18 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { SnapId } from '@metamask/snaps-sdk';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { KeyringObject } from '@metamask/keyring-controller';
 import {
   getSelectedAccountTokensAcrossChains,
   getCrossChainMetaMaskCachedBalances,
   getMetaMaskHdKeyrings,
+  getInternalAccounts,
 } from '..';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getMultichainAggregatedBalance } from '../assets';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts/snaps';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
 type AccountsByChainId = {
   [chainId: string]: {
@@ -23,10 +26,10 @@ type TokensByChainId = {
   }[];
 };
 
-const isPrimaryHdOrFirstPartySnapAccount = createDeepEqualSelector(
+const isPrimaryHdAndFirstPartySnapAccount = createDeepEqualSelector(
   (_state, account) => account,
   getMetaMaskHdKeyrings,
-  (account, hdKeyrings) => {
+  (account, hdKeyrings: KeyringObject[]) => {
     const [primaryKeyring] = hdKeyrings;
 
     // There are no keyrings during onboarding.
@@ -42,7 +45,11 @@ const isPrimaryHdOrFirstPartySnapAccount = createDeepEqualSelector(
       return true;
     }
 
-    if (isMultichainWalletSnap(account.metadata.snap?.id as SnapId)) {
+    if (
+      account.metadata.snap &&
+      isMultichainWalletSnap(account.metadata.snap.id as SnapId) &&
+      account.options?.entropySource === primaryKeyring.metadata.id
+    ) {
       return true;
     }
 
@@ -56,7 +63,7 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
   getSelectedAccountTokensAcrossChains,
   getCrossChainMetaMaskCachedBalances,
   (state, account) => getMultichainAggregatedBalance(state, account),
-  (state, account) => isPrimaryHdOrFirstPartySnapAccount(state, account),
+  (state, account) => isPrimaryHdAndFirstPartySnapAccount(state, account),
   (
     state,
     account: InternalAccount,
@@ -99,5 +106,18 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
       dismissSeedBackUpReminder === false;
 
     return showMessage;
+  },
+);
+
+export const getSnapAccountsByKeyringId = createDeepEqualSelector(
+  getInternalAccounts,
+  (_state, keyringId) => keyringId,
+  (accounts, keyringId) => {
+    return accounts.filter(
+      (account: InternalAccount) =>
+        account.metadata.snap &&
+        isSnapPreinstalled(account.metadata.snap.id as SnapId) &&
+        account.options?.entropySource === keyringId,
+    );
   },
 );

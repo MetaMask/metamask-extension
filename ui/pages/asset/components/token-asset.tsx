@@ -1,32 +1,38 @@
-import React, { useContext } from 'react';
 import { Token } from '@metamask/assets-controllers';
-import { useSelector, useDispatch } from 'react-redux';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import { useHistory } from 'react-router-dom';
-import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { AssetType } from '../../../../shared/constants/transaction';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  getURLHostName,
+  roundToDecimalPlacesRemovingExtraZeroes,
+} from '../../../helpers/utils/util';
+import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
+import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
   getSelectedInternalAccount,
   getTokenList,
   selectERC20TokensByChain,
 } from '../../../selectors';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import { AssetType } from '../../../../shared/constants/transaction';
-import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import {
-  getURLHostName,
-  roundToDecimalPlacesRemovingExtraZeroes,
-} from '../../../helpers/utils/util';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { showModal } from '../../../store/actions';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../selectors/multichain';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
 const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
-  const { address, symbol, isERC721 } = token;
+  const { address, symbol, isERC721, image } = token;
 
   const tokenList = useSelector(getTokenList);
   const allNetworks: {
@@ -39,8 +45,16 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       ? null
       : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
 
-  const { address: walletAddress } = useSelector(getSelectedInternalAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { address: walletAddress } = selectedAccount;
+
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
+
+  const multichainNetwork = useMultichainSelector(
+    getMultichainNetwork,
+    selectedAccount,
+  );
+  const isEvm = useSelector(getMultichainIsEvm);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -58,7 +72,9 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()];
 
   const name = tokenData?.name || tokenDataFromChain?.name || symbol;
-  const iconUrl = tokenData?.iconUrl || tokenDataFromChain?.iconUrl || '';
+  const iconUrl =
+    tokenData?.iconUrl || tokenDataFromChain?.iconUrl || image || '';
+
   const aggregators = tokenData?.aggregators;
 
   const {
@@ -76,6 +92,13 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     walletAddress,
     { blockExplorerUrl: currentTokenBlockExplorer ?? '' },
   );
+
+  const blockExplorerLink = isEvm
+    ? tokenTrackerLink
+    : getMultichainAccountUrl(
+        parseCaipAssetType(address as CaipAssetType).assetReference,
+        multichainNetwork,
+      );
 
   return (
     <AssetPage
@@ -111,12 +134,16 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
               event: 'Clicked Block Explorer Link',
               category: MetaMetricsEventCategory.Navigation,
               properties: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 link_type: 'Token Tracker',
                 action: 'Token Options',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 block_explorer_domain: getURLHostName(tokenTrackerLink),
               },
             });
-            global.platform.openTab({ url: tokenTrackerLink });
+            global.platform.openTab({ url: blockExplorerLink });
           }}
           tokenSymbol={token.symbol}
         />

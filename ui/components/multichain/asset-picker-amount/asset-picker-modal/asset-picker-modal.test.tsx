@@ -96,7 +96,11 @@ jest.mock('../../../../hooks/useNfts', () => ({
 
 jest.mock('lodash', () => ({
   ...jest.requireActual('lodash'),
-  debounce: jest.fn().mockImplementation((fn) => fn),
+  debounce: jest.fn().mockImplementation((fn) => {
+    const debouncedFn = fn;
+    debouncedFn.cancel = jest.fn();
+    return debouncedFn;
+  }),
 }));
 
 describe('AssetPickerModal', () => {
@@ -223,6 +227,8 @@ describe('AssetPickerModal', () => {
   });
 
   it('renders no NFTs message when there are no NFTs', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     sinon.stub(actions, 'detectNfts').returns(() => Promise.resolve());
     renderWithProvider(
       <AssetPickerModal
@@ -423,8 +429,8 @@ describe('AssetPickerModal token filtering', () => {
     header: 'Select Token',
     isOpen: true,
     onClose: jest.fn(),
-    onAssetChange: onAssetChangeMock,
     autoFocus: true,
+    onAssetChange: onAssetChangeMock,
     network: {
       chainId: '0xa',
       name: 'Optimism',

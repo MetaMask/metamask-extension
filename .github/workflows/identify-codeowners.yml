@@ -4,9 +4,13 @@ on:
   pull_request:
     types:
       - opened
-      - synchronize
       - reopened
+      - synchronize
       - ready_for_review
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master') || contains(github.ref, 'refs/heads/stable')) }}
 
 jobs:
   identify-codeowners:
@@ -17,8 +21,10 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Identify codeowners
+        if: ${{ env.PR_COMMENT_TOKEN }}
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
         run: yarn tsx ./.github/scripts/identify-codeowners.ts

@@ -1,5 +1,8 @@
-import React, { useCallback, useState } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
   SimulationDetails,
@@ -13,10 +16,14 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit-spending-cap-modal';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { updateAtomicBatchData } from '../../../../../../../store/actions/transaction-controller';
+import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
+import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BatchSimulationDetails() {
   const t = useI18nContext();
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -51,18 +58,29 @@ export function BatchSimulationDetails() {
     [id, nestedTransactionIndexToEdit],
   );
 
-  const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
-    ...change,
-    onEdit:
-      change.asset.standard === TokenStandard.ERC20
-        ? () => handleEdit(change)
-        : undefined,
-  }));
+  if (
+    transactionMeta?.type === TransactionType.revokeDelegation ||
+    isUpgradeOnly
+  ) {
+    return null;
+  }
 
-  const approveRow: StaticRow = {
-    label: t('confirmSimulationApprove'),
-    balanceChanges: finalBalanceChanges ?? [],
-  };
+  const approveRows: StaticRow[] = useMemo(() => {
+    const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
+      ...change,
+      onEdit:
+        change.asset.standard === TokenStandard.ERC20
+          ? () => handleEdit(change)
+          : undefined,
+    }));
+
+    return [
+      {
+        label: t('confirmSimulationApprove'),
+        balanceChanges: finalBalanceChanges ?? [],
+      },
+    ];
+  }, [approveBalanceChanges, handleEdit]);
 
   const nestedTransactionToEdit =
     nestedTransactionIndexToEdit === undefined
@@ -75,6 +93,8 @@ export function BatchSimulationDetails() {
         <EditSpendingCapModal
           data={nestedTransactionToEdit?.data}
           isOpenEditSpendingCapModal={true}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={handleEditSubmit}
           setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
           to={nestedTransactionToEdit?.to}
@@ -82,7 +102,7 @@ export function BatchSimulationDetails() {
       )}
       <SimulationDetails
         transaction={transactionMeta}
-        staticRows={[approveRow]}
+        staticRows={approveRows}
         isTransactionsRedesign
         enableMetrics
       />

@@ -1,0 +1,233 @@
+[
+  {
+    "name": "Ethereum Mainnet",
+    "chain": "ETH",
+    "icon": "ethereum",
+    "rpc": [
+      "https://mainnet.infura.io/v3/${INFURA_API_KEY}",
+      "wss://mainnet.infura.io/ws/v3/${INFURA_API_KEY}",
+      "https://api.mycryptoapi.com/eth",
+      "https://cloudflare-eth.com",
+      "https://ethereum-rpc.publicnode.com",
+      "wss://ethereum-rpc.publicnode.com",
+      "https://mainnet.gateway.tenderly.co",
+      "wss://mainnet.gateway.tenderly.co",
+      "https://rpc.blocknative.com/boost",
+      "https://rpc.flashbots.net",
+      "https://rpc.flashbots.net/fast",
+      "https://rpc.mevblocker.io",
+      "https://rpc.mevblocker.io/fast",
+      "https://rpc.mevblocker.io/noreverts",
+      "https://rpc.mevblocker.io/fullprivacy",
+      "https://eth.drpc.org",
+      "wss://eth.drpc.org",
+      "https://api.securerpc.com/v1"
+    ],
+    "features": [{ "name": "EIP155" }, { "name": "EIP1559" }],
+    "faucets": [],
+    "nativeCurrency": { "name": "Ether", "symbol": "ETH", "decimals": 18 },
+    "infoURL": "https://ethereum.org",
+    "shortName": "eth",
+    "chainId": 1,
+    "networkId": 1,
+    "slip44": 60,
+    "ens": { "registry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e" },
+    "explorers": [
+      {
+        "name": "etherscan",
+        "url": "https://etherscan.io",
+        "standard": "EIP3091"
+      },
+      {
+        "name": "blockscout",
+        "url": "https://eth.blockscout.com",
+        "icon": "blockscout",
+        "standard": "EIP3091"
+      },
+      {
+        "name": "dexguru",
+        "url": "https://ethereum.dex.guru",
+        "icon": "dexguru",
+        "standard": "EIP3091"
+      },
+      {
+        "name": "Routescan",
+        "url": "https://ethereum.routescan.io",
+        "standard": "EIP3091"
+      }
+    ]
+  },
+  {
+    "name": "Orderly Mainnet",
+    "chain": "ETH",
+    "rpc": ["https://rpc.orderly.network"],
+    "faucets": [],
+    "nativeCurrency": { "name": "Ether", "symbol": "ETH", "decimals": 18 },
+    "infoURL": "https://orderly.network/",
+    "shortName": "orderly",
+    "chainId": 291,
+    "networkId": 291,
+    "icon": "orderly",
+    "explorers": [
+      {
+        "name": "orderlyscout",
+        "url": "https://explorer.orderly.network",
+        "icon": "blockscout",
+        "standard": "EIP3091"
+      }
+    ]
+  },
+  {
+    "name": "PrimusChain mainnet",
+    "chain": "PC",
+    "rpc": ["https://ethnode.primusmoney.com/mainnet"],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "Primus Ether",
+      "symbol": "PETH",
+      "decimals": 18
+    },
+    "infoURL": "https://primusmoney.com",
+    "shortName": "primuschain",
+    "chainId": 78,
+    "networkId": 78
+  },
+  {
+    "name": "Camino C-Chain",
+    "chain": "CAM",
+    "rpc": ["https://api.camino.network/ext/bc/C/rpc"],
+    "faucets": [],
+    "nativeCurrency": { "name": "Camino", "symbol": "CAM", "decimals": 18 },
+    "infoURL": "https://camino.network/",
+    "shortName": "Camino",
+    "chainId": 500,
+    "networkId": 1000,
+    "icon": "camino",
+    "explorers": [
+      {
+        "name": "blockexplorer",
+        "url": "https://suite.camino.network/explorer",
+        "standard": "none"
+      }
+    ]
+  },
+  {
+    "name": "Elysium Testnet",
+    "title": "An L1, carbon-neutral, tree-planting, metaverse dedicated blockchain created by VulcanForged",
+    "chain": "Atlantis",
+    "rpc": ["https://rpc.atlantischain.network"],
+    "faucets": ["https://faucet.atlantischain.network"],
+    "nativeCurrency": { "name": "ELY", "symbol": "ELY", "decimals": 18 },
+    "infoURL": "https://elysiumchain.tech",
+    "shortName": "ATL",
+    "chainId": 1338,
+    "networkId": 1338,
+    "explorers": [
+      {
+        "name": "Atlantis explorer",
+        "url": "https://blockscout.atlantischain.network",
+        "standard": "EIP3091"
+      }
+    ]
+  },
+  {
+    "name": "Geth Testnet",
+    "title": "Go Ethereum (Geth) Private Testnet",
+    "chain": "ETH",
+    "rpc": ["http://127.0.0.1:8545"],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "Geth Testnet Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "infoURL": "https://geth.ethereum.org",
+    "shortName": "geth",
+    "chainId": 1337,
+    "networkId": 1337,
+    "slip44": 1
+  },
+  {
+    "name": "Linea Sepolia",
+    "title": "Linea Sepolia Testnet",
+    "chain": "ETH",
+    "rpc": [
+      "https://rpc.sepolia.linea.build",
+      "wss://rpc.sepolia.linea.build",
+      "https://linea-sepolia.infura.io/v3/${INFURA_API_KEY}",
+      "wss://linea-sepolia.infura.io/ws/v3/${INFURA_API_KEY}",
+      "https://linea-sepolia-rpc.publicnode.com",
+      "wss://linea-sepolia-rpc.publicnode.com"
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "Linea Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "infoURL": "https://linea.build",
+    "shortName": "linea-sepolia",
+    "chainId": 59141,
+    "networkId": 59141,
+    "slip44": 1,
+    "icon": "linea",
+    "parent": {
+      "type": "L2",
+      "chain": "eip155-11155111",
+      "bridges": [{ "url": "https://bridge.linea.build/" }]
+    },
+    "explorers": [
+      {
+        "name": "Etherscan",
+        "url": "https://sepolia.lineascan.build",
+        "standard": "EIP3091",
+        "icon": "linea"
+      },
+      {
+        "name": "Blockscout",
+        "url": "https://explorer.sepolia.linea.build",
+        "standard": "EIP3091",
+        "icon": "linea"
+      }
+    ],
+    "status": "active"
+  },
+  {
+    "name": "MegaETH Testnet",
+    "chain": "ETH",
+    "nativeCurrency": {
+      "name": "MegaETH Testnet Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "rpc": ["https://carrot.megaeth.com/rpc", "wss://carrot.megaeth.com/ws"],
+    "faucets": [],
+    "infoURL": "https://testnet.megaeth.com",
+    "shortName": "megatest",
+    "chainId": 6342,
+    "networkId": 6342,
+    "slip44": 1
+  },
+  {
+    "name": "Monad Testnet",
+    "chain": "MON",
+    "nativeCurrency": {
+      "name": "Monad Testnet Token",
+      "symbol": "MON",
+      "decimals": 18
+    },
+    "rpc": ["https://testnet-rpc.monad.xyz"],
+    "faucets": ["https://faucet.monad.xyz"],
+    "infoURL": "https://testnet.monad.xyz",
+    "shortName": "monadtest",
+    "chainId": 10143,
+    "networkId": 10143,
+    "explorers": [
+      {
+        "name": "Monad Testnet Explorer",
+        "url": "https://testnet.monadexplorer.com",
+        "standard": "EIP3091"
+      }
+    ]
+  }
+]

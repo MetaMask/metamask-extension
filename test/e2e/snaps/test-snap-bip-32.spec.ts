@@ -1,10 +1,11 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { mockBip32Snap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 const bip32PublicKey =
   '"0x043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"';
@@ -26,29 +27,29 @@ describe('Test Snap bip-32', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
+        testSpecificMock: mockBip32Snap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        // We explicitly choose to await balances to prevent flakiness due to long login times.
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to `test-snaps` page, click bip32, connect and approve
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectBip32Button',
-          true,
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectBip32Button', {
+          withWarning: true,
+        });
 
         // check the installation status
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectBip32Button',
           'Reconnect to BIP-32 Snap',
         );
 
         // Click bip32 button to get private key and validate the result
         await testSnaps.scrollAndClickButton('getBip32PublicKeyButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32PublicKeyResultSpan',
           bip32PublicKey,
         );
@@ -57,7 +58,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.scrollAndClickButton(
           'getBip32CompressedPublicKeyButton',
         );
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32PublicKeyResultSpan',
           bip32CompressedPublicKey,
         );
@@ -66,7 +67,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageSecp256k1Input', 'foo bar');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32MessageResultSecp256k1Span',
           publicKeyGeneratedWithSecp256k1Message,
         );
@@ -76,7 +77,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageEd25519Input', 'foo bar');
         await testSnaps.clickButton('signEd25519MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32MessageResultEd25519Span',
           publicKeyGeneratedWithEd2551,
         );
@@ -85,7 +86,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageEd25519Bip32Input', 'foo bar');
         await testSnaps.scrollAndClickButton('signEd25519Bip32MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'messageResultEd25519SBip32Span',
           publicKeyGeneratedWithEd25519Bip32,
         );
@@ -99,7 +100,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32MessageResultSecp256k1Span',
           publicKeyGeneratedWithEntropySourceSRP1,
         );
@@ -112,7 +113,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32MessageResultSecp256k1Span',
           publicKeyGeneratedWithEntropySourceSRP2,
         );

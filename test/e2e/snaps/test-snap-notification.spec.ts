@@ -6,12 +6,14 @@ import HeaderNavbar from '../page-objects/pages/header-navbar';
 import { withFixtures, unlockWallet, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
+import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Test Snap Notification', function () {
   it('can send 1 correctly read in-app notification', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockNotificationSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -26,7 +28,7 @@ describe('Test Snap Notification', function () {
           driver,
           'connectNotificationButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectNotificationButton',
           'Reconnect to Notifications Snap',
         );
@@ -36,15 +38,15 @@ describe('Test Snap Notification', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.check_notificationCountInMenuOption(1);
+        await headerNavbar.checkNotificationCountInMenuOption(1);
 
         // this click will close the menu
         await headerNavbar.openThreeDotMenu();
 
         // click the notification options and validate the message in the notification list
         await headerNavbar.clickNotificationsOptions();
-        await notificationsListPage.check_pageIsLoaded();
-        await notificationsListPage.check_snapsNotificationMessage(
+        await notificationsListPage.checkPageIsLoaded();
+        await notificationsListPage.checkSnapsNotificationMessage(
           'Hello from within MetaMask!',
         );
       },
@@ -55,6 +57,7 @@ describe('Test Snap Notification', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockNotificationSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -69,7 +72,7 @@ describe('Test Snap Notification', function () {
           driver,
           'connectNotificationButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectNotificationButton',
           'Reconnect to Notifications Snap',
         );
@@ -79,15 +82,15 @@ describe('Test Snap Notification', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.check_notificationCountInMenuOption(1);
+        await headerNavbar.checkNotificationCountInMenuOption(1);
 
         // this click will close the menu
         await headerNavbar.openThreeDotMenu();
 
         // click the notification options
         await headerNavbar.clickNotificationsOptions();
-        await notificationsListPage.check_pageIsLoaded();
-        await notificationsListPage.check_snapsNotificationMessage(
+        await notificationsListPage.checkPageIsLoaded();
+        await notificationsListPage.checkSnapsNotificationMessage(
           'Hello from MetaMask, click here for an expanded view!',
         );
         await notificationsListPage.clickSpecificNotificationMessage(

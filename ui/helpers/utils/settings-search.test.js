@@ -74,8 +74,6 @@ const t = (key) => {
       return 'Security & privacy';
     case 'revealSeedWords':
       return 'Reveal Secret Recovery Phrase';
-    case 'showIncomingTransactions':
-      return 'Show incoming transactions';
     case 'usePhishingDetection':
       return 'Use phishing detection';
     case 'usePhishingDetectionDescription':
@@ -142,6 +140,8 @@ const t = (key) => {
       return 'Watch Ethereum Accounts (Beta)';
     case 'bitcoin-support':
       return 'Enable "Add a new Bitcoin account (Beta)"';
+    case 'backupAndSync':
+      return 'Backup and Sync';
     default:
       return '';
   }
@@ -170,6 +170,12 @@ describe('Settings Search Utils', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(10);
     });
 
+    it('returns "Backup And Sync" section count', () => {
+      expect(
+        getNumberOfSettingRoutesInTab(t, t('backupAndSync')),
+      ).toStrictEqual(3);
+    });
+
     it('returns "Contact" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
     });
@@ -186,7 +192,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        4,
+        3,
       );
     });
 

@@ -1,5 +1,5 @@
-import { IconName } from '@metamask/snaps-sdk/jsx';
 import React, { useRef } from 'react';
+import { IconName } from '../../component-library/icon';
 import {
   BackgroundColor,
   JustifyContent,
@@ -69,7 +69,7 @@ export const NetworkFilterComponent = ({
         ellipsis
       >
         {isTokenNetworkFilterEqualCurrentNetwork
-          ? currentNetworkConfig?.nickname ?? t('currentNetwork')
+          ? (currentNetworkConfig?.nickname ?? t('currentNetwork'))
           : t('popularNetworks')}
       </ButtonBase>
 

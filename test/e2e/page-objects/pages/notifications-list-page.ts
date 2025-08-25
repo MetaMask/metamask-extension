@@ -11,6 +11,9 @@ class NotificationsListPage {
   private readonly notificationsSettingsButton =
     '[data-testid="notifications-settings-button"]';
 
+  private readonly notificationListItem = (id: string) =>
+    `[data-testid="notification-list-item-${id}"]`;
+
   private readonly snapsNotificationMessage =
     '.snap-notifications__item__details__message';
 
@@ -18,7 +21,7 @@ class NotificationsListPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.notificationsListPageTitle,
@@ -46,7 +49,7 @@ class NotificationsListPage {
     await this.driver.clickElement(this.notificationsSettingsButton);
   }
 
-  async check_snapsNotificationMessage(expectedMessage: string): Promise<void> {
+  async checkSnapsNotificationMessage(expectedMessage: string): Promise<void> {
     console.log('Checking snap notification message');
     await this.driver.waitForSelector({
       css: this.snapsNotificationMessage,
@@ -60,6 +63,18 @@ class NotificationsListPage {
       css: this.snapsNotificationMessage,
       text: message,
     });
+  }
+
+  async checkNotificationItemByTestId(id: string) {
+    console.log('Checking notification list item by id');
+    await this.driver.scrollToElement(
+      await this.driver.waitForSelector(this.notificationListItem(id)),
+    );
+  }
+
+  async clickNotificationItemByTestId(id: string) {
+    console.log('Clicking notification list item by id');
+    await this.driver.clickElement(this.notificationListItem(id));
   }
 }
 

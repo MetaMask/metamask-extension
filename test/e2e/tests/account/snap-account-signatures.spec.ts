@@ -16,6 +16,7 @@ import {
   signTypedDataV4WithSnapAccount,
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
+import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Snap Account Signatures', function (this: Suite) {
   this.timeout(200000); // This test is very long, so we need an unusually high timeout
@@ -26,11 +27,12 @@ describe('Snap Account Signatures', function (this: Suite) {
     // generate title of the test from flowType
     const title = `can sign with ${flowType} flow`;
 
-    it(title, async () => {
+    it(title, async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder().build(),
+          testSpecificMock: mockSimpleKeyringSnap,
           title,
         },
         async ({ driver }: { driver: Driver }) => {
@@ -46,16 +48,16 @@ describe('Snap Account Signatures', function (this: Suite) {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_accountLabel('SSK Account');
+          await headerNavbar.checkAccountLabel('SSK Account');
 
           // Navigate to experimental settings and disable redesigned signature.
           await headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.goToExperimentalSettings();
 
           const experimentalSettings = new ExperimentalSettings(driver);
-          await experimentalSettings.check_pageIsLoaded();
+          await experimentalSettings.checkPageIsLoaded();
 
           // Connect the SSK account
           const testDapp = new TestDapp(driver);

@@ -24,7 +24,6 @@
   },
   "allowedCircularGlob": [
     "ui/pages/confirmations/**",
-    "ui/pages/notifications/**",
     "ui/ducks/**",
     "ui/selectors/**",
     "ui/hooks/**",

@@ -4,7 +4,7 @@ exports[`SnapUIRenderer prefills interactive inputs with existing state 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
+    style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -16,7 +16,7 @@ exports[`SnapUIRenderer prefills interactive inputs with existing state 1`] = `
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -42,7 +42,7 @@ exports[`SnapUIRenderer re-focuses input after re-render 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
+    style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -54,7 +54,7 @@ exports[`SnapUIRenderer re-focuses input after re-render 1`] = `
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -70,7 +70,7 @@ exports[`SnapUIRenderer re-focuses input after re-render 1`] = `
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -96,7 +96,7 @@ exports[`SnapUIRenderer re-renders when the interface changes 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
+    style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -108,7 +108,7 @@ exports[`SnapUIRenderer re-renders when the interface changes 1`] = `
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -124,7 +124,7 @@ exports[`SnapUIRenderer re-renders when the interface changes 1`] = `
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -150,7 +150,7 @@ exports[`SnapUIRenderer re-syncs state when the interface changes 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
+    style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -162,7 +162,7 @@ exports[`SnapUIRenderer re-syncs state when the interface changes 1`] = `
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -178,7 +178,7 @@ exports[`SnapUIRenderer re-syncs state when the interface changes 1`] = `
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -204,7 +204,7 @@ exports[`SnapUIRenderer renders basic UI 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
+    style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -231,7 +231,7 @@ exports[`SnapUIRenderer renders footers 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
+    style="overflow-y: auto; margin-bottom: 80px;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -247,14 +247,14 @@ exports[`SnapUIRenderer renders footers 1`] = `
       </div>
       <div
         class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
-        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px;"
       >
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+          data-testid="undefined-snap-footer-button"
           textvariant="body-md"
         >
           <span
-            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-icon-inverse"
           >
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
@@ -298,252 +298,11 @@ exports[`SnapUIRenderer renders loading state 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer supports address inputs 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <div
-          class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
-          >
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-              focused="false"
-              id="input"
-              type="text"
-              value=""
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
-exports[`SnapUIRenderer supports address inputs with a disabled prop 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <div
-          class="mm-box mm-form-text-field mm-form-text-field--disabled snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
-          >
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-              disabled=""
-              focused="false"
-              id="input"
-              type="text"
-              value=""
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
-exports[`SnapUIRenderer supports address inputs with a placeholder 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <div
-          class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
-          >
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-              focused="false"
-              id="input"
-              placeholder="Enter an address"
-              type="text"
-              value=""
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
-exports[`SnapUIRenderer supports address inputs with existing state 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <div
-          class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
-          >
-            <div
-              style="display: flex;"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(245, 228, 0);"
-              >
-                <svg
-                  height="24"
-                  width="24"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#F2BE02"
-                    height="24"
-                    transform="translate(4.11204385070503 -3.89652025148055) rotate(387.1 12 12)"
-                    width="24"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#01778E"
-                    height="24"
-                    transform="translate(-1.9540919563657109 12.528454691642345) rotate(227.4 12 12)"
-                    width="24"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#C81435"
-                    height="24"
-                    transform="translate(13.477268130678231 -9.444486788922836) rotate(422.3 12 12)"
-                    width="24"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-              focused="false"
-              id="input"
-              type="text"
-              value="0x1234567890123456789012345678901234567890"
-            />
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-              style="mask-image: url('./images/icons/close.svg'); cursor: pointer;"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
-exports[`SnapUIRenderer supports address inputs within a field 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <div
-          class="mm-box mm-form-text-field snap-ui-renderer__address-input snap-ui-renderer__field mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <label
-            class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-            for="input"
-          >
-            Address
-          </label>
-          <div
-            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
-          >
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-              focused="false"
-              id="input"
-              type="text"
-              value=""
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
 exports[`SnapUIRenderer supports container backgrounds 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
-    style="overflow-y: auto;"
+    style="overflow-y: auto; margin-bottom: 80px;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -559,14 +318,14 @@ exports[`SnapUIRenderer supports container backgrounds 1`] = `
       </div>
       <div
         class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
-        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px;"
       >
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+          data-testid="undefined-snap-footer-button"
           textvariant="body-md"
         >
           <span
-            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-icon-inverse"
           >
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
@@ -587,206 +346,11 @@ exports[`SnapUIRenderer supports container backgrounds 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer supports file inputs 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <form
-          class="mm-box snap-ui-renderer__form mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
-          id="form"
-        >
-          <div
-            class="mm-box snap-ui-renderer__file-input snap-ui-renderer__field mm-box--display-flex mm-box--flex-direction-column"
-          >
-            <label
-              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-              for="input"
-            >
-              My Input
-            </label>
-            <input
-              hidden=""
-              id="input"
-              name="input"
-              type="file"
-            />
-            <div
-              class="mm-box snap-ui-renderer__file-input__drop-zone mm-box--padding-top-5 mm-box--padding-bottom-5 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center mm-box--text-align-center mm-box--rounded-md mm-box--border-style-solid mm-box--border-color-border-muted mm-box--border-width-1"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/upload.svg');"
-              />
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-icon-alternative"
-              >
-                Drop your file here
-              </p>
-            </div>
-          </div>
-          <button
-            class="mm-box mm-text snap-ui-renderer__button mm-text--body-md mm-text--font-weight-medium mm-box--color-info-default"
-            id="submit"
-            type="submit"
-          >
-            Submit
-          </button>
-        </form>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
-exports[`SnapUIRenderer supports forms 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <form
-          class="mm-box snap-ui-renderer__form mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
-          id="form"
-        >
-          <div
-            class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
-          >
-            <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
-            >
-              <input
-                autocomplete="off"
-                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-                focused="false"
-                id="input"
-                type="text"
-                value="abc"
-              />
-            </div>
-          </div>
-          <button
-            class="mm-box mm-text snap-ui-renderer__button mm-text--body-md mm-text--font-weight-medium mm-box--color-info-default"
-            id="submit"
-            type="submit"
-          >
-            Submit
-          </button>
-        </form>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
-exports[`SnapUIRenderer supports forms with fields 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <form
-          class="mm-box snap-ui-renderer__form mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
-          id="form"
-        >
-          <div
-            class="mm-box mm-form-text-field snap-ui-renderer__input snap-ui-renderer__field mm-box--display-flex mm-box--flex-direction-column"
-          >
-            <label
-              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-              for="input"
-            >
-              My Input
-            </label>
-            <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
-            >
-              <input
-                autocomplete="off"
-                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-                focused="false"
-                id="input"
-                type="text"
-                value="abc"
-              />
-            </div>
-          </div>
-          <div
-            class="mm-box snap-ui-renderer__checkbox mm-box--display-flex mm-box--flex-direction-column"
-          >
-            <label
-              class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-              for="checkbox"
-            >
-              Checkbox
-            </label>
-            <label
-              class="mm-box mm-text mm-checkbox mm-text--body-md mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-            >
-              <span
-                class="mm-checkbox__input-wrapper"
-              >
-                <input
-                  class="mm-box mm-checkbox__input mm-checkbox__input--checked mm-box--margin-0 mm-box--margin-right-0 mm-box--display-flex mm-box--background-color-primary-default mm-box--rounded-sm mm-box--border-color-border-muted mm-box--border-width-2 box--border-style-solid"
-                  type="checkbox"
-                />
-                <span
-                  class="mm-box mm-checkbox__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
-                  style="mask-image: url('./images/icons/check-bold.svg');"
-                />
-              </span>
-            </label>
-          </div>
-          <button
-            class="mm-box mm-text snap-ui-renderer__button mm-text--body-md mm-text--font-weight-medium mm-box--color-info-default"
-            id="submit"
-            type="submit"
-          >
-            Submit
-          </button>
-        </form>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
 exports[`SnapUIRenderer supports interactive inputs 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
+    style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -798,7 +362,7 @@ exports[`SnapUIRenderer supports interactive inputs 1`] = `
           class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -824,7 +388,7 @@ exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
-    style="overflow-y: auto;"
+    style="overflow-y: auto; margin-bottom: 80px;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -840,14 +404,14 @@ exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
       </div>
       <div
         class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
-        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px;"
       >
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+          data-testid="undefined-snap-footer-button"
           textvariant="body-md"
         >
           <span
-            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-icon-inverse"
           >
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
@@ -872,7 +436,7 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
+    style="overflow-y: auto; margin-bottom: 80px;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -888,23 +452,24 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
       </div>
       <div
         class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
-        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px;"
       >
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+          data-testid="undefined-snap-footer-button"
         >
           <span
-            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-default"
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-text-default"
           >
             Cancel
           </span>
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+          data-testid="undefined-snap-footer-button"
           textvariant="body-md"
         >
           <span
-            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-icon-inverse"
           >
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
@@ -915,181 +480,6 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
             Foo
           </span>
         </button>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
-exports[`SnapUIRenderer will render a matched address name 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
-            style="height: 48px;"
-          >
-            <div
-              style="display: flex;"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
-              >
-                <svg
-                  height="24"
-                  width="24"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#18CDF2"
-                    height="24"
-                    transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
-                    width="24"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#035E56"
-                    height="24"
-                    transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
-                    width="24"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26602"
-                    height="24"
-                    transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
-                    width="24"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div
-              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
-              style="flex: 1; min-width: 0;"
-            >
-              <div
-                class="mm-box mm-box--gap-2 mm-box--flex-direction-column"
-                style="min-width: 0; flex: 1;"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
-                >
-                  Test Account
-                </p>
-                <p
-                  class="mm-box mm-text mm-text--body-xs mm-text--ellipsis mm-box--color-text-default"
-                >
-                  0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc
-                </p>
-              </div>
-            </div>
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-              style="mask-image: url('./images/icons/close.svg'); cursor: pointer; flex-shrink: 0;"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
-  </div>
-</div>
-`;
-
-exports[`SnapUIRenderer will render avatar when displayAvatar is true 1`] = `
-<div>
-  <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto;"
-  >
-    <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
-    >
-      <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-      >
-        <div
-          class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
-          >
-            <div
-              style="display: flex;"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(242, 202, 2);"
-              >
-                <svg
-                  height="24"
-                  width="24"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#03405E"
-                    height="24"
-                    transform="translate(-5.1032274517898335 -4.005457853807921) rotate(369.5 12 12)"
-                    width="24"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FAA200"
-                    height="24"
-                    transform="translate(4.654017159434154 -10.422671895325516) rotate(387.5 12 12)"
-                    width="24"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#016F8E"
-                    height="24"
-                    transform="translate(-16.380316861028035 -8.91841489898652) rotate(241.5 12 12)"
-                    width="24"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-              focused="false"
-              id="input"
-              type="text"
-              value="0xabcd5d886577d5081b0c52e242ef29e70be3e7bc"
-            />
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
-              style="mask-image: url('./images/icons/close.svg'); cursor: pointer;"
-            />
-          </div>
-        </div>
       </div>
     </div>
     <span

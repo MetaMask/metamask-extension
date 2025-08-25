@@ -1,32 +1,42 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { CaipChainId } from '@metamask/utils';
+import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { CreateAccountSnapOptions } from '../../../../shared/lib/accounts';
 import { CreateSnapAccount } from './create-snap-account';
+
+const newSnapAccount = createMockInternalAccount({
+  name: 'Snap Account 2',
+  address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
+});
+
+const mockCreateAccount = jest.fn().mockResolvedValue(newSnapAccount);
 
 // Mock dependencies
 jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => {
-  const mockCreateAccount = jest.fn().mockResolvedValue(true);
+  const mockGetNextAvailableAccountName = jest
+    .fn()
+    .mockResolvedValue('Snap Account 2');
+
   return {
+    ...jest.requireActual(
+      '../../../hooks/accounts/useMultichainWalletSnapClient',
+    ),
     useMultichainWalletSnapClient: jest.fn().mockReturnValue({
-      createAccount: mockCreateAccount,
+      createAccount: (
+        options: CreateAccountSnapOptions,
+        internalOptions?: SnapKeyringInternalOptions,
+      ) => mockCreateAccount(options, internalOptions),
+      getNextAvailableAccountName: mockGetNextAvailableAccountName,
     }),
-    __mockCreateAccount: mockCreateAccount,
   };
 });
-
-jest.mock('../../../store/actions', () => ({
-  ...jest.requireActual('../../../store/actions'),
-  getNextAvailableAccountName: jest.fn().mockResolvedValue('Snap Account 2'),
-}));
-
-const { __mockCreateAccount: mockCreateAccount } = jest.requireMock(
-  '../../../hooks/accounts/useMultichainWalletSnapClient',
-);
 
 const mockSnapAccount = createMockInternalAccount({
   name: 'Snap Account 1',
@@ -57,6 +67,10 @@ const render = (props = defaultProps) => {
         {
           type: 'Snap Keyring',
           accounts: [mockSnapAccount.address],
+          metadata: {
+            id: 'test-keyring-id',
+            name: '',
+          },
         },
       ],
       accounts: {
@@ -105,28 +119,7 @@ describe('CreateSnapAccount', () => {
     fireEvent.click(createButton);
 
     await waitFor(() => {
-      expect(onActionComplete).toHaveBeenCalledWith(true);
-    });
-  });
-
-  it('calls onActionComplete with false when account creation fails', async () => {
-    const error = new Error('Failed to create account');
-    jest.spyOn(console, 'error').mockImplementation(() => {
-      /* Suppress error log */
-    });
-    mockCreateAccount.mockRejectedValueOnce(error);
-
-    const onActionComplete = jest.fn();
-    const { getByTestId } = render({
-      ...defaultProps,
-      onActionComplete,
-    });
-
-    const createButton = getByTestId('submit-add-account-with-name');
-    fireEvent.click(createButton);
-
-    await waitFor(() => {
-      expect(onActionComplete).toHaveBeenCalledWith(false);
+      expect(onActionComplete).toHaveBeenCalledWith(true, newSnapAccount);
     });
   });
 
@@ -138,10 +131,41 @@ describe('CreateSnapAccount', () => {
 
     await waitFor(() => {
       expect(mockCreateAccount).toHaveBeenCalledWith(
-        defaultProps.chainId,
-        defaultProps.selectedKeyringId,
-        '',
+        {
+          scope: defaultProps.chainId,
+          entropySource: defaultProps.selectedKeyringId,
+          accountNameSuggestion: '',
+        },
+        {
+          setSelectedAccount: undefined,
+        },
       );
+    });
+  });
+
+  it('renders the suggested account name as placeholder', async () => {
+    const { getByPlaceholderText } = render({
+      ...defaultProps,
+      clientType: WalletClientType.Solana,
+      chainId: MultichainNetworks.SOLANA,
+    });
+
+    await waitFor(() => {
+      const nameSuggestion = getByPlaceholderText('Snap Account 2');
+      expect(nameSuggestion).toBeInTheDocument();
+    });
+  });
+
+  it('only calls createAccount once', async () => {
+    const { getByTestId } = render();
+
+    const createButton = getByTestId('submit-add-account-with-name');
+    fireEvent.click(createButton);
+    fireEvent.click(createButton);
+    fireEvent.click(createButton);
+
+    await waitFor(() => {
+      expect(mockCreateAccount).toHaveBeenCalledTimes(1);
     });
   });
 });

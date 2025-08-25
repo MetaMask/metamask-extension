@@ -1,20 +1,14 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import reactRouterDom from 'react-router-dom';
 import { EthAccountType } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import configureStore from '../../../../../store/store';
-import { renderWithProvider } from '../../../../../../test/jest';
-import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import NftsTab from '.';
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
-}));
 
 const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
 
@@ -175,6 +169,11 @@ const render = ({
         [CHAIN_IDS.MAINNET]: {},
         [CHAIN_IDS.GOERLI]: {},
       },
+      enabledNetworkMap: {
+        eip155: {
+          [chainId]: true,
+        },
+      },
       ...mockNetworkState({ chainId }),
       currencyRates: {},
       accounts: {
@@ -205,6 +204,10 @@ const render = ({
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: 'eip155:1',
+      isEvmSelected: true,
       currentCurrency: 'usd',
       tokenList: {},
       useNftDetection,
@@ -228,19 +231,6 @@ describe('NFT Items', () => {
     setUseNftDetection: setUseNftDetectionStub,
     setOpenSeaEnabled: setDisplayNftMediaStub,
     setPreference: setPreferenceStub,
-  });
-  const historyPushMock = jest.fn();
-
-  beforeEach(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: historyPushMock });
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
-    jest.clearAllMocks();
   });
 
   describe('NFTs Detection Notice', () => {
@@ -304,44 +294,6 @@ describe('NFT Items', () => {
         chainId: '0x4',
       });
       expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
-    });
-  });
-
-  describe('NFTs options', () => {
-    it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-        useNftDetection: true,
-      });
-      expect(detectNftsStub).not.toHaveBeenCalled();
-      expect(checkAndUpdateAllNftsOwnershipStatusStub).not.toHaveBeenCalled();
-      fireEvent.click(screen.queryByText('Refresh list'));
-      expect(detectNftsStub).toHaveBeenCalled();
-      expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
-    });
-
-    it('should render a link "Refresh list" when some NFTs are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateNftsOwnershipStatus', () => {
-      render({
-        chainId: '0x5',
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-        useNftDetection: true,
-      });
-      expect(checkAndUpdateAllNftsOwnershipStatusStub).not.toHaveBeenCalled();
-      fireEvent.click(screen.queryByText('Refresh list'));
-      expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
-    });
-
-    it('should render a link "Enable autodetect" when some NFTs are present and NFT auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-      });
-      expect(historyPushMock).toHaveBeenCalledTimes(0);
-      fireEvent.click(screen.queryByText('Enable autodetect'));
-      expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
     });
   });
 });

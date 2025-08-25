@@ -480,7 +480,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >
 > ```jsx
 > const pageTitle = await driver.findElement('.unlock-page__title');
-> assert.equal(await pageTitle.getText(), 'Welcome back!');
+> assert.equal(await pageTitle.getText(), 'Welcome back');
 > ```
 >
 > >

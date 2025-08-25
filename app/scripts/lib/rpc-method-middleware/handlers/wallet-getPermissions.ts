@@ -9,7 +9,7 @@ import {
   Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
@@ -57,7 +57,7 @@ async function getPermissionsImplementation(
         CaveatSpecificationConstraint
       >['getPermissions']
     >;
-    getAccounts: (options?: { ignoreLock?: boolean }) => string[];
+    getAccounts: () => string[];
   },
 ) {
   const permissions = { ...getPermissionsForOrigin() };
@@ -70,7 +70,7 @@ async function getPermissionsImplementation(
   if (caip25CaveatValue) {
     // We cannot derive ethAccounts directly from the CAIP-25 permission
     // because the accounts will not be in order of lastSelected
-    const ethAccounts = getAccounts({ ignoreLock: true });
+    const ethAccounts = getAccounts();
 
     if (ethAccounts.length > 0) {
       permissions[RestrictedMethods.eth_accounts] = {

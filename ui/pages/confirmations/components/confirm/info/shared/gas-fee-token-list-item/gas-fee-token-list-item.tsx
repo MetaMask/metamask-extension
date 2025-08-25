@@ -3,6 +3,8 @@ import { GasFeeToken } from '@metamask/transaction-controller';
 import classnames from 'classnames';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
   Box,
   Icon,
@@ -24,32 +26,28 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import {
-  NATIVE_TOKEN_ADDRESS,
-  useGasFeeToken,
-} from '../../hooks/useGasFeeToken';
-import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
+import { useGasFeeToken } from '../../hooks/useGasFeeToken';
 import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 
 export type GasFeeTokenListItemProps = {
-  tokenAddress: Hex;
   isSelected?: boolean;
   onClick?: (token: GasFeeToken) => void;
+  tokenAddress?: Hex;
+  warning?: string;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenListItem({
-  tokenAddress,
   isSelected,
   onClick,
+  tokenAddress,
+  warning,
 }: GasFeeTokenListItemProps) {
   const t = useI18nContext();
   const gasFeeToken = useGasFeeToken({ tokenAddress });
   const currentCurrency = useSelector(getCurrentCurrency);
-
-  const hasInsufficientNative =
-    Boolean(useInsufficientBalanceAlerts().length) &&
-    tokenAddress === NATIVE_TOKEN_ADDRESS;
 
   if (!gasFeeToken) {
     return null;
@@ -61,7 +59,7 @@ export function GasFeeTokenListItem({
     <ListItem
       image={
         <GasFeeTokenIcon
-          tokenAddress={tokenAddress}
+          tokenAddress={tokenAddress ?? NATIVE_TOKEN_ADDRESS}
           size={GasFeeTokenIconSize.Md}
         />
       }
@@ -72,12 +70,14 @@ export function GasFeeTokenListItem({
       )} ${balanceFiat} ${currentCurrency.toUpperCase()}`}
       rightPrimary={amountFiat}
       rightSecondary={`${amountFormatted} ${symbol}`}
-      warning={hasInsufficientNative && <InsufficientBalanceIndicator />}
+      warning={warning && <WarningIndicator text={warning} />}
       onClick={() => onClick?.(gasFeeToken)}
     />
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ListItem({
   image,
   leftPrimary,
@@ -99,7 +99,7 @@ function ListItem({
 }) {
   return (
     <Box
-      data-testid="gas-fee-token-list-item"
+      data-testid={`gas-fee-token-list-item-${leftPrimary}`}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
@@ -126,6 +126,7 @@ function ListItem({
             gap={2}
           >
             <Text
+              data-testid="gas-fee-token-list-item-symbol"
               as="button"
               variant={TextVariant.bodyMdMedium}
               backgroundColor={BackgroundColor.transparent}
@@ -136,6 +137,7 @@ function ListItem({
             {warning}
           </Box>
           <Text
+            data-testid="gas-fee-token-list-item-balance"
             variant={TextVariant.bodySmMedium}
             color={TextColor.textAlternative}
           >
@@ -144,8 +146,14 @@ function ListItem({
         </Box>
       </Box>
       <Box textAlign={TextAlign.Right} paddingRight={2}>
-        <Text variant={TextVariant.bodyMdMedium}>{rightPrimary}</Text>
         <Text
+          data-testid="gas-fee-token-list-item-amount-fiat"
+          variant={TextVariant.bodyMdMedium}
+        >
+          {rightPrimary}
+        </Text>
+        <Text
+          data-testid="gas-fee-token-list-item-amount-token"
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
         >
@@ -156,9 +164,9 @@ function ListItem({
   );
 }
 
-function InsufficientBalanceIndicator() {
-  const t = useI18nContext();
-
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function WarningIndicator({ text }: { text: string }) {
   return (
     <Box
       display={Display.Flex}
@@ -175,12 +183,14 @@ function InsufficientBalanceIndicator() {
         color={IconColor.iconMuted}
       />
       <Text variant={TextVariant.bodyXsMedium} color={TextColor.textMuted}>
-        {t('confirmGasFeeTokenInsufficientBalance')}
+        {text}
       </Text>
     </Box>
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function SelectedIndicator() {
   return (
     <Box

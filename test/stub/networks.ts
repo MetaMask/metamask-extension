@@ -80,19 +80,25 @@ export const mockMultichainNetworkState =
       multichainNetworkConfigurationsByChainId: {
         [BtcScope.Mainnet]: {
           chainId: BtcScope.Mainnet,
-          name: 'Bitcoin Mainnet',
+          name: 'Bitcoin',
           nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
           isEvm: false,
         },
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
-          name: 'Solana Mainnet',
+          name: 'Solana',
           nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
           isEvm: false,
         },
       },
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
       isEvmSelected: true,
+      networksWithTransactionActivity: {
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          namespace: 'eip155',
+          activeChains: ['0x5'],
+        },
+      },
     };
   };
 
@@ -116,8 +122,8 @@ export const mockNetworkState = (
   const networkConfigurations = networks.map((network) => {
     const blockExplorer =
       !('blockExplorerUrl' in network) || network.blockExplorerUrl
-        ? network.blockExplorerUrl ??
-          `https://localhost/blockExplorer/${network.chainId}`
+        ? (network.blockExplorerUrl ??
+          `https://localhost/blockExplorer/${network.chainId}`)
         : undefined;
 
     const rpc =

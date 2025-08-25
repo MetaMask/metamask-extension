@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
 import { type CaipChainId, type Hex } from '@metamask/utils';
@@ -6,14 +6,16 @@ import {
   isSolanaChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
-  type BridgeToken,
   isNativeAddress,
   fetchBridgeTokens,
   BridgeClientId,
   type BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { selectERC20TokensByChain } from '../../selectors';
+import type {
+  TokenListMap,
+  TokenListToken,
+} from '@metamask/assets-controllers';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -31,8 +33,60 @@ import type {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
+import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import type { BridgeToken } from '../../ducks/bridge/types';
+
+// This transforms the token object from the bridge-api into the format expected by the AssetPicker
+const buildTokenData = (
+  chainId: ChainId | Hex | CaipChainId,
+  token?: BridgeAsset | TokenListToken,
+):
+  | AssetWithDisplayData<NativeAsset>
+  | AssetWithDisplayData<ERC20Asset>
+  | undefined => {
+  if (!chainId || !token) {
+    return undefined;
+  }
+  // Only tokens on the active chain are processed here here
+  const sharedFields = {
+    ...token,
+    chainId: isSolanaChainId(chainId)
+      ? formatChainIdToCaip(chainId)
+      : formatChainIdToHex(chainId),
+    assetId:
+      'assetId' in token
+        ? token.assetId
+        : toAssetId(token.address, formatChainIdToCaip(chainId)),
+  };
+
+  if (isNativeAddress(token.address)) {
+    return {
+      ...sharedFields,
+      type: AssetType.native,
+      address: '', // Return empty string to match useMultichainBalances output
+      image:
+        CHAIN_ID_TOKEN_IMAGE_MAP[
+          sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+        ] ??
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        (token.iconUrl || ('icon' in token ? token.icon : '') || ''),
+      // Only unimported native assets are processed here so hardcode balance to 0
+      balance: '0',
+      string: '0',
+    };
+  }
+
+  return {
+    ...sharedFields,
+    type: AssetType.token,
+    image: token.iconUrl ?? ('icon' in token ? token.icon : '') ?? '',
+    // Only tokens with 0 balance are processed here so hardcode empty string
+    balance: '',
+    string: undefined,
+  };
+};
 
 type FilterPredicate = (
   symbol: string,
@@ -53,31 +107,40 @@ type FilterPredicate = (
  * @param tokenToExclude.symbol
  * @param tokenToExclude.address
  * @param tokenToExclude.chainId
+ * @param accountId - the accountId to use for the token list
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
   tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
+  accountId?: string,
 ) => {
   const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>
     getTopAssetsFromFeatureFlags(state, chainId),
   );
 
   const { assetsWithBalance: multichainTokensWithBalance } =
-    useMultichainBalances();
+    useMultichainBalances(accountId);
 
-  const cachedTokens = useSelector(selectERC20TokensByChain);
+  const cachedTokens = useSelector(
+    (state: BridgeAppState) => state.metamask.tokensChainsCache,
+  );
 
-  const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
-    Record<string, BridgeAsset>
-  >(async () => {
-    if (chainId) {
-      if (!isSolanaChainId(chainId)) {
-        const hexChainId = formatChainIdToHex(chainId);
-        const timestamp = cachedTokens[hexChainId]?.timestamp;
-        // Use cached token data if updated in the last 10 minutes
-        if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
-          return cachedTokens[hexChainId]?.data;
-        }
+  const cachedTokenList = useMemo(() => {
+    if (!chainId) {
+      return undefined;
+    }
+    if (isSolanaChainId(chainId)) {
+      return undefined;
+    }
+    const hexChainId = formatChainIdToHex(chainId);
+    return hexChainId ? cachedTokens[hexChainId]?.data : undefined;
+  }, [chainId, cachedTokens]);
+  const isTokenListCached = Boolean(cachedTokenList);
+
+  const { value: fetchedTokenList, pending: isTokenListLoading } =
+    useAsyncResult<Record<string, BridgeAsset> | TokenListMap>(async () => {
+      if (isTokenListCached || !chainId) {
+        return {};
       }
       // Otherwise fetch new token data
       return await fetchBridgeTokens(
@@ -89,15 +152,19 @@ export const useTokensWithFiltering = (
             url: url as string,
             ...requestOptions,
             fetchOptions: { method: 'GET', headers },
+            cacheOptions: {
+              cacheRefreshTime: 10 * MINUTE,
+            },
             functionName: 'fetchBridgeTokens',
           });
         },
         BRIDGE_API_BASE_URL,
       );
-    }
+    }, [chainId, isTokenListCached]);
 
-    return {};
-  }, [chainId, cachedTokens]);
+  const tokenList = useMemo(() => {
+    return cachedTokenList ?? fetchedTokenList;
+  }, [cachedTokenList, fetchedTokenList]);
 
   const { value: topTokens, pending: isTopTokenListLoading } = useAsyncResult<
     { address: string }[]
@@ -115,53 +182,6 @@ export const useTokensWithFiltering = (
     return [];
   }, [chainId, topAssetsFromFeatureFlags]);
 
-  // This transforms the token object from the bridge-api into the format expected by the AssetPicker
-  const buildTokenDataFn = (
-    token?: BridgeAsset,
-  ):
-    | AssetWithDisplayData<NativeAsset>
-    | AssetWithDisplayData<ERC20Asset>
-    | undefined => {
-    if (!chainId || !token) {
-      return undefined;
-    }
-    // Only tokens on the active chain are processed here here
-    const sharedFields = {
-      ...token,
-      chainId: isSolanaChainId(chainId)
-        ? formatChainIdToCaip(chainId)
-        : formatChainIdToHex(chainId),
-      assetId: token.assetId,
-    };
-
-    if (isNativeAddress(token.address)) {
-      return {
-        ...sharedFields,
-        type: AssetType.native,
-        address: '', // Return empty string to match useMultichainBalances output
-        image:
-          CHAIN_ID_TOKEN_IMAGE_MAP[
-            sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-          ] ??
-          (token.iconUrl || token.icon || ''),
-        // Only unimported native assets are processed here so hardcode balance to 0
-        balance: '0',
-        string: '0',
-      };
-    }
-
-    return {
-      ...sharedFields,
-      type: AssetType.token,
-      image: token.iconUrl ?? token.icon ?? '',
-      // Only tokens with 0 balance are processed here so hardcode empty string
-      balance: '',
-      string: undefined,
-    };
-  };
-
-  const buildTokenData = useCallback(buildTokenDataFn, [chainId]);
-
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
     (filterCondition: FilterPredicate) =>
@@ -172,15 +192,36 @@ export const useTokensWithFiltering = (
           symbol: string,
           address?: string,
           tokenChainId?: string,
-        ) =>
-          filterCondition(symbol, address, tokenChainId) &&
-          (tokenToExclude && tokenChainId
-            ? !(
-                tokenToExclude.symbol === symbol &&
-                tokenToExclude.address === address &&
-                tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
-              )
-            : true);
+        ) => {
+          /**
+           * Native tokens can be represented differently across the codebase:
+           * - When selected as source: address = '0x0000000000000000000000000000000000000000'
+           * - When yielded in token lists: address = '' (empty string)
+           *
+           * @param addr - The token address to normalize
+           * @returns Empty string for native addresses, original address otherwise
+           */
+          const normalizeAddress = (addr?: string) => {
+            return addr && isNativeAddress(addr) ? '' : addr;
+          };
+
+          return (
+            filterCondition(symbol, address, tokenChainId) &&
+            (tokenToExclude && tokenChainId
+              ? !(
+                  tokenToExclude.symbol === symbol &&
+                  (isSolanaChainId(tokenChainId)
+                    ? // For Solana: normalize both addresses before comparison to handle native SOL
+                      normalizeAddress(tokenToExclude.address) ===
+                      normalizeAddress(address)
+                    : // For EVM: use case-insensitive comparison (native tokens already normalized)
+                      tokenToExclude.address?.toLowerCase() ===
+                      address?.toLowerCase()) &&
+                  tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
+                )
+              : true)
+          );
+        };
 
         if (
           !chainId ||
@@ -217,7 +258,11 @@ export const useTokensWithFiltering = (
                   MULTICHAIN_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
                   ] ??
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                   (getNativeAssetForChainId(token.chainId)?.icon ||
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                     getNativeAssetForChainId(token.chainId)?.iconUrl ||
                     getAssetImageUrl(
                       token.address,
@@ -226,6 +271,7 @@ export const useTokensWithFiltering = (
               };
             } else {
               yield {
+                ...token,
                 symbol: token.symbol,
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
@@ -248,35 +294,36 @@ export const useTokensWithFiltering = (
         }
 
         // Yield topTokens from selected chain
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         for (const token_ of topTokens) {
-          const matchedToken = tokenList?.[token_.address];
-          const token = buildTokenData(matchedToken);
+          const matchedToken =
+            tokenList?.[token_.address] ??
+            tokenList?.[token_.address.toLowerCase()];
+          const token = buildTokenData(chainId, matchedToken);
           if (
             token &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            if (token) {
-              yield token;
-            }
+            yield token;
           }
         }
 
         // Yield other tokens from selected chain
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         for (const token_ of Object.values(tokenList)) {
-          const token = buildTokenData(token_);
+          const token = buildTokenData(chainId, token_);
           if (
             token &&
-            !token.symbol.includes('$') &&
+            token.symbol.indexOf('$') === -1 &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            if (token) {
-              yield token;
-            }
+            yield token;
           }
         }
       })(),
     [
-      buildTokenData,
       multichainTokensWithBalance,
       topTokens,
       chainId,

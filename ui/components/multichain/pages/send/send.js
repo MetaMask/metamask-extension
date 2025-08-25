@@ -47,7 +47,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   INSUFFICIENT_FUNDS_ERROR,
   INVALID_HEX_DATA_ERROR,
-} from '../../../../pages/confirmations/send/send.constants';
+} from '../../../../pages/confirmations/send-legacy/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
   DEFAULT_ROUTE,
@@ -64,6 +64,7 @@ import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
+import { trace, TraceName } from '../../../../../shared/lib/trace';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -285,8 +286,14 @@ export const SendPage = () => {
     setError(undefined);
 
     try {
-      await dispatch(signTransaction(history));
-
+      await trace(
+        {
+          name: TraceName.SendCompleted,
+        },
+        async () => {
+          await dispatch(signTransaction(history));
+        },
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Complete',
@@ -324,18 +331,20 @@ export const SendPage = () => {
   const isSmartTransactionPending = smartTransactions?.find(
     ({ status }) => status === SmartTransactionStatus.pending,
   );
+  const isGasTooLow = sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR;
 
-  const isGasTooLow =
-    sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
-    sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
+  const isInsufficientFundsError =
+    sendErrors.amount === INSUFFICIENT_FUNDS_ERROR;
 
   const isHexDataInvalid = sendErrors.hexData === INVALID_HEX_DATA_ERROR;
 
-  const submitDisabled =
-    (isInvalidSendForm && !isGasTooLow) ||
-    requireContractAddressAcknowledgement ||
-    (isSwapAndSend && isSmartTransactionPending) ||
-    isHexDataInvalid;
+  const submitDisabled = Boolean(
+    isInsufficientFundsError ||
+      (isInvalidSendForm && !isGasTooLow) ||
+      requireContractAddressAcknowledgement ||
+      (isSwapAndSend && isSmartTransactionPending) ||
+      isHexDataInvalid,
+  );
 
   const isSendFormShown =
     draftTransactionExists &&
@@ -393,6 +402,7 @@ export const SendPage = () => {
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
             onClick={() => handleAssetPickerClick(false)}
+            showNetworkPicker
           />
         )}
         <Box marginTop={6}>

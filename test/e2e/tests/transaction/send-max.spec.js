@@ -215,7 +215,7 @@ describe('Sending with max amount', function () {
 
         // verify gas fee changed
         await driver.waitForSelector({
-          text: '0.0005',
+          text: '0.0009',
         });
 
         // verify initial max amount

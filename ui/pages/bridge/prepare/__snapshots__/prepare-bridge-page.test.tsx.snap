@@ -12,7 +12,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           style="min-width: 96px; max-width: 190px;"
         >
           <input
@@ -78,18 +78,10 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       </div>
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        style="height: 24px;"
       >
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
-          >
-            $0.00
-          </p>
-        </div>
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
         />
       </div>
     </div>
@@ -121,7 +113,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             style="min-width: 96px; max-width: 190px; opacity: 1;"
           >
             <input
@@ -138,27 +130,68 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
             />
           </div>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-0 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
             data-testid="bridge-destination-button"
-            data-theme="light"
-            style="white-space: nowrap;"
+            style="padding: 8px 11px 8px 8px; min-width: fit-content;"
           >
-            Bridge to
+            <div
+              class="mm-box mm-badge-wrapper mm-box--margin-right-2 mm-box--display-inline-block"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-hover mm-box--rounded-full"
+              >
+                <img
+                  alt="USDC logo"
+                  class="mm-avatar-token__token-image"
+                  src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+                />
+              </div>
+              <div
+                class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <img
+                    alt="Ethereum Mainnet logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
+              </div>
+            </div>
+            <span
+              class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            >
+              <label
+                class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  USDC
+                </p>
+              </label>
+            </span>
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-2-down.svg'); display: none;"
+            />
           </button>
         </div>
         <div
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          style="height: 24px;"
         >
-          <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
-            />
-          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
+          />
           <a
             class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
-          />
+            style="cursor: pointer; text-decoration: underline;"
+          >
+            0xa0...eb48
+          </a>
         </div>
       </div>
       <div
@@ -180,7 +213,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
               >
-                Select token and amount
+                Select amount
               </p>
             </div>
           </div>
@@ -203,7 +236,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           style="min-width: 96px; max-width: 190px;"
         >
           <input
@@ -269,18 +302,10 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       </div>
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        style="height: 24px;"
       >
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
-          >
-            $0.00
-          </p>
-        </div>
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
         />
       </div>
     </div>
@@ -312,7 +337,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             style="min-width: 96px; max-width: 190px; opacity: 1;"
           >
             <input
@@ -329,27 +354,68 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
             />
           </div>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-0 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
             data-testid="bridge-destination-button"
-            data-theme="light"
-            style="white-space: nowrap;"
+            style="padding: 8px 11px 8px 8px; min-width: fit-content;"
           >
-            Bridge to
+            <div
+              class="mm-box mm-badge-wrapper mm-box--margin-right-2 mm-box--display-inline-block"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-hover mm-box--rounded-full"
+              >
+                <img
+                  alt="USDC logo"
+                  class="mm-avatar-token__token-image"
+                  src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+                />
+              </div>
+              <div
+                class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <img
+                    alt="Ethereum Mainnet logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
+              </div>
+            </div>
+            <span
+              class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            >
+              <label
+                class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  USDC
+                </p>
+              </label>
+            </span>
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-2-down.svg'); display: none;"
+            />
           </button>
         </div>
         <div
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          style="height: 24px;"
         >
-          <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
-            />
-          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
+          />
           <a
             class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
-          />
+            style="cursor: pointer; text-decoration: underline;"
+          >
+            0xa0...eb48
+          </a>
         </div>
       </div>
       <div
@@ -371,7 +437,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
               >
-                Select token and amount
+                Select amount
               </p>
             </div>
           </div>

@@ -18,6 +18,8 @@ import {
 } from './text-field.types';
 
 export const TextField: TextFieldComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       autoComplete,
@@ -118,7 +120,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
         backgroundColor={BackgroundColor.backgroundDefault}
         alignItems={AlignItems.center}
         borderWidth={1}
-        borderRadius={BorderRadius.SM}
+        borderRadius={BorderRadius.LG}
         paddingLeft={startAccessory ? 4 : 0}
         paddingRight={endAccessory ? 4 : 0}
         onClick={handleClick}

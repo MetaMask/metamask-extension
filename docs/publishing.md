@@ -19,9 +19,9 @@ We try to ensure certain criteria are met before deploying:
 
 ## Incrementing Version & Changelog
 
-Version can be automatically incremented by creating a branch with the name `Version-vX.Y.Z`, where `X`, `Y`, and `Z` are numbers. Branches should be created off of the main branch. [Branches can be created on GitHub.](https://help.github.com/en/articles/creating-and-deleting-branches-within-your-repository)
+Version can be automatically incremented by creating a branch with the name `release/X.Y.Z`, where `X`, `Y`, and `Z` are numbers. Branches should be created off of the main branch. [Branches can be created on GitHub.](https://help.github.com/en/articles/creating-and-deleting-branches-within-your-repository)
 
-Once a version branch has been created, a build on CircleCI will create a Pull Request for the release with the app manifest and changelog versions bumped.
+Once a version branch has been created, a build on CI will create a Pull Request for the release with the app manifest and changelog versions bumped.
 
 ## Preparing for Sensitive Changes
 
@@ -29,9 +29,9 @@ In the case that a new release has sensitive changes that cannot be fully verifi
 
 ## Building
 
-While we develop on the `main` branch, our production version is maintained on the `master` branch.
+While we develop on the `main` branch, our production version is maintained on the `stable` branch.
 
-With each pull request, the @MetaMaskBot will comment with a build of that new pull request, so after bumping the version on `main`, open a pull request against `master`, and once the pull request is reviewed and merged, you can download those builds for publication.
+With each pull request, the @MetaMaskBot will comment with a build of that new pull request, so after bumping the version on `main`, open a pull request against `stable`, and once the pull request is reviewed and merged, you can download those builds for publication.
 
 ## Publishing
 
@@ -50,6 +50,6 @@ For this reason, when an urgent change is needed in production, its pull request
 
 - Describe it as a hotfix.
 - Use a hotfix tag.
-- Should be proposed against the `master` branch.
+- Should be proposed against the `stable` branch.
 
-The version and changelog bump should then be made off the `master` branch, and then merged to `main` to bring the two branches back into sync. Further time can be saved by incorporating the version/changelog bump into the PR against `master`, since we rely on @MetaMaskBot to run tests before merging.
+The version and changelog bump should then be made off the `stable` branch, and then merged to `main` to bring the two branches back into sync. Further time can be saved by incorporating the version/changelog bump into the PR against `stable`, since we rely on @MetaMaskBot to run tests before merging.

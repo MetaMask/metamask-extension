@@ -47,7 +47,11 @@ const trackNotificationsActivatedMetaMetricsEvent = async (
         event: MetaMetricsEventName.NotificationsActivated,
         category: MetaMetricsEventCategory.NotificationsActivationFlow,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           action_type: actionType,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_profile_syncing_enabled: profileSyncEnabled,
         },
       }),
@@ -86,10 +90,12 @@ describe('Notifications Activation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          isProfileSyncingEnabled: false,
+          isBackupAndSyncEnabled: false,
           isNotificationServicesEnabled: false,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -130,10 +136,12 @@ describe('Notifications Activation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          isProfileSyncingEnabled: false,
+          isBackupAndSyncEnabled: false,
           isNotificationServicesEnabled: false,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
       });

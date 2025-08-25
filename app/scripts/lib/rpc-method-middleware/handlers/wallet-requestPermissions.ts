@@ -12,7 +12,7 @@ import {
   Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import {
   AsyncJsonRpcEngineNextCallback,
@@ -97,9 +97,8 @@ async function requestPermissionsImplementation(
 
   let grantedPermissions: GrantedPermissions = {};
 
-  const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
-    requestedPermissions,
-  );
+  const [frozenGrantedPermissions] =
+    await requestPermissionsForOrigin(requestedPermissions);
 
   grantedPermissions = { ...frozenGrantedPermissions };
 

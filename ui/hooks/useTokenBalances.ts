@@ -17,6 +17,8 @@ export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
 
   useMultiPolling({
     startPolling: tokenBalancesStartPolling,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenBalancesStopPollingByPollingToken,
     input: chainIds ?? Object.keys(networkConfigurations),
   });
@@ -41,25 +43,32 @@ export const useTokenTracker = ({
 }) => {
   const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
 
-  const tokensWithBalances = tokens.reduce((acc, token) => {
-    const hexBalance =
-      tokenBalances[address]?.[chainId]?.[token.address as Hex] ?? '0x0';
-    if (hexBalance !== '0x0' || !hideZeroBalanceTokens) {
-      const decimalBalance = hexToDecimal(hexBalance);
-      acc.push({
-        address: token.address,
-        symbol: token.symbol,
-        decimals: token.decimals,
-        balance: decimalBalance,
-        balanceError: null,
-        string: stringifyBalance(
-          new BN(decimalBalance),
-          new BN(token.decimals),
-        ),
-      });
-    }
-    return acc;
-  }, [] as (Token & { balance: string; string: string; balanceError: unknown })[]);
+  const tokensWithBalances = tokens.reduce(
+    (acc, token) => {
+      const hexBalance =
+        tokenBalances[address]?.[chainId]?.[token.address as Hex] ?? '0x0';
+      if (hexBalance !== '0x0' || !hideZeroBalanceTokens) {
+        const decimalBalance = hexToDecimal(hexBalance);
+        acc.push({
+          address: token.address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          balance: decimalBalance,
+          balanceError: null,
+          string: stringifyBalance(
+            new BN(decimalBalance),
+            new BN(token.decimals),
+          ),
+        });
+      }
+      return acc;
+    },
+    [] as (Token & {
+      balance: string;
+      string: string;
+      balanceError: unknown;
+    })[],
+  );
 
   return {
     tokensWithBalances,

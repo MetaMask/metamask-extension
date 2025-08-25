@@ -6,7 +6,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, PolymorphicRef } from '../box';
 import type { BoxProps } from '../box';
-import { TextFieldProps, TextFieldSize } from '../text-field/text-field.types';
+import {
+  TextFieldProps,
+  TextFieldSize,
+  TextFieldType,
+} from '../text-field/text-field.types';
 import { Label } from '../label';
 import { TextField } from '../text-field';
 import { HelpText, HelpTextSeverity } from '../help-text';
@@ -17,6 +21,8 @@ import {
 } from './form-text-field.types';
 
 export const FormTextField: FormTextFieldComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       autoComplete,
@@ -39,6 +45,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
       onBlur,
       onChange,
       onFocus,
+      onKeyPress,
       placeholder,
       readOnly,
       required,
@@ -46,7 +53,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
       size = FormTextFieldSize.Md,
       textFieldProps,
       truncate,
-      type = 'text',
+      type = TextFieldType.Text,
       value,
       ...props
     }: FormTextFieldProps<C>,
@@ -65,13 +72,14 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         ref={ref}
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {...(props as BoxProps<any>)}
       >
         {label && (
           <Label
             htmlFor={id}
+            marginBottom={1}
             {...labelProps}
             className={classnames(
               'mm-form-text-field__label',

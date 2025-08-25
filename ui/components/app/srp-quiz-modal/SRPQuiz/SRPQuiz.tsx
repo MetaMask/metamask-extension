@@ -55,19 +55,19 @@ const rightAnswerIcon = (
 
 const openSupportArticle = (): void => {
   global.platform.openTab({
-    url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+    url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
   });
 };
 
 export type SRPQuizProps = {
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   keyringId?: string;
-  ///: END:ONLY_INCLUDE_IF
   isOpen: boolean;
   onClose: () => void;
   closeAfterCompleting?: boolean;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
@@ -231,13 +231,11 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
             onClick: () => {
               let route = REVEAL_SEED_ROUTE;
 
-              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
               // We need to check for the keyringId incase it is undefined.
               // The route param is used as an input to reveal srp, and an undefined becomes a string 'undefined'
               if (props.keyringId) {
                 route = `${REVEAL_SEED_ROUTE}/${props.keyringId}`;
               }
-              ///: END:ONLY_INCLUDE_IF
 
               history.push(route);
               if (props.closeAfterCompleting) {
@@ -290,8 +288,12 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportSelected,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           location,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
       },

@@ -1,5 +1,8 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockDialogSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Dialog', function () {
@@ -7,6 +10,7 @@ describe('Test Snap Dialog', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockDialogSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -44,9 +48,6 @@ describe('Test Snap Dialog', function () {
           text: 'Connect',
           tag: 'button',
         });
-
-        // click and dismiss possible scroll element
-        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
@@ -151,9 +152,6 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click and dismiss possible scroll element
-        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
-
         // click cancel button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
@@ -200,9 +198,6 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click and dismiss possible scroll element
-        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
-
         // click cancel button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
@@ -226,9 +221,6 @@ describe('Test Snap Dialog', function () {
 
         // fill '2323' in form field
         await driver.pasteIntoField('#custom-input', '2323');
-
-        // click and dismiss possible scroll element
-        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click confirm button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose({

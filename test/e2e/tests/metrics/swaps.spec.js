@@ -1,3 +1,4 @@
+/* eslint-disable mocha/no-skipped-tests */
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../../fixture-builder');
@@ -90,7 +91,8 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
 }
 
 // TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp
-describe('Swap Eth for another Token', function () {
+// Skipped as this will be supported in the new swap flow in the future
+describe.skip('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
     await withFixtures(
       {
@@ -100,6 +102,9 @@ describe('Swap Eth for another Token', function () {
             participateInMetaMetrics: true,
           })
           .build(),
+        localNodeOptions: {
+          hardfork: 'muirGlacier',
+        },
         title: this.test.fullTitle(),
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },

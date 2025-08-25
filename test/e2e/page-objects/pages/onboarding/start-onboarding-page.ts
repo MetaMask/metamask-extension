@@ -1,7 +1,29 @@
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Driver } from '../../../webdriver/driver';
 
 class StartOnboardingPage {
   private driver: Driver;
+
+  private readonly welcomeMessage = {
+    text: 'Welcome to MetaMask',
+    tag: 'h2',
+  };
+
+  private readonly getStartedButton =
+    '[data-testid="onboarding-get-started-button"]';
+
+  private readonly termsOfUseCheckbox = '[data-testid="terms-of-use-checkbox"]';
+
+  private readonly termsOfUseScrollButton =
+    '[data-testid="terms-of-use-scroll-button"]';
+
+  private readonly termsOfUseAgreeButton =
+    '[data-testid="terms-of-use-agree-button"]';
+
+  private readonly logInMessage = {
+    text: `Let's get started`,
+    tag: 'h2',
+  };
 
   private readonly createWalletButton =
     '[data-testid="onboarding-create-wallet"]';
@@ -9,43 +31,110 @@ class StartOnboardingPage {
   private readonly importWalletButton =
     '[data-testid="onboarding-import-wallet"]';
 
-  private readonly startMessage = {
-    text: "Let's get started",
-    tag: 'h2',
-  };
+  private readonly onboardingCreateWithSrpButton =
+    '[data-testid="onboarding-create-with-srp-button"]';
 
-  private readonly termsCheckbox = '[data-testid="onboarding-terms-checkbox"]';
+  private readonly onboardingImportWithSrpButton =
+    '[data-testid="onboarding-import-with-srp-button"]';
+
+  private readonly onboardingCreateWithGoogleButton =
+    '[data-testid="onboarding-create-with-google-button"]';
+
+  private readonly onboardingImportWithGoogleButton =
+    '[data-testid="onboarding-import-with-google-button"]';
+
+  private readonly onboardingCreateWithAppleButton =
+    '[data-testid="onboarding-create-with-apple-button"]';
+
+  private readonly onboardingImportWithAppleButton =
+    '[data-testid="onboarding-import-with-apple-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkBannerPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.startMessage,
-        this.termsCheckbox,
+        this.welcomeMessage,
+        this.getStartedButton,
       ]);
     } catch (e) {
       console.log(
-        'Timeout while waiting for start onboarding page to be loaded',
+        'Timeout while waiting for welcome page banner to be loaded',
         e,
       );
       throw e;
     }
-    console.log('Start onboarding page is loaded');
+    console.log('Welcome page banner is loaded');
   }
 
-  async checkTermsCheckbox(): Promise<void> {
-    await this.driver.clickElement(this.termsCheckbox);
+  async agreeToTermsOfUse(): Promise<void> {
+    await this.driver.clickElement(this.getStartedButton);
+    await this.driver.waitForSelector(this.termsOfUseCheckbox);
+    await this.driver.waitForSelector(this.termsOfUseScrollButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.termsOfUseScrollButton,
+      5000,
+    );
+    await this.driver.clickElement(this.termsOfUseCheckbox);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.termsOfUseAgreeButton,
+    );
   }
 
-  async clickCreateWalletButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.createWalletButton);
+  async checkLoginPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.logInMessage,
+        this.createWalletButton,
+        this.importWalletButton,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for get started page to be loaded', e);
+      throw e;
+    }
+    console.log('Get started page is loaded');
   }
 
-  async clickImportWalletButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.importWalletButton);
+  async createWalletWithSrp(socialLoginEnabled = true): Promise<void> {
+    await this.driver.clickElement(this.createWalletButton);
+    if (socialLoginEnabled) {
+      await this.driver.clickElement(this.onboardingCreateWithSrpButton);
+    }
+  }
+
+  async importWallet(): Promise<void> {
+    await this.driver.clickElement(this.importWalletButton);
+    await this.driver.clickElement(this.onboardingImportWithSrpButton);
+  }
+
+  async createWalletWithSocialLogin(
+    authConnection = AuthConnection.Google,
+  ): Promise<void> {
+    await this.driver.clickElement(this.createWalletButton);
+
+    const socialLoginButton =
+      authConnection === AuthConnection.Google
+        ? this.onboardingCreateWithGoogleButton
+        : this.onboardingCreateWithAppleButton;
+
+    await this.driver.waitForSelector(socialLoginButton);
+    await this.driver.clickElement(socialLoginButton);
+  }
+
+  async importWalletWithSocialLogin(
+    authConnection = AuthConnection.Google,
+  ): Promise<void> {
+    await this.driver.clickElement(this.importWalletButton);
+
+    const socialLoginButton =
+      authConnection === AuthConnection.Google
+        ? this.onboardingImportWithGoogleButton
+        : this.onboardingImportWithAppleButton;
+
+    await this.driver.waitForSelector(socialLoginButton);
+    await this.driver.clickElement(socialLoginButton);
   }
 }
 

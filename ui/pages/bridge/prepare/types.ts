@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 
 export type ExternalAccount = {
   address: string;

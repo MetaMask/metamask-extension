@@ -24,11 +24,7 @@ import {
   useMultichainWalletSnapClient,
 } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
 
-export const SolanaAccountCreationPrompt = ({
-  onSuccess,
-}: {
-  onSuccess: () => void;
-}) => {
+export const SolanaAccountCreationPrompt = () => {
   const t = useI18nContext();
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
@@ -40,16 +36,22 @@ export const SolanaAccountCreationPrompt = ({
     try {
       setIsCreating(true);
       await solanaWalletSnapClient.createAccount(
-        MultichainNetworks.SOLANA,
-        primaryKeyring.metadata.id,
+        {
+          scope: MultichainNetworks.SOLANA,
+          entropySource: primaryKeyring?.metadata?.id,
+        },
+        {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        },
       );
-      onSuccess();
     } catch (error) {
       console.error('Error creating Solana account:', error);
     } finally {
       setIsCreating(false);
     }
-  }, [solanaWalletSnapClient, primaryKeyring?.metadata?.id, onSuccess]);
+  }, [solanaWalletSnapClient, primaryKeyring?.metadata?.id]);
 
   return (
     <Box
@@ -93,6 +95,8 @@ export const SolanaAccountCreationPrompt = ({
         block
         size={ButtonSize.Md}
         variant={ButtonVariant.Secondary}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={handleCreateAccount}
         loading={isCreating}
         data-testid="create-solana-account-button"

@@ -1,0 +1,18 @@
+name: Automated RCA
+
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  automated-rca:
+    uses: MetaMask/github-tools/.github/workflows/post-gh-rca.yml@5da154078ddf6c022ed89dc3dbf378594afb8266
+    with:
+      repo-owner: ${{ github.repository_owner }}
+      repo-name: ${{ github.event.repository.name }}
+      issue-number: ${{ github.event.issue.number }}
+      issue-labels: '["Sev0-urgent", "Sev1-high"]'

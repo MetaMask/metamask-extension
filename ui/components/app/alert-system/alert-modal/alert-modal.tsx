@@ -104,6 +104,8 @@ function getSeverityStyle(severity?: Severity) {
   }
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertHeader({
   selectedAlert,
   customTitle,
@@ -138,38 +140,38 @@ function AlertHeader({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function BlockaidAlertDetails() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { securityAlertResponse } = currentConfirmation;
   let copy;
   switch (securityAlertResponse?.reason) {
-    case BlockaidReason.rawSignatureFarming:
-      copy = t('blockaidAlertInfoDescription3');
-      break;
     case BlockaidReason.approvalFarming:
     case BlockaidReason.setApprovalForAll:
     case BlockaidReason.permitFarming:
-      copy = t('blockaidAlertInfoDescription2');
+      copy = t('blockaidAlertDescriptionWithdraw');
       break;
     case BlockaidReason.transferFarming:
     case BlockaidReason.transferFromFarming:
     case BlockaidReason.rawNativeTokenTransfer:
-      copy = t('blockaidAlertInfoDescription');
+      copy = t('blockaidAlertDescriptionTokenTransfer');
       break;
     case BlockaidReason.seaportFarming:
-      copy = t('blockaidAlertInfoDescription4');
+      copy = t('blockaidAlertDescriptionOpenSea');
       break;
     case BlockaidReason.blurFarming:
-      copy = t('blockaidAlertInfoDescription5');
+      copy = t('blockaidAlertDescriptionBlur');
       break;
     case BlockaidReason.maliciousDomain:
-      copy = t('blockaidAlertInfoDescription6');
+      copy = t('blockaidAlertDescriptionMalicious');
       break;
+    case BlockaidReason.rawSignatureFarming:
     case BlockaidReason.tradeOrderFarming:
     case BlockaidReason.other:
     default:
-      copy = t('blockaidAlertInfoDescription7');
+      copy = t('blockaidAlertDescriptionOthers');
   }
 
   return (
@@ -179,6 +181,8 @@ function BlockaidAlertDetails() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertDetails({
   selectedAlert,
   customDetails,
@@ -226,6 +230,8 @@ function AlertDetails({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AcknowledgeCheckboxBase({
   selectedAlert,
   onCheckboxClick,
@@ -237,6 +243,8 @@ export function AcknowledgeCheckboxBase({
   isConfirmed: boolean;
   label?: string;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   if (selectedAlert.isBlocking || selectedAlert.severity !== Severity.Danger) {
     return null;
   }
@@ -264,6 +272,8 @@ export function AcknowledgeCheckboxBase({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AcknowledgeButton({
   onAcknowledgeClick,
   isConfirmed,
@@ -291,6 +301,8 @@ function AcknowledgeButton({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ActionButton({
   action,
   onClose,
@@ -334,6 +346,8 @@ function ActionButton({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AlertModal({
   ownerId,
   onAcknowledgeClick,

@@ -6,7 +6,6 @@ import {
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
-import { Json } from '@metamask/utils';
 import React, {
   FunctionComponent,
   createContext,
@@ -61,7 +60,6 @@ export type SnapInterfaceContextProviderProps = {
   interfaceId: string;
   snapId: string;
   initialState: InterfaceState;
-  context: Json;
 };
 
 /**
@@ -72,12 +70,11 @@ export type SnapInterfaceContextProviderProps = {
  * @param params.interfaceId - The interface ID to use.
  * @param params.snapId - The Snap ID that requested the interface.
  * @param params.initialState - The initial state of the interface.
- * @param params.context - The context blob of the interface.
  * @returns The context provider.
  */
 export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
-> = ({ children, interfaceId, snapId, initialState, context }) => {
+> = ({ children, interfaceId, snapId, initialState }) => {
   const dispatch = useDispatch();
 
   // We keep an internal copy of the state to speed up the state update in the
@@ -99,7 +96,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   ) => {
     handleSnapRequestFunction<Parameters<HandleEvent>[0]>({
       snapId,
-      origin: '',
+      origin: 'metamask',
       handler: 'onUserInput',
       request: {
         jsonrpc: '2.0',
@@ -112,10 +109,16 @@ export const SnapInterfaceContextProvider: FunctionComponent<
             ...(value !== undefined && value !== null ? { value } : {}),
           },
           id: interfaceId,
-          context,
         },
       },
-    }).then(() => forceUpdateMetamaskState(dispatch));
+    })
+      .then(() => forceUpdateMetamaskState(dispatch))
+      .catch((error) => {
+        console.error(
+          `Failed to handle Snap request to "${snapId}" for event "${event}" with name "${name}":`,
+          error,
+        );
+      });
   };
 
   const updateState = (state: InterfaceState) =>
@@ -161,7 +164,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   const uploadFile = (name: string, file: FileObject | null) => {
     handleSnapRequestFunction<Parameters<HandleEvent>[0]>({
       snapId,
-      origin: '',
+      origin: 'metamask',
       handler: 'onUserInput',
       request: {
         jsonrpc: '2.0',
@@ -173,7 +176,6 @@ export const SnapInterfaceContextProvider: FunctionComponent<
             ...(file === undefined ? {} : { file }),
           },
           id: interfaceId,
-          context,
         },
       },
     }).then(() => forceUpdateMetamaskState(dispatch));

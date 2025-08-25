@@ -2,7 +2,9 @@ name: Check Attributions
 
 on:
   push:
-    branches: Version-v*
+    branches:
+      - Version-v*
+      - release/*
 
 jobs:
   check-attributions:
@@ -12,6 +14,8 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Check attributions changes
         run: yarn attributions:check

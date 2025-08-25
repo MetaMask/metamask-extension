@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentType } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -9,28 +9,30 @@ import type { UITrackEventMethod } from '../../../contexts/metametrics';
 
 const mockStore = configureStore({
   reducer: {
-    metamask: (state = {
-      internalAccounts: {
-        selectedAccount: '0x0000000000000000000000000000000000000001',
-        accounts: {
-          '0x0000000000000000000000000000000000000001': {
-            address: '0x0000000000000000000000000000000000000001',
-            metadata: {
-              keyring: {
-                type: 'HD Key Tree',
-                accounts: ['0x0000000000000000000000000000000000000001'],
+    metamask: (
+      state = {
+        internalAccounts: {
+          selectedAccount: '0x0000000000000000000000000000000000000001',
+          accounts: {
+            '0x0000000000000000000000000000000000000001': {
+              address: '0x0000000000000000000000000000000000000001',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                  accounts: ['0x0000000000000000000000000000000000000001'],
+                },
               },
             },
           },
         },
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: ['0x0000000000000000000000000000000000000001'],
+          },
+        ],
       },
-      keyrings: [
-        {
-          type: 'HD Key Tree',
-          accounts: ['0x0000000000000000000000000000000000000001'],
-        },
-      ],
-    }) => state,
+    ) => state,
   },
 });
 
@@ -51,7 +53,9 @@ const Wrapper = ({ children }) => (
 
 const meta: Meta<typeof ImportSRP> = {
   title: 'Pages/OnboardingFlow/ImportSRP',
-  component: ImportSRP,
+  component: ImportSRP as ComponentType<{
+    submitSecretRecoveryPhrase: (secretRecoveryPhrase: string) => void;
+  }>,
   decorators: [
     (Story) => (
       <Wrapper>
@@ -62,7 +66,8 @@ const meta: Meta<typeof ImportSRP> = {
   parameters: {
     docs: {
       description: {
-        component: 'ImportSRP component allows users to input and submit their Secret Recovery Phrase.',
+        component:
+          'ImportSRP component allows users to input and submit their Secret Recovery Phrase.',
       },
     },
   },
@@ -76,7 +81,8 @@ type Story = StoryObj<typeof ImportSRP>;
 
 export const DefaultStory: Story = {
   args: {
-    submitSecretRecoveryPhrase: () => console.log('Secret Recovery Phrase submitted'),
+    submitSecretRecoveryPhrase: () =>
+      console.log('Secret Recovery Phrase submitted'),
   },
 };
 

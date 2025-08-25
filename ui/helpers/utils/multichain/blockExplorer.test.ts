@@ -63,7 +63,7 @@ describe('Block Explorer Tests', () => {
   describe('getMultichainAccountUrl', () => {
     it('returns the correct account URL for Ethereum mainnet', () => {
       const address = '0x1234567890abcdef';
-      const expectedUrl = `https://etherscan.io/address/${address}`;
+      const expectedUrl = `https://etherscan.io/address/${address}#asset-multichain`;
 
       const result = getMultichainAccountUrl(address, mockEvmNetwork);
 

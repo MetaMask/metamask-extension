@@ -1,17 +1,35 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { Mockttp } from 'mockttp';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { exitWithError } from '../../development/lib/exit-with-error';
 import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
+import { Driver } from './webdriver/driver';
 import FixtureBuilder from './fixture-builder';
+import HomePage from './page-objects/pages/home/homepage';
+import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
+import {
+  DEFAULT_BRIDGE_FEATURE_FLAGS,
+  MOCK_TOKENS_ETHEREUM,
+} from './tests/bridge/constants';
 import {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   withFixtures,
 } from './helpers';
-import { Driver } from './webdriver/driver';
+
+async function mockTokensEthereum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://token.api.cx.metamask.io/tokens/1`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_ETHEREUM,
+      };
+    });
+}
 
 async function loadNewAccount(): Promise<number> {
   let loadingTimes: number = 0;
@@ -19,8 +37,10 @@ async function loadNewAccount(): Promise<number> {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: 'ganache',
       disableServerMochaToBackground: true,
+      localNodeOptions: {
+        accounts: 1,
+      },
       title: 'benchmark-userActions-loadNewAccount',
     },
     async ({ driver }: { driver: Driver }) => {
@@ -53,7 +73,6 @@ async function confirmTx(): Promise<number> {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: 'ganache',
       disableServerMochaToBackground: true,
       title: 'benchmark-userActions-confirmTx',
     },
@@ -96,6 +115,68 @@ async function confirmTx(): Promise<number> {
   return loadingTimes;
 }
 
+async function bridgeUserActions(): Promise<{
+  loadPage: number;
+  loadAssetPicker: number;
+  searchToken: number;
+}> {
+  let loadPage: number = 0;
+  let loadAssetPicker: number = 0;
+  let searchToken: number = 0;
+
+  const fixtureBuilder = new FixtureBuilder()
+    .withNetworkControllerOnMainnet()
+    .withEnabledNetworks({ eip155: { '0x1': true } });
+
+  await withFixtures(
+    {
+      fixtures: fixtureBuilder.build(),
+      disableServerMochaToBackground: true,
+      testSpecificMock: mockTokensEthereum,
+      title: 'benchmark-userActions-bridgeUserActions',
+      manifestFlags: {
+        remoteFeatureFlags: {
+          bridgeConfig: DEFAULT_BRIDGE_FEATURE_FLAGS,
+        },
+      },
+    },
+    async ({ driver }: { driver: Driver }) => {
+      await logInWithBalanceValidation(driver);
+      const homePage = new HomePage(driver);
+      const quotePage = new BridgeQuotePage(driver);
+
+      const timestampBeforeLoadPage = new Date();
+      await homePage.startBridgeFlow();
+      const timestampAfterLoadPage = new Date();
+
+      loadPage =
+        timestampAfterLoadPage.getTime() - timestampBeforeLoadPage.getTime();
+
+      const timestampBeforeClickAssetPicker = new Date();
+      await driver.clickElement(quotePage.sourceAssetPickerButton);
+      const timestampAfterClickAssetPicker = new Date();
+
+      loadAssetPicker =
+        timestampAfterClickAssetPicker.getTime() -
+        timestampBeforeClickAssetPicker.getTime();
+
+      const tokenToSearch = 'FXS';
+      const timestampBeforeTokenSearch = new Date();
+      await driver.fill(quotePage.assetPrickerSearchInput, tokenToSearch);
+      await driver.waitForSelector({
+        text: tokenToSearch,
+        css: quotePage.tokenButton,
+      });
+      const timestampAferTokenSearch = new Date();
+
+      searchToken =
+        timestampAferTokenSearch.getTime() -
+        timestampBeforeTokenSearch.getTime();
+    },
+  );
+  return { loadPage, loadAssetPicker, searchToken };
+}
+
 async function main(): Promise<void> {
   const { argv } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
@@ -109,16 +190,20 @@ async function main(): Promise<void> {
       }),
   );
 
-  const results: Record<string, number> = {};
+  const results: Record<
+    string,
+    number | { loadPage: number; loadAssetPicker: number; searchToken: number }
+  > = {};
   results.loadNewAccount = await loadNewAccount();
   results.confirmTx = await confirmTx();
+  const bridgeResults = await bridgeUserActions();
+  results.bridge = bridgeResults;
   const { out } = argv as { out?: string };
 
   if (out) {
     const outputDirectory = path.dirname(out);
-    const existingParentDirectory = await getFirstParentDirectoryThatExists(
-      outputDirectory,
-    );
+    const existingParentDirectory =
+      await getFirstParentDirectoryThatExists(outputDirectory);
     if (!(await isWritable(existingParentDirectory))) {
       throw new Error('Specified output file directory is not writable');
     }

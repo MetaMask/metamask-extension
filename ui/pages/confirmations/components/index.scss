@@ -9,13 +9,15 @@
 @import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
 @import 'confirmation-warning-modal/index';
 @import 'confirm/footer';
-@import 'confirm/footer/upgrade-cancel-modal/index';
 @import 'confirm/header/header.scss';
 @import 'confirm/info/personal-sign/siwe-sign/index';
 @import 'confirm/info/shared/gas-fee-token-modal/index';
 @import 'confirm/info/shared/gas-fee-token-toast/index';
 @import 'confirm/scroll-to-bottom';
 @import 'confirm/nav/nav.scss';
+@import 'confirm/smart-account-update/smart-account-update.scss';
+@import 'confirm/smart-account-update-content/smart-account-update-content.scss';
+@import 'confirm/splash/smart-account-update-splash/smart-account-update-splash.scss';
 @import 'edit-gas-display/index';
 @import 'edit-gas-fee-button/index';
 @import 'edit-gas-fee-popover/index';

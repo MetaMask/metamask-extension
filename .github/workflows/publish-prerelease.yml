@@ -10,53 +10,56 @@ jobs:
   publish-prerelease:
     name: Publish prerelease
     runs-on: ubuntu-latest
+    env:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      RUN_ID: ${{ github.run_id }}
+      # For a `pull_request` event, the branch is `github.head_ref`.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      BASE_COMMIT_HASH: ${{ github.event.pull_request.base.sha }}
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
+      MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete and logs
+      CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
+      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
     steps:
       - name: Checkout and setup high risk environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
+          skip-allow-scripts: true
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Find the associated PR
+        if: ${{ (startsWith(env.BRANCH, 'Version-v') || startsWith(env.BRANCH, 'release/')) && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${process.env.BRANCH}`,
+              base: 'master',
+            });
+            if (prs.data.length > 0) {
+              core.exportVariable("PR_NUMBER", prs.data[0].number);
+              core.exportVariable("BASE_COMMIT_HASH", prs.data[0].base.sha);
+              core.exportVariable("HEAD_COMMIT_HASH", prs.data[0].head.sha);
+              core.info(`The pull request number is '${process.env.PR_NUMBER}', the base commit hash is '${process.env.BASE_COMMIT_HASH}', and the head commit hash is '${process.env.HEAD_COMMIT_HASH}'`);
+            } else {
+              core.info(`No pull request detected for branch '${process.env.BRANCH}'`);
+            }
 
       - name: Get merge base commit hash
-        id: get-merge-base
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        if: ${{ env.BASE_COMMIT_HASH && env.HEAD_COMMIT_HASH }}
         run: |
-          merge_base="$(git merge-base "${BASE_SHA}" "${HEAD_SHA}")"
-          echo "MERGE_BASE=${merge_base}" >> "$GITHUB_OUTPUT"
-          echo "Merge base is '${merge_base}'"
-
-      - name: Get CircleCI job details
-        id: get-circleci-job-details
-        env:
-          OWNER: ${{ github.repository_owner }}
-          REPOSITORY: ${{ github.event.repository.name }}
-          # For a `pull_request` event, the branch is `github.head_ref``.
-          BRANCH: ${{ github.head_ref }}
-          # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
-          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
-          JOB_NAME: job-publish-prerelease
-        run: |
-          pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq --arg head_commit_hash "${HEAD_COMMIT_HASH}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first | .id')
-          workflow_id=$(curl --silent "https://circleci.com/api/v2/pipeline/$pipeline_id/workflow" | jq -r ".items[0].id")
-          job_details=$(curl --silent "https://circleci.com/api/v2/workflow/$workflow_id/job" | jq --arg job_name "${JOB_NAME}" -r '.items[] | select(.name == $job_name)')
-
-          build_num=$(echo "$job_details" | jq -r '.job_number')
-          echo 'CIRCLE_BUILD_NUM='"$build_num" >> "$GITHUB_OUTPUT"
-
-          job_id=$(echo "$job_details" | jq -r '.id')
-          echo 'CIRCLE_WORKFLOW_JOB_ID='"$job_id" >> "$GITHUB_OUTPUT"
-
-          echo "Getting artifacts from pipeline '${pipeline_id}', workflow '${workflow_id}', build number '${build_num}', job id '${job_id}'"
+          merge_base_commit_hash="$(git merge-base "${BASE_COMMIT_HASH}" "${HEAD_COMMIT_HASH}")"
+          echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
+          echo "The merge base commit hash is '${merge_base_commit_hash}'"
 
       - name: Publish prerelease
-        env:
-          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
-          MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
-          CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
-          CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
-          HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+        if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
         run: yarn tsx ./development/metamaskbot-build-announce.ts

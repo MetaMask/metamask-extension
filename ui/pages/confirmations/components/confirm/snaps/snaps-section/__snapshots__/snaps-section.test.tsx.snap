@@ -40,7 +40,7 @@ exports[`SnapsSection renders section for typed sign request 1`] = `
       >
         <div
           class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
-          style="overflow-y: auto;"
+          style="overflow-y: auto; margin-bottom: 0px;"
         >
           <div
             class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -98,7 +98,7 @@ exports[`SnapsSection renders section personal sign request 1`] = `
       >
         <div
           class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
-          style="overflow-y: auto;"
+          style="overflow-y: auto; margin-bottom: 0px;"
         >
           <div
             class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"

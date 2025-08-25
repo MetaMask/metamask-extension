@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL } from '../../../constants';
-import {
-  unlockWallet,
-  veryLargeDelayMs,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
@@ -17,7 +14,7 @@ import { TestSuiteArguments } from './shared';
 const TOKEN_RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
 describe('Confirmation Redesign Native Send', function () {
-  describe('Wallet initiated', async function () {
+  describe('Wallet initiated', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
@@ -39,7 +36,7 @@ describe('Confirmation Redesign Native Send', function () {
     });
   });
 
-  describe('dApp initiated', async function () {
+  describe('dApp initiated', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
@@ -65,7 +62,7 @@ describe('Confirmation Redesign Native Send', function () {
 async function createWalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
 
   const testDapp = new TestDapp(driver);
 
@@ -75,22 +72,22 @@ async function createWalletInitiatedTransactionAndAssertDetails(
   const homePage = new HomePage(driver);
   await homePage.startSendFlow();
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient(TOKEN_RECIPIENT_ADDRESS);
   await sendToPage.fillAmount('1');
   await sendToPage.goToNextScreen();
 
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
 }
 
 async function createDAppInitiatedTransactionAndAssertDetails(driver: Driver) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
 
   const testDapp = new TestDapp(driver);
 
@@ -104,9 +101,9 @@ async function createDAppInitiatedTransactionAndAssertDetails(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_dappInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkDappInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickScrollToBottomButton();
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();

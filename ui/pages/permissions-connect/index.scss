@@ -22,12 +22,6 @@
   flex-direction: column;
   height: auto;
   width: 100%;
-  transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
-
-  @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-    margin-top: 32px;
-    margin-bottom: 32px;
-  }
 
   @include design-system.screen-sm-min {
     width: $width-screen-sm-min;
@@ -68,10 +62,6 @@
     grid-column: 2;
     justify-self: flex-end;
     font-weight: bold;
-  }
-
-  .connect-page {
-    background-color: var(--color-background-alternative); // main-container adds the width but overrides the boxProps. So, we need extra class to apply css
   }
 }
 

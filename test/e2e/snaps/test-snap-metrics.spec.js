@@ -7,6 +7,11 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { MOCK_META_METRICS_ID } = require('../constants');
+const {
+  mockNotificationSnap,
+  mockWebpackPluginOldSnap,
+  mockWebpackPluginSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 /**
@@ -137,6 +142,19 @@ async function mockedSnapUpdateFailed(mockServer) {
     });
 }
 
+async function mockedSnapExportUsed(mockServer) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [{ type: 'track', event: 'Snap Export Used' }],
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
+
 async function mockedNpmInstall(mockServer) {
   return await mockServer
     .forGet(/https:\/\/registry\.npmjs\.org/u)
@@ -165,6 +183,8 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapInstallStarted(mockServer),
         await mockedSnapInstall(mockServer),
+        await mockedSnapExportUsed(mockServer),
+        await mockNotificationSnap(mockServer),
       ];
     }
 
@@ -231,6 +251,11 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
+        // switch to test Snaps
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        await driver.clickElement('#sendInAppNotification');
+
         // check that snap installed event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Install Started');
@@ -252,6 +277,17 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
         });
+        assert.deepStrictEqual(events[2].event, 'Snap Export Used');
+        assert.deepStrictEqual(events[2].properties, {
+          snap_id: 'npm:@metamask/notification-example-snap',
+          origin: 'https://metamask.github.io',
+          export: 'onRpcRequest',
+          success: true,
+          category: 'Snaps',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'background',
+        });
       },
     );
   });
@@ -261,6 +297,7 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapInstallStarted(mockServer),
         await mockedSnapInstallRejected(mockServer),
+        await mockNotificationSnap(mockServer),
       ];
     }
 
@@ -430,7 +467,11 @@ describe('Test Snap Metrics', function () {
 
   it('tests snap uninstall metric', async function () {
     async function mockSegment(mockServer) {
-      return [await mockedSnapUninstall(mockServer)];
+      return [
+        await mockedSnapUninstall(mockServer),
+        await mockNotificationSnap(mockServer),
+        await mockWebpackPluginSnap(mockServer),
+      ];
     }
 
     await withFixtures(
@@ -561,6 +602,9 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdated(mockServer),
+        await mockNotificationSnap(mockServer),
+        await mockWebpackPluginSnap(mockServer),
+        await mockWebpackPluginOldSnap(mockServer),
       ];
     }
     await withFixtures(
@@ -716,8 +760,11 @@ describe('Test Snap Metrics', function () {
   it('test snap update rejected metric', async function () {
     async function mockSegment(mockServer) {
       return [
+        await mockNotificationSnap(mockServer),
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdateRejected(mockServer),
+        await mockWebpackPluginOldSnap(mockServer),
+        await mockWebpackPluginSnap(mockServer),
       ];
     }
     await withFixtures(
@@ -865,7 +912,9 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdateFailed(mockServer),
+        await mockWebpackPluginOldSnap(mockServer),
         await mockedNpmUpdate(mockServer),
+        await mockWebpackPluginSnap(mockServer),
       ];
     }
     await withFixtures(
@@ -880,8 +929,8 @@ describe('Test Snap Metrics', function () {
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
         ignoredConsoleErrors: [
-          'MetaMask - RPC Error: Failed to fetch snap "npm:@metamask/webpack-plugin-example-snap": Failed to fetch tarball for package "@metamask/webpack-plugin-example-snap"..',
-          'Failed to fetch snap "npm:@metamask/webpack-plugin…package "@metamask/webpack-plugin-example-snap"..',
+          'MetaMask - RPC Error: Failed to fetch snap "npm:@metamask/webpack-plugin-example-snap": Failed to fetch tarball for package "@metamask/webpack-plugin-example-snap".',
+          'Failed to fetch snap "npm:@metamask/webpack-plugin… package "@metamask/webpack-plugin-example-snap".',
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

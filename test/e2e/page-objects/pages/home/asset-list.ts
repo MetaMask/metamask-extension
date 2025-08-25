@@ -56,11 +56,19 @@ class AssetListPage {
 
   private readonly priceChart = '[data-testid="asset-price-chart"]';
 
-  private sortByAlphabetically = '[data-testid="sortByAlphabetically"]';
+  private readonly sortByAlphabetically =
+    '[data-testid="sortByAlphabetically"]';
 
-  private sortByDecliningBalance = '[data-testid="sortByDecliningBalance"]';
+  private readonly sortByDecliningBalance =
+    '[data-testid="sortByDecliningBalance"]';
 
-  private sortByPopoverToggle = '[data-testid="sort-by-popover-toggle"]';
+  private readonly sortByPopoverToggle =
+    '[data-testid="sort-by-popover-toggle"]';
+
+  private readonly buySellButton = '[data-testid="coin-overview-buy"]';
+
+  private readonly tokenFiatAmount =
+    '[data-testid="multichain-token-list-item-secondary-value"]';
 
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
@@ -78,6 +86,14 @@ class AssetListPage {
   private readonly tokenAddressInDetails =
     '[data-testid="address-copy-button-text"]';
 
+  private readonly tokenConfirmListItem =
+    '.import-tokens-modal__confirm-token-list-item-wrapper';
+
+  private readonly tokenDecimalsTitle = {
+    css: '.mm-label',
+    text: 'Token decimal',
+  };
+
   private readonly tokenNameInDetails = '[data-testid="asset-name"]';
 
   private readonly tokenImportedMessageCloseButton =
@@ -86,11 +102,24 @@ class AssetListPage {
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
 
-  private readonly tokenOptionsButton = '[data-testid="import-token-button"]';
+  private readonly tokenOptionsButton =
+    '[data-testid="asset-list-control-bar-action-button"]';
+
+  private readonly tokenSymbolTitle = {
+    css: '.mm-label',
+    text: 'Token symbol',
+  };
+
+  private tokenImportSelectNetwork(chainId: string): string {
+    return `[data-testid="select-network-item-${chainId}"]`;
+  }
 
   private tokenPercentage(address: string): string {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
   }
+
+  private readonly tokenChainDropdown =
+    '[data-testid="test-import-tokens-drop-down-custom-import"]';
 
   private readonly tokenSearchInput = 'input[placeholder="Search tokens"]';
 
@@ -106,13 +135,31 @@ class AssetListPage {
     this.driver = driver;
   }
 
+  async clickNetworkSelectorDropdown(): Promise<void> {
+    console.log(`Clicking on the network selector dropdown`);
+    await this.driver.clickElement(this.sortByPopoverToggle);
+  }
+
+  async clickCurrentNetworkOptionOnActivityList(): Promise<void> {
+    console.log(`Clicking on the current network option`);
+    await this.driver.clickElement(this.currentNetworkOption);
+    await this.driver.waitUntil(
+      async () => {
+        const toggle = await this.driver.findElement(this.sortByPopoverToggle);
+        const label = await toggle.getText();
+        return label !== 'Popular networks';
+      },
+      { timeout: 5000, interval: 100 },
+    );
+  }
+
   async clickCurrentNetworkOption(): Promise<void> {
     console.log(`Clicking on the current network option`);
     await this.driver.clickElement(this.currentNetworkOption);
     await this.driver.waitUntil(
       async () => {
         const label = await this.getNetworksFilterLabel();
-        return label !== 'All networks';
+        return label !== 'Popular networks';
       },
       { timeout: 5000, interval: 100 },
     );
@@ -205,16 +252,36 @@ class AssetListPage {
     );
   }
 
-  async importCustomToken(tokenAddress: string, symbol: string): Promise<void> {
+  async importCustomTokenByChain(
+    chainId: string,
+    tokenAddress: string,
+    symbol?: string,
+  ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.clickElement(this.customTokenModalOption);
     await this.driver.waitForSelector(this.modalWarningBanner);
+    await this.driver.clickElement(this.tokenChainDropdown);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.tokenImportSelectNetwork(chainId),
+    );
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
-    await this.driver.fill(this.tokenSymbolInput, symbol);
+    await this.driver.waitForSelector(this.tokenSymbolTitle);
+
+    if (symbol) {
+      // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
+      await this.driver.waitForSelector(this.importTokensNextButton, {
+        state: 'disabled',
+        waitAtLeastGuard: 1000,
+      });
+      await this.driver.fill(this.tokenSymbolInput, symbol);
+    }
+
+    await this.driver.waitForSelector(this.tokenDecimalsTitle);
     await this.driver.clickElement(this.importTokensNextButton);
+    await this.driver.waitForSelector(this.tokenConfirmListItem);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
     );
@@ -245,6 +312,7 @@ class AssetListPage {
 
     for (const name of tokenNames) {
       await this.driver.fill(this.tokenSearchInput, name);
+      await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
       await this.driver.clickElement({ text: name, tag: 'p' });
     }
     await this.driver.clickElement(this.importTokensNextButton);
@@ -258,7 +326,7 @@ class AssetListPage {
     await this.driver.clickElement(this.networksToggle);
     await this.driver.waitUntil(
       async () => {
-        return await this.driver.findElement(this.allNetworksOption);
+        return Boolean(await this.driver.findElement(this.allNetworksOption));
       },
       {
         timeout: 5000,
@@ -298,7 +366,17 @@ class AssetListPage {
     );
   }
 
-  async check_networkFilterText(expectedText: string): Promise<void> {
+  async checkBuySellButtonIsPresent(): Promise<void> {
+    console.log(`Verify the buy/sell button is displayed`);
+    await this.driver.waitForSelector(this.buySellButton);
+  }
+
+  async checkMultichainTokenListButtonIsPresent(): Promise<void> {
+    console.log(`Verify the multichain-token-list-button is displayed`);
+    await this.driver.waitForSelector(this.tokenListItem);
+  }
+
+  async checkNetworkFilterText(expectedText: string): Promise<void> {
     console.log(
       `Verify the displayed account label in header is: ${expectedText}`,
     );
@@ -308,7 +386,7 @@ class AssetListPage {
     });
   }
 
-  async check_priceChartIsShown(): Promise<void> {
+  async checkPriceChartIsShown(): Promise<void> {
     console.log(`Verify the price chart is displayed`);
     await this.driver.waitUntil(
       async () => {
@@ -323,7 +401,7 @@ class AssetListPage {
    *
    * @param tokenAmount - The token amount to be checked for.
    */
-  async check_tokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
+  async checkTokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
     await this.driver.waitForSelector({
       css: this.tokenAmountValue,
@@ -338,7 +416,7 @@ class AssetListPage {
    * @param tokenName - The name of the token to check for.
    * @param tokenAmount - The token amount to be checked for.
    */
-  async check_tokenAmountInTokenDetailsModal(
+  async checkTokenAmountInTokenDetailsModal(
     tokenName: string,
     tokenAmount: string,
   ): Promise<void> {
@@ -355,6 +433,18 @@ class AssetListPage {
     });
   }
 
+  async checkTokenFiatAmountIsDisplayed(
+    tokenFiatAmount: string,
+  ): Promise<void> {
+    console.log(
+      `Waiting for token fiat amount ${tokenFiatAmount} to be displayed`,
+    );
+    await this.driver.waitForSelector({
+      css: this.tokenFiatAmount,
+      text: tokenFiatAmount,
+    });
+  }
+
   /**
    * Checks if a token exists in the token list and optionally verifies the token amount.
    *
@@ -363,7 +453,7 @@ class AssetListPage {
    * @returns A promise that resolves if the token exists and the amount is displayed (if provided), otherwise it throws an error.
    * @throws Will throw an error if the token is not found in the token list.
    */
-  async check_tokenExistsInList(
+  async checkTokenExistsInList(
     tokenName: string,
     amount?: string,
   ): Promise<void> {
@@ -377,7 +467,7 @@ class AssetListPage {
     console.log(`Token "${tokenName}" was found in the token list`);
 
     if (amount) {
-      await this.check_tokenAmountIsDisplayed(amount);
+      await this.checkTokenAmountIsDisplayed(amount);
     }
   }
 
@@ -387,7 +477,7 @@ class AssetListPage {
    * @param expectedNumber - The number of token items expected to be displayed. Defaults to 1.
    * @returns A promise that resolves if the expected number of token items is displayed.
    */
-  async check_tokenItemNumber(expectedNumber: number = 1): Promise<void> {
+  async checkTokenItemNumber(expectedNumber: number = 1): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
     await this.driver.wait(async () => {
       const tokenItemsNumber = await this.getNumberOfAssets();
@@ -404,7 +494,7 @@ class AssetListPage {
    * @param address - The token address to check
    * @param expectedChange - The expected change percentage value (e.g. '+0.02%' or '-0.03%')
    */
-  async check_tokenGeneralChangePercentage(
+  async checkTokenGeneralChangePercentage(
     address: string,
     expectedChange: string,
   ): Promise<void> {
@@ -428,7 +518,7 @@ class AssetListPage {
    *
    * @param address - The token address to check
    */
-  async check_tokenGeneralChangePercentageNotPresent(
+  async checkTokenGeneralChangePercentageNotPresent(
     address: string,
   ): Promise<void> {
     console.log(
@@ -449,7 +539,7 @@ class AssetListPage {
    *
    * @param expectedChangeValue - The expected change value (e.g. '+$50.00' or '-$30.00')
    */
-  async check_tokenGeneralChangeValue(
+  async checkTokenGeneralChangeValue(
     expectedChangeValue: string,
   ): Promise<void> {
     try {
@@ -475,7 +565,7 @@ class AssetListPage {
    * @param expectedMarketCap - The expected market cap (e.g. "$1.23.00")
    * @throws Error if the price or market cap don't match the expected values
    */
-  async check_tokenPriceAndMarketCap(
+  async checkTokenPriceAndMarketCap(
     expectedPrice: string,
     expectedMarketCap: string,
   ): Promise<void> {
@@ -494,6 +584,14 @@ class AssetListPage {
     console.log(`Token price and market cap verified successfully`);
   }
 
+  async checkTokenPrice(expectedPrice: string): Promise<void> {
+    console.log(`Verifying token price ${expectedPrice}`);
+    await this.driver.waitForSelector({
+      css: this.assetPriceInDetailsModal,
+      text: expectedPrice,
+    });
+  }
+
   /**
    * Verifies the token details in the token details modal
    *
@@ -501,7 +599,7 @@ class AssetListPage {
    * @param tokenAddress - The expected token address
    * @throws Error if the token details don't match the expected values
    */
-  async check_tokenSymbolAndAddressDetails(
+  async checkTokenSymbolAndAddressDetails(
     symbol: string,
     tokenAddress: string,
   ): Promise<void> {

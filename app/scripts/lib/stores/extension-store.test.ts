@@ -28,10 +28,6 @@ const setup = (
   return new ExtensionStore();
 };
 describe('ExtensionStore', () => {
-  beforeEach(() => {
-    jest.replaceProperty(global, 'sentry', { captureException: jest.fn() });
-  });
-
   afterEach(() => {
     jest.resetModules();
   });
@@ -89,7 +85,7 @@ describe('ExtensionStore', () => {
       const result = await localStore.get();
 
       expect(result).toBe(MOCK_STATE);
-      expect(getMock).toHaveBeenCalledWith(null);
+      expect(getMock).toHaveBeenCalledWith(['data', 'meta']);
     });
   });
 });

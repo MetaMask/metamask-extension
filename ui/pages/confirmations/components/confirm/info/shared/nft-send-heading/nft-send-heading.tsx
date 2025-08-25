@@ -17,10 +17,14 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
-import { getNftImageAlt } from '../../../../../../../helpers/utils/nfts';
+import {
+  getNftImage,
+  getNftImageAlt,
+} from '../../../../../../../helpers/utils/nfts';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
-import { ellipsify } from '../../../../../send/send.utils';
+import { ellipsify } from '../../../../../send-legacy/send.utils';
+import useFetchNftDetailsFromTokenURI from '../../../../../../../hooks/useFetchNftDetailsFromTokenURI';
 
 export const generateTokenIdDisplay = (tokenId: string) => {
   if (tokenId.length >= 10) {
@@ -42,7 +46,11 @@ const NFTSendHeading = () => {
     assetName,
     tokenImage,
     tokenId: assetTokenId,
+    tokenURI,
   } = useAssetDetails(tokenAddress, userAddress, data, chainId);
+  // Attempt to fetch image and name from tokenURI
+  const { image: imageFromTokenURI, name: nameFromTokenURI } =
+    useFetchNftDetailsFromTokenURI(tokenURI);
   const nfts: Nft[] = useSelector((state) =>
     getNFTsByChainId(state, chainId),
   ) as Nft[];
@@ -55,9 +63,11 @@ const NFTSendHeading = () => {
         assetTokenId === tokenId.toString(),
     );
   const imageOriginal = (nft as Nft | undefined)?.imageOriginal;
-  const image = (nft as Nft | undefined)?.image;
+  const image = getNftImage((nft as Nft | undefined)?.image);
   const nftImageAlt = nft ? getNftImageAlt(nft) : '';
-  const nftSrcUrl = imageOriginal ?? (image || '');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const nftSrcUrl = imageOriginal ?? (image || imageFromTokenURI || '');
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const currentChain = networkConfigurations[chainId];
   const tokenIdDisplay =
@@ -66,9 +76,15 @@ const NFTSendHeading = () => {
   const TokenImage = (
     <Box style={{ width: '48px' }}>
       <NftItem
-        src={tokenImage}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        src={tokenImage || imageFromTokenURI}
         alt={nftImageAlt}
-        name={assetName}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        name={assetName || nameFromTokenURI}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         tokenId={assetTokenId || ''}
         networkName={currentChain.name ?? ''}
         networkSrc={

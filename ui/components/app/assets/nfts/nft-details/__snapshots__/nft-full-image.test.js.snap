@@ -6,7 +6,7 @@ exports[`NFT full image should match snapshot 1`] = `
     class="mm-box main-container asset__container"
   >
     <div
-      class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+      class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
       data-testid="multichain-page"
     >
       <div
@@ -76,17 +76,11 @@ exports[`NFT full image should match snapshot 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network nft-item__network-badge mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                         data-testid="nft-network-badge"
                       >
-                        G
+                        ?
                       </div>
                     </div>
                   </div>
                 </button>
-                <p
-                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-                />
-                <p
-                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
-                />
               </div>
             </div>
           </div>

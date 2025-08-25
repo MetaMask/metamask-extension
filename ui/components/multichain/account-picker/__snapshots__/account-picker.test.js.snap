@@ -2,34 +2,44 @@
 
 exports[`AccountPicker renders properly 1`] = `
 <div>
-  <button
-    class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis multichain-account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
-    data-testid="account-menu-icon"
+  <div
+    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
   >
-    <span
-      class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
+    <button
+      class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis multichain-account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-1 mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
+      data-testid="account-menu-icon"
+      style="height: auto;"
     >
-      <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
-      >
-        <img
-          alt=""
-          height="16"
-          src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woMTM5IDg5JSA1OSUpIiBkPSJNMCwwSDhWOEgweiIvPjxwYXRoIGZpbGw9ImhzbCgzMjEgOTIlIDU2JSkiIGQ9Ik0xLDJoMXYxaC0xek02LDJoMXYxaC0xek0yLDJoMXYxaC0xek01LDJoMXYxaC0xek0zLDJoMXYxaC0xek00LDJoMXYxaC0xek0zLDNoMXYxaC0xek00LDNoMXYxaC0xek0wLDRoMXYxaC0xek03LDRoMXYxaC0xek0yLDRoMXYxaC0xek01LDRoMXYxaC0xek0wLDZoMXYxaC0xek03LDZoMXYxaC0xek0xLDZoMXYxaC0xek02LDZoMXYxaC0xek0zLDZoMXYxaC0xek00LDZoMXYxaC0xek0wLDdoMXYxaC0xek03LDdoMXYxaC0xek0yLDdoMXYxaC0xek01LDdoMXYxaC0xek0zLDdoMXYxaC0xek00LDdoMXYxaC0xeiIvPjxwYXRoIGZpbGw9ImhzbCgzMjUgNDclIDU1JSkiIGQ9Ik0xLDBoMXYxaC0xek02LDBoMXYxaC0xek0zLDFoMXYxaC0xek00LDFoMXYxaC0xek0wLDVoMXYxaC0xek03LDVoMXYxaC0xeiIvPjwvc3ZnPg=="
-          style="border-radius: 50%;"
-          width="16"
-        />
-      </div>
       <span
-        class="mm-box mm-text multichain-account-picker__label mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+        class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
       >
-        Account 1
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+          >
+            <img
+              alt=""
+              height="16"
+              src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woMTM5IDg5JSA1OSUpIiBkPSJNMCwwSDhWOEgweiIvPjxwYXRoIGZpbGw9ImhzbCgzMjEgOTIlIDU2JSkiIGQ9Ik0xLDJoMXYxaC0xek02LDJoMXYxaC0xek0yLDJoMXYxaC0xek01LDJoMXYxaC0xek0zLDJoMXYxaC0xek00LDJoMXYxaC0xek0zLDNoMXYxaC0xek00LDNoMXYxaC0xek0wLDRoMXYxaC0xek03LDRoMXYxaC0xek0yLDRoMXYxaC0xek01LDRoMXYxaC0xek0wLDZoMXYxaC0xek03LDZoMXYxaC0xek0xLDZoMXYxaC0xek02LDZoMXYxaC0xek0zLDZoMXYxaC0xek00LDZoMXYxaC0xek0wLDdoMXYxaC0xek03LDdoMXYxaC0xek0yLDdoMXYxaC0xek01LDdoMXYxaC0xek0zLDdoMXYxaC0xek00LDdoMXYxaC0xeiIvPjxwYXRoIGZpbGw9ImhzbCgzMjUgNDclIDU1JSkiIGQ9Ik0xLDBoMXYxaC0xek02LDBoMXYxaC0xek0zLDFoMXYxaC0xek00LDFoMXYxaC0xek0wLDVoMXYxaC0xek03LDVoMXYxaC0xeiIvPjwvc3ZnPg=="
+              style="border-radius: 50%;"
+              width="16"
+            />
+          </div>
+          <span
+            class="mm-box mm-text multichain-account-picker__label mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+            style="font-weight: medium;"
+          >
+            Account 1
+          </span>
+        </div>
       </span>
-    </span>
-    <span
-      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-icon-default"
-      style="mask-image: url('./images/icons/arrow-down.svg');"
-    />
-  </button>
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-icon-default"
+        style="mask-image: url('./images/icons/arrow-down.svg');"
+      />
+    </button>
+  </div>
 </div>
 `;

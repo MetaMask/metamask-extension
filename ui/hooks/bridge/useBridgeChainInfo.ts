@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux';
 import {
   type TransactionMeta,
   TransactionType,
@@ -6,26 +5,20 @@ import {
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
+  getNativeAssetForChainId,
   isSolanaChainId,
 } from '@metamask/bridge-controller';
-import type { BridgeHistoryItem } from '../../../shared/types/bridge-status';
-import {
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../shared/constants/network';
+import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
-import { getMultichainNetworkConfigurationsByChainId } from '../../selectors';
+import { type ChainInfo } from '../../pages/bridge/utils/tx-details';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
+import { SOLANA_BLOCK_EXPLORER_URL } from '../../../shared/constants/multichain/networks';
 
-const getSourceAndDestChainIds = ({
-  bridgeHistoryItem,
-}: UseBridgeChainInfoProps) => {
+const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
+  const { srcChainId, destChainId } = quote;
   return {
-    srcChainId: bridgeHistoryItem
-      ? bridgeHistoryItem.quote.srcChainId
-      : undefined,
-    destChainId: bridgeHistoryItem
-      ? bridgeHistoryItem.quote.destChainId
-      : undefined,
+    srcChainId,
+    destChainId,
   };
 };
 
@@ -37,20 +30,26 @@ export type UseBridgeChainInfoProps = {
 export default function useBridgeChainInfo({
   bridgeHistoryItem,
   srcTxMeta,
-}: UseBridgeChainInfoProps) {
-  const [networkConfigurationsByChainId] =
-    useSelector(getMultichainNetworkConfigurationsByChainId) ?? [];
-
-  if (srcTxMeta?.type !== TransactionType.bridge) {
+}: UseBridgeChainInfoProps): {
+  srcNetwork?: ChainInfo;
+  destNetwork?: ChainInfo;
+} {
+  if (
+    srcTxMeta?.type &&
+    ![TransactionType.bridge, TransactionType.swap].includes(srcTxMeta.type)
+  ) {
     return {
       srcNetwork: undefined,
       destNetwork: undefined,
     };
   }
 
-  const { srcChainId, destChainId } = getSourceAndDestChainIds({
-    bridgeHistoryItem,
-  });
+  const { srcChainId, destChainId } = bridgeHistoryItem
+    ? getSourceAndDestChainIds(bridgeHistoryItem)
+    : {
+        srcChainId: srcTxMeta?.chainId,
+        destChainId: srcTxMeta?.chainId,
+      };
 
   if (!srcChainId || !destChainId) {
     return {
@@ -59,54 +58,84 @@ export default function useBridgeChainInfo({
     };
   }
 
+  // These utils throw an error if an unsupported chain id is passed in
+  let srcChainIdInCaip, destChainIdInCaip, srcNativeAsset, destNativeAsset;
+  try {
+    srcChainIdInCaip = formatChainIdToCaip(srcChainId);
+    srcNativeAsset = getNativeAssetForChainId(srcChainId);
+    destChainIdInCaip = formatChainIdToCaip(destChainId);
+    destNativeAsset = getNativeAssetForChainId(destChainId);
+  } catch (error) {
+    console.warn('Error getting XChain swaps network info', error);
+    return { srcNetwork: undefined, destNetwork: undefined };
+  }
+
   // Source chain info
-  const srcChainIdInCaip = formatChainIdToCaip(srcChainId);
-  const srcNetwork = networkConfigurationsByChainId[srcChainIdInCaip];
   const normalizedSrcChainId = isSolanaChainId(srcChainId)
     ? srcChainIdInCaip
     : formatChainIdToHex(srcChainId);
-  const fallbackSrcNetwork = {
-    chainId: normalizedSrcChainId,
-    name: NETWORK_TO_NAME_MAP[
-      normalizedSrcChainId as keyof typeof NETWORK_TO_NAME_MAP
+
+  const commonSrcNetworkFields = {
+    chainId: srcChainIdInCaip,
+    name: NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      normalizedSrcChainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
     ],
-    nativeCurrency:
-      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-        normalizedSrcChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-      ],
-    defaultBlockExplorerUrlIndex: 0,
-    blockExplorerUrls: [
-      CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[normalizedSrcChainId],
-    ],
-    defaultRpcEndpointIndex: 0,
-    rpcEndpoints: [],
+  };
+
+  const srcNetwork = {
+    ...commonSrcNetworkFields,
+    ...(isSolanaChainId(srcChainIdInCaip)
+      ? ({
+          isEvm: false,
+          nativeCurrency: srcNativeAsset?.assetId,
+          blockExplorerUrl: SOLANA_BLOCK_EXPLORER_URL,
+        } as const)
+      : {
+          defaultBlockExplorerUrlIndex: 0,
+          blockExplorerUrls: [
+            CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[normalizedSrcChainId],
+          ],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [],
+          nativeCurrency: srcNativeAsset?.symbol,
+          isEvm: true as const,
+        }),
   };
 
   // Dest chain info
-  const destChainIdInCaip = formatChainIdToCaip(destChainId);
-  const destNetwork = networkConfigurationsByChainId[destChainIdInCaip];
   const normalizedDestChainId = isSolanaChainId(destChainId)
     ? destChainIdInCaip
     : formatChainIdToHex(destChainId);
-  const fallbackDestNetwork = {
-    chainId: normalizedDestChainId,
-    name: NETWORK_TO_NAME_MAP[
-      normalizedDestChainId as keyof typeof NETWORK_TO_NAME_MAP
+
+  const commonDestNetworkFields = {
+    chainId: destChainIdInCaip,
+    name: NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      normalizedDestChainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
     ],
-    nativeCurrency:
-      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-        normalizedDestChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-      ],
-    defaultBlockExplorerUrlIndex: 0,
-    blockExplorerUrls: [
-      CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[normalizedDestChainId],
-    ],
-    defaultRpcEndpointIndex: 0,
-    rpcEndpoints: [],
+  };
+
+  const destNetwork = {
+    ...commonDestNetworkFields,
+    ...(isSolanaChainId(destChainIdInCaip)
+      ? ({
+          isEvm: false,
+          nativeCurrency: destNativeAsset?.assetId,
+          blockExplorerUrl: SOLANA_BLOCK_EXPLORER_URL,
+        } as const)
+      : {
+          defaultBlockExplorerUrlIndex: 0,
+          blockExplorerUrls: [
+            CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[normalizedDestChainId],
+          ],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [],
+          nativeCurrency: destNativeAsset?.symbol,
+          isEvm: true as const,
+        }),
   };
 
   return {
-    srcNetwork: srcNetwork || fallbackSrcNetwork,
-    destNetwork: destNetwork || fallbackDestNetwork,
+    srcNetwork,
+    destNetwork,
   };
 }

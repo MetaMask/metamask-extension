@@ -1,29 +1,45 @@
 import { getNetworkNameByChainId } from '../feature-flags';
 import { ProviderConfigState, getCurrentChainId } from './networks';
 
-type FeatureFlagsMetaMaskState = {
+type NetworkFeatureFlag = {
+  extensionActive: boolean;
+  mobileActive: boolean;
+  smartTransactions?: {
+    mobileActive?: boolean;
+    extensionActive?: boolean;
+    expectedDeadline?: number;
+    maxDeadline?: number;
+    extensionReturnTxHashAsap?: boolean;
+  };
+};
+
+type SmartTransactionsFeatureFlag = {
+  mobileActive: boolean;
+  extensionActive: boolean;
+  extensionReturnTxHashAsap: boolean;
+};
+
+export type SwapsFeatureFlags = {
+  [networkName: string]: NetworkFeatureFlag;
+  smartTransactions: SmartTransactionsFeatureFlag;
+};
+
+export type FeatureFlagsMetaMaskState = {
   metamask: {
     swapsState: {
-      swapsFeatureFlags: {
-        [key: string]: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-          smartTransactions: {
-            expectedDeadline?: number;
-            maxDeadline?: number;
-            extensionReturnTxHashAsap?: boolean;
-          };
-        };
-      };
+      swapsFeatureFlags: SwapsFeatureFlags;
     };
   };
 };
 
 export function getFeatureFlagsByChainId(
   state: ProviderConfigState & FeatureFlagsMetaMaskState,
+  chainId?: string,
 ) {
-  const chainId = getCurrentChainId(state);
-  const networkName = getNetworkNameByChainId(chainId);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const effectiveChainId = chainId || getCurrentChainId(state);
+  const networkName = getNetworkNameByChainId(effectiveChainId);
   const featureFlags = state.metamask.swapsState?.swapsFeatureFlags;
   if (!featureFlags?.[networkName]) {
     return null;

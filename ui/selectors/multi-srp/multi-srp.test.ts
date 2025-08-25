@@ -4,7 +4,10 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import mockDefaultState from '../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
-import { getShouldShowSeedPhraseReminder } from './multi-srp';
+import {
+  getSnapAccountsByKeyringId,
+  getShouldShowSeedPhraseReminder,
+} from './multi-srp';
 
 const mockGetSelectedAccountTokensAcrossChains = jest.fn();
 const mockGetCrossChainMetaMaskCachedBalances = jest.fn();
@@ -49,6 +52,19 @@ const mockSnapAccount = createMockInternalAccount({
     entropySource: mockKeyringId,
   },
 });
+const mockSnapAccountWithSecondaryEntropySource = createMockInternalAccount({
+  address: 'HMc6khkRUVrZAuwNQz7DRVrMDjYbNZsiHmFCnkh9b7bV',
+  type: SolAccountType.DataAccount,
+  keyringType: KeyringTypes.snap,
+  snapOptions: {
+    enabled: true,
+    id: SOLANA_WALLET_SNAP_ID,
+    name: 'snap-name',
+  },
+  options: {
+    entropySource: mockKeyringIdFromSecondSrp,
+  },
+});
 const mockThirdPartySnapAccount = createMockInternalAccount({
   address: 'Hcmtoy9Qw2redSMVhKD8tFBB376Y6wqevmHwgjSWxRzW',
   type: SolAccountType.DataAccount,
@@ -89,39 +105,38 @@ const generateMockState = ({
         {
           type: KeyringTypes.hd,
           accounts: [mockHdAccount.address],
+          metadata: {
+            id: mockKeyringId,
+            name: '',
+          },
         },
         {
           type: KeyringTypes.hd,
           accounts: [mockHdAccountFromSecondSrp.address],
+          metadata: {
+            id: mockKeyringIdFromSecondSrp,
+            name: '',
+          },
         },
         {
           type: KeyringTypes.simple,
           accounts: [mockPrivateKeyAccount.address],
+          metadata: {
+            id: mockKeyringIdForPrivateKeyAccount,
+            name: '',
+          },
         },
         {
           type: KeyringTypes.snap,
           accounts: [
             mockSnapAccount.address,
             mockThirdPartySnapAccount.address,
+            mockSnapAccountWithSecondaryEntropySource.address,
           ],
-        },
-      ],
-      keyringsMetadata: [
-        {
-          id: mockKeyringId,
-          name: '',
-        },
-        {
-          id: mockKeyringIdFromSecondSrp,
-          name: '',
-        },
-        {
-          id: mockKeyringIdForPrivateKeyAccount,
-          name: '',
-        },
-        {
-          id: mockSnapKeyringId,
-          name: '',
+          metadata: {
+            id: mockSnapKeyringId,
+            name: '',
+          },
         },
       ],
       seedPhraseBackedUp,
@@ -162,7 +177,7 @@ describe('Multi SRP Selectors', () => {
       expect(result).toBe(true);
     });
 
-    it.only('returns true for EVM account with cross chain balance', () => {
+    it('returns true for EVM account with cross chain balance', () => {
       const mockState = generateMockState({
         account: mockHdAccount,
         seedPhraseBackedUp: false,
@@ -284,6 +299,50 @@ describe('Multi SRP Selectors', () => {
       );
 
       expect(result).toBe(false);
+    });
+
+    it('returns false when a snap account is selected but the entropy source is not the primary hd keyring', () => {
+      const mockState = generateMockState({
+        account: mockSnapAccountWithSecondaryEntropySource,
+        seedPhraseBackedUp: false,
+        dismissSeedBackUpReminder: false,
+      });
+
+      const result = getShouldShowSeedPhraseReminder(
+        mockState,
+        mockSnapAccountWithSecondaryEntropySource,
+      );
+
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('getFirstPartySnapAccountsByKeyringId', () => {
+    it('returns the correct accounts', () => {
+      const mockState = generateMockState({
+        account: mockSnapAccount,
+        seedPhraseBackedUp: false,
+        dismissSeedBackUpReminder: false,
+      });
+
+      const result = getSnapAccountsByKeyringId(mockState, mockKeyringId);
+
+      expect(result).toStrictEqual([mockSnapAccount]);
+    });
+
+    it("returns an empty array if there aren't any first party snap accounts", () => {
+      const mockState = generateMockState({
+        account: mockHdAccount,
+        seedPhraseBackedUp: false,
+        dismissSeedBackUpReminder: false,
+      });
+
+      const result = getSnapAccountsByKeyringId(
+        mockState,
+        'mock-id-with-no-snap-accounts',
+      );
+
+      expect(result).toStrictEqual([]);
     });
   });
 });

@@ -4,7 +4,10 @@ import { NetworkStatus } from '@metamask/network-controller';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
 import { Box } from '../../../../components/component-library';
-import { mockNetworkState } from '../../../../../test/stub/networks';
+import {
+  mockMultichainNetworkState,
+  mockNetworkState,
+} from '../../../../../test/stub/networks';
 
 const STORE_MOCK = {
   ...testData,
@@ -35,10 +38,16 @@ const STORE_MOCK = {
         status: NetworkStatus.Available,
       },
     }),
+    ...mockMultichainNetworkState(),
     pendingApprovals: {
       testId: {
         id: 'testId',
         origin: 'npm:@test/test-snap',
+      },
+    },
+    enabledNetworkMap: {
+      eip155: {
+        '0x1': true,
       },
     },
     selectedNetworkClientId: 'testNetworkClientId',
@@ -95,7 +104,7 @@ export function PendingApproval({ children, requestData, state, type }) {
         >
           <Box
             style={{
-              flex: '1 0 auto',
+              flex: '1 1 auto',
               display: 'flex',
             }}
           >

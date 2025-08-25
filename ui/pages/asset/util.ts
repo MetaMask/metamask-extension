@@ -1,5 +1,7 @@
-import { SUPPORTED_CHAIN_IDS, Token } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
+import { Hex, assert } from '@metamask/utils';
+import { Duration } from 'luxon';
+import { PriceApiTimePeriod } from './types/PriceApiTimePeriod';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const getShortDateFormatter = () =>
@@ -66,11 +68,11 @@ export const chainSupportsPricing = (chainId: Hex) =>
 /** The opacity components should set during transition */
 export const loadingOpacity = 0.2;
 
-export const findAssetByAddress = (
-  data: Record<string, Token[]>,
+export const findAssetByAddress = <TItem extends { address: string }>(
+  data: Record<string, TItem[]>,
   address?: string,
   chainId?: string,
-): Token | undefined | null => {
+): TItem | undefined | null => {
   if (!chainId) {
     console.error('Chain ID is required.');
     return null;
@@ -91,4 +93,39 @@ export const findAssetByAddress = (
     (token) =>
       token.address && token.address.toLowerCase() === address.toLowerCase(),
   );
+};
+
+/**
+ * Maps an ISO 8601 duration string to a Price API time period string.
+ *
+ * @param duration - The ISO 8601 duration string, e.g. "P1D", "P1M", "P1Y", "P3YT45S", ...
+ * @returns The corresponding Price API time period string.
+ */
+export const fromIso8601DurationToPriceApiTimePeriod = (
+  duration: string,
+): PriceApiTimePeriod => {
+  assert(
+    Duration.fromISO(duration, { locale: 'en' }).isValid,
+    `Invalid ISO 8601 duration: ${duration}`,
+  );
+
+  const SUPPORTED_MAPPINGS: Record<string, PriceApiTimePeriod> = {
+    P1D: '1D',
+    P7D: '7D',
+    P1W: '7D',
+    P1M: '1M',
+    P3M: '3M',
+    P1Y: '1Y',
+    P1000Y: '1000Y',
+  };
+
+  const timePeriod = SUPPORTED_MAPPINGS[duration];
+
+  if (!timePeriod) {
+    throw new Error(
+      `No Price API timePeriod matching the ISO 8601 duration: ${duration}`,
+    );
+  }
+
+  return timePeriod;
 };

@@ -8,6 +8,7 @@ import {
   BorderRadius,
   TextVariant,
   AlignItems,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../text';
 import README from './README.mdx';
@@ -134,3 +135,21 @@ export const BorderRadiusStory: Story = {
 };
 
 BorderRadiusStory.storyName = 'BorderRadius';
+
+export const TokenListSkeleton: Story = {
+  render: () => (
+    <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
+      <Skeleton width={32} height={32} borderRadius={BorderRadius.full} style={{
+        minWidth: 32, // add classname with this style attached
+      }} />
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={1} width={BlockSize.Full} paddingRight={12}>
+        <Skeleton width="100%" height={16} />
+        <Skeleton width="70%" height={16} />
+      </Box>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={1} width={BlockSize.OneThird}>
+        <Skeleton width="100%" height={16} />
+        <Skeleton width="100%" height={16} />
+      </Box>
+    </Box>
+  ),
+};

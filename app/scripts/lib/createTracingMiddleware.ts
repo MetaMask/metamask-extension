@@ -1,5 +1,4 @@
 // Request and responses are currently untyped.
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { trace, TraceName } from '../../../shared/lib/trace';
@@ -19,7 +18,11 @@ const METHOD_TYPE_TO_TAGS: Record<string, Record<string, string>> = {
 
 export default function createTracingMiddleware() {
   return async function tracingMiddleware(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     req: any,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _res: any,
     next: () => void,
   ) {

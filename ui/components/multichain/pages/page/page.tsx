@@ -42,7 +42,7 @@ export const Page = ({ children, className = '', ...props }: PageProps) => {
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.center}
-      backgroundColor={BackgroundColor.backgroundAlternative}
+      backgroundColor={BackgroundColor.backgroundDefault}
       className={classNames}
       data-testid="multichain-page"
     >

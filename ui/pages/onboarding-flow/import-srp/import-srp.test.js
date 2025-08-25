@@ -1,17 +1,20 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { userEvent } from '@testing-library/user-event';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import ImportSrp from './import-srp';
 
 const mockHistoryReplace = jest.fn();
+const mockHistoryPush = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
     replace: mockHistoryReplace,
+    push: mockHistoryPush,
   }),
 }));
 
@@ -59,7 +62,7 @@ describe('Import SRP', () => {
     expect(confirmSrpButton).toBeDisabled();
   });
 
-  it('should input and submit srp', () => {
+  it('should paste and submit srp', async () => {
     const mockStore = configureMockStore()(mockState);
     const mockSubmitSecretRecoveryPhrase = jest.fn();
 
@@ -68,7 +71,12 @@ describe('Import SRP', () => {
       mockStore,
     );
 
-    inputSRP(TEST_SEED, queryByTestId);
+    const srpNote = queryByTestId('srp-input-import__srp-note');
+    expect(srpNote).toBeInTheDocument();
+
+    srpNote.focus();
+
+    await userEvent.paste(TEST_SEED);
 
     const confirmSrpButton = queryByTestId('import-srp-confirm');
 
@@ -77,15 +85,37 @@ describe('Import SRP', () => {
     fireEvent.click(confirmSrpButton);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
-    expect(mockHistoryReplace).toHaveBeenCalledWith(
+    expect(mockHistoryPush).toHaveBeenCalledWith(
       ONBOARDING_CREATE_PASSWORD_ROUTE,
     );
   });
 
-  function inputSRP(seedStr, queryByTestId) {
-    for (const [index, word] of seedStr.split(' ').entries()) {
-      const srpInput = queryByTestId(`import-srp__srp-word-${index}`);
-      fireEvent.change(srpInput, { target: { value: word } });
-    }
-  }
+  it('should input and submit srp', async () => {
+    const mockStore = configureMockStore()(mockState);
+    const mockSubmitSecretRecoveryPhrase = jest.fn();
+
+    const { queryByTestId } = renderWithProvider(
+      <ImportSrp submitSecretRecoveryPhrase={mockSubmitSecretRecoveryPhrase} />,
+      mockStore,
+    );
+
+    const srpNote = queryByTestId('srp-input-import__srp-note');
+    expect(srpNote).toBeInTheDocument();
+
+    srpNote.focus();
+
+    await userEvent.type(srpNote, TEST_SEED);
+    // fireEvent.change(srpNote, { target: { value: TEST_SEED } });
+
+    const confirmSrpButton = queryByTestId('import-srp-confirm');
+
+    expect(confirmSrpButton).not.toBeDisabled();
+
+    fireEvent.click(confirmSrpButton);
+
+    expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
+    expect(mockHistoryPush).toHaveBeenCalledWith(
+      ONBOARDING_CREATE_PASSWORD_ROUTE,
+    );
+  });
 });

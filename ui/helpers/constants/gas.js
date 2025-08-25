@@ -39,5 +39,6 @@ export const PRIORITY_LEVEL_ICON_MAP = {
   dappSuggested: '🌐',
   dappSuggestedHigh: '🌐',
   swapSuggested: '🔄',
+  tenPercentIncreased: '⬆',
   custom: '⚙️',
 };

@@ -3,7 +3,8 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -21,19 +22,33 @@ import {
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
 
 export const SelectRpcUrlModal = ({
   networkConfiguration,
   onNetworkChange,
 }: {
-  networkConfiguration: NetworkConfiguration;
-  onNetworkChange: (chainId: CaipChainId) => void;
+  networkConfiguration?: NetworkConfiguration;
+  onNetworkChange: (chainId: CaipChainId, networkClientId: string) => void;
 }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const chainId = location.state?.chainId;
+
+  const [, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const networkConfigurationToUse =
+    networkConfiguration ?? evmNetworks[chainId as keyof typeof evmNetworks];
+
+  // Handle case where both networkConfiguration and chainId are undefined
+  if (!networkConfigurationToUse) {
+    return null;
+  }
 
   const image =
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      networkConfiguration.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      networkConfigurationToUse.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
 
   return (
@@ -49,18 +64,18 @@ export const SelectRpcUrlModal = ({
           {image && (
             <AvatarNetwork
               src={image}
-              name={networkConfiguration.name}
+              name={networkConfigurationToUse.name}
               size={AvatarNetworkSize.Sm}
               marginRight={1}
             />
           )}
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            {networkConfiguration.name}
+            {networkConfigurationToUse.name}
           </Text>
         </Box>
       </Box>
 
-      {networkConfiguration.rpcEndpoints.map((rpcEndpoint, index) => (
+      {networkConfigurationToUse.rpcEndpoints.map((rpcEndpoint, index) => (
         <Box
           alignItems={AlignItems.center}
           paddingLeft={4}
@@ -69,19 +84,22 @@ export const SelectRpcUrlModal = ({
           key={rpcEndpoint.url}
           onClick={() => {
             const network = {
-              ...networkConfiguration,
+              ...networkConfigurationToUse,
               defaultRpcEndpointIndex: index,
             };
             dispatch(updateNetwork(network));
             dispatch(setEditedNetwork());
-            onNetworkChange(toEvmCaipChainId(network.chainId));
+            onNetworkChange(
+              toEvmCaipChainId(network.chainId),
+              rpcEndpoint.networkClientId,
+            );
           }}
           className={classnames('select-rpc-url__item', {
             'select-rpc-url__item--selected':
-              index === networkConfiguration.defaultRpcEndpointIndex,
+              index === networkConfigurationToUse.defaultRpcEndpointIndex,
           })}
         >
-          {index === networkConfiguration.defaultRpcEndpointIndex && (
+          {index === networkConfigurationToUse.defaultRpcEndpointIndex && (
             <Box
               className="select-rpc-url__item-selected-pill"
               borderRadius={BorderRadius.pill}
