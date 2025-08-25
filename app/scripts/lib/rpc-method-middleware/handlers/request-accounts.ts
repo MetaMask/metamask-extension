@@ -80,7 +80,7 @@ const locks = new Set();
  * only errors if the user rejects the request. We maintain the method for
  * backwards compatibility reasons.
  *
- * @param _req - The JSON-RPC request object.
+ * @param req - The JSON-RPC request object.
  * @param res - The JSON-RPC response object.
  * @param _next - The json-rpc-engine 'next' callback.
  * @param end - The json-rpc-engine 'end' callback.
