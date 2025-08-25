@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "問題が解決しない場合は、MetaMaskを再起動してください。",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "読み込みに通常より時間がかかっています。",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "エラー"
   },
@@ -322,6 +330,10 @@
   "addressMismatchPunycode": {
     "message": "Punycodeバージョン: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "アドレス",
+    "description": "Multichain account menu item for linking to addresses page"
   },
   "advanced": {
     "message": "高度な設定"
@@ -901,6 +913,21 @@
   },
   "bridgeNetCost": {
     "message": "純コスト"
+  },
+  "bridgePriceImpact": {
+    "message": "プライスインパクト"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "プライスインパクトは、スワップ注文が資産の市場価格に与える影響を示すものです。ガス代を支払うための十分な資金がない場合、ソーストークンの一部が自動的に手数料の支払いに充当され、スワップされる金額が減少します。MetaMaskがプライスインパクトに影響を及ぼしたり、制御したりすることはありません。"
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "プライスインパクトは、スワップ注文が資産の市場価格に与える影響を示すものです。これは、取引量とプール内の流動性によって異なります。MetaMaskがプライスインパクトに影響を及ぼしたり、制御したりすることはありません。"
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "プライスインパクト"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "プライスインパクトに関する警告"
   },
   "bridgeQuoteExpired": {
     "message": "クォートがタイムアウトしました。"
@@ -1951,6 +1978,12 @@
   },
   "downArrow": {
     "message": "下矢印"
+  },
+  "downloadAppDescription": {
+    "message": "モバイルアプリなら、MetaMaskをどこにでも持ち歩けます。さらに、Face IDを有効にしておけば、たとえパスワードを忘れても常にアクセス可能です。"
+  },
+  "downloadAppTitle": {
+    "message": "QRコードをスキャンしてアプリをダウンロード"
   },
   "downloadGoogleChrome": {
     "message": "Google Chromeをダウンロード"
@@ -4574,6 +4607,10 @@
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
   },
+  "pin": {
+    "message": "ピン留め",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "最上部にピン留め"
   },
@@ -4866,6 +4903,10 @@
   },
   "removeSnapDescription": {
     "message": "この操作により、snapとそのデータが削除され、与えられたアクセス許可が取り消されます。"
+  },
+  "rename": {
+    "message": "名前の変更",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "置き換え"
@@ -5546,6 +5587,15 @@
   },
   "slideSweepStakeTitle": {
     "message": "$5000 USDCプレゼントにご応募ください！"
+  },
+  "slippage": {
+    "message": "スリッページ"
+  },
+  "slippageAuto": {
+    "message": "自動"
+  },
+  "slippageEditAriaLabel": {
+    "message": "スリッページの編集"
   },
   "smartAccountAccept": {
     "message": "スマートアカウントを使用"
