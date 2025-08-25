@@ -2,8 +2,10 @@ const { By } = require('selenium-webdriver');
 const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  DAPP_ONE_URL,
   DAPP_URL,
+  DAPP_ONE_URL,
+} = require('../../constants');
+const {
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
