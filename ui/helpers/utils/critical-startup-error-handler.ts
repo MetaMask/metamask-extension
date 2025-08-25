@@ -29,6 +29,10 @@ export class CriticalStartupErrorHandler {
 
   #container: HTMLElement;
 
+  #handshakeTimeoutId?: NodeJS.Timeout;
+
+  #onHandshakeCompleted?: () => void;
+
   /**
    * Creates an instance of CriticalStartupErrorHandler.
    * This class listens for critical startup errors from the background script
@@ -45,26 +49,20 @@ export class CriticalStartupErrorHandler {
   /**
    * Verify that the background connection is operational.
    */
-  async #connectionHandshake() {
-    const { promise: handshake, resolve: handshakeCompleted } =
+  async #startHandshake() {
+    const { promise: handshake, resolve: onHandshakeCompleted } =
       createDeferredPromise();
-    const ackHandler: Parameters<
-      browser.Runtime.Port['onMessage']['addListener']
-    >[0] = (event) => {
-      if (event.name === 'handshake' && event.data?.method === 'ACK') {
-        this.#port.onMessage.removeListener(ackHandler);
-        handshakeCompleted();
-      }
-    };
-    this.#port.onMessage.addListener(ackHandler);
-    this.#port.postMessage({ data: { method: 'SYN' }, name: 'handshake' });
+    // This is called later in `#handle` when the response is received.
+    this.#onHandshakeCompleted = onHandshakeCompleted;
 
+    this.#port.postMessage({ data: { method: 'SYN' }, name: 'handshake' });
     const timeoutPromise = new Promise((_resolve, reject) => {
-      setTimeout(
+      this.#handshakeTimeoutId = setTimeout(
         () => reject(new Error('Background connection unresponsive')),
         BACKGROUND_CONNECTION_TIMEOUT,
       );
     });
+
     try {
       await Promise.race([handshake, timeoutPromise]);
     } catch (error) {
@@ -75,6 +73,8 @@ export class CriticalStartupErrorHandler {
         // error.
         error as ErrorLike,
       );
+    } finally {
+      clearTimeout(this.#handshakeTimeoutId);
     }
   }
 
@@ -96,9 +96,19 @@ export class CriticalStartupErrorHandler {
       return;
     }
     const { method } = data;
-    // Currently, we only handle RELOAD_WINDOW, and the state corruption error
+    // Currently, we only handle ACK, RELOAD_WINDOW, and the state corruption error
     // message, but we will be adding more in the future.
-    if (method === RELOAD_WINDOW) {
+    if (method === 'ACK') {
+      if (this.#onHandshakeCompleted) {
+        this.#onHandshakeCompleted();
+      } else {
+        await displayCriticalError(
+          this.#container,
+          CriticalErrorTranslationKey.TroubleStarting,
+          new Error('Unreachable error, handshake not initialized'),
+        );
+      }
+    } else if (method === RELOAD_WINDOW) {
       // This is a special case where we want to reload the page
       window.location.reload();
     } else if (method === METHOD_DISPLAY_STATE_CORRUPTION_ERROR) {
@@ -161,15 +171,17 @@ export class CriticalStartupErrorHandler {
   install() {
     // Called without `await` intentionally to ensure listeners for other messages are added as
     // quickly as possible.
-    this.#connectionHandshake();
+    this.#startHandshake();
 
     this.#port.onMessage.addListener(this.#handler);
   }
 
   /**
-   * Uninstalls the error listeners from the port.
+   * Uninstall the error listeners from the port, and cancel any ongoing handshake.
    */
   uninstall() {
     this.#port.onMessage.removeListener(this.#handler);
+    this.#onHandshakeCompleted = undefined;
+    clearTimeout(this.#handshakeTimeoutId);
   }
 }
