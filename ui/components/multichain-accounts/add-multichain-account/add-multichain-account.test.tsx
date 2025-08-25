@@ -104,7 +104,7 @@ describe('AddMultichainAccount', () => {
     expect(createMultichainAccount).toHaveBeenCalledTimes(1); // Still just one call
   });
 
-  it('returns to normal state after loading completes', () => {
+  it('returns to normal state after loading completes', async () => {
     const store = configureStore(initialState);
     const { container } = renderWithProvider(
       <AddMultichainAccount walletId={mockWalletId} />,
@@ -113,8 +113,14 @@ describe('AddMultichainAccount', () => {
 
     fireEvent.click(screen.getByTestId('add-multichain-account-button'));
 
-    // Fast-forward timer to complete loading
-    jest.advanceTimersByTime(1200);
+    // Verify we're in the loading state first
+    expect(screen.getByText('Creating account...')).toBeInTheDocument();
+
+    // Wait for the async operation to complete (first run any pending promises)
+    await Promise.resolve();
+
+    // Run another tick to ensure state updates are processed
+    await Promise.resolve();
 
     // Check that the component returned to normal state
     expect(screen.getByText('Create account')).toBeInTheDocument();
