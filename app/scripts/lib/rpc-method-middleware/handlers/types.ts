@@ -10,16 +10,17 @@ import type {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import type {
+  CaveatConstraint,
   CaveatSpecificationConstraint,
-  ExtractCaveats,
   ExtractPermission,
   OriginString,
+  PermissionController,
   PermissionSpecificationConstraint,
+  PermissionsRequest,
   PermissionSubjectMetadata,
   RequestedPermissions,
   SubjectPermissions,
   SubjectType,
-  ValidPermission,
 } from '@metamask/permission-controller';
 import { PermissionController } from '@metamask/permission-controller';
 import type { InfuraNetworkType } from '@metamask/controller-utils';
@@ -81,19 +82,24 @@ export type FindNetworkConfigurationBy = (
   rpcInfo: Record<string, string>,
 ) => NetworkConfiguration | null;
 export type HasPermission = (origin: OriginString) => boolean;
-export type GetAccounts = () => Promise<string[]>;
+export type GetAccounts = (options: { ignoreLock: boolean }) => Promise<Hex[]>;
 export type GetCurrentChainId = () => Hex;
 export type GetCurrentRpcUrl = () => string | undefined;
 export type GetNetworkConfigurations = () => NetworkConfiguration;
-export type GetPermissionsForOrigin<
-  ControllerCaveatSpecification extends CaveatSpecificationConstraint = CaveatSpecificationConstraint,
-> = (
-  origin: OriginString,
-) =>
-  | SubjectPermissions<
-      ValidPermission<string, ExtractCaveats<ControllerCaveatSpecification>>
-    >
-  | undefined;
+
+export type RequestCaip25ApprovalForOrigin = (
+  origin?: OriginString,
+  requestedPermissions?: PermissionsRequest['permissions'],
+) => Promise<RequestedPermissions>;
+
+export type GrantPermissionsForOrigin = (
+  approvedPermissions: RequestedPermissions,
+) => ReturnType<
+  PermissionController<
+    PermissionSpecificationConstraint,
+    CaveatConstraint
+  >['grantPermissions']
+>;
 
 export type GetProviderState = (
   origin: OriginString,
