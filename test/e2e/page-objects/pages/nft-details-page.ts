@@ -45,9 +45,7 @@ class NFTDetailsPage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.nftSendButton,
@@ -84,9 +82,7 @@ class NFTDetailsPage {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_nftDescriptionIsDisplayed(description: string) {
+  async checkNftDescriptionIsDisplayed(description: string) {
     console.log(
       'Check if NFT description is displayed on NFT details page',
       description,
@@ -97,16 +93,12 @@ class NFTDetailsPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_nftDefaultImageIsDisplayed() {
+  async checkNftDefaultImageIsDisplayed() {
     console.log('Check if NFT default image is displayed on NFT details page');
     await this.driver.waitForSelector(this.nftDefaultImage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_nftDetailsAddressIsDisplayed(address: string) {
+  async checkNftDetailsAddressIsDisplayed(address: string) {
     console.log(
       'Check if NFT address is displayed on NFT details page',
       address,
@@ -117,25 +109,19 @@ class NFTDetailsPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_nftImageContainerIsDisplayed() {
+  async checkNftImageContainerIsDisplayed() {
     console.log(
       'Check if NFT image container is displayed on NFT details page',
     );
     await this.driver.waitForSelector(this.nftImageContainer);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_nftRenderedImageIsDisplayed() {
+  async checkNftRenderedImageIsDisplayed() {
     console.log('Check if NFT rendered image is displayed on NFT details page');
     await this.driver.waitForSelector(this.nftRenderedImage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_nftNameIsDisplayed(name: string) {
+  async checkNftNameIsDisplayed(name: string) {
     console.log('Check if NFT name is displayed on NFT details page', name);
     await this.driver.waitForSelector({
       css: this.nftDetailsName,
@@ -143,9 +129,7 @@ class NFTDetailsPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_nftFullImageIsDisplayed() {
+  async checkNftFullImageIsDisplayed() {
     console.log('Check if NFT full image is displayed on NFT details page');
     await this.driver.waitForSelector('[data-testid="nft-item"]');
   }

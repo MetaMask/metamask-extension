@@ -358,7 +358,7 @@ describe('NetworkListMenu', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`', () => {
+  it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`', () => {
     const { queryByTestId } = render({
       neNetworkDiscoverButton: {
         '0x1': true,

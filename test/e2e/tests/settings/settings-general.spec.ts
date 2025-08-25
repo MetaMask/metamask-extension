@@ -21,11 +21,11 @@ describe('Settings', function () {
         // Unlock wallet and navigate to settings
         await loginWithBalanceValidation(driver);
         await headerNavbar.openSettingsPage();
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
 
         // Verify identicon options
-        await generalSettings.check_identiconOptionsAreDisplayed();
-        await generalSettings.check_identiconIsActive('jazzicon');
+        await generalSettings.checkIdenticonOptionsAreDisplayed();
+        await generalSettings.checkIdenticonIsActive('jazzicon');
       },
     );
   });

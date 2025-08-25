@@ -124,7 +124,6 @@ describe('State Utils', () => {
       metadataAccessToken: 'metadataAccessToken',
       refreshToken: 'refreshToken',
       revokeToken: 'revokeToken',
-      socialLoginEmail: 'socialLoginEmail',
       nodeAuthTokens: [
         {
           authToken: 'authToken', // to be sanitized
@@ -144,7 +143,6 @@ describe('State Utils', () => {
     const sanitizedState = sanitizeUIState(state);
 
     expect(sanitizedState).toStrictEqual({
-      socialLoginEmail: '********',
       nodeAuthTokens: [
         {
           nodeIndex: 1,

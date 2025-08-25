@@ -216,8 +216,8 @@ async function assertInfoValues({
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   const testDapp = new TestDapp(driver);
   await driver.waitUntilXWindowHandles(2);
-  await testDapp.check_successSignTypedDataV4(publicAddress);
-  await testDapp.verify_successSignTypedDataV4Result(
+  await testDapp.checkSuccessSignTypedDataV4(publicAddress);
+  await testDapp.verifySuccessSignTypedDataV4Result(
     '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
   );
 }

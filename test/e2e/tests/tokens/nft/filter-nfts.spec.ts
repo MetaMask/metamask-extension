@@ -99,20 +99,20 @@ describe('View NFT details', function () {
 
         const nftListPage = new NftListPage(driver);
         await nftListPage.toggleLineaEnablement();
-        await nftListPage.check_numberOfNftsDisplayed(2);
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.checkNumberOfNftsDisplayed(2);
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #2 on mainnet',
         );
         await nftListPage.toggleLineaEnablement();
-        await nftListPage.check_numberOfNftsDisplayed(3);
-        await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #1');
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.checkNumberOfNftsDisplayed(3);
+        await nftListPage.checkNftNameIsDisplayed('Test Dapp NFTs #1');
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #2 on mainnet',
         );
       },

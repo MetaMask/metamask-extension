@@ -54,6 +54,7 @@ import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selec
 import {} from '../../pages/bridge/utils/quote';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
+  getMultichainBalances,
   getMultichainCoinRates,
   getMultichainProviderConfig,
 } from '../../selectors/multichain';
@@ -63,6 +64,9 @@ import {
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
 import { toAssetId } from '../../../shared/lib/asset-utils';
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   exchangeRateFromMarketData,
@@ -143,6 +147,11 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
     });
     return validatedFlags;
   },
+);
+
+export const getPriceImpactThresholds = createDeepEqualSelector(
+  getBridgeFeatureFlags,
+  (bridgeFeatureFlags) => bridgeFeatureFlags?.priceImpactThreshold,
 );
 
 export const getFromChains = createDeepEqualSelector(
@@ -254,6 +263,69 @@ export const getToToken = createSelector(
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
+
+const _getFromNativeBalance = createSelector(
+  getFromChain,
+  (state: BridgeAppState) => state.bridge.fromNativeBalance,
+  getMultichainBalances,
+  getSelectedInternalAccount,
+  (fromChain, fromNativeBalance, nonEvmBalancesByAccountId, { id }) => {
+    if (!fromChain) {
+      return null;
+    }
+
+    const { chainId } = fromChain;
+    const { decimals, address, assetId } = getNativeAssetForChainId(chainId);
+
+    // Use the balance provided by the multichain balances controller
+    if (isSolanaChainId(chainId)) {
+      const caipAssetType = isNativeAddress(address)
+        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+        : (assetId ?? address);
+      return nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ?? null;
+    }
+
+    return fromNativeBalance
+      ? Numeric.from(fromNativeBalance, 10).shiftedBy(decimals).toString()
+      : null;
+  },
+);
+
+export const getFromTokenBalance = createSelector(
+  getFromToken,
+  getFromChain,
+  (state: BridgeAppState) => state.bridge.fromTokenBalance,
+  getMultichainBalances,
+  getSelectedInternalAccount,
+  (
+    fromToken,
+    fromChain,
+    fromTokenBalance,
+    nonEvmBalancesByAccountId,
+    { id },
+  ) => {
+    if (!fromToken || !fromChain) {
+      return null;
+    }
+    const { chainId, decimals, address, assetId } = fromToken;
+
+    // Use the balance provided by the multichain balances controller
+    if (isSolanaChainId(chainId)) {
+      const caipAssetType = isNativeAddress(address)
+        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+        : (assetId ?? address);
+      return (
+        nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ??
+        fromToken.string ??
+        null
+      );
+    }
+
+    return fromTokenBalance
+      ? Numeric.from(fromTokenBalance, 10).shiftedBy(decimals).toString()
+      : null;
+  },
+);
 
 export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
 
@@ -536,6 +608,8 @@ export const getValidationErrors = createDeepEqualSelector(
     selectMinimumBalanceForRentExemptionInSOL(metamask),
   getQuoteRequest,
   getTxAlerts,
+  _getFromNativeBalance,
+  getFromTokenBalance,
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
@@ -544,6 +618,8 @@ export const getValidationErrors = createDeepEqualSelector(
     minimumBalanceForRentExemptionInSOL,
     quoteRequest,
     txAlert,
+    nativeBalance,
+    fromTokenBalance,
   ) => {
     const { gasIncluded } = activeQuote?.quote ?? {};
 
@@ -564,42 +640,40 @@ export const getValidationErrors = createDeepEqualSelector(
           quotesRefreshCount > 0,
       ),
       // Shown prior to fetching quotes
-      isInsufficientGasBalance: (balance?: BigNumber) => {
-        if (
-          balance &&
+      isInsufficientGasBalance: Boolean(
+        nativeBalance &&
           !activeQuote &&
           validatedSrcAmount &&
           fromToken &&
-          !gasIncluded
-        ) {
-          return isNativeAddress(fromToken.address)
-            ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
-            : balance.lte(0);
-        }
-        return false;
-      },
+          !gasIncluded &&
+          (isNativeAddress(fromToken.address)
+            ? new BigNumber(nativeBalance)
+                .sub(minimumBalanceToUse)
+                .lte(validatedSrcAmount)
+            : new BigNumber(nativeBalance).lte(0)),
+      ),
       // Shown after fetching quotes
-      isInsufficientGasForQuote: (balance?: BigNumber) => {
-        if (
-          balance &&
+      isInsufficientGasForQuote: Boolean(
+        nativeBalance &&
           activeQuote &&
           fromToken &&
           fromTokenInputValue &&
-          !gasIncluded
-        ) {
-          return isNativeAddress(fromToken.address)
-            ? balance
+          !gasIncluded &&
+          (isNativeAddress(fromToken.address)
+            ? new BigNumber(nativeBalance)
                 .sub(activeQuote.totalMaxNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
                 .sub(minimumBalanceToUse)
                 .lte(0)
-            : balance.lte(activeQuote.totalMaxNetworkFee.amount);
-        }
-        return false;
-      },
-      isInsufficientBalance: (balance?: BigNumber) =>
-        validatedSrcAmount && balance !== undefined
-          ? balance.lt(validatedSrcAmount)
+            : new BigNumber(nativeBalance).lte(
+                activeQuote.totalMaxNetworkFee.amount,
+              )),
+      ),
+      isInsufficientBalance:
+        validatedSrcAmount &&
+        fromTokenBalance &&
+        !isNaN(Number(fromTokenBalance))
+          ? new BigNumber(fromTokenBalance).lt(validatedSrcAmount)
           : false,
       isEstimatedReturnLow:
         activeQuote?.sentAmount?.valueInCurrency &&
@@ -618,21 +692,6 @@ export const getValidationErrors = createDeepEqualSelector(
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
 };
-
-/**
- * Checks if Solana is enabled as either a fromChain or toChain for bridging
- */
-export const isBridgeSolanaEnabled = createDeepEqualSelector(
-  getBridgeFeatureFlags,
-  (bridgeFeatureFlags) => {
-    const solanaChainId = MultichainNetworks.SOLANA;
-    const solanaChainIdCaip = formatChainIdToCaip(solanaChainId);
-
-    // Directly check if Solana is enabled as a source or destination chain
-    const solanaConfig = bridgeFeatureFlags?.chains?.[solanaChainIdCaip];
-    return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
-  },
-);
 
 /**
  * Checks if the destination chain is Solana and the user has no Solana accounts

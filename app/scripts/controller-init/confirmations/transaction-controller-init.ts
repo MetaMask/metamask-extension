@@ -8,11 +8,7 @@ import {
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
-import {
-  getChainSupportsSmartTransactions,
-  getIsSmartTransaction,
-  getSmartTransactionsPreferenceEnabled,
-} from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   SmartTransactionHookMessenger,
   publishSmartTransactionHook,
@@ -107,13 +103,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       preferencesController().state.useTransactionSimulations,
     messenger: controllerMessenger,
     pendingTransactions: {
-      isResubmitEnabled: () => {
-        const uiState = getUIState(getFlatState());
-        return !(
-          getSmartTransactionsPreferenceEnabled(uiState) &&
-          getChainSupportsSmartTransactions(uiState)
-        );
-      },
+      isResubmitEnabled: () => false,
     },
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),

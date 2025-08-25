@@ -40,7 +40,7 @@ describe('Notification List - View Items and Details', function () {
         await navigateToNotificationSettingsAndClickDisable(driver);
         await new NotificationsSettingsPage(
           driver,
-        ).check_notificationSectionIsHidden();
+        ).checkNotificationSectionIsHidden();
       },
     );
   });

@@ -48,14 +48,14 @@ describe('Account syncing - Settings Toggle', function () {
         await unlockWallet(driver);
 
         const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
+        await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // Verify the default account exists
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkAccountDisplayedInAccountList(
           DEFAULT_ACCOUNT_NAME,
         );
 
@@ -80,8 +80,8 @@ describe('Account syncing - Settings Toggle', function () {
 
         // Reopen account menu to verify second account was created successfully
         await header.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
 
@@ -91,19 +91,19 @@ describe('Account syncing - Settings Toggle', function () {
         // Navigate to Settings to toggle account sync
         await header.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToBackupAndSyncSettings();
 
         // Disable account synchronization
         const backupAndSyncSettingsPage = new BackupAndSyncSettings(driver);
-        await backupAndSyncSettingsPage.check_pageIsLoaded();
+        await backupAndSyncSettingsPage.checkPageIsLoaded();
         await backupAndSyncSettingsPage.toggleAccountSync();
 
         // Navigate back to wallet to create third account
         await driver.navigate(PAGES.HOME);
-        await header.check_pageIsLoaded();
+        await header.checkPageIsLoaded();
         await header.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // Create third account with sync disabled - this should NOT sync to user storage
         await accountListPage.addAccount({
@@ -112,8 +112,8 @@ describe('Account syncing - Settings Toggle', function () {
 
         // Reopen account menu to verify third account was created locally
         await header.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList(
           THIRD_ACCOUNT_NAME,
         );
 
@@ -133,28 +133,26 @@ describe('Account syncing - Settings Toggle', function () {
         await unlockWallet(driver);
 
         const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
+        await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // Verify only accounts created with sync enabled are restored
         const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];
 
         for (const accountName of visibleAccounts) {
-          await accountListPage.check_accountDisplayedInAccountList(
-            accountName,
-          );
+          await accountListPage.checkAccountDisplayedInAccountList(accountName);
         }
 
         // Verify third account (created with sync disabled) is NOT restored
-        await accountListPage.check_accountIsNotDisplayedInAccountList(
+        await accountListPage.checkAccountIsNotDisplayedInAccountList(
           THIRD_ACCOUNT_NAME,
         );
 
         // Verify we only have 2 accounts (not 3)
-        await accountListPage.check_numberOfAvailableAccounts(
+        await accountListPage.checkNumberOfAvailableAccounts(
           2,
           ACCOUNT_TYPE.Ethereum,
         );

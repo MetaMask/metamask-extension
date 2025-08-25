@@ -39,7 +39,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_accountBelongsToSrp('Account 2', 2);
+        await accountListPage.checkAccountBelongsToSrp('Account 2', 2);
       },
     );
   });
@@ -55,13 +55,13 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.startExportSrpForAccount('Account 2');
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(testPassword);
-        await privacySettings.check_srpTextIsDisplayed(SECOND_TEST_E2E_SRP);
+        await privacySettings.checkSrpTextIsDisplayed(SECOND_TEST_E2E_SRP);
       },
     );
   });
@@ -77,13 +77,13 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       async ({ driver }: { driver: Driver; mockServer?: Mockttp }) => {
         await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         await accountListPage.openImportSrpModal();
 

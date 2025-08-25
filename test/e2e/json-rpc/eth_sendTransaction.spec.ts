@@ -24,7 +24,7 @@ describe('eth_sendTransaction', function () {
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // eth_sendTransaction
         const request = JSON.stringify({
@@ -48,10 +48,10 @@ describe('eth_sendTransaction', function () {
         // confirm transaction in mm popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         const actualHash = await driver.executeScript(
           `return window.transactionHash;`,
         );
@@ -75,7 +75,7 @@ describe('eth_sendTransaction', function () {
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // eth_sendTransaction
         const request = JSON.stringify({
@@ -99,10 +99,10 @@ describe('eth_sendTransaction', function () {
         // reject transaction in mm popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         const result = await driver
           .executeScript(`return window.transactionHash;`)
           .then((data: unknown) => {

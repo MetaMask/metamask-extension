@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
 import {
@@ -6,7 +7,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Json, add0x } from '@metamask/utils';
+import { Json, add0x, createProjectLogger } from '@metamask/utils';
 import { Hex } from 'viem';
 import {
   MESSAGE_TYPE,
@@ -63,9 +64,13 @@ import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { extractRpcDomain } from '../util';
 
+const log = createProjectLogger('transaction-metrics');
+
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
 const CONTRACT_INTERACTION_TYPES = [
+  TransactionType.bridge,
+  TransactionType.bridgeApproval,
   TransactionType.contractInteraction,
   TransactionType.tokenMethodApprove,
   TransactionType.tokenMethodIncreaseAllowance,
@@ -77,6 +82,11 @@ const CONTRACT_INTERACTION_TYPES = [
   TransactionType.swapAndSend,
   TransactionType.swapApproval,
 ];
+
+enum MetricsTransactionType {
+  swap = 'mm_swap',
+  bridge = 'mm_bridge',
+}
 
 /**
  * This function is called when a transaction is added to the controller.
@@ -372,8 +382,6 @@ export const handlePostTransactionBalanceUpdate = async (
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties: { ...transactionMeta.swapMetaData },
         properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: getHDEntropyIndex(),
         },
       });
@@ -418,23 +426,11 @@ export const handlePostTransactionBalanceUpdate = async (
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties: {
           ...transactionMeta.swapMetaData,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_to_amount_received: tokensReceived,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           quote_vs_executionRatio: quoteVsExecutionRatio,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           trade_and_approval_gas_cost_in_eth:
             transactionsCost.tradeAndApprovalGasCostInEth,
           // Firefox and Chrome have different implementations of the APIs
@@ -442,14 +438,10 @@ export const handlePostTransactionBalanceUpdate = async (
           // numbers are converted into number strings, on firefox they remain
           // Big Number objects. As such, we convert them here for both
           // browsers.
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_to_amount:
             transactionMeta.swapMetaData.token_to_amount.toString(10),
         },
         properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: getHDEntropyIndex(),
         },
       });
@@ -872,9 +864,6 @@ async function buildEventFragmentProperties({
     eip1559Version = '2';
   }
 
-  const contractInteractionTypes =
-    type && CONTRACT_INTERACTION_TYPES.includes(type);
-
   const contractMethodNames = {
     APPROVE: 'Approve',
   };
@@ -884,18 +873,15 @@ async function buildEventFragmentProperties({
   let transactionApprovalAmountVsProposedRatio;
   let transactionApprovalAmountVsBalanceRatio;
   let transactionContractAddress;
-  let transactionType = TransactionType.simpleSend;
   let transactionContractMethod4Byte;
-  if (type === TransactionType.swapAndSend) {
-    transactionType = TransactionType.swapAndSend;
-  } else if (type === TransactionType.cancel) {
-    transactionType = TransactionType.cancel;
-  } else if (type === TransactionType.retry && originalType) {
-    transactionType = originalType;
-  } else if (type === TransactionType.deployContract) {
-    transactionType = TransactionType.deployContract;
-  } else if (contractInteractionTypes) {
-    transactionType = TransactionType.contractInteraction;
+
+  const { transactionType, isContractInteraction } =
+    determineTransactionTypeAndContractInteraction(
+      type as TransactionType,
+      originalType,
+    );
+
+  if (isContractInteraction) {
     transactionContractMethod = contractMethodName;
     transactionContractAddress = transactionMeta.txParams?.to;
     transactionContractMethod4Byte = transactionMeta.txParams?.data?.slice(
@@ -999,70 +985,44 @@ async function buildEventFragmentProperties({
 
   // Add Entropy Properties
   const hdEntropyProperties = {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
   };
 
+  let accountType;
+  try {
+    accountType = await transactionMetricsRequest.getAccountType(
+      transactionMetricsRequest.getSelectedAddress(),
+    );
+  } catch (error) {
+    accountType = 'error';
+    log('Error getting account type for transaction metrics:', error);
+  }
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     chain_id: chainId,
     referrer,
     source,
     status,
     network: `${parseInt(chainId, 16)}`,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     eip_1559_version: eip1559Version,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_edit_type: 'none',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_edit_attempted: 'none',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_estimation_failed: Boolean(simulationFails),
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    account_type: await transactionMetricsRequest.getAccountType(
-      transactionMetricsRequest.getSelectedAddress(),
-    ),
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    account_type: accountType,
     device_model: await transactionMetricsRequest.getDeviceModel(
       transactionMetricsRequest.getSelectedAddress(),
     ),
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     asset_type: assetType,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     token_standard: tokenStandard,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_type: transactionType,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_speed_up: type === TransactionType.retry,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_internal_id: id,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_fee_selected: gasFeeSelected,
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_advanced_view: isAdvancedDetailsOpen,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_contract_method: transactionContractMethod
       ? [transactionContractMethod]
       : [],
@@ -1085,34 +1045,26 @@ async function buildEventFragmentProperties({
   if (transactionContractMethod === contractMethodNames.APPROVE) {
     properties = {
       ...properties,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+      simulation_receiving_assets_total_value:
+        properties.simulation_receiving_assets_total_value ??
+        transactionMeta?.assetsFiatValues?.receiving,
+      simulation_sending_assets_total_value:
+        properties.simulation_sending_assets_total_value ??
+        transactionMeta?.assetsFiatValues?.sending,
       transaction_approval_amount_type: transactionApprovalAmountType,
     };
   }
 
   let sensitiveProperties = {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_envelope_type: isEIP1559Transaction(transactionMeta)
       ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
       : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     first_seen: time,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_limit: gasLimit,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_replaced: transactionReplaced,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_contract_address: transactionContractAddress
       ? [transactionContractAddress]
       : [],
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
@@ -1124,12 +1076,10 @@ async function buildEventFragmentProperties({
   if (transactionContractMethod === contractMethodNames.APPROVE) {
     sensitiveProperties = {
       ...sensitiveProperties,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       transaction_approval_amount_vs_balance_ratio:
         transactionApprovalAmountVsBalanceRatio,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       transaction_approval_amount_vs_proposed_ratio:
         transactionApprovalAmountVsProposedRatio,
     };
@@ -1320,13 +1270,7 @@ function addGaslessProperties(
   _sensitiveProperties: Record<string, Json | undefined>,
   getAccountBalance: (account: Hex, chainId: Hex) => Hex,
 ) {
-  const {
-    batchId,
-    batchTransactions,
-    gasFeeTokens,
-    nestedTransactions,
-    selectedGasFeeToken,
-  } = transactionMeta;
+  const { gasFeeTokens, selectedGasFeeToken } = transactionMeta;
 
   properties.gas_payment_tokens_available = gasFeeTokens?.map(
     (token) => token.symbol,
@@ -1345,11 +1289,6 @@ function addGaslessProperties(
     transactionMeta,
     getAccountBalance,
   );
-
-  // Temporary pending nested transaction type support
-  if (batchId && !batchTransactions?.length && !nestedTransactions?.length) {
-    properties.transaction_type = 'gas_payment';
-  }
 }
 
 async function getNestedMethodNames(
@@ -1390,4 +1329,80 @@ function isInsufficientNativeBalance(
   const totalCost = add0x(addHexes(gasCost, value ?? '0x0'));
 
   return new Numeric(totalCost, 16).greaterThan(new Numeric(nativeBalance, 16));
+}
+
+function getMMSwapOrBridgeType(
+  type: TransactionType,
+): MetricsTransactionType | null {
+  if (type === TransactionType.swap) {
+    return MetricsTransactionType.swap;
+  } else if (type === TransactionType.bridge) {
+    return MetricsTransactionType.bridge;
+  }
+  return null;
+}
+
+/**
+ * Determines the transaction type for metrics and whether it's a contract interaction
+ *
+ * @param type - The transaction type
+ * @param originalType - The original transaction type (for retry transactions)
+ * @returns  Object containing final type and whether it's a contract interaction
+ */
+function determineTransactionTypeAndContractInteraction(
+  type: TransactionType,
+  originalType?: TransactionType,
+): {
+  transactionType: TransactionType;
+  isContractInteraction: boolean;
+} {
+  const isContractInteraction =
+    type && CONTRACT_INTERACTION_TYPES.includes(type);
+
+  // Direct type assignments
+  const directTypeMappings = [
+    TransactionType.swapAndSend,
+    TransactionType.cancel,
+    TransactionType.deployContract,
+    TransactionType.gasPayment,
+    TransactionType.batch,
+  ];
+
+  if (directTypeMappings.includes(type)) {
+    return {
+      transactionType: type,
+      isContractInteraction,
+    };
+  }
+
+  // Special case for retry transactions
+  if (type === TransactionType.retry && originalType) {
+    return {
+      transactionType: originalType,
+      isContractInteraction,
+    };
+  }
+
+  // Contract interaction types
+  if (isContractInteraction) {
+    const mmSwapOrBridgeType = getMMSwapOrBridgeType(type);
+    if (mmSwapOrBridgeType) {
+      // This doesn't have to be valid transaction type as it's required to be different values for metrics
+      return {
+        transactionType: mmSwapOrBridgeType as unknown as TransactionType,
+        isContractInteraction: true,
+      };
+    }
+
+    return {
+      transactionType: TransactionType.contractInteraction,
+      isContractInteraction: true,
+    };
+  }
+
+  // Default fallback
+  return {
+    transactionType: TransactionType.simpleSend,
+    isContractInteraction: false,
+  };
 }

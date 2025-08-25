@@ -26,7 +26,7 @@ describe('Interactive UI Snap', function () {
           driver,
           'connectInteractiveButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectInteractiveButton',
           'Reconnect to Interactive UI Snap',
         );
@@ -34,7 +34,7 @@ describe('Interactive UI Snap', function () {
         // click create dialog button
         await testSnaps.scrollAndClickButton('createDialogButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await interactiveUI.check_pageIsLoaded();
+        await interactiveUI.checkPageIsLoaded();
 
         // fill in the details in the example dialog
         await interactiveUI.fillMessage('foo bar');
@@ -46,10 +46,10 @@ describe('Interactive UI Snap', function () {
         await interactiveUI.clickSubmitButton();
 
         // check for returned values and close the dialog
-        await interactiveUI.check_result();
+        await interactiveUI.checkResult();
         await interactiveUI.clickOKButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'interactiveUIResultSpan',
           'null',
         );

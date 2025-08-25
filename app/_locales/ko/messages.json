@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "기본 기능 켜기"
   },
-  "bestPrice": {
-    "message": "최고의 가격"
-  },
   "beta": {
     "message": "베타"
   },
@@ -936,9 +933,6 @@
     "message": "$1을(를) $2(으)로 스왑 중",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "약관"
-  },
   "bridgeTimingMinutes": {
     "message": "$1분",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask는 전 세계적으로 설계 및 구축되어 있습니다."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "바쁨"
@@ -2664,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "허니팟"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "트랜잭션을 처리하기 위해 필요한 예상 수수료입니다. 최대 수수료는 $1입니다."
   },
   "howQuotesWork": {
     "message": "견적 방식"

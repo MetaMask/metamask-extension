@@ -161,6 +161,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                 >
                   <span
                     class="mm-box mm-text multichain-account-picker__label mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                    style="font-weight: medium;"
                   >
                     Test Account
                   </span>

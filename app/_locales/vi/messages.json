@@ -719,9 +719,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Bật chức năng cơ bản"
   },
-  "bestPrice": {
-    "message": "Giá tốt nhất"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +933,6 @@
     "message": "Đang hoán đổi $1 thành $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Điều khoản"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 phút",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1019,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask được thiết kế và xây dựng trên khắp thế giới."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Đang bận"
@@ -2664,9 +2655,6 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot (Bẫy trong bẫy)"
-  },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Phí ước tính cần thiết để xử lý giao dịch. Phí tối đa là $1."
   },
   "howQuotesWork": {
     "message": "Cách báo giá hoạt động"

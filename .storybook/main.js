@@ -24,7 +24,6 @@ module.exports = {
     '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
     'storybook-dark-mode',
-    '@whitespace/storybook-addon-html',
     '@storybook/addon-mdx-gfm',
     '@storybook/addon-designs',
   ],

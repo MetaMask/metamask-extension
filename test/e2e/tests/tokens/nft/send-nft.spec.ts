@@ -45,7 +45,7 @@ describe('Send NFTs', function () {
         await homepage.startSendFlow();
 
         const sendToPage = new SendTokenPage(driver);
-        await sendToPage.check_pageIsLoaded();
+        await sendToPage.checkPageIsLoaded();
         await sendToPage.selectRecipientAccount('Account 1');
         await sendToPage.clickAssetPickerButton();
         const assetPicker = new AssetPicker(driver);
@@ -74,11 +74,11 @@ describe('Send NFTs', function () {
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);
-        await nftListPage.check_pageIsLoaded();
+        await nftListPage.checkPageIsLoaded();
         await homepage.startSendFlow();
 
         const sendToPage = new SendTokenPage(driver);
-        await sendToPage.check_pageIsLoaded();
+        await sendToPage.checkPageIsLoaded();
         await sendToPage.selectRecipientAccount('Account 1');
         await sendToPage.clickAssetPickerButton();
         const assetPicker = new AssetPicker(driver);

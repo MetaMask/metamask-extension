@@ -27,16 +27,16 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('1208925.8196');
+        await homePage.checkExpectedBalanceIsDisplayed('1208925.8196');
         await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,
           amount: '1',
         });
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity();
-        await activityList.check_txAmountInActivity();
+        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        await activityList.checkTxAmountInActivity();
       },
     );
   });
@@ -57,16 +57,16 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('1208925.8196');
+        await homePage.checkExpectedBalanceIsDisplayed('1208925.8196');
         await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,
           amount: '1',
         });
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity();
-        await activityList.check_txAmountInActivity();
+        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        await activityList.checkTxAmountInActivity();
       },
     );
   });

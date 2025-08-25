@@ -273,7 +273,10 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    const wd = await buildWebDriver(driverOptions);
+    const wd = await buildWebDriver({
+      ...driverOptions,
+      disableServerMochaToBackground,
+    });
     driver = wd.driver;
     extensionId = wd.extensionId;
     webDriver = driver.driver;
@@ -386,44 +389,69 @@ async function withFixtures(options, testSuite) {
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
-      await fixtureServer.stop();
+      const shutdownTasks = [fixtureServer.stop()];
+
       for (const server of localNodes) {
         if (server) {
-          await server.quit();
+          shutdownTasks.push(server.quit());
         }
       }
 
       if (useBundler) {
-        await bundlerServer.stop();
+        shutdownTasks.push(bundlerServer.stop());
       }
 
       if (webDriver) {
-        await driver.quit();
+        shutdownTasks.push(driver.quit());
       }
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
-            await new Promise((resolve, reject) => {
-              dappServer[i].close((error) => {
-                if (error) {
-                  return reject(error);
-                }
-                return resolve();
-              });
-            });
+            shutdownTasks.push(
+              new Promise((resolve, reject) => {
+                dappServer[i].close((error) => {
+                  if (error) {
+                    return reject(error);
+                  }
+                  return resolve();
+                });
+                // We need to close all connections to stop the server quickly
+                // Otherwise it takes a few seconds for it to close
+                dappServer[i].closeAllConnections();
+              }),
+            );
           }
         }
       }
       if (phishingPageServer.isRunning()) {
-        await phishingPageServer.quit();
+        shutdownTasks.push(phishingPageServer.quit());
       }
 
-      // Since mockServer could be stop'd at another location,
-      // use a try/catch to avoid an error
-      try {
-        await mockServer.stop();
-      } catch (e) {
-        console.log('mockServer already stopped');
+      shutdownTasks.push(
+        (async () => {
+          // Since mockServer could be stop'd at another location,
+          // use a try/catch to avoid an error
+          try {
+            await mockServer.stop();
+          } catch (e) {
+            console.log('mockServer already stopped');
+          }
+        })(),
+      );
+
+      const results = await Promise.allSettled(shutdownTasks);
+      const failures = results.filter((result) => result.status === 'rejected');
+      for (const { reason } of failures) {
+        console.error('Failed to shut down:', reason);
+      }
+      if (failures.length) {
+        // A test error may get overridden here by the shutdown error, but this is OK because a
+        // shutdown error indicates a bug in our test tooling that might invalidate later tests.
+        // eslint-disable-next-line no-unsafe-finally
+        throw new AggregateError(
+          failures.map((failure) => failure.reason),
+          'Failed to shut down test servers',
+        );
       }
     }
   }

@@ -109,13 +109,13 @@ describe('Incoming Transactions', function () {
         await homepage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(2);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
-        await activityList.check_txAction('Received', 1);
-        await activityList.check_txAmountInActivity('1.23 ETH', 1);
+        await activityList.checkTxAction('Received', 1);
+        await activityList.checkTxAmountInActivity('1.23 ETH', 1);
 
-        await activityList.check_txAction('Received', 2);
-        await activityList.check_txAmountInActivity('2.34 ETH', 2);
+        await activityList.checkTxAction('Received', 2);
+        await activityList.checkTxAmountInActivity('2.34 ETH', 2);
       },
     );
   });
@@ -142,7 +142,7 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -166,10 +166,10 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(2);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
-        await activityList.check_txAction('Contract interaction', 2);
-        await activityList.check_txAmountInActivity('-4.56 ETH', 2);
+        await activityList.checkTxAction('Contract interaction', 2);
+        await activityList.checkTxAmountInActivity('-4.56 ETH', 2);
       },
     );
   });
@@ -191,7 +191,7 @@ describe('Incoming Transactions', function () {
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
         await driver.delay(2000);
-        await activityList.check_noTxInActivity();
+        await activityList.checkNoTxInActivity();
       },
     );
   });
@@ -219,7 +219,7 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });

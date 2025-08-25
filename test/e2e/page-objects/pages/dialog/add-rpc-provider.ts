@@ -15,9 +15,7 @@ class AddRpcProviderDialog {
   /**
    * @param networkName - The name of the network for adding RPC provider
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(networkName: string): Promise<void> {
+  async checkPageIsLoaded(networkName: string): Promise<void> {
     try {
       await this.driver.waitForSelector(this.addRpcProviderButton);
       await this.driver.waitForSelector({

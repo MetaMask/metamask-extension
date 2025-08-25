@@ -65,22 +65,15 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
   }
 
   // Check Methods
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_interactingWithParagraph() {
+  async checkInteractingWithParagraph() {
     await this.driver.waitForSelector(this.interactingWithParagraph);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkFeeParagraph() {
+  async checkNetworkFeeParagraph() {
     await this.driver.waitForSelector(this.networkFeeParagraph);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkParagraph() {
+  async checkNetworkParagraph() {
     await this.driver.waitForSelector(this.networkParagraph);
   }
 
@@ -92,11 +85,9 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
    * @param expectedNetworkFee - The expected gas/network fee value to be displayed on the page.
    * @returns A promise that resolves when all specified elements are verified to be present and contain the expected values, indicating the page has fully loaded.
    * @example
-   * await tokenTransferTransactionConfirmation.check_tokenTransferPageIsLoaded('10', 'ETH', '0.01');
+   * await tokenTransferTransactionConfirmation.checkTokenTransferPageIsLoaded('10', 'ETH', '0.01');
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenTransferPageIsLoaded(
+  async checkTokenTransferPageIsLoaded(
     transferAmount: string,
     symbol: string,
     expectedNetworkFee: string,

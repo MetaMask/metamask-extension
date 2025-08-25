@@ -120,13 +120,6 @@ function sanitizeSeedlessOnboardingControllerState(state: FlattenedUIState) {
     });
   }
 
-  const socialLoginEmail =
-    state.socialLoginEmail as SeedlessOnboardingControllerState['socialLoginEmail'];
-
-  if (socialLoginEmail) {
-    state.socialLoginEmail = '********';
-  }
-
   // Manually sanitize the socialBackupsMetadata.
   const socialBackupsMetadata =
     state.socialBackupsMetadata as SeedlessOnboardingControllerState['socialBackupsMetadata'];

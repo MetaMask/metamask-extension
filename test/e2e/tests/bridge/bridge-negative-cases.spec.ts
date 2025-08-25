@@ -27,7 +27,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('$84,992.50', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed('$84,992.50', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
@@ -38,8 +38,8 @@ describe('Bridge functionality', function (this: Suite) {
           fromChain: 'Ethereum',
           toChain: 'Linea',
         });
-        await bridgePage.check_insufficientFundsButtonIsDisplayed();
-        await bridgePage.check_moreETHneededIsDisplayed();
+        await bridgePage.checkInsufficientFundsButtonIsDisplayed();
+        await bridgePage.checkMoreETHneededIsDisplayed();
       },
     );
   });
@@ -57,11 +57,11 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('$85,000.00', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.check_noTradeRouteMessageIsDisplayed();
+        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -79,11 +79,11 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('$85,000.00', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.check_noTradeRouteMessageIsDisplayed();
+        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -101,12 +101,12 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('$85,000.00', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
 
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.check_noTradeRouteMessageIsDisplayed();
+        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -129,7 +129,7 @@ describe('Bridge functionality', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('$84,992.50', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed('$84,992.50', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -137,7 +137,7 @@ describe('Bridge functionality', function (this: Suite) {
 
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
-        await activityList.check_pendingBridgeTransactionActivity();
+        await activityList.checkPendingBridgeTransactionActivity();
       },
     );
   });
@@ -160,7 +160,7 @@ describe('Bridge functionality', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('$84,992.50', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed('$84,992.50', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -169,7 +169,7 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.check_failedTxNumberDisplayedInActivity();
+        await activityList.checkFailedTxNumberDisplayedInActivity();
       },
     );
   });
@@ -192,7 +192,7 @@ describe('Bridge functionality', function (this: Suite) {
         await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('$84,992.50', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed('$84,992.50', 'USD');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -201,7 +201,7 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.check_failedTxNumberDisplayedInActivity();
+        await activityList.checkFailedTxNumberDisplayedInActivity();
       },
     );
   });

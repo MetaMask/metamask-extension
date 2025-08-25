@@ -37,9 +37,7 @@ class EditConnectedAccountsModal {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.editAccountsModalTitle,
@@ -93,9 +91,7 @@ class EditConnectedAccountsModal {
    * @param accountIndex - The index of the account to check (1-based)
    * @returns boolean indicating if the account is selected
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_isAccountSelected(accountIndex: number): Promise<boolean> {
+  async checkIsAccountSelected(accountIndex: number): Promise<boolean> {
     console.log(`Checking if account number ${accountIndex} is selected`);
     const checkboxes = await this.driver.findElements(this.accountCheckbox);
     const accountCheckbox = checkboxes[accountIndex];

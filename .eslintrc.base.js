@@ -9,6 +9,10 @@ module.exports = {
   globals: {
     document: 'readonly',
     window: 'readonly',
+    // Our ESLint config is stuck at ES2017 because Browserify doesn't support the spread operator.
+    // We can remove this global after we've migrated away from Browserify and updated our ESLint
+    // config to at least ES2021.
+    AggregateError: 'readonly',
   },
 
   rules: {

@@ -1,10 +1,13 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { MultichainAccountCell } from './multichain-account-cell';
+import {
+  MultichainAccountCell,
+  MultichainAccountCellProps,
+} from './multichain-account-cell';
 
 describe('MultichainAccountCell', () => {
-  const defaultProps = {
-    accountId: '0x1234567890abcdef',
+  const defaultProps: MultichainAccountCellProps = {
+    accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
     accountName: 'Test Account',
     balance: '$2,400.00',
     endAccessory: <span data-testid="end-accessory">More</span>,
@@ -14,7 +17,7 @@ describe('MultichainAccountCell', () => {
     render(<MultichainAccountCell {...defaultProps} />);
 
     const cellElement = screen.getByTestId(
-      'multichain-account-cell-0x1234567890abcdef',
+      `multichain-account-cell-${defaultProps.accountId}`,
     );
     expect(cellElement).toBeInTheDocument();
 
@@ -24,7 +27,7 @@ describe('MultichainAccountCell', () => {
 
     expect(
       screen.queryByTestId(
-        'multichain-account-cell-0x1234567890abcdef-selected-icon',
+        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
       ),
     ).not.toBeInTheDocument();
   });
@@ -34,7 +37,7 @@ describe('MultichainAccountCell', () => {
 
     expect(
       screen.getByTestId(
-        'multichain-account-cell-0x1234567890abcdef-selected-icon',
+        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
       ),
     ).toBeInTheDocument();
 
@@ -54,7 +57,7 @@ describe('MultichainAccountCell', () => {
     render(<MultichainAccountCell {...defaultProps} onClick={handleClick} />);
 
     const cellElement = screen.getByTestId(
-      'multichain-account-cell-0x1234567890abcdef',
+      `multichain-account-cell-${defaultProps.accountId}`,
     );
 
     expect(cellElement.style.cursor).toBe('pointer');
@@ -66,7 +69,7 @@ describe('MultichainAccountCell', () => {
   it('renders correctly without optional props', () => {
     render(
       <MultichainAccountCell
-        accountId="0xabc123"
+        accountId={defaultProps.accountId}
         accountName="Minimal Account"
         balance="$100"
       />,
@@ -81,7 +84,9 @@ describe('MultichainAccountCell', () => {
     expect(endAccessoryContainer).toBeInTheDocument();
     expect(endAccessoryContainer?.children.length).toBe(0);
 
-    const cellElement = screen.getByTestId('multichain-account-cell-0xabc123');
+    const cellElement = screen.getByTestId(
+      `multichain-account-cell-${defaultProps.accountId}`,
+    );
     expect(cellElement.style.cursor).toBe('default');
   });
 
@@ -89,7 +94,7 @@ describe('MultichainAccountCell', () => {
     const handleClick = jest.fn();
     render(
       <MultichainAccountCell
-        accountId="0xfull789"
+        accountId={defaultProps.accountId}
         accountName="Complete Account"
         balance="$1,234.56"
         onClick={handleClick}
@@ -102,7 +107,9 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByText('$1,234.56')).toBeInTheDocument();
     expect(screen.getByTestId('end-accessory')).toBeInTheDocument();
     expect(
-      screen.getByTestId('multichain-account-cell-0xfull789-selected-icon'),
+      screen.getByTestId(
+        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
+      ),
     ).toBeInTheDocument();
 
     const avatarContainer = document.querySelector(
@@ -110,7 +117,9 @@ describe('MultichainAccountCell', () => {
     );
     expect(avatarContainer).toHaveClass('mm-box--border-color-primary-default');
 
-    const cellElement = screen.getByTestId('multichain-account-cell-0xfull789');
+    const cellElement = screen.getByTestId(
+      `multichain-account-cell-${defaultProps.accountId}`,
+    );
     expect(cellElement.style.cursor).toBe('pointer');
 
     fireEvent.click(cellElement);

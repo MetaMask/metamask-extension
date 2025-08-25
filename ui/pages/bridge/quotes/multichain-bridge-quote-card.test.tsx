@@ -11,10 +11,9 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { BridgeQuoteCard } from './bridge-quote-card';
 import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
 
-describe('BridgeQuoteCard', () => {
+describe('MultichainBridgeQuoteCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -81,7 +80,7 @@ describe('BridgeQuoteCard', () => {
       },
     });
     const { container } = renderWithProvider(
-      <BridgeQuoteCard />,
+      <MultichainBridgeQuoteCard />,
       configureStore(mockStore),
     );
 
@@ -223,7 +222,7 @@ describe('BridgeQuoteCard', () => {
       },
     });
     const { container, queryByText } = renderWithProvider(
-      <BridgeQuoteCard />,
+      <MultichainBridgeQuoteCard />,
       configureStore(mockStore),
     );
 
@@ -249,7 +248,7 @@ describe('BridgeQuoteCard', () => {
       },
     });
     const { container } = renderWithProvider(
-      <BridgeQuoteCard />,
+      <MultichainBridgeQuoteCard />,
       configureStore(mockStore),
     );
 
@@ -274,7 +273,7 @@ describe('BridgeQuoteCard', () => {
       },
     });
     const { container } = renderWithProvider(
-      <BridgeQuoteCard />,
+      <MultichainBridgeQuoteCard />,
       configureStore(mockStore),
     );
 

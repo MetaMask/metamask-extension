@@ -13,7 +13,7 @@ export const createInternalTransaction = async (driver: Driver) => {
   await homePage.startSendFlow();
 
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
   await sendToPage.fillAmount('1');
   await sendToPage.goToNextScreen();
@@ -29,7 +29,7 @@ export const createInternalTransactionWithMaxAmount = async (
   await homePage.startSendFlow();
 
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
   await sendToPage.clickMaxAmountButton();
   await sendToPage.goToNextScreen();

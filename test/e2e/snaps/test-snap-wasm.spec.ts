@@ -21,7 +21,7 @@ describe('Test Snap WASM', function () {
         await openTestSnapClickButtonAndInstall(driver, 'connectWasmButton');
 
         // Check installation success
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectWasmButton',
           'Reconnect to WebAssembly Snap',
         );
@@ -29,7 +29,7 @@ describe('Test Snap WASM', function () {
         // Enter number for test to input field and validate the result
         await testSnaps.fillMessage('wasmInput', '23');
         await testSnaps.clickButton('sendWasmMessageButton');
-        await testSnaps.check_messageResultSpan('wasmResultSpan', '28657');
+        await testSnaps.checkMessageResultSpan('wasmResultSpan', '28657');
       },
     );
   });

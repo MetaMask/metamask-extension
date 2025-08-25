@@ -48,17 +48,17 @@ describe('Token List', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
 
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await assetListPage.importCustomTokenByChain(
           chainId,
           tokenAddress,
           symbol,
         );
 
-        await assetListPage.check_tokenGeneralChangePercentageNotPresent(
+        await assetListPage.checkTokenGeneralChangePercentageNotPresent(
           zeroAddress(),
         );
-        await assetListPage.check_tokenGeneralChangePercentageNotPresent(
+        await assetListPage.checkTokenGeneralChangePercentageNotPresent(
           tokenAddress,
         );
       },
@@ -105,18 +105,18 @@ describe('Token List', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
 
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await assetListPage.importCustomTokenByChain(
           chainId,
           tokenAddress,
           symbol,
         );
 
-        await assetListPage.check_tokenGeneralChangePercentage(
+        await assetListPage.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',
         );
-        await assetListPage.check_tokenGeneralChangePercentage(
+        await assetListPage.checkTokenGeneralChangePercentage(
           tokenAddress,
           '+0.05%',
         );
@@ -124,9 +124,9 @@ describe('Token List', function () {
         // We made this due to a change on Firefox v125
         // The 2 decimals are not displayed with values which are "rounded",
         if (isFirefox) {
-          await assetListPage.check_tokenGeneralChangeValue('+$50');
+          await assetListPage.checkTokenGeneralChangeValue('+$50');
         } else {
-          await assetListPage.check_tokenGeneralChangeValue('+$50.00');
+          await assetListPage.checkTokenGeneralChangeValue('+$50.00');
         }
       },
     );

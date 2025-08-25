@@ -127,21 +127,21 @@ describe('Network Manager', function (this: Suite) {
         const assetListPage = new AssetListPage(driver);
         const networkManager = new NetworkManager(driver);
 
-        await assetListPage.check_tokenItemNumber(2);
+        await assetListPage.checkTokenItemNumber(2);
 
         await networkManager.openNetworkManager();
         await networkManager.checkTabIsSelected('Default');
         await networkManager.deselectNetwork(NetworkId.LINEA);
 
-        await assetListPage.check_tokenItemNumber(1);
+        await assetListPage.checkTokenItemNumber(1);
 
         await networkManager.selectNetwork('eip155:8453');
 
-        await assetListPage.check_tokenItemNumber(2);
+        await assetListPage.checkTokenItemNumber(2);
 
         await networkManager.selectNetwork(NetworkId.LINEA);
 
-        await assetListPage.check_tokenItemNumber(3);
+        await assetListPage.checkTokenItemNumber(3);
       },
     );
   });
@@ -183,7 +183,7 @@ describe('Network Manager', function (this: Suite) {
         // Add network via dapp
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const addEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -210,7 +210,7 @@ describe('Network Manager', function (this: Suite) {
         // Approve the network addition
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.check_pageIsLoaded('Polygon Mainnet');
+        await addNetworkConfirmation.checkPageIsLoaded('Polygon Mainnet');
         await addNetworkConfirmation.approveAddNetwork();
 
         // Switch back to MetaMask to verify preservation
@@ -270,7 +270,7 @@ describe('Network Manager', function (this: Suite) {
         // Add custom network via dapp
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const addEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -297,7 +297,7 @@ describe('Network Manager', function (this: Suite) {
         // Approve the network addition
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.check_pageIsLoaded('Custom Test Network');
+        await addNetworkConfirmation.checkPageIsLoaded('Custom Test Network');
         await addNetworkConfirmation.approveAddNetwork();
 
         // Switch back to MetaMask to verify behavior

@@ -20,7 +20,7 @@ describe('Swap on Solana', function () {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
 
-        await homePage.check_pageIsLoaded('50');
+        await homePage.checkPageIsLoaded('50');
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({
@@ -59,9 +59,9 @@ describe('Swap on Solana', function () {
         }
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_txAmountInActivity('-0.001 SOL', 1);
-        await activityListPage.check_waitForTransactionStatus('confirmed');
-        await activityListPage.check_transactionActivityByText(
+        await activityListPage.checkTxAmountInActivity('-0.001 SOL', 1);
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityListPage.checkTransactionActivityByText(
           'Swap SOL to USDC',
         );
       },
@@ -79,7 +79,7 @@ describe('Swap on Solana', function () {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
 
-        await homePage.check_pageIsLoaded('50');
+        await homePage.checkPageIsLoaded('50');
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({
@@ -100,9 +100,9 @@ describe('Swap on Solana', function () {
         }
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_txAmountInActivity('-1 USDC', 1);
-        await activityListPage.check_waitForTransactionStatus('confirmed');
-        await activityListPage.check_transactionActivityByText(
+        await activityListPage.checkTxAmountInActivity('-1 USDC', 1);
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityListPage.checkTransactionActivityByText(
           'Swap USDC to SOL',
         );
       },
@@ -119,7 +119,7 @@ describe('Swap on Solana', function () {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
 
-        await homePage.check_pageIsLoaded('50');
+        await homePage.checkPageIsLoaded('50');
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({

@@ -28,6 +28,7 @@ import {
   getParticipateInMetaMetrics,
   getIsSocialLoginFlow,
   getSocialLoginType,
+  getIsParticipateInMetaMetricsSet,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -82,6 +83,9 @@ export default function CreatePassword({
   const socialLoginType = useSelector(getSocialLoginType);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
   const metametricsId = useSelector(getMetaMetricsId);
   const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
     'base64',
@@ -103,7 +107,11 @@ export default function CreatePassword({
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
-        history.replace(ONBOARDING_METAMETRICS);
+        history.replace(
+          isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+        );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (isFirefox) {
           history.replace(ONBOARDING_COMPLETION_ROUTE);
@@ -125,6 +133,7 @@ export default function CreatePassword({
     firstTimeFlowType,
     newAccountCreationInProgress,
     secretRecoveryPhrase,
+    isParticipateInMetaMetricsSet,
   ]);
 
   const handleLearnMoreClick = (event) => {

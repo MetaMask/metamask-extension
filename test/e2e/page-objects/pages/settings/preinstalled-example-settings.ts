@@ -18,9 +18,7 @@ class PreinstalledExampleSettings {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.snapRenderPanel,
@@ -52,16 +50,12 @@ class PreinstalledExampleSettings {
     await this.driver.clickElement({ text: option, tag: `option` });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_isToggleOn(): Promise<void> {
+  async checkIsToggleOn(): Promise<void> {
     console.log('Checking if the toggle is on');
     await this.driver.waitForSelector(`${this.toggleButton}--on`);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_selectedRadioOption(option: string): Promise<boolean> {
+  async checkSelectedRadioOption(option: string): Promise<boolean> {
     console.log(`Checking if the radio option "${option}" is selected`);
     const radioOption = await this.driver.findElement(
       `input[type="radio"][id="${option}"]`,
@@ -70,9 +64,7 @@ class PreinstalledExampleSettings {
     return isChecked;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_selectedDropdownOption(option: string): Promise<void> {
+  async checkSelectedDropdownOption(option: string): Promise<void> {
     console.log(`Checking if the dropdown option "${option}" is selected`);
     await this.driver.waitForSelector({
       css: this.settingsDropdown,

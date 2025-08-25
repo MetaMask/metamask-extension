@@ -42,8 +42,8 @@ describe('Account-watcher snap', function (this: Suite) {
 
           // new account should be displayed in the account list
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
-          await headerNavbar.check_accountAddress(SHORTENED_EOA_ADDRESS);
+          await headerNavbar.checkAccountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
+          await headerNavbar.checkAccountAddress(SHORTENED_EOA_ADDRESS);
         },
       );
     });
@@ -69,15 +69,15 @@ describe('Account-watcher snap', function (this: Suite) {
           await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
-          await homePage.headerNavbar.check_accountLabel(
+          await homePage.headerNavbar.checkAccountLabel(
             DEFAULT_WATCHED_ACCOUNT_NAME,
           );
 
           // 'Send' button should be disabled
-          assert.equal(await homePage.check_ifSendButtonIsClickable(), false);
+          assert.equal(await homePage.checkIfSendButtonIsClickable(), false);
 
           // 'Bridge' button should be disabled
-          assert.equal(await homePage.check_ifBridgeButtonIsClickable(), false);
+          assert.equal(await homePage.checkIfBridgeButtonIsClickable(), false);
         },
       );
     });
@@ -130,13 +130,13 @@ describe('Account-watcher snap', function (this: Suite) {
           async ({ driver }: { driver: Driver }) => {
             await loginWithBalanceValidation(driver);
             const homePage = new HomePage(driver);
-            await homePage.check_pageIsLoaded();
-            await homePage.check_expectedBalanceIsDisplayed();
+            await homePage.checkPageIsLoaded();
+            await homePage.checkExpectedBalanceIsDisplayed();
 
             // error message should be displayed by snap when try to watch an EOA with invalid input
             await homePage.headerNavbar.openAccountMenu();
             const accountListPage = new AccountListPage(driver);
-            await accountListPage.check_pageIsLoaded();
+            await accountListPage.checkPageIsLoaded();
             await accountListPage.addEoaAccount(input, message);
           },
         );
@@ -170,12 +170,12 @@ describe('Account-watcher snap', function (this: Suite) {
           await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, ACCOUNT_2);
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
+          await headerNavbar.checkAccountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
 
           // try to import private key of watched ACCOUNT_2 address and check error message
           await headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.addNewImportedAccount(
             PRIVATE_KEY_TWO,
             'KeyringController - The account you are trying to import is a duplicate',
@@ -207,13 +207,13 @@ describe('Account-watcher snap', function (this: Suite) {
 
           // open account details modal in header navbar
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
+          await headerNavbar.checkAccountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
           await headerNavbar.openAccountDetailsModalDetailsTab();
 
           // check 'Show private key' button should not be displayed
           const accountDetailsModal = new AccountDetailsModal(driver);
-          await accountDetailsModal.check_pageIsLoaded();
-          await accountDetailsModal.check_showPrivateKeyButtonIsNotDisplayed();
+          await accountDetailsModal.checkPageIsLoaded();
+          await accountDetailsModal.checkShowPrivateKeyButtonIsNotDisplayed();
         },
       );
     });
@@ -239,7 +239,7 @@ describe('Account-watcher snap', function (this: Suite) {
           await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
-          await homePage.headerNavbar.check_accountLabel(
+          await homePage.headerNavbar.checkAccountLabel(
             DEFAULT_WATCHED_ACCOUNT_NAME,
           );
 
@@ -247,24 +247,24 @@ describe('Account-watcher snap', function (this: Suite) {
           await homePage.headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
           await accountListPage.removeAccount(DEFAULT_WATCHED_ACCOUNT_NAME);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedBalanceIsDisplayed();
 
           // account should be removed from the account list
           await homePage.headerNavbar.openAccountMenu();
-          await accountListPage.check_accountIsNotDisplayedInAccountList(
+          await accountListPage.checkAccountIsNotDisplayedInAccountList(
             DEFAULT_WATCHED_ACCOUNT_NAME,
           );
           await accountListPage.closeAccountModal();
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedBalanceIsDisplayed();
 
           // watch the same EOA address again and check the account is recreated
           await watchEoaAddress(driver, EOA_ADDRESS);
-          await homePage.headerNavbar.check_accountLabel(
+          await homePage.headerNavbar.checkAccountLabel(
             DEFAULT_WATCHED_ACCOUNT_NAME,
           );
-          await homePage.headerNavbar.check_accountAddress(
+          await homePage.headerNavbar.checkAccountAddress(
             SHORTENED_EOA_ADDRESS,
           );
         },
@@ -282,16 +282,16 @@ describe('Account-watcher snap', function (this: Suite) {
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
           const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedBalanceIsDisplayed();
 
           // navigate to experimental settings
           await homePage.headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.goToExperimentalSettings();
           const experimentalSettings = new ExperimentalSettings(driver);
-          await experimentalSettings.check_pageIsLoaded();
+          await experimentalSettings.checkPageIsLoaded();
 
           // verify watch account toggle is off by default and enable the toggle
           assert.equal(
@@ -303,12 +303,12 @@ describe('Account-watcher snap', function (this: Suite) {
           await settingsPage.closeSettingsPage();
 
           // verify the 'Watch and Ethereum account (Beta)' option is available
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedBalanceIsDisplayed();
           await homePage.headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_addWatchAccountAvailable(true);
+          await accountListPage.checkPageIsLoaded();
+          await accountListPage.checkAddWatchAccountAvailable(true);
         },
       );
     });
@@ -322,44 +322,44 @@ describe('Account-watcher snap', function (this: Suite) {
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
           const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedBalanceIsDisplayed();
 
           // navigate to experimental settings and enable the toggle
           await homePage.headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.goToExperimentalSettings();
           const experimentalSettings = new ExperimentalSettings(driver);
-          await experimentalSettings.check_pageIsLoaded();
+          await experimentalSettings.checkPageIsLoaded();
           await experimentalSettings.toggleWatchAccount();
           await settingsPage.closeSettingsPage();
 
           // verify the 'Watch and Ethereum account (Beta)' option is available
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedBalanceIsDisplayed();
           await homePage.headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_addWatchAccountAvailable(true);
+          await accountListPage.checkPageIsLoaded();
+          await accountListPage.checkAddWatchAccountAvailable(true);
           await accountListPage.closeAccountModal();
 
           // navigate back to experimental settings and disable the toggle
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedBalanceIsDisplayed();
           await homePage.headerNavbar.openSettingsPage();
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.goToExperimentalSettings();
-          await experimentalSettings.check_pageIsLoaded();
+          await experimentalSettings.checkPageIsLoaded();
           await experimentalSettings.toggleWatchAccount();
           await settingsPage.closeSettingsPage();
 
           // verify the 'Watch and Ethereum account (Beta)' option is not available
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedBalanceIsDisplayed();
           await homePage.headerNavbar.openAccountMenu();
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_addWatchAccountAvailable(false);
+          await accountListPage.checkPageIsLoaded();
+          await accountListPage.checkAddWatchAccountAvailable(false);
         },
       );
     });

@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BridgeQuoteCard should not render when there is a quote fetch error 1`] = `<div />`;
+exports[`MultichainBridgeQuoteCard should not render when there is a quote fetch error 1`] = `<div />`;
 
-exports[`BridgeQuoteCard should not render when there is no quote 1`] = `<div />`;
+exports[`MultichainBridgeQuoteCard should not render when there is no quote 1`] = `<div />`;
 
-exports[`BridgeQuoteCard should render a quote with MM fee 1`] = `
+exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
 <div>
   <div
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
@@ -97,6 +97,7 @@ exports[`BridgeQuoteCard should render a quote with MM fee 1`] = `
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="network-fees"
         >
           $2.52
         </p>
@@ -162,54 +163,49 @@ exports[`BridgeQuoteCard should render a quote with MM fee 1`] = `
 </div>
 `;
 
-exports[`BridgeQuoteCard should render the recommended quote (no MM fee) 1`] = `
+exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fee) 1`] = `
 <div>
   <div
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
   >
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-    >
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-flex-start mm-box--align-items-center"
-        style="white-space: nowrap;"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
-        >
-          Best price
-        </p>
-        <div
-          class="mm-box"
-        >
-          <div
-            class="mm-box mm-box--display-flex"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-full mm-box--height-full"
-      >
-        <a
-          class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
-        >
-          More quotes
-        </a>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
     >
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
+        <div
+          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          >
+            Quote
+          </p>
+          <div
+            class="mm-box"
+          >
+            <div
+              class="mm-box mm-box--display-flex"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
         <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative-soft"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          1 USDC = 0.999 USDC
+        </p>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
           Bridging
         </p>
@@ -227,7 +223,6 @@ exports[`BridgeQuoteCard should render the recommended quote (no MM fee) 1`] = `
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-            style="white-space: nowrap;"
           >
             OP Mainnet
           </p>
@@ -246,44 +241,25 @@ exports[`BridgeQuoteCard should render the recommended quote (no MM fee) 1`] = `
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-            style="white-space: nowrap;"
           >
             Polygon
           </p>
         </div>
       </div>
       <div
-        class="mm-box mm-container mm-container--max-width-undefined row-with-warning mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative-soft"
-          style="white-space: nowrap;"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
           Network fee
         </p>
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="network-fees"
         >
-          <div
-            class="mm-box"
-          >
-            <div
-              class="mm-box mm-box--display-flex"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md"
-                data-testid="network-fees"
-                style="white-space: nowrap; overflow: visible; text-decoration: underline; cursor: pointer;"
-              >
-                $2.52
-              </p>
-            </div>
-          </div>
-          <span
-            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative-soft"
-            style="mask-image: url('./images/icons/swap-vertical.svg'); cursor: pointer;"
-          />
-        </div>
+          $2.52
+        </p>
       </div>
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -292,14 +268,13 @@ exports[`BridgeQuoteCard should render the recommended quote (no MM fee) 1`] = `
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative-soft"
-            style="white-space: nowrap;"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             Slippage
           </p>
           <button
             aria-label="Edit slippage"
-            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative-soft mm-box--background-color-transparent mm-box--rounded-lg"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="slippage-edit-button"
           >
             <span
@@ -318,7 +293,7 @@ exports[`BridgeQuoteCard should render the recommended quote (no MM fee) 1`] = `
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative-soft"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
           Time
         </p>
@@ -329,81 +304,65 @@ exports[`BridgeQuoteCard should render the recommended quote (no MM fee) 1`] = `
         </p>
       </div>
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-flex-start mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-alternative"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative-soft"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        />
+        <button
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         >
-          Rate includes 0.875% fee
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative-soft"
-        >
-          ·
-        </p>
-        <a
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative-soft mm-box--background-color-transparent"
-          href="https://consensys.io/terms-of-use/"
-          rel="noopener noreferrer"
-          style="text-decoration: underline;"
-          target="_blank"
-        >
-          Terms
-        </a>
+          More quotes
+        </button>
       </div>
     </div>
   </div>
 </div>
 `;
 
-exports[`BridgeQuoteCard should render the recommended quote while loading new quotes 1`] = `
+exports[`MultichainBridgeQuoteCard should render the recommended quote while loading new quotes 1`] = `
 <div>
   <div
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
   >
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-    >
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-flex-start mm-box--align-items-center"
-        style="white-space: nowrap;"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
-        >
-          Best price
-        </p>
-        <div
-          class="mm-box"
-        >
-          <div
-            class="mm-box mm-box--display-flex"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-full mm-box--height-full"
-      >
-        <a
-          class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
-        >
-          More quotes
-        </a>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
     >
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
+        <div
+          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          >
+            Quote
+          </p>
+          <div
+            class="mm-box"
+          >
+            <div
+              class="mm-box mm-box--display-flex"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
         <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative-soft"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          1 ETH = 2,444 USDC
+        </p>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
           Bridging
         </p>
@@ -421,7 +380,6 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-            style="white-space: nowrap;"
           >
             OP Mainnet
           </p>
@@ -440,44 +398,25 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-            style="white-space: nowrap;"
           >
             Polygon
           </p>
         </div>
       </div>
       <div
-        class="mm-box mm-container mm-container--max-width-undefined row-with-warning mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative-soft"
-          style="white-space: nowrap;"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
           Network fee
         </p>
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="network-fees"
         >
-          <div
-            class="mm-box"
-          >
-            <div
-              class="mm-box mm-box--display-flex"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md"
-                data-testid="network-fees"
-                style="white-space: nowrap; overflow: visible; text-decoration: underline; cursor: pointer;"
-              >
-                $2.52
-              </p>
-            </div>
-          </div>
-          <span
-            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative-soft"
-            style="mask-image: url('./images/icons/swap-vertical.svg'); cursor: pointer;"
-          />
-        </div>
+          $2.52
+        </p>
       </div>
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -486,14 +425,13 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative-soft"
-            style="white-space: nowrap;"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             Slippage
           </p>
           <button
             aria-label="Edit slippage"
-            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative-soft mm-box--background-color-transparent mm-box--rounded-lg"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="slippage-edit-button"
           >
             <span
@@ -512,7 +450,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative-soft"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
           Time
         </p>
@@ -523,27 +461,18 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
         </p>
       </div>
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-flex-start mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-alternative"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative-soft"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           Rate includes 0.875% fee
         </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative-soft"
+        <button
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         >
-          ·
-        </p>
-        <a
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative-soft mm-box--background-color-transparent"
-          href="https://consensys.io/terms-of-use/"
-          rel="noopener noreferrer"
-          style="text-decoration: underline;"
-          target="_blank"
-        >
-          Terms
-        </a>
+          More quotes
+        </button>
       </div>
     </div>
   </div>

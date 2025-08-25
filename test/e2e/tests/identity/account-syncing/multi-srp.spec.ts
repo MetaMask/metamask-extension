@@ -49,14 +49,14 @@ describe('Account syncing - Multiple SRPs', function () {
         await unlockWallet(driver);
 
         const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
+        await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // Verify default account is visible
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkAccountDisplayedInAccountList(
           DEFAULT_ACCOUNT_NAME,
         );
 
@@ -81,11 +81,11 @@ describe('Account syncing - Multiple SRPs', function () {
 
         // Reopen account menu to verify both accounts are visible
         await header.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList(
           DEFAULT_ACCOUNT_NAME,
         );
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
 
@@ -101,11 +101,11 @@ describe('Account syncing - Multiple SRPs', function () {
         await waitUntilSyncedAccountsNumberEquals(3);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         // Add a fourth account with custom name to the second SRP
         await header.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // Add account with custom name to specific SRP
         await accountListPage.addAccount({
@@ -116,8 +116,8 @@ describe('Account syncing - Multiple SRPs', function () {
 
         // Verify all accounts are visible
         await header.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList(
           SRP_2_SECOND_ACCOUNT,
         );
 
@@ -136,7 +136,7 @@ describe('Account syncing - Multiple SRPs', function () {
         await unlockWallet(driver);
 
         const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
+        await header.checkPageIsLoaded();
 
         // Import the second SRP to get access to all accounts
         await header.openAccountMenu();
@@ -146,11 +146,11 @@ describe('Account syncing - Multiple SRPs', function () {
         );
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         // Verify all accounts from both SRPs are visible
         await header.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         const visibleAccounts = [
           DEFAULT_ACCOUNT_NAME,
@@ -160,13 +160,11 @@ describe('Account syncing - Multiple SRPs', function () {
         ];
 
         for (const accountName of visibleAccounts) {
-          await accountListPage.check_accountDisplayedInAccountList(
-            accountName,
-          );
+          await accountListPage.checkAccountDisplayedInAccountList(accountName);
         }
 
         // Verify we have exactly 4 accounts
-        await accountListPage.check_numberOfAvailableAccounts(
+        await accountListPage.checkNumberOfAvailableAccounts(
           4,
           ACCOUNT_TYPE.Ethereum,
         );

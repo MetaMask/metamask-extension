@@ -47,9 +47,9 @@ const goToOnboardingWelcomeLoginPage = async ({
   }
 
   const startOnboardingPage = new StartOnboardingPage(driver);
-  await startOnboardingPage.check_bannerPageIsLoaded();
+  await startOnboardingPage.checkBannerPageIsLoaded();
   await startOnboardingPage.agreeToTermsOfUse();
-  await startOnboardingPage.check_loginPageIsLoaded();
+  await startOnboardingPage.checkLoginPageIsLoaded();
 
   return startOnboardingPage;
 };
@@ -92,7 +92,7 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
 
   await startOnboardingPage.createWalletWithSocialLogin(authConnection);
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-  await onboardingPasswordPage.check_pageIsLoaded();
+  await onboardingPasswordPage.checkPageIsLoaded();
 
   await onboardingPasswordPage.createWalletPassword(password);
 
@@ -143,7 +143,7 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
   await startOnboardingPage.importWalletWithSocialLogin(authConnection);
 
   const loginPage = new LoginPage(driver);
-  await loginPage.check_pageIsLoaded();
+  await loginPage.checkPageIsLoaded();
   await loginPage.loginToHomepage(password);
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
@@ -193,11 +193,11 @@ export const createNewWalletOnboardingFlow = async ({
   await startOnboardingPage.createWalletWithSrp(socialLoginEnabled);
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-  await onboardingPasswordPage.check_pageIsLoaded();
+  await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
 
   const secureWalletPage = new SecureWalletPage(driver);
-  await secureWalletPage.check_pageIsLoaded();
+  await secureWalletPage.checkPageIsLoaded();
 
   if (skipSRPBackup) {
     await secureWalletPage.skipSRPBackup();
@@ -246,11 +246,11 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
   await startOnboardingPage.createWalletWithSrp();
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-  await onboardingPasswordPage.check_pageIsLoaded();
+  await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
 
   const secureWalletPage = new SecureWalletPage(driver);
-  await secureWalletPage.check_pageIsLoaded();
+  await secureWalletPage.checkPageIsLoaded();
   await secureWalletPage.revealAndDoNotConfirmSRP();
 };
 
@@ -267,7 +267,7 @@ export async function onboardingMetricsFlow(
   { participateInMetaMetrics = false, dataCollectionForMarketing = false } = {},
 ) {
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-  await onboardingMetricsPage.check_pageIsLoaded();
+  await onboardingMetricsPage.checkPageIsLoaded();
   if (dataCollectionForMarketing) {
     await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
   }
@@ -314,7 +314,7 @@ export const importSRPOnboardingFlow = async ({
   await startOnboardingPage.importWallet();
 
   const onboardingSrpPage = new OnboardingSrpPage(driver);
-  await onboardingSrpPage.check_pageIsLoaded();
+  await onboardingSrpPage.checkPageIsLoaded();
   if (fillSrpWordByWord) {
     await onboardingSrpPage.fillSrpWordByWord(seedPhrase);
   } else {
@@ -323,7 +323,7 @@ export const importSRPOnboardingFlow = async ({
   await onboardingSrpPage.clickConfirmButton();
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-  await onboardingPasswordPage.check_pageIsLoaded();
+  await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
@@ -370,9 +370,9 @@ export const completeCreateNewWalletOnboardingFlow = async ({
     skipSRPBackup,
   });
   const onboardingCompletePage = new OnboardingCompletePage(driver);
-  await onboardingCompletePage.check_pageIsLoaded();
+  await onboardingCompletePage.checkPageIsLoaded();
   if (!skipSRPBackup) {
-    await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+    await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
   }
   await onboardingCompletePage.completeOnboarding();
 };
@@ -415,8 +415,8 @@ export const completeImportSRPOnboardingFlow = async ({
   });
 
   const onboardingCompletePage = new OnboardingCompletePage(driver);
-  await onboardingCompletePage.check_pageIsLoaded();
-  await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+  await onboardingCompletePage.checkPageIsLoaded();
+  await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
   await onboardingCompletePage.completeOnboarding();
 };
 
@@ -453,7 +453,7 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
     socialLoginEnabled,
   });
   const onboardingCompletePage = new OnboardingCompletePage(driver);
-  await onboardingCompletePage.check_pageIsLoaded();
+  await onboardingCompletePage.checkPageIsLoaded();
   await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
   const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
@@ -467,7 +467,7 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
   }
 
   await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
-  await onboardingCompletePage.check_pageIsLoaded();
+  await onboardingCompletePage.checkPageIsLoaded();
   await onboardingCompletePage.completeOnboarding();
 };
 
@@ -488,7 +488,7 @@ export const completeVaultRecoveryOnboardingFlow = async ({
   // after a vault recovery the Login page is displayed before the normal
   // onboarding flow.
   const loginPage = new LoginPage(driver);
-  await loginPage.check_pageIsLoaded();
+  await loginPage.checkPageIsLoaded();
   await loginPage.loginToHomepage(password);
 
   // complete metrics onboarding flow
@@ -498,20 +498,20 @@ export const completeVaultRecoveryOnboardingFlow = async ({
   });
 
   const secureWalletPage = new SecureWalletPage(driver);
-  await secureWalletPage.check_pageIsLoaded();
+  await secureWalletPage.checkPageIsLoaded();
   await secureWalletPage.skipSRPBackup();
 
   // finish up onboarding screens
   const onboardingCompletePage = new OnboardingCompletePage(driver);
-  await onboardingCompletePage.check_pageIsLoaded();
+  await onboardingCompletePage.checkPageIsLoaded();
   await onboardingCompletePage.completeOnboarding();
 
   const homePage = new HomePage(driver);
-  homePage.check_pageIsLoaded();
+  homePage.checkPageIsLoaded();
 
   // Because our state was reset, and the flow skips the welcome screen, we now
   // need to accept the terms of use again
   const updateTermsOfUseModal = new TermsOfUseUpdateModal(driver);
-  await updateTermsOfUseModal.check_pageIsLoaded();
+  await updateTermsOfUseModal.checkPageIsLoaded();
   await updateTermsOfUseModal.confirmAcceptTermsOfUseUpdate();
 };

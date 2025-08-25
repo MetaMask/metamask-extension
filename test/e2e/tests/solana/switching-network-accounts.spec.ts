@@ -13,13 +13,13 @@ describe('Switching between account from different networks', function (this: Su
         const headerNavbar = new HeaderNavbar(driver);
         console.log('Starting test');
         const assetList = new AssetListPage(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.check_accountLabel('Solana 1');
-        await assetList.check_networkFilterText('Solana');
+        await headerNavbar.checkPageIsLoaded();
+        await headerNavbar.checkAccountLabel('Solana 1');
+        await assetList.checkNetworkFilterText('Solana');
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.selectAccount('Account 1');
-        await assetList.check_networkFilterText('Localhost 8545');
+        await assetList.checkNetworkFilterText('Localhost 8545');
       },
     );
   });
@@ -29,18 +29,18 @@ describe('Switching between account from different networks', function (this: Su
       async (driver) => {
         const headerNavbar = new HeaderNavbar(driver);
         const assetList = new AssetListPage(driver);
-        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.selectAccount('Account 1');
-        await assetList.check_networkFilterText('Localhost 8545');
+        await assetList.checkNetworkFilterText('Localhost 8545');
         await headerNavbar.openAccountMenu();
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Solana,
           accountName: 'Solana Account 2',
         });
-        await assetList.check_networkFilterText('Solana');
-        await headerNavbar.check_accountLabel('Solana Account 2');
+        await assetList.checkNetworkFilterText('Solana');
+        await headerNavbar.checkAccountLabel('Solana Account 2');
       },
     );
   });

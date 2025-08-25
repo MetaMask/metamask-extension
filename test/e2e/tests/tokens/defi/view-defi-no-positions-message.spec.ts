@@ -27,12 +27,12 @@ describe('Check DeFi empty state when no defi positions', function () {
         const defiTab = new DeFiTab(driver);
 
         // Empty state
-        await defiTab.check_noPositionsMessageIsDisplayed();
+        await defiTab.checkNoPositionsMessageIsDisplayed();
 
         // switch network
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
-        await defiTab.check_noPositionsMessageIsDisplayed();
+        await defiTab.checkNoPositionsMessageIsDisplayed();
       },
     );
   });

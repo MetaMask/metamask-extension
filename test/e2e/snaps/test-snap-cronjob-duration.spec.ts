@@ -27,7 +27,7 @@ describe('Test Snap Cronjob Duration', function () {
           driver,
           'connectCronjobDurationButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectCronjobDurationButton',
           'Reconnect to Cronjob Duration Snap',
         );
@@ -37,7 +37,7 @@ describe('Test Snap Cronjob Duration', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.check_notificationCountInMenuOption(1);
+        await headerNavbar.checkNotificationCountInMenuOption(1);
 
         // This click will close the menu.
         await headerNavbar.openThreeDotMenu();
@@ -45,8 +45,8 @@ describe('Test Snap Cronjob Duration', function () {
         // Click the notification options and validate the message in the
         // notification list.
         await headerNavbar.clickNotificationsOptions();
-        await notificationsListPage.check_pageIsLoaded();
-        await notificationsListPage.check_snapsNotificationMessage(
+        await notificationsListPage.checkPageIsLoaded();
+        await notificationsListPage.checkSnapsNotificationMessage(
           'This notification was triggered by a cronjob using an ISO 8601 duration.',
         );
       },

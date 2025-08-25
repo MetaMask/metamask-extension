@@ -36,22 +36,22 @@ describe('Navigate transactions', function () {
         const navigation = new Confirmation(driver);
 
         await navigation.clickNextPage();
-        await navigation.check_pageNumbers(2, 4);
+        await navigation.checkPageNumbers(2, 4);
 
         await navigation.clickNextPage();
-        await navigation.check_pageNumbers(3, 4);
+        await navigation.checkPageNumbers(3, 4);
 
         await navigation.clickNextPage();
-        await navigation.check_pageNumbers(4, 4);
+        await navigation.checkPageNumbers(4, 4);
 
         await navigation.clickPreviousPage();
-        await navigation.check_pageNumbers(3, 4);
+        await navigation.checkPageNumbers(3, 4);
 
         await navigation.clickPreviousPage();
-        await navigation.check_pageNumbers(2, 4);
+        await navigation.checkPageNumbers(2, 4);
 
         await navigation.clickPreviousPage();
-        await navigation.check_pageNumbers(1, 4);
+        await navigation.checkPageNumbers(1, 4);
       },
     );
   });
@@ -75,7 +75,7 @@ describe('Navigate transactions', function () {
         const navigation = new Confirmation(driver);
 
         await navigation.clickNextPage();
-        await navigation.check_pageNumbers(2, 4);
+        await navigation.checkPageNumbers(2, 4);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -86,7 +86,7 @@ describe('Navigate transactions', function () {
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await navigation.check_pageNumbers(2, 5);
+        await navigation.checkPageNumbers(2, 5);
       },
     );
   });
@@ -111,7 +111,7 @@ describe('Navigate transactions', function () {
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         const navigation = new Confirmation(driver);
-        await navigation.check_pageNumbers(1, 3);
+        await navigation.checkPageNumbers(1, 3);
       },
     );
   });
@@ -136,7 +136,7 @@ describe('Navigate transactions', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         const navigation = new Confirmation(driver);
-        await navigation.check_pageNumbers(1, 3);
+        await navigation.checkPageNumbers(1, 3);
       },
     );
   });

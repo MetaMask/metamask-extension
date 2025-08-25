@@ -71,48 +71,36 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="confirmation__token-details-section"]';
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_walletInitiatedHeadingTitle() {
+  async checkWalletInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.walletInitiatedHeadingTitle);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_dappInitiatedHeadingTitle() {
+  async checkDappInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.dappInitiatedHeadingTitle);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_gasFee(amountToken: string) {
+  async checkGasFee(amountToken: string) {
     await this.driver.findElement({
       css: this.gasFeeText,
       text: amountToken,
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_gasFeeFiat(amountFiat: string) {
+  async checkGasFeeFiat(amountFiat: string) {
     await this.driver.findElement({
       css: this.gasFeeFiatText,
       text: amountFiat,
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_gasFeeSymbol(symbol: string) {
+  async checkGasFeeSymbol(symbol: string) {
     await this.driver.waitForSelector({
       css: this.gasFeeTokenPill,
       text: symbol,
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_gasFeeTokenFee(amountFiat: string) {
+  async checkGasFeeTokenFee(amountFiat: string) {
     await this.driver.findElement({
       css: this.gasFeeTokenFeeText,
       text: amountFiat,
@@ -124,9 +112,7 @@ class TransactionConfirmation extends Confirmation {
    *
    * @param account - The sender account to check.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_isSenderAccountDisplayed(account: string): Promise<boolean> {
+  async checkIsSenderAccountDisplayed(account: string): Promise<boolean> {
     console.log(
       `Checking sender account ${account} on transaction confirmation page.`,
     );
@@ -139,9 +125,7 @@ class TransactionConfirmation extends Confirmation {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkIsDisplayed(network: string): Promise<void> {
+  async checkNetworkIsDisplayed(network: string): Promise<void> {
     console.log(
       `Checking network ${network} is displayed on transaction confirmation page.`,
     );
@@ -309,9 +293,7 @@ class TransactionConfirmation extends Confirmation {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_sendAmount(amount: string) {
+  async checkSendAmount(amount: string) {
     console.log(
       `Checking send amount ${amount} on transaction confirmation page.`,
     );

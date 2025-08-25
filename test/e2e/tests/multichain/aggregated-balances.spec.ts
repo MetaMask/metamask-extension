@@ -70,12 +70,12 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await settingsPage.exitSettings();
 
         console.log('Step 4: Verify main balance on homepage and account menu');
-        await homepage.check_expectedBalanceIsDisplayed(
+        await homepage.checkExpectedBalanceIsDisplayed(
           EXPECTED_BALANCE_USD,
           'usd',
         );
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_accountValueAndSuffixDisplayed(
+        await accountListPage.checkAccountValueAndSuffixDisplayed(
           EXPECTED_BALANCE_USD,
         );
         await accountListPage.closeAccountModal();
@@ -86,7 +86,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await sendTokenPage.clickCancelButton();
 
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_accountValueAndSuffixDisplayed(
+        await accountListPage.checkAccountValueAndSuffixDisplayed(
           EXPECTED_BALANCE_USD,
         );
         await accountListPage.closeAccountModal();
@@ -102,7 +102,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await switchToNetworkFromSendFlow(driver, NETWORK_NAME_SEPOLIA);
 
         console.log('Step 8: Verify native balance on Sepolia network');
-        await homepage.check_expectedBalanceIsDisplayed(
+        await homepage.checkExpectedBalanceIsDisplayed(
           EXPECTED_SEPOLIA_BALANCE_NATIVE,
           SEPOLIA_NATIVE_TOKEN,
         );
@@ -114,7 +114,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await settingsPage.closeSettingsPage();
 
         console.log('Step 10: Verify USD balance on Sepolia network');
-        await homepage.check_expectedBalanceIsDisplayed(
+        await homepage.checkExpectedBalanceIsDisplayed(
           EXPECTED_SEPOLIA_BALANCE_NATIVE,
           SEPOLIA_NATIVE_TOKEN,
         );
