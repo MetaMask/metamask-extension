@@ -1009,6 +1009,16 @@ export function connectHardware(
   };
 }
 
+export function connectHardwareBeforeCheck(
+  deviceName: HardwareDeviceNames,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    return await submitRequestToBackground<void>('connectHardwareBeforeCheck', [
+      deviceName,
+    ]);
+  };
+}
+
 export function unlockHardwareWalletAccounts(
   indexes: string[],
   deviceName: HardwareDeviceNames,
