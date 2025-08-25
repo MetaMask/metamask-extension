@@ -2,11 +2,13 @@ import FixtureBuilder from '../../../fixture-builder';
 import { withFixtures } from '../../../helpers';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 
 import HomePage from '../../../page-objects/pages/home/homepage';
 import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
+
 import { mockLedgerTransactionRequests } from './mocks';
 
 describe('Ledger Swap', function () {

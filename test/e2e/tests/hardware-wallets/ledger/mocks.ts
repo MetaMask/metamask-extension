@@ -589,17 +589,17 @@ async function mockLedgerTransactionRequestsBase(mockServer: MockttpServer) {
         result: {
           transactionHash:
             '0xe3e223b9725765a7de557effdb2b507ace3534bcff2c1fe3a857e0791e56a518',
-          transactionIndex: '0x0',
+          status: '0x1', // This should be '0x1' for success
+          blockNumber: '0x1', // Ensure block number is present
           blockHash:
             '0x1111111111111111111111111111111111111111111111111111111111111111',
-          blockNumber: '0x1',
+          transactionIndex: '0x0',
           from: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
           to: '0x881d40237659c251811cec9c364ef91dc08d300c',
           gasUsed: '0x5208',
           cumulativeGasUsed: '0x5208',
           contractAddress: null,
           logs: [],
-          status: '0x1', // Success
         },
       },
     ],
@@ -648,24 +648,26 @@ async function mockExternalAccountsAPI(mockServer: MockttpServer) {
       networks: '0x1,0x89,0x38,0xe708,0x2105,0xa,0xa4b1,0x82750,0x531',
       sortDirection: 'DESC',
     })
-    .thenJson(200, [
-      {
-        hash: '0xe3e223b9725765a7de557effdb2b507ace3534bcff2c1fe3a857e0791e56a518',
-        chainId: 1337, // localhost chainId
-        from: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
-        to: '0x881d40237659c251811cec9c364ef91dc08d300c',
-        value: '2000000000000000000', // 2 ETH
-        blockNumber: 1,
-        blockHash:
-          '0x1111111111111111111111111111111111111111111111111111111111111111',
-        transactionIndex: 0,
-        gasUsed: '21000',
-        gasPrice: '10000000000',
-        status: 'confirmed',
-        timestamp: Date.now(),
-        type: 'swap',
-      },
-    ]);
+    .thenJson(200, {
+      data: [
+        {
+          hash: '0xe3e223b9725765a7de557effdb2b507ace3534bcff2c1fe3a857e0791e56a518',
+          chainId: 1337, // localhost chainId
+          from: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
+          to: '0x881d40237659c251811cec9c364ef91dc08d300c',
+          value: '2000000000000000000', // 2 ETH
+          blockNumber: 1,
+          blockHash:
+            '0x1111111111111111111111111111111111111111111111111111111111111111',
+          transactionIndex: 0,
+          gasUsed: '21000',
+          gasPrice: '10000000000',
+          status: 'confirmed',
+          timestamp: Date.now(),
+          type: 'swap',
+        },
+      ],
+    });
 
   // Also mock without query parameters as fallback
   await mockServer
