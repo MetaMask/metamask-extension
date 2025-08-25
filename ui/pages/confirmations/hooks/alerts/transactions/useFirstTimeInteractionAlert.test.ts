@@ -30,11 +30,6 @@ jest.mock('../../../../../../shared/constants/verification', () => ({
   getExperience: jest.fn(),
 }));
 
-jest.mock('../../../../../selectors', () => ({
-  ...jest.requireActual('../../../../../selectors'),
-  getInternalAccounts: jest.fn(() => []),
-}));
-
 const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const ACCOUNT_ADDRESS_2_MOCK = '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
 const CONTRACT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7be';
@@ -274,82 +269,74 @@ describe('useFirstTimeInteractionAlert', () => {
 
     expect(alerts).toEqual([]);
   });
-
-  describe('race condition fix', () => {
-    it('does not return alert when trust signal is still loading', () => {
-      // Simulate the trust signal still loading
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Loading,
-        label: null,
-      });
-
-      const firstTimeConfirmation = {
-        ...TRANSACTION_META_MOCK,
-        isFirstTimeInteraction: true,
-        type: TransactionType.simpleSend,
-        txParams: {
-          ...TRANSACTION_META_MOCK.txParams,
-          to: ACCOUNT_ADDRESS_2_MOCK,
-        },
-      };
-
-      const alerts = runHook({
-        currentConfirmation: firstTimeConfirmation,
-      });
-
-      // Should not show alert while trust signal is loading
-      expect(alerts).toEqual([]);
+  it('does not return alert when trust signal is still loading', () => {
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Loading,
+      label: null,
     });
 
-    it('returns alert when trust signal is loaded but address is not verified', () => {
-      // Simulate the trust signal being loaded with non-verified result
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Unknown,
-        label: null,
-      });
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      type: TransactionType.simpleSend,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: ACCOUNT_ADDRESS_2_MOCK,
+      },
+    };
 
-      const firstTimeConfirmation = {
-        ...TRANSACTION_META_MOCK,
-        isFirstTimeInteraction: true,
-        type: TransactionType.simpleSend,
-        txParams: {
-          ...TRANSACTION_META_MOCK.txParams,
-          to: ACCOUNT_ADDRESS_2_MOCK,
-        },
-      };
-
-      const alerts = runHook({
-        currentConfirmation: firstTimeConfirmation,
-      });
-
-      // Should show alert when check is complete and address is not verified
-      expect(alerts).toHaveLength(1);
-      expect(alerts[0].key).toBe('firstTimeInteractionTitle');
+    const alerts = runHook({
+      currentConfirmation: firstTimeConfirmation,
     });
 
-    it('does not return alert when trust signal shows verified address', () => {
-      // Simulate the trust signal being loaded with verified result
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Verified,
-        label: null,
-      });
+    expect(alerts).toEqual([]);
+  });
 
-      const firstTimeConfirmation = {
-        ...TRANSACTION_META_MOCK,
-        isFirstTimeInteraction: true,
-        type: TransactionType.simpleSend,
-        txParams: {
-          ...TRANSACTION_META_MOCK.txParams,
-          to: ACCOUNT_ADDRESS_2_MOCK,
-        },
-      };
-
-      const alerts = runHook({
-        currentConfirmation: firstTimeConfirmation,
-      });
-
-      // Should not show alert for verified addresses
-      expect(alerts).toEqual([]);
+  it('returns alert when trust signal is loaded but address is not verified', () => {
+    // Simulate the trust signal being loaded with non-verified result
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
     });
+
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      type: TransactionType.simpleSend,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: ACCOUNT_ADDRESS_2_MOCK,
+      },
+    };
+
+    const alerts = runHook({
+      currentConfirmation: firstTimeConfirmation,
+    });
+
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0].key).toBe('firstTimeInteractionTitle');
+  });
+
+  it('does not return alert when trust signal shows verified address', () => {
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Verified,
+      label: null,
+    });
+
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      type: TransactionType.simpleSend,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: ACCOUNT_ADDRESS_2_MOCK,
+      },
+    };
+
+    const alerts = runHook({
+      currentConfirmation: firstTimeConfirmation,
+    });
+
+    expect(alerts).toEqual([]);
   });
 });

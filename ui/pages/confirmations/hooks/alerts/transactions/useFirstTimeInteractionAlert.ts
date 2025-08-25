@@ -42,14 +42,15 @@ export function useFirstTimeInteractionAlert(): Alert[] {
 
   // Don't show alert if trust signal is still loading
   const isTrustSignalLoading =
-    trustSignalDisplayState === TrustSignalDisplayState.Loading;
+    trustSignalDisplayState === TrustSignalDisplayState.Loading ||
+    trustSignalDisplayState === undefined;
 
   const showAlert =
     !isInternalAccount &&
     isFirstTimeInteraction &&
     !isVerifiedAddress &&
     !isFirstPartyContract &&
-    !isTrustSignalLoading; // Don't show alert while trust signal is loading
+    !isTrustSignalLoading;
 
   return useMemo(() => {
     // If isFirstTimeInteraction is undefined that means it's either disabled or error in accounts API

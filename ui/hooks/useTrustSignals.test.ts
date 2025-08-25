@@ -230,7 +230,7 @@ describe('useTrustSignals', () => {
 
         const requests: UseTrustSignalRequest[] = [
           {
-            value: '', // Empty address
+            value: '',
             type: NameType.ETHEREUM_ADDRESS,
           },
         ];

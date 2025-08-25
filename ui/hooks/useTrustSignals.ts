@@ -65,7 +65,7 @@ export function useTrustSignals(
         };
       }
 
-      // If response is null or falsy (but not undefined), it means we checked but found nothing
+      // If response is null, it means we checked but found nothing
       if (!securityAlertResponse) {
         return {
           state: TrustSignalDisplayState.Unknown,
