@@ -16,6 +16,7 @@ export const createBridgeMockStore = ({
   bridgeStateOverrides = {},
   bridgeStatusStateOverrides = {},
   metamaskStateOverrides = {},
+  stateOverrides = {},
 }: {
   // featureFlagOverrides?: Partial<BridgeControllerState['bridgeFeatureFlags']>;
   // bridgeSliceOverrides?: Partial<BridgeState>;
@@ -33,6 +34,8 @@ export const createBridgeMockStore = ({
   bridgeStatusStateOverrides?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskStateOverrides?: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  stateOverrides?: Record<string, any>;
 } = {}): BridgeAppState => {
   const {
     metamask: swapsMetamask,
@@ -227,6 +230,7 @@ export const createBridgeMockStore = ({
     send: {
       swapsBlockedTokens: [],
     },
+    ...stateOverrides,
     // TODO fix types
   } as unknown as BridgeAppState;
 };
