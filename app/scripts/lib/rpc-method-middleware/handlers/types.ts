@@ -1,28 +1,12 @@
-import type { JsonRpcParams, JsonRpcRequest, Hex, Json } from '@metamask/utils';
+import type { JsonRpcParams, JsonRpcRequest, Hex } from '@metamask/utils';
 import type {
-  AddApprovalOptions,
-  ApprovalFlowStartResult,
-  EndFlowOptions,
-  StartFlowOptions,
-} from '@metamask/approval-controller';
-import type {
-  NetworkClientId,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
-import type {
-  CaveatConstraint,
   CaveatSpecificationConstraint,
-  ExtractPermission,
   OriginString,
   PermissionSpecificationConstraint,
   PermissionsRequest,
-  PermissionSubjectMetadata,
   RequestedPermissions,
-  SubjectPermissions,
-  SubjectType,
 } from '@metamask/permission-controller';
 import { PermissionController } from '@metamask/permission-controller';
-import type { InfuraNetworkType } from '@metamask/controller-utils';
 import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
@@ -39,15 +23,6 @@ export type HandlerRequestType<Params extends JsonRpcParams = JsonRpcParams> =
     origin: string;
   };
 
-export type ExistingNetworkChainIds = '0x1' | '0xaa36a7' | '0xe704' | '0xe708';
-
-export type NetworkConfigurations = Record<
-  string,
-  NetworkConfiguration & {
-    id: string;
-  }
->;
-
 /**
  * @property chainId - The current chain ID.
  * @property isUnlocked - Whether the extension is unlocked or not.
@@ -61,38 +36,7 @@ export type ProviderStateHandlerResult = {
   accounts: string[];
 };
 
-export type SubjectMetadataToAdd = PermissionSubjectMetadata & {
-  name?: string | null;
-  subjectType?: SubjectType | null;
-  extensionId?: string | null;
-  iconUrl?: string | null;
-} & Record<string, Json>;
-
-export type UpsertNetworkConfigurationOptions = {
-  referrer: string;
-  source: string;
-  setActive?: boolean;
-};
-
-export type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
-
-export type EndApprovalFlow = ({ id }: EndFlowOptions) => void;
-
-export type FindNetworkClientIdByChainId = (chainId: Hex) => NetworkClientId;
-
-export type FindNetworkConfigurationBy = (
-  rpcInfo: Record<string, string>,
-) => NetworkConfiguration | null;
-
-export type HasPermission = (origin: OriginString) => boolean;
-
 export type GetAccounts = (options?: { ignoreLock: boolean }) => Promise<Hex[]>;
-
-export type GetCurrentChainId = () => Hex;
-
-export type GetCurrentRpcUrl = () => string | undefined;
-
-export type GetNetworkConfigurations = () => NetworkConfiguration;
 
 export type RequestCaip25ApprovalForOrigin = (
   origin?: OriginString,
@@ -107,85 +51,14 @@ export type RequestPermissionsForOrigin = (
   requestedPermissions: RequestedPermissions,
 ) => Promise<[GrantedPermissions]>;
 
-export type GrantPermissionsForOrigin = (
-  approvedPermissions: RequestedPermissions,
-) => ReturnType<
-  PermissionController<
-    PermissionSpecificationConstraint,
-    CaveatConstraint
-  >['grantPermissions']
->;
-
-export type GetProviderState = (
-  origin: OriginString,
-) => Promise<ProviderStateHandlerResult>;
-
 export type GetUnlockPromise = (
   shouldShowUnlockRequest: boolean,
 ) => Promise<void>;
-
-export type GetWeb3ShimUsageState = (origin: OriginString) => undefined | 1 | 2;
-
-export type HandleWatchAssetRequest = (
-  options: Record<string, string>,
-) => Promise<void>;
-
-export type RequestAccountsPermission<
-  ControllerPermissionSpecification extends PermissionSpecificationConstraint = PermissionSpecificationConstraint,
-  ControllerCaveatSpecification extends CaveatSpecificationConstraint = CaveatSpecificationConstraint,
-> = (
-  subject?: PermissionSubjectMetadata,
-  requestedPermissions?: RequestedPermissions,
-  options?: {
-    id?: string;
-    preserveExistingPermissions?: boolean;
-  },
-) => Promise<
-  [
-    SubjectPermissions<
-      ExtractPermission<
-        ControllerPermissionSpecification,
-        ControllerCaveatSpecification
-      >
-    >,
-    {
-      data?: Record<string, unknown>;
-      id: string;
-      origin: OriginString;
-    },
-  ]
->;
-
-export type RequestUserApproval = (
-  options?: AddApprovalOptions,
-) => Promise<unknown>;
 
 export type SendMetrics = (
   payload: MetaMetricsEventPayload,
   options?: MetaMetricsEventOptions,
 ) => void;
-
-export type SetActiveNetwork = (
-  networkConfigurationIdOrType: string,
-) => Promise<void>;
-
-export type SetNetworkClientIdForDomain = (
-  domain: string,
-  networkClientId: NetworkClientId,
-) => void;
-
-export type SetProviderType = (type: InfuraNetworkType) => Promise<void>;
-
-export type SetWeb3ShimUsageRecorded = (origin: OriginString) => void;
-
-export type StartApprovalFlow = (
-  options?: StartFlowOptions,
-) => ApprovalFlowStartResult;
-
-export type UpsertNetworkConfiguration = (
-  networkConfiguration: NetworkConfiguration,
-  options?: UpsertNetworkConfigurationOptions,
-) => Promise<string>;
 
 type AbstractPermissionController = PermissionController<
   PermissionSpecificationConstraint,
