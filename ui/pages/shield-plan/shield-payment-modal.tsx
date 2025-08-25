@@ -31,6 +31,7 @@ import {
 import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
 import { TabName } from '../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { AssetType } from '../../../shared/constants/transaction';
+import { useI18nContext } from '../../hooks/useI18nContext';
 import { PAYMENT_METHODS, PaymentMethod } from './types';
 
 export const ShieldPaymentModal = ({
@@ -44,13 +45,16 @@ export const ShieldPaymentModal = ({
   selectedPaymentMethod: PaymentMethod;
   setSelectedPaymentMethod: (method: PaymentMethod) => void;
 }) => {
+  const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="shield-payment-modal">
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={onClose}>Change payment method</ModalHeader>
+        <ModalHeader onClose={onClose}>
+          {t('shieldPlanPaymentTitle')}
+        </ModalHeader>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -114,12 +118,14 @@ export const ShieldPaymentModal = ({
                   />
                 </BadgeWrapper>
                 <Box textAlign={TextAlign.Left}>
-                  <Text variant={TextVariant.bodyMdMedium}>Pay with USDT</Text>
+                  <Text variant={TextVariant.bodyMdMedium}>
+                    {t('shieldPlanPayWithToken', ['USDT'])}
+                  </Text>
                   <Text
                     variant={TextVariant.bodySm}
                     color={TextColor.textAlternative}
                   >
-                    Balance: 123.43 USDT
+                    {t('balance')}: 123.43 USDT
                   </Text>
                 </Box>
               </Box>
@@ -166,7 +172,9 @@ export const ShieldPaymentModal = ({
               >
                 <Icon size={IconSize.Xl} name={IconName.Card} />
                 <Box textAlign={TextAlign.Left}>
-                  <Text variant={TextVariant.bodyMdMedium}>Pay with card</Text>
+                  <Text variant={TextVariant.bodyMdMedium}>
+                    {t('shieldPlanPayWithCard')}
+                  </Text>
                   <Box
                     display={Display.Flex}
                     gap={1}

@@ -39,19 +39,14 @@ import {
   Button,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { PAYMENT_METHODS, PaymentMethod } from './types';
+import {
+  PAYMENT_METHODS,
+  PaymentMethod,
+  Plan,
+  PLAN_TYPES,
+  SHIELD_PLAN_PRICES,
+} from './types';
 import { ShieldPaymentModal } from './shield-payment-modal';
-
-const PLAN_TYPES = {
-  ANNUAL: 'annual',
-  MONTHLY: 'monthly',
-} as const;
-
-type Plan = {
-  id: (typeof PLAN_TYPES)[keyof typeof PLAN_TYPES];
-  label: string;
-  price: string;
-};
 
 const ShieldPlan = () => {
   const history = useHistory();
@@ -68,20 +63,20 @@ const ShieldPlan = () => {
   const plans: Plan[] = [
     {
       id: PLAN_TYPES.ANNUAL,
-      label: 'Annual',
-      price: '$80/year',
+      label: t('shieldPlanAnnual'),
+      price: t('shieldPlanAnnualPrice', [SHIELD_PLAN_PRICES.ANNUAL]),
     },
     {
       id: PLAN_TYPES.MONTHLY,
-      label: 'Monthly',
-      price: '$8/month',
+      label: t('shieldPlanMonthly'),
+      price: t('shieldPlanMonthlyPrice', [SHIELD_PLAN_PRICES.MONTHLY]),
     },
   ];
 
   const planDetails = [
-    'No charge now, try free for 14 days',
-    'Pre-approve membership (default 1 year), with fees charged only on a monthly basis',
-    'Secures your assets from risky transactions',
+    t('shieldPlanDetails1'),
+    t('shieldPlanDetails2'),
+    t('shieldPlanDetails3'),
   ];
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -112,7 +107,7 @@ const ShieldPlan = () => {
           />
         }
       >
-        Choose your plan
+        {t('shieldPlanTitle')}
       </Header>
       <Content>
         <Box
@@ -156,7 +151,7 @@ const ShieldPlan = () => {
                     variant={TextVariant.bodyXs}
                     color={TextColor.iconInverse}
                   >
-                    Save 16%
+                    {t('shieldPlanSave')}
                   </Text>
                 </Box>
               )}
@@ -171,7 +166,9 @@ const ShieldPlan = () => {
             onClick={() => setShowPaymentModal(true)}
             width={BlockSize.Full}
           >
-            <Text variant={TextVariant.bodyLgMedium}>Pay with</Text>
+            <Text variant={TextVariant.bodyLgMedium}>
+              {t('shieldPlanPayWith')}
+            </Text>
 
             <Box display={Display.Flex} gap={2} alignItems={AlignItems.center}>
               {selectedPaymentMethod === PAYMENT_METHODS.TOKEN ? (
@@ -197,7 +194,7 @@ const ShieldPlan = () => {
               <Text variant={TextVariant.bodyLgMedium}>
                 {selectedPaymentMethod === PAYMENT_METHODS.TOKEN
                   ? 'ETH'
-                  : 'Card'}
+                  : t('shieldPlanCard')}
               </Text>
               <Icon size={IconSize.Md} name={IconName.ArrowRight} />
             </Box>
@@ -210,7 +207,7 @@ const ShieldPlan = () => {
             display={Display.Block}
           >
             <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
-              Plan details
+              {t('shieldPlanDetails')}
             </Text>
             <Box
               display={Display.Flex}
@@ -219,11 +216,17 @@ const ShieldPlan = () => {
             >
               {planDetails.map((detail, index) => (
                 <Box key={index} display={Display.Flex} gap={2}>
-                  <Icon
-                    size={IconSize.Sm}
-                    name={IconName.Check}
-                    color={IconColor.primaryDefault}
-                  />
+                  <Box
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    style={{ height: '1lh' }}
+                  >
+                    <Icon
+                      size={IconSize.Sm}
+                      name={IconName.Check}
+                      color={IconColor.primaryDefault}
+                    />
+                  </Box>
                   <Text variant={TextVariant.bodySm}>{detail}</Text>
                 </Box>
               ))}
@@ -251,7 +254,7 @@ const ShieldPlan = () => {
           color={TextColor.textAlternative}
           textAlign={TextAlign.Center}
         >
-          Auto renews for $8/month until canceled
+          {t('shieldPlanAutoRenew', [SHIELD_PLAN_PRICES.MONTHLY])}
         </Text>
       </Footer>
     </Page>

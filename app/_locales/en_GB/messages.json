@@ -5350,6 +5350,58 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
   },
+  "shieldPlanAnnual": {
+    "message": "Annual"
+  },
+  "shieldPlanAnnualPrice": {
+    "message": "$1/year",
+    "description": "The $1 is the price of the annual plan"
+  },
+  "shieldPlanAutoRenew": {
+    "message": "Auto renews for $1/month until canceled",
+    "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanCard": {
+    "message": "Card"
+  },
+  "shieldPlanDetails": {
+    "message": "Plan details"
+  },
+  "shieldPlanDetails1": {
+    "message": "No charge now, try free for 14 days"
+  },
+  "shieldPlanDetails2": {
+    "message": "Pre-approve membership (default 1 year), with fees charged only on a monthly basis"
+  },
+  "shieldPlanDetails3": {
+    "message": "Secures your assets from risky transactions"
+  },
+  "shieldPlanMonthly": {
+    "message": "Monthly"
+  },
+  "shieldPlanMonthlyPrice": {
+    "message": "$1/month",
+    "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanPayWith": {
+    "message": "Pay with"
+  },
+  "shieldPlanPayWithCard": {
+    "message": "Pay with card"
+  },
+  "shieldPlanPayWithToken": {
+    "message": "Pay with $1",
+    "description": "The $1 is token"
+  },
+  "shieldPlanSave": {
+    "message": "Save 16%"
+  },
+  "shieldPlanTitle": {
+    "message": "Choose your plan"
+  },
+  "shieldPlanPaymentTitle": {
+    "message": "Change payment method"
+  },
   "show": {
     "message": "Show"
   },
