@@ -1,41 +1,15 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  CaveatConstraint,
-  PermissionConstraint,
-} from '@metamask/permission-controller';
 import FixtureBuilder from '../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import Homepage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-
-const getPermittedChains = async (driver: Driver) => {
-  const getPermissionsRequest = JSON.stringify({
-    method: 'wallet_getPermissions',
-  });
-  const getPermissionsResult = await driver.executeScript(
-    `return window.ethereum.request(${getPermissionsRequest})`,
-  );
-
-  const permittedChains =
-    getPermissionsResult
-      ?.find(
-        (permission: PermissionConstraint) =>
-          permission.parentCapability === PermissionNames.permittedChains,
-      )
-      ?.caveats.find(
-        (caveat: CaveatConstraint) =>
-          caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value || [];
-
-  return permittedChains;
-};
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { getPermittedChains } from './common';
 
 describe('Remove Network:', function (this: Suite) {
   it('should remove the chainId from existing permissions when a network configuration is removed entirely', async function () {
@@ -89,7 +63,7 @@ describe('Remove Network:', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const beforePermittedChains = await getPermittedChains(driver);
         assert.deepEqual(beforePermittedChains, ['0x539', '0x53a']);
@@ -97,17 +71,16 @@ describe('Remove Network:', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const homepage = new Homepage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.headerNavbar.clickSwitchNetworkDropDown();
+        const homepage = new HomePage(driver);
+        await homepage.checkPageIsLoaded();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
-        // Delete network from network list
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.deleteNetwork('eip155:1338');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const afterPermittedChains = await getPermittedChains(driver);
         assert.deepEqual(afterPermittedChains, ['0x539']);
@@ -174,7 +147,7 @@ describe('Remove Network:', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const beforePermittedChains = await getPermittedChains(driver);
         assert.deepEqual(beforePermittedChains, ['0x539', '0x53a']);
@@ -182,27 +155,24 @@ describe('Remove Network:', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const homepage = new Homepage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
-        // Go to Edit Menu
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:1338');
         await selectNetworkDialog.openEditNetworkModal();
 
         // Remove the second RPC
         const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
+        await editNetworkModal.checkPageIsLoaded();
         await editNetworkModal.removeRPCInEditNetworkModal(2);
-        await editNetworkModal.check_rpcIsDisplayed('127.0.0.1:8546', false);
+        await editNetworkModal.checkRpcIsDisplayed('127.0.0.1:8546', false);
 
         // Save the edited network
         await editNetworkModal.saveEditedNetwork();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const afterPermittedChains = await getPermittedChains(driver);
         assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);

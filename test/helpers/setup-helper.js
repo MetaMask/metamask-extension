@@ -23,6 +23,22 @@ global.chrome = {
   },
 };
 
+// Stub for Sentry global
+global.sentry = {
+  captureException: () => {
+    // no-op
+  },
+  captureFeedback: () => {
+    // no-op
+  },
+  captureMessage: () => {
+    // no-op
+  },
+  lastEventId: () => {
+    // no-op
+  },
+};
+
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
 if (typeof beforeEach === 'function') {

@@ -5,9 +5,17 @@ import type { Hex } from './utils';
  * A version agnostic blob of contract addresses required for the DeleGator system to function.
  */
 export type DeleGatorEnvironment = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   DelegationManager: Hex;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   EIP7702StatelessDeleGatorImpl: Hex;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   EntryPoint: Hex;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SimpleFactory: Hex;
   implementations: {
     [implementation: string]: Hex;

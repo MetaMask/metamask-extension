@@ -5,14 +5,17 @@ import {
 } from '@metamask/permission-controller';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
-import {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  WINDOW_TITLES,
-} from '../helpers';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../shared/constants/permissions';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../page-objects/flows/network.flow';
+import AddNetworkConfirmation from '../page-objects/pages/confirmations/redesign/add-network-confirmations';
+import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
+import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
+import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import TestDapp from '../page-objects/pages/test-dapp';
+import UpdateNetworkConfirmation from '../page-objects/pages/confirmations/redesign/update-network-confirmation';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
 const getPermittedChains = async (driver: Driver) => {
   const getPermissionsRequest = JSON.stringify({
@@ -58,8 +61,10 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await unlockWallet(driver);
-          await openDapp(driver);
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           const beforePermittedChains = await getPermittedChains(driver);
 
@@ -88,9 +93,12 @@ describe('Add Ethereum Chain', function () {
           );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.clickElement({ text: 'Approve', tag: 'button' });
+          const addNetworkConfirmation = new AddNetworkConfirmation(driver);
+          await addNetworkConfirmation.checkPageIsLoaded('Localhost 1338');
+          await addNetworkConfirmation.approveAddNetwork();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await testDapp.checkPageIsLoaded();
 
           const afterPermittedChains = await getPermittedChains(driver);
           assert.deepEqual(afterPermittedChains, ['0x53a']);
@@ -120,8 +128,10 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await unlockWallet(driver);
-          await openDapp(driver);
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           const beforePermittedChains = await getPermittedChains(driver);
 
@@ -151,9 +161,14 @@ describe('Add Ethereum Chain', function () {
           );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.clickElement({ text: 'Approve', tag: 'button' });
+          const updateNetworkConfirmation = new UpdateNetworkConfirmation(
+            driver,
+          );
+          await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
+          await updateNetworkConfirmation.approveUpdateNetworkAndWaitToClose();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await testDapp.checkPageIsLoaded();
 
           const afterPermittedChains = await getPermittedChains(driver);
           assert.deepEqual(afterPermittedChains, ['0x53a']);
@@ -183,8 +198,10 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await unlockWallet(driver);
-          await openDapp(driver);
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           const beforePermittedChains = await getPermittedChains(driver);
 
@@ -213,11 +230,17 @@ describe('Add Ethereum Chain', function () {
             `window.ethereum.request(${addEthereumChainRequest})`,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.findElement({ text: 'Use your enabled networks' });
-          await driver.findElement({ text: 'Localhost 8546' });
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          const reviewPermissionsConfirmation =
+            new ReviewPermissionsConfirmation(driver);
+          await reviewPermissionsConfirmation.checkPageIsLoaded();
+          await reviewPermissionsConfirmation.checkUseEnabledNetworksMessageIsDisplayed();
+          await reviewPermissionsConfirmation.checkNetworkIsDisplayed(
+            'Localhost 8546',
+          );
+          await reviewPermissionsConfirmation.confirmReviewPermissions();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await testDapp.checkPageIsLoaded();
 
           const afterPermittedChains = await getPermittedChains(driver);
           assert.deepEqual(afterPermittedChains, ['0x53a']);
@@ -235,8 +258,10 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await unlockWallet(driver);
-          await openDapp(driver);
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           const beforePermittedChains = await getPermittedChains(driver);
 
@@ -266,9 +291,14 @@ describe('Add Ethereum Chain', function () {
           );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.clickElement({ text: 'Approve', tag: 'button' });
+          const updateNetworkConfirmation = new UpdateNetworkConfirmation(
+            driver,
+          );
+          await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8545');
+          await updateNetworkConfirmation.approveUpdateNetworkAndWaitToClose();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await testDapp.checkPageIsLoaded();
 
           const afterPermittedChains = await getPermittedChains(driver);
           assert.deepEqual(afterPermittedChains, ['0x539']);
@@ -286,8 +316,10 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await unlockWallet(driver);
-          await openDapp(driver);
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           const beforePermittedChains = await getPermittedChains(driver);
 
@@ -317,11 +349,17 @@ describe('Add Ethereum Chain', function () {
           );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.findElement({ text: 'Use your enabled networks' });
-          await driver.findElement({ text: 'Localhost 8545' });
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          const reviewPermissionsConfirmation =
+            new ReviewPermissionsConfirmation(driver);
+          await reviewPermissionsConfirmation.checkPageIsLoaded();
+          await reviewPermissionsConfirmation.checkUseEnabledNetworksMessageIsDisplayed();
+          await reviewPermissionsConfirmation.checkNetworkIsDisplayed(
+            'Localhost 8545',
+          );
+          await reviewPermissionsConfirmation.confirmReviewPermissions();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await testDapp.checkPageIsLoaded();
 
           const afterPermittedChains = await getPermittedChains(driver);
           assert.deepEqual(afterPermittedChains, ['0x539']);
@@ -357,14 +395,16 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await unlockWallet(driver);
-          await openDapp(driver);
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           const beforePermittedChains = await getPermittedChains(driver);
           assert.deepEqual(beforePermittedChains, ['0x539', '0x53a']);
 
           // should start on 1337
-          await driver.findElement({ css: '#chainId', text: '0x539' });
+          await testDapp.checkNetworkIsConnected('0x539');
 
           const switchEthereumChainRequest = JSON.stringify({
             jsonrpc: '2.0',
@@ -390,15 +430,20 @@ describe('Add Ethereum Chain', function () {
           );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.clickElement({ text: 'Approve', tag: 'button' });
+          const updateNetworkConfirmation = new UpdateNetworkConfirmation(
+            driver,
+          );
+          await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
+          await updateNetworkConfirmation.approveUpdateNetworkAndWaitToClose();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await testDapp.checkPageIsLoaded();
 
           const afterPermittedChains = await getPermittedChains(driver);
           assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
 
           // should end on 1338
-          await driver.findElement({ css: '#chainId', text: '0x53a' });
+          await testDapp.checkNetworkIsConnected('0x53a');
         },
       );
     });
@@ -429,14 +474,16 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await unlockWallet(driver);
-          await openDapp(driver);
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           const beforePermittedChains = await getPermittedChains(driver);
           assert.deepEqual(beforePermittedChains, ['0x539', '0x53a']);
 
           // should start on 1337
-          await driver.findElement({ css: '#chainId', text: '0x539' });
+          await testDapp.checkNetworkIsConnected('0x539');
 
           const switchEthereumChainRequest = JSON.stringify({
             jsonrpc: '2.0',
@@ -465,7 +512,7 @@ describe('Add Ethereum Chain', function () {
           assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
 
           // should end on 1338
-          await driver.findElement({ css: '#chainId', text: '0x53a' });
+          await testDapp.checkNetworkIsConnected('0x53a');
         },
       );
     });
@@ -482,13 +529,15 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await unlockWallet(driver);
-          await openDapp(driver);
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
           const beforePermittedChains = await getPermittedChains(driver);
           assert.deepEqual(beforePermittedChains, ['0x539']);
 
-          await driver.findElement({ css: '#chainId', text: '0x539' });
+          await testDapp.checkNetworkIsConnected('0x539');
 
           const addEthereumChainRequest = JSON.stringify({
             jsonrpc: '2.0',
@@ -514,19 +563,18 @@ describe('Add Ethereum Chain', function () {
           );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.findElement({ text: 'Update Localhost 8545' });
-          await driver.clickElement({ text: 'Approve', tag: 'button' });
+          const updateNetworkConfirmation = new UpdateNetworkConfirmation(
+            driver,
+          );
+          await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8545');
+          await updateNetworkConfirmation.approveUpdateNetworkAndWaitToClose();
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
           // go to network selector
+          await switchToEditRPCViaGlobalMenuNetworks(driver);
           await driver.findElement({ text: 'Localhost 8545' });
-          await driver.clickElement({ text: 'Localhost 8545' });
-
-          await driver.findElement({
-            text: 'Alternative localhost chain 0x539',
-          });
         },
       );
     });
@@ -556,16 +604,17 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await unlockWallet(driver);
-          await openDapp(driver);
-
-          await driver.clickElement('#personalSign');
+          await loginWithBalanceValidation(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+          await testDapp.clickPersonalSign();
 
           const beforePermittedChains = await getPermittedChains(driver);
           assert.deepEqual(beforePermittedChains, ['0x539']);
 
           // should start on 1337
-          await driver.findElement({ css: '#chainId', text: '0x539' });
+          await testDapp.checkNetworkIsConnected('0x539');
 
           const switchEthereumChainRequest = JSON.stringify({
             jsonrpc: '2.0',
@@ -591,31 +640,36 @@ describe('Add Ethereum Chain', function () {
           );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-          await driver.clickElement(
-            '[data-testid="confirm-nav__next-confirmation"]',
-          );
+          const confirmation = new Confirmation(driver);
+          await confirmation.checkPageIsLoaded();
+          await confirmation.clickNextPage();
 
           // User reviews pending alerts
-          await driver.clickElement({ text: 'Approve', tag: 'button' });
-          await driver.clickElement(
-            '[data-testid="alert-modal-action-showPendingConfirmation"]',
+          const updateNetworkConfirmation = new UpdateNetworkConfirmation(
+            driver,
           );
+          await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
+          await updateNetworkConfirmation.approveUpdateNetwork();
+          const networkSwitchAlertModal = new NetworkSwitchAlertModal(driver);
+          await networkSwitchAlertModal.checkPageIsLoaded();
+          await networkSwitchAlertModal.clickShowPendingConfirmationButton();
 
           // user confirms add network confirmation
-          await driver.clickElement(
-            '[data-testid="confirm-nav__next-confirmation"]',
-          );
-          await driver.clickElement({ text: 'Approve', tag: 'button' });
-          await driver.clickElement('[data-testid="alert-modal-button"]');
+          await confirmation.checkPageIsLoaded();
+          await confirmation.clickNextPage();
+          await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
+          await updateNetworkConfirmation.approveUpdateNetwork();
+          await networkSwitchAlertModal.checkPageIsLoaded();
+          await networkSwitchAlertModal.clickGotItButton();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await testDapp.checkPageIsLoaded();
 
           const afterPermittedChains = await getPermittedChains(driver);
           assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
 
           // should end on 1338
-          await driver.findElement({ css: '#chainId', text: '0x53a' });
+          await testDapp.checkNetworkIsConnected('0x53a');
         },
       );
     });

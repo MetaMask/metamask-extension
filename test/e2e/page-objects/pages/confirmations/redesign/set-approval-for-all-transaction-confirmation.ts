@@ -29,15 +29,15 @@ class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
     };
   }
 
-  async check_setApprovalForAllTitle() {
+  async checkSetApprovalForAllTitle() {
     await this.driver.waitForSelector(this.setApprovalForAllTitleElement);
   }
 
-  async check_setApprovalForAllSubHeading() {
+  async checkSetApprovalForAllSubHeading() {
     await this.driver.waitForSelector(this.setApprovalForAllSubHeadingElement);
   }
 
-  async check_revokeSetApprovalForAllTitle() {
+  async checkRevokeSetApprovalForAllTitle() {
     await this.driver.waitForSelector(this.revokeSetApprovalForAllTitleElement);
   }
 }

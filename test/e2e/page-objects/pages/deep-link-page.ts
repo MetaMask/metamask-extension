@@ -19,7 +19,7 @@ export default class DeepLink {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.descriptionBox);
       // loading indicator should not be present when the page is loaded

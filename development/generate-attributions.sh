@@ -47,7 +47,7 @@ main() {
   yarn generate-attribution -o "${PROJECT_DIRECTORY}" -b "${PROJECT_DIRECTORY}"
 
   # Check if the script is running in a CI environment (GitHub Actions sets the CI variable to true)
-  if [ -z "${CI:-}" ] || [ "${FORCE_CLEANUP}" = "true" ]; then
+  if [ -z "${CI:-}" ] || [ "${FORCE_CLEANUP:-}" = "true" ]; then
     # If not running in CI, restore the allow-scripts plugin and development dependencies.
     cd "${PROJECT_DIRECTORY}"
     git checkout -- .yarnrc.yml .yarn package.json

@@ -11,19 +11,22 @@ import {
   isEthSignTypedData,
   isEthSendTransaction,
   hasValidTransactionParams,
-  isEthAccounts,
   isSecurityAlertsEnabledByUser,
-  isProdEnabled,
+  isConnected,
+  connectScreenHasBeenPrompted,
+  getChainId,
 } from './trust-signals-util';
+import { SupportedEVMChain } from './types';
 
 export function createTrustSignalsMiddleware(
   networkController: NetworkController,
   appStateController: AppStateController,
   phishingController: PhishingController,
   preferencesController: PreferencesController,
+  getPermittedAccounts: (origin: string) => string[],
 ) {
   return async (
-    req: JsonRpcRequest & { mainFrameOrigin?: string },
+    req: JsonRpcRequest & { origin?: string },
     _res: JsonRpcResponse,
     next: () => void,
   ) => {
@@ -36,19 +39,15 @@ export function createTrustSignalsMiddleware(
       }
 
       if (isEthSendTransaction(req)) {
-        await handleEthSendTransaction(
-          req,
-          appStateController,
-          networkController,
-        );
+        handleEthSendTransaction(req, appStateController, networkController);
+        scanUrl(req, phishingController);
       } else if (isEthSignTypedData(req)) {
-        await handleEthSignTypedData(
-          req,
-          appStateController,
-          networkController,
-        );
-      } else if (isEthAccounts(req) && isProdEnabled()) {
-        handleEthAccounts(req, phishingController);
+        handleEthSignTypedData(req, appStateController, networkController);
+        scanUrl(req, phishingController);
+      } else if (isConnected(req, getPermittedAccounts)) {
+        scanUrl(req, phishingController);
+      } else if (connectScreenHasBeenPrompted(req)) {
+        scanUrl(req, phishingController);
       }
     } catch (error) {
       console.error('[createTrustSignalsMiddleware] error: ', error);
@@ -58,7 +57,18 @@ export function createTrustSignalsMiddleware(
   };
 }
 
-async function handleEthSendTransaction(
+function scanUrl(
+  req: JsonRpcRequest & { origin?: string },
+  phishingController: PhishingController,
+) {
+  if (req.origin) {
+    phishingController.scanUrl(req.origin).catch((error) => {
+      console.error('[createTrustSignalsMiddleware] error:', error);
+    });
+  }
+}
+
+function handleEthSendTransaction(
   req: JsonRpcRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
@@ -68,10 +78,35 @@ async function handleEthSendTransaction(
   }
 
   const { to } = req.params[0];
-  await scanAddressAndAddToCache(to, appStateController, networkController);
+  let chainId: SupportedEVMChain | undefined;
+  try {
+    chainId = getChainId(networkController);
+  } catch (error) {
+    console.error(
+      '[createTrustSignalsMiddleware] error getting chainId:',
+      error,
+    );
+    return;
+  }
+
+  if (!chainId) {
+    return;
+  }
+
+  scanAddressAndAddToCache(
+    to,
+    appStateController.getAddressSecurityAlertResponse,
+    appStateController.addAddressSecurityAlertResponse,
+    chainId,
+  ).catch((error) => {
+    console.error(
+      '[createTrustSignalsMiddleware] error scanning address for transaction:',
+      error,
+    );
+  });
 }
 
-async function handleEthSignTypedData(
+function handleEthSignTypedData(
   req: JsonRpcRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
@@ -90,20 +125,30 @@ async function handleEthSignTypedData(
     return;
   }
 
-  await scanAddressAndAddToCache(
-    verifyingContract,
-    appStateController,
-    networkController,
-  );
-}
-
-function handleEthAccounts(
-  req: JsonRpcRequest & { mainFrameOrigin?: string },
-  phishingController: PhishingController,
-) {
-  if (req.mainFrameOrigin) {
-    phishingController.scanUrl(req.mainFrameOrigin).catch((error) => {
-      console.error('[createTrustSignalsMiddleware] error:', error);
-    });
+  let chainId: SupportedEVMChain | undefined;
+  try {
+    chainId = getChainId(networkController);
+  } catch (error) {
+    console.error(
+      '[createTrustSignalsMiddleware] error getting chainId:',
+      error,
+    );
+    return;
   }
+
+  if (!chainId) {
+    return;
+  }
+
+  scanAddressAndAddToCache(
+    verifyingContract,
+    appStateController.getAddressSecurityAlertResponse,
+    appStateController.addAddressSecurityAlertResponse,
+    chainId,
+  ).catch((error) => {
+    console.error(
+      '[createTrustSignalsMiddleware] error scanning address for signature:',
+      error,
+    );
+  });
 }

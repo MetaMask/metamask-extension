@@ -205,6 +205,7 @@ describe('SimulationDetails', () => {
             },
             amount: new BigNumber(123),
             fiatAmount: 456,
+            usdAmount: 789,
           },
         ],
       },

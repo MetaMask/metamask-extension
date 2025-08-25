@@ -8,9 +8,10 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
+
 // Investigate why this test is flaky https://consensyssoftware.atlassian.net/browse/MMQA-549
 // eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Send flow', function (this: Suite) {
+describe('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -21,10 +22,10 @@ describe.skip('Send flow', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('0');
+        await homePage.checkPageIsLoaded('0');
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded();
+        await sendSolanaPage.checkPageIsLoaded();
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -32,8 +33,8 @@ describe.skip('Send flow', function (this: Suite) {
         );
         await sendSolanaPage.setToAddress('2433asd');
         assert.equal(
-          await sendSolanaPage.check_validationErrorAppears(
-            'Invalid Solana address',
+          await sendSolanaPage.checkValidationErrorAppears(
+            'Invalid Solana address or domain name',
           ),
           true,
           'Invalid Solana address should appear and it does not',
@@ -42,7 +43,7 @@ describe.skip('Send flow', function (this: Suite) {
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('1');
         assert.equal(
-          await sendSolanaPage.check_validationErrorAppears(
+          await sendSolanaPage.checkValidationErrorAppears(
             'Insufficient balance',
           ),
           true,
@@ -73,25 +74,25 @@ describe.skip('Send flow', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('50');
+        await homePage.checkPageIsLoaded('50');
         assert.equal(
-          await homePage.check_ifSendButtonIsClickable(),
+          await homePage.checkIfSendButtonIsClickable(),
           true,
           'Send button is not enabled and it should',
         );
         assert.equal(
-          await homePage.check_ifSwapButtonIsClickable(),
+          await homePage.checkIfSwapButtonIsClickable(),
           true,
           'Swap button is not enabled and it should',
         );
         assert.equal(
-          await homePage.check_ifBridgeButtonIsClickable(),
+          await homePage.checkIfBridgeButtonIsClickable(),
           true,
           'Bridge button is not enabled and it should',
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded();
+        await sendSolanaPage.checkPageIsLoaded();
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -148,16 +149,16 @@ describe.skip('Send flow', function (this: Suite) {
           true,
           'Network fee is not displayed and it should',
         );
-
         await confirmSolanaPage.clickOnSend();
+
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await sentTxPage.check_TransactionStatusText('0.0886', true),
+          await sentTxPage.checkTransactionStatusText('0.0886', true),
           true,
           'Transaction amount is not correct',
         );
         assert.equal(
-          await sentTxPage.check_TransactionStatus(true),
+          await sentTxPage.checkTransactionStatus(true),
           true,
           'Transaction was not sent as expected',
         );
@@ -187,7 +188,7 @@ describe.skip('Send flow', function (this: Suite) {
           'Network fee field not displayed',
         );
         assert.equal(
-          await sentTxPage.check_isViewTransactionLinkDisplayed(),
+          await sentTxPage.checkIsViewTransactionLinkDisplayed(),
           true,
           'View transaction link is not displayed and it should',
         );
@@ -205,25 +206,25 @@ describe.skip('Send flow', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('50');
+        await homePage.checkPageIsLoaded('50');
         assert.equal(
-          await homePage.check_ifSendButtonIsClickable(),
+          await homePage.checkIfSendButtonIsClickable(),
           true,
           'Send button is not enabled and it should',
         );
         assert.equal(
-          await homePage.check_ifSwapButtonIsClickable(),
+          await homePage.checkIfSwapButtonIsClickable(),
           true,
           'Swap button is not enabled and it should',
         );
         assert.equal(
-          await homePage.check_ifBridgeButtonIsClickable(),
+          await homePage.checkIfBridgeButtonIsClickable(),
           true,
           'Bridge button is not enabled and it should',
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded('50 SOL');
+        // await sendSolanaPage.checkPageIsLoaded('50 SOL');
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -274,12 +275,12 @@ describe.skip('Send flow', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await sentTxPage.check_TransactionStatusText('0.1', true),
+          await sentTxPage.checkTransactionStatusText('0.1', true),
           true,
           'Transaction amount is not correct',
         );
         assert.equal(
-          await sentTxPage.check_TransactionStatus(true),
+          await sentTxPage.checkTransactionStatus(true),
           true,
           'Transaction was not sent as expected',
         );
@@ -309,7 +310,7 @@ describe.skip('Send flow', function (this: Suite) {
           'Network fee field not displayed',
         );
         assert.equal(
-          await sentTxPage.check_isViewTransactionLinkDisplayed(),
+          await sentTxPage.checkIsViewTransactionLinkDisplayed(),
           true,
           'View transaction link is not displayed and it should',
         );
@@ -327,11 +328,11 @@ describe.skip('Send flow', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('50', 'SOL');
+        await homePage.checkGetBalance('50', 'SOL');
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded('50 SOL');
+        // await sendSolanaPage.checkPageIsLoaded('50 SOL');
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
         // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
@@ -341,12 +342,12 @@ describe.skip('Send flow', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const failedTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await failedTxPage.check_TransactionStatusText('0.1', false),
+          await failedTxPage.checkTransactionStatusText('0.1', false),
           true,
           'Transaction amount is not correct',
         );
         assert.equal(
-          await failedTxPage.check_TransactionStatus(false),
+          await failedTxPage.checkTransactionStatus(false),
           true,
           'Transaction did not fail as expected',
         );

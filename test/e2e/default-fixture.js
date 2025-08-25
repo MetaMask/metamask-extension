@@ -91,7 +91,12 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         ],
         enabledNetworkMap: {
-          [inputChainId]: true,
+          eip155: {
+            [inputChainId]: true,
+          },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+          },
         },
       },
       AccountOrderController: {
@@ -146,6 +151,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
+        tracesBeforeMetricsOptIn: [],
         fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,

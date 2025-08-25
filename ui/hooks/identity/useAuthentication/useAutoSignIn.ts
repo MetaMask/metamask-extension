@@ -6,12 +6,9 @@ import {
 } from '../../../ducks/metamask/metamask';
 import {
   getMetaMaskKeyrings,
-  getParticipateInMetaMetrics,
   getUseExternalServices,
 } from '../../../selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
-import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
-import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { useSignIn } from './useSignIn';
 
 /**
@@ -46,7 +43,7 @@ export function useAutoSignIn(): {
     }
   }, [keyrings.length]);
 
-  const areBasePrerequisitesMet = useMemo(
+  const shouldAutoSignIn = useMemo(
     () =>
       (!isSignedIn || hasNewKeyrings) &&
       isUnlocked &&
@@ -60,29 +57,6 @@ export function useAutoSignIn(): {
       hasNewKeyrings,
     ],
   );
-
-  // Auth dependent features
-  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-  const isParticipateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-  const isNotificationServicesEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
-  );
-
-  const isAtLeastOneAuthDependentFeatureEnabled = useMemo(
-    () =>
-      isBackupAndSyncEnabled ||
-      isParticipateInMetaMetrics ||
-      isNotificationServicesEnabled,
-    [
-      isBackupAndSyncEnabled,
-      isParticipateInMetaMetrics,
-      isNotificationServicesEnabled,
-    ],
-  );
-
-  const shouldAutoSignIn = useMemo(() => {
-    return areBasePrerequisitesMet && isAtLeastOneAuthDependentFeatureEnabled;
-  }, [areBasePrerequisitesMet, isAtLeastOneAuthDependentFeatureEnabled]);
 
   const autoSignIn = useCallback(async () => {
     if (shouldAutoSignIn) {

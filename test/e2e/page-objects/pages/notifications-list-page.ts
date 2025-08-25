@@ -21,7 +21,7 @@ class NotificationsListPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.notificationsListPageTitle,
@@ -49,7 +49,7 @@ class NotificationsListPage {
     await this.driver.clickElement(this.notificationsSettingsButton);
   }
 
-  async check_snapsNotificationMessage(expectedMessage: string): Promise<void> {
+  async checkSnapsNotificationMessage(expectedMessage: string): Promise<void> {
     console.log('Checking snap notification message');
     await this.driver.waitForSelector({
       css: this.snapsNotificationMessage,
@@ -65,7 +65,7 @@ class NotificationsListPage {
     });
   }
 
-  async check_notificationItemByTestId(id: string) {
+  async checkNotificationItemByTestId(id: string) {
     console.log('Checking notification list item by id');
     await this.driver.scrollToElement(
       await this.driver.waitForSelector(this.notificationListItem(id)),

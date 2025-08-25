@@ -12,6 +12,8 @@ import {
 } from './badge-wrapper.types';
 
 export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       children,

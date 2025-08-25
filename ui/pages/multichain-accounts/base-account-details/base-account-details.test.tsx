@@ -8,10 +8,9 @@ import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../../test/data/mock-accounts';
-import {
-  ACCOUNT_DETAILS_QR_CODE_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ACCOUNT_DETAILS_QR_CODE_ROUTE } from '../../../helpers/constants/routes';
+import { KeyringType } from '../../../../shared/constants/keyring';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { BaseAccountDetails } from './base-account-details';
 
 const middleware = [thunk];
@@ -19,25 +18,30 @@ const mockStore = configureMockStore(middleware);
 
 // Mock the useHistory hook
 const mockPush = jest.fn();
+const mockGoBack = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
     push: mockPush,
+    goBack: mockGoBack,
   }),
-}));
-
-// Mock the useI18nContext hook
-jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
 }));
 
 const createMockState = (
   address: string,
   account = MOCK_ACCOUNT_EOA,
   useBlockie = false,
+  walletName = 'Mock Wallet',
 ) => ({
   appState: {
     accountDetailsAddress: address,
+  },
+  activeTab: {
+    id: 1,
+    title: 'Test Dapp',
+    origin: 'https://test-dapp.com',
+    protocol: 'https:',
+    url: 'https://test-dapp.com',
   },
   metamask: {
     useBlockie,
@@ -50,12 +54,88 @@ const createMockState = (
       },
       selectedAccount: account.id,
     },
+    accountTree: {
+      wallets: {
+        'mock-wallet-id': {
+          id: 'mock-wallet-id',
+          metadata: {
+            name: walletName,
+          },
+          groups: {
+            'mock-wallet-id:default': {
+              id: 'mock-wallet-id:default',
+              metadata: {
+                name: 'Default',
+              },
+              accounts: [account.id],
+            },
+          },
+        },
+      },
+    },
+    // Required for network selectors
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        blockExplorerUrls: ['https://etherscan.io'],
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/your-project-id',
+            type: 'infura',
+            networkClientId: 'mainnet',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        defaultBlockExplorerUrlIndex: 0,
+      },
+    },
+    selectedNetworkClientId: 'mainnet',
+    // Required for account balance selectors
+    accountsByChainId: {
+      '0x1': {
+        [address]: {
+          balance: '0x0',
+          address,
+        },
+      },
+    },
+    // Required for keyring selectors
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [address],
+        index: 0,
+        metadata: {
+          id: 'mock-hd-keyring-id',
+          name: 'HD Key Tree',
+        },
+      },
+    ],
+    // Required for permission selectors
+    permissionHistory: {
+      'https://test-dapp.com': {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        eth_accounts: {
+          accounts: {
+            [address]: Date.now(),
+          },
+        },
+      },
+    },
+    // Required for account lists
+    pinnedAccountsList: [],
+    hiddenAccountsList: [],
+    connectedAccounts: [],
   },
 });
 
 describe('BaseAccountDetails', () => {
   beforeEach(() => {
     mockPush.mockClear();
+    mockGoBack.mockClear();
   });
 
   describe('Component Rendering', () => {
@@ -65,7 +145,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
@@ -74,11 +157,15 @@ describe('BaseAccountDetails', () => {
       expect(screen.getAllByText('Account 1')).toHaveLength(2); // Header + details section
 
       // Check if account details section is rendered
-      expect(screen.getByText('accountName')).toBeInTheDocument();
-      expect(screen.getByText('address')).toBeInTheDocument();
+      expect(screen.getByText('Account name')).toBeInTheDocument();
+      expect(screen.getByText('Address')).toBeInTheDocument();
+      expect(screen.getByText('Wallet')).toBeInTheDocument();
 
       // Check if shortened address is displayed (short address stays as-is)
-      expect(screen.getByText('0x123')).toBeInTheDocument();
+      expect(screen.getByText('0xa0b86...f5e4b')).toBeInTheDocument();
+
+      // Check if wallet name is displayed
+      expect(screen.getByText('Mock Wallet')).toBeInTheDocument();
     });
 
     it('should render with non-EVM (Solana) account correctly', () => {
@@ -90,7 +177,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_SOLANA_MAINNET.address}
+            account={MOCK_ACCOUNT_SOLANA_MAINNET}
+          />
         </MemoryRouter>,
         store,
       );
@@ -100,6 +190,9 @@ describe('BaseAccountDetails', () => {
 
       // Check if Solana address is displayed correctly (7 chars + ... + 5 chars)
       expect(screen.getByText('8A4AptC...aaLGC')).toBeInTheDocument();
+
+      // Check if wallet name is displayed
+      expect(screen.getByText('Mock Wallet')).toBeInTheDocument();
     });
 
     it('should render children when passed', () => {
@@ -108,7 +201,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails>
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          >
             <div data-testid="test-child">Test Child Component</div>
           </BaseAccountDetails>
         </MemoryRouter>,
@@ -121,13 +217,16 @@ describe('BaseAccountDetails', () => {
   });
 
   describe('Navigation', () => {
-    it('should navigate to default route when back button is clicked', () => {
+    it('should go back when back button is clicked', () => {
       const state = createMockState(MOCK_ACCOUNT_EOA.address);
       const store = mockStore(state);
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
@@ -135,7 +234,7 @@ describe('BaseAccountDetails', () => {
       const backButton = screen.getByLabelText('Back');
       fireEvent.click(backButton);
 
-      expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockGoBack).toHaveBeenCalledTimes(1);
     });
 
     it('should navigate to QR code route when address row is clicked', () => {
@@ -144,15 +243,44 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
 
-      const addressRowButton = screen.getByLabelText('next');
+      // Find all "next" buttons and click the first one (address row)
+      const nextButtons = screen.getAllByLabelText('Next');
+      const addressRowButton = nextButtons[0];
       fireEvent.click(addressRowButton);
 
-      expect(mockPush).toHaveBeenCalledWith(ACCOUNT_DETAILS_QR_CODE_ROUTE);
+      expect(mockPush).toHaveBeenCalledWith(
+        `${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${MOCK_ACCOUNT_EOA.address}`,
+      );
+    });
+
+    it('should navigate to wallet details when wallet row is clicked', () => {
+      const state = createMockState(MOCK_ACCOUNT_EOA.address);
+      const store = mockStore(state);
+
+      renderWithProvider(
+        <MemoryRouter>
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
+        </MemoryRouter>,
+        store,
+      );
+
+      // Find all "next" buttons and click the second one (wallet row)
+      const nextButtons = screen.getAllByLabelText('Next');
+      const walletRowButton = nextButtons[1];
+      fireEvent.click(walletRowButton);
+
+      expect(mockPush).toHaveBeenCalledWith('/wallet-details/mock-wallet-id');
     });
   });
 
@@ -163,16 +291,19 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
 
-      const editButton = screen.getByLabelText('edit');
+      const editButton = screen.getByLabelText('Edit');
       fireEvent.click(editButton);
 
       // Check if modal is opened by looking for the edit modal text
-      expect(screen.getByText('editAccountName')).toBeInTheDocument();
+      expect(screen.getByText('Edit account name')).toBeInTheDocument();
     });
   });
 
@@ -187,7 +318,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={mockEvmAccount.address}
+            account={mockEvmAccount}
+          />
         </MemoryRouter>,
         store,
       );
@@ -205,7 +339,10 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_SOLANA_MAINNET.address}
+            account={MOCK_ACCOUNT_SOLANA_MAINNET}
+          />
         </MemoryRouter>,
         store,
       );
@@ -222,17 +359,158 @@ describe('BaseAccountDetails', () => {
 
       renderWithProvider(
         <MemoryRouter>
-          <BaseAccountDetails />
+          <BaseAccountDetails
+            address={MOCK_ACCOUNT_EOA.address}
+            account={MOCK_ACCOUNT_EOA}
+          />
         </MemoryRouter>,
         store,
       );
 
       // Open the modal
-      const editButton = screen.getByLabelText('edit');
+      const editButton = screen.getByLabelText('Edit');
       fireEvent.click(editButton);
 
       // Check if modal is rendered by looking for the modal text content
-      expect(screen.getByText('editAccountName')).toBeInTheDocument();
+      expect(screen.getByText('Edit account name')).toBeInTheDocument();
+    });
+  });
+
+  describe('Account Removal', () => {
+    it('should display remove account button for removable accounts', () => {
+      const hardwareAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: 'hardware-account',
+        metadata: {
+          ...MOCK_ACCOUNT_EOA.metadata,
+          name: 'Hardware Account',
+          keyring: {
+            type: KeyringType.trezor,
+          },
+        },
+      };
+
+      const state = createMockState(hardwareAccount.address, hardwareAccount);
+      const store = mockStore(state);
+
+      renderWithProvider(
+        <MemoryRouter>
+          <BaseAccountDetails
+            address={hardwareAccount.address}
+            account={hardwareAccount}
+          />
+        </MemoryRouter>,
+        store,
+      );
+
+      const removeButton = screen.getByText('Remove account');
+      expect(removeButton).toBeInTheDocument();
+
+      // Verify that the modal is triggered and present
+      fireEvent.click(removeButton);
+
+      expect(
+        screen.getByText('This account will be removed from MetaMask.'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'Make sure you have the Secret Recovery Phrase or private key for this account before removing.',
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('should not display remove account button for non-removable accounts', () => {
+      const hdKeyTreeAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: 'hd-account',
+        metadata: {
+          ...MOCK_ACCOUNT_EOA.metadata,
+          name: 'HD Account',
+          keyring: {
+            type: KeyringType.hdKeyTree,
+          },
+        },
+      };
+
+      const state = createMockState(hdKeyTreeAccount.address, hdKeyTreeAccount);
+      const store = mockStore(state);
+
+      renderWithProvider(
+        <MemoryRouter>
+          <BaseAccountDetails
+            address={hdKeyTreeAccount.address}
+            account={hdKeyTreeAccount}
+          />
+        </MemoryRouter>,
+        store,
+      );
+
+      const removeButton = screen.queryByText('Remove account');
+      expect(removeButton).not.toBeInTheDocument();
+
+      const solanaAccount = {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        id: 'solana-account',
+        metadata: {
+          ...MOCK_ACCOUNT_SOLANA_MAINNET.metadata,
+          name: 'Solana Account',
+          keyring: {
+            type: KeyringType.snap,
+          },
+        },
+      };
+
+      const solanaState = createMockState(solanaAccount.address, solanaAccount);
+      const solanaStore = mockStore(solanaState);
+
+      renderWithProvider(
+        <MemoryRouter>
+          <BaseAccountDetails
+            address={solanaAccount.address}
+            account={solanaAccount}
+          />
+        </MemoryRouter>,
+        solanaStore,
+      );
+
+      const solanaRemoveButton = screen.queryByText('Remove account');
+      expect(solanaRemoveButton).not.toBeInTheDocument();
+    });
+
+    it('should not display remove account button for social login accounts', () => {
+      const hardwareAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: 'hardware-account',
+        metadata: {
+          ...MOCK_ACCOUNT_EOA.metadata,
+          name: 'Hardware Account',
+          keyring: {
+            type: KeyringType.trezor,
+          },
+        },
+      };
+
+      const state = createMockState(hardwareAccount.address, hardwareAccount);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+
+      renderWithProvider(
+        <MemoryRouter>
+          <BaseAccountDetails
+            address={hardwareAccount.address}
+            account={hardwareAccount}
+          />
+        </MemoryRouter>,
+        store,
+      );
+
+      const removeButton = screen.queryByText('Remove account');
+      expect(removeButton).not.toBeInTheDocument();
     });
   });
 });

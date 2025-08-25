@@ -3,10 +3,8 @@ import { Driver } from '../../../webdriver/driver';
 class SecureWalletPage {
   private driver: Driver;
 
-  private readonly confirmPasswordButton = {
-    text: 'Confirm',
-    tag: 'button',
-  };
+  private readonly confirmPasswordButton =
+    '[data-testid="reveal-recovery-phrase-continue"]';
 
   private readonly confirmRecoveryPhraseButton =
     '[data-testid="recovery-phrase-confirm"]';
@@ -66,7 +64,7 @@ class SecureWalletPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.secureWalletMessage,

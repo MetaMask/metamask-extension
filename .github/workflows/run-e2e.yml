@@ -37,23 +37,27 @@ on:
           ./test-artifacts
           ./test/test-results/e2e
         description: The path to the test artifacts
-    secrets:
-      DOCKER_HUB_USERNAME:
-        required: true
-      DOCKER_HUB_TOKEN:
-        required: true
 
 jobs:
   run-e2e:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: public.ecr.aws/a6f6j9d3/metamask-core/metamask-extension-e2e:v22.15.0
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v1.0.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
+      # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
+      # For a `push` event, the fork is `github.event.repository.fork`.
+      IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+      # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+      # For a `push` event, the head commit hash is `github.sha`.
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
       MATRIX_INDEX: ${{ inputs.matrix-index }}
       MATRIX_TOTAL: ${{ inputs.matrix-total }}
       JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
@@ -67,8 +71,16 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      # not installed by checkout-and-setup when cache is restored
-      - name: Install anvil
+      - name: Restore .metamask folder
+        id: restore-metamask
+        uses: actions/cache/restore@v4
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
         run: yarn mm-foundryup
 
       - name: Download build artifact

@@ -59,6 +59,8 @@ class SnapListPage {
     tag: 'p',
   };
 
+  private readonly backButton = 'button[aria-label="Back"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -97,7 +99,7 @@ class SnapListPage {
     await this.driver.clickElementAndWaitToDisappear(this.closeModalButton);
   }
 
-  async check_noSnapInstalledMessageIsDisplayed(): Promise<void> {
+  async checkNoSnapInstalledMessageIsDisplayed(): Promise<void> {
     console.log('Verifying no snaps is installed for current account');
     await this.driver.waitForSelector(this.noSnapInstalledMessage);
   }
@@ -108,7 +110,7 @@ class SnapListPage {
     await this.driver.clickElement(this.homePageSnap);
   }
 
-  async check_homePageTitle(): Promise<void> {
+  async checkHomePageTitle(): Promise<void> {
     console.log('Checking title of snap list page');
     await this.driver.waitForSelector(this.homePageTitle);
   }
@@ -123,11 +125,16 @@ class SnapListPage {
     await this.driver.clickElement(this.updateSnapButton);
   }
 
-  async check_updateLinkIsNotDisplayed(): Promise<void> {
+  async checkUpdateLinkIsNotDisplayed(): Promise<void> {
     await this.driver.assertElementNotPresent(this.updateSnapButton, {
       // make sure the Snap page has loaded
       findElementGuard: this.descriptionWebpack,
     });
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button');
+    await this.driver.clickElement(this.backButton);
   }
 }
 

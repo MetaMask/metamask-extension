@@ -8,7 +8,7 @@
  *
  * 1) A global beforeEach hook in the E2E tests backs up the manifest.json file
  * 2) The helpers.withFixtures() function calls setManifestFlags(), which reads in the manifest file and parses it
- * 3) We alter the manifest with CircleCI environment variables and custom flags, then write it back to manifest.json
+ * 3) We alter the manifest with CI environment variables and custom flags, then write it back to manifest.json
  * 4) The test runs, and the built extension can call getManifestFlags() to get the custom flags
  * 5) A global afterEach hook restores the backup copy of the manifest, so that the next test gets the normal manifest
  */

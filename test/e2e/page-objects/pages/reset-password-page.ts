@@ -19,7 +19,7 @@ class ResetPasswordPage {
     this.restoreButton = '[data-testid="create-new-vault-submit-button"]';
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.passwordInput,

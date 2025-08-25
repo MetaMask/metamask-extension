@@ -34,10 +34,14 @@ const sortingCallbacks: SortingCallbacksT = {
 };
 
 // Utility function to access nested properties by key path
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function getNestedValue<T>(obj: T, keyPath: string): SortingType {
   return get(obj, keyPath) as SortingType;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function sortAssets<T>(array: T[], criteria: SortCriteria): T[] {
   const { key, order = 'asc', sortCallback } = criteria;
 

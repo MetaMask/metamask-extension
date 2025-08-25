@@ -27,18 +27,16 @@ import { useMultichainSelector } from './useMultichainSelector';
 // TODO replace this with getMultichainAssets
 const useNonEvmAssetsWithBalances = (
   accountId?: string,
-): (
-  | Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
-      chainId: `${string}:${string}`;
-      decimals: number;
-      address: string;
-      assetId: `${string}:${string}`;
-      string: string;
-      balance: string;
-      tokenFiatAmount: number;
-      symbol: string;
-    }
-)[] => {
+): (Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
+  chainId: `${string}:${string}`;
+  decimals: number;
+  address: string;
+  assetId: `${string}:${string}`;
+  string: string;
+  balance: string;
+  tokenFiatAmount: number;
+  symbol: string;
+})[] => {
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
   const assetMetadataById = useSelector(getAssetsMetadata);

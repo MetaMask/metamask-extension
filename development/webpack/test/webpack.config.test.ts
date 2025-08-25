@@ -13,6 +13,7 @@ import { noop } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
+import { MANIFEST_DEV_KEY } from '../../build/constants';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -140,36 +141,44 @@ ${Object.entries(env)
       `development build from git id: ${getLatestCommit().hash()}`,
     );
     assert(manifestPlugin.options.transform);
-    assert.deepStrictEqual(
-      manifestPlugin.options.transform(
-        {
-          manifest_version: 3,
-          name: 'name',
-          version: '1.2.3',
-          content_scripts: [
-            {
-              js: [
-                'ignored',
-                'scripts/contentscript.js',
-                'scripts/inpage.js',
-                'ignored',
-              ],
-            },
-          ],
-        },
-        'brave',
-      ),
+    const transformedManifest = manifestPlugin.options.transform(
       {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         name: 'name',
         version: '1.2.3',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         content_scripts: [
           {
-            js: ['scripts/contentscript.js', 'scripts/inpage.js'],
+            js: [
+              'ignored',
+              'scripts/contentscript.js',
+              'scripts/inpage.js',
+              'ignored',
+            ],
           },
         ],
       },
+      'brave',
     );
+    console.log('transformedManifest', transformedManifest);
+    assert.deepStrictEqual(transformedManifest, {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      manifest_version: 3,
+      name: 'name',
+      version: '1.2.3',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      content_scripts: [
+        {
+          js: ['scripts/contentscript.js', 'scripts/inpage.js'],
+        },
+      ],
+      key: MANIFEST_DEV_KEY,
+    });
     assert.strictEqual(manifestPlugin.options.zip, false);
     const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
     assert.strictEqual(manifestOpts.zipOptions, undefined);
@@ -197,6 +206,8 @@ ${Object.entries(env)
         INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
         SEGMENT_WRITE_KEY: '-',
         SEGMENT_PROD_WRITE_KEY: '-',
+        GOOGLE_PROD_CLIENT_ID: '00000000000',
+        APPLE_PROD_CLIENT_ID: '00000000000',
       },
     );
     // webpack logs a warning if we specify `watch: true`, `getWebpackInstance`
@@ -284,6 +295,8 @@ ${Object.entries(env)
 
   it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
     const config: Configuration = getWebpackConfig(['--watch'], {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       __HMR_READY__: 'true',
     });
     delete config.watch;
