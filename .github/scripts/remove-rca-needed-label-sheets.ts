@@ -14,9 +14,9 @@ const RCA_NEEDED_LABEL: Label = {
   description: 'Issue requires Root Cause Analysis',
 };
 
-// Google Sheets configuration
-const SPREADSHEET_ID = '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24';
-const SHEET_NAME = 'Form Responses 1'; // Adjust based on actual sheet name
+// Google Sheets configuration from environment variables
+const SPREADSHEET_ID = process.env.SPREADSHEET_ID || '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24';
+const SHEET_NAME = process.env.SHEET_NAME || 'Form Responses 1';
 
 interface RcaFormResponse {
   issueNumber: string;
@@ -39,6 +39,16 @@ async function main(): Promise<void> {
       process.exit(1);
     }
 
+    // Validate sheet configuration
+    if (!SPREADSHEET_ID) {
+      core.setFailed('SPREADSHEET_ID not configured');
+      process.exit(1);
+    }
+    if (!SHEET_NAME) {
+      core.setFailed('SHEET_NAME not configured');
+      process.exit(1);
+    }
+
     const isDryRun = process.env.DRY_RUN === 'true';
 
     const octokit: InstanceType<typeof GitHub> = getOctokit(githubToken);
@@ -46,6 +56,8 @@ async function main(): Promise<void> {
     const repoName = context.repo?.repo || 'metamask-extension';
 
     console.log(`Starting Google Sheets-based RCA label removal (Dry Run: ${isDryRun})`);
+    console.log(`Sheet ID: ${SPREADSHEET_ID}`);
+    console.log(`Sheet Name: ${SHEET_NAME}`);
 
     // Initialize Google Sheets API
     const sheets = await initializeGoogleSheets(googleCredentials);

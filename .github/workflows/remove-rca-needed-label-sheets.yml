@@ -16,6 +16,16 @@ on:
         options:
           - 'true'
           - 'false'
+      spreadsheet_id:
+        description: 'Google Spreadsheet ID (optional - uses default if not provided)'
+        required: false
+        default: ''
+        type: string
+      sheet_name:
+        description: 'Sheet tab name (optional - uses default if not provided)'
+        required: false
+        default: ''
+        type: string
 
 permissions:
   issues: write
@@ -48,3 +58,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          # Google Sheet configuration - can be overridden via workflow inputs
+          SPREADSHEET_ID: ${{ github.event.inputs.spreadsheet_id || '1C_T3Y4if37r9foXyWBnIKF-0HTcJGVN2sNk6z7xkmQY' }} # '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24'
+          SHEET_NAME: ${{ github.event.inputs.sheet_name || 'Form Responses 1' }}
