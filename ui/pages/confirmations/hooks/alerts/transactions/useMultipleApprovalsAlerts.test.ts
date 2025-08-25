@@ -802,7 +802,7 @@ describe('useMultipleApprovalsAlerts', () => {
       const alerts = runHook({
         currentConfirmation: BASE_CONFIRMATION as TransactionMeta,
         nestedTransactions: SINGLE_TRANSACTION,
-        simulationData: [],
+        simulationData: { tokenBalanceChanges: [] },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
         useTransactionSimulations: isSimulationEnabled,
         simulationError,
