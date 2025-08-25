@@ -4,8 +4,8 @@ set -e
 set -u
 set -o pipefail
 
-if [[ -z "${EXTENSION_BUNDLESIZE_STATS_TOKEN:-}" ]]; then
-# if [[ -z "${EXTENSION_BENCHMARK_STATS_TOKEN:-}" ]]; then
+# if [[ -z "${EXTENSION_BUNDLESIZE_STATS_TOKEN:-}" ]]; then
+if [[ -z "${EXTENSION_BENCHMARK_STATS_TOKEN:-}" ]]; then
     printf '%s\n' 'EXTENSION_BENCHMARK_STATS_TOKEN environment variable must be set'
     exit 1
 fi
@@ -68,9 +68,9 @@ git commit --message "Adding page load benchmark data at commit: ${GITHUB_SHA}"
 
 repo_slug="${GITHUB_REPOSITORY_OWNER}/extension_benchmark_stats"
 
-# TODO: [ffmcgee] change "temp" to "main" / "EXTENSION_BUNDLESIZE_STATS_TOKEN" to "EXTENSION_BENCHMARK_STATS_TOKEN"
-git push "https://metamaskbot:${EXTENSION_BUNDLESIZE_STATS_TOKEN}@github.com/${repo_slug}" main
-# git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" main
+# TODO: [ffmcgee] "EXTENSION_BUNDLESIZE_STATS_TOKEN" to "EXTENSION_BENCHMARK_STATS_TOKEN"
+# git push "https://metamaskbot:${EXTENSION_BUNDLESIZE_STATS_TOKEN}@github.com/${repo_slug}" gh-pages
+git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" gh-pages
 
 cd ..
 
