@@ -321,7 +321,7 @@ env:
   # Temporary mechanism to enable security alerts API prior to release
   - SECURITY_ALERTS_API_ENABLED: 'true'
   # URL of security alerts API used to validate dApp requests
-  - SECURITY_ALERTS_API_URL: 'http://localhost:3000'
+  - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
 
   # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
