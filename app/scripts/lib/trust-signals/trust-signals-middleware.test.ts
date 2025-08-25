@@ -5,6 +5,7 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import { ResultType } from './types';
+import { getChainId } from './trust-signals-util';
 
 jest.mock('./security-alerts-api');
 process.env.SECURITY_ALERTS_API_ENABLED = 'true';
@@ -35,6 +36,8 @@ const MOCK_SCAN_RESPONSES = {
     label: 'Bad guy',
   },
 };
+
+const getPermittedAccounts = jest.fn();
 
 const createMockRequest = (
   method: string,
@@ -100,6 +103,7 @@ const createMiddleware = (
       appStateController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      getPermittedAccounts,
     ),
     appStateController,
     networkController,
@@ -172,8 +176,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
       expect(next).toHaveBeenCalled();
@@ -202,8 +207,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -231,8 +237,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -268,8 +275,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -301,8 +309,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
     });
@@ -358,16 +367,10 @@ describe('createTrustSignalsMiddleware', () => {
       });
 
       it('handles missing chain ID gracefully', async () => {
-        const error = new Error('Chain ID not found');
-        scanAddressMockAndAddToCache.mockRejectedValue(error);
-        const {
-          middleware,
-          appStateController,
-          networkController,
-          phishingController,
-        } = createMiddleware({
-          chainId: null,
-        });
+        const { middleware, appStateController, phishingController } =
+          createMiddleware({
+            chainId: null,
+          });
         appStateController.getAddressSecurityAlertResponse.mockReturnValue(
           undefined,
         );
@@ -380,11 +383,9 @@ describe('createTrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
-          TEST_ADDRESSES.TO,
-          appStateController,
-          networkController,
-        );
+        // When chain ID is missing, scanAddressAndAddToCache should not be called
+        // because getChainId throws an error before the call
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
@@ -428,8 +429,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -469,8 +471,9 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
-        appStateController,
-        networkController,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        getChainId(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -523,8 +526,9 @@ describe('createTrustSignalsMiddleware', () => {
 
         expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
           TEST_ADDRESSES.TO,
-          appStateController,
-          networkController,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
         );
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
@@ -558,22 +562,17 @@ describe('createTrustSignalsMiddleware', () => {
     });
   });
 
-  describe('eth_accounts', () => {
+  describe('eth_request_accounts', () => {
     it('scans URL when origin is present', async () => {
       const { middleware, phishingController } = createMiddleware();
       const origin = 'https://example.com';
-      const req = {
-        ...createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS),
+      const req = createMockRequest(
+        MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS,
+        [],
         origin,
-      };
+      );
       const res = createMockResponse();
       const next = jest.fn();
-      phishingController.scanUrl.mockResolvedValue({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        result_type: 'benign',
-        label: 'Safe site',
-      });
 
       await middleware(req, res, next);
 
@@ -583,7 +582,7 @@ describe('createTrustSignalsMiddleware', () => {
 
     it('does not scan URL when origin is not present', async () => {
       const { middleware, phishingController } = createMiddleware();
-      const req = createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS);
+      const req = createMockRequest(MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS);
       req.origin = undefined;
       const res = createMockResponse();
       const next = jest.fn();
@@ -593,33 +592,112 @@ describe('createTrustSignalsMiddleware', () => {
       expect(phishingController.scanUrl).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
     });
+  });
 
-    it('handles phishing scan errors gracefully', async () => {
+  describe('wallet_request_permissions', () => {
+    it('scans URL when origin is present', async () => {
       const { middleware, phishingController } = createMiddleware();
-      const origin = 'https://malicious.com';
-      const req = {
-        ...createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS),
+      const origin = 'https://example.com';
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS,
+        [],
         origin,
-      };
+      );
       const res = createMockResponse();
       const next = jest.fn();
 
-      const error = new Error('Phishing scan failed');
-      phishingController.scanUrl.mockRejectedValue(error);
-
-      consoleErrorSpy.mockClear();
-
       await middleware(req, res, next);
-
-      await new Promise((resolve) => setTimeout(resolve, 0));
 
       expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
       expect(next).toHaveBeenCalled();
+    });
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        '[createTrustSignalsMiddleware] error:',
-        error,
-      );
+    it('does not scan URL when origin is not present', async () => {
+      const { middleware, phishingController } = createMiddleware();
+      const req = createMockRequest(MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS);
+      req.origin = undefined;
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(phishingController.scanUrl).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe('eth_accounts', () => {
+    describe('when user is connected', () => {
+      beforeEach(() => {
+        getPermittedAccounts.mockReturnValue([TEST_ADDRESSES.FROM]);
+      });
+
+      it('scans URL when origin is present', async () => {
+        const { middleware, phishingController } = createMiddleware();
+        const origin = 'https://example.com';
+        const req = createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS, [], origin);
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(phishingController.scanUrl).toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+      });
+
+      it('does not scan URL when origin is not present', async () => {
+        const { middleware, phishingController } = createMiddleware();
+        const req = createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS);
+        req.origin = undefined;
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(phishingController.scanUrl).not.toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+      });
+
+      it('handles phishing scan errors gracefully', async () => {
+        const { middleware, phishingController } = createMiddleware();
+        const origin = 'https://malicious.com';
+        const req = {
+          ...createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS),
+          origin,
+        };
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        const error = new Error('Phishing scan failed');
+        phishingController.scanUrl.mockRejectedValue(error);
+
+        consoleErrorSpy.mockClear();
+
+        await middleware(req, res, next);
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
+        expect(next).toHaveBeenCalled();
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[createTrustSignalsMiddleware] error:',
+          error,
+        );
+      });
+    });
+
+    it('does not scan URL when user is not connected', async () => {
+      getPermittedAccounts.mockReturnValue([]);
+      const { middleware, phishingController } = createMiddleware();
+      const req = createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS);
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(phishingController.scanUrl).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
     });
   });
 

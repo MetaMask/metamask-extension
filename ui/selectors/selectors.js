@@ -122,7 +122,6 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
@@ -274,10 +273,6 @@ export const getPendingTokens = (state) => state.appState.pendingTokens;
 
 export function getShowConnectionsRemovedModal(state) {
   return state.appState.showConnectionsRemovedModal;
-}
-
-export function getOnboardingErrorReport(state) {
-  return state.appState.onboardingErrorReport || null;
 }
 
 /** `metamask` slice selectors */
@@ -710,10 +705,15 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
  * @returns {object} An object mapping chain IDs to arrays of tokens (including native tokens) with balances.
  */
 export function getSelectedAccountTokensAcrossChains(state) {
-  const { allTokens } = state.metamask;
-  const selectedAddress = getSelectedEvmInternalAccount(state).address;
-
   const tokensByChain = {};
+
+  const { address: selectedAddress } =
+    getSelectedEvmInternalAccount(state) ?? {};
+  if (!selectedAddress) {
+    return tokensByChain;
+  }
+
+  const { allTokens } = state.metamask;
 
   const nativeTokenBalancesByChainId =
     getSelectedAccountNativeTokenCachedBalanceByChainId(state);
@@ -728,7 +728,12 @@ export function getSelectedAccountTokensAcrossChains(state) {
       tokensByChain[chainId] = [];
     }
 
-    if (allTokens[chainId]?.[selectedAddress]) {
+    if (
+      allTokens[chainId] &&
+      selectedAddress &&
+      selectedAddress in allTokens[chainId] &&
+      allTokens[chainId][selectedAddress]
+    ) {
       allTokens[chainId][selectedAddress].forEach((token) => {
         const tokenWithChain = { ...token, chainId, isNative: false };
         tokensByChain[chainId].push(tokenWithChain);
@@ -2254,6 +2259,19 @@ export const getNameLookupSnapsIds = createDeepEqualSelector(
   },
 );
 
+export const getNameLookupSnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps)
+      .filter(({ id }) => subjects[id]?.permissions['endowment:name-lookup'])
+      .map((snap) => ({
+        id: snap.id,
+        permission: subjects[snap.id]?.permissions['endowment:name-lookup'],
+      }));
+  },
+);
+
 export const getSettingsPageSnapsIds = createDeepEqualSelector(
   getSettingsPageSnaps,
   (snaps) => snaps.map((snap) => snap.id),
@@ -2295,9 +2313,7 @@ export const getSnapInsights = createDeepEqualSelector(
  * @returns {object}
  */
 function getAllowedAnnouncementIds() {
-  return {
-    [NOTIFICATION_SOLANA_ON_METAMASK]: true,
-  };
+  return {};
 }
 
 /**
@@ -3908,12 +3924,12 @@ export function getShowUpdateModal(state) {
   const extensionCurrentVersion = semver.valid(
     semver.coerce(global.platform?.getVersion()),
   );
-  const extensionMinimumVersion = semver.valid(
-    semver.coerce(remoteFeatureFlags.extensionMinimumVersion),
+  const extensionUpdatePromptMinimumVersion = semver.valid(
+    semver.coerce(remoteFeatureFlags.extensionUpdatePromptMinimumVersion),
   );
   const isExtensionOutdated =
-    extensionCurrentVersion && extensionMinimumVersion
-      ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
+    extensionCurrentVersion && extensionUpdatePromptMinimumVersion
+      ? semver.lt(extensionCurrentVersion, extensionUpdatePromptMinimumVersion)
       : false;
 
   const currentTime = Date.now();

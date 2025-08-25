@@ -248,20 +248,20 @@ describe('Swap-Send ETH', function () {
           await logInWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedTokenBalanceIsDisplayed('50', 'WETH');
-          await homePage.check_expectedTokenBalanceIsDisplayed('25', 'ETH');
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedTokenBalanceIsDisplayed('50', 'WETH');
+          await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
           // disable smart transactions
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_pageIsLoaded();
+          await headerNavbar.checkPageIsLoaded();
           await headerNavbar.openSettingsPage();
 
           const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.clickAdvancedTab();
           const advancedSettingsPage = new AdvancedSettings(driver);
-          await advancedSettingsPage.check_pageIsLoaded();
+          await advancedSettingsPage.checkPageIsLoaded();
           await advancedSettingsPage.toggleSmartTransactions();
           await settingsPage.closeSettingsPage();
 
@@ -319,9 +319,9 @@ describe('Swap-Send ETH', function () {
           );
 
           await homePage.goToTokensTab();
-          await homePage.check_expectedTokenBalanceIsDisplayed('60', 'WETH');
+          await homePage.checkExpectedTokenBalanceIsDisplayed('60', 'WETH');
           // https://github.com/MetaMask/metamask-extension/issues/31427
-          // await homePage.check_expectedTokenBalanceIsDisplayed(
+          // await homePage.checkExpectedTokenBalanceIsDisplayed(
           //   '14.99994',
           //   'ETH',
           // );

@@ -175,6 +175,9 @@
     "message": "$1 hesabı ekle",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Hesap veya cüzdan ekle"
+  },
   "addAccountToMetaMask": {
     "message": "MetaMask'e hesap ekle"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "Adres"
   },
+  "addressCopied": {
+    "message": "Adres kopyalandı"
+  },
   "addressMismatch": {
     "message": "Site adresi uyumsuzluğu"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "Siz ücreti manuel olarak güncelleyene dek bu işleme devam edemiyoruz."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Bu, kötü amaçlı olarak tanımlanmış. Bu siteyle etkileşimde bulunulmamasını öneriyoruz."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Bu, şüpheli olarak tanımlanmış. Bu siteyle etkileşimde bulunulmamasını öneriyoruz."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "Talepte bulunan site giriş yaptığınız site değil. Bu durum oturum açma bilgilerinizi çalma teşebbüsü olabilir."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Ücret tahmini mevcut değil"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Kötü amaçlı site"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Şüpheli site"
   },
   "alertReasonPendingTransactions": {
     "message": "İşlem beklemede"
@@ -719,9 +737,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Temel işlevselliği aç"
   },
-  "bestPrice": {
-    "message": "En iyi fiyat"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -936,9 +951,6 @@
     "message": "$1 ile $2 swap ediliyor",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
-  "bridgeTerms": {
-    "message": "Şartlar"
-  },
   "bridgeTimingMinutes": {
     "message": "$1 dk",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1025,9 +1037,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask dünya çapında geliştirilmiş ve yapılmıştır."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Meşgul"
@@ -1446,6 +1455,12 @@
   },
   "connectionRequest": {
     "message": "Bağlantı talebi"
+  },
+  "connectionsRemovedModalDescription": {
+    "message": "Bu cihazdaki işlemsizlikten dolayı bazı bağlantılar (donanım cüzdanları ve snap'ler gibi) kaldırıldı. Dilediğiniz zaman Ayarlar kısmında tekrar ekleyebilirsiniz."
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "Bağlantılar kaldırıldı"
   },
   "contactUs": {
     "message": "Bize ulaşın"
@@ -1940,6 +1955,15 @@
   "downloadGoogleChrome": {
     "message": "Google Chrome'u indir"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Face ID ile şifrenizi unutsanız bile uygulamamıza giriş yapabilirsiniz. MetaMask'i gittiğiniz her yere yanınızda götürün!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Başlamak için bu QR kodunu tarayın."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Mobil uygulamamızı edinin"
+  },
   "downloadNow": {
     "message": "Şimdi İndir"
   },
@@ -2220,6 +2244,10 @@
     "message": "Kod: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
+  "errorDetails": {
+    "message": "Hata ayrıntıları",
+    "description": "Label for the error details field in the error screen."
+  },
   "errorGettingSafeChainList": {
     "message": "Güvenli zincir listesi alınırken hata oluştu, lütfen dikkatli bir şekilde devam edin."
   },
@@ -2392,10 +2420,6 @@
   "floatAmountToken": {
     "message": "Token miktarı tam sayı olmalıdır"
   },
-  "followUsOnX": {
-    "message": "Bizi $1 üzerinden takip edin",
-    "description": "$1 is the x icon"
-  },
   "forbiddenIpfsGateway": {
     "message": "Yasaklı IPFS Ağ Geçidi: Lütfen bir CID ağ geçidi belirtin"
   },
@@ -2428,7 +2452,7 @@
     "message": "biyometri açıldı"
   },
   "forgotPasswordSocialStep2": {
-    "message": "$1 varsa $1 kullanarak geçerli cüzdanınızı sıfırlayabilir ve yeniden içe aktarabilirsiniz.",
+    "message": "$1 varsa Gizli Kurtarma İfadesini kullanarak mevcut cüzdanınızı sıfırlayabilir ve yeniden içe aktarabilirsiniz.",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
@@ -2669,9 +2693,6 @@
   "honeypotTitle": {
     "message": "Bal Tuzağı"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "İşlemi gerçekleştirmek için tahmini ücret gereklidir. Maksimum ücret $1."
-  },
   "howQuotesWork": {
     "message": "Teklifler nasıl çalışır?"
   },
@@ -2717,6 +2738,13 @@
   },
   "importAccountMsg": {
     "message": "İçe aktarılan hesaplar ilk olarak oluşturduğunuz MetaMask hesabı Gizli Kurtarma ifadenizle ilişkilendirilmez. İçe aktarılan hesaplar hakkında daha fazla bilgi edinin"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "İçe aktarılan özel anahtarlar hesabınıza yedeklenir ve aynı Google veya Apple oturumu ile giriş yaptığınızda otomatik olarak senkronize olur."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "İçe aktarılan anahtarların nasıl çalıştığı hakkında $1",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "NFT'yi İçe Aktar"
@@ -3008,9 +3036,6 @@
   "learnMoreAboutPrivacy": {
     "message": "En iyi gizlilik uygulamaları hakkında daha fazla bilgi edinin."
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Solana hesapları hakkında daha fazla bilgi edinin"
-  },
   "learnMoreKeystone": {
     "message": "Daha Fazla Bilgi"
   },
@@ -3058,6 +3083,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum işleminin giriş verileri yeterli şekilde doldurulmamış."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Ledger'ınıza bağlanırken sorun yaşıyoruz. "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " bölümümüzde donanım cüzdanı nasıl bağlanır kısmını inceledikten sonra tekrar deneyin."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger artık Firefox'u desteklemiyor, bu nedenle farklı bir tarayıcı kullanmanız gerekir."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "kılavuz"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox Desteklenmiyor"
   },
   "ledgerLiveApp": {
     "message": "Ledger Live Uygulaması"
@@ -3496,6 +3536,9 @@
   "networkIsBusy": {
     "message": "Ağ meşgul. Gaz fiyatları yüksektir ve tahminler daha az doğrudur."
   },
+  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
+    "message": "En az bir ağ etkinleştirilmiş olmalıdır"
+  },
   "networkMenu": {
     "message": "Ağ Menüsü"
   },
@@ -3713,6 +3756,9 @@
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
   },
+  "noDeFiPositions": {
+    "message": "Aradığınızı bulamıyor musunuz?"
+  },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
   },
@@ -3721,6 +3767,9 @@
   },
   "noNFTs": {
     "message": "Henüz NFT yok"
+  },
+  "noNetworksAvailable": {
+    "message": "Mevcut ağ yok"
   },
   "noNetworksFound": {
     "message": "Belirtilen arama sorgusu için herhangi bir ağ bulunamadı"
@@ -3769,9 +3818,6 @@
   },
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
-  },
-  "notNow": {
-    "message": "Şimdi değil"
   },
   "notificationDetail": {
     "message": "Ayrıntılar"
@@ -4091,7 +4137,7 @@
     "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
-    "message": "Gizli Kurtarma İfadesi ile devam edin"
+    "message": "Gizli Kurtarma İfadesi kullanın"
   },
   "onboardingSrpImport": {
     "message": "Gizli Kurtarma İfadesini kullanarak içe aktarın"
@@ -4198,6 +4244,9 @@
     "message": "Güçlü bir şifre, cihazının çalınması veya güvenliğinin ihlal edilmesi durumunda cüzdanının güvenliğini artırabilir."
   },
   "passwordTermsWarning": {
+    "message": "Bu şifreyi unutursam MetaMask bunu benim için sıfırlayamaz."
+  },
+  "passwordTermsWarningSocial": {
     "message": "Bu şifreyi unutursam cüzdanıma erişimi kalıcı olarak kaybedeceğim. MetaMask bunu benim için sıfırlayamaz."
   },
   "passwordToggleHide": {
@@ -4608,6 +4657,9 @@
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"
   },
+  "protocolNotSupported": {
+    "message": "Henüz protokolünüzü desteklemiyor olabiliriz."
+  },
   "provide": {
     "message": "Sun"
   },
@@ -4851,16 +4903,34 @@
     "message": "Sıfırla"
   },
   "resetWallet": {
-    "message": "Cüzdanı sıfırla"
+    "message": "Cüzdanınızı sıfırlayın"
   },
   "resetWalletSubHeader": {
     "message": "MetaMask, şifrenizin bir kopyasını tutmaz. Hesabınızın kilidini açarken sorun yaşıyorsanız cüzdanınızı sıfırlamanız gerekir. Bunu, cüzdanınızı kurarken kullandığınız Gizli Kurtarma İfadesini sunarak yapabilirsin."
   },
+  "resetWalletSubHeaderSocial": {
+    "message": "MetaMask, şifrenizin bir kopyasını saklamaz. Hesabınızın kilidini açma konusunda sorun yaşıyorsanız cüzdanınızı sıfırlamanız gerekir. Gizli Kurtarma İfadeniz varsa mevcut cüzdanınızı hesap listenizle birlikte bu cihazdan silmek için onu kullanabilirsiniz."
+  },
   "resetWalletUsingSRP": {
     "message": "Bu eylem, düzenlediğiniz hesapların listesiyle birlikte mevcut cüzdanınızı ve Gizli Kurtarma İfadenizi bu cihazdan siler. Bir Gizli Kurtarma İfadesi ile sıfırlama yaptıktan sonra sıfırlamak için kullandığınız Gizli Kurtarma İfadesine dayalı bir hesap listesi göreceksiniz. Bu yeni liste otomatik olarak bakiyesi olan hesapları içerecektir. Ayrıca daha önce oluşturulmuş $1 hesabınızı oluşturabileceksiniz. İçe aktardığınız özel hesapların $2 olması ve bir hesaba eklediğiniz özel tokenlerin de $3 olması gerekir."
   },
+  "resetWalletUsingSRPSocial": {
+    "message": "Bir Gizli Kurtarma İfadesi ile sıfırlama gerçekleştirdikten sonra yeni bir hesap listesi göreceksiniz. Bu liste, bakiyesi bulunan hesapları içerecektir. Daha önce yaptığınız gibi $1 işlemi gerçekleştirebilirsiniz. Ancak içe aktardığınız tüm $2 ve $3 geri eklenmelidir. "
+  },
+  "resetWalletUsingSRPSocialAccounts": {
+    "message": "tüm diğer hesapları geri ekle"
+  },
+  "resetWalletUsingSRPSocialCustomAccounts": {
+    "message": "özel hesaplar"
+  },
+  "resetWalletUsingSRPSocialCustomTokens": {
+    "message": "özel token'lar"
+  },
   "resetWalletWarning": {
     "message": "Devam etmeden önce doğru Gizli Kurtarma İfadesini kullandığından emin ol. Bunu geri alamazsın."
+  },
+  "resetWalletWarningSocial": {
+    "message": "Sıfırlamadan önce doğru Gizli Kurtarma İfadesini kullandığınızdan emin olun. Bu işlem geri alınamaz."
   },
   "restartMetamask": {
     "message": "MetaMask'i yeniden başlat"
@@ -4984,6 +5054,9 @@
   "searchAccounts": {
     "message": "Hesapları ara"
   },
+  "searchNetworks": {
+    "message": "Ağ ara"
+  },
   "searchNfts": {
     "message": "NFT ara"
   },
@@ -5071,7 +5144,7 @@
     "message": "Etkinleştirildi"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Bu e-posta ve MetaMask şifreniz hesabınızı ve kurtarma ifadelerinizi kurtarmanıza yardımcı olacaktır.",
+    "message": "$1 oturumunuzu ve MetaMask şifrenizi kullanarak hesabınızı ve Gizli Kurtarma İfadelerini kurtarabilirsiniz.",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
@@ -5363,6 +5436,12 @@
   "simulationErrorMessageV2": {
     "message": "Gaz tahmini yapamadık. Sözleşmede bir hata olabilir ve bu işlem başarısız olabilir."
   },
+  "simulationSettingsModalEnforceSlippage": {
+    "message": "Kayma toleransı"
+  },
+  "simulationSettingsModalEnforceSlippageDescription": {
+    "message": "Bakiye değişiklikleri konusunda rahat hissettiğiniz bir fark belirleyin. Fark daha yüksek olursa işlemler gerçekleşmez."
+  },
   "simulationSettingsModalEnforceToggle": {
     "message": "Bakiye değişikliklerini uygula"
   },
@@ -5432,6 +5511,12 @@
   "slideDebitCardTitle": {
     "message": "MetaMask banka kartı"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Cüzdanınızı gittiğiniz her yere götürün"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "MetaMask mobili indirin"
+  },
   "slideFundWalletDescription": {
     "message": "Başlamak için token ekleyin veya transfer edin"
   },
@@ -5443,12 +5528,6 @@
   },
   "slideMultiSrpTitle": {
     "message": "Birden fazla Gizli Kurtarma İfadesi ekleyin"
-  },
-  "slideRemoteModeDescription": {
-    "message": "Soğuk cüzdanınızı kablosuz olarak kullanın"
-  },
-  "slideRemoteModeTitle": {
-    "message": "Soğuk depolama, hızlı erişim"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Aynı adres, daha akıllı özellikler"
@@ -5494,6 +5573,9 @@
   },
   "smartAccountSameAccount": {
     "message": "Aynı hesap, daha akıllı özellikler."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Akıllı hesaplar"
   },
   "smartAccountSplashTitle": {
     "message": "Akıllı hesap kullanılsın mı?"
@@ -5652,6 +5734,9 @@
   "snapResultSuccessDescription": {
     "message": "$1 kullanıma hazır"
   },
+  "snapUIAccountSelectorTitle": {
+    "message": "Hesap seç"
+  },
   "snapUIAssetSelectorTitle": {
     "message": "Bir varlık seç"
   },
@@ -5719,27 +5804,6 @@
   },
   "solanaAccountRequired": {
     "message": "Bu siteye bağlanmak için bir Solana hesabı gereklidir."
-  },
-  "solanaImportAccounts": {
-    "message": "Solana hesaplarını içe aktar"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Başka bir cüzdandan Solana hesabınızı taşımak için bir Gizli Kurtarma İfadesini içe aktarın."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Daha fazla özellik çok yakında"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFT'ler, donanım cüzdanı desteği ve daha fazlası çok yakında."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana MetaMask'te"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Token gönder, al ve swap yap"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "SOL, USDC ve daha fazlası gibi token'lar ile transfer ve işlem gerçekleştir."
   },
   "someNetworks": {
     "message": "$1 ağ"
@@ -5885,7 +5949,7 @@
     "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
-    "message": "Gizli kurtarma ifadenizin tamamını herhangi bir alana yapıştırabilirsiniz",
+    "message": "Gizli Kurtarma İfadenizin tamamını herhangi bir alana yapıştırabilirsiniz.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
@@ -6591,7 +6655,7 @@
     "message": "Kabul Ediyorum"
   },
   "termsOfUseAgreeText": {
-    "message": "MetaMask ve tüm özelliklerini kullanımım için geçerli olan Kullanım şartları bölümünü kabul ediyorum"
+    "message": "MetaMask ve tüm özelliklerini kullanımım için geçerli olan Kullanım Şartları bölümünü kabul ediyorum."
   },
   "termsOfUseFooterText": {
     "message": "Tüm bölümleri okumak için lütfen kaydırın"
@@ -6829,8 +6893,11 @@
     "message": "$1 ile bağlantı kurmada sorun yaşıyoruz, $2 kısmını inceleyip tekrar deneyin.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "troubleStarting": {
-    "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
+  "troubleStartingMessage": {
+    "message": "Bu hata sürekli olmayabilir; bu yüzden uzantıyı yeniden başlatmayı deneyin."
+  },
+  "troubleStartingTitle": {
+    "message": "MetaMask başlatılırken sorun oluştu."
   },
   "tryAgain": {
     "message": "Tekrar dene"
@@ -6919,7 +6986,7 @@
     "message": "Şifre yanlış. Lütfen tekrar deneyin."
   },
   "unlockPageTooManyFailedAttempts": {
-    "message": "Çok sayıda başarısız deneme. Lütfen tekrar deneyin: "
+    "message": "Çok sayıda deneme. Şu kadar süre sonra tekrar deneyin: "
   },
   "unpin": {
     "message": "Sabitlemeyi kaldır"
@@ -7039,6 +7106,10 @@
   "viewActivity": {
     "message": "Aktiviteyi görüntüle"
   },
+  "viewAddressOnExplorer": {
+    "message": "$1 üzerinde görüntüle",
+    "description": "$1 is the block explorer name"
+  },
   "viewAllQuotes": {
     "message": "tüm teklifleri görüntüle"
   },
@@ -7067,9 +7138,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea'de görüntüle"
-  },
-  "viewSolanaAccount": {
-    "message": "Solana hesabını görüntüle"
   },
   "viewTransaction": {
     "message": "İşlemi görüntüle"

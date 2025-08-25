@@ -1,19 +1,14 @@
-import { createModuleLogger, createProjectLogger } from '@metamask/utils';
+import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
+import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
 
-const projectLogger = createProjectLogger('sentry');
 let installType = 'unknown';
-
-export const log = createModuleLogger(
-  projectLogger,
-  globalThis.document ? 'ui' : 'background',
-);
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -38,7 +33,7 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-export default function setupSentry(skipConsentFilter = false) {
+export default function setupSentry() {
   if (!RELEASE) {
     throw new Error('Missing release');
   }
@@ -63,7 +58,7 @@ export default function setupSentry(skipConsentFilter = false) {
       log('Error getting extension installType', error);
     });
   integrateLogging();
-  setSentryClient(skipConsentFilter);
+  setSentryClient();
 
   return {
     ...Sentry,
@@ -71,7 +66,7 @@ export default function setupSentry(skipConsentFilter = false) {
   };
 }
 
-function getClientOptions(skipConsentFilter = false) {
+function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
@@ -91,11 +86,7 @@ function getClientOptions(skipConsentFilter = false) {
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
         },
       }),
-      filterEvents({
-        getMetaMetricsEnabled,
-        log,
-        skipConsentFilter,
-      }),
+      filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -106,7 +97,7 @@ function getClientOptions(skipConsentFilter = false) {
     // `false`.
     sendClientReports: false,
     tracesSampleRate: getTracesSampleRate(sentryTarget),
-    transport: (option) => makeTransport(option, skipConsentFilter),
+    transport: makeTransport,
   };
 }
 
@@ -260,8 +251,8 @@ async function getMetaMetricsEnabled() {
   }
 }
 
-function setSentryClient(skipConsentFilter = false) {
-  const clientOptions = getClientOptions(skipConsentFilter);
+function setSentryClient() {
+  const clientOptions = getClientOptions();
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**
@@ -548,11 +539,11 @@ function addDebugListeners() {
   log('Added debug listeners');
 }
 
-function makeTransport(options, skipConsentFilter = false) {
+function makeTransport(options) {
   return Sentry.makeFetchTransport(options, async (...args) => {
     const metricsEnabled = await getMetaMetricsEnabled();
 
-    if (!metricsEnabled && !skipConsentFilter) {
+    if (!metricsEnabled) {
       throw new Error('Network request skipped as metrics disabled');
     }
 

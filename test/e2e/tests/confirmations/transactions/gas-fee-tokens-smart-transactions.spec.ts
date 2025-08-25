@@ -36,6 +36,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           mockSmartTransactionBatchRequests(mockServer, {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
           });
+          mockSentinelNetworks(mockServer);
         },
         title: this.test?.fullTitle(),
       },
@@ -49,19 +50,19 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         await transactionConfirmation.clickGasFeeTokenPill();
 
         const gasFeeTokenModal = new GasFeeTokenModal(driver);
-        await gasFeeTokenModal.check_AmountFiat('DAI', '$3.21');
-        await gasFeeTokenModal.check_AmountToken('DAI', '3.21 DAI');
-        await gasFeeTokenModal.check_Balance('DAI', '$10.00');
+        await gasFeeTokenModal.checkAmountFiat('DAI', '$3.21');
+        await gasFeeTokenModal.checkAmountToken('DAI', '3.21 DAI');
+        await gasFeeTokenModal.checkBalance('DAI', '$10.00');
 
-        await gasFeeTokenModal.check_AmountFiat('USDC', '$1.23');
-        await gasFeeTokenModal.check_AmountToken('USDC', '1.23 USDC');
-        await gasFeeTokenModal.check_Balance('USDC', '$5.00');
+        await gasFeeTokenModal.checkAmountFiat('USDC', '$1.23');
+        await gasFeeTokenModal.checkAmountToken('USDC', '1.23 USDC');
+        await gasFeeTokenModal.checkBalance('USDC', '$5.00');
         await gasFeeTokenModal.clickToken('USDC');
 
-        await transactionConfirmation.check_gasFeeSymbol('USDC');
-        await transactionConfirmation.check_gasFeeFiat('$1.23');
-        await transactionConfirmation.check_gasFee('1.23');
-        await transactionConfirmation.check_gasFeeTokenFee('$0.43');
+        await transactionConfirmation.checkGasFeeSymbol('USDC');
+        await transactionConfirmation.checkGasFeeFiat('$1.23');
+        await transactionConfirmation.checkGasFee('1.23');
+        await transactionConfirmation.checkGasFeeTokenFee('$0.43');
         await transactionConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(
@@ -72,7 +73,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         await homepage.goToActivityList();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_confirmedTxNumberDisplayedInActivity(2);
+        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(2);
       },
     );
   });
@@ -94,6 +95,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
             error: true,
           });
+          mockSentinelNetworks(mockServer);
         },
         title: this.test?.fullTitle(),
       },
@@ -108,7 +110,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         const gasFeeTokenModal = new GasFeeTokenModal(driver);
         await gasFeeTokenModal.clickToken('USDC');
 
-        await transactionConfirmation.check_gasFeeSymbol('USDC');
+        await transactionConfirmation.checkGasFeeSymbol('USDC');
         await transactionConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(
@@ -119,7 +121,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         await homepage.goToActivityList();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_failedTxNumberDisplayedInActivity(2);
+        await activityListPage.checkFailedTxNumberDisplayedInActivity(2);
       },
     );
   });
@@ -188,4 +190,24 @@ async function mockSimulationResponse(mockServer: MockttpServer) {
       };
     }),
   ];
+}
+
+async function mockSentinelNetworks(mockServer: MockttpServer) {
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/networks`)
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: {
+          '1': {
+            network: 'ethereum-mainnet',
+            confirmations: true,
+            relayTransactions: true,
+            sendBundle: true,
+          },
+        },
+      };
+    });
 }

@@ -81,7 +81,7 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
   },
   [BuildTypeEnv.ProdMain]: {
     googleAuthConnectionId: 'mm-google-main-extension',
-    appleAuthConnectionId: 'mm-apple-main-extension',
+    appleAuthConnectionId: 'mm-apple-main-common',
     googleGroupedAuthConnectionId: 'mm-google-main',
     appleGroupedAuthConnectionId: 'mm-apple-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
@@ -89,7 +89,7 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
   },
   [BuildTypeEnv.ProdFlask]: {
     googleAuthConnectionId: 'mm-google-flask-main-extension',
-    appleAuthConnectionId: 'mm-apple-flask-main-extension',
+    appleAuthConnectionId: 'mm-apple-flask-main-common',
     googleGroupedAuthConnectionId: 'mm-google-flask-main',
     appleGroupedAuthConnectionId: 'mm-apple-flask-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
@@ -97,7 +97,7 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
   },
   [BuildTypeEnv.Beta]: {
     googleAuthConnectionId: 'mm-google-main-extension',
-    appleAuthConnectionId: 'mm-apple-main-extension',
+    appleAuthConnectionId: 'mm-apple-main-common',
     googleGroupedAuthConnectionId: 'mm-google-main',
     appleGroupedAuthConnectionId: 'mm-apple-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
@@ -127,6 +127,16 @@ function isProductionBuild() {
 }
 
 /**
+ * Check if the build is from the release candidate branch.
+ * Example: `Version-v13.0.0` branch.
+ *
+ * @returns true if the build is from the release candidate branch, false otherwise
+ */
+function isReleaseCandidateBuild() {
+  return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE;
+}
+
+/**
  * Load the OAuth config based on the build type and environment.
  *
  * @returns the OAuth config
@@ -138,7 +148,7 @@ export function loadOAuthConfig(): OAuthConfig {
   if (buildType === 'main') {
     if (isDevOrTestBuild()) {
       buildTypeEnv = BuildTypeEnv.DevMain;
-    } else if (isProductionBuild()) {
+    } else if (isProductionBuild() || isReleaseCandidateBuild()) {
       buildTypeEnv = BuildTypeEnv.ProdMain;
     } else {
       buildTypeEnv = BuildTypeEnv.UatMain;
@@ -146,7 +156,7 @@ export function loadOAuthConfig(): OAuthConfig {
   } else if (buildType === 'flask') {
     if (isDevOrTestBuild()) {
       buildTypeEnv = BuildTypeEnv.DevFlask;
-    } else if (isProductionBuild()) {
+    } else if (isProductionBuild() || isReleaseCandidateBuild()) {
       buildTypeEnv = BuildTypeEnv.ProdFlask;
     } else {
       buildTypeEnv = BuildTypeEnv.UatFlask;

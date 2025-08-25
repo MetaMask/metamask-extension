@@ -75,6 +75,7 @@ const blocklistedHosts = [
   'linea-sepolia.infura.io',
   'testnet-rpc.monad.xyz',
   'carrot.megaeth.com',
+  'sei-mainnet.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
 ];
@@ -174,11 +175,9 @@ async function setupMocking(
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
 
-  // User Profile Metametrics
+  // User Profile Lineage
   await server
-    .forGet(
-      'https://authentication.api.cx.metamask.io/api/v2/profile/metametrics',
-    )
+    .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -1008,7 +1007,7 @@ async function setupMocking(
    * @param request
    */
   const portfolioRequestsMatcher = (request) =>
-    request.headers.referer === 'https://portfolio.metamask.io/';
+    request.headers.referer === 'https://app.metamask.io/';
 
   /**
    * Tests a request against private domains and returns a set of generic hostnames that

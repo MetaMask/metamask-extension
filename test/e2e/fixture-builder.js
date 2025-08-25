@@ -127,7 +127,6 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MEGAETH_TESTNET]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MONAD_TESTNET]: true,
         },
-        skipDeepLinkInterstitial: false,
       },
       SelectedNetworkController: {
         domains: {},
@@ -446,6 +445,26 @@ class FixtureBuilder {
             blockExplorerUrl: 'https://testnet.monadexplorer.com',
           },
           id: 'monad-testnet',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnSei() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'sei',
+      networkConfigurations: {
+        sei: {
+          chainId: CHAIN_IDS.SEI,
+          nickname: 'Sei',
+          rpcUrl: 'https://sei-mainnet.infura.io/v3/',
+          ticker: 'SEI',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://seitrace.com',
+          },
+          id: 'sei',
           type: 'rpc',
           isCustom: true,
         },

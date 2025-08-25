@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { captureException } from '@sentry/browser';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   JustifyContent,
@@ -29,6 +28,7 @@ import {
   getParticipateInMetaMetrics,
   getIsSocialLoginFlow,
   getSocialLoginType,
+  getIsParticipateInMetaMetricsSet,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -52,11 +52,10 @@ import PasswordForm from '../../../components/app/password-form/password-form';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import {
-  resetOAuthLoginState,
-  setOnboardingErrorReport,
+  forceUpdateMetamaskState,
+  resetOnboarding,
 } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
-import { getPasswordStrengthCategory } from '../../../helpers/utils/common.util';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
@@ -84,6 +83,9 @@ export default function CreatePassword({
   const socialLoginType = useSelector(getSocialLoginType);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
   const metametricsId = useSelector(getMetaMetricsId);
   const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
     'base64',
@@ -105,7 +107,11 @@ export default function CreatePassword({
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
-        history.replace(ONBOARDING_METAMETRICS);
+        history.replace(
+          isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+        );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (isFirefox) {
           history.replace(ONBOARDING_COMPLETION_ROUTE);
@@ -127,6 +133,7 @@ export default function CreatePassword({
     firstTimeFlowType,
     newAccountCreationInProgress,
     secretRecoveryPhrase,
+    isParticipateInMetaMetricsSet,
   ]);
 
   const handleLearnMoreClick = (event) => {
@@ -137,7 +144,7 @@ export default function CreatePassword({
       properties: {
         text: 'Learn More',
         location: 'create_password',
-        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+        url: ZENDESK_URLS.PASSWORD_ARTICLE,
       },
     });
   };
@@ -167,7 +174,6 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletImported,
       properties: {
         biometrics_enabled: false,
-        password_strength: getPasswordStrengthCategory(password),
       },
     });
 
@@ -218,7 +224,10 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletCreated,
       properties: {
         biometrics_enabled: false,
-        password_strength: getPasswordStrengthCategory(password),
+        account_type: getAccountType(
+          MetaMetricsEventAccountType.Default,
+          isSocialLoginFlow,
+        ),
       },
     });
 
@@ -257,10 +266,11 @@ export default function CreatePassword({
     };
   }, [onboardingParentContext, bufferedTrace, bufferedEndTrace]);
 
-  const handleBackClick = (event) => {
+  const handleBackClick = async (event) => {
     event.preventDefault();
-    // reset the social login state
-    dispatch(resetOAuthLoginState());
+    // reset onboarding flow
+    await dispatch(resetOnboarding());
+    await forceUpdateMetamaskState(dispatch);
 
     firstTimeFlowType === FirstTimeFlowType.import
       ? history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE)
@@ -306,22 +316,6 @@ export default function CreatePassword({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletSetupFailure,
       });
-      if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
-        if (participateInMetaMetrics) {
-          captureException(error, {
-            tags: {
-              view: 'Create Password - Social login',
-            },
-          });
-        } else {
-          dispatch(
-            setOnboardingErrorReport({
-              error,
-              view: 'Create Password - Social login',
-            }),
-          );
-        }
-      }
     }
   };
 
@@ -329,7 +323,7 @@ export default function CreatePassword({
     <a
       onClick={handleLearnMoreClick}
       key="create-password__link-text"
-      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
+      href={ZENDESK_URLS.PASSWORD_ARTICLE}
       target="_blank"
       rel="noopener noreferrer"
     >

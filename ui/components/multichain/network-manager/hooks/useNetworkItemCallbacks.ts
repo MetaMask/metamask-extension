@@ -4,7 +4,7 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import { type Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
   getRpcDataByChainId,
@@ -38,13 +38,13 @@ export const useNetworkItemCallbacks = () => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const isDiscoverBtnEnabled = useCallback(
-    (hexChainId: Hex): boolean => {
+    (chainId: Hex | `${string}:${string}`): boolean => {
       // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
-      // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
-      return (
-        (isNetworkDiscoverButtonEnabled as Record<Hex, boolean>)?.[
-          hexChainId
-        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+      // and in the constants `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`.
+      return Boolean(
+        isNetworkDiscoverButtonEnabled?.[
+          chainId as keyof typeof isNetworkDiscoverButtonEnabled
+        ] && CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined,
       );
     },
     [isNetworkDiscoverButtonEnabled],
@@ -75,11 +75,17 @@ export const useNetworkItemCallbacks = () => {
       const { chainId, isEvm } = network;
 
       if (!isEvm) {
-        return {};
+        return {
+          onDiscoverClick: isDiscoverBtnEnabled(chainId)
+            ? () => {
+                openWindow(
+                  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId],
+                  '_blank',
+                );
+              }
+            : undefined,
+        };
       }
-
-      // Non-EVM networks cannot be deleted, edited or have
-      // RPC endpoints so it's safe to call this conversion function here.
       const hexChainId = convertCaipToHexChainId(chainId);
       const isDeletable = isUnlocked && network.chainId !== EthScope.Mainnet;
 
@@ -112,7 +118,7 @@ export const useNetworkItemCallbacks = () => {
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
               openWindow(
-                CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
+                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
                 '_blank',
               );
             }
@@ -146,7 +152,6 @@ export const useNetworkItemCallbacks = () => {
 
   return {
     getItemCallbacks,
-    isDiscoverBtnEnabled,
     hasMultiRpcOptions,
     isNetworkEnabled,
   };
