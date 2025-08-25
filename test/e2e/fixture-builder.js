@@ -1594,9 +1594,7 @@ class FixtureBuilder {
     return this.withNameController({ names: {} });
   }
 
-  withLedgerAccount(
-    selectedAccount = '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
-  ) {
+  withLedgerAccount() {
     return this.withAccountTracker({
       accounts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
@@ -1690,19 +1688,7 @@ class FixtureBuilder {
               },
             },
           },
-          selectedAccount: (() => {
-            if (
-              selectedAccount === '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
-            ) {
-              return 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
-            }
-            if (
-              selectedAccount === '0xF68464152d7289D7eA9a2bEC2E0035c45188223c'
-            ) {
-              return '221ecb67-0d29-4c04-83b2-dff07c263634';
-            }
-            return '221ecb67-0d29-4c04-83b2-dff07c263634';
-          })(),
+          selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
         },
       })
       .withKeyringController({
@@ -1744,7 +1730,7 @@ class FixtureBuilder {
             name: 'Ledger 1',
           },
         },
-        selectedAddress: selectedAccount,
+        selectedAddress: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
       });
   }
 
