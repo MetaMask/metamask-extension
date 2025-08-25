@@ -102,14 +102,16 @@ const createMockSimulationChange = (
 function runHook({
   currentConfirmation,
   nestedTransactions = [],
-  simulationData = [],
+  simulationData,
   approveBalanceChanges = [],
   useTransactionSimulations = true,
   simulationError = undefined,
 }: {
   currentConfirmation?: Partial<TransactionMeta>;
   nestedTransactions?: NestedTransactionMetadata[];
-  simulationData?: SimulationTokenBalanceChange[];
+  simulationData?: {
+    tokenBalanceChanges: SimulationTokenBalanceChange[];
+  };
   approveBalanceChanges?: ApprovalBalanceChange[];
   useTransactionSimulations?: boolean;
   simulationError?: SimulationErrorCode | null | undefined;
@@ -119,10 +121,12 @@ function runHook({
         ...genUnapprovedContractInteractionConfirmation({ chainId: '0x5' }),
         ...currentConfirmation,
         nestedTransactions,
-        simulationData: {
-          tokenBalanceChanges: simulationData,
-          error: simulationError ? { code: simulationError } : undefined,
-        },
+        simulationData: simulationData
+          ? {
+              ...simulationData,
+              error: simulationError ? { code: simulationError } : undefined,
+            }
+          : undefined,
       }
     : undefined;
 
@@ -185,6 +189,32 @@ describe('useMultipleApprovalsAlerts', () => {
     });
   });
 
+  describe('when confirmation exists but no simulation data', () => {
+    it('returns no alerts', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
+      });
+      expect(alerts).toEqual([]);
+    });
+  });
+
   describe('when no nested transactions exist', () => {
     it('returns no alerts', () => {
       const alerts = runHook({
@@ -229,9 +259,11 @@ describe('useMultipleApprovalsAlerts', () => {
         createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
       ];
 
-      const simulationData = [
-        createMockSimulationChange(TOKEN_ADDRESS_1, '0x64', true), // decrease
-      ];
+      const simulationData = {
+        tokenBalanceChanges: [
+          createMockSimulationChange(TOKEN_ADDRESS_1, '0x64', true), // decrease
+        ],
+      };
 
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
@@ -273,7 +305,9 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        simulationData: [], // no outflows
+        simulationData: {
+          tokenBalanceChanges: [], // no outflows
+        },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
@@ -309,6 +343,9 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
@@ -333,6 +370,9 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
@@ -357,6 +397,9 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
@@ -381,6 +424,9 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
@@ -471,6 +517,9 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
@@ -581,7 +630,9 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        simulationData: [], // No outflows - should be unused
+        simulationData: {
+          tokenBalanceChanges: [], // No outflows - should be unused
+        },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
@@ -594,10 +645,12 @@ describe('useMultipleApprovalsAlerts', () => {
         createMockNestedTransaction('0x456', TOKEN_ADDRESS_2),
       ];
 
-      const simulationData = [
-        createMockSimulationChange(TOKEN_ADDRESS_1, '0x64', true), // used
-        // TOKEN_ADDRESS_2 has no outflow - unused
-      ];
+      const simulationData = {
+        tokenBalanceChanges: [
+          createMockSimulationChange(TOKEN_ADDRESS_1, '0x64', true), // used
+          // TOKEN_ADDRESS_2 has no outflow - unused
+        ],
+      };
 
       // parseApprovalTransactionData gets called 4 times:
       // 1. Once for each transaction in getUniqueTokenAddresses (2 calls)
@@ -665,6 +718,9 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
@@ -694,6 +750,9 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
@@ -868,13 +927,15 @@ describe('useMultipleApprovalsAlerts', () => {
         ),
       ];
 
-      const simulationData = [
-        createMockSimulationChange(
-          TOKEN_ADDRESS_1.toLowerCase() as Hex,
-          '0x64',
-          true,
-        ),
-      ];
+      const simulationData = {
+        tokenBalanceChanges: [
+          createMockSimulationChange(
+            TOKEN_ADDRESS_1.toLowerCase() as Hex,
+            '0x64',
+            true,
+          ),
+        ],
+      };
 
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
@@ -894,31 +955,6 @@ describe('useMultipleApprovalsAlerts', () => {
       });
 
       expect(alerts).toEqual([]); // should match despite case difference
-    });
-
-    it('handles empty simulation data array', () => {
-      const nestedTransactions = [
-        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
-      ];
-
-      mockParseApprovalTransactionData.mockReturnValue({
-        name: 'approve',
-        amountOrTokenId: new BigNumber('1000'),
-        tokenAddress: undefined,
-        isRevokeAll: false,
-      });
-
-      const alerts = runHook({
-        currentConfirmation: {
-          txParams: { from: ACCOUNT_ADDRESS },
-          chainId: '0x5',
-        },
-        nestedTransactions,
-        simulationData: undefined, // undefined simulation data
-        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
-      });
-
-      expect(alerts).toHaveLength(1); // should treat as unused
     });
   });
 });

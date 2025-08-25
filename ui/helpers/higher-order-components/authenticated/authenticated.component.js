@@ -24,4 +24,7 @@ export default function Authenticated(props) {
 Authenticated.propTypes = {
   isUnlocked: PropTypes.bool,
   completedOnboarding: PropTypes.bool,
+  path: PropTypes.string,
+  component: PropTypes.object,
+  exact: PropTypes.bool,
 };

@@ -858,7 +858,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
+        "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/account-api>@metamask/keyring-utils": true,
@@ -907,7 +907,6 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "ethers>@ethersproject/address": true,
-        "@ethersproject/bignumber": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
@@ -915,7 +914,7 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/keyring-api": true,
+        "@metamask/assets-controllers>@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller": true,
@@ -1064,6 +1063,21 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/design-system-react": {
+      "globals": {
+        "__import__": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/jazzicon": true,
+        "@metamask/utils": true,
+        "@metamask/design-system-react>@radix-ui/react-slot": true,
+        "@solana/addresses": true,
+        "@metamask/design-system-react>blo": true,
+        "react": true,
+        "@metamask/design-system-react>tailwind-merge": true
       }
     },
     "@metamask/ens-controller": {
@@ -1231,26 +1245,6 @@
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "console.info": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-internal-api": true,
-        "@metamask/keyring-internal-snap-client": true,
-        "@metamask/account-api>@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "webpack>events": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
-      }
-    },
     "@metamask/eth-token-tracker": {
       "globals": {
         "console.warn": true
@@ -1401,6 +1395,14 @@
         "bitcoin-address-validation": true
       }
     },
+    "@metamask/assets-controllers>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
     "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
       "packages": {
         "@metamask/account-api>@metamask/keyring-utils": true,
@@ -1499,6 +1501,9 @@
       }
     },
     "@metamask/multichain-account-service": {
+      "globals": {
+        "console.warn": true
+      },
       "packages": {
         "@metamask/account-api": true,
         "@metamask/keyring-api": true,
@@ -2170,7 +2175,7 @@
         "@ngraveio/bc-ur>cbor-sync": true,
         "@ngraveio/bc-ur>crc": true,
         "@ngraveio/bc-ur>jsbi": true,
-        "addons-linter>sha.js": true
+        "@ngraveio/bc-ur>sha.js": true
       }
     },
     "@noble/ciphers": {
@@ -2253,6 +2258,17 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
+      }
+    },
+    "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": {
+      "packages": {
+        "react": true
+      }
+    },
+    "@metamask/design-system-react>@radix-ui/react-slot": {
+      "packages": {
+        "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": true,
+        "react": true
       }
     },
     "@reduxjs/toolkit": {
@@ -2857,6 +2873,11 @@
         "btoa": true
       }
     },
+    "@metamask/design-system-react>blo": {
+      "globals": {
+        "btoa": true
+      }
+    },
     "bn.js": {
       "globals": {
         "Buffer": true
@@ -3164,7 +3185,7 @@
         "pumpify>inherits": true,
         "ethereumjs-util>create-hash>md5.js": true,
         "ethereumjs-util>create-hash>ripemd160": true,
-        "addons-linter>sha.js": true
+        "@ngraveio/bc-ur>sha.js": true
       }
     },
     "crypto-browserify>pbkdf2>create-hash": {
@@ -3179,7 +3200,7 @@
         "pumpify>inherits": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "koa>content-disposition>safe-buffer": true,
-        "addons-linter>sha.js": true
+        "@ngraveio/bc-ur>sha.js": true
       }
     },
     "cron-parser": {
@@ -4067,7 +4088,7 @@
         "react-markdown>remark-parse>mdast-util-from-markdown>mdast-util-to-string": true,
         "react-markdown>remark-parse>mdast-util-from-markdown>micromark": true,
         "react-syntax-highlighter>refractor>parse-entities": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>unist-util-stringify-position": true
+        "react-markdown>vfile>unist-util-stringify-position": true
       }
     },
     "react-markdown>remark-rehype>mdast-util-to-hast": {
@@ -4241,8 +4262,8 @@
         "process": true,
         "crypto-browserify>pbkdf2>ripemd160": true,
         "koa>content-disposition>safe-buffer": true,
-        "addons-linter>sha.js": true,
-        "crypto-browserify>pbkdf2>to-buffer": true
+        "@ngraveio/bc-ur>sha.js": true,
+        "@ngraveio/bc-ur>sha.js>to-buffer": true
       }
     },
     "@material-ui/core>popper.js": {
@@ -4952,10 +4973,11 @@
         "browserify>timers-browserify": true
       }
     },
-    "addons-linter>sha.js": {
+    "@ngraveio/bc-ur>sha.js": {
       "packages": {
         "pumpify>inherits": true,
-        "koa>content-disposition>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true,
+        "@ngraveio/bc-ur>sha.js>to-buffer": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-list": {
@@ -5092,7 +5114,7 @@
         "console": true
       }
     },
-    "crypto-browserify>pbkdf2>to-buffer": {
+    "@ngraveio/bc-ur>sha.js>to-buffer": {
       "packages": {
         "@lavamoat/lavapack>json-stable-stringify>isarray": true,
         "koa>content-disposition>safe-buffer": true,
@@ -5259,11 +5281,6 @@
       }
     },
     "@metamask/eth-snap-keyring>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
       "globals": {
         "crypto": true
       }

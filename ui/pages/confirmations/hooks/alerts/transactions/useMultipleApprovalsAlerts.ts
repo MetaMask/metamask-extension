@@ -289,7 +289,10 @@ export function useMultipleApprovalsAlerts(): Alert[] {
     return findUnusedApprovals(approvals, tokenOutflows);
   }, [approvals, tokenOutflows]);
 
-  const shouldShowAlert = unusedApprovals.length > 0 && isSimulationSupported;
+  const shouldShowAlert =
+    unusedApprovals.length > 0 &&
+    Boolean(currentConfirmation?.simulationData) &&
+    isSimulationSupported;
 
   return useMemo(() => {
     if (!shouldShowAlert) {
