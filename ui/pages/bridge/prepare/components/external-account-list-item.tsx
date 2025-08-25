@@ -16,10 +16,10 @@ import {
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
-import type { DestinationAccount } from '../types';
+import type { ExternalDestinationAccount } from '../types';
 
 type ExternalAccountListItemProps = {
-  account: DestinationAccount;
+  account: ExternalDestinationAccount;
   selected?: boolean;
   onClick?: () => void;
 };
@@ -28,7 +28,6 @@ export const ExternalAccountListItem: React.FC<
   ExternalAccountListItemProps
 > = ({ account, selected = false, onClick }) => {
   const t = useI18nContext();
-  const isEnsName = account.metadata.name.endsWith('.eth');
 
   return (
     <Box
@@ -58,7 +57,7 @@ export const ExternalAccountListItem: React.FC<
               whiteSpace: 'nowrap',
             }}
           >
-            {isEnsName ? account.metadata.name : t('externalAccount')}
+            {account.displayName}
           </Text>
           <Text
             variant={TextVariant.bodySm}
@@ -75,14 +74,12 @@ export const ExternalAccountListItem: React.FC<
         </Box>
       </Box>
 
-      {isEnsName && (
-        <Tag
-          label={t('externalAccount')}
-          paddingLeft={2}
-          paddingRight={2}
-          labelProps={{ variant: TextVariant.bodyXs }}
-        />
-      )}
+      <Tag
+        label={t('externalAccount')}
+        paddingLeft={2}
+        paddingRight={2}
+        labelProps={{ variant: TextVariant.bodyXs }}
+      />
     </Box>
   );
 };

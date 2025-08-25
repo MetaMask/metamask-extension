@@ -45,11 +45,12 @@ import {
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
 } from '../../../../selectors/multichain';
+import { type InternalDestinationAccount } from '../types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 
 type DestinationAccountListItemProps = {
-  account: InternalAccount;
+  account: InternalDestinationAccount;
   selected?: boolean;
   onClick?: () => void;
 };
@@ -155,7 +156,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
               ellipsis
               style={{ maxWidth: '200px' }}
             >
-              {account.metadata.name}
+              {account.displayName}
             </Text>
           </Box>
           <Box

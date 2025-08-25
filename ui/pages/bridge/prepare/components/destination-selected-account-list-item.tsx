@@ -13,7 +13,7 @@ import {
 
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { DestinationAccount } from '../types';
+import { type DestinationAccount } from '../types';
 
 type DestinationSelectedAccountListItemProps = {
   account: DestinationAccount;
@@ -25,7 +25,6 @@ const DestinationSelectedAccountListItem: React.FC<
   DestinationSelectedAccountListItemProps
 > = ({ account, selected, onClick }) => {
   const t = useI18nContext();
-  const isExternalAccount = 'isExternal' in account && account.isExternal;
 
   return (
     <Box
@@ -55,15 +54,7 @@ const DestinationSelectedAccountListItem: React.FC<
         </Text>
 
         <Text variant={TextVariant.bodyMdMedium} marginBottom={1} ellipsis>
-          {(() => {
-            if (isExternalAccount) {
-              if (account.metadata.name.endsWith('.eth')) {
-                return account.metadata.name;
-              }
-              return t('externalAccount');
-            }
-            return account.metadata.name;
-          })()}
+          {account.displayName}
         </Text>
       </Box>
     </Box>

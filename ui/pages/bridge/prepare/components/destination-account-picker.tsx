@@ -21,7 +21,7 @@ import {
 import { t } from '../../../../../shared/lib/translate';
 import { getToAccounts, getToChain } from '../../../../ducks/bridge/selectors';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
-import { DestinationAccount } from '../types';
+import type { DestinationAccount } from '../types';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
@@ -42,22 +42,21 @@ export const DestinationAccountPicker = ({
     ? isSolanaChainId(toChain.chainId)
     : false;
 
-  const { externalAccount } = useExternalAccountResolution({
+  const externalAccount = useExternalAccountResolution({
     searchQuery,
     isDestinationSolana,
-    accounts,
   });
 
   const filteredAccounts = useMemo(
     () =>
       accounts.filter((account) => {
-        const matchesSearchByName = account.metadata.name
+        const matchesSearchByName = account.displayName
           .toLowerCase()
-          .includes(searchQuery.toLowerCase());
+          .includes(searchQuery.trim().toLowerCase());
 
         const matchesSearchByAddress = account.address
           .toLowerCase()
-          .includes(searchQuery.toLowerCase());
+          .includes(searchQuery.trim().toLowerCase());
 
         const matchesSearch = matchesSearchByName || matchesSearchByAddress;
 
