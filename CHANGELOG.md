@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [13.1.1]
 ### Fixed
 - fix: remove the Solana new feature modal from the onboarding flow (#34988)
+- fix: hide swap fee info line if quote does not include a MetaMask fee (#35278)
 
 ## [13.1.0]
 ### Added
