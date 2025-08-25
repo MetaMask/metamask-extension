@@ -1,10 +1,10 @@
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { parseMetaMaskUrl } from '@metamask/snaps-utils';
 import { getSnapRoute } from '../../helpers/utils/util';
 
 const useSnapNavigation = () => {
-  const history = useHistory();
-  const navigate = (url: string) => {
+  const navigate = useNavigate();
+  const useSnapNavigate = (url: string) => {
     let path;
     const linkData = parseMetaMaskUrl(url);
     if (linkData.snapId) {
@@ -12,10 +12,10 @@ const useSnapNavigation = () => {
     } else {
       path = linkData.path;
     }
-    history.push(path);
+    navigate(path);
   };
   return {
-    navigate,
+    useSnapNavigate,
   };
 };
 
