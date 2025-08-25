@@ -15,6 +15,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   PREPARE_SWAP_ROUTE,
   SEND_ROUTE,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCurrentKeyring,
@@ -23,6 +24,8 @@ import {
   isNonEvmAccount,
   getSwapsDefaultToken,
 } from '../../../selectors';
+import { getIsMultichainAccountsState1Enabled } from '../../../selectors/multichain-accounts/feature-flags';
+import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import Tooltip from '../../ui/tooltip';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -101,6 +104,12 @@ const CoinButtons = ({
   >;
   const currentChainId = useSelector(getCurrentChainId);
   const displayNewIconButtons = process.env.REMOVE_GNS;
+
+  // Multichain accounts feature flag and selected account group
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
+  );
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
   const defaultSwapsToken = useSelector((state) =>
     getSwapsDefaultToken(state, chainId.toString()),
@@ -368,6 +377,39 @@ const CoinButtons = ({
     defaultSwapsToken,
   ]);
 
+  const handleReceiveOnClick = useCallback(() => {
+    trace({ name: TraceName.ReceiveModal });
+    trackEvent({
+      event: MetaMetricsEventName.NavReceiveButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        text: 'Receive',
+        location: trackingLocation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+      },
+    });
+
+    // Check if multichain accounts feature is enabled and we have a selected account group
+    if (isMultichainAccountsState1Enabled && selectedAccountGroup) {
+      // Navigate to the multichain address list page with receive source
+      history.push(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?source=receive`,
+      );
+    } else {
+      // Show the traditional receive modal
+      setShowReceiveModal(true);
+    }
+  }, [
+    isMultichainAccountsState1Enabled,
+    selectedAccountGroup,
+    history,
+    trackEvent,
+    trackingLocation,
+    chainId,
+  ]);
+
   return (
     <Box
       display={Display.Flex}
@@ -524,21 +566,7 @@ const CoinButtons = ({
             }
             label={t('receive')}
             width={BlockSize.Full}
-            onClick={() => {
-              trace({ name: TraceName.ReceiveModal });
-              trackEvent({
-                event: MetaMetricsEventName.NavReceiveButtonClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  text: 'Receive',
-                  location: trackingLocation,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  chain_id: chainId,
-                },
-              });
-              setShowReceiveModal(true);
-            }}
+            onClick={handleReceiveOnClick}
             round={!displayNewIconButtons}
           />
         </>

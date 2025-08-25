@@ -646,3 +646,36 @@ export const getInternalAccountBySelectedAccountGroupAndCaip =
       return getInternalAccountFromGroup(group, caipChainId, internalAccounts);
     },
   );
+
+/**
+ * Get all internal accounts from a specific account group by its ID.
+ *
+ * @param state - The Redux state.
+ * @param groupId - The ID of the account group.
+ * @returns Array of internal accounts in the specified group, or empty array if not found.
+ */
+export const getInternalAccountsFromGroupById = createDeepEqualSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (_, groupId: AccountGroupId) => groupId,
+  (
+    accountTree: AccountTreeState,
+    internalAccounts: Record<AccountId, InternalAccount>,
+    groupId: AccountGroupId | null,
+  ): InternalAccount[] => {
+    if (!groupId) {
+      return [];
+    }
+
+    const { wallets } = accountTree;
+    const group = getGroupByGroupId(wallets, groupId);
+
+    if (!group) {
+      return [];
+    }
+
+    return group.accounts
+      .map((accountId) => internalAccounts[accountId])
+      .filter((account): account is InternalAccount => Boolean(account));
+  },
+);
