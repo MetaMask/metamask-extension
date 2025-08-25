@@ -27,6 +27,11 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+  SITES,
+  TOKEN_STREAMS_ROUTE,
+  TOKEN_SUBSCRIPTIONS_ROUTE,
+  REVIEW_TOKEN_STREAMS_ROUTE,
+  REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -140,6 +145,47 @@ export function hideAppHeader(props) {
   );
 
   if (isPermissionsPage) {
+    return true;
+  }
+
+  const isSitesPage = Boolean(
+    matchPath(location.pathname, {
+      path: SITES,
+      exact: false,
+    }),
+  );
+
+  if (isSitesPage) {
+    return true;
+  }
+
+  const isGatorPermissionsPage =
+    Boolean(
+      matchPath(location.pathname, {
+        path: TOKEN_STREAMS_ROUTE,
+        exact: false,
+      }),
+    ) ||
+    Boolean(
+      matchPath(location.pathname, {
+        path: TOKEN_SUBSCRIPTIONS_ROUTE,
+        exact: false,
+      }),
+    ) ||
+    Boolean(
+      matchPath(location.pathname, {
+        path: REVIEW_TOKEN_STREAMS_ROUTE,
+        exact: false,
+      }),
+    ) ||
+    Boolean(
+      matchPath(location.pathname, {
+        path: REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
+        exact: false,
+      }),
+    );
+
+  if (isGatorPermissionsPage) {
     return true;
   }
 
