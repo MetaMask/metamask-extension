@@ -5,6 +5,12 @@ import configureStore, { MetaMaskReduxDispatch } from '../../../store/store';
 import { createMultichainAccount } from '../../../store/actions';
 import { AddMultichainAccount } from './add-multichain-account';
 
+const addMultichainAccountButtonTestId = 'add-multichain-account-button';
+const addMultichainAccountIconClass = '.add-multichain-account__icon-box__icon';
+const addMultichainAccountIconLoadingClass =
+  '.add-multichain-account__icon-box__icon-loading';
+const addMultichainAccountIconBoxClass = '.add-multichain-account__icon-box';
+
 jest.mock('../../../store/actions', () => ({
   createMultichainAccount: jest.fn(() => (dispatch: MetaMaskReduxDispatch) => {
     return dispatch({ type: 'MOCKED_ACTION' });
@@ -39,16 +45,14 @@ describe('AddMultichainAccount', () => {
     );
 
     expect(
-      screen.getByTestId('add-multichain-account-button'),
+      screen.getByTestId(addMultichainAccountButtonTestId),
     ).toBeInTheDocument();
     expect(screen.getByText('Create account')).toBeInTheDocument();
     expect(
-      container.querySelector('.add-multichain-account__icon-box__icon'),
+      container.querySelector(addMultichainAccountIconClass),
     ).toBeInTheDocument();
     expect(
-      container.querySelector(
-        '.add-multichain-account__icon-box__icon-loading',
-      ),
+      container.querySelector(addMultichainAccountIconLoadingClass),
     ).not.toBeInTheDocument();
   });
 
@@ -56,7 +60,7 @@ describe('AddMultichainAccount', () => {
     const store = configureStore(initialState);
     renderWithProvider(<AddMultichainAccount walletId={mockWalletId} />, store);
 
-    fireEvent.click(screen.getByTestId('add-multichain-account-button'));
+    fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
 
     expect(createMultichainAccount).toHaveBeenCalledWith(mockWalletId);
   });
@@ -68,26 +72,22 @@ describe('AddMultichainAccount', () => {
       store,
     );
 
-    fireEvent.click(screen.getByTestId('add-multichain-account-button'));
+    fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
 
     expect(screen.getByText('Creating account...')).toBeInTheDocument();
     expect(
-      container.querySelector('.add-multichain-account__icon-box__icon'),
+      container.querySelector(addMultichainAccountIconClass),
     ).not.toBeInTheDocument();
     expect(
-      container.querySelector(
-        '.add-multichain-account__icon-box__icon-loading',
-      ),
+      container.querySelector(addMultichainAccountIconLoadingClass),
     ).toBeInTheDocument();
 
     // Check cursor style
-    const button = screen.getByTestId('add-multichain-account-button');
+    const button = screen.getByTestId(addMultichainAccountButtonTestId);
     expect(button).toHaveStyle('cursor: not-allowed');
 
     // Check background color of icon box
-    const iconBox = container.querySelector(
-      '.add-multichain-account__icon-box',
-    );
+    const iconBox = container.querySelector(addMultichainAccountIconBoxClass);
     expect(iconBox).toHaveClass('mm-box--background-color-transparent');
   });
 
@@ -96,11 +96,11 @@ describe('AddMultichainAccount', () => {
     renderWithProvider(<AddMultichainAccount walletId={mockWalletId} />, store);
 
     // First click
-    fireEvent.click(screen.getByTestId('add-multichain-account-button'));
+    fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
     expect(createMultichainAccount).toHaveBeenCalledTimes(1);
 
     // Try clicking again during the loading state
-    fireEvent.click(screen.getByTestId('add-multichain-account-button'));
+    fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
     expect(createMultichainAccount).toHaveBeenCalledTimes(1); // Still just one call
   });
 
@@ -111,7 +111,7 @@ describe('AddMultichainAccount', () => {
       store,
     );
 
-    fireEvent.click(screen.getByTestId('add-multichain-account-button'));
+    fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
 
     // Verify we're in the loading state first
     expect(screen.getByText('Creating account...')).toBeInTheDocument();
@@ -125,22 +125,18 @@ describe('AddMultichainAccount', () => {
     // Check that the component returned to normal state
     expect(screen.getByText('Create account')).toBeInTheDocument();
     expect(
-      container.querySelector('.add-multichain-account__icon-box__icon'),
+      container.querySelector(addMultichainAccountIconClass),
     ).toBeInTheDocument();
     expect(
-      container.querySelector(
-        '.add-multichain-account__icon-box__icon-loading',
-      ),
+      container.querySelector(addMultichainAccountIconLoadingClass),
     ).not.toBeInTheDocument();
 
     // Check cursor style
-    const button = screen.getByTestId('add-multichain-account-button');
+    const button = screen.getByTestId(addMultichainAccountButtonTestId);
     expect(button).toHaveStyle('cursor: pointer');
 
     // Check background color of icon box
-    const iconBox = container.querySelector(
-      '.add-multichain-account__icon-box',
-    );
+    const iconBox = container.querySelector(addMultichainAccountIconBoxClass);
     expect(iconBox).toHaveClass('mm-box--background-color-info-muted');
   });
 });
