@@ -1502,6 +1502,7 @@
     },
     "@metamask/multichain-account-service": {
       "globals": {
+        "console.log": true,
         "console.warn": true
       },
       "packages": {

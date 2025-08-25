@@ -22,6 +22,13 @@ import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
+type MultichainAccountServiceSetBasicFunctionalityAction = {
+  type: 'MultichainAccountService:setBasicFunctionality';
+  handler: (enabled: boolean) => Promise<void>;
+};
+///: END:ONLY_INCLUDE_IF
+
 type AccountIdentityEntry = {
   address: string;
   name: string;
@@ -64,7 +71,10 @@ export type AllowedActions =
   | AccountsControllerSetAccountNameAction
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerSetSelectedAccountAction
-  | NetworkControllerGetStateAction;
+  | NetworkControllerGetStateAction
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  | MultichainAccountServiceSetBasicFunctionalityAction;
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -515,6 +525,22 @@ export class PreferencesController extends BaseController<
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
     this.setUseSafeChainsListValidation(useExternalServices);
+
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    // Set basic functionality and trigger alignment if enabled
+    // This single call handles both provider disable/enable and alignment
+    this.messagingSystem
+      .call(
+        'MultichainAccountService:setBasicFunctionality',
+        useExternalServices,
+      )
+      .catch((error) => {
+        console.error(
+          'Failed to set basic functionality on MultichainAccountService:',
+          error,
+        );
+      });
+    ///: END:ONLY_INCLUDE_IF
   }
 
   /**

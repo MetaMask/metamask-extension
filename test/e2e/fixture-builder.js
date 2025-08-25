@@ -141,6 +141,9 @@ function onboardingFixture() {
         },
       },
       UserStorageController: {},
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      MultichainAccountService: {},
+      ///: END:ONLY_INCLUDE_IF
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},

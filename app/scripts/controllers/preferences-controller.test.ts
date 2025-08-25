@@ -63,6 +63,9 @@ const setupController = ({
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
         'NetworkController:getState',
+        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+        'MultichainAccountService:setBasicFunctionality',
+        ///: END:ONLY_INCLUDE_IF
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
@@ -73,6 +76,13 @@ const setupController = ({
       networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
     }),
   );
+
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  messenger.registerActionHandler(
+    'MultichainAccountService:setBasicFunctionality',
+    jest.fn().mockResolvedValue(undefined),
+  );
+  ///: END:ONLY_INCLUDE_IF
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
     state,
