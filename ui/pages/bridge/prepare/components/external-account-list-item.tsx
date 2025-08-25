@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { ExternalAccount } from '../types';
+import { useSelector } from 'react-redux';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { Box, Text, Tag } from '../../../../components/component-library';
 import {
@@ -16,16 +16,17 @@ import {
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
+import type { DestinationAccount } from '../types';
 
 type ExternalAccountListItemProps = {
-  account: ExternalAccount;
-  selected: boolean;
+  account: DestinationAccount;
+  selected?: boolean;
   onClick?: () => void;
 };
 
 export const ExternalAccountListItem: React.FC<
   ExternalAccountListItemProps
-> = ({ account, selected, onClick }) => {
+> = ({ account, selected = false, onClick }) => {
   const t = useI18nContext();
   const isEnsName = account.metadata.name.endsWith('.eth');
 

@@ -4,6 +4,7 @@ import type {
   ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   isSolanaChainId,
   isNativeAddress,
@@ -18,7 +19,7 @@ import {
   isValidQuoteRequest,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { SolAccountType } from '@metamask/keyring-api';
+import { EthScope, SolAccountType, SolScope } from '@metamask/keyring-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
@@ -66,8 +67,14 @@ import {
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import {
+  getInternalAccountsByScope,
+  getSelectedInternalAccount,
+} from '../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import type { AccountTreeState } from '../../selectors/multichain-accounts/account-tree.types';
+
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
@@ -82,6 +89,7 @@ export type BridgeAppState = {
     GasFeeState &
     NetworkState &
     AccountsControllerState &
+    AccountTreeState &
     MultichainAssetsRatesControllerState &
     TokenRatesControllerState &
     RatesControllerState &
@@ -178,9 +186,7 @@ export const getFromChain = createDeepEqualSelector(
   getMultichainProviderConfig,
   getFromChains,
   (providerConfig, fromChains) => {
-    return providerConfig?.chainId
-      ? fromChains.find(({ chainId }) => chainId === providerConfig.chainId)
-      : undefined;
+    return fromChains.find(({ chainId }) => chainId === providerConfig.chainId);
   },
 );
 
@@ -264,6 +270,51 @@ export const getToToken = createSelector(
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
+export const getFromAccount = createSelector(
+  [(state) => getFromChain(state)?.chainId, (state) => state],
+  (fromChainId, state) => {
+    if (fromChainId) {
+      return getInternalAccountBySelectedAccountGroupAndCaip(
+        state,
+        isSolanaChainId(fromChainId) ? SolScope.Mainnet : EthScope.Eoa,
+        // TODO use chainId when selector is ready
+        // :formatChainIdToCaip(fromChainId),
+      );
+    }
+    return null;
+  },
+);
+
+export const getToAccounts = createSelector(
+  [getToChain, (state) => state],
+  (toChain, state): InternalAccount[] => {
+    if (!toChain) {
+      return [];
+    }
+    return getInternalAccountsByScope(
+      state,
+      formatChainIdToCaip(toChain.chainId),
+    );
+  },
+);
+
+export const getToAccount = createSelector(
+  [getFromAccount, (state) => getToChain(state)?.chainId, (state) => state],
+  (fromAccount, toChainId, state): InternalAccount | null => {
+    // For swaps, always use the currently selected account
+    if (!toChainId) {
+      return fromAccount;
+    }
+    // For bridges, use the appropriate account type for the destination chain
+    return getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      isSolanaChainId(toChainId) ? SolScope.Mainnet : EthScope.Eoa,
+      // TODO: use this when selector is ready
+      // formatChainIdToCaip(toChain.chainId),
+    );
+  },
+);
+
 const _getFromNativeBalance = createSelector(
   getFromChain,
   (state: BridgeAppState) => state.bridge.fromNativeBalance,
@@ -296,17 +347,18 @@ export const getFromTokenBalance = createSelector(
   getFromChain,
   (state: BridgeAppState) => state.bridge.fromTokenBalance,
   getMultichainBalances,
-  getSelectedInternalAccount,
+  getFromAccount,
   (
     fromToken,
     fromChain,
     fromTokenBalance,
     nonEvmBalancesByAccountId,
-    { id },
+    fromAccount,
   ) => {
-    if (!fromToken || !fromChain) {
+    if (!fromToken || !fromChain || !fromAccount) {
       return null;
     }
+    const { id } = fromAccount;
     const { chainId, decimals, address, assetId } = fromToken;
 
     // Use the balance provided by the multichain balances controller

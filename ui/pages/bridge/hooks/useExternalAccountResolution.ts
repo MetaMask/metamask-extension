@@ -98,6 +98,7 @@ export const useExternalAccountResolution = ({
           name: ensName,
         },
         isExternal: true,
+        type: 'any:account' as const,
       };
     }
 
@@ -118,6 +119,7 @@ export const useExternalAccountResolution = ({
           name: address,
         },
         isExternal: true,
+        type: 'any:account' as const,
       };
     }
 

@@ -18,7 +18,6 @@ import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   forceUpdateMetamaskState,
   setActiveNetworkWithError,
-  setSelectedAccount,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
@@ -31,8 +30,8 @@ import {
   setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
   setEVMSrcNativeBalance,
 } from './bridge';
-import { isNetworkAdded } from './utils';
 import type { TokenPayload } from './types';
+import { isNetworkAdded } from './utils';
 
 const {
   setToChainId,
@@ -145,33 +144,39 @@ export const setEVMSrcTokenBalance = (
 
 export const setFromChain = ({
   networkConfig,
-  selectedSolanaAccount,
-  selectedEvmAccount,
+  selectedAccount,
   token = null,
 }: {
   networkConfig?:
     | NetworkConfiguration
     | AddNetworkFields
     | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
-  selectedSolanaAccount?: InternalAccount;
-  selectedEvmAccount?: InternalAccount;
+  selectedAccount: InternalAccount | null;
   token?: TokenPayload['payload'];
 }) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    if (
-      networkConfig &&
-      isSolanaChainId(networkConfig.chainId) &&
-      selectedSolanaAccount
-    ) {
-      await dispatch(setSelectedAccount(selectedSolanaAccount.address));
-    } else if (isNetworkAdded(networkConfig) && selectedEvmAccount) {
-      await dispatch(setSelectedAccount(selectedEvmAccount.address));
-      await dispatch(
-        setActiveNetworkWithError(
-          networkConfig.rpcEndpoints[networkConfig.defaultRpcEndpointIndex]
-            .networkClientId || networkConfig.chainId,
-        ),
-      );
+    if (!networkConfig) {
+      return;
+    }
+    const isSolana = isSolanaChainId(networkConfig.chainId);
+    // Set the src network
+    if (isSolana) {
+      dispatch(setActiveNetworkWithError(networkConfig.chainId));
+    } else {
+      const networkId = isNetworkAdded(networkConfig)
+        ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
+            ?.networkClientId
+        : null;
+      if (networkId) {
+        dispatch(setActiveNetworkWithError(networkId));
+      }
+    }
+    // Set the src token
+    if (token) {
+      dispatch(setFromToken(token));
+    }
+    // Fetch the native EVM balance
+    if (selectedAccount && !isSolana) {
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {
@@ -182,13 +187,10 @@ export const setFromChain = ({
       });
       await dispatch(
         setEVMSrcNativeBalance({
-          selectedAddress: selectedEvmAccount.address,
+          selectedAddress: selectedAccount.address,
           chainId: networkConfig.chainId,
         }),
       );
-    }
-    if (token) {
-      dispatch(setFromToken(token));
     }
   };
 };

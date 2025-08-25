@@ -54,6 +54,7 @@ import {
   getIsSwap,
   BridgeAppState,
   getTxAlerts,
+  getFromAccount,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -94,8 +95,6 @@ import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
   getEnabledNetworksByNamespace,
-  getSelectedEvmInternalAccount,
-  getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -104,7 +103,6 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
-  getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
   getMultichainNativeCurrency,
   getMultichainProviderConfig,
@@ -248,14 +246,7 @@ const PrepareBridgePage = ({
   const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
-  const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
-  const selectedSolanaAccount = useSelector(getLastSelectedNonEvmAccount);
-  const selectedMultichainAccount = useMultichainSelector(
-    getSelectedInternalAccount,
-  );
-  const selectedAccount = isEvm
-    ? selectedEvmAccount
-    : selectedMultichainAccount;
+  const selectedAccount = useSelector(getFromAccount);
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -275,7 +266,7 @@ const PrepareBridgePage = ({
 
   const { tokenAlert } = useTokenAlerts();
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
-    useDestinationAccount(isSwap);
+    useDestinationAccount();
 
   const {
     filteredTokenListGenerator: toTokenListGenerator,
@@ -362,13 +353,6 @@ const PrepareBridgePage = ({
   }, [isEstimatedReturnLow, isInsufficientGasForQuote, isLowReturnBannerOpen]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
-
-  const isDestinationSolana = useMemo(() => {
-    if (!toChain?.chainId) {
-      return false;
-    }
-    return isSolanaChainId(toChain.chainId);
-  }, [toChain?.chainId]);
 
   const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
@@ -492,7 +476,7 @@ const PrepareBridgePage = ({
     }
   }, []);
 
-  useBridgeQueryParams(selectedSolanaAccount, selectedEvmAccount);
+  useBridgeQueryParams();
 
   const occurrences = toToken?.occurrences ?? toToken?.aggregators?.length;
   const toTokenIsNotNative =
@@ -554,8 +538,7 @@ const PrepareBridgePage = ({
               dispatch(
                 setFromChain({
                   networkConfig,
-                  selectedSolanaAccount,
-                  selectedEvmAccount,
+                  selectedAccount,
                 }),
               );
             },
@@ -690,8 +673,7 @@ const PrepareBridgePage = ({
                     setFromChain({
                       networkConfig: toChain,
                       token: toToken,
-                      selectedSolanaAccount,
-                      selectedEvmAccount,
+                      selectedAccount,
                     }),
                   );
                 }
@@ -765,7 +747,6 @@ const PrepareBridgePage = ({
               <DestinationAccountPicker
                 onAccountSelect={setSelectedDestinationAccount}
                 selectedSwapToAccount={selectedDestinationAccount}
-                isDestinationSolana={isDestinationSolana}
               />
             </Box>
           )}

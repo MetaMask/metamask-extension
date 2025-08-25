@@ -50,13 +50,13 @@ const MAXIMUM_CURRENCY_DECIMALS = 3;
 
 type DestinationAccountListItemProps = {
   account: InternalAccount;
-  selected: boolean;
+  selected?: boolean;
   onClick?: () => void;
 };
 
 const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   account,
-  selected,
+  selected = false,
   onClick,
 }) => {
   const shouldHideZeroBalanceTokens = useSelector(
