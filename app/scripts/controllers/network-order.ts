@@ -54,21 +54,23 @@ export type NetworkOrderControllerupdateNetworksListAction = {
 export type NetworkOrderControllerMessengerActions =
   NetworkOrderControllerupdateNetworksListAction;
 
+export type NetworkOrderControllerMessengerEvents = NetworkOrderStateChange;
+
 type AllowedActions =
   | NetworkControllerGetStateAction
   | NetworkControllerSetActiveNetworkAction;
+
+type AllowedEvents =
+  | NetworkControllerStateChangeEvent
+  | NetworkControllerNetworkRemovedEvent;
 
 // Type for the messenger of NetworkOrderController
 export type NetworkOrderControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   NetworkOrderControllerMessengerActions | AllowedActions,
-  | NetworkOrderStateChange
-  | NetworkControllerStateChangeEvent
-  | NetworkControllerNetworkRemovedEvent,
+  NetworkOrderControllerMessengerEvents | AllowedEvents,
   AllowedActions['type'],
-  | NetworkOrderStateChange['type']
-  | NetworkControllerStateChangeEvent['type']
-  | NetworkControllerNetworkRemovedEvent['type']
+  AllowedEvents['type']
 >;
 
 // Default state for the controller
@@ -240,11 +242,11 @@ export class NetworkOrderController extends BaseController<
    *
    * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
    * to be enabled. All other networks will be implicitly disabled.
-   * @param networkId - The CaipChainId of the currently selected network
+   * @param namespace - The caip-2 namespace of the currently selected network *(e.g. 'eip155' or 'solana')
    */
-  setEnabledNetworks(chainIds: string | string[], networkId: CaipChainId) {
-    if (!networkId) {
-      throw new Error('networkId is required to set enabled networks');
+  setEnabledNetworks(chainIds: string | string[], namespace: CaipNamespace) {
+    if (!namespace) {
+      throw new Error('namespace is required to set enabled networks');
     }
     if (!chainIds) {
       throw new Error('chainIds is required to set enabled networks');
@@ -255,7 +257,7 @@ export class NetworkOrderController extends BaseController<
       const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
 
       // Add the enabled networks to the mapping for the specified network type
-      state.enabledNetworkMap[networkId] = enabledNetworks;
+      state.enabledNetworkMap[namespace] = enabledNetworks;
     });
 
     this.#switchToEnabledNetworkIfNeeded(ids);

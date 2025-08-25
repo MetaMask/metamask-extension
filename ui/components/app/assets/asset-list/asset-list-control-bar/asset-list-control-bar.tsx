@@ -20,6 +20,8 @@ import {
 import { getEnabledNetworksByNamespace } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -28,10 +30,13 @@ import {
   IconSize,
   Popover,
   PopoverPosition,
+  Text,
 } from '../../../../component-library';
 import SortControl, { SelectableListItem } from '../sort-control/sort-control';
 import {
+  AlignItems,
   BackgroundColor,
+  BorderColor,
   Display,
   JustifyContent,
   TextColor,
@@ -281,11 +286,12 @@ const AssetListControlBar = ({
         : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
+    // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworksByNamespace).length > 1
     ) {
-      return t('enabledNetworks');
+      return t('allPopularNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&
@@ -303,13 +309,38 @@ const AssetListControlBar = ({
     }
 
     return t('popularNetworks');
-  }, [isTokenNetworkFilterEqualCurrentNetwork, currentMultichainNetwork, t]);
+  }, [
+    enabledNetworksByNamespace,
+    isTokenNetworkFilterEqualCurrentNetwork,
+    currentMultichainNetwork.isEvmNetwork,
+    currentMultichainNetwork.network.nickname,
+    currentMultichainNetwork?.nickname,
+    t,
+    allNetworks,
+  ]);
+
+  const singleNetworkIconUrl = useMemo(() => {
+    if (!isGlobalNetworkSelectorRemoved) {
+      return undefined;
+    }
+
+    const chainIds = Object.keys(enabledNetworksByNamespace);
+
+    if (chainIds.length !== 1) {
+      return undefined;
+    }
+
+    return currentMultichainNetwork?.network?.rpcPrefs?.imageUrl;
+  }, [
+    currentMultichainNetwork?.network?.rpcPrefs?.imageUrl,
+    enabledNetworksByNamespace,
+  ]);
 
   return (
     <Box
       className="asset-list-control-bar"
-      marginLeft={2}
-      marginRight={2}
+      marginLeft={4}
+      marginRight={4}
       ref={popoverRef}
     >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
@@ -323,7 +354,7 @@ const AssetListControlBar = ({
               : toggleNetworkFilterPopover
           }
           disabled={isGlobalNetworkSelectorRemoved ? false : isDisabled}
-          size={ButtonBaseSize.Sm}
+          size={ButtonBaseSize.Md}
           endIconName={IconName.ArrowDown}
           backgroundColor={
             isNetworkFilterPopoverOpen
@@ -332,9 +363,20 @@ const AssetListControlBar = ({
           }
           color={TextColor.textDefault}
           marginRight={isFullScreen ? 2 : null}
+          borderColor={BorderColor.borderDefault}
           ellipsis
         >
-          {networkButtonText}
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            {singleNetworkIconUrl && (
+              <AvatarNetwork
+                name={currentMultichainNetwork.nickname}
+                src={singleNetworkIconUrl}
+                size={AvatarNetworkSize.Sm}
+                borderWidth={0}
+              />
+            )}
+            <Text ellipsis>{networkButtonText}</Text>
+          </Box>
         </ButtonBase>
 
         <Box
@@ -348,9 +390,9 @@ const AssetListControlBar = ({
                 data-testid="sort-by-popover-toggle"
                 className="asset-list-control-bar__button"
                 onClick={toggleTokenSortPopover}
-                size={ButtonBaseSize.Sm}
+                size={ButtonBaseSize.Md}
                 startIconName={IconName.Filter}
-                startIconProps={{ marginInlineEnd: 0 }}
+                startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
                 backgroundColor={
                   isTokenSortPopoverOpen
                     ? BackgroundColor.backgroundPressed

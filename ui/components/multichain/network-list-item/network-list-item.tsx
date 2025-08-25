@@ -145,6 +145,7 @@ export const NetworkListItem = ({
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
+        'multichain-network-list-item--deselected': !selected,
         'multichain-network-list-item--disabled': disabled,
         'multichain-network-list-item--not-selectable': notSelectable,
       })}

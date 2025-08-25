@@ -18,6 +18,11 @@ function buildFixtures(title: string, chainId: number = 1337) {
       .withPermissionControllerConnectedToTestDapp()
       .withNetworkControllerOnPolygon()
       .withTokensControllerERC20({ chainId })
+      .withEnabledNetworks({
+        eip155: {
+          [CHAIN_IDS.POLYGON]: true,
+        },
+      })
       .build(),
     smartContract: SMART_CONTRACTS.HST,
     title,
@@ -55,20 +60,12 @@ describe('Multichain Asset List', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await assetListPage.check_tokenItemNumber(3);
-        await driver.clickElement('.multichain-token-list-item');
-        const coinOverviewElement = await driver.findElement(
-          '[data-testid="coin-overview-buy"]',
-        );
-        const multichainTokenListButton = await driver.findElement(
-          '[data-testid="multichain-token-list-button"]',
-        );
-        assert.ok(coinOverviewElement, 'coin-overview-buy is present');
-        assert.ok(
-          multichainTokenListButton,
-          'multichain-token-list-button is present',
-        );
+        await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
+        // Only Ethereum network is selected so only 1 token visible
+        await assetListPage.checkTokenItemNumber(1);
+        await assetListPage.clickOnAsset('Ethereum');
+        await assetListPage.checkBuySellButtonIsPresent();
+        await assetListPage.checkMultichainTokenListButtonIsPresent();
       },
     );
   });
@@ -80,7 +77,9 @@ describe('Multichain Asset List', function (this: Suite) {
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
         const sendPage = new SendTokenPage(driver);
-        await assetListPage.check_tokenItemNumber(4);
+        // Currently only polygon is selected, so only see polygon tokens
+        // 1 native token (POL), and 1 ERC-20 (TST)
+        await assetListPage.checkTokenItemNumber(2);
         await assetListPage.clickOnAsset('TST');
         await driver.clickElement('[data-testid="eth-overview-send"]');
         await sendPage.check_networkChange(POLYGON_NAME_MAINNET);

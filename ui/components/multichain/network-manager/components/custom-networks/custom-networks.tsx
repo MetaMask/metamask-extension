@@ -1,6 +1,6 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
@@ -37,10 +37,12 @@ import {
   getOrderedNetworksList,
   getShowTestNetworks,
 } from '../../../../../selectors';
+import { hideModal } from '../../../../../store/actions';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
   const history = useHistory();
+  const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -72,8 +74,9 @@ export const CustomNetworks = React.memo(() => {
   const handleNetworkClick = useCallback(
     async (chainId: MultichainNetworkConfiguration['chainId']) => {
       await handleNetworkChange(chainId);
+      await dispatch(hideModal());
     },
-    [handleNetworkChange],
+    [dispatch, handleNetworkChange],
   );
 
   // Renders a network in the network list
@@ -130,20 +133,19 @@ export const CustomNetworks = React.memo(() => {
     });
 
     return filteredNetworks.length > 0 ? (
-      <>
+      <Box paddingBottom={2}>
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
           paddingLeft={4}
           paddingRight={4}
-          paddingTop={4}
         >
           {t('customNetworks')}
         </Text>
         {filteredNetworks.map((network) =>
           generateMultichainNetworkListItem(network),
         )}
-      </>
+      </Box>
     ) : null;
   }, [
     orderedNetworks,
@@ -194,7 +196,6 @@ export const CustomNetworks = React.memo(() => {
                 color={TextColor.textAlternative}
                 paddingLeft={4}
                 paddingRight={4}
-                paddingTop={4}
               >
                 {t('testnets')}
               </Text>
