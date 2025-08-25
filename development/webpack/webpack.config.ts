@@ -28,6 +28,7 @@ import {
   NODE_MODULES_RE,
   __HMR_READY__,
   SNOW_MODULE_RE,
+  TREZOR_MODULE_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -232,6 +233,28 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    // TODO: Remove this workaround after upgrading to React 18
+    // WORKAROUND: Alias for React JSX runtime to handle ESM module resolution issues.
+    // This is needed because @metamask/design-system-react uses @radix-ui/react-slot,
+    // which is distributed as an ESM module (.mjs) that imports 'react/jsx-runtime'
+    // without the file extension. Webpack 5's strict ESM resolution requires fully
+    // specified imports, so we explicitly map these to the actual files.
+    //
+    // This issue only affects React 17. React 18+ properly exports jsx-runtime
+    // with correct ESM module resolution, so this workaround can be removed after upgrading.
+    //
+    // Related issues:
+    // - https://github.com/radix-ui/primitives/issues/3413
+    // - Fix example: https://github.com/xyflow/xyflow/issues/4683#issuecomment-2388049017
+    //
+    // Potential solutions until React 18 upgrade:
+    // 1. Current workaround: webpack aliases (what we're using)
+    // 2. @metamask/design-system-react could patch the Radix UI packages
+    // 3. @metamask/design-system-react could re-export components with a build step that fixes imports
+    alias: {
+      'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
+      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
+    },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
@@ -300,12 +323,7 @@ const config = {
 
               // these trezor libraries are .js files with CJS exports, they
               // must be processed with the CJS loader
-              /^.*\/node_modules\/@trezor\/connect\/.*$/u,
-              /^.*\/node_modules\/@trezor\/connect-web\/.*$/u,
-              /^.*\/node_modules\/@trezor\/connect-common\/.*$/u,
-              /^.*\/node_modules\/@trezor\/utils\/.*$/u,
-              /^.*\/node_modules\/@trezor\/websocket-client\/.*$/u,
-              /^.*\/node_modules\/@trezor\/schema-utils\/.*$/u,
+              TREZOR_MODULE_RE,
             ],
             use: npmLoader,
           },

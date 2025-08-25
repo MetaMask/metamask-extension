@@ -130,6 +130,7 @@ export const ConnectedSitePopover = ({
                     }),
                   )
                 }
+                data-testid="connected-site-popover-network-button"
               >
                 {currentNetwork?.name}
               </ButtonLink>
@@ -165,7 +166,7 @@ export const ConnectedSitePopover = ({
                 onClick();
               } else {
                 global.platform.openTab({
-                  url: 'https://portfolio.metamask.io/explore/dapps',
+                  url: 'https://app.metamask.io/explore/dapps',
                 });
               }
             }}
