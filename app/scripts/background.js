@@ -452,12 +452,12 @@ browser.runtime.onConnect.addListener(async (port) => {
     return;
   }
   // Setup listeners to respond immediately to liveness check from UI.
-  const synHandler = (event) => {
+  const livenessCheckHandler = (event) => {
     if (
       event.name === 'background-liveness' &&
       event.data?.method === BACKGROUND_LIVENESS_REQUEST
     ) {
-      port.onMessage.removeListener(synHandler);
+      port.onMessage.removeListener(livenessCheckHandler);
       port.postMessage({
         data: {
           method: BACKGROUND_LIVENESS_RESPONSE,
@@ -466,7 +466,7 @@ browser.runtime.onConnect.addListener(async (port) => {
       });
     }
   };
-  port.onMessage.addListener(synHandler);
+  port.onMessage.addListener(livenessCheckHandler);
 
   // Queue up connection attempts here, waiting until after initialization
   try {
