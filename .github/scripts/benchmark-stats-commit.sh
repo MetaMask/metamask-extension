@@ -29,7 +29,9 @@ git clone --depth 1 https://github.com/MetaMask/extension_benchmark_stats.git te
 
 cd temp
 
-git fetch --all
+git fetch origin main:main
+
+echo "Fetching main branch"
 
 git checkout main
 
