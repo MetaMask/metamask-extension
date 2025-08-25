@@ -4825,7 +4825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^4.3.1, @lavamoat/aa@npm:^4.3.3":
+"@lavamoat/aa@npm:^4.3.1":
   version: 4.3.3
   resolution: "@lavamoat/aa@npm:4.3.3"
   dependencies:
@@ -4833,6 +4833,17 @@ __metadata:
   bin:
     lavamoat-ls: src/cli.js
   checksum: 10/a1051478a59efd3fc032c955369b1dada86148d192a5cccb0c08140f697b96c5211a93a77f5bddf8254b98e60d8f0759cf961000a59b910673db14c0ac0237ae
+  languageName: node
+  linkType: hard
+
+"@lavamoat/aa@npm:^4.3.4":
+  version: 4.3.4
+  resolution: "@lavamoat/aa@npm:4.3.4"
+  dependencies:
+    resolve: "npm:1.22.10"
+  bin:
+    lavamoat-ls: src/cli.js
+  checksum: 10/062e85d6e13f4f59be6bc632d19166e5fdc0c2402aa4d7c2ce39308542d6b4daf8721f498360520abb6707e5590b6755f767c32c075291effeb24c48ed3a18b4
   languageName: node
   linkType: hard
 
@@ -4917,18 +4928,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@lavamoat/webpack@npm:1.1.0"
+"@lavamoat/webpack@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@lavamoat/webpack@npm:1.2.0"
   dependencies:
-    "@lavamoat/aa": "npm:^4.3.3"
+    "@lavamoat/aa": "npm:^4.3.4"
     browser-resolve: "npm:2.0.0"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^16.5.0"
-    ses: "npm:1.12.0"
+    lavamoat-core: "npm:^16.5.1"
+    ses: "npm:1.14.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/232be6adf942c3675f55f38c786594406428b90af35156f276efbf121afa9c5b4908527c66c96821af6e7779b87d474c1e9e4bbd86e450a392345822a9a068ed
+  checksum: 10/bef023b5e044f5f458b2cf4324286ffa538cebebdca39bf63ebb4b8011dbd5fee22febf964a28a037758e30ecc1f21fc74ea5fcd3d4aff1869a5211a498f0477
   languageName: node
   linkType: hard
 
@@ -30603,18 +30614,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^16.5.0":
-  version: 16.5.0
-  resolution: "lavamoat-core@npm:16.5.0"
+"lavamoat-core@npm:^16.5.1":
+  version: 16.5.1
+  resolution: "lavamoat-core@npm:16.5.1"
   dependencies:
     "@babel/types": "npm:7.27.3"
     json-stable-stringify: "npm:1.3.0"
     lavamoat-tofu: "npm:^8.0.8"
     merge-deep: "npm:3.0.3"
-    ses: "npm:1.12.0"
+    ses: "npm:1.14.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/c8164ee8e3802aa2c8c36408a570d75238db4c77b3c0fa69b204e7fb7ca1665edb981765eae80fb5542beb4f44b6749fa197137877607d913a7b73e975db5dea
+  checksum: 10/91f043b733902b1af02f5efa1862598c21f80fba14d531a276ff6017a6bf51b01dd9cee4cd241eee2279acf59847c220f473d364d1d88290f4e67a029dfb4a5a
   languageName: node
   linkType: hard
 
@@ -32047,7 +32058,7 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.5"
     "@lavamoat/snow": "npm:^2.0.3"
-    "@lavamoat/webpack": "npm:^1.1.0"
+    "@lavamoat/webpack": "npm:^1.2.0"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
@@ -39565,12 +39576,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:1.12.0":
-  version: 1.12.0
-  resolution: "ses@npm:1.12.0"
+"ses@npm:1.14.0, ses@npm:^1.1.0, ses@npm:^1.12.0, ses@npm:^1.13.0, ses@npm:^1.14.0":
+  version: 1.14.0
+  resolution: "ses@npm:1.14.0"
   dependencies:
-    "@endo/env-options": "npm:^1.1.8"
-  checksum: 10/209731eb2f6cfcc9e12296964f8f31cab7fefb53de97aff8d75e357aa6c85e40f69e62ebc0a8d946c6cbdd7ef644caf247f38d5c85a6ad891c00a1c5653f0e39
+    "@endo/cache-map": "npm:^1.1.0"
+    "@endo/env-options": "npm:^1.1.11"
+    "@endo/immutable-arraybuffer": "npm:^1.1.2"
+  checksum: 10/bee10b958938fb3d153ea8f1b4514f8ddb390dc7533fe9cfc382dcc046bebd5fca02d80836bfb8f98e94609ffbe3580a0bb65428eb7e39d523315eacdc052300
   languageName: node
   linkType: hard
 
@@ -39580,17 +39593,6 @@ __metadata:
   dependencies:
     "@endo/env-options": "npm:^1.1.7"
   checksum: 10/6a1a54d3a62839b1fb888a71136960ad042bed89bdb2e20417fd7ef8880387b30d5fe6aa2420ec58992962f790f0392c65a84c5d3be36e0ebbc4d604d8795174
-  languageName: node
-  linkType: hard
-
-"ses@npm:^1.1.0, ses@npm:^1.12.0, ses@npm:^1.13.0, ses@npm:^1.14.0":
-  version: 1.14.0
-  resolution: "ses@npm:1.14.0"
-  dependencies:
-    "@endo/cache-map": "npm:^1.1.0"
-    "@endo/env-options": "npm:^1.1.11"
-    "@endo/immutable-arraybuffer": "npm:^1.1.2"
-  checksum: 10/bee10b958938fb3d153ea8f1b4514f8ddb390dc7533fe9cfc382dcc046bebd5fca02d80836bfb8f98e94609ffbe3580a0bb65428eb7e39d523315eacdc052300
   languageName: node
   linkType: hard
 

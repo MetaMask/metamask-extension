@@ -46,6 +46,7 @@ export const lavamoatPlugin = new LavamoatPlugin({
       'Event',
       'Image', // Used by browser to generate notifications
       'fetch', // Used by browser to generate notifications
+      'AbortController',
       'OffscreenCanvas', // Used by browser to generate notifications
       // globals chromedriver needs to function
       // @ts-expect-error - regex is not included in the types for some reason
@@ -84,8 +85,6 @@ export const lavamoatPlugin = new LavamoatPlugin({
       'browser',
       'chrome',
       'indexedDB',
-      // webpack
-      'webpackChunk',
     ],
   },
 });
