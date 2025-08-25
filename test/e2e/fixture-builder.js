@@ -1595,26 +1595,157 @@ class FixtureBuilder {
   }
 
   withLedgerAccount(
-    selectedAccount = '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+    selectedAccount = '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
   ) {
-    return this.withKeyringController({
-      vault:
-        '{"data":"kCehIbrW5j8AKVLEdUUaidsTomloRQLmLnEIYUA+HHMCJTJ9/dX+B692ExnrgWlZK4PySLTVoofQZjgQcKVMHi+mO5wnPV3p4sKKpv/w1zh0AIx5h25zDln5DbyHWjJtUKISOvKyLvZ02I0oqFvVGF6Wae/TNLelUleYwjP02h39//Fkgy8hukDNMmscBlX/Vx3iNwyie9X7FXKXMHrHcMhSjRJaZxri48SOWbchx31hfZuv8oP2l1yJkrWv82JjkiZYoQcbGkBRis06GnfFU62cKyqh9ZrIRHb6yj8g7SjRF5mMe7czA3QdJQjUMHJLq9IV2To+WOiOsKd+CVrjvNR9A1fWrRlAvQENDWO9FxaBuuBsNF2mm9KHqowSXD+/TUP1fiftyTnxs9mzojKReX8fPP0qjlIE7Sv71OfKvD1+7zW1udWmgoO+RcCFj3tQ5wXc6/MAYB2N2vfSHB9k+AgUYvajtaf0cb4gdm3KDPhriv1sDkOenaKbZLGLnsbfMWAbTQPrwCDdhiOvHBUfCVrV1ac0FlUIERdNkxDMwbd9BllyscPsif9VNuZCUzzeboTk0LTm1FszgFD8UxlvCfxB9Z5pZgk5ublhAkWZGZuckfVTEPofcELNx8VVf2Un8Yju8QzX7XGwNTTg/v5jLx52NrGWHvWIRUHRjnLK6hOVL26yRbds4e6FK4vsi1Hxi85HiiB1J2RX3gBfl14R2/1nCpLZePnEUaH6TgGPzsbzlJsSsCktGvMZaLdD","iv":"utoVJtRyaiuYF9PnhgZD8w==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"PwqqENo0YiZXcRrMzg+ujLG2VtyTNkKBCvFMsnzFefk="}',
-    }).withPreferencesController({
-      identities: {
+    return this.withAccountTracker({
+      accounts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
           address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          lastSelected: 1665507600000,
-          name: 'Ledger 1',
+          balance: '0x1158e460913d00000', // 20 ETH in wei
         },
-        '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
-          address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
-          lastSelected: 1665507800000,
-          name: 'Ledger 2',
+        '0xF68464152d7289D7eA9a2bEC2E0035c45188223c': {
+          address: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
+          balance: '0x1158e460913d00000', // 20 ETH in wei
         },
       },
-      selectedAddress: selectedAccount,
-    });
+      currentBlockGasLimit: '0x1c9c380',
+      accountsByChainId: {
+        '0x539': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            balance: '0x1158e460913d00000', // 20 ETH in wei
+          },
+          '0xF68464152d7289D7eA9a2bEC2E0035c45188223c': {
+            address: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
+            balance: '0x1158e460913d00000', // 20 ETH in wei
+          },
+        },
+        '0x1': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            balance: '0x1158e460913d00000', // 20 ETH in wei
+          },
+          '0xF68464152d7289D7eA9a2bEC2E0035c45188223c': {
+            address: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
+            balance: '0x1158e460913d00000', // 20 ETH in wei
+          },
+        },
+      },
+      currentBlockGasLimitByChainId: {
+        '0x539': '0x1c9c380',
+        '0x1': '0x1c9c380',
+      },
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            '221ecb67-0d29-4c04-83b2-dff07c263634': {
+              id: '221ecb67-0d29-4c04-83b2-dff07c263634',
+              address: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
+              options: {
+                hdPath: "m/44'/60'/0'/0/0",
+                hdAccountIndex: 0,
+              },
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Ledger 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Ledger Hardware',
+                  hdPath: "m/44'/60'/0'/0/0",
+                  hdAccountIndex: 0,
+                },
+                lastSelected: 1724486729083,
+              },
+            },
+          },
+          selectedAccount: (() => {
+            if (
+              selectedAccount === '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
+            ) {
+              return 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
+            }
+            if (
+              selectedAccount === '0xF68464152d7289D7eA9a2bEC2E0035c45188223c'
+            ) {
+              return '221ecb67-0d29-4c04-83b2-dff07c263634';
+            }
+            return '221ecb67-0d29-4c04-83b2-dff07c263634';
+          })(),
+        },
+      })
+      .withKeyringController({
+        vault:
+          '{"data":"kCehIbrW5j8AKVLEdUUaidsTomloRQLmLnEIYUA+HHMCJTJ9/dX+B692ExnrgWlZK4PySLTVoofQZjgQcKVMHi+mO5wnPV3p4sKKpv/w1zh0AIx5h25zDln5DbyHWjJtUKISOvKyLvZ02I0oqFvVGF6Wae/TNLelUleYwjP02h39//Fkgy8hukDNMmscBlX/Vx3iNwyie9X7FXKXMHrHcMhSjRJaZxri48SOWbchx31hfZuv8oP2l1yJkrWv82JjkiZYoQcbGkBRis06GnfFU62cKyqh9ZrIRHb6yj8g7SjRF5mMe7czA3QdJQjUMHJLq9IV2To+WOiOsKd+CVrjvNR9A1fWrRlAvQENDWO9FxaBuuBsNF2mm9KHqowSXD+/TUP1fiftyTnxs9mzojKReX8fPP0qjlIE7Sv71OfKvD1+7zW1udWmgoO+RcCFj3tQ5wXc6/MAYB2N2vfSHB9k+AgUYvajtaf0cb4gdm3KDPhriv1sDkOenaKbZLGLnsbfMWAbTQPrwCDdhiOvHBUfCVrV1ac0FlUIERdNkxDMwbd9BllyscPsif9VNuZCUzzeboTk0LTm1FszgFD8UxlvCfxB9Z5pZgk5ublhAkWZGZuckfVTEPofcELNx8VVf2Un8Yju8QzX7XGwNTTg/v5jLx52NrGWHvWIRUHRjnLK6hOVL26yRbds4e6FK4vsi1Hxi85HiiB1J2RX3gBfl14R2/1nCpLZePnEUaH6TgGPzsbzlJsSsCktGvMZaLdD","iv":"utoVJtRyaiuYF9PnhgZD8w==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"PwqqENo0YiZXcRrMzg+ujLG2VtyTNkKBCvFMsnzFefk="}',
+      })
+      .withNameController({
+        names: {
+          ethereumAddress: {
+            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+              '*': {
+                name: 'Account 1',
+                sourceId: null,
+                proposedNames: {},
+                origin: 'account-identity',
+              },
+            },
+            '0xF68464152d7289D7eA9a2bEC2E0035c45188223c': {
+              '*': {
+                proposedNames: {},
+                name: 'Ledger 1',
+                sourceId: null,
+                origin: 'account-identity',
+              },
+            },
+          },
+        },
+      })
+      .withPreferencesController({
+        identities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+          '0xF68464152d7289D7eA9a2bEC2E0035c45188223c': {
+            address: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
+            lastSelected: 1665507800000,
+            name: 'Ledger 1',
+          },
+        },
+        selectedAddress: selectedAccount,
+      });
   }
 
   withTrezorAccount() {
@@ -1889,7 +2020,7 @@ class FixtureBuilder {
           },
           sourceCode:
             // eslint-disable-next-line no-template-curly-in-string
-            '(()=>{var e={d:(n,t)=>{for(var a in t)e.o(t,a)&&!e.o(n,a)&&Object.defineProperty(n,a,{enumerable:!0,get:t[a]})},o:(e,n)=>Object.prototype.hasOwnProperty.call(e,n),r:e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})}},n={};(()=>{"use strict";function t(e,n,t){if("string"==typeof e)throw new Error(`An HTML element ("${String(e)}") was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.`);if(!e)throw new Error("A JSX fragment was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.");return e({...n,key:t})}function a(e){return Object.fromEntries(Object.entries(e).filter((([,e])=>void 0!==e)))}function r(e){return n=>{const{key:t=null,...r}=n;return{type:e,props:a(r),key:t}}}e.r(n),e.d(n,{onInstall:()=>p,onStart:()=>l,onUpdate:()=>d});const o=r("Box"),s=r("Text"),l=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The client was started successfully, and the "onStart" handler was called.\'})})}}),p=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The Snap was installed successfully, and the "onInstall" handler was called.\'})})}}),d=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The Snap was updated successfully, and the "onUpdate" handler was called.\'})})}})})(),module.exports=n})();',
+            '(()=>{var e={d:(n,t)=>{for(var a in t)e.o(t,a)&&!e.o(n,a)&&Object.defineProperty(n,a,{enumerable:!0,get:t[a]})},o:(e,n)=>Object.prototype.hasOwnProperty.call(e,n),r:e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})}},n={};(()=>{"use strict";function t(e,n,t){if("string"==typeof e)throw new Error(`An HTML element ("${String(e)}") was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.`);if(!e)throw new Error("A JSX fragment was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.");return e({...n,key:t})}function a(e){return Object.fromEntries(Object.entries(e).filter((([,e])=>void 0!==e)))}function r(e){return n=>{const{key:t=null,...r}=n;return{type:e,props:a(r),key:t}}}e.r(n),e.d(n,{onInstall:()=>p,onStart:()=>l,onUpdate:()=>d});const o=r("Box"),s=r("Text"),l=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The client was started successfully, and the "onStart" handler was called.\'})})}}),p=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The Snap was installed successfully, and the "onInstall" handler was called.\'})})}}),d=async()=>await snap.request({method:"snap_dialog",params:{type:"alert",content:t(o,{children:t(s,{children:\'The Snap was updated successfully, and the "onUpdate" handler was called.\'})})})})(),module.exports=n})();',
           status: 'stopped',
           version: '2.2.0',
           versionHistory: [

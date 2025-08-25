@@ -8,6 +8,8 @@ global.platform = {
   openTab: () => undefined,
   // Required for: settings info tab
   getVersion: () => '<version>',
+  // Required for: hardware wallet swap functionality
+  openExtensionInBrowser: () => undefined,
 };
 
 global.browser = {
