@@ -335,7 +335,14 @@ export function NftDetailsComponent({
       }),
     );
     // We only allow sending one NFT at a time
-    history.push(SEND_ROUTE);
+    if (process.env.SEND_REDESIGN_ENABLED) {
+      const queryParams = new URLSearchParams();
+      queryParams.append('address', nft.address);
+      queryParams.append('tokenId', nft.tokenId);
+      history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
+    } else {
+      history.push(SEND_ROUTE);
+    }
   };
 
   const getDateCreatedTimestamp = (dateString: string) => {
