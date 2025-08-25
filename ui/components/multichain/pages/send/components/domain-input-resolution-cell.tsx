@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../../contexts/i18n';
 import Confusable from '../../../../ui/confusable';
 import {
-  AvatarAccount,
   Box,
   AvatarIcon,
   AvatarIconSize,
@@ -20,6 +19,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import Tooltip from '../../../../ui/tooltip';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 
@@ -91,7 +91,7 @@ export const DomainInputResolutionCell = ({
   return (
     <Box
       key={address}
-      className="multichain-send-page__recipient__item"
+      className="multichain-send-page__recipient__item gap-4"
       onClick={() => onClick()}
       display={Display.Flex}
       alignItems={AlignItems.center}
@@ -124,7 +124,7 @@ export const DomainInputResolutionCell = ({
             className: 'multichain-send-page__recipient__item__badge',
           }}
         >
-          <AvatarAccount address={address} />
+          <PreferredAvatar address={address} />
         </BadgeWrapper>
       </Tooltip>
       <Box
