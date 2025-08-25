@@ -39,7 +39,7 @@ export const useSendActions = () => {
         history.push(CONFIRM_TRANSACTION_ROUTE);
       }
     },
-    [asset, from, isEvmSendType, to, value],
+    [asset, dispatch, from, history, isEvmSendType, to, value],
   );
 
   const handleBack = useCallback(() => {

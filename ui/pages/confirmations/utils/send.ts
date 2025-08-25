@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { isNativeAddress } from '@metamask/bridge-controller';
 
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
 import {
   addTransactionAndRouteToConfirmationPage,
   findNetworkClientIdByChainId,
@@ -18,26 +18,42 @@ import {
   generateERC721TransferData,
 } from '../send-legacy/send.utils';
 
-export const fromTokenMinimalUnit = (
+export const fromTokenMinUnitsNumeric = (
   value: string,
+  base: NumericBase,
   decimals?: number | string,
 ) => {
   const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
-  if (!decimalValue) {
-    return value;
-  }
   const multiplier = Math.pow(10, Number(decimalValue));
-  return new Numeric(value, 16).times(multiplier, 10).toBase(16).toString();
+  return new Numeric(value, base).times(multiplier, 10);
 };
 
-export const toTokenMinimalUnit = (
+export const fromTokenMinimalUnitsNumeric = (
+  value: string,
+  decimals?: number | string,
+) => fromTokenMinUnitsNumeric(value, 10, decimals);
+
+export const fromTokenMinimalUnits = (
+  value: string,
+  decimals?: number | string,
+) => fromTokenMinimalUnitsNumeric(value, decimals).toBase(16).toString();
+
+export const fromTokenMinimalUnitsHexNumeric = (
+  value: string,
+  decimals?: number | string,
+) => fromTokenMinUnitsNumeric(value, 16, decimals);
+
+export const toTokenMinimalUnitNumeric = (
   value: string,
   decimals?: number | string,
 ) => {
   const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
   const multiplier = Math.pow(10, Number(decimalValue));
-  return new Numeric(value, 16).divide(multiplier, 10).toBase(10).toString();
+  return new Numeric(value, 16).divide(multiplier, 10);
 };
+
+export const toTokenMinimalUnit = (value: string, decimals?: number | string) =>
+  toTokenMinimalUnitNumeric(value, decimals).toBase(10).toString();
 
 export function formatToFixedDecimals(
   value: string | undefined,
@@ -78,7 +94,7 @@ export const prepareEVMTransaction = (
 
   const tokenValue = asset.tokenId
     ? value
-    : fromTokenMinimalUnit(value ?? '0', asset.decimals);
+    : fromTokenMinimalUnits(value ?? '0', asset.decimals);
 
   // Native token
   if (isNativeAddress(asset.address)) {
@@ -144,3 +160,15 @@ export const submitEvmTransaction = async ({
     type: TransactionType.simpleSend,
   });
 };
+
+export function isDecimal(value: string) {
+  return Number.isFinite(parseFloat(value)) && !Number.isNaN(parseFloat(value));
+}
+
+export function convertedCurrency(value: string, conversionRate?: number) {
+  return new Numeric(value, 10)
+    .applyConversionRate(conversionRate)
+    .toBase(10)
+    .toString()
+    .replace(/\.?0+$/u, '');
+}

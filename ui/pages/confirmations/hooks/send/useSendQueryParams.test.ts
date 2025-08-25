@@ -1,4 +1,5 @@
 import * as BridgeCtrl from '@metamask/bridge-controller';
+import { DefaultRootState } from 'react-redux';
 import { useSearchParams } from 'react-router-dom-v5-compat';
 import { SetURLSearchParams } from 'react-router-dom-v5-compat/dist/react-router-dom';
 
@@ -9,7 +10,6 @@ import {
   SOLANA_ASSET,
 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
-import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { SendPages } from '../../constants/send';
 import * as SendContext from '../../context/send';
 import { useSendQueryParams } from './useSendQueryParams';
@@ -48,8 +48,11 @@ jest.mock(
   ],
 );
 
-function renderHook() {
-  const { result } = renderHookWithProvider(useSendQueryParams, mockState);
+function renderHook(args: DefaultRootState = {}) {
+  const { result } = renderHookWithProvider(useSendQueryParams, {
+    ...mockState,
+    metamask: { ...mockState.metamask, ...args },
+  });
   return result.current;
 }
 
@@ -83,7 +86,13 @@ describe('useSendQueryParams', () => {
     expect(mockGetNativeAssetForChainId).toHaveBeenCalledWith('0x1');
   });
 
-  it('call getTokenStandardAndDetails if address is present in params', () => {
+  it('get asset details from state of ERC20 token is passed', () => {
+    const mockUpdateAsset = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateAsset: mockUpdateAsset,
+      updateCurrentPage: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+
     const mockUseSearchParams = jest.mocked(useSearchParams);
     mockUseSearchParams.mockReturnValue([
       {
@@ -92,12 +101,17 @@ describe('useSendQueryParams', () => {
         },
       },
     ] as unknown as [URLSearchParams, SetURLSearchParams]);
-    renderHook();
-    expect(getTokenStandardAndDetails).toHaveBeenCalledWith(
-      EVM_ASSET.address,
-      undefined,
-      undefined,
-    );
+    renderHook({
+      allTokens: {
+        '0x5': {
+          '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': [EVM_ASSET],
+        },
+      },
+    });
+    expect(mockUpdateAsset).toHaveBeenCalledWith({
+      ...EVM_ASSET,
+      chainId: '0x5',
+    });
   });
 
   it('use asset from multiChainAssets if present', () => {
