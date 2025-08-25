@@ -123,7 +123,7 @@ const ShieldPlan = () => {
   };
 
   return (
-    <Page className="shield-plan-page">
+    <Page className="shield-plan-page" data-testid="shield-plan-page">
       <Header
         textProps={{
           variant: TextVariant.headingSm,
