@@ -8,7 +8,6 @@ global.platform = {
   openTab: () => undefined,
   // Required for: settings info tab
   getVersion: () => '<version>',
-
 };
 
 global.browser = {
