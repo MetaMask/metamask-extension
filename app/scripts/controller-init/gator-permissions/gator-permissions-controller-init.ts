@@ -1,20 +1,23 @@
 import {
   GatorPermissionsController,
-  type GatorPermissionsControllerConfig,
+  type GatorPermissionsControllerMessenger,
 } from '@metamask/gator-permissions-controller';
 import { ControllerInitFunction } from '../types';
-import { type GatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
+import { SnapId } from '@metamask/snaps-sdk';
+import { GatorPermissionsControllerInitMessenger } from '../messengers/gator-permissions';
 
 export const GatorPermissionsControllerInit: ControllerInitFunction<
   GatorPermissionsController,
-  GatorPermissionsControllerMessenger
+  // @ts-expect-error - GatorPermissionsControllerMessenger is not a valid type
+  GatorPermissionsControllerMessenger,
+  GatorPermissionsControllerInitMessenger
 > = ({ controllerMessenger, persistedState }) => {
   const controller = new GatorPermissionsController({
     messenger: controllerMessenger,
-    state: persistedState.GatorPermissionsController,
-    config: {
-      gatorPermissionsProviderSnapId: 'local:http://localhost:8082',
-    } as GatorPermissionsControllerConfig,
+    state: {
+      ...persistedState.GatorPermissionsController,
+      gatorPermissionsProviderSnapId: 'local:http://localhost:8082' as SnapId,
+    },
   });
 
   return {
