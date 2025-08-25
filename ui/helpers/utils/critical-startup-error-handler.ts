@@ -103,8 +103,8 @@ export class CriticalStartupErrorHandler {
       return;
     }
     const { method } = data;
-    // Currently, we only handle ACK, RELOAD_WINDOW, and the state corruption error
-    // message, but we will be adding more in the future.
+    // Currently, we only handle BACKGROUND_LIVENESS_RESPONSE, RELOAD_WINDOW, and the state
+    // corruption error message, but we will be adding more in the future.
     if (method === BACKGROUND_LIVENESS_RESPONSE) {
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
