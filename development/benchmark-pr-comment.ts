@@ -129,10 +129,8 @@ function getEmojiForMetric(metric: string, value: number): string {
  */
 function getComparisonEmoji(current: number, reference: number): string {
   const diff = current - reference;
-  const percentDiff = Math.abs(diff) / reference;
 
-  if (percentDiff < 0.05) {
-    // Less than 5% difference
+  if (diff === 0) {
     return '➡️';
   }
   return diff < 0 ? '⬇️' : '⬆️'; // Down arrow for better (lower), up arrow for worse (higher)
@@ -148,10 +146,7 @@ function getComparisonEmoji(current: number, reference: number): string {
 function hasSignificantIncrease(current: number, reference: number): boolean {
   const diff = current - reference;
   const percentIncrease = diff / reference;
-  // TODO: [ffmcgee] testing out layout, remove this after
-  console.log({ percentIncrease });
-  return true;
-  // return percentIncrease >= 0.2; // 20% or more increase
+  return percentIncrease >= 0.2; // 20% or more increase
 }
 
 /**

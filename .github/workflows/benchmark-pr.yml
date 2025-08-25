@@ -61,8 +61,7 @@ jobs:
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Upload benchmark results
-        # TODO: [ffmcgee] For testing, trigger this always (steps on benchmark-stats-commit.sh) remove the comment below after testing
-        # if: github.ref == 'refs/heads/main' # && secrets.EXTENSION_BENCHMARK_STATS_TOKEN
+        if: github.ref == 'refs/heads/main'
         run: .github/scripts/benchmark-stats-commit.sh
         env:
           EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
