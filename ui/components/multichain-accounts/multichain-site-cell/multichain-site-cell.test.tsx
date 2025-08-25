@@ -1,14 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { render, fireEvent, screen } from '@testing-library/react';
-import { CaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
+import { AccountGroupObject } from '@metamask/account-tree-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import configureStore from '../../../store/store';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
+import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
 import { MultichainSiteCell } from './multichain-site-cell';
-import { AccountGroupObject } from '@metamask/account-tree-controller';
 
 jest.mock('../../../contexts/metametrics', () => {
   const { createContext } = jest.requireActual('react');
@@ -79,26 +81,60 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
   },
 ];
 
-const mockNetworks = [
+const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
   {
     name: 'Ethereum Mainnet',
-    chainId: '1',
+    chainId: '0x1' as Hex,
     caipChainId: 'eip155:1' as CaipChainId,
+    blockExplorerUrls: ['https://etherscan.io'],
+    defaultBlockExplorerUrlIndex: 0,
+    defaultRpcEndpointIndex: 0,
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        networkClientId: 'mainnet',
+        type: RpcEndpointType.Custom,
+        url: 'https://mainnet.infura.io/v3/',
+      },
+    ],
   },
   {
     name: 'Polygon',
-    chainId: '137',
+    chainId: '0x89' as Hex,
     caipChainId: 'eip155:137' as CaipChainId,
+    blockExplorerUrls: ['https://polygonscan.com'],
+    defaultBlockExplorerUrlIndex: 0,
+    defaultRpcEndpointIndex: 0,
+    nativeCurrency: 'MATIC',
+    rpcEndpoints: [
+      {
+        networkClientId: 'polygon',
+        type: RpcEndpointType.Custom,
+        url: 'https://polygon-rpc.com',
+      },
+    ],
   },
 ];
 
-const mockTestNetworks = [
-  {
-    name: 'Sepolia',
-    chainId: '11155111',
-    caipChainId: 'eip155:11155111' as CaipChainId,
-  },
-];
+const mockTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] =
+  [
+    {
+      name: 'Sepolia',
+      chainId: '0xaa36a7' as Hex,
+      caipChainId: 'eip155:11155111' as CaipChainId,
+      blockExplorerUrls: ['https://sepolia.etherscan.io'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      nativeCurrency: 'ETH',
+      rpcEndpoints: [
+        {
+          networkClientId: 'sepolia',
+          type: RpcEndpointType.Custom,
+          url: 'https://sepolia.infura.io/v3/',
+        },
+      ],
+    },
+  ];
 
 const createMockState = (overrides = {}) => ({
   metamask: {

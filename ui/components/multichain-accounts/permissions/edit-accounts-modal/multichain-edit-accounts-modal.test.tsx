@@ -399,7 +399,6 @@ describe('MultichainEditAccountsModal', () => {
     ).toBeInTheDocument();
 
     // Rerender with all accounts selected
-    const store = configureStore(createMockState());
     rerender(
       <MultichainEditAccountsModal
         supportedAccountGroups={createMockAccountGroups()}
