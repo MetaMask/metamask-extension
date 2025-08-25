@@ -32,6 +32,7 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -296,13 +297,16 @@ export function isCurrentProviderCustom(state) {
   );
 }
 
-export function getCurrentQRHardwareState(state) {
-  const { qrHardware } = state.metamask;
-  return qrHardware || {};
+export function getActiveQrCodeScanRequest(state) {
+  return state.metamask.activeQrCodeScanRequest;
 }
 
 export function getIsSigningQRHardwareTransaction(state) {
-  return state.metamask.qrHardware?.sign?.request !== undefined;
+  const activeQrCodeScanRequest = getActiveQrCodeScanRequest(state);
+  return (
+    activeQrCodeScanRequest &&
+    activeQrCodeScanRequest.type === QrScanRequestType.SIGN
+  );
 }
 
 export function getCurrentKeyring(state) {
