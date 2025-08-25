@@ -1,11 +1,13 @@
 import React, { memo } from 'react';
 import { NameType } from '@metamask/name-controller';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import classnames from 'classnames';
 import Identicon from '../../../ui/identicon';
 import { Icon, IconSize, Text } from '../../../component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import { PreferredAvatar } from '../../preferred-avatar';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 
@@ -47,8 +49,11 @@ const NameDisplay = memo(
         );
       }
 
-      // Otherwise, use Identicon
-      return <Identicon address={value} diameter={16} image={image} />;
+      if (image) {
+        return <Identicon address={value} diameter={16} image={image} />;
+      }
+
+      return <PreferredAvatar address={value} size={AvatarAccountSize.Xs} />;
     };
 
     const renderName = () => {
