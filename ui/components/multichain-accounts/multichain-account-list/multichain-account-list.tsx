@@ -35,11 +35,16 @@ import { MultichainAccountMenu } from '../multichain-account-menu';
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
   selectedAccountGroup: AccountGroupId;
+  formattedAccountGroupBalancesByWallet?: Record<
+    string,
+    Record<string, string>
+  >;
 };
 
 export const MultichainAccountList = ({
   wallets,
   selectedAccountGroup,
+  formattedAccountGroupBalancesByWallet,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -104,6 +109,9 @@ export const MultichainAccountList = ({
 
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
+            const balanceText =
+              formattedAccountGroupBalancesByWallet?.[walletId]?.[groupId] ??
+              '$ n/a';
             // TODO: Implement logic for removable accounts
             const isRemovable = false;
 
@@ -112,7 +120,7 @@ export const MultichainAccountList = ({
                 key={`multichain-account-cell-${groupId}`}
                 accountId={groupId as AccountGroupId}
                 accountName={groupData.metadata.name}
-                balance="$ n/a"
+                balance={balanceText}
                 selected={selectedAccountGroup === groupId}
                 onClick={handleAccountClick}
                 endAccessory={
@@ -138,6 +146,7 @@ export const MultichainAccountList = ({
     dispatch,
     history,
     selectedAccountGroup,
+    formattedAccountGroupBalancesByWallet,
   ]);
 
   return <>{walletTree}</>;
