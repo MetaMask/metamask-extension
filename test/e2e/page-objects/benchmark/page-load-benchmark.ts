@@ -255,8 +255,7 @@ export class PageLoadBenchmark {
       return {
         pageLoadTime: navigation.loadEventEnd - navigation.startTime,
         domContentLoaded:
-          navigation.domContentLoadedEventEnd -
-          navigation.domContentLoadedEventStart,
+          navigation.domContentLoadedEventEnd - navigation.startTime,
         firstPaint: paint.find((p) => p.name === 'first-paint')?.startTime || 0,
         firstContentfulPaint:
           paint.find((p) => p.name === 'first-contentful-paint')?.startTime ||
