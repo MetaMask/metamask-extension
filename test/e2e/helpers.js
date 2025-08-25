@@ -281,6 +281,28 @@ async function withFixtures(options, testSuite) {
     extensionId = wd.extensionId;
     webDriver = driver.driver;
 
+    // Disable LavaMoat scuttling for E2E tests to prevent "global" property access issues
+    try {
+      await driver.executeScript(() => {
+        if (typeof globalThis !== 'undefined' && globalThis.lavaMoat) {
+          globalThis.lavaMoat.disableScuttling();
+        }
+        // Also ensure global property exists for compatibility
+        if (typeof globalThis !== 'undefined' && !globalThis.global) {
+          Object.defineProperty(globalThis, 'global', {
+            value: globalThis,
+            writable: false,
+            configurable: false,
+          });
+        }
+      });
+    } catch (error) {
+      console.log(
+        'Warning: Could not disable LavaMoat scuttling:',
+        error.message,
+      );
+    }
+
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
       await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
