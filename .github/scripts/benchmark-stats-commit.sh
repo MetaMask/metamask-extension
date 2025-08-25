@@ -54,7 +54,7 @@ jq . "${BENCHMARK_FILE}" > /dev/null || {
 
 # Check if the SHA already exists in the stats file
 if jq -e "has(\"${GITHUB_SHA}\")" "${STATS_FILE}" > /dev/null; then
-    echo "SHA ${GITHUB_SHA} already exists in stats file. Updating existing entry."
+    echo "SHA ${GITHUB_SHA} already exists in stats file. No new commit needed."
     exit 0
 fi
 
