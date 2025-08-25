@@ -71,7 +71,6 @@ describe('Ledger Swap', function () {
           swapFrom: 'TESTETH',
           swapTo: 'DAI',
         });
-        console.log('Ledger swap transaction completed successfully');
       },
     );
   });
