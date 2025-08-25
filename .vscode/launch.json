@@ -1,64 +1,20 @@
 {
   "configurations": [
+
+
     {
-      "type": "node",
+      "name": "Launch Debug MetaMask Chrome",
       "request": "launch",
-      "name": "Jest: current file",
-      "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": [
-        "${fileBasenameNoExtension}",
-        "--config",
-        "--runInBand",
-        "jest.config.js"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "windows": {
-        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-      }
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Jest Integration: current file",
-      "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": [
-        "${fileBasenameNoExtension}",
-        "--config",
-        "jest.integration.config.js",
-        "--testTimeout",
-        "30000"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "windows": {
-        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-      }
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Test E2E: current file",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "yarn",
+      "type": "chrome",
       "runtimeArgs": [
-        "test:e2e:single",
-        "${relativeFile}",
-        "--browser=${input:browserToUse}",
-        "--debug"
+        "--load-extension=${workspaceFolder}/dist/chrome",
+        "--disable-extensions-except=${workspaceFolder}/dist/chrome",
+        "--remote-debugging-port=9222"
       ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
-    }
-  ],
-  "inputs": [
-    {
-      "type": "pickString",
-      "id": "browserToUse",
-      "description": "Which browser do you want to test with?",
-      "options": ["chrome", "firefox", "all"],
-      "default": "chrome"
-    }
+      "url": "chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/background.html",
+      "sourceMaps": true,
+      "webRoot": "${workspaceFolder}",
+    },
   ],
   "version": "0.2.0"
 }
