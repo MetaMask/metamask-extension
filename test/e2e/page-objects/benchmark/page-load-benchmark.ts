@@ -231,7 +231,6 @@ export class PageLoadBenchmark {
 
     // Enable performance monitoring
     await page.addInitScript(() => {
-      // TODO: [ffmcgee] We are overriding performance.now for more precise timing, evaluate if this stays or not
       const originalNow = performance.now;
       const startTime = Date.now();
       performance.now = () => originalNow() + (Date.now() - startTime);
