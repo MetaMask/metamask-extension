@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 import { Box, Text } from '../../component-library';
 import {
   BackgroundColor,
@@ -26,21 +27,22 @@ export const AccountDetailsRow = ({
   onClick,
   labelColor,
 }: AccountDetailsRowProps) => {
+  const rowClassName = classnames('multichain-account-details__row', {
+    'multichain-account-details__row--clickable': Boolean(onClick),
+    'multichain-account-details__row--default': !onClick,
+  });
+
   return (
     <Box
       backgroundColor={BackgroundColor.backgroundAlternative}
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
-      style={{
-        ...style,
-        height: '52px',
-        cursor: onClick ? 'pointer' : 'default',
-      }}
+      style={style}
       paddingLeft={4}
       paddingRight={4}
       alignItems={AlignItems.center}
       onClick={onClick}
-      className="multichain-account-details__row"
+      className={rowClassName}
       data-testid={`account-details-row-${label
         .toLowerCase()
         .replaceAll(' ', '-')}`}
@@ -48,22 +50,20 @@ export const AccountDetailsRow = ({
       <Text
         color={labelColor ?? TextColor.textDefault}
         variant={TextVariant.bodyMdMedium}
-        style={{ fontWeight: '600' }}
+        className="multichain-account-details__label"
       >
         {label}
       </Text>
       <Box
         display={Display.Flex}
         alignItems={AlignItems.center}
-        style={{ minWidth: 0, flex: 1, justifyContent: 'flex-end' }}
+        className="multichain-account-details__value-container"
       >
         <Text
           color={TextColor.textAlternative}
           variant={TextVariant.bodyMdMedium}
           ellipsis
-          style={{
-            maxWidth: '150px',
-          }}
+          className="multichain-account-details__value"
           data-testid={`account-details-row-value-${label
             .toLowerCase()
             .replaceAll(' ', '-')}`}
