@@ -66,11 +66,11 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
     }
 
     // TODO: Remove this once we want to enable all non-EVM Snaps
-    if (!isMultichainWalletSnap(account.metadata.snap.id as SnapId)) {
-      throw new Error(
-        `Non-EVM Snap is not whitelisted: ${account.metadata.snap.id}`,
-      );
-    }
+    // if (!isMultichainWalletSnap(account.metadata.snap.id as SnapId)) {
+    //   throw new Error(
+    //     `Non-EVM Snap is not whitelisted: ${account.metadata.snap.id}`,
+    //   );
+    // }
 
     // Either use the passed caipAssetType, or fallback to the chain's native asset
     const assetTypeToUse = (() => {

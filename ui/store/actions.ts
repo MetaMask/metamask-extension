@@ -7000,19 +7000,36 @@ export async function sendMultichainTransaction(
     assetType?: CaipAssetType;
   },
 ) {
-  await handleSnapRequest({
+  const response = await handleSnapRequest({
     snapId,
     origin: 'metamask',
-    handler: HandlerType.OnRpcRequest,
+    handler: HandlerType.OnClientRequest,
     request: {
-      method: 'startSendTransactionFlow',
+      method: 'confirmSend',
       params: {
-        account,
-        scope,
-        assetId: assetType, // The Solana snap names the parameter `assetId` while it is in fact an `assetType`
-      },
+        "amount": "0.97544",
+        "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "fromAccountId": "4e152c63-ea3f-4d45-b86e-2a08dac77b6c",
+        "toAddress": "4Nd1mYdGQJkQ1tDk1H6rQhzX8ZcA5m9D7nFDJw3YcCVf"
+      }
     },
   });
+
+  console.log('response', response);
+
+  // await handleSnapRequest({
+  //   snapId,
+  //   origin: 'metamask',
+  //   handler: HandlerType.OnRpcRequest,
+  //   request: {
+  //     method: 'startSendTransactionFlow',
+  //     params: {
+  //       account,
+  //       scope,
+  //       assetId: assetType, // The Solana snap names the parameter `assetId` while it is in fact an `assetType`
+  //     },
+  //   },
+  // });
 }
 ///: END:ONLY_INCLUDE_IF
 
