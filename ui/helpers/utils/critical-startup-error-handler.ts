@@ -176,11 +176,11 @@ export class CriticalStartupErrorHandler {
    * it minimize abstractions that could cause further issues.
    */
   install() {
+    this.#port.onMessage.addListener(this.#handler);
+
     // Called without `await` intentionally to ensure listeners for other messages are added as
     // quickly as possible.
     this.#startLivenessCheck();
-
-    this.#port.onMessage.addListener(this.#handler);
   }
 
   /**
