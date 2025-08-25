@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Redémarrez MetaMask si le problème persiste.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "Le chargement prend plus de temps que d’habitude.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Erreur"
   },
@@ -322,6 +330,10 @@
   "addressMismatchPunycode": {
     "message": "Version Punycode : $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "Adresses",
+    "description": "Multichain account menu item for linking to addresses page"
   },
   "advanced": {
     "message": "Paramètres avancés"
@@ -901,6 +913,21 @@
   },
   "bridgeNetCost": {
     "message": "Coût net"
+  },
+  "bridgePriceImpact": {
+    "message": "Impact sur le prix"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "L’impact sur le prix reflète la manière dont votre ordre d’échange affecte le prix courant de l’actif. Si vous ne disposez pas de fonds suffisants pour payer les frais de gaz, une partie de votre jeton source est automatiquement allouée pour couvrir ces frais, ce qui réduit le montant échangé. MetaMask n’influence ni ne contrôle l’impact sur le prix."
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "L’impact sur le prix reflète la manière dont votre ordre d’échange affecte le prix courant de l’actif. Il dépend du volume de la transaction et de la liquidité disponible dans le pool. MetaMask n’influence ni ne contrôle l’impact sur le prix."
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Impact sur le prix"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "Avertissement concernant l’impact sur le prix"
   },
   "bridgeQuoteExpired": {
     "message": "Votre cotation a expiré."
@@ -1951,6 +1978,12 @@
   },
   "downArrow": {
     "message": "flèche vers le bas"
+  },
+  "downloadAppDescription": {
+    "message": "Emportez MetaMask partout avec vous grâce à l’application mobile. De plus, activez Face ID pour y avoir toujours accès, même si vous oubliez votre mot de passe."
+  },
+  "downloadAppTitle": {
+    "message": "Scannez le code QR et téléchargez l’application"
   },
   "downloadGoogleChrome": {
     "message": "Télécharger Google Chrome"
@@ -4574,6 +4607,10 @@
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
   },
+  "pin": {
+    "message": "Épingler",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "Épingler en haut de la page"
   },
@@ -4866,6 +4903,10 @@
   },
   "removeSnapDescription": {
     "message": "Cette action supprimera le snap, ses données et révoquera vos autorisations."
+  },
+  "rename": {
+    "message": "Renommer",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "remplacer"
@@ -5546,6 +5587,15 @@
   },
   "slideSweepStakeTitle": {
     "message": "Participez au tirage au sort qui vous permet de gagner $5000 USDC !"
+  },
+  "slippage": {
+    "message": "Effet de glissement"
+  },
+  "slippageAuto": {
+    "message": "Automatique"
+  },
+  "slippageEditAriaLabel": {
+    "message": "Ajuster l’effet de glissement"
   },
   "smartAccountAccept": {
     "message": "Utiliser un compte intelligent"
