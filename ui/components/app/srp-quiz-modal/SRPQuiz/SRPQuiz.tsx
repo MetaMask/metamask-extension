@@ -71,7 +71,7 @@ export type SRPQuizProps = {
 export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const history = useHistory();
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);

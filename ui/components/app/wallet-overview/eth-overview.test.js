@@ -412,7 +412,7 @@ describe('EthOverview', () => {
 
     const mockedStore = configureMockStore([thunk])(mockStore);
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <EthOverview />
       </MetaMetricsContext.Provider>,
       mockedStore,
@@ -507,7 +507,7 @@ describe('EthOverview', () => {
       mockedStoreWithSpecificChainId,
     );
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <EthOverview />
       </MetaMetricsContext.Provider>,
       mockedStore,

@@ -42,7 +42,7 @@ describe('PermitSimulationValueDisplay', () => {
 
     await act(async () => {
       renderWithProvider(
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
           <PermitSimulationValueDisplay
             tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             value="4321"
@@ -60,7 +60,7 @@ describe('PermitSimulationValueDisplay', () => {
     const mockStore = configureMockStore([])(mockState);
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={jest.fn()}>
+      <MetaMetricsContext.Provider value={{ trackEvent: jest.fn() }}>
         <PermitSimulationValueDisplay
           tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
           value={UNLIMITED_THRESHOLD}
@@ -82,7 +82,7 @@ describe('PermitSimulationValueDisplay', () => {
     const mockStore = configureMockStore([])(mockState);
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={jest.fn()}>
+      <MetaMetricsContext.Provider value={{ trackEvent: jest.fn() }}>
         <PermitSimulationValueDisplay
           tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
           value={`${UNLIMITED_THRESHOLD.slice(0, -1)}1`}
@@ -104,7 +104,7 @@ describe('PermitSimulationValueDisplay', () => {
     const mockStore = configureMockStore([])(mockState);
 
     const { queryByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={jest.fn()}>
+      <MetaMetricsContext.Provider value={{ trackEvent: jest.fn() }}>
         <PermitSimulationValueDisplay
           tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
           value={UNLIMITED_THRESHOLD.slice(0, -1)}

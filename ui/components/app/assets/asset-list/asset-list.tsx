@@ -25,7 +25,7 @@ const TokenListContainer = React.memo(
     onClickAsset,
     safeChains,
   }: Pick<AssetListProps, 'onClickAsset' | 'safeChains'>) => {
-    const trackEvent = useContext(MetaMetricsContext);
+    const { trackEvent } = useContext(MetaMetricsContext);
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
 
     const onTokenClick = useCallback(

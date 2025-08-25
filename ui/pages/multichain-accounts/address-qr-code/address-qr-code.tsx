@@ -37,7 +37,7 @@ export const AddressQRCode = () => {
   const t = useI18nContext();
   const history = useHistory();
   const { address } = useParams();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
   );

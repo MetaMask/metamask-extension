@@ -212,7 +212,7 @@ const render = (state = defaultState) => {
   return renderWithProvider(
     <MemoryRouter>
       <CompatRouter>
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
           <TransactionList />
         </MetaMetricsContext.Provider>
       </CompatRouter>
@@ -244,7 +244,7 @@ describe('TransactionList', () => {
     const { container } = renderWithProvider(
       <MemoryRouter>
         <CompatRouter>
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
+          <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
             <TransactionList hideNetworkFilter />
           </MetaMetricsContext.Provider>
         </CompatRouter>
@@ -266,7 +266,7 @@ describe('TransactionList', () => {
     const { container } = renderWithProvider(
       <MemoryRouter>
         <CompatRouter>
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
+          <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
             <TransactionList hideTokenTransactions />
           </MetaMetricsContext.Provider>
         </CompatRouter>
@@ -322,7 +322,7 @@ describe('TransactionList', () => {
     const { queryByText } = renderWithProvider(
       <MemoryRouter>
         <CompatRouter>
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
+          <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
             <TransactionList tokenChainId="0x89" />
           </MetaMetricsContext.Provider>
         </CompatRouter>
@@ -377,7 +377,7 @@ describe('TransactionList', () => {
     const { queryByText } = renderWithProvider(
       <MemoryRouter>
         <CompatRouter>
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
+          <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
             <TransactionList tokenChainId="0xe708" />
           </MetaMetricsContext.Provider>
         </CompatRouter>
