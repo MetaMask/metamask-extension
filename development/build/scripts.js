@@ -676,9 +676,9 @@ function createFactoredBuild({
             return path.parse(filepath).name;
           },
         }),
-        // cap files at 2 mb
+        // cap files at 4 mb
         bifyModuleGroups.groupBySize({
-          sizeLimit: 2e6,
+          sizeLimit: 4e6,
           groupingMap: sizeGroupMap,
         }),
       );
@@ -1141,7 +1141,7 @@ function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
 function setupSourcemaps(buildConfiguration, { buildTarget }) {
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
-    pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true }));
+    pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true, largeFile: true }));
     pipeline
       .get('sourcemaps:write')
       // Use inline source maps for development due to Chrome DevTools bug
