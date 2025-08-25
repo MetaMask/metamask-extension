@@ -111,6 +111,9 @@ export const MultichainAccountList = ({
           ([groupId, groupData]) => {
             // TODO: Implement logic for removable accounts
             const isRemovable = false;
+            const isSelected = selectedAccountGroups.includes(
+              groupId as AccountGroupId,
+            );
 
             return [
               <MultichainAccountCell
@@ -118,9 +121,7 @@ export const MultichainAccountList = ({
                 accountId={groupId as AccountGroupId}
                 accountName={groupData.metadata.name}
                 balance="$ n/a"
-                selected={selectedAccountGroups.includes(
-                  groupId as AccountGroupId,
-                )}
+                selected={isSelected}
                 onClick={handleAccountClickToUse}
                 endAccessory={
                   <MultichainAccountMenu
