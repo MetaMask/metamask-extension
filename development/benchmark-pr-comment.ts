@@ -205,11 +205,100 @@ function formatMetricRow(
 }
 
 /**
+ * Extracts metric values from a benchmark summary for a given metric name
+ *
+ * @param summary - Benchmark summary containing metric data
+ * @param metric - Name of the metric to extract
+ * @returns Object containing mean and standard deviation, or null if metric is not a number
+ */
+function getMetricValues(
+  summary: BenchmarkSummary,
+  metric: string,
+): { mean: number; stdDev: number } | null {
+  const meanValue =
+    summary.mean[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+  const stdDevValue =
+    summary.standardDeviation[
+      metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+    ];
+
+  if (typeof meanValue !== 'number') {
+    return null;
+  }
+
+  return {
+    mean: meanValue,
+    stdDev: stdDevValue || 0,
+  };
+}
+
+/**
+ * Processes a single metric for comparison and returns the formatted row
+ *
+ * @param metric - Name of the metric to process
+ * @param currentValues - Current metric values (mean and standard deviation)
+ * @param currentValues.mean - Mean value
+ * @param currentValues.stdDev - Standard deviation value
+ * @param page - Name of the page being processed
+ * @param significantIncreases - Array to track significant performance increases
+ * @param [referenceData] - Reference benchmark data for comparison
+ * @returns Formatted metric row string
+ */
+function processMetricForComparison(
+  metric: string,
+  currentValues: { mean: number; stdDev: number },
+  page: string,
+  significantIncreases: {
+    page: string;
+    metric: string;
+    current: number;
+    reference: number;
+    percentIncrease: number;
+  }[],
+  referenceData?: BenchmarkOutput | null,
+): string {
+  if (!referenceData) {
+    return formatMetricRow(metric, currentValues.mean, currentValues.stdDev);
+  }
+
+  const referencePage = referenceData.summary?.find((ref) => ref.page === page);
+  if (!referencePage) {
+    return formatMetricRow(metric, currentValues.mean, currentValues.stdDev);
+  }
+
+  const referenceValues = getMetricValues(referencePage, metric);
+  if (!referenceValues) {
+    return formatMetricRow(metric, currentValues.mean, currentValues.stdDev);
+  }
+
+  if (hasSignificantIncrease(currentValues.mean, referenceValues.mean)) {
+    const percentIncrease =
+      ((currentValues.mean - referenceValues.mean) / referenceValues.mean) *
+      100;
+    significantIncreases.push({
+      page,
+      metric,
+      current: currentValues.mean,
+      reference: referenceValues.mean,
+      percentIncrease,
+    });
+  }
+
+  return formatMetricRowWithComparison(
+    metric,
+    currentValues.mean,
+    currentValues.stdDev,
+    referenceValues.mean,
+    referenceValues.stdDev,
+  );
+}
+
+/**
  * Generates a comprehensive markdown comment for pull request benchmark results.
  * Creates a structured report with summary metrics, detailed statistics, and performance indicators.
  *
  * @param benchmarkData - Benchmark results data containing summary and metadata
- * @param referenceData - Reference benchmark data from main branch for comparison
+ * @param [referenceData] - Reference benchmark data from main branch for comparison
  * @returns Formatted markdown comment string ready for posting to GitHub
  */
 function generateBenchmarkComment(
@@ -239,7 +328,7 @@ function generateBenchmarkComment(
   }[] = [];
 
   for (const pageSummary of summary) {
-    const { page, samples, mean, standardDeviation } = pageSummary;
+    const { page, samples, mean } = pageSummary;
 
     comment += `### 📄 ${page}\n\n`;
     comment += `**Samples**: ${samples}\n\n`;
@@ -254,59 +343,19 @@ function generateBenchmarkComment(
     ];
 
     for (const metric of keyMetrics) {
-      const meanValue =
-        mean[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
-      const stdDevValue =
-        standardDeviation[
-          metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
-        ];
-
-      // TODO: [ffmcgee] this is some 💩 nesting code, improve this
-      if (typeof meanValue === 'number') {
-        if (referenceData) {
-          // Find the corresponding page in reference data
-          const referencePage = referenceData.summary?.find(
-            (ref) => ref.page === page,
-          );
-          if (referencePage) {
-            const refMeanValue =
-              referencePage.mean[
-                metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
-              ];
-            const refStdDevValue =
-              referencePage.standardDeviation[
-                metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
-              ];
-
-            if (typeof refMeanValue === 'number') {
-              // Check for significant increase
-              if (hasSignificantIncrease(meanValue, refMeanValue)) {
-                const percentIncrease =
-                  ((meanValue - refMeanValue) / refMeanValue) * 100;
-                significantIncreases.push({
-                  page,
-                  metric,
-                  current: meanValue,
-                  reference: refMeanValue,
-                  percentIncrease,
-                });
-              }
-
-              comment += `${formatMetricRowWithComparison(
-                metric,
-                meanValue,
-                stdDevValue || 0,
-                refMeanValue,
-                refStdDevValue || 0,
-              )}\n`;
-              continue;
-            }
-          }
-        }
-
-        // Fallback to original format if no reference data or matching page
-        comment += `${formatMetricRow(metric, meanValue, stdDevValue || 0)}\n`;
+      const currentValues = getMetricValues(pageSummary, metric);
+      if (!currentValues) {
+        continue;
       }
+
+      const metricRow = processMetricForComparison(
+        metric,
+        currentValues,
+        page,
+        significantIncreases,
+        referenceData,
+      );
+      comment += `${metricRow}\n`;
     }
 
     // Create detailed results section
@@ -316,12 +365,11 @@ function generateBenchmarkComment(
 
     const allMetrics = Object.keys(mean);
     for (const metric of allMetrics) {
-      const meanValue =
-        mean[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
-      const stdDevValue =
-        standardDeviation[
-          metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
-        ];
+      const currentValues = getMetricValues(pageSummary, metric);
+      if (!currentValues) {
+        continue;
+      }
+
       const minValue =
         pageSummary.min[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
       const maxValue =
@@ -331,9 +379,7 @@ function generateBenchmarkComment(
       const p99Value =
         pageSummary.p99[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
 
-      if (typeof meanValue === 'number') {
-        comment += `| ${metric} | ${formatTime(meanValue)} | ${formatTime(stdDevValue || 0)} | ${formatTime(minValue || 0)} | ${formatTime(maxValue || 0)} | ${formatTime(p95Value || 0)} | ${formatTime(p99Value || 0)} |\n`;
-      }
+      comment += `| ${metric} | ${formatTime(currentValues.mean)} | ${formatTime(currentValues.stdDev)} | ${formatTime(minValue || 0)} | ${formatTime(maxValue || 0)} | ${formatTime(p95Value || 0)} | ${formatTime(p99Value || 0)} |\n`;
     }
 
     comment += `\n</details>\n\n`;
@@ -406,10 +452,8 @@ async function main(): Promise<void> {
     return;
   }
 
-  // Fetch reference benchmark data from main branch
   const referenceData = await fetchLatestMainBenchmarkData();
 
-  // Generate comment
   const commentBody = generateBenchmarkComment(benchmarkData, referenceData);
   console.log('Generated comment:');
   console.log(commentBody);
