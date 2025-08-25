@@ -4,6 +4,7 @@ import {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import * as Util from '../../util';
+import type { FlattenedBackgroundStateProxy } from '../../../../../shared/types';
 import requestEthereumAccounts from './request-accounts';
 
 jest.mock('../../util', () => ({
@@ -50,7 +51,7 @@ const createMockedHandler = () => {
     requestEthereumAccounts.implementation(request, response, next, end, {
       getAccounts,
       sendMetrics,
-      metamaskState,
+      metamaskState: metamaskState as unknown as FlattenedBackgroundStateProxy,
       getCaip25PermissionFromLegacyPermissionsForOrigin,
       requestPermissionsForOrigin,
     });

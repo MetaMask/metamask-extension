@@ -16,7 +16,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { shouldEmitDappViewedEvent } from '../../util';
-import type { MetaMaskReduxState } from '../../../../../ui/store/store';
+import type { FlattenedBackgroundStateProxy } from '../../../../../shared/types';
 import type {
   GetAccounts,
   HandlerWrapper,
@@ -25,10 +25,10 @@ import type {
   RequestPermissionsForOrigin,
 } from './types';
 
-type RequestEthereumAccountsOptions = {
+export type RequestEthereumAccountsOptions = {
   getAccounts: GetAccounts;
   sendMetrics: SendMetrics;
-  metamaskState: MetaMaskReduxState['metamask'];
+  metamaskState: FlattenedBackgroundStateProxy;
   getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
   requestPermissionsForOrigin: RequestPermissionsForOrigin;
 };
