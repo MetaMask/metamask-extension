@@ -1,5 +1,5 @@
 import FixtureBuilder from '../../../fixture-builder';
-import { withFixtures } from '../../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 
@@ -7,6 +7,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
+import { checkActivityTransaction } from '../../swaps/shared';
 
 import { mockLedgerTransactionRequests } from './mocks';
 
@@ -27,18 +28,6 @@ describe('Ledger Swap', function () {
         const homePage = new HomePage(driver);
         await homePage.checkExpectedTokenBalanceIsDisplayed('20', 'ETH');
 
-        // Mock platform.openExtensionInBrowser to navigate in the same window for testing
-        await driver.executeScript(() => {
-          window.global = window.global || {};
-          window.global.platform = window.global.platform || {};
-          window.global.platform.openExtensionInBrowser = (route) => {
-            // Instead of opening a new window, navigate in the current window
-            if (route) {
-              window.location.hash = route;
-            }
-          };
-        });
-
         // disable smart transactions
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkPageIsLoaded();
@@ -53,7 +42,14 @@ describe('Ledger Swap', function () {
         await settingsPage.closeSettingsPage();
 
         await homePage.checkIfSwapButtonIsClickable();
+
         await homePage.startSwapFlow();
+
+        // switch windows back to ExtensionInFullScreenView to avoid the issue of the window being closed
+        await driver.delay(5000);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
@@ -66,6 +62,15 @@ describe('Ledger Swap', function () {
 
         await swapPage.waitForTransactionToComplete();
 
+        // check activity list
+        await homePage.goToActivityList();
+
+        await checkActivityTransaction(driver, {
+          index: 0,
+          amount: '2',
+          swapFrom: 'TESTETH',
+          swapTo: 'DAI',
+        });
         console.log('Ledger swap transaction completed successfully');
       },
     );
