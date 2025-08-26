@@ -7,6 +7,31 @@ import TestDappPage from '../../../page-objects/pages/test-dapp';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 describe('Trezor Hardware Signatures', function (this: Suite) {
+  it('personal sign', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withTrezorAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dapp: true,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithoutBalanceValidation(driver);
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage();
+        await testDappPage.checkPageIsLoaded();
+        await testDappPage.personalSign();
+        await testDappPage.checkSuccessPersonalSign(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+        );
+      },
+    );
+  });
+
   it('sign typed v4', async function () {
     await withFixtures(
       {
