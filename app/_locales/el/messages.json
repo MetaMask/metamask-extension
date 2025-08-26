@@ -3569,9 +3569,6 @@
   "networkIsBusy": {
     "message": "Το δίκτυο είναι απασχολημένο. Τα τέλη συναλλαγής είναι υψηλά και οι εκτιμήσεις λιγότερο ακριβείς."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Πρέπει να είναι ενεργοποιημένο τουλάχιστον ένα δίκτυο"
-  },
   "networkMenu": {
     "message": "Μενού δικτύου"
   },

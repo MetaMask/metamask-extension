@@ -138,7 +138,6 @@ import {
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
-  KnownCaipNamespace,
   add0x,
   hexToBytes,
   bytesToHex,
@@ -299,7 +298,6 @@ import {
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
-import { NetworkOrderController } from './controllers/network-order';
 import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
@@ -390,6 +388,7 @@ import {
 } from './controller-init/multichain';
 import {
   AssetsContractControllerInit,
+  NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
   TokenRatesControllerInit,
@@ -1057,44 +1056,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: announcementMessenger,
       allAnnouncements: UI_NOTIFICATIONS,
       state: initState.AnnouncementController,
-    });
-
-    const networkOrderMessenger = this.controllerMessenger.getRestricted({
-      name: 'NetworkOrderController',
-      allowedEvents: [
-        'NetworkController:stateChange',
-        'NetworkController:networkRemoved',
-      ],
-      allowedActions: [
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'NetworkController:setActiveNetwork',
-      ],
-    });
-
-    let initialNetworkOrderControllerState = initState.NetworkOrderController;
-    if (
-      !initialNetworkOrderControllerState &&
-      process.env.METAMASK_DEBUG &&
-      process.env.METAMASK_ENVIRONMENT === 'development' &&
-      !process.env.IN_TEST
-    ) {
-      initialNetworkOrderControllerState = {
-        orderedNetworkList: [],
-        enabledNetworkMap: {
-          [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.SEPOLIA]: true,
-          },
-          [KnownCaipNamespace.Solana]: {
-            [SolScope.Mainnet]: true,
-          },
-        },
-      };
-    }
-
-    this.networkOrderController = new NetworkOrderController({
-      messenger: networkOrderMessenger,
-      state: initialNetworkOrderControllerState,
     });
 
     const accountOrderMessenger = this.controllerMessenger.getRestricted({
@@ -1984,6 +1945,7 @@ export default class MetamaskController extends EventEmitter {
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
+      NetworkOrderController: NetworkOrderControllerInit,
     };
 
     const {
@@ -2041,6 +2003,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTreeController = controllersByName.AccountTreeController;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
+    this.networkOrderController = controllersByName.NetworkOrderController;
 
     this.notificationServicesController.init();
     this.snapController.init();
