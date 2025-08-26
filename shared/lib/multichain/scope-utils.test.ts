@@ -1,11 +1,12 @@
-import { anyScopesMatch, scopeMatches } from './scope-utils';
 import { EthScope } from '@metamask/keyring-api';
+import { anyScopesMatch, scopeMatches } from './scope-utils';
 
 describe('scope-utils', () => {
   describe('anyScopesMatch', () => {
     it('returns false for empty account scopes', () => {
       expect(anyScopesMatch([], 'eip155:1')).toBe(false);
-      expect(anyScopesMatch(undefined as any, 'eip155:1')).toBe(false);
+      // @ts-expect-error - testing undefined scope
+      expect(anyScopesMatch(undefined, 'eip155:1')).toBe(false);
     });
 
     it('returns true for direct scope match', () => {

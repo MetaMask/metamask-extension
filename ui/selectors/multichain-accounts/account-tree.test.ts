@@ -6,7 +6,6 @@ import {
 } from '@metamask/account-api';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
 
-import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 
 import mockState from '../../../test/data/mock-state.json';
@@ -30,11 +29,7 @@ import {
   getNetworkAddressCount,
   getWallet,
 } from './account-tree';
-import {
-  MultichainAccountsState,
-  AccountTreeState,
-  InternalAccountsState,
-} from './account-tree.types';
+import { MultichainAccountsState } from './account-tree.types';
 import {
   createMockMultichainAccountsState,
   createEmptyState,
