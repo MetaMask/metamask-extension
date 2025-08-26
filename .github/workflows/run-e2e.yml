@@ -106,13 +106,17 @@ jobs:
           which vulkaninfo || echo "vulkaninfo not found in PATH"
           vulkaninfo --summary || echo "vulkaninfo failed to run"
 
+          echo "=== Fixing Git ownership ==="
+          git config --global --add safe.directory /__w/metamask-extension/metamask-extension
+
           echo "=== Final verification ==="
           echo "VK_ICD_FILENAMES will be set to: /usr/share/vulkan/icd.d/intel_icd.x86_64.json:/usr/share/vulkan/icd.d/radeon_icd.x86_64.json"
           echo "DISPLAY will be set to: :99"
           echo "VK_LAYER_PATH will be set to: /usr/share/vulkan/explicit_layer.d"
           echo "LIBGL_ALWAYS_SOFTWARE will be set to: 1"
+          echo "Git safe directory configured for: /__w/metamask-extension/metamask-extension"
 
-          echo "=== Vulkan installation completed ==="
+          echo "=== Vulkan installation and setup completed ==="
 
       - name: Restore .metamask folder
         id: restore-metamask
