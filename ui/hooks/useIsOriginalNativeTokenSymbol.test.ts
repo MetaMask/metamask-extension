@@ -12,8 +12,8 @@ const arrangeMocks = () => {
     .spyOn(MultichainSelectorsModule, 'getMultichainIsEvm')
     .mockReturnValue(true);
 
-  const mockUseSafeChainsListValidationSelector = jest
-    .spyOn(SelectorsModule, 'useSafeChainsListValidationSelector')
+  const mockgetUseSafeChainsListValidation = jest
+    .spyOn(SelectorsModule, 'getUseSafeChainsListValidation')
     .mockReturnValue(true);
 
   const createMockProviderConfig = () =>
@@ -31,7 +31,7 @@ const arrangeMocks = () => {
 
   return {
     mockGetMultichainIsEVM,
-    mockUseSafeChainsListValidationSelector,
+    mockgetUseSafeChainsListValidation,
     createMockProviderConfig,
     mockGetMultichainCurrentNetwork,
     mockIsOriginalNativeTokenSymbol,

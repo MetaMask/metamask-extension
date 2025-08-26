@@ -605,7 +605,7 @@ export default function TransactionList({
     selectedAccount,
   );
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   if (!isEvmAccountType(selectedAccount.type)) {
     const { namespace } = parseCaipChainId(multichainNetworkConfig.chainId);

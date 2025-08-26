@@ -94,7 +94,7 @@ export const SendPage = () => {
 
   const history = useHistory();
   const location = useLocation();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -276,7 +276,6 @@ export const SendPage = () => {
       );
     }
     // sendAnalytics should not result in the event refiring
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackEvent, swapQuotesError]);
 
   const onSubmit = async (event) => {

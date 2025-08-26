@@ -54,7 +54,7 @@ export default function AwaitingSignatures() {
     getCurrentSmartTransactionsEnabled,
   );
   const needsTwoConfirmations = Boolean(approveTxParams);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
     trackEvent({
@@ -75,7 +75,6 @@ export default function AwaitingSignatures() {
         stx_user_opt_in: smartTransactionsOptInStatus,
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const headerText = needsTwoConfirmations

@@ -58,7 +58,7 @@ describe('ErrorPage', () => {
 
   it('should render the error message, code, and name if provided', () => {
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -80,7 +80,7 @@ describe('ErrorPage', () => {
     const error = {};
 
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <ErrorPage error={error} />
       </MetaMetricsContext.Provider>,
     );
@@ -93,7 +93,7 @@ describe('ErrorPage', () => {
 
   it('should render sentry user feedback form and submit sentry report successfully when metrics is opted in', () => {
     const { getByTestId, queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -132,7 +132,7 @@ describe('ErrorPage', () => {
       return undefined;
     });
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -145,7 +145,7 @@ describe('ErrorPage', () => {
 
   it('should reload the extension when the "Try Again" button is clicked', () => {
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -158,7 +158,7 @@ describe('ErrorPage', () => {
     window.open = jest.fn();
 
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );

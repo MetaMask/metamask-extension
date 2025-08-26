@@ -186,7 +186,7 @@ const MessageBody = forwardRef(
     ref,
   ) => {
     const dispatch = useDispatch();
-    const trackEvent = useContext(MetaMetricsContext);
+    const { trackEvent } = useContext(MetaMetricsContext);
     const t = useI18nContext();
 
     const [copyToClipboardPressed, setCopyToClipboardPressed] = useState(false);
@@ -212,7 +212,7 @@ const MessageBody = forwardRef(
     const onDecryptMessage = async (event) => {
       event.stopPropagation(event);
 
-      const params = messageData.msgParams;
+      const params = { ...messageData.msgParams };
       params.metamaskId = messageData.id;
 
       const result = await dispatch(decryptMsgInline(params));
@@ -329,7 +329,7 @@ const Footer = ({
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const onCancelClick = async (event) => {
     event.stopPropagation(event);
@@ -349,7 +349,7 @@ const Footer = ({
 
   const onSubmitClick = async (event) => {
     event.stopPropagation(event);
-    const params = messageData.msgParams;
+    const params = { ...messageData.msgParams };
     params.metamaskId = messageData.id;
 
     await dispatch(decryptMsg(params));

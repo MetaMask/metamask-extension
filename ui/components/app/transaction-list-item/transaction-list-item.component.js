@@ -122,7 +122,7 @@ function TransactionListItemInner({
     primaryTransaction: { error, status },
   } = transactionGroup;
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const retryTransaction = useCallback(
     async (event) => {

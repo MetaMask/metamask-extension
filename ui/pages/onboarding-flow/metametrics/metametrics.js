@@ -64,7 +64,7 @@ export default function OnboardingMetametrics() {
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   let nextRouteByBrowser = useSelector(
     getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,

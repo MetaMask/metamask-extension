@@ -72,7 +72,7 @@ export function AssetPickerModalNftTab({
     overridePopularNetworkFilter: true,
   });
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const filteredNfts = currentlyOwnedNfts.reduce((acc: NFT[], nft: NFT) => {
