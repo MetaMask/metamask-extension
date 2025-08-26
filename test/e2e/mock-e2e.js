@@ -718,9 +718,8 @@ async function setupMocking(
     });
 
   await server
-    .forGet(
-      'https://bridge.api.cx.metamask.io/networks/10/tokens?includeBlockedTokens=true',
-    )
+    .forGet('https://bridge.api.cx.metamask.io/networks/10/tokens')
+    .withQuery({ includeBlockedTokens: 'true' })
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -750,9 +749,8 @@ async function setupMocking(
     });
 
   await server
-    .forGet(
-      'https://bridge.api.cx.metamask.io/networks/137/tokens?includeBlockedTokens=true',
-    )
+    .forGet('https://bridge.api.cx.metamask.io/networks/137/tokens')
+    .withQuery({ includeBlockedTokens: 'true' })
     .thenCallback(() => {
       return {
         statusCode: 200,
