@@ -4,8 +4,8 @@ import LavamoatPlugin from '@lavamoat/webpack';
 export const lavamoatPlugin = new LavamoatPlugin({
   rootDir: join(__dirname, '../../../../../'), // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up. This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
   diagnosticsVerbosity: 2,
-  generatePolicy: false,
-  runChecks: false, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
+  generatePolicy: true,
+  runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
   readableResourceIds: true,
   inlineLockdown: /^runtime|contentscript\.js/u,
   unlockedChunksUnsafe: /inpage\.js/u,
