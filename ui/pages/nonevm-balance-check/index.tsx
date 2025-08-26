@@ -111,6 +111,7 @@ export const NonEvmBalanceCheck = () => {
     isMarketingEnabled,
     hasAccountForChain,
     accounts,
+    lastSelectedNonEvmAccount,
   ]);
 
   if (!hasAccountForChain) {
