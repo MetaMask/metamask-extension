@@ -24,7 +24,7 @@ const baseRequest = {
 const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
-  const getAccounts = jest.fn().mockReturnValue([]);
+  const getAccounts = jest.fn().mockResolvedValue([]);
   const sendMetrics = jest.fn();
   const metamaskState = {
     permissionHistory: {},
@@ -37,14 +37,28 @@ const createMockedHandler = () => {
         },
       },
       '0x2': {
-        '0x01': {
-          address: '0x01',
-          balance: 'null',
-        },
         '0x02': {
           address: '0x02',
           balance: 'null',
         },
+        '0x03': {
+          address: '0x03',
+          balance: 'null',
+        },
+      },
+    },
+    accounts: {
+      '0x01': {
+        address: '0x01',
+        balance: 'null',
+      },
+      '0x02': {
+        address: '0x02',
+        balance: 'null',
+      },
+      '0x03': {
+        address: '0x03',
+        balance: 'null',
       },
     },
   };
@@ -96,7 +110,7 @@ describe('requestEthereumAccountsHandler', () => {
   describe('eip155 account permissions exist', () => {
     it('returns the accounts', async () => {
       const { handler, response, getAccounts } = createMockedHandler();
-      getAccounts.mockReturnValue(['0xdead', '0xbeef']);
+      getAccounts.mockResolvedValue(['0xdead', '0xbeef']);
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual(['0xdead', '0xbeef']);
@@ -143,8 +157,8 @@ describe('requestEthereumAccountsHandler', () => {
     it('returns the newly granted and properly ordered eth accounts', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts
-        .mockReturnValueOnce([])
-        .mockReturnValueOnce(['0xdead', '0xbeef']);
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(['0xdead', '0xbeef']);
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual(['0xdead', '0xbeef']);
@@ -154,8 +168,8 @@ describe('requestEthereumAccountsHandler', () => {
     it('emits the dapp viewed metrics event when shouldEmitDappViewedEvent returns true', async () => {
       const { handler, getAccounts, sendMetrics } = createMockedHandler();
       getAccounts
-        .mockReturnValueOnce([])
-        .mockReturnValueOnce(['0xdead', '0xbeef']);
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(['0xdead', '0xbeef']);
       MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
 
       await handler(baseRequest);
@@ -164,13 +178,10 @@ describe('requestEthereumAccountsHandler', () => {
           category: 'inpage_provider',
           event: 'Dapp Viewed',
           properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_first_visit: true,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_accounts: 3,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_accounts_connected: 2,
           },
@@ -187,8 +198,8 @@ describe('requestEthereumAccountsHandler', () => {
     it('does not emit the dapp viewed metrics event when shouldEmitDappViewedEvent returns false', async () => {
       const { handler, getAccounts, sendMetrics } = createMockedHandler();
       getAccounts
-        .mockReturnValueOnce([])
-        .mockReturnValueOnce(['0xdead', '0xbeef']);
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(['0xdead', '0xbeef']);
       MockUtil.shouldEmitDappViewedEvent.mockReturnValue(false);
 
       await handler(baseRequest);
