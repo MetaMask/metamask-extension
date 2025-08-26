@@ -123,7 +123,7 @@ export const getCompatibleNetworksForAccount = (
     }
   });
 
-  // Filter out test networks to match mobile implementation behavior
+  // Filter out test networks
   return compatibleItems.filter(
     (item) => !CAIP_FORMATTED_EVM_TEST_CHAINS.includes(item.chainId),
   );
