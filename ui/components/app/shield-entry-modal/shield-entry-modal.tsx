@@ -46,7 +46,7 @@ export default function ShieldEntryModal({
     >
       <ModalOverlay />
       <ModalContent
-        alignItems={AlignItems.center}
+        alignItems={AlignItems.flexStart}
         modalDialogProps={{ paddingTop: 0, paddingBottom: 6 }}
       >
         {/* TODO: update with full image banner */}
