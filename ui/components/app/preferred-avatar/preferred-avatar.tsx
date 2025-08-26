@@ -6,7 +6,7 @@ import {
   AvatarAccountVariant,
   AvatarBaseShape,
 } from '@metamask/design-system-react';
-import { getUseBlockie } from '../../../selectors';
+import type { MetaMaskReduxState } from '../../../store/store';
 
 /**
  * Renders an avatar for an address based on the user's settings. This wraps AvatarAccount.
@@ -26,3 +26,10 @@ export const PreferredAvatar = (props: Omit<AvatarAccountProps, 'ref'>) => {
     />
   );
 };
+
+// Inlining to avoid having to import the selectors barrel file and cause
+// circular dependencies in certain situations. This will be revised once
+// we switch to Maskicon.
+function getUseBlockie(state: MetaMaskReduxState) {
+  return state.metamask.useBlockie;
+}
