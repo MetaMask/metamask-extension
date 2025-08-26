@@ -94,6 +94,21 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
     return Promise.resolve();
   }
 
+  async ethereumSignMessage(params) {
+    const { message } = params;
+    const signature = personalSign({
+      privateKey: KNOWN_PRIVATE_KEYS[0],
+      data: add0x(message),
+    });
+    return {
+      id: 1,
+      success: true,
+      payload: {
+        signature,
+      },
+    };
+  }
+
   async ethereumSignTransaction({ transaction }) {
     const common = Common.custom({
       chain: {
