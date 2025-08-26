@@ -3,10 +3,7 @@ import { isObject, hasProperty, createDeferredPromise } from '@metamask/utils';
 import log from 'loglevel';
 import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../../shared/constants/state-corruption';
 import type { ErrorLike } from '../../../shared/constants/errors';
-import {
-  BACKGROUND_LIVENESS_REQUEST,
-  BACKGROUND_LIVENESS_RESPONSE,
-} from '../../../shared/constants/background-liveness-check';
+import { BACKGROUND_LIVENESS_METHOD } from '../../../shared/constants/background-liveness-check';
 import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
@@ -59,10 +56,6 @@ export class CriticalStartupErrorHandler {
     // This is called later in `#handle` when the response is received.
     this.#onLivenessCheckCompleted = onLivenessCheckCompleted;
 
-    this.#port.postMessage({
-      data: { method: BACKGROUND_LIVENESS_REQUEST },
-      name: 'background-liveness',
-    });
     const timeoutPromise = new Promise((_resolve, reject) => {
       this.#livenessCheckTimeoutId = setTimeout(
         () => reject(new Error('Background connection unresponsive')),
@@ -103,9 +96,9 @@ export class CriticalStartupErrorHandler {
       return;
     }
     const { method } = data;
-    // Currently, we only handle BACKGROUND_LIVENESS_RESPONSE, RELOAD_WINDOW, and the state
+    // Currently, we only handle BACKGROUND_LIVENESS_METHOD, RELOAD_WINDOW, and the state
     // corruption error message, but we will be adding more in the future.
-    if (method === BACKGROUND_LIVENESS_RESPONSE) {
+    if (method === BACKGROUND_LIVENESS_METHOD) {
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
       } else {
