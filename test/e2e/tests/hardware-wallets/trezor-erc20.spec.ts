@@ -11,7 +11,7 @@ import TokenTransferTransactionConfirmation from '../../page-objects/pages/confi
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 
-describe('Ledger Hardware', function (this: Suite) {
+describe('Trezor Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
     await withFixtures(
       {
