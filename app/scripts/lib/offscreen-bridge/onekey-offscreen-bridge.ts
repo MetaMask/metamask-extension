@@ -1,9 +1,8 @@
 import {
   ONEKEY_HARDWARE_UI_EVENT,
   OneKeyBridge,
-} from 'eth-onekey-bridge-keyring';
+} from '@metamask/eth-onekey-keyring';
 import type {
-  ConnectSettings,
   Params,
   Response as OneKeyResponse,
   EVMSignedTx,
@@ -44,7 +43,7 @@ export class OneKeyOffscreenBridge implements OneKeyBridge {
     this.listeners.delete(event);
   }
 
-  init(settings: Partial<ConnectSettings>) {
+  init() {
     chrome.runtime.onMessage.addListener((msg) => {
       if (
         msg.target === OffscreenCommunicationTarget.extension &&
@@ -68,7 +67,6 @@ export class OneKeyOffscreenBridge implements OneKeyBridge {
           target: OffscreenCommunicationTarget.onekeyOffscreen,
           action: OneKeyAction.init,
           params: {
-            ...settings,
             env: window.navigator.usb ? 'webusb' : 'web',
           },
         },

@@ -1,7 +1,7 @@
 import {
   ONEKEY_HARDWARE_UI_EVENT,
   type OneKeyBridge,
-} from 'eth-onekey-bridge-keyring';
+} from '@metamask/eth-onekey-keyring';
 import { KeyringClass, Json } from '@metamask/utils';
 import { Platform } from '../../../types/global';
 // eslint-disable-next-line import/no-restricted-paths
