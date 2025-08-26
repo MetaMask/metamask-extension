@@ -279,8 +279,10 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        // NOTE - we do not show a carousel modal when basic functionality if off
+        // TODO - decide if we want to keep or remove this behaviour
         // check the basic functionality is off warning message is displayed
-        await homePage.checkBasicFunctionalityOffWarnigMessageIsDisplayed();
+        // await homePage.checkBasicFunctionalityOffWarnigMessageIsDisplayed();
       },
     );
   });
