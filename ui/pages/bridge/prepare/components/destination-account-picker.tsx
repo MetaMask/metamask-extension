@@ -137,6 +137,7 @@ export const DestinationAccountPicker = ({
         }}
       >
         <TextField
+          autoFocus
           placeholder={
             (isDestinationSolana
               ? t('destinationAccountPickerSearchPlaceholderToSolana')
