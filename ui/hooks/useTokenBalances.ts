@@ -2,25 +2,28 @@ import { useSelector } from 'react-redux';
 import BN from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   tokenBalancesStartPolling,
   tokenBalancesStopPollingByPollingToken,
 } from '../store/actions';
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { getEnabledChainIds } from '../selectors/multichain/networks';
 import useMultiPolling from './useMultiPolling';
 
 export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
   const tokenBalances = useSelector(getTokenBalances);
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const enabledChainIds = useSelector(getEnabledChainIds);
+
+  const pollableChains =
+    chainIds && chainIds.length > 0 ? chainIds : enabledChainIds;
 
   useMultiPolling({
     startPolling: tokenBalancesStartPolling,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenBalancesStopPollingByPollingToken,
-    input: chainIds ?? Object.keys(networkConfigurations),
+    input: [pollableChains],
   });
 
   return { tokenBalances };

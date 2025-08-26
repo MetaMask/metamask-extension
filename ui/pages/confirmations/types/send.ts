@@ -10,4 +10,5 @@ export type Asset = {
   symbol?: string | undefined;
   tokenId?: string;
   tokenURI?: string | undefined;
+  primary?: string;
 };

@@ -18,13 +18,56 @@ import {
   generateERC721TransferData,
 } from '../send-legacy/send.utils';
 
-export const toTokenMinimalUnit = (value: string, decimals: number) => {
-  if (!decimals) {
+export const fromTokenMinimalUnit = (
+  value: string,
+  decimals?: number | string,
+) => {
+  const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
+  if (!decimalValue) {
     return value;
   }
-  const multiplier = Math.pow(10, Number(decimals));
+  const multiplier = Math.pow(10, Number(decimalValue));
   return new Numeric(value, 16).times(multiplier, 10).toBase(16).toString();
 };
+
+export const toTokenMinimalUnit = (
+  value: string,
+  decimals?: number | string,
+) => {
+  const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
+  const multiplier = Math.pow(10, Number(decimalValue));
+  return new Numeric(value, 16).divide(multiplier, 10).toBase(10).toString();
+};
+
+export function formatToFixedDecimals(
+  value: string | undefined,
+  decimalsToShow: string | number = 5,
+) {
+  if (!value) {
+    return '0';
+  }
+  const val = new Numeric(value, 10);
+  if (val.isZero()) {
+    return '0';
+  }
+  let decimals = parseInt(decimalsToShow?.toString(), 10);
+  decimals = decimals < 5 ? decimals : 5;
+
+  const minVal = 1 / Math.pow(10, decimals);
+  if (val.lessThan(new Numeric(minVal, 10))) {
+    return `< ${minVal}`;
+  }
+
+  const strValueArr = val.toString().split('.');
+  if (!strValueArr[1]) {
+    return strValueArr[0];
+  }
+
+  return `${strValueArr[0]}.${strValueArr[1].slice(0, decimals)}`.replace(
+    /\.?0+$/u,
+    '',
+  );
+}
 
 export const prepareEVMTransaction = (
   asset: Asset,
@@ -35,10 +78,7 @@ export const prepareEVMTransaction = (
 
   const tokenValue = asset.tokenId
     ? value
-    : toTokenMinimalUnit(
-        value ?? '0',
-        parseInt(asset.decimals?.toString() ?? '0', 10),
-      );
+    : fromTokenMinimalUnit(value ?? '0', asset.decimals);
 
   // Native token
   if (isNativeAddress(asset.address)) {
