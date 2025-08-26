@@ -120,7 +120,12 @@ export const NonEvmBalanceCheck = () => {
 
   if (!hasAccountForChain) {
     return (
-      <Modal isOpen onClose={() => {}}>
+      <Modal
+        isOpen
+        onClose={() => {
+          // do nothing
+        }}
+      >
         <ModalOverlay />
         <ModalContent
           modalDialogProps={{
