@@ -86,10 +86,7 @@ export const DestinationAccountPicker = ({
           width={BlockSize.Full}
           style={{ flex: 1, minWidth: 0 }}
         >
-          <DestinationSelectedAccountListItem
-            account={selectedSwapToAccount}
-            selected
-          />
+          <DestinationSelectedAccountListItem account={selectedSwapToAccount} />
         </Box>
         <Box className="deselect-button-container" paddingRight={5}>
           <Button
@@ -179,6 +176,14 @@ export const DestinationAccountPicker = ({
             key={account.id}
             account={account}
             onClick={() => onAccountSelect(account)}
+            selected={
+              selectedSwapToAccount
+                ? account.address.toLowerCase() ===
+                  (
+                    selectedSwapToAccount as DestinationAccount
+                  ).address.toLowerCase()
+                : false
+            }
           />
         ))}
         {externalAccount && (

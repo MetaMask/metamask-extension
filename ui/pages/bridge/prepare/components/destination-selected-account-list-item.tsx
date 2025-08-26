@@ -17,7 +17,7 @@ import { type DestinationAccount } from '../types';
 
 type DestinationSelectedAccountListItemProps = {
   account: DestinationAccount;
-  selected: boolean;
+  selected?: boolean;
   onClick?: () => void;
 };
 
@@ -33,7 +33,7 @@ const DestinationSelectedAccountListItem: React.FC<
         selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
       }
       className={classnames('multichain-account-list-item px-4 gap-2', {
-        'multichain-account-list-item--selected': selected,
+        'multichain-account-list-item--selected': Boolean(selected),
       })}
       onClick={onClick}
       alignItems={AlignItems.center}
