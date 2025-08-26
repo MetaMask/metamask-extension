@@ -85,10 +85,7 @@ export const NonEvmBalanceCheck = () => {
 
     if (hasAccountForChain) {
       // If we have a "last selected" non-EVM account that matches the chain -> switch to it
-      if (
-        lastSelectedNonEvmAccount &&
-        lastSelectedNonEvmAccount.scopes.includes(chainId)
-      ) {
+      if (lastSelectedNonEvmAccount?.scopes?.includes(chainId)) {
         dispatch(setSelectedAccount(lastSelectedNonEvmAccount.address));
       }
 
