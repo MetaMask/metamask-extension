@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [13.1.2]
 ### Fixed
 - fix: fixes a performance issue by closing all Solana WebSocket connections whenever the client becomes inactive (#35359)
+- fix: fixes a performance issue by only opening Solana WebSocket connections if client is active (#35392)
 
 ## [13.1.1]
 ### Fixed
