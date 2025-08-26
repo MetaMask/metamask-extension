@@ -69,6 +69,12 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
+      - name: Setup Git configuration
+        run: |
+          echo "=== Setting up Git configuration ==="
+          git config --global --add safe.directory /__w/metamask-extension/metamask-extension
+          echo "=== Git configuration completed ==="
+
       - name: Install Vulkan drivers (Chrome only)
         if: ${{ !contains(env.TEST_SUITE_NAME, 'firefox') }}
         run: |
@@ -123,9 +129,6 @@ jobs:
           echo "MESA_VK_DEVICE_SELECT: $MESA_VK_DEVICE_SELECT"
           echo "LIBGL_ALWAYS_SOFTWARE: $LIBGL_ALWAYS_SOFTWARE"
 
-          echo "=== Fixing Git ownership ==="
-          git config --global --add safe.directory /__w/metamask-extension/metamask-extension
-
           echo "=== Final verification ==="
           echo "VK_ICD_FILENAMES will be set to: /usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
           echo "DISPLAY will be set to: :99"
@@ -133,7 +136,6 @@ jobs:
           echo "LIBGL_ALWAYS_SOFTWARE will be set to: 1"
           echo "MESA_VK_DEVICE_SELECT will be set to: llvmpipe"
           echo "VK_LOADER_DEBUG will be set to: error"
-          echo "Git safe directory configured for: /__w/metamask-extension/metamask-extension"
 
           echo "=== Vulkan installation and setup completed ==="
 
