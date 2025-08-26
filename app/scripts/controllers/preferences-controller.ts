@@ -18,15 +18,15 @@ import {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
   type PreferencesState,
 } from '@metamask/preferences-controller';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import { ThemeType } from '../../../shared/constants/preferences';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 type MultichainAccountServiceAlignWalletsAction = {
   type: 'MultichainAccountService:alignWallets';
   handler: () => Promise<void>;
 };
 ///: END:ONLY_INCLUDE_IF
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import { ThemeType } from '../../../shared/constants/preferences';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 type MultichainAccountServiceSetBasicFunctionalityAction = {
