@@ -69,25 +69,14 @@ export const useAccountGroupsForPermissions = (
     const supportedGroups = new Set<AccountGroupWithInternalAccounts>();
 
     for (const accountGroup of accountGroups) {
-      let hasMatchingScope = false;
-
-      for (const account of accountGroup.accounts) {
-        if (account.scopes?.length) {
-          for (const scope of account.scopes) {
-            const [scopeNamespace] = scope.split(':');
-            if (
-              scopeNamespace &&
-              namespaceSet.has(scopeNamespace as CaipNamespace)
-            ) {
-              hasMatchingScope = true;
-              break;
-            }
-          }
-          if (hasMatchingScope) {
-            break;
-          }
-        }
-      }
+      const hasMatchingScope = accountGroup.accounts.some((account) =>
+        account.scopes?.some((scope) => {
+          const [scopeNamespace] = scope.split(':');
+          return (
+            scopeNamespace && namespaceSet.has(scopeNamespace as CaipNamespace)
+          );
+        }),
+      );
 
       if (hasMatchingScope) {
         supportedGroups.add(accountGroup);
