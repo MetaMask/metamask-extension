@@ -4,7 +4,7 @@ import type {
   LedgerBridgeOptions,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { KeyringClass } from '@metamask/keyring-utils';
-import type { OneKeyBridge } from 'eth-onekey-bridge-keyring';
+import type { OneKeyBridge } from '@metamask/eth-onekey-keyring';
 import { FakeKeyringBridge } from '../../../test/stub/keyring-bridge';
 
 /**
