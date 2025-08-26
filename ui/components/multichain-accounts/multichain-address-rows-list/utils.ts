@@ -1,6 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
 import {
+  CAIP_FORMATTED_EVM_TEST_CHAINS,
   CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
   TEST_NETWORK_IDS,
@@ -79,11 +80,12 @@ const createNetworkAddressItem = (
 });
 
 /**
- * Gets compatible networks for an InternalAccount based on its scopes
+ * Gets compatible networks for an InternalAccount based on its scopes.
+ * Filters out test networks to match mobile implementation behavior.
  *
  * @param account - InternalAccount object to get compatible networks for
  * @param allNetworks - Record of all network configurations
- * @returns Array of NetworkAddressItem objects
+ * @returns Array of NetworkAddressItem objects, excluding test networks
  */
 export const getCompatibleNetworksForAccount = (
   account: InternalAccount,
@@ -121,5 +123,8 @@ export const getCompatibleNetworksForAccount = (
     }
   });
 
-  return compatibleItems;
+  // Filter out test networks to match mobile implementation behavior
+  return compatibleItems.filter(
+    (item) => !CAIP_FORMATTED_EVM_TEST_CHAINS.includes(item.chainId),
+  );
 };
