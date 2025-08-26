@@ -129,6 +129,7 @@
     },
     "react-dom": {
       "globals": {
+        "event": false,
         "HTMLIFrameElement": true
       }
     },
