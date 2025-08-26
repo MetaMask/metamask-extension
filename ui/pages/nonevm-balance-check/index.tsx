@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -10,11 +10,13 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
+import { setSelectedAccount } from '../../store/actions';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import { NonEvmQueryParams } from '../../../shared/lib/deep-links/routes/nonevm';
 import { SWAP_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { RampsMetaMaskEntry } from '../../hooks/ramps/useRamps/useRamps';
+import { getLastSelectedNonEvmAccount } from '../../selectors/multichain';
 import {
   getDataCollectionForMarketing,
   getMetaMaskAccountsOrdered,
@@ -60,10 +62,12 @@ const getBuyUrl = (
 
 export const NonEvmBalanceCheck = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const lastSelectedNonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
 
   const params = new URLSearchParams(location.search);
   const chainId = params.get(NonEvmQueryParams.ChainId) as CaipChainId;
@@ -80,6 +84,14 @@ export const NonEvmBalanceCheck = () => {
     }
 
     if (hasAccountForChain) {
+      // If we have a "last selected" non-EVM account that matches the chain -> switch to it
+      if (
+        lastSelectedNonEvmAccount &&
+        lastSelectedNonEvmAccount.scopes.includes(chainId)
+      ) {
+        dispatch(setSelectedAccount(lastSelectedNonEvmAccount.address));
+      }
+
       const hasPositiveBalance = assetsWithBalance.some(
         (asset) =>
           asset.chainId === chainId && asset.balance && asset.balance !== '0',
