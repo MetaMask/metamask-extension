@@ -183,7 +183,7 @@ const mapStateToProps = (state) => {
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
     showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
     // TODO: integrate condition to show shield entry modal
-    showShieldEntryModal: true,
+    showShieldEntryModal: false,
   };
 };
 
