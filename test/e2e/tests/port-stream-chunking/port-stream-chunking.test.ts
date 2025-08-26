@@ -19,10 +19,11 @@ describe('Port Stream Chunking', function () {
         value: '0xde0b6b3a7640000',
         gas: '0x5208',
         gasPrice: '0x2540be400',
-        data: '0x' + '11'.repeat(10 ** 6), // 10 MB
+        data: '0x' + '11'.repeat(10 ** 6), // big
       },
       origin: 'metamask',
       type: 'simpleSend',
+      testingNoise: '😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀',
     };
     const largeTransactions = Array.from({ length: 40 }, () => hugeTx);
 
