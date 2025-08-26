@@ -161,14 +161,7 @@ async function requestEthereumAccountsHandler<
           // eslint-disable-next-line @typescript-eslint/naming-convention
           is_first_visit: isFirstVisit,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_accounts: Object.keys(
-            metamaskState.accountsByChainId,
-          ).reduce((total, chainId) => {
-            return (
-              total +
-              Object.keys(metamaskState.accountsByChainId[chainId]).length
-            );
-          }, 0),
+          number_of_accounts: Object.keys(metamaskState.accounts).length,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           number_of_accounts_connected: ethAccounts.length,
         },
