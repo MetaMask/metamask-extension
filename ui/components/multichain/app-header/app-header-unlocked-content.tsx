@@ -11,6 +11,12 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+  AvatarBaseShape,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BlockSize,
@@ -23,9 +29,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -205,6 +208,7 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
+          // TODO: Remove this once we are using PreferredAvatar
           <AvatarAccount
             variant={
               useBlockie
@@ -213,6 +217,8 @@ export const AppHeaderUnlockedContent = ({
             }
             address={internalAccount.address}
             size={AvatarAccountSize.Md}
+            shape={AvatarBaseShape.Circle}
+            className="shrink-0"
           />
         )}
         {internalAccount && (
@@ -267,6 +273,7 @@ export const AppHeaderUnlockedContent = ({
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         gap={2}
+        className="min-w-0"
       >
         {AppContent}
       </Box>
