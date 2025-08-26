@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -28,7 +29,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { MultichainAccountList } from '../../multichain-account-list';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
@@ -80,24 +80,15 @@ export const MultichainEditAccountsModal: React.FC<
     return Object.fromEntries(walletMap);
   }, [accountTree.wallets, supportedAccountGroups]);
 
-  useEffect(() => {
-    setSelectedAccountGroups(defaultSelectedAccountGroups);
-  }, [
-    // TODO: Fix the source of this prop value to be the same array instance each render
-    JSON.stringify(defaultSelectedAccountGroups),
-  ]);
-
   const handleAccountClick = useCallback(
     (accountGroupId: AccountGroupId) => {
-      const existingIndex = selectedAccountGroups.findIndex(
-        (selectedAccountGroupId) => selectedAccountGroupId === accountGroupId,
-      );
-
-      if (existingIndex !== -1) {
-        const newSelection = [...selectedAccountGroups];
-        newSelection.splice(existingIndex, 1);
-        setSelectedAccountGroups(newSelection);
+      if (selectedAccountGroups.includes(accountGroupId)) {
+        // Remove item if it exists
+        setSelectedAccountGroups(
+          selectedAccountGroups.filter((id) => id !== accountGroupId),
+        );
       } else {
+        // Add item if it doesn't exist
         setSelectedAccountGroups([...selectedAccountGroups, accountGroupId]);
       }
     },
