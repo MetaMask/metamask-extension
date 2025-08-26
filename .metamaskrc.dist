@@ -63,3 +63,6 @@ BLOCKAID_PUBLIC_KEY=
 ; }
 ; Note: Properties are shallow merged into the manifest.json file at build time.
 ;MANIFEST_OVERRIDES=.manifest-overrides.json
+
+; Set this to `true` to enable Shield Gateway
+; SHIELD_GATEWAY_ENABLED='false'
