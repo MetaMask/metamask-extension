@@ -322,7 +322,7 @@ function formatMetricRow(
   const formattedMean = formatTime(mean);
   const formattedStdDev = formatStandardDeviation(mean, stdDev);
 
-  return `- **${metricName}**: ${formattedMean}${formattedStdDev} ${emoji}`;
+  return `- **${metricName}**-> current mean value: ${formattedMean}${formattedStdDev} ${emoji}`;
 }
 
 /**
@@ -435,10 +435,9 @@ function generateBenchmarkComment(
 
   const shortCommit = commit.slice(0, 7);
   const date = new Date(timestamp).toLocaleDateString();
-  const referenceCommit = referenceData?.commit?.slice(0, 7);
 
   let comment = `## 📊 Page Load Benchmark Results\n\n`;
-  comment += `**Current Commit**: \`${shortCommit}\` | **Reference Commit**: \`${referenceCommit}\` | **Date**: ${date}\n\n`;
+  comment += `**Current Commit**: \`${shortCommit}\` | **Date**: ${date}\n\n`;
 
   // Track significant increases for warning
   const significantIncreases: {
