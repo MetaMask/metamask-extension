@@ -218,6 +218,7 @@ export const AppHeaderUnlockedContent = ({
             address={internalAccount.address}
             size={AvatarAccountSize.Md}
             shape={AvatarBaseShape.Circle}
+            className="shrink-0"
           />
         )}
         {internalAccount && (
@@ -272,6 +273,7 @@ export const AppHeaderUnlockedContent = ({
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         gap={2}
+        className="min-w-0"
       >
         {AppContent}
       </Box>
