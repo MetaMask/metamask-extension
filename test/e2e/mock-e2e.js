@@ -645,6 +645,143 @@ async function setupMocking(
       };
     });
 
+  // Bridge API mocks
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/networks/10/topAssets')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'ETH',
+          },
+          {
+            address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+            symbol: 'USDC',
+          },
+          {
+            address: '0x4200000000000000000000000000000000000006',
+            symbol: 'WETH',
+          },
+          {
+            address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
+            symbol: 'USDT',
+          },
+        ],
+      };
+    });
+
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/networks/137/topAssets')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'MATIC',
+          },
+          {
+            address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            symbol: 'USDC',
+          },
+          {
+            address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+            symbol: 'USDC.e',
+          },
+          {
+            address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+            symbol: 'USDT',
+          },
+        ],
+      };
+    });
+
+  // Using same format as existing aggregatorMetadata
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/networks/10/aggregatorMetadata')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: AGGREGATOR_METADATA,
+      };
+    });
+
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/networks/137/aggregatorMetadata')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: AGGREGATOR_METADATA,
+      };
+    });
+
+  await server
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/10/tokens?includeBlockedTokens=true',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            chainId: 10,
+            address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+            symbol: 'USDC',
+            name: 'USD Coin',
+            decimals: 6,
+            icon: 'https://media.socket.tech/tokens/all/USDC',
+            logoURI: 'https://media.socket.tech/tokens/all/USDC',
+            chainAgnosticId: null,
+          },
+          {
+            chainId: 10,
+            address: '0x4200000000000000000000000000000000000006',
+            symbol: 'WETH',
+            name: 'Wrapped Ether',
+            decimals: 18,
+            icon: 'https://media.socket.tech/tokens/all/WETH',
+            logoURI: 'https://media.socket.tech/tokens/all/WETH',
+            chainAgnosticId: null,
+          },
+        ],
+      };
+    });
+
+  await server
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/137/tokens?includeBlockedTokens=true',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            chainId: 137,
+            address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            assetId: 'asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            symbol: 'USDC',
+            name: 'Native USD Coin (POS)',
+            decimals: 6,
+            icon: 'https://media.socket.tech/tokens/all/USDC',
+            logoURI: 'https://media.socket.tech/tokens/all/USDC',
+            chainAgnosticId: 'USDC',
+          },
+          {
+            chainId: 137,
+            address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+            symbol: 'USDC.e',
+            name: 'USD Coin (PoS)',
+            decimals: 6,
+            icon: 'https://media.socket.tech/tokens/all/USDC',
+            logoURI: 'https://media.socket.tech/tokens/all/USDC',
+            chainAgnosticId: null,
+          },
+        ],
+      };
+    });
+
   await server
     .forGet(`https://token.api.cx.metamask.io/token/${chainId}`)
     .thenCallback(() => {
