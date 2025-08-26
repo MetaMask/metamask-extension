@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { Box } from '../../components/component-library';
+import {
+  Box,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+} from '../../components/component-library';
 import {
   BlockSize,
   Display,
@@ -111,20 +116,30 @@ export const NonEvmBalanceCheck = () => {
     isMarketingEnabled,
     hasAccountForChain,
     accounts,
-    lastSelectedNonEvmAccount,
   ]);
 
   if (!hasAccountForChain) {
     return (
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.spaceBetween}
-        width={BlockSize.OneFifth}
-        padding={4}
-      >
-        <AddNonEvmAccountModal chainId={chainId} />
-      </Box>
+      <Modal isOpen onClose={() => {}}>
+        <ModalOverlay />
+        <ModalContent
+          modalDialogProps={{
+            padding: 0,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+          }}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.spaceBetween}
+            width={BlockSize.Full}
+            padding={2}
+          >
+            <AddNonEvmAccountModal chainId={chainId} />
+          </Box>
+        </ModalContent>
+      </Modal>
     );
   }
 
