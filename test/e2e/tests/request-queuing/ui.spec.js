@@ -480,15 +480,12 @@ describe('Request-queue UI changes', function () {
         // Open the popup with shimmed activeTabOrigin
         await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
-        // Switch to mainnet
-        await driver.clickElement('[data-testid="sort-by-networks"]');
-        await driver.clickElement({
-          text: 'Default',
-        });
-        await driver.clickElement({
-          text: 'Ethereum Mainnet',
-          tag: 'p',
-        });
+        // Switch to mainnet using per-dapp connected network flow
+        await driver.clickElement('[data-testid="connection-menu"]');
+        await driver.clickElement(
+          '[data-testid="connected-site-popover-network-button"]',
+        );
+        await driver.clickElement('[data-testid="Ethereum Mainnet"]');
 
         // Switch back to the Dapp tab
         await driver.switchToWindowWithUrl(DAPP_URL);

@@ -65,7 +65,7 @@ jest.mock('../../../store/actions.ts', () => ({
   },
 }));
 
-const MOCK_ORIGIN = 'https://portfolio.metamask.io';
+const MOCK_ORIGIN = 'https://app.metamask.io';
 
 const render = ({
   showTestNetworks = false,
@@ -248,7 +248,7 @@ describe('NetworkListMenu', () => {
   });
 
   it('switches networks when an item is clicked', () => {
-    const origin = 'https://portfolio.metamask.io';
+    const origin = 'https://app.metamask.io';
     const { getByText } = render({
       selectedTabOriginInDomainsState: true,
       isUnlocked: true,
@@ -273,7 +273,7 @@ describe('NetworkListMenu', () => {
       selectedTabOriginInDomainsState: true,
       isUnlocked: true,
       isAccessedFromDappConnectedSitePopover: true,
-      origin: 'https://portfolio.metamask.io',
+      origin: 'https://app.metamask.io',
     });
 
     // Contains Mainnet, Linea Mainnet and the two custom networks
@@ -358,7 +358,7 @@ describe('NetworkListMenu', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`', () => {
+  it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`', () => {
     const { queryByTestId } = render({
       neNetworkDiscoverButton: {
         '0x1': true,

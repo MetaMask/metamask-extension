@@ -6,6 +6,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.1.1]
+### Fixed
+- fix: remove the Solana new feature modal from the onboarding flow (#34988)
+- fix: hide swap fee info line if quote does not include a MetaMask fee (#35278)
+
+## [13.1.0]
+### Added
+- feat: inform users using social login when their password got updated in another instance of the wallet (#34757)
+- feat: use websockets instead of polling to automatically update Solana transactions and token balances (#34620)
+- feat: enable notifications by default for users (#34693)
+- feat: show general startup error messages to users instead of the loading screen indefinitely (#34305)
+- feat: configure slippage applied to delegation caveats when enforced simulations is enabled (#33924)
+- feat: Add buttons to test error capture (#34386)
+
+### Changed
+- update: more seamless and user-friendly experience for users interacting with Trezor devices (#33834)
+- update: adopt fixed spacing between the account avatar and its details rows (#34689)
+- update: polish welcome page copywriting and styles (#34621)
+- update: update srp lock image and remove 'follow us on X' button in onboarding flow (#34619)
+- update: use swaps label for the unified swaps/bridge page (#34467)
+- update: change default label of bridge originated txs to 'swap' or 'bridge' based on source and destination chain (#34476)
+- update: change background color of loading screen to match rest of application's background color (#34346)
+- update: change background color of initial popup screen to match latest designs (#34347)
+- update: remove loading spinner shown when creating an ethereum account (#34374)
+- update: reduce bundle size to improve application performance (#34694)
+- update: change the way accounts are grouped on the account list page (#34631)
+- update: update logo of sei network (#34634)
+- update: reduce contentscript size to improve application performance (#34688)
+- update: translate 'Select account' label on account selector (#34657)
+- update: adopt fixed toggle spacing on advanced settings page (#34536)
+- update: change discover link to redirect to token explorer page instead of dapp explorer page on the Portfolio (#34580)
+- update: improve performance of address formatting/validation (#34152)
+- update: update colors to stay current with the latest MetaMask design system standards (#34384)
+- update: update `form-data` to address advisory (#34480)
+
+### Fixed
+- fix: hide bridge button on testnet for unified ui (#34700)
+- fix: display multichain accounts in the right order on account list (#34756)
+- fix: stop showing all enabled networks when an additional network permission request is prompted by a dapp (#34651)
+- fix: handle potential state corruption issue during Solana accountChanged flow (#34643)
+- fix: stop redirecting back to the login screen upon page refresh for users with social login already completed (#34716)
+- fix: redirect user to the change password form when change password fails (#34722)
+- fix: show correct subtitle and redirect on view explorer (#34723)
+- fix: display right copy + translations for NetworkIndicator text (#34648)
+- fix: use only USD values in simulation metrics, rather than selected currency (#34645)
+- fix: hold insufficient balance alert until simulation is completed (#33932)
+- fix: prevent 'Request cannot be constructed from a URL that includes credentials' error when using RPC endpoints with embedded credentials (#34278)
+- fix: fix token auto-detection feature (#34647)
+- fix: remove all gas validation from legacy send flow, to support gas station and defer to transaction confirmation (#34646)
+- fix: ensure Solana source token is properly displayed for solana -> evm bridges (#34521)
+- fix: fix an issue where signature requests with object-type data could fail by normalizing the data before parsing (#34054)
+- fix: set max limit of block gas used for gas estimation to 10M, which is required to fix ERC20 send issue on MegaETH Testnet (#34398)
+- fix: minimize frequent writes while the wallet UI is closed, to avoid abnormal disk writing (#34473)
+- fix: ensures we are scanning the same value origin that is actually displayed to users in the confirmation screen (#34459)
+- fix: inform user when tx simulation results in ResultWithNegativeLamports errors, as for some providers, like Debridge, it's the only way to detect whether quotes will succeed (#34477)
+- fix: prevent frequent writes while the wallet UI is closed (#34506)
+- fix: ensure 'view on explorer' button displayed below address qr code on the receive page redirects to the right explorer (#34377)
+- fix: update address qr code navigation to prevent infinite loop of navigation (#34381)
+- fix: show solana connected state in the dapp view (#34375)
+- fix: reduce occurrences of Ledger timeout errors (#34574)
+- fix: fix issue where network is always Mainnet when switching to a Bitcoin testnet account (#34286)
+- fix: eliminate 'MetaMask extension not found' error logged in the console when connecting to some dapps on Chrome (#34783)
+- fix: improve default slippage values for swaps and bridges to reduce transaction failures, now using 0.5% for Solana swaps, stablecoin pairs, and bridges, while using 2% for other EVM token swaps (#34821)
+- fix: move password change operations to the background script, to ensure they can continue even when the wallet/browser window closes (#34852)
+- fix: make the slippage editable and visible in the quote card to reduce the risk of submitting transactions with unintended slippage (#34916)
+- fix: trigger Solana UI refreshes only when the client is active and the UI is open, to enhance performance and fix Solana asset removal logic (#34887)
+- fix: handle the case where the refresh token changes during onboarding (e.g. cubist) (#35053)
+- fix: handle issue with Firefox's private browsing mode that was causing the extension to fail during initialization (#35040)
+- fix: show effective gas fees instead of max gas fees when displaying swap quotes (#35038)
+- fix: prevent undesired dapp selected network change when enabled network check boxes are clicked (#35126)
+- fix: ensures that sensitive items are removed from the state logs, which are downloadable from advanced settings page (#35003)
+- fix: ensures that user's email is removed from the state logs, which are downloadable from advanced settings page (#35119)
+
 ## [13.0.1]
 ### Fixed
 - fix: invalid refresh token error thrown when wallet was locked before some background requests completed (#34961)
@@ -54,7 +127,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: change unlock pages error message for too many attempts and time format (#34577)
 - update: remove the Use a different login method button from Unlock page if user is not on social-login flow (#34618)
 - update: rename Profile sync request from /api/v2/profile/metametrics to /api/v2/profile/lineage (#34735)
-- update: Update or add support links on password form, password change modal, import account modal, abd srp quiz modal (#34718)
+- update: update or add support links on password form, password change modal, import account modal, abd srp quiz modal (#34718)
+- update: add Cubist to the list of supported institutional wallet (#34761)
 
 ### Fixed
 - fix: align asset page buttons and fix homepage scrolling (#34342)
@@ -139,7 +213,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: prevent password field error text from dimming when field is disabled (#34545)
 - fix: add vault expiry modal for old password recovery scenarios (#34118)
 - fix: prevent incorrect onboarding navigation on browser back/refresh actions in social login flow (#34541)
-- fix: prevent background password sync checks from affecting UI state (#34542)
+- fix: prevent background password sync checks from affecting UI state (#34534)
 - fix: prevent password field error text from dimming when field is disabled (#34564)
 - fix: handle RecoveryError at unlock when password is outdated (#34571)
 - fix: defer network manager selection logic to prevent blocking toggles (#34450)
@@ -361,7 +435,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.1.1...HEAD
+[13.1.1]: https://github.com/MetaMask/metamask-extension/compare/v13.1.0...v13.1.1
+[13.1.0]: https://github.com/MetaMask/metamask-extension/compare/v13.0.1...v13.1.0
 [13.0.1]: https://github.com/MetaMask/metamask-extension/compare/v13.0.0...v13.0.1
 [13.0.0]: https://github.com/MetaMask/metamask-extension/compare/v12.23.1...v13.0.0
 [12.23.1]: https://github.com/MetaMask/metamask-extension/compare/v12.23.0...v12.23.1
