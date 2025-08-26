@@ -11,7 +11,7 @@ import NFTListPage from '../../page-objects/pages/home/nft-list';
 import SetApprovalForAllTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
-describe('Ledger Hardware', function (this: Suite) {
+describe('Trezor Hardware', function (this: Suite) {
   it('can perform actions on an ERC-721 token', async function () {
     await withFixtures(
       {
