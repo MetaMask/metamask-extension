@@ -1,3 +1,6 @@
+import { Browser } from 'selenium-webdriver';
+import { checkActivityTransaction } from '../../swaps/shared';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -5,11 +8,11 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 
 import HomePage from '../../../page-objects/pages/home/homepage';
 import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
-import { checkActivityTransaction } from '../../swaps/shared';
 
 import { mockLedgerTransactionRequests } from './mocks';
+
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 describe('Ledger Swap', function () {
   it('swaps ETH to DAI', async function () {
@@ -45,8 +48,16 @@ describe('Ledger Swap', function () {
 
         await homePage.startSwapFlow();
 
-        // switch windows back to ExtensionInFullScreenView to avoid the issue of the window being closed
         await driver.delay(5000);
+        if (isFirefox) {
+          // firefox will open swap page in another tab with same name, so we need to close it
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await driver.closeWindow();
+        }
+
+        // switch to the swap page tab
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
