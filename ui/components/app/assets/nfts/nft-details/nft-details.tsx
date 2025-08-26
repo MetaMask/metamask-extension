@@ -336,9 +336,8 @@ export function NftDetailsComponent({
     );
     // We only allow sending one NFT at a time
     const queryParams = new URLSearchParams();
-    queryParams.append('address', nft.address);
-    queryParams.append('tokenId', nft.tokenId);
-    history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
+    queryParams.append('asset', nft.address);
+    history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
   };
 
   const getDateCreatedTimestamp = (dateString: string) => {

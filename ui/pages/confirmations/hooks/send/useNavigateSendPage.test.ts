@@ -26,24 +26,15 @@ describe('useNavigateSendPage', () => {
 
   it('call SendContext.updateCurrentPage with correct parameters', () => {
     const result = renderHook();
-    expect(result.goToAmountPage).toBeDefined();
-    expect(result.goToSendToPage).toBeDefined();
+    expect(result.goToAmountRecipientPage).toBeDefined();
     expect(result.goToPreviousPage).toBeDefined();
   });
 
-  it('calls updateCurrentPage with "Amount" when goToAmountPage is called', () => {
+  it('calls updateCurrentPage with "Amount" when goToAmountRecipientPage is called', () => {
     const result = renderHook();
-    result.goToAmountPage();
+    result.goToAmountRecipientPage();
     expect(mockHistory.push).toHaveBeenCalledWith(
-      `${SEND_ROUTE}/${SendPages.AMOUNT}`,
-    );
-  });
-
-  it('calls updateCurrentPage with "Recipient" when goToSendToPage is called', () => {
-    const result = renderHook();
-    result.goToSendToPage();
-    expect(mockHistory.push).toHaveBeenCalledWith(
-      `${SEND_ROUTE}/${SendPages.RECIPIENT}`,
+      `${SEND_ROUTE}/${SendPages.AMOUNT_RECIPIENT}`,
     );
   });
 
