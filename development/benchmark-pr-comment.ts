@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { mean as calculateMean } from 'lodash';
 import {
   BenchmarkMetrics,
   BenchmarkSummary,
@@ -58,12 +59,109 @@ const SIGNIFICANT_PERCENT_INCREASE_THRESHOLDS: Record<string, number> = {
 };
 
 /**
- * Fetches the latest benchmark data from the main branch of the extension_benchmark_stats repository
+ * Aggregates historical benchmark data from the stats repository into a single object.
+ *
+ * @param commitHashes - The commit hashes to aggregate
+ * @param data - Historical benchmark data from the stats repository
+ * @param n - The number of commits to aggregate
+ * @returns Aggregated benchmark data
  */
-async function fetchLatestMainBenchmarkData(): Promise<BenchmarkOutput | null> {
+function aggregateHistoricalBenchmarkData(
+  commitHashes: string[],
+  data: HistoricalBenchmarkData,
+  n: number,
+): BenchmarkOutput {
+  // Take the latest N commits (or all if less than N)
+  const latestCommits = commitHashes.slice(0, n);
+  console.log(
+    `Processing ${latestCommits.length} commits: ${latestCommits.join(', ')}`,
+  );
+
+  // Calculate mean of means for each page and metric
+  const aggregatedData: BenchmarkOutput = {
+    timestamp: Date.now(), // Use current timestamp
+    commit: latestCommits[0], // Use the latest commit hash as representative
+    summary: [],
+    rawResults: [],
+  };
+
+  // Get all unique pages from all commits
+  const allPages = new Set<string>();
+  latestCommits.forEach((commitHash) => {
+    const commitData = data[commitHash];
+    if (commitData?.summary) {
+      commitData.summary.forEach((pageSummary) => {
+        allPages.add(pageSummary.page);
+      });
+    }
+  });
+
+  // For each page, calculate mean of means for key metrics only
+  allPages.forEach((pageName) => {
+    const pageData: BenchmarkSummary = {
+      page: pageName,
+      samples: 0, // Not used downstream
+      mean: {} as BenchmarkMetrics,
+      standardDeviation: {} as BenchmarkMetrics,
+      min: {} as BenchmarkMetrics,
+      max: {} as BenchmarkMetrics,
+      p95: {} as BenchmarkMetrics,
+      p99: {} as BenchmarkMetrics,
+    };
+
+    // Collect mean values for key metrics across all commits
+    const metricMeans: Record<string, number[]> = {};
+
+    latestCommits.forEach((commitHash) => {
+      const commitData = data[commitHash];
+      const pageSummary = commitData?.summary?.find((p) => p.page === pageName);
+
+      if (pageSummary?.mean) {
+        // Only collect key metrics
+        Object.values(KeyMetrics).forEach((metricKey) => {
+          const metricValue =
+            pageSummary.mean[
+              metricKey as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+            ];
+          if (typeof metricValue === 'number') {
+            if (!metricMeans[metricKey]) {
+              metricMeans[metricKey] = [];
+            }
+            metricMeans[metricKey].push(metricValue);
+          }
+        });
+      }
+    });
+
+    // Calculate mean of means for each key metric
+    Object.keys(metricMeans).forEach((metricKey) => {
+      const values = metricMeans[metricKey];
+      if (values.length > 0) {
+        const calculatedMean = calculateMean(values);
+        pageData.mean[
+          metricKey as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+        ] = calculatedMean;
+      }
+    });
+
+    aggregatedData.summary.push(pageData);
+  });
+  return aggregatedData;
+}
+
+/**
+ * Fetches the latest benchmark data from the main branch of the extension_benchmark_stats repository
+ *
+ * @param n - The number of commits to fetch
+ * Returns the mean of means from the latest N commits (or all available if less than N)
+ */
+async function fetchLatestMainBenchmarkData(
+  n: number,
+): Promise<BenchmarkOutput | null> {
   try {
+    // TODO: [ffmcgee]: "temp" for testing, replace with "main"
     const response = await fetch(
-      'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/page_load_data.json',
+      'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/temp/stats/page_load_data.json',
     );
 
     if (!response.ok) {
@@ -74,18 +172,20 @@ async function fetchLatestMainBenchmarkData(): Promise<BenchmarkOutput | null> {
     }
 
     const data: HistoricalBenchmarkData = await response.json();
-    const referenceCommit = Object.keys(data).at(-1) ?? '';
-    const referenceData = data[referenceCommit];
+    const commitHashes = Object.keys(data).reverse(); // Sort by commit hash, newest first
 
-    if (!referenceData) {
+    if (commitHashes.length === 0) {
       console.warn('No benchmark data found');
       return null;
     }
 
+    // Take the latest N commits (or all if less than N)
+    const latestCommits = commitHashes.slice(0, n);
     console.log(
-      `Successfully fetched benchmark data for reference commit: ${referenceCommit}`,
+      `Processing ${latestCommits.length} commits: ${latestCommits.join(', ')}`,
     );
-    return referenceData;
+
+    return aggregateHistoricalBenchmarkData(latestCommits, data, n);
   } catch (error) {
     console.warn('Error fetching historical benchmark data:', error);
     return null;
@@ -184,8 +284,7 @@ function hasSignificantIncrease(
  * @param metricName - Name of the performance metric
  * @param currentMean - Current commit mean value in milliseconds
  * @param currentStdDev - Current commit standard deviation in milliseconds
- * @param referenceMean - Reference commit mean value in milliseconds
- * @param referenceStdDev - Reference commit standard deviation in milliseconds
+ * @param referenceMean - Historical mean value in milliseconds
  * @returns Formatted markdown row string
  */
 function formatMetricRowWithComparison(
@@ -193,7 +292,6 @@ function formatMetricRowWithComparison(
   currentMean: number,
   currentStdDev: number,
   referenceMean: number,
-  referenceStdDev: number,
 ): string {
   const currentEmoji = getEmojiForMetric(metricName, currentMean);
   const comparisonEmoji = getComparisonEmoji(currentMean, referenceMean);
@@ -203,12 +301,8 @@ function formatMetricRowWithComparison(
     currentStdDev,
   );
   const referenceFormatted = formatTime(referenceMean);
-  const referenceStdDevFormatted = formatStandardDeviation(
-    referenceMean,
-    referenceStdDev,
-  );
 
-  return `- **${metricName}**: ${currentFormatted}${currentStdDevFormatted} ${currentEmoji} vs ${referenceFormatted}${referenceStdDevFormatted} ${comparisonEmoji}`;
+  return `- **${metricName}**: ${currentFormatted}${currentStdDevFormatted} ${currentEmoji} (current data) vs ${referenceFormatted} ${comparisonEmoji} (historical data)`;
 }
 
 /**
@@ -319,7 +413,6 @@ function processMetricForComparison(
     currentValues.mean,
     currentValues.stdDev,
     referenceValues.mean,
-    referenceValues.stdDev,
   );
 }
 
@@ -445,6 +538,7 @@ function generateBenchmarkComment(
 async function main(): Promise<void> {
   const { PR_COMMENT_TOKEN, OWNER, REPOSITORY, PR_NUMBER } =
     process.env as Record<string, string>;
+  const N_COMMITS = 10;
 
   if (!PR_NUMBER) {
     console.warn('No pull request detected, skipping benchmark comment');
@@ -476,7 +570,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  const referenceData = await fetchLatestMainBenchmarkData();
+  const referenceData = await fetchLatestMainBenchmarkData(N_COMMITS);
 
   const commentBody = generateBenchmarkComment(benchmarkData, referenceData);
   console.log('Generated comment:');
