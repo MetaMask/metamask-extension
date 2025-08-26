@@ -8,6 +8,11 @@ import {
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import type { DestinationAccount } from '../prepare/types';
 
+/**
+ * Hook to provide the default internal destination account for a bridge quote
+ *
+ * @returns The default destination account and the setter for the selected destination account.
+ */
 export const useDestinationAccount = () => {
   const [selectedDestinationAccount, setSelectedDestinationAccount] =
     useState<DestinationAccount | null>(null);

@@ -1,6 +1,5 @@
 import React from 'react';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { Box, Text, Tag } from '../../../../components/component-library';
 import {

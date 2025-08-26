@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {

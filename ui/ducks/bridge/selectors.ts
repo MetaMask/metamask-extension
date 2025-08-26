@@ -39,6 +39,10 @@ import type {
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import {
+  type AccountGroupObject,
+  type AccountTreeControllerState,
+} from '@metamask/account-tree-controller';
+import {
   MultichainNetworks,
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -84,10 +88,6 @@ import {
   toBridgeToken,
 } from './utils';
 import type { BridgeState } from './types';
-import {
-  type AccountGroupObject,
-  type AccountTreeControllerState,
-} from '@metamask/account-tree-controller';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &

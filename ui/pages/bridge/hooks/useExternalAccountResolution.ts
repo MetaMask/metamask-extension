@@ -38,6 +38,7 @@ export const useExternalAccountResolution = ({
     ) {
       return trimmedQuery;
     }
+    return null;
   }, [trimmedQuery, isDestinationSolana]);
 
   const validEnsName =
