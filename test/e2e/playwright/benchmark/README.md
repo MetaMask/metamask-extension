@@ -39,11 +39,6 @@ yarn playwright test --project=benchmark
 BENCHMARK_BROWSER_LOADS=5 BENCHMARK_PAGE_LOADS=5 yarn playwright test --project=benchmark
 ```
 
-### Environment Variables
-
-- `BENCHMARK_BROWSER_LOADS`: Number of browser instances to test (default: 10)
-- `BENCHMARK_PAGE_LOADS`: Number of page loads per browser (default: 10)
-
 ## Output
 
 The benchmark generates a JSON file (`benchmark-results.json`) with the following structure:
