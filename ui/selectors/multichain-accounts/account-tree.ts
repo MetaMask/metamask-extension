@@ -294,7 +294,10 @@ export const getAllAccountGroups = createDeepEqualSelector(
     const { wallets } = accountTree;
 
     return Object.values(wallets).flatMap((wallet) => {
-      return Object.values(wallet.groups);
+      return Object.values(wallet.groups).map((group) => ({
+        ...group,
+        walletName: wallet.metadata.name,
+      }));
     });
   },
 );
@@ -380,7 +383,7 @@ export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
   getAllAccountGroups,
   getInternalAccounts,
   (
-    accountGroups: AccountGroupObject[],
+    accountGroups: (AccountGroupObject & { walletName: string })[],
     internalAccounts: InternalAccount[],
   ): AccountGroupWithInternalAccounts[] => {
     return accountGroups.map((accountGroup) => {
