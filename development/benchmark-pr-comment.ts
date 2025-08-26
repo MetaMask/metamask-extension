@@ -33,8 +33,8 @@ type HistoricalBenchmarkData = {
  */
 enum KeyMetrics {
   PageLoadTime = 'pageLoadTime',
+  DomContentLoaded = 'domContentLoaded',
   FirstContentfulPaint = 'firstContentfulPaint',
-  LargestContentfulPaint = 'largestContentfulPaint',
 }
 
 /**
@@ -45,8 +45,8 @@ const EMOJI_RENDERING_THRESHOLDS: Record<
   { good: number; warning: number }
 > = {
   [KeyMetrics.PageLoadTime]: { good: 1000, warning: 2000 },
+  [KeyMetrics.DomContentLoaded]: { good: 1200, warning: 2500 },
   [KeyMetrics.FirstContentfulPaint]: { good: 800, warning: 1500 },
-  [KeyMetrics.LargestContentfulPaint]: { good: 1200, warning: 2500 },
 };
 
 /**
@@ -54,8 +54,8 @@ const EMOJI_RENDERING_THRESHOLDS: Record<
  */
 const SIGNIFICANT_PERCENT_INCREASE_THRESHOLDS: Record<string, number> = {
   [KeyMetrics.PageLoadTime]: 0.25,
+  [KeyMetrics.DomContentLoaded]: 0.2,
   [KeyMetrics.FirstContentfulPaint]: 1.5,
-  [KeyMetrics.LargestContentfulPaint]: 0.4,
 };
 
 /**
