@@ -155,7 +155,6 @@ describe('eth_sendTransaction', function () {
           `window.transactionHash = window.ethereum.request(${request})`,
         );
 
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
