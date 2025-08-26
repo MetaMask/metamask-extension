@@ -40,11 +40,7 @@ try {
   console.log('🧪 Running benchmark...');
   execSync(`yarn playwright test --project=benchmark --reporter=list,html`, {
     stdio: 'inherit',
-    env: {
-      ...process.env,
-      BENCHMARK_BROWSER_LOADS: browserLoads,
-      BENCHMARK_PAGE_LOADS: pageLoads,
-    },
+    env: { ...process.env },
   });
 
   console.log('✅ Benchmark completed successfully!');

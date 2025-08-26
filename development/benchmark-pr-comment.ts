@@ -37,6 +37,27 @@ enum KeyMetrics {
 }
 
 /**
+ * Constants to determine which indicating performance level indicating Emoji should be rendered in {@link getEmojiForMetric} util function.
+ */
+const EMOJI_RENDERING_THRESHOLDS: Record<
+  string,
+  { good: number; warning: number }
+> = {
+  [KeyMetrics.PageLoadTime]: { good: 1000, warning: 2000 },
+  [KeyMetrics.FirstContentfulPaint]: { good: 800, warning: 1500 },
+  [KeyMetrics.LargestContentfulPaint]: { good: 1200, warning: 2500 },
+};
+
+/**
+ * Constants to determine a significant increase threshold for metrics, used in {@link hasSignificantIncrease} util function.
+ */
+const SIGNIFICANT_PERCENT_INCREASE_THRESHOLDS: Record<string, number> = {
+  [KeyMetrics.PageLoadTime]: 0.25,
+  [KeyMetrics.FirstContentfulPaint]: 1.5,
+  [KeyMetrics.LargestContentfulPaint]: 0.4,
+};
+
+/**
  * Fetches the latest benchmark data from the main branch of the extension_benchmark_stats repository
  */
 async function fetchLatestMainBenchmarkData(): Promise<BenchmarkOutput | null> {
@@ -106,18 +127,12 @@ function formatStandardDeviation(mean: number, stdDev: number): string {
  *
  * @param metric - Name of the performance metric
  * @param value - Measured value in milliseconds
- * @returns Emoji indicating performance level: 🟢 (good), 🟡 (warning), 🔴 (poor), or 📊 (neutral)
+ * @returns Emoji indicating performance level: 🟢 (good), 🟡 (warning), 🔴 (poor), or ⚪ (neutral)
  */
 function getEmojiForMetric(metric: string, value: number): string {
-  const thresholds: Record<string, { good: number; warning: number }> = {
-    [KeyMetrics.PageLoadTime]: { good: 1000, warning: 2000 },
-    [KeyMetrics.FirstContentfulPaint]: { good: 800, warning: 1500 },
-    [KeyMetrics.LargestContentfulPaint]: { good: 1200, warning: 2500 },
-  };
-
-  const threshold = thresholds[metric];
+  const threshold = EMOJI_RENDERING_THRESHOLDS[metric];
   if (!threshold) {
-    return '📊';
+    return '⚪';
   }
   if (value <= threshold.good) {
     return '🟢';
@@ -157,14 +172,9 @@ function hasSignificantIncrease(
   current: number,
   reference: number,
 ): boolean {
-  const significantPercentIncreaseThresholds: Record<string, number> = {
-    [KeyMetrics.PageLoadTime]: 0.25,
-    [KeyMetrics.FirstContentfulPaint]: 1.5,
-    [KeyMetrics.LargestContentfulPaint]: 0.4,
-  };
   const diff = current - reference;
   const percentIncrease = diff / reference;
-  return percentIncrease >= significantPercentIncreaseThresholds[metric];
+  return percentIncrease >= SIGNIFICANT_PERCENT_INCREASE_THRESHOLDS[metric];
 }
 
 /**

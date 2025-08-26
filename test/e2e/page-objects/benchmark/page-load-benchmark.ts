@@ -305,16 +305,13 @@ export class PageLoadBenchmark {
     for (let browserLoad = 0; browserLoad < browserLoads; browserLoad++) {
       console.log(`Browser load ${browserLoad + 1}/${browserLoads}`);
 
-      // Setup fresh browser context for each browser load
-      if (browserLoad > 0) {
-        await this.context?.close();
-        this.context = await this.browser?.newContext({
-          viewport: { width: 1280, height: 720 },
-          userAgent:
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        });
-        await this.waitForExtensionLoad();
-      }
+      /** Setup fresh browser context for each browser load */
+      this.context = await this.browser?.newContext({
+        viewport: { width: 1280, height: 720 },
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      });
+      await this.waitForExtensionLoad();
 
       for (const url of urls) {
         for (let pageLoad = 0; pageLoad < pageLoads; pageLoad++) {
@@ -323,18 +320,17 @@ export class PageLoadBenchmark {
             `  Measuring ${url} (run ${runNumber + 1}/${browserLoads * pageLoads})`,
           );
 
-          try {
-            await this.measurePageLoad(url, runNumber);
-            // Small delay between measurements
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-          } catch (error) {
-            console.error(
-              `Error measuring ${url} (run ${runNumber + 1}):`,
-              error,
-            );
-          }
+          await this.measurePageLoad(url, runNumber);
+          /**
+           * To make sure page setup & teardown doesn't have unexpected results in the next measurement,
+           * we add a small delay between measurements.
+           */
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       }
+
+      /** Teardown current browser context in preparation for next iteration */
+      await this.context?.close();
     }
   }
 
