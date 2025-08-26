@@ -2001,18 +2001,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
 "@endo/env-options@npm:1.1.11":
-=======
-"@endo/env-options@npm:^1.1.11":
->>>>>>> 8317332d6e (feat: support onekey)
   version: 1.1.11
   resolution: "@endo/env-options@npm:1.1.11"
   checksum: 10/a85326b2f422ebb3f5895ed263d230bf9c4915ed2f798210bebb3941daf94d97495f4767f4113bab8f3781b0534ecbe1d29067d7806478fd6237ab69e97fe5c1
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
 "@endo/env-options@patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch":
   version: 1.1.11
   resolution: "@endo/env-options@patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch::version=1.1.11&hash=832523"
@@ -2020,16 +2015,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/errors@npm:^1.2.10, @endo/errors@npm:^1.2.13":
-=======
-"@endo/env-options@npm:^1.1.7, @endo/env-options@npm:^1.1.8":
-  version: 1.1.9
-  resolution: "@endo/env-options@npm:1.1.9"
-  checksum: 10/13a7525bc178d1a3d4b588893fe69cf369e0b741dc389e520a8f893635d6f1d0c63790c8a1e739b350b3f347bbd6758b1d382e3d72bb703dedac4a553b51b1ba
-  languageName: node
-  linkType: hard
-
-"@endo/errors@npm:^1.2.10, @endo/errors@npm:^1.2.9":
+"@endo/errors@npm:^1.2.10":
   version: 1.2.10
   resolution: "@endo/errors@npm:1.2.10"
   dependencies:
@@ -2039,7 +2025,6 @@ __metadata:
   linkType: hard
 
 "@endo/errors@npm:^1.2.13":
->>>>>>> 8317332d6e (feat: support onekey)
   version: 1.2.13
   resolution: "@endo/errors@npm:1.2.13"
   dependencies:
@@ -6092,6 +6077,23 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^8.2.0"
     hdkey: "npm:^2.1.0"
   checksum: 10/3e9b10f366d2b33569a5eb95639db89798cff8b79629c47318a4e10c26da4a2fac10ed61002493683ef2472521c517d5379e5c39998027891b98cc2c76ecc853
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-onekey-keyring@npm:@metamask-previews/eth-onekey-keyring@0.1.0-a621908":
+  version: 0.1.0-a621908
+  resolution: "@metamask-previews/eth-onekey-keyring@npm:0.1.0-a621908"
+  dependencies:
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@noble/hashes": "npm:^1.7.0"
+    "@onekeyfe/hd-core": "npm:1.1.6-patch.4"
+    "@onekeyfe/hd-shared": "npm:1.1.6-patch.4"
+    "@onekeyfe/hd-transport": "npm:1.1.6-patch.4"
+    "@onekeyfe/hd-web-sdk": "npm:1.1.6-patch.4"
+    hdkey: "npm:^2.1.0"
+  checksum: 10/dba372433d74cadfb70377c3130b125bdf1cf3a26e128ff48f4f877090022b9cad3676a6930d1c4cb38c8a2dfadcdf110e13bfb12fdcc173bc2aa5deba03f502
   languageName: node
   linkType: hard
 
@@ -23864,23 +23866,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-onekey-bridge-keyring@npm:^0.3.8":
-  version: 0.3.8
-  resolution: "eth-onekey-bridge-keyring@npm:0.3.8"
-  dependencies:
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@noble/hashes": "npm:^1.7.0"
-    "@onekeyfe/hd-core": "npm:1.1.6-patch.4"
-    "@onekeyfe/hd-shared": "npm:1.1.6-patch.4"
-    "@onekeyfe/hd-transport": "npm:1.1.6-patch.4"
-    "@onekeyfe/hd-web-sdk": "npm:1.1.6-patch.4"
-    hdkey: "npm:^2.1.0"
-  checksum: 10/3c99e4ff38c6d3d5b4a2656d12ee2e3b5a31a5a9d504ed7f27e76aff5ba074d4815f65119722036282cb4dd3a4e62bf8dba0b0622f2aade536b715e393370ce2
-  languageName: node
-  linkType: hard
-
 "eth-phishing-detect@npm:^1.2.0":
   version: 1.2.0
   resolution: "eth-phishing-detect@npm:1.2.0"
@@ -32254,6 +32239,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
+    "@metamask/eth-onekey-keyring": "npm:@metamask-previews/eth-onekey-keyring@0.1.0-a621908"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^16.0.0"
@@ -32484,7 +32470,6 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     eth-lattice-keyring: "patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch"
     eth-method-registry: "npm:^4.0.0"
-    eth-onekey-bridge-keyring: "npm:^0.3.8"
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:^5.7.0"
     extension-port-stream: "npm:^3.0.0"

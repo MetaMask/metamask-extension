@@ -1,7 +1,7 @@
 import {
   ONEKEY_HARDWARE_UI_EVENT,
   OneKeyBridge,
-} from 'eth-onekey-bridge-keyring';
+} from '@metamask/eth-onekey-keyring';
 import type {
   ConnectSettings,
   Params,

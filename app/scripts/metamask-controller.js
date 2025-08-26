@@ -142,7 +142,7 @@ import {
   bytesToHex,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
-import { OneKeyKeyring, OneKeyWebBridge } from 'eth-onekey-bridge-keyring';
+import { OneKeyKeyring, OneKeyWebBridge } from '@metamask/eth-onekey-keyring';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
 import {
