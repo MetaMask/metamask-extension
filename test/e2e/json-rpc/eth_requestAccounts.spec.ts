@@ -93,6 +93,7 @@ describe('eth_requestAccounts', function () {
           `window.requestAccount = window.ethereum.request(${requestAccountRequest})`,
         );
 
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
