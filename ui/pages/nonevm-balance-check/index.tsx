@@ -1,20 +1,27 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { Box } from '../../components/component-library';
+import {
+  Box,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+} from '../../components/component-library';
 import {
   BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
+import { setSelectedAccount } from '../../store/actions';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import { NonEvmQueryParams } from '../../../shared/lib/deep-links/routes/nonevm';
 import { SWAP_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { RampsMetaMaskEntry } from '../../hooks/ramps/useRamps/useRamps';
+import { getLastSelectedNonEvmAccount } from '../../selectors/multichain';
 import {
   getDataCollectionForMarketing,
   getMetaMaskAccountsOrdered,
@@ -60,10 +67,12 @@ const getBuyUrl = (
 
 export const NonEvmBalanceCheck = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const lastSelectedNonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
 
   const params = new URLSearchParams(location.search);
   const chainId = params.get(NonEvmQueryParams.ChainId) as CaipChainId;
@@ -80,6 +89,11 @@ export const NonEvmBalanceCheck = () => {
     }
 
     if (hasAccountForChain) {
+      // If we have a "last selected" non-EVM account that matches the chain -> switch to it
+      if (lastSelectedNonEvmAccount?.scopes?.includes(chainId)) {
+        dispatch(setSelectedAccount(lastSelectedNonEvmAccount.address));
+      }
+
       const hasPositiveBalance = assetsWithBalance.some(
         (asset) =>
           asset.chainId === chainId && asset.balance && asset.balance !== '0',
@@ -106,15 +120,31 @@ export const NonEvmBalanceCheck = () => {
 
   if (!hasAccountForChain) {
     return (
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.spaceBetween}
-        width={BlockSize.OneFifth}
-        padding={4}
+      <Modal
+        isOpen
+        onClose={() => {
+          // do nothing
+        }}
       >
-        <AddNonEvmAccountModal chainId={chainId} />
-      </Box>
+        <ModalOverlay />
+        <ModalContent
+          modalDialogProps={{
+            padding: 0,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+          }}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.spaceBetween}
+            width={BlockSize.Full}
+            padding={2}
+          >
+            <AddNonEvmAccountModal chainId={chainId} />
+          </Box>
+        </ModalContent>
+      </Modal>
     );
   }
 
