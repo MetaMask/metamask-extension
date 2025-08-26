@@ -6090,6 +6090,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-onekey-keyring@npm:@metamask-previews/eth-onekey-keyring@0.1.0-a621908":
+  version: 0.1.0-a621908
+  resolution: "@metamask-previews/eth-onekey-keyring@npm:0.1.0-a621908"
+  dependencies:
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@noble/hashes": "npm:^1.7.0"
+    "@onekeyfe/hd-core": "npm:1.1.6-patch.4"
+    "@onekeyfe/hd-shared": "npm:1.1.6-patch.4"
+    "@onekeyfe/hd-transport": "npm:1.1.6-patch.4"
+    "@onekeyfe/hd-web-sdk": "npm:1.1.6-patch.4"
+    hdkey: "npm:^2.1.0"
+  checksum: 10/dba372433d74cadfb70377c3130b125bdf1cf3a26e128ff48f4f877090022b9cad3676a6930d1c4cb38c8a2dfadcdf110e13bfb12fdcc173bc2aa5deba03f502
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-query@npm:^4.0.0":
   version: 4.0.0
   resolution: "@metamask/eth-query@npm:4.0.0"
@@ -23843,23 +23860,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-onekey-bridge-keyring@npm:^0.3.8":
-  version: 0.3.8
-  resolution: "eth-onekey-bridge-keyring@npm:0.3.8"
-  dependencies:
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@noble/hashes": "npm:^1.7.0"
-    "@onekeyfe/hd-core": "npm:1.1.6-patch.4"
-    "@onekeyfe/hd-shared": "npm:1.1.6-patch.4"
-    "@onekeyfe/hd-transport": "npm:1.1.6-patch.4"
-    "@onekeyfe/hd-web-sdk": "npm:1.1.6-patch.4"
-    hdkey: "npm:^2.1.0"
-  checksum: 10/3c99e4ff38c6d3d5b4a2656d12ee2e3b5a31a5a9d504ed7f27e76aff5ba074d4815f65119722036282cb4dd3a4e62bf8dba0b0622f2aade536b715e393370ce2
-  languageName: node
-  linkType: hard
-
 "eth-phishing-detect@npm:^1.2.0":
   version: 1.2.0
   resolution: "eth-phishing-detect@npm:1.2.0"
@@ -32206,6 +32206,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
+    "@metamask/eth-onekey-keyring": "npm:@metamask-previews/eth-onekey-keyring@0.1.0-a621908"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^16.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
@@ -32435,7 +32436,6 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     eth-lattice-keyring: "patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch"
     eth-method-registry: "npm:^4.0.0"
-    eth-onekey-bridge-keyring: "npm:^0.3.8"
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:^5.7.0"
     extension-port-stream: "npm:^3.0.0"
