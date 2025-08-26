@@ -68,6 +68,51 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
+      - name: Install Vulkan drivers
+        run: |
+          echo "=== Starting Vulkan installation ==="
+          echo "Current user: $(whoami)"
+          echo "Current directory: $(pwd)"
+          echo "Available space: $(df -h /)"
+
+          echo "=== Updating package lists ==="
+          apt-get update -y
+
+          echo "=== Installing Vulkan packages ==="
+          apt-get install -y \
+            mesa-vulkan-drivers \
+            vulkan-tools \
+            vulkan-validationlayers \
+            libvulkan1 \
+            mesa-utils \
+            vulkan-validationlayers-dev
+
+          echo "=== Verifying package installation ==="
+          dpkg -l | grep -i vulkan || echo "No Vulkan packages found in dpkg"
+
+          echo "=== Checking installed files ==="
+          ls -la /usr/lib/x86_64-linux-gnu/ | grep vulkan || echo "No vulkan libs in /usr/lib/x86_64-linux-gnu/"
+          ls -la /usr/share/vulkan/ || echo "No /usr/share/vulkan/ directory"
+          ls -la /usr/share/vulkan/icd.d/ || echo "No /usr/share/vulkan/icd.d/ directory"
+
+          echo "=== Setting Vulkan environment variables ==="
+          echo "VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json:/usr/share/vulkan/icd.d/radeon_icd.x86_64.json" >> $GITHUB_ENV
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+          echo "VK_LAYER_PATH=/usr/share/vulkan/explicit_layer.d" >> $GITHUB_ENV
+          echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
+
+          echo "=== Testing vulkaninfo ==="
+          which vulkaninfo || echo "vulkaninfo not found in PATH"
+          vulkaninfo --summary || echo "vulkaninfo failed to run"
+
+          echo "=== Final verification ==="
+          echo "VK_ICD_FILENAMES will be set to: /usr/share/vulkan/icd.d/intel_icd.x86_64.json:/usr/share/vulkan/icd.d/radeon_icd.x86_64.json"
+          echo "DISPLAY will be set to: :99"
+          echo "VK_LAYER_PATH will be set to: /usr/share/vulkan/explicit_layer.d"
+          echo "LIBGL_ALWAYS_SOFTWARE will be set to: 1"
+
+          echo "=== Vulkan installation completed ==="
+
       - name: Restore .metamask folder
         id: restore-metamask
         uses: actions/cache/restore@v4
