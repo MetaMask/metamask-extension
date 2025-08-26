@@ -8,16 +8,14 @@ import type {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import type { OriginString } from '@metamask/permission-controller';
-import type { PermissionLogControllerState } from '@metamask/permission-log-controller';
-import type { AccountTrackerControllerState } from '@metamask/assets-controllers';
 import { rpcErrors } from '@metamask/rpc-errors';
 
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import type { FlattenedBackgroundStateProxy } from '../../../../../shared/types';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
-import type { MetaMetricsControllerState } from '../../../controllers/metametrics-controller';
 import { shouldEmitDappViewedEvent } from '../../util';
 import type {
   GetAccounts,
@@ -30,11 +28,10 @@ import type {
 export type RequestEthereumAccountsOptions = {
   getAccounts: GetAccounts;
   sendMetrics: SendMetrics;
-  metamaskState: {
-    metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
-    permissionHistory: PermissionLogControllerState['permissionHistory'];
-    accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
-  };
+  metamaskState: Pick<
+    FlattenedBackgroundStateProxy,
+    'accounts' | 'metaMetricsId' | 'permissionHistory' | 'accountsByChainId'
+  >;
   getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
   requestPermissionsForOrigin: RequestPermissionsForOrigin;
 };
@@ -146,7 +143,7 @@ async function requestEthereumAccountsHandler<
   // first time connection to dapp will lead to no log in the permissionHistory
   // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
   // we will leverage that to identify `is_first_visit` for metrics
-  if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId ?? '')) {
+  if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
