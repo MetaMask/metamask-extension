@@ -128,7 +128,7 @@ export async function bridgeTransaction(
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
-    .forGet(`https://portfolio.metamask.io/bridge`)
+    .forGet(`https://app.metamask.io/bridge`)
     .thenCallback(() => {
       return {
         statusCode: 200,
