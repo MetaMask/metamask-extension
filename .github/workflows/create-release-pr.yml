@@ -13,7 +13,7 @@ on:
         description: 'A semantic version, eg: x.x.x'
         required: true
       previous-version-ref:
-        description: 'Previous release version branch name, tag or commit hash (e.g., release/7.7.0, v7.7.0, or 76fbc500034db9779e9ff7ce637ac5be1da0493d)'
+        description: 'Previous release version branch name, tag or commit hash (e.g., Version-vx.y.z, v7.7.0, or 76fbc500034db9779e9ff7ce637ac5be1da0493d)'
         required: true
 
 jobs:
