@@ -27,8 +27,10 @@ import {
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { Skeleton } from '../../../components/component-library/skeleton';
 import CancelMembershipModal from './cancel-membership-modal';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const TransactionShield = () => {
+  const t = useI18nContext();
   const [isLoading] = useState(false);
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
@@ -37,13 +39,13 @@ const TransactionShield = () => {
   const shieldDetails = [
     {
       icon: IconName.ShieldLock,
-      title: 'Covers $10,000 in transaction protection',
-      description: 'Secures your assets from risky transactions',
+      title: t('shieldTxDetails1Title'),
+      description: t('shieldTxDetails1Description'),
     },
     {
       icon: IconName.Flash,
-      title: 'Priority support',
-      description: 'Get faster, dedicated support anytime',
+      title: t('shieldTxDetails2Title'),
+      description: t('shieldTxDetails2Description'),
     },
   ];
 
@@ -53,10 +55,11 @@ const TransactionShield = () => {
     padding: 4,
   };
 
-  const buttonRow = (label: string, onClick: () => void) => {
+  const buttonRow = (label: string, onClick: () => void, id?: string) => {
     return (
       <Box
         as="button"
+        data-testid={id}
         className="transaction-shield-page__row"
         {...rowsStyleProps}
         justifyContent={JustifyContent.spaceBetween}
@@ -107,6 +110,7 @@ const TransactionShield = () => {
   return (
     <Box
       className="transaction-shield-page"
+      data-testid="transaction-shield-page"
       width={BlockSize.Full}
       flexDirection={FlexDirection.Column}
       padding={4}
@@ -147,12 +151,12 @@ const TransactionShield = () => {
                   className="transaction-shield-page__membership-text"
                 >
                   {isActiveMembership
-                    ? 'Active membership'
-                    : 'Inactive membership'}
+                    ? t('shieldTxMembershipActive')
+                    : t('shieldTxMembershipInactive')}
                 </Text>
                 {isActiveMembership && (
                   <Tag
-                    label="Free Trial"
+                    label={t('shieldTxMembershipFreeTrial')}
                     labelProps={{
                       variant: TextVariant.bodySmMedium,
                       color: TextColor.textAlternativeSoft,
@@ -171,19 +175,20 @@ const TransactionShield = () => {
                 variant={TextVariant.bodyXs}
                 className="transaction-shield-page__membership-text"
               >
-                Membership ID: #SnJnwxwr1booC7
+                {t('shieldTxMembershipId')}: #SnJnwxwr1booC7
               </Text>
             )}
           </Box>
           {!isActiveMembership && (
             <Box>
               <Button
+                data-testid="shield-tx-membership-resubscribe-button"
                 size={ButtonSize.Sm}
                 onClick={() => {
                   setIsActiveMembership(true);
                 }}
               >
-                Resubscribe
+                {t('shieldTxMembershipResubscribe')}
               </Button>
             </Box>
           )}
@@ -240,17 +245,21 @@ const TransactionShield = () => {
             </Box>
           ))}
         </Box>
-        {buttonRow('View full benefits', () => {
+        {buttonRow(t('shieldTxMembershipViewFullBenefits'), () => {
           console.log('View full benefits');
         })}
         {isActiveMembership &&
-          buttonRow('Submit a case', () => {
+          buttonRow(t('shieldTxMembershipSubmitCase'), () => {
             console.log('Submit a case');
           })}
         {isActiveMembership &&
-          buttonRow('Cancel membership', () => {
-            setIsCancelMembershipModalOpen(true);
-          })}
+          buttonRow(
+            t('shieldTxMembershipCancel'),
+            () => {
+              setIsCancelMembershipModalOpen(true);
+            },
+            'shield-tx-membership-cancel-button',
+          )}
       </Box>
 
       <Box className="transaction-shield-page__container">
@@ -263,16 +272,33 @@ const TransactionShield = () => {
           {isLoading ? (
             <Skeleton width="60%" height={24} />
           ) : (
-            <Text variant={TextVariant.headingSm}>Billing details</Text>
+            <Text variant={TextVariant.headingSm}>
+              {t('shieldTxMembershipBillingDetails')}
+            </Text>
           )}
-          {billingDetails('Next billing', 'Apr 18, 2024')}
-          {billingDetails('Charges', '8 USDT/month (Monthly)')}
-          {billingDetails('Billing account', '0x187...190')}
-          {billingDetails('Payment method', 'USDT')}
+          {billingDetails(
+            t('shieldTxMembershipBillingDetailsNextBilling'),
+            'Apr 18, 2024',
+          )}
+          {billingDetails(
+            t('shieldTxMembershipBillingDetailsCharges'),
+            '8 USDT/month (Monthly)',
+          )}
+          {billingDetails(
+            t('shieldTxMembershipBillingDetailsBillingAccount'),
+            '0x187...190',
+          )}
+          {billingDetails(
+            t('shieldTxMembershipBillingDetailsPaymentMethod'),
+            'USDT',
+          )}
         </Box>
-        {buttonRow('View billing history', () => {
-          console.log('View billing history');
-        })}
+        {buttonRow(
+          t('shieldTxMembershipBillingDetailsViewBillingHistory'),
+          () => {
+            console.log('View billing history');
+          },
+        )}
       </Box>
       {isCancelMembershipModalOpen && (
         <CancelMembershipModal

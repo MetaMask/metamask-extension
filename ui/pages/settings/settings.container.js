@@ -64,7 +64,7 @@ const ROUTES_TO_I18N_KEYS = {
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
-  [TRANSACTION_SHIELD_ROUTE]: 'transactionShield',
+  [TRANSACTION_SHIELD_ROUTE]: 'shieldTx',
 };
 
 const mapStateToProps = (state, ownProps) => {

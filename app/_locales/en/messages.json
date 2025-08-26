@@ -5347,6 +5347,67 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
   },
+  "shieldTx": {
+    "message": "Transaction Shield"
+  },
+  "shieldTxCancelDetails": {
+    "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
+    "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxDetails1Title": {
+    "message": "Covers $10,000 in transaction protection"
+  },
+  "shieldTxDetails1Description": {
+    "message": "Secures your assets from risky transactions"
+  },
+  "shieldTxDetails2Title": {
+    "message": "Priority support"
+  },
+  "shieldTxDetails2Description": {
+    "message": "Get faster, dedicated support anytime"
+  },
+  "shieldTxMembershipActive": {
+    "message": "Active membership"
+  },
+  "shieldTxMembershipInactive": {
+    "message": "Inactive membership"
+  },
+  "shieldTxMembershipFreeTrial": {
+    "message": "Free trial"
+  },
+  "shieldTxMembershipId": {
+    "message": "Membership ID"
+  },
+  "shieldTxMembershipResubscribe": {
+    "message": "Resubscribe"
+  },
+  "shieldTxMembershipViewFullBenefits": {
+    "message": "View full benefits"
+  },
+  "shieldTxMembershipCancel": {
+    "message": "Cancel membership"
+  },
+  "shieldTxMembershipSubmitCase": {
+    "message": "Submit a case"
+  },
+  "shieldTxMembershipBillingDetails": {
+    "message": "Billing details"
+  },
+  "shieldTxMembershipBillingDetailsNextBilling": {
+    "message": "Next billing"
+  },
+  "shieldTxMembershipBillingDetailsCharges": {
+    "message": "Charges"
+  },
+  "shieldTxMembershipBillingDetailsBillingAccount": {
+    "message": "Billing account"
+  },
+  "shieldTxMembershipBillingDetailsPaymentMethod": {
+    "message": "Payment method"
+  },
+  "shieldTxMembershipBillingDetailsViewBillingHistory": {
+    "message": "View billing history"
+  },
   "show": {
     "message": "Show"
   },
@@ -6893,9 +6954,6 @@
   },
   "transactionSettings": {
     "message": "Transaction settings"
-  },
-  "transactionShield": {
-    "message": "Transaction Shield"
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
