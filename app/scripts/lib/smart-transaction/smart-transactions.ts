@@ -585,8 +585,11 @@ export async function publishSmartTransactionHook({
 }) {
   const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
     getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+  const { currentSubmissionRequest } = flatState;
+  const gasIncluded7702 =
+    currentSubmissionRequest?.quoteResponse?.quote?.gasIncluded7702;
 
-  if (isSmartTransaction) {
+  if (isSmartTransaction && !gasIncluded7702) {
     const result = await submitSmartTransactionHook({
       transactionMeta,
       signedTransactionInHex: signedTx as Hex,
