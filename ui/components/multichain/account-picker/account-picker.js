@@ -75,6 +75,7 @@ export const AccountPicker = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
+      className="w-full"
     >
       <ButtonBase
         className={classnames('multichain-account-picker', className)}
@@ -110,6 +111,7 @@ export const AccountPicker = ({
           }
           alignItems={AlignItems.center}
           gap={showAvatarAccount ? 2 : 0}
+          className="min-w-0"
         >
           {showAvatarAccount ? (
             <AvatarAccount
@@ -129,7 +131,7 @@ export const AccountPicker = ({
             variant={accountNameFontVariant}
             {...labelProps}
             className={classnames(
-              'multichain-account-picker__label',
+              'multichain-account-picker__label w-full',
               labelProps.className ?? '',
             )}
             style={accountNameStyling}
