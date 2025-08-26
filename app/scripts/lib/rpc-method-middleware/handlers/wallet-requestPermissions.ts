@@ -24,6 +24,7 @@ import {
 } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 import {
+  GetAccounts,
   GetCaip25PermissionFromLegacyPermissionsForOrigin,
   GrantedPermissions,
   RequestPermissionsForOrigin,
@@ -62,7 +63,7 @@ async function requestPermissionsImplementation(
     requestPermissionsForOrigin,
     getCaip25PermissionFromLegacyPermissionsForOrigin,
   }: {
-    getAccounts: () => string[];
+    getAccounts: GetAccounts;
     requestPermissionsForOrigin: RequestPermissionsForOrigin;
     getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
   },
@@ -92,7 +93,10 @@ async function requestPermissionsImplementation(
     const caip25Permission = getCaip25PermissionFromLegacyPermissionsForOrigin(
       caip25EquivalentPermissions,
     );
-    requestedPermissions = { ...requestedPermissions, ...caip25Permission };
+    requestedPermissions = {
+      ...requestedPermissions,
+      ...caip25Permission,
+    };
   }
 
   let grantedPermissions: GrantedPermissions = {};
@@ -123,7 +127,7 @@ async function requestPermissionsImplementation(
     delete grantedPermissions[Caip25EndowmentPermissionName];
     // We cannot derive correct eth_accounts value directly from the CAIP-25 permission
     // because the accounts will not be in order of lastSelected
-    const ethAccounts = getAccounts();
+    const ethAccounts = await getAccounts(origin);
 
     grantedPermissions[RestrictedMethods.eth_accounts] = {
       ...caip25Endowment,
