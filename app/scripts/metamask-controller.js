@@ -766,10 +766,11 @@ export default class MetamaskController extends EventEmitter {
     );
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointDegraded',
-      async ({ chainId, endpointUrl }) => {
+      async ({ chainId, endpointUrl, error }) => {
         onRpcEndpointDegraded({
           chainId,
           endpointUrl,
+          error,
           infuraProjectId: opts.infuraProjectId,
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
@@ -1017,6 +1018,8 @@ export default class MetamaskController extends EventEmitter {
         'PreferencesController:getState',
         'AccountsController:getSelectedAccount',
         'AccountsController:listAccounts',
+        'AccountTrackerController:updateNativeBalances',
+        'AccountTrackerController:updateStakedBalances',
       ],
       allowedEvents: [
         'PreferencesController:stateChange',
@@ -1029,6 +1032,9 @@ export default class MetamaskController extends EventEmitter {
     this.tokenBalancesController = new TokenBalancesController({
       messenger: tokenBalancesMessenger,
       state: initState.TokenBalancesController,
+      useAccountsAPI: false,
+      queryMultipleAccounts:
+        this.preferencesController.state.useMultiAccountBalanceChecker,
       interval: 30000,
     });
 
@@ -8988,8 +8994,8 @@ export default class MetamaskController extends EventEmitter {
     await this._createTransactionNotifcation(transactionMeta);
     await this._updateNFTOwnership(transactionMeta);
     this._trackTransactionFailure(transactionMeta);
-    await this.tokenBalancesController.updateBalancesByChainId({
-      chainId: transactionMeta.chainId,
+    await this.tokenBalancesController.updateBalances({
+      chainIds: [transactionMeta.chainId],
     });
     endTrace({
       name: TraceName.OnFinishedTransaction,
