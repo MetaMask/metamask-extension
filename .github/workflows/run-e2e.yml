@@ -92,20 +92,22 @@ jobs:
           dpkg -l | grep -i vulkan || echo "No Vulkan packages found in dpkg"
 
           echo "=== Checking installed files ==="
-          ls -la /usr/lib/x86_64-linux-gnu/ | grep vulkan || echo "No vulkan libs in /usr/lib/x86_64-linux-gnu/"
+          find /usr/lib/x86_64-linux-gnu/ -name "*vulkan*" -ls 2>/dev/null || echo "No vulkan libs in /usr/lib/x86_64-linux-gnu/"
           ls -la /usr/share/vulkan/ || echo "No /usr/share/vulkan/ directory"
           ls -la /usr/share/vulkan/icd.d/ || echo "No /usr/share/vulkan/icd.d/ directory"
           echo "=== Checking for LLVMpipe ICD ==="
-          ls -la /usr/share/vulkan/icd.d/*lvp* || echo "No LLVMpipe ICD found"
+          find /usr/share/vulkan/icd.d/ -name "*lvp*" -ls 2>/dev/null || echo "No LLVMpipe ICD found"
           cat /usr/share/vulkan/icd.d/lvp_icd.x86_64.json 2>/dev/null || echo "Cannot read LLVMpipe ICD file"
 
           echo "=== Setting Vulkan environment variables ==="
-          echo "VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json" >> $GITHUB_ENV
-          echo "DISPLAY=:99" >> $GITHUB_ENV
-          echo "VK_LAYER_PATH=/usr/share/vulkan/explicit_layer.d" >> $GITHUB_ENV
-          echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
-          echo "MESA_VK_DEVICE_SELECT=llvmpipe" >> $GITHUB_ENV
-          echo "VK_LOADER_DEBUG=error" >> $GITHUB_ENV
+          {
+            echo "VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
+            echo "DISPLAY=:99"
+            echo "VK_LAYER_PATH=/usr/share/vulkan/explicit_layer.d"
+            echo "LIBGL_ALWAYS_SOFTWARE=1"
+            echo "MESA_VK_DEVICE_SELECT=llvmpipe"
+            echo "VK_LOADER_DEBUG=error"
+          } >> "$GITHUB_ENV"
 
           echo "=== Testing Vulkan functionality ==="
           which vulkaninfo || echo "vulkaninfo not found in PATH"
@@ -163,12 +165,12 @@ jobs:
           echo "=== Starting Xvfb ==="
           Xvfb -ac :99 -screen 0 1280x1024x16 &
           sleep 2
-          echo "=== Graphics environment check ==="
+                    echo "=== Graphics environment check ==="
           echo "DISPLAY: $DISPLAY"
           echo "VK_ICD_FILENAMES: $VK_ICD_FILENAMES"
           echo "MESA_VK_DEVICE_SELECT: $MESA_VK_DEVICE_SELECT"
           echo "LIBGL_ALWAYS_SOFTWARE: $LIBGL_ALWAYS_SOFTWARE"
-          ps aux | grep Xvfb | grep -v grep || echo "Xvfb not running"
+          pgrep -f "Xvfb.*:99" || echo "Xvfb not running"
 
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}
