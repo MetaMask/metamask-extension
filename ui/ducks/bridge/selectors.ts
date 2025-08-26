@@ -19,7 +19,7 @@ import {
   isValidQuoteRequest,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { EthScope, SolAccountType, SolScope } from '@metamask/keyring-api';
+import { SolAccountType } from '@metamask/keyring-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
@@ -294,9 +294,7 @@ export const getFromAccount = createSelector(
     if (fromChainId) {
       return getInternalAccountBySelectedAccountGroupAndCaip(
         state,
-        isSolanaChainId(fromChainId) ? SolScope.Mainnet : EthScope.Eoa,
-        // TODO use chainId when selector is ready
-        // :formatChainIdToCaip(fromChainId),
+        formatChainIdToCaip(fromChainId),
       );
     }
     return null;
