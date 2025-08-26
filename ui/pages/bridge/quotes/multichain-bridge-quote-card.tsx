@@ -160,7 +160,13 @@ export const MultichainBridgeQuoteCard = ({
                   offset={[-16, 16]}
                   iconName={IconName.Question}
                 >
-                  {t('howQuotesWorkExplanation', [BRIDGE_MM_FEE_RATE])}
+                  {t('howQuotesWorkExplanation', [
+                    new BigNumber(
+                      activeQuote.quote.feeData.metabridge.amount,
+                    ).gt(0)
+                      ? BRIDGE_MM_FEE_RATE
+                      : '0',
+                  ])}
                 </Tooltip>
               </Row>
               <Text>
