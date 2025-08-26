@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import { execSync } from 'child_process';
 import path from 'path';
 import { chromium, type BrowserContext, Browser } from '@playwright/test';
+import { mean } from 'lodash';
 
 declare global {
   /**
@@ -378,7 +379,7 @@ export class PageLoadBenchmark {
           .map((m) => m[key])
           .filter((v) => typeof v === 'number') as number[];
         if (values.length > 0) {
-          summary.mean[key] = this.calculateMean(values);
+          summary.mean[key] = mean(values);
           summary.p95[key] = this.calculatePercentile(values, 95);
           summary.p99[key] = this.calculatePercentile(values, 99);
           summary.min[key] = Math.min(...values);
@@ -392,16 +393,6 @@ export class PageLoadBenchmark {
     }
 
     return summaries;
-  }
-
-  /**
-   * Calculates the arithmetic mean (average) of an array of numbers.
-   *
-   * @param values - Array of numeric values
-   * @returns The mean value
-   */
-  private calculateMean(values: number[]): number {
-    return values.reduce((sum, val) => sum + val, 0) / values.length;
   }
 
   /**
@@ -426,9 +417,9 @@ export class PageLoadBenchmark {
    * @returns The standard deviation value
    */
   private calculateStandardDeviation(values: number[]): number {
-    const mean = this.calculateMean(values);
-    const squaredDiffs = values.map((val) => Math.pow(val - mean, 2));
-    const variance = this.calculateMean(squaredDiffs);
+    const calculatedMean = mean(values);
+    const squaredDiffs = values.map((val) => Math.pow(val - calculatedMean, 2));
+    const variance = mean(squaredDiffs);
     return Math.sqrt(variance);
   }
 
