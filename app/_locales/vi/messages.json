@@ -2171,9 +2171,6 @@
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
   },
-  "enableIt": {
-    "message": " Bật"
-  },
   "enableSmartContractAccount": {
     "message": "Bật tài khoản hợp đồng thông minh"
   },

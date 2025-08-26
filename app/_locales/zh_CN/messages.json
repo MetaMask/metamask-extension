@@ -2171,9 +2171,6 @@
   "enableFromSettings": {
     "message": " 从设置中启用它。"
   },
-  "enableIt": {
-    "message": " 启用它"
-  },
   "enableSmartContractAccount": {
     "message": "启用智能合约账户"
   },

@@ -2186,9 +2186,6 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableIt": {
-    "message": " Enable it"
-  },
   "enableSmartContractAccount": {
     "message": "Enable smart contract account"
   },

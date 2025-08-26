@@ -2138,9 +2138,6 @@
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Mga Setting."
   },
-  "enableIt": {
-    "message": " Paganahin ito"
-  },
   "enableSmartContractAccount": {
     "message": "Paganahin ang account ng smart contract"
   },

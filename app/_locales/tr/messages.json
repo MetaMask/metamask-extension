@@ -2138,9 +2138,6 @@
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
-  "enableIt": {
-    "message": " Etkinleştir"
-  },
   "enableSmartContractAccount": {
     "message": "Akıllı sözleşme hesabını etkinleştir"
   },

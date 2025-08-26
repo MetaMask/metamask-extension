@@ -2171,9 +2171,6 @@
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
   },
-  "enableIt": {
-    "message": " 활성화"
-  },
   "enableSmartContractAccount": {
     "message": "스마트 계약 계정 활성화"
   },

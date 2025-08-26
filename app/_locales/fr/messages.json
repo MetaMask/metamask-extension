@@ -2138,9 +2138,6 @@
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
   },
-  "enableIt": {
-    "message": " Activer le réseau"
-  },
   "enableSmartContractAccount": {
     "message": "Activer le compte de contrat intelligent"
   },

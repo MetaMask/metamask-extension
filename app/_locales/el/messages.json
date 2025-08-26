@@ -2171,9 +2171,6 @@
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
   },
-  "enableIt": {
-    "message": " Ενεργοποίηση"
-  },
   "enableSmartContractAccount": {
     "message": "Ενεργοποίηση λογαριασμού έξυπνου συμβολαίου"
   },

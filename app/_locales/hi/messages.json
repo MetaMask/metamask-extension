@@ -2171,9 +2171,6 @@
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
   },
-  "enableIt": {
-    "message": " इसे चालू करें"
-  },
   "enableSmartContractAccount": {
     "message": "स्मार्ट कॉन्ट्रैक्ट अकाउंट चालू करें"
   },

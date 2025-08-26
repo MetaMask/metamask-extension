@@ -2171,9 +2171,6 @@
   "enableFromSettings": {
     "message": " Включите его в Настройках."
   },
-  "enableIt": {
-    "message": " Включить"
-  },
   "enableSmartContractAccount": {
     "message": "Включить счет смарт-контракта"
   },

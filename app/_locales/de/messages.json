@@ -2171,9 +2171,6 @@
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
   },
-  "enableIt": {
-    "message": " Aktiviere es"
-  },
   "enableSmartContractAccount": {
     "message": "Smart-Contract-Konto aktivieren"
   },

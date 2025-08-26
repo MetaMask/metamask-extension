@@ -2171,9 +2171,6 @@
   "enableFromSettings": {
     "message": " Actívela en Configuración."
   },
-  "enableIt": {
-    "message": " Activarla"
-  },
   "enableSmartContractAccount": {
     "message": "Activar la cuenta de contrato inteligente"
   },

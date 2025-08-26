@@ -2138,9 +2138,6 @@
   "enableFromSettings": {
     "message": " Ative nas Configurações."
   },
-  "enableIt": {
-    "message": " Habilitar"
-  },
   "enableSmartContractAccount": {
     "message": "Habilitar conta de contrato inteligente"
   },

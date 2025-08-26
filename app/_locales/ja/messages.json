@@ -2138,9 +2138,6 @@
   "enableFromSettings": {
     "message": " 設定で有効にします。"
   },
-  "enableIt": {
-    "message": "有効にする"
-  },
   "enableSmartContractAccount": {
     "message": "スマートコントラクトアカウントを有効にする"
   },
