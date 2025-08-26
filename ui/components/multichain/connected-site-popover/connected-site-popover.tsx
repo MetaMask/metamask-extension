@@ -166,7 +166,7 @@ export const ConnectedSitePopover = ({
                 onClick();
               } else {
                 global.platform.openTab({
-                  url: 'https://portfolio.metamask.io/explore/dapps',
+                  url: 'https://app.metamask.io/explore/dapps',
                 });
               }
             }}
