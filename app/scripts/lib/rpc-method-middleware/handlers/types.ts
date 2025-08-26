@@ -1,17 +1,22 @@
-import type { JsonRpcParams, JsonRpcRequest, Hex } from '@metamask/utils';
+import type {
+  JsonRpcParams,
+  JsonRpcRequest,
+  NonEmptyArray,
+} from '@metamask/utils';
 import type {
   CaveatSpecificationConstraint,
-  OriginString,
   PermissionSpecificationConstraint,
-  PermissionsRequest,
   RequestedPermissions,
 } from '@metamask/permission-controller';
 import { PermissionController } from '@metamask/permission-controller';
 import {
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
-} from '../../../../../shared/constants/metametrics';
+  getCaip25PermissionFromLegacyPermissions,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
 import { MessageType } from '../../../../../shared/constants/app';
+import MetamaskController from '../../../metamask-controller';
+import MetaMetricsController from '../../../controllers/metametrics-controller';
+import { AppStateController } from '../../../controllers/app-state-controller';
 
 export type HandlerWrapper = {
   methodNames: [MessageType] | MessageType[];
@@ -23,42 +28,19 @@ export type HandlerRequestType<Params extends JsonRpcParams = JsonRpcParams> =
     origin: string;
   };
 
-/**
- * @property chainId - The current chain ID.
- * @property isUnlocked - Whether the extension is unlocked or not.
- * @property networkVersion - The current network ID.
- * @property accounts - List of permitted accounts for the specified origin.
- */
-export type ProviderStateHandlerResult = {
-  chainId: string;
-  isUnlocked: boolean;
-  networkVersion: string;
-  accounts: string[];
-};
-
-export type GetAccounts = (options?: { ignoreLock: boolean }) => Promise<Hex[]>;
-
-export type RequestCaip25ApprovalForOrigin = (
-  origin?: OriginString,
-  requestedPermissions?: PermissionsRequest['permissions'],
-) => Promise<RequestedPermissions>;
+export type GetAccounts = MetamaskController['getPermittedAccounts'];
 
 export type GetCaip25PermissionFromLegacyPermissionsForOrigin = (
   requestedPermissions?: RequestedPermissions,
-) => RequestedPermissions;
+) => { [Caip25EndowmentPermissionName]: Caip25Caveats };
 
 export type RequestPermissionsForOrigin = (
   requestedPermissions: RequestedPermissions,
 ) => Promise<[GrantedPermissions]>;
 
-export type GetUnlockPromise = (
-  shouldShowUnlockRequest: boolean,
-) => Promise<void>;
+export type GetUnlockPromise = AppStateController['getUnlockPromise'];
 
-export type SendMetrics = (
-  payload: MetaMetricsEventPayload,
-  options?: MetaMetricsEventOptions,
-) => void;
+export type SendMetrics = MetaMetricsController['trackEvent'];
 
 type AbstractPermissionController = PermissionController<
   PermissionSpecificationConstraint,
@@ -68,3 +50,14 @@ type AbstractPermissionController = PermissionController<
 export type GrantedPermissions = Awaited<
   ReturnType<AbstractPermissionController['requestPermissions']>
 >[0];
+
+type Caip25Permission = ReturnType<
+  typeof getCaip25PermissionFromLegacyPermissions
+>;
+
+type Caip25RequestedPermission =
+  Caip25Permission[typeof Caip25EndowmentPermissionName];
+
+type Caip25Caveats = {
+  caveats: NonEmptyArray<Caip25RequestedPermission['caveats'][0]>;
+};
