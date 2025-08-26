@@ -2235,7 +2235,7 @@ export function setSelectedMultichainAccount(
  *
  * @param walletId - ID of a wallet.
  */
-export function createMultichainAccount(
+export function createNextMultichainAccountGroup(
   walletId: AccountWalletId,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
@@ -2246,6 +2246,9 @@ export function createMultichainAccount(
       await submitRequestToBackground('createNextMultichainAccountGroup', [
         walletIdWithoutTypePrefix,
       ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
     }

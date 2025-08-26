@@ -1389,7 +1389,7 @@ describe('Actions', () => {
     });
   });
 
-  describe('#createMultichainAccount', () => {
+  describe('#createNextMultichainAccountGroup', () => {
     afterEach(() => {
       sinon.restore();
     });
@@ -1406,7 +1406,7 @@ describe('Actions', () => {
 
       setBackgroundConnection(background.getApi());
 
-      store.dispatch(actions.createMultichainAccount(walletId));
+      store.dispatch(actions.createNextMultichainAccountGroup(walletId));
 
       expect(createNextMultichainAccountGroup.callCount).toStrictEqual(1);
       expect(

@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore, { MetaMaskReduxDispatch } from '../../../store/store';
-import { createMultichainAccount } from '../../../store/actions';
+import { createNextMultichainAccountGroup } from '../../../store/actions';
 import { AddMultichainAccount } from './add-multichain-account';
 
 const addMultichainAccountButtonTestId = 'add-multichain-account-button';
@@ -12,11 +12,12 @@ const addMultichainAccountIconLoadingClass =
 const addMultichainAccountIconBoxClass = '.add-multichain-account__icon-box';
 
 jest.mock('../../../store/actions', () => ({
-  createMultichainAccount: jest.fn(() => (dispatch: MetaMaskReduxDispatch) => {
-    return dispatch({ type: 'MOCKED_ACTION' });
-  }),
+  createNextMultichainAccountGroup: jest.fn(
+    () => (dispatch: MetaMaskReduxDispatch) => {
+      return dispatch({ type: 'MOCKED_ACTION' });
+    },
+  ),
 }));
-jest.useFakeTimers();
 
 describe('AddMultichainAccount', () => {
   const mockWalletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
@@ -62,7 +63,7 @@ describe('AddMultichainAccount', () => {
 
     fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
 
-    expect(createMultichainAccount).toHaveBeenCalledWith(mockWalletId);
+    expect(createNextMultichainAccountGroup).toHaveBeenCalledWith(mockWalletId);
   });
 
   it('shows loading state when clicked', () => {
@@ -97,11 +98,11 @@ describe('AddMultichainAccount', () => {
 
     // First click
     fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
-    expect(createMultichainAccount).toHaveBeenCalledTimes(1);
+    expect(createNextMultichainAccountGroup).toHaveBeenCalledTimes(1);
 
     // Try clicking again during the loading state
     fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
-    expect(createMultichainAccount).toHaveBeenCalledTimes(1); // Still just one call
+    expect(createNextMultichainAccountGroup).toHaveBeenCalledTimes(1); // Still just one call
   });
 
   it('returns to normal state after loading completes', async () => {

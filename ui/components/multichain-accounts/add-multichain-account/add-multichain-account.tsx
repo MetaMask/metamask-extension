@@ -13,7 +13,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { createMultichainAccount } from '../../../store/actions';
+import { createNextMultichainAccountGroup } from '../../../store/actions';
 
 export type AddMultichainAccountProps = {
   walletId: AccountWalletId;
@@ -32,7 +32,7 @@ export const AddMultichainAccount = ({
     }
 
     setIsLoading(true);
-    await dispatch(createMultichainAccount(walletId));
+    await dispatch(createNextMultichainAccountGroup(walletId));
     setIsLoading(false);
   };
 
