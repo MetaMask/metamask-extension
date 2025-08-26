@@ -6575,10 +6575,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-signing-snap@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@metamask/message-signing-snap@npm:1.1.2"
-  checksum: 10/99970642e6bbcb4dbfeb9defbc286ce92f992d11c542000ea761c5c892b2fbac5fdee9d5c6c8f8df05666322848ab7bb510289780959a14fbb390d556fd63f19
+"@metamask/message-signing-snap@npm:1.1.3":
+  version: 1.1.3
+  resolution: "@metamask/message-signing-snap@npm:1.1.3"
+  checksum: 10/9601a6e83c1759badf8c906128c27bc0d7206ae8aa5e75f45493b6b5782bcf1b139bd0570d46926d7feb416999e43c889080950d11a8b74c9f8585a32f8d627f
   languageName: node
   linkType: hard
 
@@ -7381,10 +7381,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "@metamask/solana-wallet-snap@npm:2.3.1"
-  checksum: 10/0f7c295ea9eb5a5cf2474da50d66bed8c13a7109837348835a4aa5f4822519bd738a1d524402d3a823dc45fa3d1af3c85191239d5642d8870b7425861e86859f
+"@metamask/solana-wallet-snap@npm:^2.3.2":
+  version: 2.3.2
+  resolution: "@metamask/solana-wallet-snap@npm:2.3.2"
+  checksum: 10/b06308c1925c7f74135d7d4a4ce8eb47b278dc54c738a630703c134a1e6f58bdddecea0270f56732a15f47456341e899402ba4e9d2de55523ca055d916e4baad
   languageName: node
   linkType: hard
 
@@ -31734,7 +31734,7 @@ __metadata:
     "@metamask/logging-controller": "npm:^6.0.4"
     "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^12.0.1"
-    "@metamask/message-signing-snap": "npm:1.1.2"
+    "@metamask/message-signing-snap": "npm:1.1.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^0.4.0"
     "@metamask/multichain-api-client": "npm:^0.6.5"
@@ -31770,7 +31770,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.5.1"
     "@metamask/snaps-sdk": "npm:^9.3.0"
     "@metamask/snaps-utils": "npm:^11.5.0"
-    "@metamask/solana-wallet-snap": "npm:^2.3.1"
+    "@metamask/solana-wallet-snap": "npm:^2.3.2"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.2.0"
     "@metamask/superstruct": "npm:^3.2.1"
