@@ -7,16 +7,16 @@ import type {
   CaveatSpecificationConstraint,
   PermissionSpecificationConstraint,
   RequestedPermissions,
+  PermissionController,
 } from '@metamask/permission-controller';
-import { PermissionController } from '@metamask/permission-controller';
 import {
   getCaip25PermissionFromLegacyPermissions,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import { MessageType } from '../../../../../shared/constants/app';
-import MetamaskController from '../../../metamask-controller';
-import MetaMetricsController from '../../../controllers/metametrics-controller';
-import { AppStateController } from '../../../controllers/app-state-controller';
+import type MetamaskController from '../../../metamask-controller';
+import type MetaMetricsController from '../../../controllers/metametrics-controller';
+import type { AppStateController } from '../../../controllers/app-state-controller';
 
 export type HandlerWrapper = {
   methodNames: [MessageType] | MessageType[];

@@ -1,20 +1,24 @@
 import { pick } from 'lodash';
 import { isPlainObject } from '@metamask/controller-utils';
 import {
-  Caveat,
+  type Caveat,
   invalidParams,
   MethodNames,
-  RequestedPermissions,
-  ValidPermission,
+  type RequestedPermissions,
+  type ValidPermission,
 } from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
-  Caip25CaveatValue,
+  type Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
-import {
+import type {
+  Json,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
+import type {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from '@metamask/json-rpc-engine';
@@ -23,7 +27,7 @@ import {
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
-import {
+import type {
   GetAccounts,
   GetCaip25PermissionFromLegacyPermissionsForOrigin,
   GrantedPermissions,
