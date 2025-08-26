@@ -65,7 +65,8 @@ describe('Multichain Accounts Selectors', () => {
   const EIP155_MAINNET_SCOPE = 'eip155:0';
   const SOLANA_MAINNET_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
-  const createStateWithMissingInternalAccount = (): MultichainAccountsState =>
+  const createStateWithMissingInternalAccount = (): MultichainAccountsState &
+    MultichainNetworkConfigurationsByChainIdState =>
     createMockMultichainAccountsState(
       {
         wallets: {
@@ -105,7 +106,8 @@ describe('Multichain Accounts Selectors', () => {
       },
     );
 
-  const createStateWithoutMultichain = (): MultichainAccountsState =>
+  const createStateWithoutMultichain = (): MultichainAccountsState &
+    MultichainNetworkConfigurationsByChainIdState =>
     createMockMultichainAccountsState(
       {
         wallets: {
