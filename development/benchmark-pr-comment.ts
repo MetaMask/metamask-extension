@@ -159,9 +159,8 @@ async function fetchLatestMainBenchmarkData(
   n: number,
 ): Promise<BenchmarkOutput | null> {
   try {
-    // TODO: [ffmcgee]: "temp" for testing, replace with "main"
     const response = await fetch(
-      'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/temp/stats/page_load_data.json',
+      'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/page_load_data.json',
     );
 
     if (!response.ok) {
@@ -302,7 +301,7 @@ function formatMetricRowWithComparison(
   );
   const referenceFormatted = formatTime(referenceMean);
 
-  return `- **${metricName}**: ${currentFormatted}${currentStdDevFormatted} ${currentEmoji} (current data) vs ${referenceFormatted} ${comparisonEmoji} (historical data)`;
+  return `- **${metricName}**-> current mean value: ${currentFormatted}${currentStdDevFormatted} ${currentEmoji} | historical mean value: ${referenceFormatted} ${comparisonEmoji} (historical data)`;
 }
 
 /**
