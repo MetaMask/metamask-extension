@@ -5553,13 +5553,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^8.0.0, @metamask/base-controller@npm:^8.0.1, @metamask/base-controller@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "@metamask/base-controller@npm:8.1.0"
+"@metamask/base-controller@npm:^8.0.0, @metamask/base-controller@npm:^8.0.1, @metamask/base-controller@npm:^8.1.0, @metamask/base-controller@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "@metamask/base-controller@npm:8.2.0"
   dependencies:
+    "@metamask/messenger": "npm:^0.1.0"
     "@metamask/utils": "npm:^11.4.2"
     immer: "npm:^9.0.6"
-  checksum: 10/3ae3dd5aff22b7826d6272b9966482b4ba86c40a4bfb68ad322c527b10f648fbfa286539af79b162614c663b3020dca49221d06ddf17d295350d7eb66eb717b3
+  checksum: 10/09df9d8841aefe1169fe9dac8afa675bf26a62c4975c5b051e5c4a7566e6e51f1171b5e9e4bfceeb57fe900ba656cd0d0ef7bcdd1227b789517940a90681b666
   languageName: node
   linkType: hard
 
@@ -6582,6 +6583,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/messenger@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/messenger@npm:0.1.0"
+  checksum: 10/5d6105865255e72571df143c648ebfb42b04ead24cd6bade758f0340eafba3790d9ff0818bd06fbda17799e3253ac05df51d9e13ebfd0c710e68fd1c0d1007a9
+  languageName: node
+  linkType: hard
+
 "@metamask/metamask-eth-abis@npm:^3.1.1":
   version: 3.1.1
   resolution: "@metamask/metamask-eth-abis@npm:3.1.1"
@@ -6589,11 +6597,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@0.4.0-preview-7dfc3145":
-  version: 0.4.0-preview-7dfc3145
-  resolution: "@metamask-previews/multichain-account-service@npm:0.4.0-preview-7dfc3145"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@0.5.0-preview-6a91767a":
+  version: 0.5.0-preview-6a91767a
+  resolution: "@metamask-previews/multichain-account-service@npm:0.5.0-preview-6a91767a"
   dependencies:
-    "@metamask/base-controller": "npm:^8.1.0"
+    "@metamask/base-controller": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^16.1.0"
     "@metamask/keyring-api": "npm:^20.1.0"
     "@metamask/keyring-internal-api": "npm:^8.1.0"
@@ -6604,12 +6612,12 @@ __metadata:
     "@metamask/superstruct": "npm:^3.1.0"
   peerDependencies:
     "@metamask/account-api": ^0.9.0
-    "@metamask/accounts-controller": ^32.0.0
-    "@metamask/keyring-controller": ^22.0.0
+    "@metamask/accounts-controller": ^33.0.0
+    "@metamask/keyring-controller": ^23.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/bfa7c9361e1fdcdb076a3752ed897d1dd001bbd02e0b1a9b2be3659ae3d0f1df38f4f526d13cf2a93560442f21942a75c03894ad33b6040ff018e1eac4838dbd
+  checksum: 10/dc27df171c5276bbd1e6c47324a855963199e55bc7d67e1d259c482085bcd80362d63cd1acc73ad94af00d5d82854eb65905e7c53f9c083f24717e5fa664db7c
   languageName: node
   linkType: hard
 
@@ -31736,7 +31744,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:1.1.2"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@0.4.0-preview-7dfc3145"
+    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@0.5.0-preview-6a91767a"
     "@metamask/multichain-api-client": "npm:^0.6.5"
     "@metamask/multichain-api-middleware": "npm:1.0.0"
     "@metamask/multichain-network-controller": "npm:^0.11.1"
