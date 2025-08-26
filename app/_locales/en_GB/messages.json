@@ -101,6 +101,10 @@
   "accountDetails": {
     "message": "Account details"
   },
+  "accountDetailsSrpBackUpMessage": {
+    "message": "Back up",
+    "description": "Text used to describe action for SRP backup. Used on multichain account details."
+  },
   "accountIdenticon": {
     "message": "Account identicon"
   },
@@ -320,6 +324,10 @@
   "addressCopied": {
     "message": "Address copied"
   },
+  "addressLabel": {
+    "message": "address",
+    "description": "Label for address count (single address). Used on multichain account details page."
+  },
   "addressMismatch": {
     "message": "Site address mismatch"
   },
@@ -334,6 +342,10 @@
   "addresses": {
     "message": "Addresses",
     "description": "Multichain account menu item for linking to addresses page"
+  },
+  "addressesLabel": {
+    "message": "addresses",
+    "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
     "message": "Advanced"
@@ -4676,6 +4688,10 @@
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
+  "privateKeys": {
+    "message": "Private keys",
+    "description": "Private keys row label on multichain account details page."
+  },
   "privateNetwork": {
     "message": "Private network"
   },
@@ -5328,6 +5344,10 @@
   "setApprovalForAllTitle": {
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
+  },
+  "setUp": {
+    "message": "Set up",
+    "description": "Action label for Smart Accounts. Used on multichain details page."
   },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
@@ -6977,6 +6997,10 @@
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many attempts. Try again in "
+  },
+  "unlockToReveal": {
+    "message": "Unlock to reveal",
+    "description": "Label used for Private Keys row on multichain account details page."
   },
   "unpin": {
     "message": "Unpin"
