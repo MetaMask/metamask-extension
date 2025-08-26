@@ -6423,6 +6423,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-api@npm:^20.1.1":
+  version: 20.1.1
+  resolution: "@metamask/keyring-api@npm:20.1.1"
+  dependencies:
+    "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+  checksum: 10/f261205687c9aa1c39a2221e30a6edd4f530d2b0afd86a8ab13ea23d2af2a0bf1c89a8c4ad5646368e3b06909613d64195c335063319edd018636c9fa6ee63ee
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-controller@npm:^22.1.1":
   version: 22.1.1
   resolution: "@metamask/keyring-controller@npm:22.1.1"
@@ -31733,7 +31745,7 @@ __metadata:
     "@metamask/kernel-shims": "npm:^0.2.0"
     "@metamask/kernel-ui": "npm:^0.1.0"
     "@metamask/kernel-utils": "npm:^0.1.0"
-    "@metamask/keyring-api": "npm:^20.0.0"
+    "@metamask/keyring-api": "npm:^20.1.1"
     "@metamask/keyring-controller": "npm:^22.1.1"
     "@metamask/keyring-internal-api": "npm:^8.0.0"
     "@metamask/keyring-internal-snap-client": "npm:^6.0.0"
