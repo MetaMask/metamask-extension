@@ -69,7 +69,8 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Install Vulkan drivers
+      - name: Install Vulkan drivers (Chrome only)
+        if: ${{ !contains(env.TEST_SUITE_NAME, 'firefox') }}
         run: |
           echo "=== Starting Vulkan installation ==="
           echo "Current user: $(whoami)"
@@ -165,7 +166,7 @@ jobs:
           echo "=== Starting Xvfb ==="
           Xvfb -ac :99 -screen 0 1280x1024x16 &
           sleep 2
-                    echo "=== Graphics environment check ==="
+          echo "=== Graphics environment check ==="
           echo "DISPLAY: $DISPLAY"
           echo "VK_ICD_FILENAMES: $VK_ICD_FILENAMES"
           echo "MESA_VK_DEVICE_SELECT: $MESA_VK_DEVICE_SELECT"
