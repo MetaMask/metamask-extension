@@ -2,14 +2,13 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Platform } from '@metamask/profile-sync-controller/sdk';
-
 import {
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getSlides,
   getUseExternalServices,
   getShowDownloadMobileAppSlide,
+  getRemoteFeatureFlags,
 } from '../../selectors';
 import { updateSlides } from '../../store/actions';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
@@ -24,7 +23,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../../store/actions', () => ({
   updateSlides: jest.fn(),
   getUserProfileLineage: jest.fn().mockResolvedValue({
-    lineage: [{ agent: Platform.EXTENSION }],
+    lineage: [{ agent: 'extension' }],
   }),
 }));
 
@@ -64,6 +63,8 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
       regularSlides: [slide('fund'), slide('downloadMobileApp')],
     });
 
+    type MockSelector = (state: unknown) => unknown;
+
     mockUseDispatch.mockReturnValue(jest.fn());
     mockUseSelector.mockImplementation(
       <TSelected>(selector: (state: unknown) => TSelected): TSelected => {
@@ -81,6 +82,9 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
         }
         if (selector === getShowDownloadMobileAppSlide) {
           return mockGetShowDownloadMobileAppSlide() as TSelected;
+        }
+        if (selector === (getRemoteFeatureFlags as MockSelector)) {
+          return mockGetRemoteFeatureFlags() as TSelected;
         }
         return undefined as unknown as TSelected;
       },
@@ -107,10 +111,7 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
     await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
 
     const updated = getDispatchedSlides();
-    expect(updated.map((s) => s.variableName)).toEqual([
-      'fund',
-      'downloadMobileApp',
-    ]);
+    expect(updated.map((s) => s.variableName)).toEqual(['fund']);
 
     const fund = updated.find((s) => s.variableName === 'fund');
     expect(fund?.undismissable).toBe(true);
