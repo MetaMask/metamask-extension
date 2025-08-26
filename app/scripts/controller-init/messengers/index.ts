@@ -33,6 +33,7 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
+  getNetworkOrderControllerMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getTokenRatesControllerMessenger,
@@ -174,6 +175,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   MultichainAccountService: {
     getMessenger: getMultichainAccountServiceMessenger,
+    getInitMessenger: noop,
+  },
+  NetworkOrderController: {
+    getMessenger: getNetworkOrderControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;
