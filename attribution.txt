@@ -29786,7 +29786,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/solana-wallet-snap
-2.1.4 <https://github.com/MetaMask/snap-solana-wallet>
+2.3.1 <https://github.com/MetaMask/snap-solana-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
