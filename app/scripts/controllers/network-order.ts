@@ -259,3 +259,4 @@ export class NetworkOrderController extends BaseController<
       state.enabledNetworkMap[namespace] = enabledNetworks;
     });
   }
+};
