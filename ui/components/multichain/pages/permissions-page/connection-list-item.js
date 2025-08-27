@@ -43,7 +43,6 @@ export const ConnectionListItem = ({ connection, onClick }) => {
 
   const acccountsToShow = useMemo(() => {
     if (isState2Enabled) {
-      console.log('isState2Enabled', isState2Enabled);
       const accountGroupsToShow = connection.addresses
         .map((address) => {
           const accountGroup = accountGroups.find((group) =>
