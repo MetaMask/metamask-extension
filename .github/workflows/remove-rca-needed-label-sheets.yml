@@ -8,14 +8,6 @@ on:
   # Allow manual triggering for testing
   workflow_dispatch:
     inputs:
-      dry_run:
-        description: 'Run in dry-run mode (no changes made)'
-        required: false
-        default: 'false'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
       spreadsheet_id:
         description: 'Google Spreadsheet ID (optional - uses default if not provided)'
         required: false
@@ -29,10 +21,9 @@ on:
 
 jobs:
   remove-rca-labels:
-    name: Remove RCA-needed Labels using GitHub Tools
-    uses: MetaMask/github-tools/.github/workflows/remove-rca-needed-label-sheets.yml@main
+    name: Remove RCA-needed Labels
+    uses: MetaMask/github-tools/.github/workflows/remove-rca-needed-label-sheets.yml@d354252842b91355deb6d57c752812f745f99679
     with:
-      dry_run: ${{ github.event.inputs.dry_run || 'false' }}
       spreadsheet_id: ${{ github.event.inputs.spreadsheet_id || '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24' }}
       sheet_name: ${{ github.event.inputs.sheet_name || 'Form Responses 1' }}
     secrets:
