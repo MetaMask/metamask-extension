@@ -262,13 +262,14 @@ describe('MetaMaskController', function () {
       );
     });
 
-    it('should throw an error if the `seedlessOperationMutex` is locked', async function () {
+    it('should acquire the seedlessOperationMutex when social login flow is enabled', async function () {
       jest
         .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
         .mockReturnValue(true);
-      const checkIsLockedSpy = jest
-        .spyOn(metamaskController.seedlessOperationMutex, 'isLocked')
-        .mockReturnValue(true);
+      const mockReleaseLock = jest.fn();
+      const acquireSpy = jest
+        .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
+        .mockResolvedValue(mockReleaseLock);
       const seedlessSetLockedSpy = jest
         .spyOn(metamaskController.seedlessOnboardingController, 'setLocked')
         .mockResolvedValue();
@@ -276,12 +277,12 @@ describe('MetaMaskController', function () {
         .spyOn(metamaskController.keyringController, 'setLocked')
         .mockResolvedValue();
 
-      await expect(metamaskController.setLocked()).rejects.toThrow(
-        'seedlessOperationMutex is locked',
-      );
-      expect(checkIsLockedSpy).toHaveBeenCalled();
-      expect(seedlessSetLockedSpy).not.toHaveBeenCalled();
-      expect(keyringSetLockedSpy).not.toHaveBeenCalled();
+      await metamaskController.setLocked();
+
+      expect(acquireSpy).toHaveBeenCalled();
+      expect(keyringSetLockedSpy).toHaveBeenCalled();
+      expect(seedlessSetLockedSpy).toHaveBeenCalled();
+      expect(mockReleaseLock).toHaveBeenCalled();
     });
 
     it('should throw an error if the `seedlessOnboardingController.setLocked` fails', async function () {
