@@ -3949,3 +3949,37 @@ export function getShowUpdateModal(state) {
 
   return showUpdateModal;
 }
+
+/**
+ * Selector to get the network that a specific dapp/origin is connected to
+ *
+ * @param {object} state - Redux state object
+ * @param {string} origin - The origin/domain of the dapp
+ * @returns {object|null} The network configuration that the dapp is connected to, or null
+ */
+export function getDappActiveNetwork(state, origin) {
+  const allDomains = getAllDomains(state);
+  const networkConfigurationsByChainId =
+    getNetworkConfigurationsByChainId(state);
+
+  if (!origin || !allDomains) {
+    return null;
+  }
+
+  // Get the networkClientId for this domain
+  const networkClientId = allDomains[origin];
+  if (!networkClientId) {
+    return null;
+  }
+
+  // Find the network configuration that has this networkClientId
+  const networkConfiguration = Object.values(
+    networkConfigurationsByChainId,
+  ).find((network) => {
+    return network.rpcEndpoints.some(
+      (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
+    );
+  });
+
+  return networkConfiguration || null;
+}

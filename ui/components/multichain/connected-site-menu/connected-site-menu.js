@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
+import { parseCaipChainId } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -10,9 +11,13 @@ import {
   IconColor,
   JustifyContent,
   Size,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarFavicon,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapper,
   Box,
   Icon,
   IconName,
@@ -22,7 +27,9 @@ import {
   getOriginOfCurrentTab,
   getPermittedAccountsByOrigin,
   getSubjectMetadata,
+  getDappActiveNetwork,
 } from '../../../selectors';
+import { getImageForChainId } from '../../../selectors/multichain';
 import { ConnectedSitePopover } from '../connected-site-popover';
 import { STATUS_CONNECTED } from '../../../helpers/constants/connected-sites';
 
@@ -34,9 +41,19 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
   const subjectMetadata = useSelector(getSubjectMetadata);
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
   const permittedAccountsByOrigin = useSelector(getPermittedAccountsByOrigin);
+  const dappActiveNetwork = useSelector((state) =>
+    getDappActiveNetwork(state, connectedOrigin),
+  );
+
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[connectedOrigin]?.length;
   const connectedSubjectsMetadata = subjectMetadata[connectedOrigin];
+  const getChainIdForImage = (chainId) => {
+    const { namespace, reference } = parseCaipChainId(chainId);
+    return namespace === 'eip155'
+      ? `0x${parseInt(reference, 10).toString(16)}`
+      : chainId;
+  };
 
   const iconElement = currentTabHasNoAccounts ? (
     <Icon
@@ -45,11 +62,30 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
       color={IconColor.iconDefault}
     />
   ) : (
-    <AvatarFavicon
-      name={connectedSubjectsMetadata.name}
-      size={Size.SM}
-      src={connectedSubjectsMetadata.iconUrl}
-    />
+    <BadgeWrapper
+      badge={
+        dappActiveNetwork && (
+          <AvatarNetwork
+            size={AvatarNetworkSize.Xs}
+            name={dappActiveNetwork?.name || ''}
+            src={
+              dappActiveNetwork?.chainId?.includes(':')
+                ? getImageForChainId(
+                    getChainIdForImage(dappActiveNetwork.chainId),
+                  )
+                : getImageForChainId(dappActiveNetwork?.chainId)
+            }
+            borderColor={BorderColor.borderMuted}
+          />
+        )
+      }
+    >
+      <AvatarFavicon
+        name={connectedSubjectsMetadata?.name}
+        size={Size.SM}
+        src={connectedSubjectsMetadata?.iconUrl}
+      />
+    </BadgeWrapper>
   );
   return (
     <>
