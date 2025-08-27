@@ -15,22 +15,22 @@ export const Amount = () => {
   const [amount, setAmount] = useState(value ?? '');
   const { amountError } = useAmountValidation();
   const { balance } = useBalance();
-  const [faitMode, setFiatMode] = useState(false);
+  const [fiatMode, setFiatMode] = useState(false);
   const { getNativeValue } = useCurrencyConversions();
 
   const onChange = useCallback(
     (event) => {
       const newValue = event.target.value;
-      updateValue(faitMode ? getNativeValue(newValue) : newValue);
+      updateValue(fiatMode ? getNativeValue(newValue) : newValue);
       setAmount(newValue);
     },
-    [faitMode, getNativeValue, setAmount, updateValue],
+    [fiatMode, getNativeValue, setAmount, updateValue],
   );
 
   const toggleFiatMode = useCallback(() => {
     setAmount('');
-    setFiatMode(!faitMode);
-  }, [faitMode, setAmount, setFiatMode]);
+    setFiatMode(!fiatMode);
+  }, [fiatMode, setAmount, setFiatMode]);
 
   return (
     <div>
@@ -39,7 +39,7 @@ export const Amount = () => {
       <Text>Balance: {balance}</Text>
       <Text>Error: {amountError}</Text>
       <Button onClick={toggleFiatMode}>
-        {faitMode ? 'Native Mode' : 'Fiat Mode'}
+        {fiatMode ? 'Native Mode' : 'Fiat Mode'}
       </Button>
     </div>
   );
