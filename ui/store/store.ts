@@ -47,8 +47,7 @@ type ReduxState = {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
-  const reduxDevtoolsEnabled =
-    process.env.METAMASK_REACT_REDUX_DEVTOOLS;
+  const reduxDevtoolsEnabled = process.env.METAMASK_REACT_REDUX_DEVTOOLS;
   const runningTests = process.env.IN_TEST;
   const enhancers: StoreEnhancer[] = [];
 
