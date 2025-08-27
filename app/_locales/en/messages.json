@@ -2914,6 +2914,9 @@
   "insufficientFundsForGas": {
     "message": "Insufficient funds for gas"
   },
+  "insufficientFundsSend": {
+    "message": "Insufficient funds"
+  },
   "insufficientLockedLiquidityDescription": {
     "message": "The lack of adequately locked or burned liquidity leaves the token vulnerable to sudden liquidity withdrawals, potentially causing market instability."
   },
@@ -2990,6 +2993,9 @@
   },
   "invalidSeedPhraseNotFound": {
     "message": "Secret Recovery Phrase not found."
+  },
+  "invalidValue": {
+    "message": "Invalid value"
   },
   "ipfsGateway": {
     "message": "IPFS gateway"
