@@ -41,6 +41,7 @@ export type ConfirmInfoRowProps = {
   'data-testid'?: string;
   label: string;
   labelChildren?: React.ReactNode;
+  onClick?: () => void;
   style?: React.CSSProperties;
   tooltip?: string;
   tooltipIcon?: IconName;
@@ -90,6 +91,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   collapsed,
   tooltipIcon,
   tooltipIconColor,
+  onClick,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
@@ -119,8 +121,10 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           overflowWrap: OverflowWrap.Anywhere,
           minHeight: '24px',
           position: 'relative',
+          cursor: onClick ? 'pointer' : 'default',
           ...style,
         }}
+        onClick={onClick}
       >
         {copyEnabled && (
           <CopyIcon

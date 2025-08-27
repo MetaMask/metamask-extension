@@ -58,10 +58,6 @@ export default function InlineAlert({
           name={severity === Severity.Info ? IconName.Info : IconName.Danger}
           size={IconSize.Sm}
         />
-        <Text variant={TextVariant.bodySm} color={TextColor.inherit}>
-          {t('alert')}
-        </Text>
-        <Icon name={IconName.ArrowRight} size={IconSize.Xs} />
       </Box>
     </Box>
   );
