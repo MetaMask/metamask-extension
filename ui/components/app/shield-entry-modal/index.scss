@@ -1,10 +1,8 @@
 .shield-entry-modal {
   &__header {
-    background: url('/images/shield-entry-header.svg') no-repeat right -20px center;
-    background-color: var(--color-accent03-dark);
-    background-size: 180px;
-  }
-  &__title {
-    color: var(--color-accent03-normal);
+    background: url('/images/shield-entry-modal-banner.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 }

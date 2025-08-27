@@ -51,24 +51,13 @@ export default function ShieldEntryModal({
       >
         {/* TODO: update with full image banner */}
         <ModalHeader
-          paddingTop={4}
-          className="shield-entry-modal__header h-[160px] flex items-center"
+          className="shield-entry-modal__header h-[160px]"
           data-theme={ThemeType.dark}
-        >
-          <Text
-            variant={TextVariant.displayMd}
-            className="shield-entry-modal__title"
-          >
-            {t('shieldEntryModalTitle')}
-          </Text>
-          <ButtonIcon
-            iconName={IconName.Close}
-            ariaLabel={t('close')}
-            size={ButtonIconSize.Sm}
-            className="absolute top-2 right-2"
-            onClick={onClose}
-          />
-        </ModalHeader>
+          closeButtonProps={{
+            className: 'absolute top-2 right-2',
+          }}
+          onClose={onClose}
+        />
         <ModalBody paddingTop={4}>
           <Text variant={TextVariant.headingMd} marginBottom={1}>
             {t('shieldEntryModalSubtitle')}
