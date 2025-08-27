@@ -41,11 +41,10 @@ import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
  * @param state - Redux state.
  * @param state.metamask - MetaMask state object.
  * @param state.metamask.accountTree - Account tree state object.
- * @returns Account tree state, or default empty state if not available.
+ * @returns Account tree state.
  */
 export const getAccountTree = createDeepEqualSelector(
-  (state: MultichainAccountsState) =>
-    state.metamask.accountTree ?? { wallets: {}, selectedAccountGroup: null },
+  (state: MultichainAccountsState) => state.metamask.accountTree,
   (accountTree: AccountTreeState): AccountTreeState => accountTree,
 );
 
@@ -617,7 +616,7 @@ export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
  */
 export const getSelectedAccountGroup = createDeepEqualSelector(
   getAccountTree,
-  (accountTree: AccountTreeState) => accountTree?.selectedAccountGroup ?? null,
+  (accountTree: AccountTreeState) => accountTree.selectedAccountGroup,
 );
 
 /**
