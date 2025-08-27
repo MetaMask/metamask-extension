@@ -19,8 +19,7 @@ describe('AddWalletModal', () => {
   it('renders all wallet options', () => {
     renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
 
-    expect(screen.getByText('Create a new wallet')).toBeInTheDocument();
-    expect(screen.getByText('Import wallet')).toBeInTheDocument();
+    expect(screen.getByText('Import a wallet')).toBeInTheDocument();
     expect(screen.getByText('Import an account')).toBeInTheDocument();
     expect(screen.getByText('Add a hardware wallet')).toBeInTheDocument();
   });
@@ -28,7 +27,7 @@ describe('AddWalletModal', () => {
   it('calls onClose when a wallet option is clicked', () => {
     renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
 
-    fireEvent.click(screen.getByText('Create a new wallet'));
+    fireEvent.click(screen.getByText('Import a wallet'));
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
