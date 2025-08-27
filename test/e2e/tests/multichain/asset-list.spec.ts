@@ -41,7 +41,6 @@ function buildFixtures(title: string, chainId: number = 137) {
       .withTokensControllerERC20({ chainId })
       .withEnabledNetworks({
         eip155: {
-          [CHAIN_IDS.MAINNET]: true,
           [CHAIN_IDS.POLYGON]: true,
         },
       })
@@ -75,7 +74,8 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
-        await assetListPage.checkTokenItemNumber(3);
+        // Only Ethereum network is selected so only 1 token visible
+        await assetListPage.checkTokenItemNumber(1);
         await assetListPage.clickOnAsset('Ethereum');
         await assetListPage.checkBuySellButtonIsPresent();
         await assetListPage.checkMultichainTokenListButtonIsPresent();
@@ -89,7 +89,9 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         const sendPage = new SendTokenPage(driver);
-        await assetListPage.checkTokenItemNumber(3);
+        // Currently only polygon is selected, so only see polygon tokens
+        // 1 native token (POL), and 1 ERC-20 (TST)
+        await assetListPage.checkTokenItemNumber(2);
         await assetListPage.clickOnAsset('TST');
         await assetListPage.clickSendButton();
         await sendPage.checkPageIsLoaded();
