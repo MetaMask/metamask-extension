@@ -34,12 +34,14 @@ import { MultichainAccountMenu } from '../multichain-account-menu';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
-  selectedAccountGroup: AccountGroupId;
+  selectedAccountGroups: AccountGroupId[];
+  handleAccountClick?: (accountGroupId: AccountGroupId) => void;
 };
 
 export const MultichainAccountList = ({
   wallets,
-  selectedAccountGroup,
+  selectedAccountGroups,
+  handleAccountClick,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -49,8 +51,14 @@ export const MultichainAccountList = ({
   );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
+  // Convert selectedAccountGroups array to Set for O(1) lookup
+  const selectedAccountGroupsSet = useMemo(
+    () => new Set(selectedAccountGroups),
+    [selectedAccountGroups],
+  );
+
   const walletTree = useMemo(() => {
-    const handleAccountClick = (accountGroupId: AccountGroupId) => {
+    const defaultHandleAccountClick = (accountGroupId: AccountGroupId) => {
       trackEvent({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.NavAccountSwitched,
@@ -75,6 +83,9 @@ export const MultichainAccountList = ({
       dispatch(setSelectedMultichainAccount(accountGroupId));
       history.push(DEFAULT_ROUTE);
     };
+
+    const handleAccountClickToUse =
+      handleAccountClick ?? defaultHandleAccountClick;
 
     return Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
@@ -113,8 +124,10 @@ export const MultichainAccountList = ({
                 accountId={groupId as AccountGroupId}
                 accountName={groupData.metadata.name}
                 balance="$ n/a"
-                selected={selectedAccountGroup === groupId}
-                onClick={handleAccountClick}
+                selected={selectedAccountGroupsSet.has(
+                  groupId as AccountGroupId,
+                )}
+                onClick={handleAccountClickToUse}
                 endAccessory={
                   <MultichainAccountMenu
                     accountGroupId={groupId as AccountGroupId}
@@ -131,13 +144,14 @@ export const MultichainAccountList = ({
       [] as React.ReactNode[],
     );
   }, [
+    handleAccountClick,
     wallets,
     trackEvent,
     hdEntropyIndex,
     defaultHomeActiveTabName,
     dispatch,
     history,
-    selectedAccountGroup,
+    selectedAccountGroupsSet,
   ]);
 
   return <>{walletTree}</>;
