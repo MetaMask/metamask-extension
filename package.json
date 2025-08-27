@@ -287,7 +287,7 @@
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^17.0.0",
     "@metamask/eth-ledger-bridge-keyring": "11.1.2",
-    "@metamask/eth-onekey-keyring": "npm:@metamask-previews/eth-onekey-keyring@0.1.0-a621908",
+    "@metamask/eth-onekey-keyring": "npm:@metamask-previews/eth-onekey-keyring@0.1.0-3e52ac6",
     "@metamask/eth-sig-util": "^8.2.0",
     "@metamask/eth-snap-keyring": "^16.0.0",
     "@metamask/eth-token-tracker": "^10.0.2",
