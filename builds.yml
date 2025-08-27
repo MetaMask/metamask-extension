@@ -165,6 +165,7 @@ features:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   solana-swaps:
+  bitcoin-swaps:
   multichain:
   ocap-kernel:
     assets:
