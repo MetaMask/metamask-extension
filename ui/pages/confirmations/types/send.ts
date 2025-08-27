@@ -8,6 +8,7 @@ export type Asset = {
   name?: string | undefined;
   standard?: string;
   symbol?: string | undefined;
+  ticker?: string;
   tokenId?: string;
   tokenURI?: string | undefined;
   primary?: string;
