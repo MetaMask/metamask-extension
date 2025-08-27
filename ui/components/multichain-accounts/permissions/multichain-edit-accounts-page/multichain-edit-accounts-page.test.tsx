@@ -29,6 +29,7 @@ const TEST_IDS = {
   CONNECT_MORE_ACCOUNTS_BUTTON: 'connect-more-accounts-button',
   MULTICHAIN_ACCOUNT_CELL: (groupId: string) =>
     `multichain-account-cell-${groupId}`,
+  BACK_BUTTON: 'back-button',
 } as const;
 
 const mockEvmAccount1 = createMockInternalAccount({
@@ -377,8 +378,8 @@ describe('MultichainEditAccountsPage', () => {
     const onClose = jest.fn();
     const { getByTestId } = render({ onClose });
 
-    const closeButton = getByTestId('close-button');
-    fireEvent.click(closeButton);
+    const backButton = getByTestId(TEST_IDS.BACK_BUTTON);
+    fireEvent.click(backButton);
     expect(onClose).toHaveBeenCalled();
   });
 
