@@ -8,8 +8,8 @@ import {
   ButtonPrimarySize,
   Text,
   IconName,
-  IconSize,
-  Icon,
+  ButtonIcon,
+  ButtonIconSize,
 } from '../../../component-library';
 
 import {
@@ -17,6 +17,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -134,21 +135,19 @@ export const MultichainEditAccountsPage: React.FC<
         paddingTop={8}
         paddingBottom={0}
         startAccessory={
-          <Icon
-            name={IconName.Close}
-            size={IconSize.Md}
+          <ButtonIcon
+            size={ButtonIconSize.Md}
+            ariaLabel={t('back')}
+            iconName={IconName.ArrowLeft}
             onClick={onClose}
-            data-testid="close-button"
+            data-testid="back-button"
           />
         }
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
       >
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          marginBottom={8}
-        >
-          <Text variant={TextVariant.headingMd}>{t('editAccounts')}</Text>
-        </Box>
+        {t('editAccounts')}
       </Header>
       <Content
         paddingLeft={4}
@@ -166,6 +165,8 @@ export const MultichainEditAccountsPage: React.FC<
       <Footer>
         <ButtonPrimary
           data-testid="connect-more-accounts-button"
+          backgroundColor={BackgroundColor.infoMuted}
+          color={TextColor.primaryDefault}
           onClick={handleConnect}
           size={ButtonPrimarySize.Lg}
           block
