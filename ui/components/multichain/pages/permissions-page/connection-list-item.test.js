@@ -5,6 +5,7 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import { ConnectionListItem } from './connection-list-item';
 
 const mockUseSelector = jest.fn();
@@ -110,7 +111,7 @@ describe('ConnectionListItem', () => {
       if (selector.name === 'getIsMultichainAccountsState2Enabled') {
         return true;
       }
-      if (selector.name === 'getAccountGroupWithInternalAccounts') {
+      if (selector === getAccountGroupWithInternalAccounts) {
         return [
           {
             id: 'entropy:test/0',
@@ -152,7 +153,7 @@ describe('ConnectionListItem', () => {
       getByTestId('connection-list-item__avatar-favicon'),
     ).toBeInTheDocument();
     // In state 2, shows account group count instead of individual address count
-    expect(getByText(/1.*accounts.*2.*networks/u)).toBeInTheDocument();
+    expect(getByText(/2.*accounts.*2.*networks/u)).toBeInTheDocument();
   });
 
   it('handles state 2 with multiple account groups', () => {
@@ -167,7 +168,7 @@ describe('ConnectionListItem', () => {
       if (selector.name === 'getIsMultichainAccountsState2Enabled') {
         return true;
       }
-      if (selector.name === 'getAccountGroupWithInternalAccounts') {
+      if (selector === getAccountGroupWithInternalAccounts) {
         return [
           {
             id: 'entropy:test/0',
@@ -224,7 +225,7 @@ describe('ConnectionListItem', () => {
       if (selector.name === 'getIsMultichainAccountsState2Enabled') {
         return true;
       }
-      if (selector.name === 'getAccountGroupWithInternalAccounts') {
+      if (selector === getAccountGroupWithInternalAccounts) {
         return [
           {
             id: 'entropy:test/0',

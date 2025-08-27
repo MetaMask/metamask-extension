@@ -41,8 +41,6 @@ export const ConnectionListItem = ({ connection, onClick }) => {
 
   const isState2Enabled = useSelector(getIsMultichainAccountsState2Enabled);
 
-  console.log('connection', connection);
-
   const acccountsToShow = useMemo(() => {
     if (isState2Enabled) {
       const accountAddressesSet = new Set();
