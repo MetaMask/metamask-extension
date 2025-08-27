@@ -3677,6 +3677,13 @@ export default class MetamaskController extends EventEmitter {
         this.accountTreeController.setSelectedAccountGroup(accountGroupId);
       },
 
+      // MultichainAccountService
+      createNextMultichainAccountGroup: async (walletId) => {
+        await this.multichainAccountService.createNextMultichainAccountGroup({
+          entropySource: walletId,
+        });
+      },
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTokenSymbol: this.getTokenSymbol.bind(this),
