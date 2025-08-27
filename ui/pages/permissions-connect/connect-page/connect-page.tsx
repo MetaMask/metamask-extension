@@ -38,6 +38,9 @@ import {
   ButtonLink,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '../../../components/component-library';
 import {
@@ -54,6 +57,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -82,6 +86,9 @@ import {
 } from '../../../selectors/selectors.types';
 import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
+import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
+import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
+import Tooltip from '../../../components/ui/tooltip';
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
@@ -441,6 +448,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
+  const originTrustSignals = useOriginTrustSignals(
+    targetSubjectMetadata.origin,
+  );
 
   return (
     <Page
@@ -491,9 +501,24 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </AvatarBase>
           )}
         </Box>
-        <Text variant={TextVariant.headingLg} marginBottom={1}>
-          {title}
-        </Text>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          gap={2}
+          marginBottom={1}
+        >
+          <Text variant={TextVariant.headingLg}>{title}</Text>
+          {originTrustSignals.state === TrustSignalDisplayState.Verified && (
+            <Tooltip title="Verified site" position="bottom">
+              <Icon
+                name={IconName.VerifiedFilled}
+                color={IconColor.infoDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+        </Box>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
           <Text color={TextColor.textAlternative}>
             {t('connectionDescription')}
