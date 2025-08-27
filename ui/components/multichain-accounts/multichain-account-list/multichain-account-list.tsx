@@ -1,6 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 
-import { AccountGroupId } from '@metamask/account-api';
+import {
+  AccountGroupId,
+  AccountWalletId,
+  AccountWalletType,
+} from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, Text } from '../../component-library';
@@ -30,6 +34,8 @@ import {
   getHDEntropyIndex,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MultichainAccountMenu } from '../multichain-account-menu';
+import { AddMultichainAccount } from '../add-multichain-account';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -103,6 +109,9 @@ export const MultichainAccountList = ({
 
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
+            // TODO: Implement logic for removable accounts
+            const isRemovable = false;
+
             return [
               <MultichainAccountCell
                 key={`multichain-account-cell-${groupId}`}
@@ -111,10 +120,25 @@ export const MultichainAccountList = ({
                 balance="$ n/a"
                 selected={selectedAccountGroup === groupId}
                 onClick={handleAccountClick}
+                endAccessory={
+                  <MultichainAccountMenu
+                    accountGroupId={groupId as AccountGroupId}
+                    isRemovable={isRemovable}
+                  />
+                }
               />,
             ];
           },
         );
+
+        if (walletData.type === AccountWalletType.Entropy) {
+          groupsItems.push(
+            <AddMultichainAccount
+              walletId={walletId as AccountWalletId}
+              key={`add-multichain-account-${walletId}`}
+            />,
+          );
+        }
 
         return [...walletsAccumulator, walletHeader, ...groupsItems];
       },
