@@ -18,6 +18,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
@@ -105,13 +106,7 @@ export const MultichainEditAccountsPage: React.FC<
         paddingTop={8}
         paddingBottom={0}
         startAccessory={
-          <IconButton
-            onClick={onClose}
-            size={ButtonBaseSize.Md}
-            label={'close'}
-            aria-label="Close"
-            Icon={<Icon name={IconName.Close} size={IconSize.Md} />}
-          />
+          <Icon name={IconName.Close} size={IconSize.Md} onClick={onClose} />
         }
       >
         <Box
@@ -119,7 +114,7 @@ export const MultichainEditAccountsPage: React.FC<
           justifyContent={JustifyContent.center}
           marginBottom={8}
         >
-          <Text>{t('editAccounts')}</Text>
+          <Text variant={TextVariant.headingMd}>{t('editAccounts')}</Text>
         </Box>
       </Header>
       <Content
