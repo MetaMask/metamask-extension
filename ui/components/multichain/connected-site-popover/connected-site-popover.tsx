@@ -20,115 +20,59 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import {
-  getOriginOfCurrentTab,
-  getAllPermittedChainsForSelectedTab,
-  getSelectedMultichainNetworkChainId,
-} from '../../../selectors';
-import {
-  getSelectedMultichainNetworkConfiguration,
-  getMultichainNetworkConfigurationsByChainId,
-} from '../../../selectors/multichain/networks';
+import { getOriginOfCurrentTab, getAllDomains } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
 
 type ConnectedSitePopoverProps = {
+  referenceElement: RefObject<HTMLElement>;
   isOpen: boolean;
+  onClose: () => void;
   isConnected: boolean;
   onClick: () => void;
-  onClose: () => void;
-  connectedOrigin: string;
-  referenceElement?: RefObject<HTMLElement>;
 };
 
-export const ConnectedSitePopover = ({
+export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
+  referenceElement,
   isOpen,
+  onClose,
   isConnected,
   onClick,
-  onClose,
-  referenceElement,
-  connectedOrigin,
-}: ConnectedSitePopoverProps) => {
+}) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const siteName = getURLHost(activeTabOrigin);
-  // TODO: Replace it with networkClient Selector
-  // const activeDomain = useSelector(getAllDomains);
-  // const networkClientId = activeDomain?.[activeTabOrigin];
-  const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
-  const permittedChainIds = useSelector((state) =>
-    getAllPermittedChainsForSelectedTab(state, connectedOrigin),
-  );
-  const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
-  const [networkConfigurations] = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
+  const allDomains = useSelector(getAllDomains);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
   );
   const dispatch = useDispatch();
 
-  // Get the network that the dapp is actually active on
+  // Get the network that this dapp is actually connected to using domain mapping
   const dappActiveNetwork = useMemo(() => {
-    if (!permittedChainIds.length) {
+    if (!activeTabOrigin || !allDomains) {
       return null;
     }
 
-    // Check if current global network is permitted for this dapp
-    const getCurrentChainReference = (chainId: string) => {
-      try {
-        // parseCaipChainId expects a CAIP-2 chainId string (e.g., "eip155:1")
-        if (typeof chainId === 'string' && chainId.includes(':')) {
-          const { reference } = parseCaipChainId(
-            chainId as `${string}:${string}`,
-          );
-          return reference;
-        }
-        // If not a CAIP-2 string, just return as-is
-        return chainId;
-      } catch {
-        return chainId;
-      }
-    };
-
-    const currentChainReference = getCurrentChainReference(currentChainId);
-    const isCurrentNetworkPermitted = permittedChainIds.some(
-      (permittedChainId) => {
-        const permittedChainReference =
-          getCurrentChainReference(permittedChainId);
-        return permittedChainReference === currentChainReference;
-      },
-    );
-
-    // If current network is permitted, use it
-    if (isCurrentNetworkPermitted) {
-      return currentNetwork;
+    // Get the networkClientId for this domain
+    const networkClientId = allDomains[activeTabOrigin];
+    if (!networkClientId) {
+      return null;
     }
 
-    // Otherwise, find the network config for the first permitted chain
-    const firstPermittedChainId = permittedChainIds[0];
-    const permittedChainReference = getCurrentChainReference(
-      firstPermittedChainId,
-    );
+    // Find the network configuration that has this networkClientId
+    const networkConfiguration = Object.values(
+      networkConfigurationsByChainId,
+    ).find((network) => {
+      return network.rpcEndpoints.some(
+        (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
+      );
+    });
 
-    // Find matching network configuration
-    const matchingNetwork = Object.values(networkConfigurations).find(
-      (network) => {
-        if (network.isEvm) {
-          const networkChainReference = getCurrentChainReference(
-            network.chainId,
-          );
-          return networkChainReference === permittedChainReference;
-        }
-        return network.chainId === firstPermittedChainId;
-      },
-    );
-
-    return matchingNetwork || null;
-  }, [
-    permittedChainIds,
-    currentChainId,
-    currentNetwork,
-    networkConfigurations,
-  ]);
+    return networkConfiguration || null;
+  }, [activeTabOrigin, allDomains, networkConfigurationsByChainId]);
 
   const getChainIdForImage = (chainId: `${string}:${string}`): string => {
     const { namespace, reference } = parseCaipChainId(chainId);
@@ -181,7 +125,7 @@ export const ConnectedSitePopover = ({
                           dappActiveNetwork.chainId as `${string}:${string}`,
                         ),
                       )
-                    : undefined
+                    : getImageForChainId(dappActiveNetwork?.chainId)
                 }
               />
               <ButtonLink
@@ -200,7 +144,7 @@ export const ConnectedSitePopover = ({
                 }
                 data-testid="connected-site-popover-network-button"
               >
-                {dappActiveNetwork?.name}
+                {(dappActiveNetwork as { name?: string })?.name}
               </ButtonLink>
             </Box>
           ) : (
