@@ -699,12 +699,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Learn how we protect your privacy"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Back up your accounts and sync settings."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Introducing backup and sync"
-  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -728,9 +722,6 @@
   },
   "basic": {
     "message": "Basic"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "Basic functionality is off"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our $1.",
@@ -1562,6 +1553,14 @@
   "create": {
     "message": "Create"
   },
+  "createMultichainAccountButton": {
+    "message": "Create account",
+    "description": "Name of a button used on multichain account related pages for triggering the account creation process."
+  },
+  "createMultichainAccountButtonLoading": {
+    "message": "Creating account...",
+    "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
+  },
   "createNewAccountHeader": {
     "message": "Create a new account"
   },
@@ -2197,9 +2196,6 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
-  },
-  "enableIt": {
-    "message": " Enable it"
   },
   "enableSmartContractAccount": {
     "message": "Enable smart contract account"
@@ -5629,60 +5625,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A \"deep link\" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information. This setting only applies to links signed by MetaMask."
-  },
-  "slideBridgeDescription": {
-    "message": "Move across 9 chains, all within your wallet"
-  },
-  "slideBridgeTitle": {
-    "message": "Ready to bridge?"
-  },
-  "slideCashOutDescription": {
-    "message": "Sell your crypto for cash"
-  },
-  "slideCashOutTitle": {
-    "message": "Cash out with MetaMask"
-  },
-  "slideDebitCardDescription": {
-    "message": "Available in select regions"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMask debit card"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Take your wallet everywhere you go"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "Download MetaMask mobile"
-  },
-  "slideFundWalletDescription": {
-    "message": "Add or transfer tokens to get started"
-  },
-  "slideFundWalletTitle": {
-    "message": "Fund your wallet"
-  },
-  "slideMultiSrpDescription": {
-    "message": "Import and use multiple wallets in MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Add multiple Secret Recovery Phrases"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Same address, smarter features"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Start using smart accounts"
-  },
-  "slideSolanaDescription": {
-    "message": "Create a Solana account to get started"
-  },
-  "slideSolanaTitle": {
-    "message": "Solana is now supported"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Mint an NFT now for a chance to win"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Enter the $5000 USDC Giveaway!"
   },
   "slippage": {
     "message": "Slippage"
