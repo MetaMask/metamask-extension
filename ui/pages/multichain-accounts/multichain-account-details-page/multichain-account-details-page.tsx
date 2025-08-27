@@ -28,6 +28,7 @@ import {
   getWallet,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
+import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 
 export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
@@ -39,7 +40,7 @@ export const MultichainAccountDetailsPage = () => {
   );
   const walletId = extractWalletIdFromGroupId(accountGroupId);
   const wallet = useSelector((state) => getWallet(state, walletId));
-  const walletRoute = `/wallet-details/${encodeURIComponent(walletId)}`;
+  const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`;
   const isRemovable =
     wallet?.type !== AccountWalletType.Entropy &&
     wallet?.type !== AccountWalletType.Snap;

@@ -1,18 +1,46 @@
-import { useEffect } from 'react';
+import { Hex } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { isAddress as isEvmAddress } from 'ethers/lib/utils';
+import { useEffect } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom-v5-compat';
+import { useSelector } from 'react-redux';
 
 import useMultiChainAssets from '../../../../components/app/assets/hooks/useMultichainAssets';
-import { useAsyncResult } from '../../../../hooks/useAsync';
+import { getAllTokens } from '../../../../selectors';
+import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
-import { memoizedGetTokenStandardAndDetails } from '../../utils/token';
 import { useSendContext } from '../../context/send';
 
+export const getAssetFromList = (
+  evmTokens: Record<Hex, Record<Hex, Asset[]>>,
+  address: Hex,
+) => {
+  let asset;
+  Object.entries(evmTokens).forEach(
+    ([chainId, assetsObj]: [string, Record<Hex, Asset[]>]) => {
+      return Object.values(assetsObj).forEach((assets) => {
+        const filteredAsset = assets.find((ast) => ast.address === address);
+        if (filteredAsset) {
+          asset = { ...filteredAsset, chainId };
+        }
+      });
+    },
+  );
+  return asset;
+};
+
 export const useSendQueryParams = () => {
-  const { updateCurrentPage, updateAsset } = useSendContext();
+  const {
+    asset: existingAsset,
+    updateCurrentPage,
+    updateAsset,
+  } = useSendContext();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
   const multiChainAssets = useMultiChainAssets();
+  const evmTokens: Record<Hex, Record<Hex, Asset[]>> = useSelector(
+    getAllTokens,
+  );
 
   const address = searchParams.get('address');
   const chainId = searchParams.get('chainId');
@@ -23,26 +51,32 @@ export const useSendQueryParams = () => {
     updateCurrentPage((subPath as SendPages) ?? SendPages.ASSET);
   }, [pathname, updateCurrentPage]);
 
-  useAsyncResult(async () => {
+  useEffect(() => {
+    if (existingAsset) {
+      return;
+    }
     let asset;
     if (address) {
-      asset = multiChainAssets.find(
-        ({ address: assetAddress }) => assetAddress === address,
-      );
-      if (!asset) {
-        asset = await memoizedGetTokenStandardAndDetails(
-          address,
-          undefined,
-          tokenId ?? undefined,
+      if (isEvmAddress(address)) {
+        asset = getAssetFromList(evmTokens, address as Hex);
+      } else {
+        asset = multiChainAssets.find(
+          ({ address: assetAddress }) => assetAddress === address,
         );
       }
     } else if (chainId) {
-      asset = getNativeAssetForChainId(chainId);
+      asset = { ...getNativeAssetForChainId(chainId), chainId };
     }
     if (asset) {
       updateAsset(asset);
     }
-    return asset;
+  }, [
+    address,
+    chainId,
     // using only multiChainAssets as dependency causes infinite loading
-  }, [address, chainId, multiChainAssets?.length, tokenId, updateAsset]);
+    multiChainAssets?.length,
+    evmTokens,
+    tokenId,
+    updateAsset,
+  ]);
 };
