@@ -6,7 +6,6 @@ import {
   Box,
   ButtonPrimary,
   ButtonPrimarySize,
-  Text,
   IconName,
   ButtonIcon,
   ButtonIconSize,
@@ -16,7 +15,6 @@ import {
   BackgroundColor,
   Display,
   FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
