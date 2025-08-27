@@ -51,6 +51,12 @@ export const MultichainAccountList = ({
   );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
+  // Convert selectedAccountGroups array to Set for O(1) lookup
+  const selectedAccountGroupsSet = useMemo(
+    () => new Set(selectedAccountGroups),
+    [selectedAccountGroups],
+  );
+
   const walletTree = useMemo(() => {
     const defaultHandleAccountClick = (accountGroupId: AccountGroupId) => {
       trackEvent({
@@ -118,7 +124,7 @@ export const MultichainAccountList = ({
                 accountId={groupId as AccountGroupId}
                 accountName={groupData.metadata.name}
                 balance="$ n/a"
-                selected={selectedAccountGroups.includes(
+                selected={selectedAccountGroupsSet.has(
                   groupId as AccountGroupId,
                 )}
                 onClick={handleAccountClickToUse}
@@ -145,7 +151,7 @@ export const MultichainAccountList = ({
     defaultHomeActiveTabName,
     dispatch,
     history,
-    selectedAccountGroups,
+    selectedAccountGroupsSet,
   ]);
 
   return <>{walletTree}</>;
