@@ -56,7 +56,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.LG}
     >
-      {streamsCount > 0 && streamsNetworks.length > 0 && (
+      {streamsCount > 0 && (
         <PermissionsCellConnectionListItem
           title={t('tokenStreams')}
           iconName={IconName.Coin}
@@ -68,7 +68,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
           onClick={() => history.push(TOKEN_STREAMS_ROUTE)}
         />
       )}
-      {subscriptionsCount > 0 && subscriptionsNetworks.length > 0 && (
+      {subscriptionsCount > 0 && (
         <PermissionsCellConnectionListItem
           title={t('tokenSubscriptions')}
           iconName={IconName.Coin}
