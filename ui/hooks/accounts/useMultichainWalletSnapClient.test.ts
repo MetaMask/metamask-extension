@@ -40,7 +40,7 @@ describe('useMultichainWalletSnapClient', () => {
         address: 'tb1q2hjrlnf8kmtt5dj6e49gqzy6jnpe0sj7ty50cl',
         id: '11a33c6b-0d46-43f4-a401-01587d575fd0',
         options: {},
-        methods: [BtcMethod.SendBitcoin],
+        methods: Object.values(BtcMethod),
         scopes: [BtcScope.Testnet],
         type: BtcAccountType.P2wpkh,
       },

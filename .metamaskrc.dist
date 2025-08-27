@@ -7,6 +7,9 @@ INFURA_PROJECT_ID=00000000000
 ; Set this to `true` to enable Seedless onboarding (Social login flow)
 SEEDLESS_ONBOARDING_ENABLED='false'
 
+; Set this to `true` to enable Metamask Shield
+METAMASK_SHIELD_ENABLED='false'
+
 ; These variables are required for OAuth Service
 GOOGLE_CLIENT_ID=
 APPLE_CLIENT_ID=

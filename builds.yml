@@ -178,7 +178,7 @@ env:
   - ACCOUNTS_USE_DEV_APIS: false
   - BRIDGE_USE_DEV_APIS: false
   - SWAPS_USE_DEV_APIS: false
-  - PORTFOLIO_URL: https://portfolio.metamask.io
+  - PORTFOLIO_URL: https://app.metamask.io
   - TOKEN_ALLOWANCE_IMPROVEMENTS: false
   - TRANSACTION_SECURITY_PROVIDER: false
   # The unlock password
@@ -393,6 +393,9 @@ env:
   - APPLE_CLIENT_ID_FLASK_UAT: ''
   - GOOGLE_CLIENT_ID_UAT: ''
   - APPLE_CLIENT_ID_UAT: ''
+
+  # Metamask Shield
+  - METAMASK_SHIELD_ENABLED: 'false'
 
   # Snaps
   # This should only be used for local testing, and should not be enabled in any
