@@ -99,7 +99,6 @@ export const PermissionsCellTooltip = ({ networks }) => {
       delay={50}
       duration={0}
       size="small"
-      title={t('alertDisableTooltip')}
       trigger="mouseenter focus"
       theme="dark"
       tag="div"
