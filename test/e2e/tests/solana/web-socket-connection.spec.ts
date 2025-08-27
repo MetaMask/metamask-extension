@@ -1,11 +1,11 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
+import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wallet-standard/testHelpers';
 import {
   withSolanaAccountSnap,
   getWebsocketConnectionCount,
 } from './common-solana';
-import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wallet-standard/testHelpers';
 
 describe('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
