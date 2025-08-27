@@ -3,7 +3,7 @@ import LavamoatPlugin from '@lavamoat/webpack';
 
 export const lavamoatPlugin = new LavamoatPlugin({
   rootDir: join(__dirname, '../../../../../'), // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up. This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
-  diagnosticsVerbosity: 2,
+  diagnosticsVerbosity: 0,
   generatePolicy: true,
   runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
   readableResourceIds: true,
@@ -21,8 +21,7 @@ export const lavamoatPlugin = new LavamoatPlugin({
   },
   scuttleGlobalThis: {
     enabled: true,
-    // TODO(34913): support snow and scuttler
-    // scuttlerName: 'SCUTTLER',
+    scuttlerName: 'SCUTTLER',
     exceptions: [
       // globals used by different mm deps outside of lm compartment
       'Proxy',
