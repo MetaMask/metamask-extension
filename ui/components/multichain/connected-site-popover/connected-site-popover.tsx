@@ -1,4 +1,4 @@
-import React, { useContext, RefObject } from 'react';
+import React, { useContext, RefObject, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { parseCaipChainId } from '@metamask/utils';
 import {
@@ -25,7 +25,10 @@ import {
   getAllPermittedChainsForSelectedTab,
   getSelectedMultichainNetworkChainId,
 } from '../../../selectors';
-import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
+import {
+  getSelectedMultichainNetworkConfiguration,
+  getMultichainNetworkConfigurationsByChainId,
+} from '../../../selectors/multichain/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
@@ -58,11 +61,74 @@ export const ConnectedSitePopover = ({
     getAllPermittedChainsForSelectedTab(state, connectedOrigin),
   );
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
+  const [networkConfigurations] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
   const dispatch = useDispatch();
 
-  // Check if current network is permitted for this dapp
-  // Both currentChainId and permittedChainIds are in CAIP format, so we can compare directly
-  const isCurrentNetworkPermitted = permittedChainIds.includes(currentChainId);
+  // Get the network that the dapp is actually active on
+  const dappActiveNetwork = useMemo(() => {
+    if (!permittedChainIds.length) {
+      return null;
+    }
+
+    // Check if current global network is permitted for this dapp
+    const getCurrentChainReference = (chainId: string) => {
+      try {
+        // parseCaipChainId expects a CAIP-2 chainId string (e.g., "eip155:1")
+        if (typeof chainId === 'string' && chainId.includes(':')) {
+          const { reference } = parseCaipChainId(
+            chainId as `${string}:${string}`,
+          );
+          return reference;
+        }
+        // If not a CAIP-2 string, just return as-is
+        return chainId;
+      } catch {
+        return chainId;
+      }
+    };
+
+    const currentChainReference = getCurrentChainReference(currentChainId);
+    const isCurrentNetworkPermitted = permittedChainIds.some(
+      (permittedChainId) => {
+        const permittedChainReference =
+          getCurrentChainReference(permittedChainId);
+        return permittedChainReference === currentChainReference;
+      },
+    );
+
+    // If current network is permitted, use it
+    if (isCurrentNetworkPermitted) {
+      return currentNetwork;
+    }
+
+    // Otherwise, find the network config for the first permitted chain
+    const firstPermittedChainId = permittedChainIds[0];
+    const permittedChainReference = getCurrentChainReference(
+      firstPermittedChainId,
+    );
+
+    // Find matching network configuration
+    const matchingNetwork = Object.values(networkConfigurations).find(
+      (network) => {
+        if (network.isEvm) {
+          const networkChainReference = getCurrentChainReference(
+            network.chainId,
+          );
+          return networkChainReference === permittedChainReference;
+        }
+        return network.chainId === firstPermittedChainId;
+      },
+    );
+
+    return matchingNetwork || null;
+  }, [
+    permittedChainIds,
+    currentChainId,
+    currentNetwork,
+    networkConfigurations,
+  ]);
 
   const getChainIdForImage = (chainId: `${string}:${string}`): string => {
     const { namespace, reference } = parseCaipChainId(chainId);
@@ -96,7 +162,7 @@ export const ConnectedSitePopover = ({
           paddingBottom={2}
         >
           <Text variant={TextVariant.bodyMdMedium}>{siteName}</Text>
-          {isConnected && isCurrentNetworkPermitted ? (
+          {isConnected && dappActiveNetwork ? (
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
@@ -107,11 +173,13 @@ export const ConnectedSitePopover = ({
                 size={AvatarNetworkSize.Xs}
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                name={currentNetwork?.name || ''}
+                name={dappActiveNetwork?.name || ''}
                 src={
-                  currentNetwork?.chainId
+                  dappActiveNetwork?.chainId?.includes(':')
                     ? getImageForChainId(
-                        getChainIdForImage(currentNetwork.chainId),
+                        getChainIdForImage(
+                          dappActiveNetwork.chainId as `${string}:${string}`,
+                        ),
                       )
                     : undefined
                 }
@@ -132,7 +200,7 @@ export const ConnectedSitePopover = ({
                 }
                 data-testid="connected-site-popover-network-button"
               >
-                {currentNetwork?.name}
+                {dappActiveNetwork?.name}
               </ButtonLink>
             </Box>
           ) : (
