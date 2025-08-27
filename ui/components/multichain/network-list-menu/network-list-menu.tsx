@@ -73,7 +73,6 @@ import {
   getAllChainsToPoll,
   getEnabledNetworksByNamespace,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
@@ -200,43 +199,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const permittedAccountAddresses = useSelector((state) =>
     getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
   );
-
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
-
-  // Determine which network the dapp is actually connected to using domain mapping
-  const dappActiveChainId = useMemo(() => {
-    if (
-      !isAccessedFromDappConnectedSitePopover ||
-      !selectedTabOrigin ||
-      !domains
-    ) {
-      return null; // Not in dapp context, use global network
-    }
-
-    // Get the networkClientId for this domain
-    const networkClientId = domains[selectedTabOrigin];
-    if (!networkClientId) {
-      return null;
-    }
-
-    // Find the network configuration that has this networkClientId
-    const networkConfiguration = Object.values(
-      networkConfigurationsByChainId,
-    ).find((network) => {
-      return network.rpcEndpoints.some(
-        (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
-      );
-    });
-
-    return networkConfiguration?.chainId || null;
-  }, [
-    isAccessedFromDappConnectedSitePopover,
-    selectedTabOrigin,
-    domains,
-    networkConfigurationsByChainId,
-  ]);
 
   const allChainIds = useSelector(getAllChainsToPoll);
   const canSelectNetwork: boolean =
@@ -615,11 +577,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const generateMultichainNetworkListItem = (
     network: MultichainNetworkConfiguration,
   ) => {
-    // When in dapp context, show the dapp's active network as selected
-    // Otherwise, show the globally active network as selected
-    const effectiveCurrentChainId = dappActiveChainId || currentChainId;
-    const isCurrentNetwork = network.chainId === effectiveCurrentChainId;
-
+    const isCurrentNetwork = network.chainId === currentChainId;
     const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
       getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
@@ -631,7 +589,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
-        selected={isCurrentNetwork && !focusSearch}
+        selected={canSelectNetwork && isCurrentNetwork && !focusSearch}
         focus={canSelectNetwork && isCurrentNetwork && !focusSearch}
         rpcEndpoint={
           hasMultiRpcOptions(network)

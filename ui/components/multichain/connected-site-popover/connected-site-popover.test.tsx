@@ -6,11 +6,11 @@ import { renderWithProvider } from '../../../../test/jest';
 import { ConnectedSitePopover } from './connected-site-popover';
 
 const props = {
+  referenceElement: { current: document.createElement('div') },
   isOpen: true,
   isConnected: true,
   onClick: jest.fn(),
   onClose: jest.fn(),
-  connectedOrigin: 'https://metamask.github.io',
 };
 
 const render = () => {
