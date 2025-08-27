@@ -2708,12 +2708,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howQuotesWork": {
-    "message": "Cómo funcionan las cotizaciones"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Esta cotización tiene la mejor rentabilidad de las cotizaciones que buscamos. Se basa en la tarifa de intercambio, que incluye las tarifas de puente y una tarifa de MetaMask del $1 %, menos las tarifas de gas. Las tarifas de gas dependen de lo ocupada que esté la red y de lo compleja que sea la transacción."
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,12 +3377,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Está agregando esta red a MetaMask y otorgando permiso a este sitio para usarla."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Puenteo"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Cotización"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "Hora"
