@@ -74,7 +74,7 @@ export const TokenSubscriptionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={Color.iconDefault}
-            onClick={() => history.push(PERMISSIONS)}
+            onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />
         }
@@ -84,7 +84,7 @@ export const TokenSubscriptionsPage = () => {
           variant={TextVariant.headingMd}
           textAlign={TextAlign.Center}
         >
-          {t('permissions_tokenSubscriptions')}
+          {t('tokenSubscriptions')}
         </Text>
       </Header>
       <Content padding={0}>
