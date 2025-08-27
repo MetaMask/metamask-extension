@@ -19,14 +19,17 @@ If you run the tests for first time, you may need to install the browser depende
 yarn playwright install chromium
 ```
 
+As well as have the extension built locally
+
+```bash
+yarn build:test
+```
+
 ### Quick Start
 
 ```bash
 # Run with default settings (10 browser loads, 10 page loads each)
-yarn tsx test/e2e/playwright/benchmark/run-benchmark.ts
-
-# Run with custom settings
-yarn tsx test/e2e/playwright/benchmark/run-benchmark.ts --browser-loads=5 --page-loads=5
+yarn test:e2e:benchmark
 ```
 
 ### Using Playwright Directly
@@ -45,7 +48,7 @@ The benchmark generates a JSON file (`benchmark-results.json`) with the followin
 
 ```json
 {
-  "timestamp": "2024-01-01T00:00:00.000Z",
+  "timestamp": "1666134325990",
   "summary": [
     {
       "page": "https://metamask.github.io/test-dapp/",
@@ -76,7 +79,7 @@ The benchmark generates a JSON file (`benchmark-results.json`) with the followin
       "page": "https://metamask.github.io/test-dapp/",
       "run": 0,
       "metrics": { ... },
-      "timestamp": "2024-01-01T00:00:00.000Z"
+      "timestamp": "1666134325990"
     }
   ]
 }
@@ -96,7 +99,7 @@ The benchmark generates a JSON file (`benchmark-results.json`) with the followin
 To run with additional debugging:
 
 ```bash
-DEBUG=pw:api yarn tsx test/e2e/playwright/benchmark/run-benchmark.ts
+DEBUG=pw:api yarn playwright test --project=benchmark
 ```
 
 ## Contact Wallet API-SDK team

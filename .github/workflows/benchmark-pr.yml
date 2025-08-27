@@ -46,10 +46,10 @@ jobs:
         run: yarn playwright install chromium
 
       - name: Run page load benchmarks
-        run: yarn tsx test/e2e/playwright/benchmark/run-benchmark.ts
+        run: yarn test:e2e:benchmark
         env:
-          BENCHMARK_BROWSER_LOADS: ${{ inputs.browser-loads }}
-          BENCHMARK_PAGE_LOADS: ${{ inputs.page-loads }}
+          BENCHMARK_BROWSER_LOADS: ${{ env.BENCHMARK_BROWSER_LOADS }}
+          BENCHMARK_PAGE_LOADS: ${{ env.BENCHMARK_PAGE_LOADS }}
 
       - name: Compare and comment
         if: ${{ github.event_name == 'pull_request' }}
