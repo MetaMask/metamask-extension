@@ -72,8 +72,6 @@ export const KNOWN_QR_ACCOUNTS = [
   '0xC64D05CD3582531f19dcB16e5FA9652B281fA018',
 ];
 
-export const KNOWN_QR_BASE_NAME = 'AirGap - test';
-
 export class FakeKeyringBridge {
   async init() {
     return Promise.resolve();
