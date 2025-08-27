@@ -10,6 +10,7 @@ import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../preferred-avatar';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
+import Tooltip from '../../../ui/tooltip';
 
 export type NameDisplayProps = {
   preferContractSymbol?: boolean;
@@ -39,7 +40,7 @@ const NameDisplay = memo(
     const renderIcon = () => {
       // If icon exists, use it (trust signal /unknown)
       if (icon) {
-        return (
+        const iconElement = (
           <Icon
             name={icon.name}
             className="name__icon"
@@ -47,6 +48,17 @@ const NameDisplay = memo(
             color={icon.color}
           />
         );
+
+        // Wrap verified icons with tooltip
+        if (displayState === TrustSignalDisplayState.Verified) {
+          return (
+            <Tooltip title="Verified address" position="bottom">
+              {iconElement}
+            </Tooltip>
+          );
+        }
+
+        return iconElement;
       }
 
       if (image) {
