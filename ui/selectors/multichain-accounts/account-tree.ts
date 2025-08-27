@@ -648,3 +648,29 @@ export const getNetworkAddressCount = createSelector(
     return wallet.groups[accountGroupId].accounts.length;
   },
 );
+
+/**
+ * Get the account group that an account ID belongs to.
+ *
+ * @param accountTree - Account tree state.
+ * @param accountId - The account ID to find the group for.
+ * @returns The account group object that contains the account, or null if not found.
+ */
+export const getAccountGroupByAccountId = createDeepEqualSelector(
+  getAccountTree,
+  (_, accountId: string) => accountId,
+  (accountTree: AccountTreeState, accountId: string) => {
+    const { wallets } = accountTree;
+
+    // Search through all wallets and groups to find the account
+    for (const wallet of Object.values(wallets)) {
+      for (const group of Object.values(wallet.groups)) {
+        if (group.accounts.includes(accountId)) {
+          return group;
+        }
+      }
+    }
+
+    return null;
+  },
+);

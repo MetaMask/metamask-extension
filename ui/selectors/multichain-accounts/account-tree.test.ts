@@ -28,6 +28,8 @@ import {
   getWalletsWithAccounts,
   getNetworkAddressCount,
   getWallet,
+  getAccountGroupByAccountId,
+  getAccountGroupNameByAccountId,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 import {
@@ -50,6 +52,15 @@ describe('Multichain Accounts Selectors', () => {
 
   const ACCOUNT_1_ID = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
   const ACCOUNT_2_ID = '07c2cfec-36c9-46c4-8115-3836d3ac9047';
+  const ACCOUNT_3_ID = '784225f4-d30b-4e77-a900-c8bbce735b88';
+  const SNAP_ACCOUNT_ID = '694225f4-d30b-4e77-a900-c8bbce735b42';
+  const SNAP_GROUP_ID =
+    'snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281';
+  const NON_EXISTENT_ACCOUNT_ID = 'non-existent-account-id';
+  const DIFFERENT_ACCOUNT_ID = 'different-account-id';
+  const EXISTING_ACCOUNT_ID = 'existing-account-id';
+  const TEST_WALLET_ID = 'entropy:test';
+  const TEST_GROUP_ID = 'entropy:test/0';
 
   const ACCOUNT_1_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
   const ACCOUNT_2_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
@@ -1003,6 +1014,160 @@ describe('Multichain Accounts Selectors', () => {
       );
 
       expect(result).toBe(0);
+    });
+  });
+
+  describe('getAccountGroupByAccountId', () => {
+    it('returns the account group when account exists in a group', () => {
+      const result = getAccountGroupByAccountId(typedMockState, ACCOUNT_1_ID);
+
+      expect(result).toBeDefined();
+      expect(result?.id).toBe(ENTROPY_GROUP_1_ID);
+      expect(result?.type).toBe(AccountGroupType.MultichainAccount);
+      expect(result?.accounts).toContain(ACCOUNT_1_ID);
+    });
+
+    it('returns the account group when account exists in a different wallet', () => {
+      const result = getAccountGroupByAccountId(typedMockState, ACCOUNT_3_ID);
+
+      expect(result).toBeDefined();
+      expect(result?.id).toBe(ENTROPY_GROUP_2_ID);
+      expect(result?.type).toBe(AccountGroupType.MultichainAccount);
+      expect(result?.accounts).toContain(ACCOUNT_3_ID);
+    });
+
+    it('returns the account group when account exists in a snap wallet', () => {
+      const result = getAccountGroupByAccountId(
+        typedMockState,
+        SNAP_ACCOUNT_ID,
+      );
+
+      expect(result).toBeDefined();
+      expect(result?.id).toBe(SNAP_GROUP_ID);
+      expect(result?.type).toBe(AccountGroupType.SingleAccount);
+      expect(result?.accounts).toContain(SNAP_ACCOUNT_ID);
+    });
+
+    it('returns null when account does not exist in any group', () => {
+      const result = getAccountGroupByAccountId(
+        typedMockState,
+        NON_EXISTENT_ACCOUNT_ID,
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('returns null when account tree is empty', () => {
+      const emptyState = createEmptyState();
+
+      const result = getAccountGroupByAccountId(emptyState, ACCOUNT_1_ID);
+
+      expect(result).toBeNull();
+    });
+
+    it('returns null when account tree has wallets but no matching accounts', () => {
+      const stateWithWalletsButNoMatchingAccount =
+        createMockMultichainAccountsState(
+          {
+            wallets: {
+              [TEST_WALLET_ID]: {
+                id: TEST_WALLET_ID,
+                type: AccountWalletType.Entropy,
+                groups: {
+                  [TEST_GROUP_ID]: {
+                    id: TEST_GROUP_ID,
+                    type: AccountGroupType.MultichainAccount,
+                    accounts: [EXISTING_ACCOUNT_ID] as [string, ...string[]],
+                    metadata: {
+                      name: 'Test Group',
+                      entropy: { groupIndex: 0 },
+                      pinned: false,
+                      hidden: false,
+                    },
+                  },
+                },
+                metadata: {
+                  name: 'Test Wallet',
+                  entropy: { id: 'test' },
+                },
+              },
+            },
+            selectedAccountGroup: TEST_GROUP_ID as AccountGroupId,
+          },
+          {
+            accounts: {},
+            selectedAccount: '',
+          },
+        );
+
+      const result = getAccountGroupByAccountId(
+        stateWithWalletsButNoMatchingAccount,
+        DIFFERENT_ACCOUNT_ID,
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('finds account in the first group when multiple groups exist', () => {
+      const result = getAccountGroupByAccountId(typedMockState, ACCOUNT_1_ID);
+
+      expect(result).toBeDefined();
+      expect(result?.id).toBe(ENTROPY_GROUP_1_ID);
+      expect(result?.accounts).toContain(ACCOUNT_1_ID);
+    });
+
+    it('finds account in the second group when multiple groups exist', () => {
+      const result = getAccountGroupByAccountId(typedMockState, ACCOUNT_2_ID);
+
+      expect(result).toBeDefined();
+      expect(result?.id).toBe(ENTROPY_GROUP_1_ID);
+      expect(result?.accounts).toContain(ACCOUNT_2_ID);
+    });
+  });
+
+  describe('getAccountGroupNameByAccountId', () => {
+    it('returns the account group name when account exists in a group', () => {
+      const result = getAccountGroupNameByAccountId(
+        typedMockState,
+        ACCOUNT_1_ID,
+      );
+
+      expect(result).toBe('Account 1');
+    });
+
+    it('returns the account group name when account exists in a different wallet', () => {
+      const result = getAccountGroupNameByAccountId(
+        typedMockState,
+        ACCOUNT_3_ID,
+      );
+
+      expect(result).toBe('Account 2');
+    });
+
+    it('returns the account group name when account exists in a snap wallet', () => {
+      const result = getAccountGroupNameByAccountId(
+        typedMockState,
+        SNAP_ACCOUNT_ID,
+      );
+
+      expect(result).toBe('Test Account 3');
+    });
+
+    it('returns null when account does not exist in any group', () => {
+      const result = getAccountGroupNameByAccountId(
+        typedMockState,
+        NON_EXISTENT_ACCOUNT_ID,
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('returns null when account tree is empty', () => {
+      const emptyState = createEmptyState();
+
+      const result = getAccountGroupNameByAccountId(emptyState, ACCOUNT_1_ID);
+
+      expect(result).toBeNull();
     });
   });
 });
