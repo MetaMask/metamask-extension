@@ -28,6 +28,7 @@ import { MultichainAccountList } from '../../multichain-account-list';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { Content, Footer, Header, Page } from '../../../multichain/pages/page';
+import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 
 type MultichainEditAccountsPageProps = {
   defaultSelectedAccountGroups: AccountGroupId[];
@@ -56,11 +57,11 @@ export const MultichainEditAccountsPage: React.FC<
 
     // Build wallets from scratch using only supported account groups
     supportedAccountGroups.forEach((group) => {
-      const [walletId] = group.id.split('/');
+      const walletId = extractWalletIdFromGroupId(group.id);
       const walletIdTyped = walletId as AccountWalletId;
       const wallet = accountTree.wallets[walletIdTyped];
 
-      if (group && wallet) {
+      if (wallet) {
         if (!walletMap.has(walletId)) {
           walletMap.set(walletId, {
             id: wallet.id,

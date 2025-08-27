@@ -373,11 +373,11 @@ describe('MultichainEditAccountsPage', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it('calls onClose when modal close button is clicked', () => {
+  it('calls onClose when close button is clicked', () => {
     const onClose = jest.fn();
-    const { getByLabelText } = render({ onClose });
+    const { getByTestId } = render({ onClose });
 
-    const closeButton = getByLabelText('Close');
+    const closeButton = getByTestId('close-button');
     fireEvent.click(closeButton);
     expect(onClose).toHaveBeenCalled();
   });
