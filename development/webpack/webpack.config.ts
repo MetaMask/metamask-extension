@@ -11,6 +11,9 @@ import {
   type WebpackPluginInstance,
   type MemoryCacheOptions,
   type FileCacheOptions,
+  type Compiler,
+  type Dependency,
+  type RuleSetRule,
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
@@ -29,7 +32,6 @@ import {
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
-  type Browser,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -38,7 +40,6 @@ import { getSwcLoader } from './utils/loaders/swcLoader';
 import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
-import { lavamoatPlugin } from './utils/plugins/LavamoatPlugin';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -178,7 +179,46 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
+
+const optionalRules: RuleSetRule[] = [];
+
 if (args.lavamoat) {
+  const { lavamoatPlugin } = require('./utils/plugins/LavamoatPlugin');
+  const { exclude: excludeLoader } = require('@lavamoat/webpack');
+  optionalRules.push({
+    // 1) the entry module itself
+    test: /bootstrap/u,
+    use: [excludeLoader],
+  });
+  optionalRules.push({
+    // 2) everything issued by that entry (has issuerLayer='bootstrap')
+    issuerLayer: 'bootstrap',
+    use: [excludeLoader],
+  });
+  plugins.push({
+    apply(compiler: Compiler) {
+      compiler.hooks.thisCompilation.tap('Layer', (compilation) => {
+        compilation.hooks.addEntry.tap(
+          'Layer',
+          (entry: Dependency, options) => {
+            const name = options.name;
+            if (
+              name &&
+              'request' in entry &&
+              typeof entry.request === 'string'
+            ) {
+              if (name === 'bootstrap') {
+                const entryData = compilation.entries.get(name);
+                if (entryData) {
+                  entryData.options.layer = 'bootstrap';
+                }
+              }
+            }
+          },
+        );
+      });
+    },
+  });
   plugins.push(lavamoatPlugin);
 }
 // enable React Refresh in 'development' mode when `watch` is enabled
@@ -292,6 +332,7 @@ const config = {
       /^lodash$/u,
     ],
     rules: [
+      ...optionalRules,
       // json
       { test: /\.json$/u, type: 'json' },
       // treats JSON and compressed JSON files loaded via `new URL('./file.json(?:\.gz)', import.meta.url)` as assets.
@@ -469,67 +510,9 @@ const config = {
     aggregateTimeout: 5, // ms
     ignored: NODE_MODULES_RE, // avoid `fs.inotify.max_user_watches` issues
   },
+  experiments: {
+    layers: true,
+  },
 } as const satisfies Configuration;
 
-// Transpile a bootstrap script that runs before LavaMoat
-// Emits dist/<browser>/bootstrap.js so HTML can reference it as /bootstrap.js.
-const bootstrapConfig = {
-  name: 'bootstrap',
-  dependencies: [config.name],
-  mode: args.env,
-  context,
-  entry: args.browser.reduce(
-    (acc, browser) => {
-      acc[browser] = './scripts/load/bootstrap.ts';
-      return acc;
-    },
-    {} as Record<Browser, './scripts/load/bootstrap.ts'>,
-  ),
-  target: `browserslist:${browsersListPath}:defaults`,
-  devtool: args.devtool === 'none' ? false : args.devtool,
-  output: {
-    path: join(context, '..', 'dist'),
-    publicPath: '',
-    filename: '[name]/bootstrap.js',
-    clean: false,
-    crossOriginLoading: 'anonymous',
-    pathinfo: false,
-  },
-  resolve: {
-    symlinks: false,
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    fallback: {
-      crypto: require.resolve('crypto-browserify'),
-      fs: false,
-      http: require.resolve('stream-http'),
-      https: require.resolve('https-browserify'),
-      path: require.resolve('path-browserify'),
-      stream: require.resolve('stream-browserify'),
-      vm: false,
-      zlib: false,
-    },
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(?:ts|mts|tsx)$/u,
-        exclude: NODE_MODULES_RE,
-        use: [tsxLoader],
-      },
-      {
-        test: /\.(?:js|mjs|jsx)$/u,
-        exclude: NODE_MODULES_RE,
-        use: [jsxLoader],
-      },
-    ],
-  },
-  performance: { maxAssetSize: 1 << 22 },
-  cache: false,
-  stats: args.stats ? 'normal' : 'none',
-  watch: args.watch,
-  watchOptions: { aggregateTimeout: 5, ignored: NODE_MODULES_RE },
-} as const satisfies Configuration;
-
-const configs = [config, bootstrapConfig];
-
-export default configs;
+export default config;
