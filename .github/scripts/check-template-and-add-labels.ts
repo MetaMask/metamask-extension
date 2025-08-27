@@ -186,8 +186,15 @@ async function main(): Promise<void> {
         invalidPullRequestTemplateLabel,
       );
 
+      // Skip changelog check if PR has "no-changelog" label
+      const hasNoChangelogLabel = labelable.labels?.some(
+        (label) => label.name === "no-changelog"
+      );
+
       // Require changelog entry
-      if (!hasChangelogEntry(labelable.body)) {
+      if (hasNoChangelogLabel) {
+        console.log(`PR ${labelable.number} has "no-changelog" label. Skipping changelog entry check.`);
+      } else if (!hasChangelogEntry(labelable.body)) {
         const errorMessage = `PR is missing a valid "CHANGELOG entry:" line.`;
         console.log(errorMessage);
 
