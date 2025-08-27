@@ -52,7 +52,7 @@ describe('AmountRecipient', () => {
     });
 
     fireEvent.click(getByText('Continue'));
-    expect(mockHandleSubmit).toHaveBeenCalled();
+    expect(mockHandleSubmit).toHaveBeenCalledWith(MOCK_ADDRESS);
   });
 
   it('go to previous page when previous button is clicked', () => {

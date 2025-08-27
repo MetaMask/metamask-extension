@@ -9,7 +9,7 @@ export const Recipient = ({ setTo }: { setTo: (to?: string) => void }) => {
   const onChange = useCallback(
     (e) => {
       const toAddress = e.target.value;
-      setTo(to);
+      setTo(toAddress);
       updateTo(toAddress);
     },
     [setTo, to, updateTo],

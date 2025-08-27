@@ -64,6 +64,9 @@ export const useSendQueryParams = () => {
   const paramRecipient = searchParams.get('recipient');
 
   useEffect(() => {
+    if (currentPage === subPath) {
+      return;
+    }
     updateCurrentPage((subPath as SendPages) ?? SendPages.ASSET);
   }, [currentPage, subPath, updateCurrentPage]);
 
