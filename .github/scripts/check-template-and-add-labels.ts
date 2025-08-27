@@ -417,8 +417,9 @@ function hasChangelogEntry(body: string): boolean {
     return false;
   }
 
-  // Extract text after the "CHANGELOG entry:" prefix
-  const entry = changelogLine.slice("CHANGELOG entry:".length).trim();
+  // Extract everything after the prefix, tolerating extra spaces after the colon
+  const match = changelogLine.match(/^\s*CHANGELOG entry:\s*(.*)$/);
+  const entry = match?.[1]?.trim() ?? "";
 
   if (entry === "") {
     console.log("Changelog entry is empty");
