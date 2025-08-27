@@ -579,6 +579,7 @@ describe('MetaMaskController', () => {
           updateSecurityAlertResponse: expect.any(Function),
           getSecurityAlertResponse: expect.any(Function),
           addSecurityAlertResponse: expect.any(Function),
+          getSecurityAlertsConfig: expect.any(Function),
         });
       });
       it('passes through any additional params to the object', () => {

@@ -2005,6 +2005,18 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
 
+    // For now, we return undefined here, which means that the Security Alerts
+    // API falls back to default behavior. In the future, we plan to use this
+    // configuration option for conditional re-routing of API requests.
+    this.getSecurityAlertsConfig = () => {
+      return (_url) => {
+        return Promise.resolve({
+          newUrl: undefined,
+          authorization: undefined,
+        });
+      };
+    };
+
     this.notificationServicesController.init();
     this.snapController.init();
     this.cronjobController.init();
@@ -6698,6 +6710,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.addAddressSecurityAlertResponse.bind(
           this.appStateController,
         ),
+      getSecurityAlertsConfig: this.getSecurityAlertsConfig(),
       ...otherParams,
     };
   }
@@ -7505,6 +7518,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
+        this.getSecurityAlertsConfig.bind(this),
       ),
     );
 
