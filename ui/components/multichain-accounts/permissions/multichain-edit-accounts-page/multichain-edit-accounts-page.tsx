@@ -9,7 +9,6 @@ import {
   Text,
   IconName,
   IconSize,
-  ButtonBaseSize,
   Icon,
 } from '../../../component-library';
 
@@ -29,7 +28,6 @@ import { MultichainAccountList } from '../../multichain-account-list';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { Content, Footer, Header, Page } from '../../../multichain/pages/page';
-import IconButton from '../../../ui/icon-button';
 
 type MultichainEditAccountsPageProps = {
   defaultSelectedAccountGroups: AccountGroupId[];
@@ -96,6 +94,35 @@ export const MultichainEditAccountsPage: React.FC<
   const defaultSet = new Set(defaultSelectedAccountGroups);
   const selectedSet = new Set(selectedAccountGroups);
 
+  const handleConnect = useCallback(() => {
+    const addedAccounts = selectedAccountGroups.filter(
+      (accountGroup) => !defaultSet.has(accountGroup),
+    );
+    const removedAccounts = defaultSelectedAccountGroups.filter(
+      (accountGroup) => !selectedSet.has(accountGroup),
+    );
+
+    onSubmit(selectedAccountGroups);
+    trackEvent({
+      category: MetaMetricsEventCategory.Permissions,
+      event: MetaMetricsEventName.UpdatePermissionedAccounts,
+      properties: {
+        addedAccounts: addedAccounts.length,
+        removedAccounts: removedAccounts.length,
+        location: 'Edit Accounts Modal',
+      },
+    });
+
+    onClose();
+  }, [
+    selectedAccountGroups,
+    defaultSet,
+    defaultSelectedAccountGroups,
+    onSubmit,
+    trackEvent,
+    onClose,
+  ]);
+
   return (
     <Page
       data-testid="modal-page"
@@ -133,27 +160,7 @@ export const MultichainEditAccountsPage: React.FC<
       <Footer>
         <ButtonPrimary
           data-testid="connect-more-accounts-button"
-          onClick={() => {
-            const addedAccounts = selectedAccountGroups.filter(
-              (accountGroup) => !defaultSet.has(accountGroup),
-            );
-            const removedAccounts = defaultSelectedAccountGroups.filter(
-              (accountGroup) => !selectedSet.has(accountGroup),
-            );
-
-            onSubmit(selectedAccountGroups);
-            trackEvent({
-              category: MetaMetricsEventCategory.Permissions,
-              event: MetaMetricsEventName.UpdatePermissionedAccounts,
-              properties: {
-                addedAccounts: addedAccounts.length,
-                removedAccounts: removedAccounts.length,
-                location: 'Edit Accounts Modal',
-              },
-            });
-
-            onClose();
-          }}
+          onClick={handleConnect}
           size={ButtonPrimarySize.Lg}
           block
         >
