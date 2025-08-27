@@ -36,6 +36,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: use a static list of words for blurred SRP to prevent any potential possibility of a 'blur reversal attack' (#34288)
 - fix: revert 'set default theme to dark' (#34274)
 
+## [13.1.2]
+### Fixed
+- fix: fixes a performance issue by closing all Solana WebSocket connections whenever the client becomes inactive (#35359)
+- fix: fixes a performance issue by only opening Solana WebSocket connections if client is active (#35392)
+
 ## [13.1.1]
 ### Fixed
 - fix: remove the Solana new feature modal from the onboarding flow (#34988)
@@ -466,7 +471,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.2.0...HEAD
-[13.2.0]: https://github.com/MetaMask/metamask-extension/compare/v13.1.1...v13.2.0
+[13.2.0]: https://github.com/MetaMask/metamask-extension/compare/v13.1.2...v13.2.0
+[13.1.2]: https://github.com/MetaMask/metamask-extension/compare/v13.1.1...v13.1.2
 [13.1.1]: https://github.com/MetaMask/metamask-extension/compare/v13.1.0...v13.1.1
 [13.1.0]: https://github.com/MetaMask/metamask-extension/compare/v13.0.1...v13.1.0
 [13.0.1]: https://github.com/MetaMask/metamask-extension/compare/v13.0.0...v13.0.1
