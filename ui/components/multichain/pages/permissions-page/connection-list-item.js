@@ -41,19 +41,22 @@ export const ConnectionListItem = ({ connection, onClick }) => {
 
   const isState2Enabled = useSelector(getIsMultichainAccountsState2Enabled);
 
+  console.log('connection', connection);
+
   const acccountsToShow = useMemo(() => {
     if (isState2Enabled) {
-      const accountGroupsToShow = connection.addresses
-        .map((address) => {
-          const accountGroup = accountGroups.find((group) =>
-            group.accounts.some((account) => account.address === address),
-          );
+      const accountAddressesSet = new Set();
+      accountGroups.forEach((group) => {
+        group.accounts.forEach((account) => {
+          accountAddressesSet.add(account.address);
+        });
+      });
 
-          return accountGroup;
-        })
-        .filter((account) => account !== undefined);
+      const uniqueConnectedAccounts = connection.addresses.filter((address) =>
+        accountAddressesSet.has(address),
+      );
 
-      return accountGroupsToShow.length;
+      return uniqueConnectedAccounts.length;
     }
     return connection.addresses.length;
   }, [accountGroups, connection.addresses, isState2Enabled]);
