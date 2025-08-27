@@ -333,7 +333,7 @@
     "@metamask/ppom-validator": "0.36.0",
     "@metamask/preinstalled-example-snap": "^0.7.1",
     "@metamask/profile-sync-controller": "^23.0.0",
-    "@metamask/providers": "^22.1.0",
+    "@metamask/providers": "^22.1.1",
     "@metamask/rate-limit-controller": "^6.0.3",
     "@metamask/remote-feature-flag-controller": "^1.6.0",
     "@metamask/rpc-errors": "^7.0.0",

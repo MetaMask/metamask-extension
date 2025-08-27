@@ -28,6 +28,7 @@ export type ProviderStateHandlerResult = {
 
 export type GetProviderState = (
   origin: string,
+  options?: { isInitializingStreamProvider?: boolean },
 ) => Promise<ProviderStateHandlerResult>;
 
 type GetProviderStateConstraint<Params extends JsonRpcParams = JsonRpcParams> =
@@ -73,8 +74,9 @@ async function getProviderStateHandler<
   end: JsonRpcEngineEndCallback,
   { getProviderState: _getProviderState }: Record<string, GetProviderState>,
 ): Promise<void> {
+  const isInitializingStreamProvider = req.params?.isInitializingStreamProvider;
   res.result = {
-    ...(await _getProviderState(req.origin)),
+    ...(await _getProviderState(req.origin, { isInitializingStreamProvider })),
   };
   return end();
 }

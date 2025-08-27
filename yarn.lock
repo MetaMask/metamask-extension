@@ -7028,9 +7028,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^22.1.0":
-  version: 22.1.0
-  resolution: "@metamask/providers@npm:22.1.0"
+"@metamask/providers@npm:^22.1.0, @metamask/providers@npm:^22.1.1":
+  version: 22.1.1
+  resolution: "@metamask/providers@npm:22.1.1"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
@@ -7045,7 +7045,7 @@ __metadata:
     readable-stream: "npm:^3.6.2"
   peerDependencies:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/d6dc969296e3d478a904228f27adae3b6dcbfdbf49eb6d571c9d73d7506df3c6e3bf3c3464f1e69e4c0acb6f6072d12d1c8182348e626ca1572f4f22f9c585e6
+  checksum: 10/50194c608fb308cee268c6eefb8c8d439a9d07aa41d07cb5ddcd7e706819aea7e746150f32688fe06d20309b49346440855b5d56aacf286b343da6fcb217cc12
   languageName: node
   linkType: hard
 
@@ -31815,7 +31815,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.1"
     "@metamask/profile-sync-controller": "npm:^23.0.0"
-    "@metamask/providers": "npm:^22.1.0"
+    "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
     "@metamask/rpc-errors": "npm:^7.0.0"

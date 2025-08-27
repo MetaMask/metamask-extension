@@ -23,7 +23,9 @@ describe('getProviderState', () => {
   it('should call getProviderState when the handler is invoked', async () => {
     const req: HandlerRequestType = {
       origin: 'testOrigin',
-      params: [],
+      params: {
+        isInitializingStreamProvider: true,
+      },
       id: '22',
       jsonrpc: '2.0',
       method: 'metamask_getProviderState',
@@ -44,7 +46,9 @@ describe('getProviderState', () => {
       getProviderState: mockGetProviderState,
     });
 
-    expect(mockGetProviderState).toHaveBeenCalledWith(req.origin);
+    expect(mockGetProviderState).toHaveBeenCalledWith(req.origin, {
+      isInitializingStreamProvider: true,
+    });
     expect(res.result).toStrictEqual({
       chainId: '0x539',
       isUnlocked: true,
