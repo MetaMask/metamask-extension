@@ -12,7 +12,7 @@ import { useSendContext } from '../../../context/send';
 
 export const Amount = () => {
   const { value, updateValue } = useSendContext();
-  const [amount, setAmount] = useState(value);
+  const [amount, setAmount] = useState(value ?? '');
   const { amountError } = useAmountValidation();
   const { balance } = useBalance();
   const [faitMode, setFiatMode] = useState(false);

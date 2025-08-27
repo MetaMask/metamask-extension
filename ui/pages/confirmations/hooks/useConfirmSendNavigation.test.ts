@@ -45,11 +45,9 @@ describe('useConfirmSendNavigation', () => {
   });
 
   it('result returns method handleBack to goto previous page', () => {
-    jest
-      .spyOn(ConfirmContext, 'useConfirmContext')
-      .mockReturnValue({
-        currentConfirmation: { origin: 'metamask', type: 'simpleSend' },
-      } as unknown as ConfirmContext.ConfirmContextType);
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: { origin: 'metamask', type: 'simpleSend' },
+    } as unknown as ConfirmContext.ConfirmContextType);
     const result = renderHook();
     result.navigateBackIfSend();
     expect(mockHistory.goBack).toHaveBeenCalled();
