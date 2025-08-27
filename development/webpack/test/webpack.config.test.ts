@@ -90,8 +90,8 @@ ${Object.entries(env)
     const stats = options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
     const fallback = options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
-    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
+    assert.strictEqual(typeof fallback['react-devtools-core'], 'boolean');
+    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'boolean');
     assert.strictEqual(options.optimization.minimize, false);
     assert.strictEqual(options.optimization.sideEffects, false);
     assert.strictEqual(options.optimization.providedExports, false);
@@ -208,6 +208,7 @@ ${Object.entries(env)
         SEGMENT_PROD_WRITE_KEY: '-',
         GOOGLE_PROD_CLIENT_ID: '00000000000',
         APPLE_PROD_CLIENT_ID: '00000000000',
+        METAMASK_REACT_REDUX_DEVTOOLS: 'true',
       },
     );
     // webpack logs a warning if we specify `watch: true`, `getWebpackInstance`
@@ -224,8 +225,8 @@ ${Object.entries(env)
     const stats = instance.options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'normal');
     const fallback = instance.options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(fallback['react-devtools-core'], false);
-    assert.strictEqual(fallback['remote-redux-devtools'], false);
+    assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
+    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
     assert.strictEqual(instance.options.optimization.minimize, true);
     assert.strictEqual(instance.options.optimization.sideEffects, true);
     assert.strictEqual(instance.options.optimization.providedExports, true);
