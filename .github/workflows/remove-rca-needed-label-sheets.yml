@@ -5,27 +5,13 @@ on:
   schedule:
     - cron: '0 */6 * * *'
 
-  # Allow manual triggering for testing
-  workflow_dispatch:
-    inputs:
-      spreadsheet_id:
-        description: 'Google Spreadsheet ID (optional - uses default if not provided)'
-        required: false
-        default: ''
-        type: string
-      sheet_name:
-        description: 'Sheet tab name (optional - uses default if not provided)'
-        required: false
-        default: ''
-        type: string
-
 jobs:
   remove-rca-labels:
     name: Remove RCA-needed Labels
     uses: MetaMask/github-tools/.github/workflows/remove-rca-needed-label-sheets.yml@d354252842b91355deb6d57c752812f745f99679
     with:
-      spreadsheet_id: ${{ github.event.inputs.spreadsheet_id || '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24' }}
-      sheet_name: ${{ github.event.inputs.sheet_name || 'Form Responses 1' }}
+      spreadsheet_id: '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24'
+      sheet_name: 'Form Responses 1'
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
       google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
