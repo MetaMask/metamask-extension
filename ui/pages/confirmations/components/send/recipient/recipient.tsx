@@ -12,7 +12,7 @@ export const Recipient = ({ setTo }: { setTo: (to?: string) => void }) => {
       setTo(toAddress);
       updateTo(toAddress);
     },
-    [setTo, to, updateTo],
+    [setTo, updateTo],
   );
 
   return (
