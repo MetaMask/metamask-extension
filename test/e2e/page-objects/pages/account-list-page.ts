@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';

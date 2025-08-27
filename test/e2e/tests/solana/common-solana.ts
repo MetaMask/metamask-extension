@@ -1546,7 +1546,6 @@ const featureFlagsWithSnapConfirmation = {
 let websocketConnections: WebSocket[] = [];
 export async function startSolanaWebsocketServer(mockServer: Mockttp) {
   const port = 8088;
-
   // Start a WebSocket server to handle the connection
   const localWebSocketServer = WebSocketLocalServer.getServerInstance(port);
   localWebSocketServer.start();

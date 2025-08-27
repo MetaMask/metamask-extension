@@ -1,21 +1,38 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wallet-standard/testHelpers';
-import {
-  withSolanaAccountSnap,
-  getWebsocketConnectionCount,
-} from './common-solana';
+import { Driver } from '../../webdriver/driver';
+import { withFixtures } from '../../helpers';
+import { ACCOUNT_TYPE } from '../../constants';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import FixtureBuilder from '../../fixture-builder';
+import { getWebsocketConnectionCount } from './common-solana';
 
 describe('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        withSolanaWebSocket: true,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            addSolanaAccount: true,
+          },
+        },
       },
-      async (driver) => {
-        // Wait a moment for the websocket connection to be established
-        await driver.delay(3000);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
+
+        const headerComponent = new HeaderNavbar(driver);
+        const accountListPage = new AccountListPage(driver);
+
+        await headerComponent.openAccountMenu();
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Solana,
+          accountName: `Solana ${1}`,
+        });
 
         assert.equal(
           getWebsocketConnectionCount(),
@@ -34,26 +51,38 @@ describe('Solana Web Socket', function (this: Suite) {
   });
 
   it('the websocket connection is closed when MetaMask window is closed', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        withSolanaWebSocket: true,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            addSolanaAccount: true,
+          },
+        },
       },
-      async (driver) => {
-        // Wait a moment for the websocket connection to be established
-        await driver.delay(3000);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
-        // Open a page to prevent browser from closing
-        const testDappSolana = new TestDappSolana(driver);
-        await testDappSolana.openTestDappPage();
-        await testDappSolana.checkPageIsLoaded();
+        const headerComponent = new HeaderNavbar(driver);
+        const accountListPage = new AccountListPage(driver);
+
+        await headerComponent.openAccountMenu();
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Solana,
+          accountName: `Solana ${1}`,
+        });
+
+        // Open a blank page to prevent browser from closing
+        await driver.openNewPage('about:blank');
 
         // Switch back to MetaMask window and close it
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
         // Wait a moment for the websocket to be stopped
-        await driver.delay(3000);
+        await driver.delay(5000);
 
         const activeWebSocketConnections = getWebsocketConnectionCount();
         assert.equal(
@@ -66,14 +95,28 @@ describe('Solana Web Socket', function (this: Suite) {
   });
 
   it('websocket connection is shared between multiple MetaMask windows', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        withSolanaWebSocket: true,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            addSolanaAccount: true,
+          },
+        },
       },
-      async (driver) => {
-        // Wait a moment for the websocket connection to be established
-        await driver.delay(3000);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
+
+        const headerComponent = new HeaderNavbar(driver);
+        const accountListPage = new AccountListPage(driver);
+
+        await headerComponent.openAccountMenu();
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Solana,
+          accountName: `Solana ${1}`,
+        });
 
         // Verify that a websocket connection has been established with first window
         let connectionCount = getWebsocketConnectionCount();
@@ -83,15 +126,14 @@ describe('Solana Web Socket', function (this: Suite) {
           `Expected 1 websocket connection with first MM window, but found ${connectionCount}`,
         );
 
-        // Open a page to prevent browser from closing
-        const testDappSolana = new TestDappSolana(driver);
-        await testDappSolana.openTestDappPage();
-        await testDappSolana.checkPageIsLoaded();
+        // Open a blank page to prevent browser from closing
+        await driver.openNewPage('about:blank');
+
         // Open a new MetaMask window
         await driver.openNewPage(`${driver.extensionUrl}/home.html`);
 
         // Verify that no new websocket connection is opened (give it some time)
-        await driver.delay(3000);
+        await driver.delay(5000);
         connectionCount = getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
@@ -104,7 +146,7 @@ describe('Solana Web Socket', function (this: Suite) {
         await driver.closeWindow();
 
         // Verify that websocket connection is NOT closed - second MM window still open (give it some time)
-        await driver.delay(3000);
+        await driver.delay(5000);
         connectionCount = getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
@@ -115,9 +157,6 @@ describe('Solana Web Socket', function (this: Suite) {
         // Close the second MetaMask window
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
-
-        // Wait a moment for the websocket to be stopped
-        await driver.delay(3000);
 
         // Verify that websocket connection is now closed
         const activeWebSocketConnections = getWebsocketConnectionCount();
