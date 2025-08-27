@@ -6,6 +6,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Box } from '../../../../component-library';
+import type { SizeNumber } from '../../../../component-library/box/box.types';
 import { IconName } from '../../../../component-library/icon';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../../selectors/selectors.types';
 import {
@@ -21,6 +22,7 @@ type PermissionsCellProps = {
   subscriptionsCount: number;
   streamsChainIds: string[];
   subscriptionsChainIds: string[];
+  paddingTop?: SizeNumber;
 };
 
 export const PermissionsCell: React.FC<PermissionsCellProps> = ({
@@ -30,6 +32,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
   subscriptionsCount,
   streamsChainIds,
   subscriptionsChainIds,
+  paddingTop,
 }) => {
   const t = useI18nContext();
   const history = useHistory();
@@ -51,7 +54,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
   return (
     <Box
       padding={4}
-      paddingTop={0}
+      paddingTop={paddingTop !== undefined ? paddingTop : 0}
       gap={4}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.LG}

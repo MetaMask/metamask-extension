@@ -349,6 +349,7 @@ export const ReviewPermissions = () => {
               subscriptionsChainIds={
                 filteredGatorPermissions.subscriptions.chains
               }
+              paddingTop={connectedAccountAddresses.length === 0 ? 4 : 0}
             />
           ) : null}
           {connectedAccountAddresses.length === 0 &&
