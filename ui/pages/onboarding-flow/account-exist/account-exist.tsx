@@ -155,7 +155,7 @@ export default function AccountExist() {
             />
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {t('accountAlreadyExistsLoginDescription', [userSocialLoginEmail])}
+            {t('accountAlreadyExistsLoginDescription', [userSocialLoginEmail || '-'])}
           </Text>
         </Box>
       </Box>
