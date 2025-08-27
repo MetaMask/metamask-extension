@@ -23,6 +23,7 @@ import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 export const MultichainAccountMenu = ({
   accountGroupId,
   isRemovable,
+  buttonBackgroundColor,
 }: MultichainAccountMenuProps) => {
   const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -122,7 +123,9 @@ export const MultichainAccountMenu = ({
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={
+          buttonBackgroundColor || BackgroundColor.backgroundMuted
+        }
         borderRadius={BorderRadius.LG}
         padding={1}
         onClick={togglePopover}
