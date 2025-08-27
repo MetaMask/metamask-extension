@@ -9,11 +9,6 @@
         "0xffee91b17be552e72300cc0c61358eeed4d30ec88b85fc5c2f792d0c45209d31": "0x000000000000000000000000000000000000000000000002B5E3AF16B1880000"
       }
     },
-    "0xF68464152d7289D7eA9a2bEC2E0035c45188223c": {
-      "nonce": 0,
-      "balance": "0x1158e460913d00000",
-      "code": "0x",
-      "storage": {}
     }
   },
   "accountsByChainId": {
