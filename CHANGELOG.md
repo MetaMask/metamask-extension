@@ -18,12 +18,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add 'Scan QR code and download the Mobile app' page on onboarding flow (#34825)
 - feat: hide 'Remove imported account' button for social login, as it's not yet supported (#34895)
 - feat: add Frax network and token logos (#34986)
+- feat: add support for non-evm deep links (#35228)
+- feat: automatically switch to the last used solana account when opening swap/buy deep link with SOL token set as query parameter (#35390)
+- feat: update network selector to manage selecting a single network or all popular networks (#35264)
 
 ### Changed
 - update: remove the Solana modal from the initial flow (#34988)
 - update: disable transaction resubmission (#35028)
 - update: update `SEI` network's name from `Sei Network` to `Sei Mainnet` (#34930)
 - update: reduce bundle size to improve performance (#34690)
+- update: removed the `socialLoginEmail` from the state-logs export (settings -> advanced -> download state-logs), instead of masking the value (#35170)
 
 ### Fixed
 - fix: ensure text doesn't go beyond component boundaries when user is prompted to add a network (#34824)
@@ -35,6 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: remove console error displayed when connecting wallet to a dapp (#34783)
 - fix: use a static list of words for blurred SRP to prevent any potential possibility of a 'blur reversal attack' (#34288)
 - fix: revert 'set default theme to dark' (#34274)
+- fix: fixes incorrect email value in onboarding and setting page UI (#35170)
+- fix: fixes incorrect balances displayed on swap page, due to race condition when balances are set before URL params are applied (#35008)
+- fix: fixes ui not loading in old browsers due to use `Promise.withResolvers` (#35175)
 
 ## [13.1.2]
 ### Fixed
