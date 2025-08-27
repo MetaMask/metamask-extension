@@ -21,6 +21,7 @@ import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
 import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
 import { useOriginTrustSignals } from '../../../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
+import Tooltip from '../../../../ui/tooltip';
 
 export type ConfirmInfoRowUrlProps = {
   url: string;
@@ -115,11 +116,13 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     // Priority 4: Verified
     if (originTrustSignals.state === TrustSignalDisplayState.Verified) {
       return (
-        <Icon
-          name={IconName.VerifiedFilled}
-          color={IconColor.infoDefault}
-          size={IconSize.Sm}
-        />
+        <Tooltip title="Verified site" position="bottom">
+          <Icon
+            name={IconName.VerifiedFilled}
+            color={IconColor.infoDefault}
+            size={IconSize.Sm}
+          />
+        </Tooltip>
       );
     }
 
