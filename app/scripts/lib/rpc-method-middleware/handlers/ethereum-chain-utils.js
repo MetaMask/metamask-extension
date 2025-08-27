@@ -260,22 +260,14 @@ export async function switchChain(
     // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
     setTokenNetworkFilter(chainId);
 
-    if (isPrefixedFormattedHexString(chainId)) {
-      const existingEnabledNetworks = getEnabledNetworks(
-        KnownCaipNamespace.Eip155,
-      );
-      const existingChainIds = Object.keys(existingEnabledNetworks);
-      if (!existingChainIds.includes(chainId)) {
-        setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
-      }
-    } else {
-      const { namespace } = parseCaipChainId(chainId);
-      const existingEnabledNetworks = getEnabledNetworks(namespace);
-      const existingChainIds = Object.keys(existingEnabledNetworks);
-      if (!existingChainIds.includes(chainId)) {
-        setEnabledNetworks([chainId], namespace);
-      }
+    const existingEnabledNetworks = getEnabledNetworks(
+      KnownCaipNamespace.Eip155,
+    );
+    const existingChainIds = Object.keys(existingEnabledNetworks);
+    if (!existingChainIds.includes(chainId)) {
+      setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
     }
+
 
     response.result = null;
     return end();

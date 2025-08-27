@@ -197,7 +197,6 @@ export class NetworkOrderController extends BaseController<
     const evmChainIds = Object.keys(
       this.state.enabledNetworkMap[KnownCaipNamespace.Eip155],
     );
-    this.#switchToEnabledNetworkIfNeeded(evmChainIds);
   }
 
   onNetworkRemoved(networkId: Hex) {
@@ -259,54 +258,4 @@ export class NetworkOrderController extends BaseController<
       // Add the enabled networks to the mapping for the specified network type
       state.enabledNetworkMap[namespace] = enabledNetworks;
     });
-
-    this.#switchToEnabledNetworkIfNeeded(ids);
   }
-
-  /**
-   * Switches to an enabled network if the currently selected network is not in the enabled list.
-   * This is a private helper method that handles the network switching logic.
-   *
-   * @param chainIds - Array of enabled chain IDs
-   */
-  #switchToEnabledNetworkIfNeeded(chainIds: string[]) {
-    // Early return if no enabled networks
-    if (chainIds.length === 0) {
-      return;
-    }
-
-    const { selectedNetworkClientId, networkConfigurationsByChainId } =
-      this.messagingSystem.call('NetworkController:getState');
-
-    const selectedNetworkChainId = Object.values(
-      networkConfigurationsByChainId,
-    ).find(
-      (network) =>
-        network.rpcEndpoints?.[network.defaultRpcEndpointIndex]
-          ?.networkClientId === selectedNetworkClientId,
-    )?.chainId;
-
-    const networkConf = Object.values(networkConfigurationsByChainId).find(
-      (network) => network.chainId === chainIds[0],
-    );
-
-    const clientId =
-      networkConf?.rpcEndpoints?.[networkConf.defaultRpcEndpointIndex]
-        ?.networkClientId;
-
-    if (
-      selectedNetworkChainId &&
-      !chainIds.includes(selectedNetworkChainId) &&
-      clientId
-    ) {
-      // Settimout delay to run this in a seperate 'tick'.
-      // There were some issues related to background state being updated, but persisted state not being updated.
-      setTimeout(() => {
-        this.messagingSystem.call(
-          'NetworkController:setActiveNetwork',
-          clientId,
-        );
-      }, 0);
-    }
-  }
-}
