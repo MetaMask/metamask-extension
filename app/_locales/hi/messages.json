@@ -3557,9 +3557,6 @@
   "networkIsBusy": {
     "message": "नेटवर्क व्यस्त है। गैस प्राइसें अधिक हैं और अनुमान कम सटीक हैं।"
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "कम से कम एक नेटवर्क चालू होना चाहिए"
-  },
   "networkMenu": {
     "message": "नेटवर्क मेन्यू"
   },

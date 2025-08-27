@@ -3557,9 +3557,6 @@
   "networkIsBusy": {
     "message": "La red está ocupada. Los precios del gas son altos y las estimaciones son menos precisas."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Debes tener al menos una red habilitada"
-  },
   "networkMenu": {
     "message": "Menú de red"
   },

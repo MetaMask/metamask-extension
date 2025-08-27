@@ -13,17 +13,17 @@ import { useSendType } from './useSendType';
 
 type AccountWithBalances = Record<Hex, { balance: Hex }>;
 type TokenBalances = Record<Hex, Record<Hex, Record<Hex, Hex>>>;
-type MetamaskSendStata = {
+type MetamaskSendState = {
   metamask: { accountsByChainId: Record<Hex, AccountWithBalances> };
 };
-export type GetEvmBalanceArgs = {
+type GetEvmBalanceArgs = {
   accountsWithBalances?: AccountWithBalances;
   asset?: Asset;
   from: string;
   tokenBalances: TokenBalances;
 };
 
-export const getEvmBalance = ({
+const getEvmBalance = ({
   accountsWithBalances,
   asset,
   from,
@@ -58,7 +58,7 @@ export const getEvmBalance = ({
   );
 };
 
-export const getNonEvmBalance = (asset?: Asset) => {
+const getNonEvmBalance = (asset?: Asset) => {
   if (!asset) {
     return '0';
   }
@@ -71,14 +71,14 @@ export const useBalance = () => {
   const tokenBalances = useSelector(getTokenBalances);
   const { isEvmSendType } = useSendType();
   const accountsByChainId = useSelector(
-    (state: MetamaskSendStata) => state.metamask.accountsByChainId,
+    (state: MetamaskSendState) => state.metamask.accountsByChainId,
   ) as AccountWithBalances;
   const accountsWithBalances = useMemo(() => {
     if (asset?.chainId && asset?.address && isEvmAddress(asset?.address)) {
       return accountsByChainId[toHex(asset?.chainId)];
     }
     return undefined;
-  }, [accountsByChainId, asset?.chainId]);
+  }, [accountsByChainId, asset?.address, asset?.chainId]);
 
   const balance = useMemo(() => {
     if (asset?.standard === ERC1155) {

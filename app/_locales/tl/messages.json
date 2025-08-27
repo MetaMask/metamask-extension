@@ -3524,9 +3524,6 @@
   "networkIsBusy": {
     "message": "Busy ang network. Ang presyo ng gas ay mataas at ang pagtantya ay hindi gaanong tumpak."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Dapat mayroong kahit isang network na pinagana"
-  },
   "networkMenu": {
     "message": "Network Menu"
   },

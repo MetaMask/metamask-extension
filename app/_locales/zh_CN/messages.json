@@ -3557,9 +3557,6 @@
   "networkIsBusy": {
     "message": "网络繁忙。燃料价格较高，估值较不准确。"
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "必须至少启用一个网络"
-  },
   "networkMenu": {
     "message": "网络菜单"
   },

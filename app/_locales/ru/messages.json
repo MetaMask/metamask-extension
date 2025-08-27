@@ -3557,9 +3557,6 @@
   "networkIsBusy": {
     "message": "Сеть занята. Цены газа высоки, а оценки менее точны."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Должна быть включена хотя бы одна сеть"
-  },
   "networkMenu": {
     "message": "Сетевое меню"
   },
