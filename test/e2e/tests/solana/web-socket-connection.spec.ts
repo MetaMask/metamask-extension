@@ -4,7 +4,8 @@ import {
   withSolanaAccountSnap,
   getWebsocketConnectionCount,
 } from './common-solana';
-import TestDapp from '../../page-objects/pages/test-dapp';
+import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
+import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wallet-standard/testHelpers';
 
 describe('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
@@ -35,6 +36,7 @@ describe('Solana Web Socket', function (this: Suite) {
   it('the websocket connection is closed when MetaMask window is closed', async function () {
     await withSolanaAccountSnap(
       {
+        ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
       },
       async (driver) => {
@@ -42,9 +44,9 @@ describe('Solana Web Socket', function (this: Suite) {
         await driver.delay(3000);
 
         // Open a page to prevent browser from closing
-        await driver.openNewPage('http://127.0.0.1:8080');
-        const testDapp = new TestDapp(driver);
-        await testDapp.checkPageIsLoaded();
+        const testDappSolana = new TestDappSolana(driver);
+        await testDappSolana.openTestDappPage();
+        await testDappSolana.checkPageIsLoaded();
 
         // Switch back to MetaMask window and close it
         await driver.switchToWindowWithTitle('MetaMask');
@@ -66,6 +68,7 @@ describe('Solana Web Socket', function (this: Suite) {
   it('websocket connection is shared between multiple MetaMask windows', async function () {
     await withSolanaAccountSnap(
       {
+        ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
       },
       async (driver) => {
@@ -81,9 +84,9 @@ describe('Solana Web Socket', function (this: Suite) {
         );
 
         // Open a page to prevent browser from closing
-        await driver.openNewPage('http://127.0.0.1:8080');
-        const testDapp = new TestDapp(driver);
-        await testDapp.checkPageIsLoaded();
+        const testDappSolana = new TestDappSolana(driver);
+        await testDappSolana.openTestDappPage();
+        await testDappSolana.checkPageIsLoaded();
         // Open a new MetaMask window
         await driver.openNewPage(`${driver.extensionUrl}/home.html`);
 
