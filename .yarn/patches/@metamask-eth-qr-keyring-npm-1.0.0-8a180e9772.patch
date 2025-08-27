@@ -1,3 +1,29 @@
+diff --git a/dist/device.cjs b/dist/device.cjs
+index 53863db4f8b928905e4cc8a44cb7da3b06a3a42e..edfc260ec40a39117a9737f56b3f72e268f8bfab 100644
+--- a/dist/device.cjs
++++ b/dist/device.cjs
+@@ -46,7 +46,7 @@ const MAX_INDEX = 1000;
+ function getFingerprintFromSource(source) {
+     return source instanceof bc_ur_registry_eth_1.CryptoAccount
+         ? source.getMasterFingerprint()?.toString('hex')
+-        : source.getParentFingerprint()?.toString('hex');
++        : source.getOrigin()?.getSourceFingerprint()?.toString('hex');
+ }
+ /**
+  * Get fingerprint, account paths and names from the a CryptoAccount
+diff --git a/dist/device.mjs b/dist/device.mjs
+index 5c5369fb4b3cb919632183ebdb865abb6a1bd8ad..7747655dd02da4be998ac7a4065a0b6d13c63b33 100644
+--- a/dist/device.mjs
++++ b/dist/device.mjs
+@@ -47,7 +47,7 @@ const MAX_INDEX = 1000;
+ function getFingerprintFromSource(source) {
+     return source instanceof CryptoAccount
+         ? source.getMasterFingerprint()?.toString('hex')
+-        : source.getParentFingerprint()?.toString('hex');
++        : source.getOrigin()?.getSourceFingerprint()?.toString('hex');
+ }
+ /**
+  * Get fingerprint, account paths and names from the a CryptoAccount
 diff --git a/dist/index.d.cts b/dist/index.d.cts
 index 9c3dd8da9c224978fac56213b8d5131e3614e591..c74af495a6270747967c87c82c9a0c9cc342abad 100644
 --- a/dist/index.d.cts
