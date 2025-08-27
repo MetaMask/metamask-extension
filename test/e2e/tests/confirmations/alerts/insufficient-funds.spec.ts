@@ -31,11 +31,11 @@ describe('Alert for insufficient funds', function () {
         const alertModal = new AlertModal(driver);
 
         await openDAppWithContract(driver, contractRegistry, nftSmartContract);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.clickERC721MintButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.clickInlineAlert();
-        await alertModal.check_insufficientBalanceMessageIsDisplayed();
+        await alertModal.checkInsufficientBalanceMessageIsDisplayed();
         await alertModal.clickConfirmButton();
       },
     );

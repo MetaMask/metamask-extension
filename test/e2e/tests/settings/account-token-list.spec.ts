@@ -47,9 +47,9 @@ describe('Settings', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await new AssetListPage(driver).check_tokenAmountIsDisplayed('25 ETH');
+        await new AssetListPage(driver).checkTokenAmountIsDisplayed('25 ETH');
         await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).check_accountBalanceDisplayed(
+        await new AccountListPage(driver).checkAccountBalanceDisplayed(
           '25 ETH',
         );
       },
@@ -67,7 +67,6 @@ describe('Settings', function () {
           })
           .withEnabledNetworks({
             eip155: {
-              [CHAIN_IDS.SEPOLIA]: true,
               [CHAIN_IDS.LOCALHOST]: true,
             },
           })
@@ -79,8 +78,8 @@ describe('Settings', function () {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('42,500.00', 'USD');
-        await new AssetListPage(driver).check_tokenFiatAmountIsDisplayed(
+        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
+        await new AssetListPage(driver).checkTokenFiatAmountIsDisplayed(
           '$42,500.00',
         );
 
@@ -98,7 +97,7 @@ describe('Settings', function () {
         await switchToNetworkFromSendFlow(driver, 'Sepolia');
 
         await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).check_accountValueAndSuffixDisplayed(
+        await new AccountListPage(driver).checkAccountValueAndSuffixDisplayed(
           '$42,500.00',
         );
       },
@@ -120,7 +119,7 @@ describe('Settings', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).check_accountBalanceDisplayed(
+        await new AccountListPage(driver).checkAccountBalanceDisplayed(
           '25 ETH',
         );
       },

@@ -26,14 +26,14 @@ describe('Update Network:', function (this: Suite) {
         await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:1337');
         await selectNetworkDialog.openEditNetworkModal();
 
         // Verify chain id is not editable when updating a network
         const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
-        await editNetworkModal.check_chainIdInputFieldIsEnabled(false);
+        await editNetworkModal.checkPageIsLoaded();
+        await editNetworkModal.checkChainIdInputFieldIsEnabled(false);
 
         // Update the network name and save the changes
         await editNetworkModal.fillNetworkNameInputField(inputData.networkName);
@@ -41,30 +41,30 @@ describe('Update Network:', function (this: Suite) {
 
         // Verify the new network name is visible
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_editNetworkMessageIsDisplayed(
+        await homePage.checkPageIsLoaded();
+        await homePage.checkEditNetworkMessageIsDisplayed(
           inputData.networkName,
         );
         await homePage.closeUseNetworkNotificationModal();
         // Since switching networks is disabled via the networks modal in global menu, we don't need to check the selected network anymore
         await switchToEditRPCViaGlobalMenuNetworks(driver);
 
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:1337');
         await selectNetworkDialog.openEditNetworkModal();
-        await editNetworkModal.check_pageIsLoaded();
+        await editNetworkModal.checkPageIsLoaded();
 
         // Edit the RPC URL to something invalid
         await editNetworkModal.openAddRpcUrlModal();
         const addNetworkRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addNetworkRpcUrlModal.check_pageIsLoaded();
+        await addNetworkRpcUrlModal.checkPageIsLoaded();
         await addNetworkRpcUrlModal.fillAddRpcUrlInput(inputData.rpcUrl);
 
         // Validate the error message that appears for the invalid url format
-        await addNetworkRpcUrlModal.check_errorMessageInvalidUrlIsDisplayed();
+        await addNetworkRpcUrlModal.checkErrorMessageInvalidUrlIsDisplayed();
 
         // Validate the Save button is disabled for the invalid url format
-        await addNetworkRpcUrlModal.check_addRpcUrlButtonIsEnabled(false);
+        await addNetworkRpcUrlModal.checkAddRpcUrlButtonIsEnabled(false);
       },
     );
   });
@@ -137,36 +137,36 @@ describe('Update Network:', function (this: Suite) {
         await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
 
         // Go to Edit Menu
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
         const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
+        await editNetworkModal.checkPageIsLoaded();
 
         // Remove the RPC
         await editNetworkModal.removeRPCInEditNetworkModal(2);
-        await editNetworkModal.check_rpcIsDisplayed(
+        await editNetworkModal.checkRpcIsDisplayed(
           'responsive-rpc.test',
           false,
         );
         await editNetworkModal.saveEditedNetwork();
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum One');
         await homePage.closeUseNetworkNotificationModal();
 
         // Re-open the network menu and go back to edit the network
         await switchToEditRPCViaGlobalMenuNetworks(driver);
 
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
-        await editNetworkModal.check_pageIsLoaded();
+        await editNetworkModal.checkPageIsLoaded();
 
         // Verify the rpc endpoint is removed
-        await editNetworkModal.check_rpcIsDisplayed(
+        await editNetworkModal.checkRpcIsDisplayed(
           'responsive-rpc.test',
           false,
         );
@@ -225,43 +225,43 @@ describe('Update Network:', function (this: Suite) {
         await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
 
         // Go to Edit Menu
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
         const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
+        await editNetworkModal.checkPageIsLoaded();
 
         // Add a new rpc url and verify it appears in the dropdown
         await editNetworkModal.openAddRpcUrlModal();
         const addNetworkRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addNetworkRpcUrlModal.check_pageIsLoaded();
+        await addNetworkRpcUrlModal.checkPageIsLoaded();
         await addNetworkRpcUrlModal.fillAddRpcUrlInput(
           'https://responsive-rpc.test',
         );
         await addNetworkRpcUrlModal.fillAddRpcNameInput('testName');
-        await addNetworkRpcUrlModal.check_addRpcUrlButtonIsEnabled();
+        await addNetworkRpcUrlModal.checkAddRpcUrlButtonIsEnabled();
         await addNetworkRpcUrlModal.saveAddRpcUrl();
-        await editNetworkModal.check_rpcIsDisplayed('responsive-rpc.test');
+        await editNetworkModal.checkRpcIsDisplayed('responsive-rpc.test');
 
         // Save the network
         await editNetworkModal.saveEditedNetwork();
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum One');
         await homePage.closeUseNetworkNotificationModal();
 
         // Re-open the network menu and go back to edit the network
         await switchToEditRPCViaGlobalMenuNetworks(driver);
 
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
-        await editNetworkModal.check_pageIsLoaded();
+        await editNetworkModal.checkPageIsLoaded();
 
         // Verify the new endpoint is still there
-        await editNetworkModal.check_rpcIsDisplayed('responsive-rpc.test');
+        await editNetworkModal.checkRpcIsDisplayed('responsive-rpc.test');
       },
     );
   });

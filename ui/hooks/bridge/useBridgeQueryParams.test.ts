@@ -1,15 +1,37 @@
-import { ChainId } from '@metamask/bridge-controller';
+import * as bridgeControllerUtils from '@metamask/bridge-controller';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
+import { BigNumber } from 'ethers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import * as assetUtils from '../../../shared/lib/asset-utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
+
 import { useBridgeQueryParams } from './useBridgeQueryParams';
 
 const renderUseBridgeQueryParams = (mockStoreState: object, path?: string) =>
-  renderHookWithProvider(() => useBridgeQueryParams(), mockStoreState, path);
+  renderHookWithProvider(
+    () =>
+      useBridgeQueryParams(undefined, {
+        id: 'test-account-id',
+        type: EthAccountType.Eoa,
+        address: '0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293',
+        scopes: [EthScope.Mainnet],
+      } as never),
+    mockStoreState,
+    path,
+  );
+
+let calcLatestSrcBalanceSpy: jest.SpyInstance;
 
 describe('useBridgeQueryParams', () => {
+  const { ChainId } = bridgeControllerUtils;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    calcLatestSrcBalanceSpy = jest
+      .spyOn(bridgeControllerUtils, 'calcLatestSrcBalance')
+      .mockResolvedValue(BigNumber.from('1000000'));
   });
 
   it('should set solana swap params', async () => {
@@ -105,6 +127,9 @@ describe('useBridgeQueryParams', () => {
           },
         },
       },
+      metamaskStateOverrides: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+      },
     });
 
     const searchParams = new URLSearchParams({
@@ -124,15 +149,24 @@ describe('useBridgeQueryParams', () => {
 
     expect(history.location.search).toBe('swaps=true');
     expect(store).toBeDefined();
-    const { fromToken, toToken, toChainId, fromTokenInputValue } =
-      store?.getState().bridge ?? {};
+    const {
+      fromToken,
+      toToken,
+      toChainId,
+      fromTokenInputValue,
+      fromTokenBalance,
+      fromNativeBalance,
+    } = store?.getState().bridge ?? {};
     expect({
       fromToken,
       toToken,
       toChainId,
       fromTokenInputValue,
+      fromTokenBalance,
+      fromNativeBalance,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
+    expect(calcLatestSrcBalanceSpy.mock.calls).toMatchSnapshot();
   });
 
   it('should not set params when fetchAssetMetadataForAssetIds fails', async () => {
@@ -207,6 +241,9 @@ describe('useBridgeQueryParams', () => {
           },
         },
       },
+      metamaskStateOverrides: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+      },
     });
 
     const searchParams = new URLSearchParams({
@@ -232,6 +269,7 @@ describe('useBridgeQueryParams', () => {
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
+    expect(calcLatestSrcBalanceSpy).toHaveBeenCalledTimes(2);
   });
 
   it('should set src token after navigating from native asset page', async () => {
@@ -255,6 +293,9 @@ describe('useBridgeQueryParams', () => {
             },
           },
         },
+      },
+      metamaskStateOverrides: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
       },
     });
 
@@ -281,6 +322,7 @@ describe('useBridgeQueryParams', () => {
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
+    expect(calcLatestSrcBalanceSpy.mock.calls).toMatchSnapshot();
   });
 
   it('should not set inputs when there are no query params', async () => {
@@ -304,6 +346,7 @@ describe('useBridgeQueryParams', () => {
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).not.toHaveBeenCalled();
+    expect(calcLatestSrcBalanceSpy.mock.calls).toMatchSnapshot();
   });
 
   it('should only set dest token', async () => {
@@ -328,6 +371,9 @@ describe('useBridgeQueryParams', () => {
             },
           },
         },
+      },
+      metamaskStateOverrides: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
       },
     });
 
@@ -381,6 +427,9 @@ describe('useBridgeQueryParams', () => {
           },
         },
       },
+      metamaskStateOverrides: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+      },
     });
 
     const searchParams = new URLSearchParams({
@@ -407,6 +456,7 @@ describe('useBridgeQueryParams', () => {
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
+    expect(calcLatestSrcBalanceSpy.mock.calls).toMatchSnapshot();
   });
 
   it('should unset amount', async () => {
