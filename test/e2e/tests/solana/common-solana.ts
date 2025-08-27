@@ -1545,11 +1545,8 @@ const featureFlagsWithSnapConfirmation = {
 
 let websocketConnections: WebSocket[] = [];
 
-async function startWebsocketMock(mockServer: Mockttp) {
+export async function startSolanaWebsocketServer(mockServer: Mockttp) {
   const port = 8088;
-
-  // Forcibly close all existing connections and reset tracking
-  await cleanupWebsocketConnections();
 
   // Start a WebSocket server to handle the connection
   const localWebSocketServer = WebSocketLocalServer.getServerInstance(port);
@@ -1657,10 +1654,15 @@ export function getWebsocketConnectionCount(): number {
     const localWebSocketServer = WebSocketLocalServer.getServerInstance(8088);
     const wsServer = localWebSocketServer.getServer();
     const serverClientCount = wsServer.clients.size;
-    console.log(`Server has ${serverClientCount} clients, tracked array has ${websocketConnections.length}`);
+    console.log(
+      `Server has ${serverClientCount} clients, tracked array has ${websocketConnections.length}`,
+    );
     return serverClientCount;
   } catch (error) {
-    console.warn('Error getting server client count, falling back to tracked count:', error);
+    console.warn(
+      'Error getting server client count, falling back to tracked count:',
+      error,
+    );
     return websocketConnections.length;
   }
 }
@@ -1669,7 +1671,7 @@ export function getWebsocketConnectionCount(): number {
  * Cleanup function to forcibly close all websocket connections and reset tracking
  * This ensures clean state between tests
  */
-export async function cleanupWebsocketConnections(): Promise<void> {
+export async function stopSolanaWebsocketServer(): Promise<void> {
   try {
     const localWebSocketServer = WebSocketLocalServer.getServerInstance(8088);
     const wsServer = localWebSocketServer.getServer();
@@ -1679,7 +1681,10 @@ export async function cleanupWebsocketConnections(): Promise<void> {
 
     for (const client of serverClients) {
       try {
-        if (client.readyState === client.OPEN || client.readyState === client.CONNECTING) {
+        if (
+          client.readyState === client.OPEN ||
+          client.readyState === client.CONNECTING
+        ) {
           client.close();
         }
       } catch (error) {
@@ -1691,16 +1696,18 @@ export async function cleanupWebsocketConnections(): Promise<void> {
     localWebSocketServer.stop();
 
     // Force reset the singleton instance to ensure fresh server for next test
-    // @ts-ignore - accessing private static property for cleanup
+    // @ts-expect-error - accessing private static property for cleanup
     WebSocketLocalServer.instance = undefined;
-
   } catch (error) {
     console.warn('Error accessing WebSocket server during cleanup:', error);
   }
 
   for (const socket of websocketConnections) {
     try {
-      if (socket.readyState === socket.OPEN || socket.readyState === socket.CONNECTING) {
+      if (
+        socket.readyState === socket.OPEN ||
+        socket.readyState === socket.CONNECTING
+      ) {
         socket.close();
       }
     } catch (error) {
@@ -1711,7 +1718,7 @@ export async function cleanupWebsocketConnections(): Promise<void> {
   websocketConnections = [];
 
   // Give a longer delay to ensure all connections and the server are fully closed
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
 export async function withSolanaAccountSnap(
@@ -1783,6 +1790,7 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
+      withSolanaWebSocket: true,
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
         // component, which will impact to the slides count.
@@ -1910,7 +1918,6 @@ export async function withSolanaAccountSnap(
       mockServer: Mockttp;
       extensionId: string;
     }) => {
-      await startWebsocketMock(mockServer);
       await loginWithBalanceValidation(driver);
 
       const headerComponent = new HeaderNavbar(driver);

@@ -3,21 +3,9 @@ import { Suite } from 'mocha';
 import {
   withSolanaAccountSnap,
   getWebsocketConnectionCount,
-  cleanupWebsocketConnections,
 } from './common-solana';
 
-describe('Web Socket', function (this: Suite) {
-  // Log initial state before each test
-  beforeEach(async function () {
-    getWebsocketConnectionCount();
-  });
-
-  // Cleanup websocket connections after each test to prevent cross-test contamination
-  afterEach(async function () {
-    await cleanupWebsocketConnections();
-    getWebsocketConnectionCount();
-  });
-
+describe('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
     await withSolanaAccountSnap(
       {
@@ -43,7 +31,7 @@ describe('Web Socket', function (this: Suite) {
     );
   });
 
-  it('websocket connection is closed when MetaMask window is closed', async function () {
+  it('the websocket connection is closed when MetaMask window is closed', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
@@ -73,10 +61,6 @@ describe('Web Socket', function (this: Suite) {
   });
 
   it('websocket connection is shared between multiple MetaMask windows', async function () {
-    // Explicitly cleanup before this test to ensure clean state
-    console.log('🧹 Explicit cleanup before multi-window test');
-    await cleanupWebsocketConnections();
-
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),

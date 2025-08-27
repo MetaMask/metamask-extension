@@ -25,6 +25,10 @@ const {
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
+const {
+  startSolanaWebsocketServer,
+  stopSolanaWebsocketServer,
+} = require('./tests/solana/common-solana');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -126,6 +130,7 @@ async function withFixtures(options, testSuite) {
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
+    withSolanaWebSocket = false,
   } = options;
 
   // Normalize localNodeOptions
@@ -272,6 +277,10 @@ async function withFixtures(options, testSuite) {
     await mockServer.start(8000);
 
     await setManifestFlags(manifestFlags);
+
+    if (withSolanaWebSocket) {
+      await startSolanaWebsocketServer(mockServer);
+    }
 
     const wd = await buildWebDriver({
       ...driverOptions,
@@ -438,6 +447,10 @@ async function withFixtures(options, testSuite) {
           }
         })(),
       );
+
+      if (withSolanaWebSocket) {
+        shutdownTasks.push(stopSolanaWebsocketServer());
+      }
 
       const results = await Promise.allSettled(shutdownTasks);
       const failures = results.filter((result) => result.status === 'rejected');

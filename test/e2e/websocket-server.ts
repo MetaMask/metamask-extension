@@ -22,7 +22,6 @@ class WebSocketLocalServer {
     if (!WebSocketLocalServer.instance) {
       WebSocketLocalServer.instance = new WebSocketLocalServer(port);
     }
-    WebSocketLocalServer.instance.start();
     return WebSocketLocalServer.instance;
   }
 
