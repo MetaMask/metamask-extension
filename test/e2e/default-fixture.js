@@ -86,7 +86,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000',
           },
           {
-            networkId: '0x539',
+            networkId: inputChainId,
             networkRpcUrl: 'http://localhost:8545',
           },
         ],
