@@ -6,7 +6,10 @@ import {
   FEATURED_NETWORK_CHAIN_IDS,
   TEST_NETWORK_IDS,
 } from '../../../../shared/constants/network';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import {
+  MultichainNetworks,
+  SOLANA_TEST_CHAINS,
+} from '../../../../shared/constants/multichain/networks';
 
 export type NetworkAddressItem = {
   chainId: string;
@@ -125,6 +128,8 @@ export const getCompatibleNetworksForAccount = (
 
   // Filter out test networks
   return compatibleItems.filter(
-    (item) => !CAIP_FORMATTED_EVM_TEST_CHAINS.includes(item.chainId),
+    (item) =>
+      !CAIP_FORMATTED_EVM_TEST_CHAINS.includes(item.chainId) &&
+      !SOLANA_TEST_CHAINS.includes(item.chainId as CaipChainId),
   );
 };
