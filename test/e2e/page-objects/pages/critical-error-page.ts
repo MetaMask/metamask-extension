@@ -1,18 +1,18 @@
 import { Driver } from '../../webdriver/driver';
 
 class CriticalErrorPage {
-  private readonly driver: Driver;
+  readonly #driver: Driver;
 
   // Locators
-  private readonly errorPageTitle: object = {
+  readonly #errorPageTitle: object = {
     text: 'MetaMask had trouble starting.',
     css: 'h1',
   };
 
-  private readonly errorMessage = '.critical-error__details';
+  readonly #errorMessage = '.critical-error__details';
 
   constructor(driver: Driver) {
-    this.driver = driver;
+    this.#driver = driver;
   }
 
   /**
@@ -20,7 +20,7 @@ class CriticalErrorPage {
    */
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.errorPageTitle);
+      await this.#driver.waitForSelector(this.#errorPageTitle);
     } catch (e) {
       console.log(
         'Timeout while waiting for critical error page to be loaded',
@@ -35,7 +35,7 @@ class CriticalErrorPage {
    * Validate that the description on the page is for the "trouble starting" scenario.
    */
   async validateTroubleStartingDescription(): Promise<void> {
-    await this.driver.waitForSelector({
+    await this.#driver.waitForSelector({
       text: 'This error could be intermittent, so try restarting the extension.',
     });
   }
@@ -46,9 +46,9 @@ class CriticalErrorPage {
    * @param errorMessage - The error message to check for.
    */
   async validateErrorMessage(errorMessage: string): Promise<void> {
-    await this.driver.waitForSelector({
+    await this.#driver.waitForSelector({
       text: errorMessage,
-      css: this.errorMessage,
+      css: this.#errorMessage,
     });
   }
 }
