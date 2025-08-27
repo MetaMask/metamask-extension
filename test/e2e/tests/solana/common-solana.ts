@@ -1544,7 +1544,6 @@ const featureFlagsWithSnapConfirmation = {
 };
 
 let websocketConnections: WebSocket[] = [];
-
 export async function startSolanaWebsocketServer(mockServer: Mockttp) {
   const port = 8088;
 
@@ -1667,10 +1666,6 @@ export function getWebsocketConnectionCount(): number {
   }
 }
 
-/**
- * Cleanup function to forcibly close all websocket connections and reset tracking
- * This ensures clean state between tests
- */
 export async function stopSolanaWebsocketServer(): Promise<void> {
   try {
     const localWebSocketServer = WebSocketLocalServer.getServerInstance(8088);

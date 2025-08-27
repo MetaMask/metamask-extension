@@ -4,7 +4,7 @@ import {
   withSolanaAccountSnap,
   getWebsocketConnectionCount,
 } from './common-solana';
-import HomePage from '../../page-objects/pages/home/homepage';
+import TestDapp from '../../page-objects/pages/test-dapp';
 
 describe('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
@@ -41,8 +41,10 @@ describe('Solana Web Socket', function (this: Suite) {
         // Wait a moment for the websocket connection to be established
         await driver.delay(3000);
 
-        // Open a blank page to prevent browser from closing
-        await driver.openNewPage('about:blank');
+        // Open a page to prevent browser from closing
+        await driver.openNewPage('http://127.0.0.1:8080');
+        const testDapp = new TestDapp(driver);
+        await testDapp.checkPageIsLoaded();
 
         // Switch back to MetaMask window and close it
         await driver.switchToWindowWithTitle('MetaMask');
@@ -78,13 +80,12 @@ describe('Solana Web Socket', function (this: Suite) {
           `Expected 1 websocket connection with first MM window, but found ${connectionCount}`,
         );
 
-        // Open a blank page to prevent browser from closing
-        await driver.openNewPage('about:blank');
-
+        // Open a page to prevent browser from closing
+        await driver.openNewPage('http://127.0.0.1:8080');
+        const testDapp = new TestDapp(driver);
+        await testDapp.checkPageIsLoaded();
         // Open a new MetaMask window
         await driver.openNewPage(`${driver.extensionUrl}/home.html`);
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
 
         // Verify that no new websocket connection is opened (give it some time)
         await driver.delay(3000);
