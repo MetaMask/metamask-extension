@@ -48,11 +48,6 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
     return null;
   }
 
-  // Only show items if they have networks
-  if (streamsNetworks.length === 0 && subscriptionsNetworks.length === 0) {
-    return null;
-  }
-
   return (
     <Box
       padding={4}
