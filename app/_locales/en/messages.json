@@ -5411,7 +5411,7 @@
     "message": "Free trial"
   },
   "shieldTxMembershipId": {
-    "message": "Membership ID"
+    "message": "Member ID"
   },
   "shieldTxMembershipResubscribe": {
     "message": "Resubscribe"
@@ -5423,7 +5423,7 @@
     "message": "Cancel membership"
   },
   "shieldTxMembershipSubmitCase": {
-    "message": "Submit a case"
+    "message": "Submit a claim"
   },
   "shieldTxMembershipBillingDetails": {
     "message": "Billing details"

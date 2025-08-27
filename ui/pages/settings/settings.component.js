@@ -53,6 +53,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
+import { getIsMetamaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -354,6 +355,7 @@ class SettingsPage extends PureComponent {
     const { history, currentPath, useExternalServices, settingsPageSnaps } =
       this.props;
     const { t } = this.context;
+    const isMetamaskShieldFeatureEnabled = getIsMetamaskShieldFeatureEnabled();
 
     const snapsSettings = settingsPageSnaps.map(({ id, name }) => {
       return {
@@ -397,11 +399,6 @@ class SettingsPage extends PureComponent {
         key: SECURITY_ROUTE,
       },
       {
-        content: 'Transaction Shield',
-        icon: <Icon name={IconName.ShieldLock} />,
-        key: TRANSACTION_SHIELD_ROUTE,
-      },
-      {
         content: t('experimental'),
         icon: <Icon name={IconName.Flask} />,
         key: EXPERIMENTAL_ROUTE,
@@ -418,6 +415,14 @@ class SettingsPage extends PureComponent {
         content: t('notifications'),
         icon: <Icon name={IconName.Notification} />,
         key: NOTIFICATIONS_SETTINGS_ROUTE,
+      });
+    }
+
+    if (isMetamaskShieldFeatureEnabled) {
+      tabs.splice(-4, 0, {
+        content: t('shieldTx'),
+        icon: <Icon name={IconName.ShieldLock} />,
+        key: TRANSACTION_SHIELD_ROUTE,
       });
     }
 

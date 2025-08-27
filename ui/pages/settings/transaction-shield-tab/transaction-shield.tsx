@@ -122,7 +122,9 @@ const TransactionShield = () => {
             {
               'transaction-shield-page__membership--loading': isLoading,
               'transaction-shield-page__membership--inactive':
-                !isActiveMembership,
+                !isActiveMembership && !isLoading,
+              'transaction-shield-page__membership--active':
+                isActiveMembership && !isLoading,
             },
           )}
           {...rowsStyleProps}
@@ -175,7 +177,7 @@ const TransactionShield = () => {
                 variant={TextVariant.bodyXs}
                 className="transaction-shield-page__membership-text"
               >
-                {t('shieldTxMembershipId')}: #SnJnwxwr1booC7
+                {t('shieldTxMembershipId')}: 9s6XKzkNRiz8i3
               </Text>
             )}
           </Box>

@@ -41,7 +41,7 @@ export default function CancelMembershipModal({
                 variant={TextVariant.bodyMdMedium}
                 as="span"
               >
-                Apr 18, 2024.
+                Apr 18, 2024
               </Text>,
             ])}
           </Text>
