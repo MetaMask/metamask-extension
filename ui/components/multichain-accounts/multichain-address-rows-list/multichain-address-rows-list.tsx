@@ -102,6 +102,17 @@ export const MultichainAddressRowsList = ({
     setSearchPattern('');
   };
 
+  const renderedRows = useMemo(() => {
+    return filteredItems.map((item, index) => (
+      <MultichainAddressRow
+        key={`${item.address}-${item.chainId}-${index}`}
+        chainId={item.chainId}
+        networkName={item.networkName}
+        address={item.address}
+      />
+    ));
+  }, [filteredItems]);
+
   return (
     <Box
       display={Display.Flex}
@@ -123,14 +134,7 @@ export const MultichainAddressRowsList = ({
 
       <Box>
         {filteredItems.length > 0 ? (
-          filteredItems.map((item, index) => (
-            <MultichainAddressRow
-              key={`${item.address}-${item.chainId}-${index}`}
-              chainId={item.chainId}
-              networkName={item.networkName}
-              address={item.address}
-            />
-          ))
+          renderedRows
         ) : (
           <Text
             variant={TextVariant.bodyMd}
