@@ -5113,7 +5113,7 @@ THE SOFTWARE.
 ******************************
 
 cipher-base
-1.0.4 <https://github.com/crypto-browserify/cipher-base>
+1.0.6 <https://github.com/crypto-browserify/cipher-base>
 The MIT License (MIT)
 
 Copyright (c) 2017 crypto-browserify contributors
@@ -29786,7 +29786,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/solana-wallet-snap
-2.1.4 <https://github.com/MetaMask/snap-solana-wallet>
+2.3.2 <https://github.com/MetaMask/snap-solana-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
@@ -36522,7 +36522,7 @@ SOFTWARE.
 ******************************
 
 sha.js
-2.4.11 <https://github.com/crypto-browserify/sha.js>
+2.4.12 <https://github.com/crypto-browserify/sha.js>
 Copyright (c) 2013-2018 sha.js contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

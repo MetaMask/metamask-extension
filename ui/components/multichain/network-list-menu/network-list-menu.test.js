@@ -23,8 +23,9 @@ const mockSetActiveNetwork = jest.fn();
 const mockUpdateCustomNonce = jest.fn();
 const mockSetNextNonce = jest.fn();
 const mockSetTokenNetworkFilter = jest.fn();
-const mockSetEnabledNetworks = jest.fn();
 const mockDetectNfts = jest.fn();
+const mockEnableAllPopularNetworks = jest.fn();
+const mockEnableSingleNetwork = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => {
@@ -55,17 +56,24 @@ jest.mock('../../../store/actions.ts', () => ({
     mockSetTokenNetworkFilter();
     return { type: 'SET_TOKEN_NETWORK_FILTER' };
   },
-  setEnabledNetworks: () => {
-    mockSetEnabledNetworks();
-    return { type: 'SET_ENABLED_NETWORKS' };
-  },
   detectNfts: () => {
     mockDetectNfts();
     return { type: 'DETECT_NFTS' };
   },
 }));
 
-const MOCK_ORIGIN = 'https://portfolio.metamask.io';
+jest.mock('../../../store/controller-actions/network-order-controller', () => ({
+  enableAllPopularNetworks: () => {
+    mockEnableAllPopularNetworks();
+    return { type: 'ENABLE_ALL_POPULAR_NETWORKS' };
+  },
+  enableSingleNetwork: () => {
+    mockEnableSingleNetwork();
+    return { type: 'ENABLE_SINGLE_NETWORKS' };
+  },
+}));
+
+const MOCK_ORIGIN = 'https://app.metamask.io';
 
 const render = ({
   showTestNetworks = false,
