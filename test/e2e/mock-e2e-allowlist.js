@@ -44,8 +44,6 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/vault-decryptor',
   'https://metamask.github.io/vault-decryptor/',
   'https://metamask.github.io/vault-decryptor/bundle.js',
-  // Chrome
-  'https://android.clients.google.com/checkin',
 ];
 
 module.exports = { ALLOWLISTED_URLS };
