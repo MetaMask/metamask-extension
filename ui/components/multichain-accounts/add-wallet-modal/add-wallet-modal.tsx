@@ -49,13 +49,8 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
 
   const walletOptions: WalletOption[] = [
     {
-      id: 'create-new',
-      titleKey: 'createNewWallet',
-      iconName: IconName.Add,
-    },
-    {
       id: 'import-wallet',
-      titleKey: 'importWallet',
+      titleKey: 'importAWallet',
       iconName: IconName.Wallet,
     },
     {

@@ -1570,9 +1570,6 @@
   "createNewAccountHeader": {
     "message": "Create a new account"
   },
-  "createNewWallet": {
-    "message": "Create a new wallet"
-  },
   "createPassword": {
     "message": "MetaMask password"
   },
