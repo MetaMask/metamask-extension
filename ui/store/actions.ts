@@ -2238,7 +2238,7 @@ export function setSelectedMultichainAccount(
 export function createNextMultichainAccountGroup(
   walletId: AccountWalletId,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.createNextMultichainAccountGroup`);
     try {
       const walletIdWithoutTypePrefix =
