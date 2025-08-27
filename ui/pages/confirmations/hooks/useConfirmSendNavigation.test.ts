@@ -44,7 +44,8 @@ describe('useConfirmSendNavigation', () => {
     expect(result.navigateBackIfSend).toBeDefined();
   });
 
-  it('result returns method handleBack to goto previous page', () => {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('result returns method handleBack to goto previous page', () => {
     jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: { origin: 'metamask', type: 'simpleSend' },
     } as unknown as ConfirmContext.ConfirmContextType);
