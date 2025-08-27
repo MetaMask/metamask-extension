@@ -1,6 +1,5 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { CaipChainId } from '@metamask/utils';
 import {
   BackgroundColor,
   BorderRadius,
@@ -10,6 +9,7 @@ import { Box } from '../../../../component-library';
 import { IconName } from '../../../../component-library/icon';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../../selectors/selectors.types';
 import { PermissionsCellConnectionListItem } from './permissions-cell-connection-list-item.js';
+import { TOKEN_STREAMS_ROUTE, TOKEN_SUBSCRIPTIONS_ROUTE } from '../../../../../helpers/constants/routes';
 
 type PermissionsCellProps = {
   nonTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
@@ -50,14 +50,6 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
     return null;
   }
 
-  const handleStreamsClick = () => {
-    history.push('/gator-permissions/token-streams');
-  };
-
-  const handleSubscriptionsClick = () => {
-    history.push('/gator-permissions/token-subscriptions');
-  };
-
   return (
     <Box
       padding={4}
@@ -75,7 +67,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
           countMessage={t('streams')}
           paddingBottomValue={2}
           paddingTopValue={0}
-          onClick={handleStreamsClick}
+          onClick={() => history.push(TOKEN_STREAMS_ROUTE)}
         />
       )}
       {subscriptionsCount > 0 && subscriptionsNetworks.length > 0 && (
@@ -87,7 +79,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
           countMessage={t('subscriptions')}
           paddingTopValue={2}
           paddingBottomValue={0}
-          onClick={handleSubscriptionsClick}
+          onClick={() => history.push(TOKEN_SUBSCRIPTIONS_ROUTE)}
         />
       )}
     </Box>
