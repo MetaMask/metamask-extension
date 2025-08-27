@@ -215,11 +215,16 @@ const Footer = () => {
         return;
       }
 
+      navigateBackIfSend();
       rejectApproval({ location });
       resetTransactionState();
-      navigateBackIfSend();
     },
-    [currentConfirmation, rejectApproval, resetTransactionState],
+    [
+      currentConfirmation,
+      navigateBackIfSend,
+      rejectApproval,
+      resetTransactionState,
+    ],
   );
 
   const onSubmit = useCallback(() => {

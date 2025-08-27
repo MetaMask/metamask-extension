@@ -14,6 +14,16 @@ jest.mock('react-router-dom', () => ({
   useHistory: () => mockHistory,
 }));
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useLocation: () => ({ pathname: '/send/asset' }),
+  useSearchParams: jest
+    .fn()
+    .mockReturnValue([
+      { get: () => null, toString: () => 'searchParams=dummy' },
+    ]),
+}));
+
 function renderHook() {
   const { result } = renderHookWithProvider(useNavigateSendPage, mockState);
   return result.current;
@@ -34,7 +44,7 @@ describe('useNavigateSendPage', () => {
     const result = renderHook();
     result.goToAmountRecipientPage();
     expect(mockHistory.push).toHaveBeenCalledWith(
-      `${SEND_ROUTE}/${SendPages.AMOUNT_RECIPIENT}`,
+      `${SEND_ROUTE}/${SendPages.AMOUNTRECIPIENT}?searchParams=dummy`,
     );
   });
 

@@ -17,7 +17,7 @@ export const SendInner = () => {
   if (currentPage === SendPages.ASSET) {
     return <Asset />;
   }
-  if (currentPage === SendPages.AMOUNT_RECIPIENT) {
+  if (currentPage === SendPages.AMOUNTRECIPIENT) {
     return <AmountRecipient />;
   }
 

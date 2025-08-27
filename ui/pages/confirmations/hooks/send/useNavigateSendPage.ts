@@ -11,9 +11,9 @@ export const useNavigateSendPage = () => {
 
   const goToAmountRecipientPage = useCallback(() => {
     history.push(
-      `${SEND_ROUTE}/${SendPages.AMOUNT_RECIPIENT}?${searchParams.toString()}`,
+      `${SEND_ROUTE}/${SendPages.AMOUNTRECIPIENT}?${searchParams.toString()}`,
     );
-  }, [history]);
+  }, [searchParams, history]);
 
   const goToPreviousPage = useCallback(() => {
     history.goBack();

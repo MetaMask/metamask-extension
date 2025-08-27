@@ -55,6 +55,7 @@ export const useSendQueryParams = () => {
     if (Object.values(SendPages).includes(path as SendPages)) {
       return path;
     }
+    return undefined;
   }, [pathname]);
 
   const paramAsset = searchParams.get('asset');
@@ -134,6 +135,7 @@ export const useSendQueryParams = () => {
       updateAsset(newAsset);
     }
   }, [
+    asset,
     paramAsset,
     paramChainId,
     // using only multiChainAssets as dependency causes infinite loading

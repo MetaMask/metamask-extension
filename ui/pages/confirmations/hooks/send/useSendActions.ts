@@ -54,17 +54,7 @@ export const useSendActions = () => {
         );
       }
     },
-    [
-      asset,
-      dispatch,
-      from,
-      fromAccount,
-      history,
-      isEvmSendType,
-      to,
-      updateCurrentPage,
-      value,
-    ],
+    [asset, dispatch, from, fromAccount, history, isEvmSendType, to, value],
   );
 
   const handleBack = useCallback(() => {

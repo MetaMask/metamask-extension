@@ -4,10 +4,7 @@ import { fireEvent } from '@testing-library/dom';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
-import * as SendActions from '../../../hooks/send/useSendActions';
-import { AmountRecipient } from './amount-recipient';
-
-const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
+import { Asset } from './asset';
 
 const mockHistory = {
   goBack: jest.fn(),
@@ -22,37 +19,33 @@ jest.mock('react-router-dom', () => ({
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
   useLocation: () => ({ pathname: '/send/asset' }),
-  useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
+  useSearchParams: jest
+    .fn()
+    .mockReturnValue([
+      { get: () => null, toString: () => 'searchParams=dummy' },
+    ]),
 }));
 
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? mockState);
 
-  return renderWithProvider(<AmountRecipient />, store);
+  return renderWithProvider(<Asset />, store);
 };
 
-describe('AmountRecipient', () => {
+describe('Asset', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Previous')).toBeInTheDocument();
-    expect(getByText('Continue')).toBeInTheDocument();
+    expect(getByText('asset')).toBeInTheDocument();
   });
 
-  it('submit transaction when continue button is clicked', async () => {
-    const mockHandleSubmit = jest.fn();
-    jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
-      handleSubmit: mockHandleSubmit,
-    } as unknown as ReturnType<typeof SendActions.useSendActions>);
-
-    const { getAllByRole, getByText } = render();
-
-    fireEvent.change(getAllByRole('textbox')[0], {
-      target: { value: MOCK_ADDRESS },
-    });
+  it('go to AmountRecipient page when continue button is clicked', () => {
+    const { getByText } = render();
 
     fireEvent.click(getByText('Continue'));
-    expect(mockHandleSubmit).toHaveBeenCalled();
+    expect(mockHistory.push).toHaveBeenCalledWith(
+      '/send/amount-recipient?searchParams=dummy',
+    );
   });
 
   it('go to previous page when previous button is clicked', () => {
