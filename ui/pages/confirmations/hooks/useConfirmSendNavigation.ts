@@ -9,6 +9,9 @@ export const useConfirmSendNavigation = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const navigateBackIfSend = useCallback(() => {
+    if (!process.env.SEND_REDESIGN_ENABLED) {
+      return;
+    }
     const { origin, type } = currentConfirmation;
     if (origin === 'metamask' && type === 'simpleSend') {
       history.goBack();
