@@ -3536,9 +3536,6 @@
   "networkIsBusy": {
     "message": "Le réseau est occupé. Les gas fees sont élevés et les estimations sont moins précises."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Au moins un réseau doit être activé"
-  },
   "networkMenu": {
     "message": "Menu du réseau"
   },

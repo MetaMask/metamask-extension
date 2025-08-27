@@ -3569,9 +3569,6 @@
   "networkIsBusy": {
     "message": "네트워크 사용량이 많습니다. 가스비가 높고 견적의 정확도도 떨어집니다."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "한 개 이상의 네트워크가 활성화되어야 합니다"
-  },
   "networkMenu": {
     "message": "네트워크 메뉴"
   },

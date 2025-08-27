@@ -393,6 +393,9 @@ env:
   - GOOGLE_CLIENT_ID_UAT: ''
   - APPLE_CLIENT_ID_UAT: ''
 
+  # Metamask Shield
+  - METAMASK_SHIELD_ENABLED: 'false'
+
   # Snaps
   # This should only be used for local testing, and should not be enabled in any
   # production builds (including beta and Flask).
