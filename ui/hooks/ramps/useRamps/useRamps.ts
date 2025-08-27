@@ -56,7 +56,7 @@ const useRamps = (
         url.search = params.toString();
         return url.toString();
       } catch {
-        return 'https://portfolio.metamask.io/buy';
+        return 'https://app.metamask.io/buy';
       }
     },
     [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, metamaskEntry],

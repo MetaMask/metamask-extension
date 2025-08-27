@@ -263,15 +263,19 @@ const CoinButtons = ({
     // Native Send flow
     await setCorrectChain();
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    let route;
-    if (trackingLocation === 'home') {
-      route = `${SEND_ROUTE}/asset`;
+    if (process.env.SEND_REDESIGN_ENABLED) {
+      let route;
+      if (trackingLocation === 'home') {
+        route = `${SEND_ROUTE}/asset`;
+      } else {
+        const queryParams = new URLSearchParams();
+        queryParams.append('chainId', chainId.toString());
+        route = `${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`;
+      }
+      history.push(route);
     } else {
-      const queryParams = new URLSearchParams();
-      queryParams.append('chainId', chainId.toString());
-      route = `${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`;
+      history.push(SEND_ROUTE);
     }
-    history.push(route);
   }, [
     chainId,
     account,

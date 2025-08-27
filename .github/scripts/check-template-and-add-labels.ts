@@ -274,9 +274,14 @@ function extractReleaseVersionFromBugReportIssueBody(
   const cleanedBody = body.replace(/\r?\n/g, ' ');
 
   // Extract version from the cleaned body
-  const regex = /### Version\s+((.*?)(?=  |$))/;
+  const regex = /### Version\s+(.*?)(?=\s+###|$)/;
   const versionMatch = cleanedBody.match(regex);
-  const version = versionMatch?.[1];
+  const fullVersionString = versionMatch?.[1]?.trim();
+
+  // Extract just the x.x.x part from the full version string
+  const versionRegex = /(\d+\.\d+\.\d+)/;
+  const semanticVersionMatch = fullVersionString?.match(versionRegex);
+  const version = semanticVersionMatch?.[1];
 
   // Check if version is in the format x.y.z
   if (version && !/^(\d+\.)?(\d+\.)?(\*|\d+)$/.test(version)) {

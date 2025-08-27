@@ -128,9 +128,13 @@ export function AssetPickerModalNftTab({
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    const queryParams = new URLSearchParams();
-    queryParams.append('asset', nft.address);
-    history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
+    if (process.env.SEND_REDESIGN_ENABLED) {
+      const queryParams = new URLSearchParams();
+      queryParams.append('asset', nft.address);
+      history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
+    } else {
+      history.push(SEND_ROUTE);
+    }
     onClose && onClose();
   };
 

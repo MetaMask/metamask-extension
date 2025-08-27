@@ -195,9 +195,15 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      const queryParams = new URLSearchParams();
-      queryParams.append('asset', token.address);
-      history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
+      if (process.env.SEND_REDESIGN_ENABLED) {
+        const queryParams = new URLSearchParams();
+        queryParams.append('asset', token.address);
+        history.push(
+          `${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`,
+        );
+      } else {
+        history.push(SEND_ROUTE);
+      }
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
