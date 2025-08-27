@@ -1,3 +1,4 @@
+import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { NetworkController } from '@metamask/network-controller';
@@ -49,6 +50,7 @@ import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
+import { NetworkOrderController } from '../controllers/network-order';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -68,6 +70,7 @@ export type Controller =
   | MultichainTransactionsController
   | MultichainNetworkController
   | NetworkController
+  | NetworkOrderController
   | NotificationServicesController
   | NotificationServicesPushController
   | OnboardingController
@@ -91,7 +94,8 @@ export type Controller =
   | NftDetectionController
   | AssetsContractController
   | AccountTreeController
-  | WebSocketService;
+  | WebSocketService
+  | MultichainAccountService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -112,6 +116,7 @@ export type ControllerFlatState = AccountsController['state'] &
   MultichainTransactionsController['state'] &
   MultichainNetworkController['state'] &
   NetworkController['state'] &
+  NetworkOrderController['state'] &
   OnboardingController['state'] &
   PermissionController<
     PermissionSpecificationConstraint,

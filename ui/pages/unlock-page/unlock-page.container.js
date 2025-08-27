@@ -13,8 +13,11 @@ import {
   tryUnlockMetamask,
   markPasswordForgotten,
   forceUpdateMetamaskState,
+  checkIsSeedlessPasswordOutdated,
+  resetOnboarding,
 } from '../../store/actions';
 import { getIsSocialLoginFlow } from '../../selectors';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -24,6 +27,7 @@ const mapStateToProps = (state) => {
   return {
     isUnlocked,
     isSocialLoginFlow: getIsSocialLoginFlow(state),
+    isOnboardingCompleted: getCompletedOnboarding(state),
   };
 };
 
@@ -32,6 +36,9 @@ const mapDispatchToProps = (dispatch) => {
     tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
+    loginWithDifferentMethod: () => dispatch(resetOnboarding()),
+    checkIsSeedlessPasswordOutdated: () =>
+      dispatch(checkIsSeedlessPasswordOutdated()),
   };
 };
 

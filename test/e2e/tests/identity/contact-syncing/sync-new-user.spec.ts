@@ -1,14 +1,13 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
-import { withFixtures, getCleanAppState } from '../../../helpers';
+import { withFixtures, getCleanAppState, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
-import { completeNewWalletFlowIdentity } from '../flows';
 
 import { arrangeContactSyncingTestUtils } from './helpers';
 import { MOCK_CONTACT_ADDRESSES } from './mock-data';
@@ -41,7 +40,7 @@ describe('Contact syncing - New User', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // Setup contact syncing mock path
@@ -54,8 +53,8 @@ describe('Contact syncing - New User', function () {
         },
       },
       async ({ driver }) => {
-        // Create new wallet and complete onboarding
-        await completeNewWalletFlowIdentity(driver);
+        // Unlock wallet with backup and sync already enabled
+        await unlockWallet(driver);
 
         // Wait for the UI to be ready before opening settings
         await driver.wait(async () => {
@@ -69,18 +68,18 @@ describe('Contact syncing - New User', function () {
 
         // Add a test contact to trigger syncing
         const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
+        await header.checkPageIsLoaded();
 
         // Add a small delay to ensure the menu is ready
         await driver.delay(1000);
 
         await header.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToContactsSettings();
 
         const contactsSettings = new ContactsSettings(driver);
-        await contactsSettings.check_pageIsLoaded();
+        await contactsSettings.checkPageIsLoaded();
 
         // First, let's check if the page is actually showing the right content
         console.log('About to add contact...');
@@ -111,7 +110,7 @@ describe('Contact syncing - New User', function () {
         });
 
         // Verify contact was added locally and synced
-        await contactsSettings.check_contactDisplayed({
+        await contactsSettings.checkContactDisplayed({
           contactName: testContact.name,
           address: '0x12345...67890', // Properly shortened address format
         });
@@ -126,7 +125,7 @@ describe('Contact syncing - New User', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           userStorageMockttpController.setupPath(
@@ -140,7 +139,7 @@ describe('Contact syncing - New User', function () {
         },
       },
       async ({ driver }) => {
-        await completeNewWalletFlowIdentity(driver);
+        await unlockWallet(driver);
 
         // Wait for contact syncing to initialize
         await driver.wait(async () => {

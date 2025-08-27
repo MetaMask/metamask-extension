@@ -13,9 +13,7 @@ class DeFiToken {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenMarketValue(tokenListItemSecondaryValue: string) {
+  async checkTokenMarketValue(tokenListItemSecondaryValue: string) {
     console.log(
       'Check if token market value is displayed on token list item',
       tokenListItemSecondaryValue,
@@ -26,9 +24,7 @@ class DeFiToken {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_tokenName(tokenName: string) {
+  async checkTokenName(tokenName: string) {
     console.log(
       'Check if token name is displayed on token list item',
       tokenName,
@@ -52,8 +48,6 @@ class DeFiTab {
 
   private readonly popularNetworks =
     '[data-testid="network-filter-all__button"]';
-
-  private readonly stakeLink = '[data-testid="defi-tab-start-earning-link"]';
 
   private readonly groupIcon = '[data-testid="avatar-group"]';
 
@@ -88,30 +82,19 @@ class DeFiTab {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_errorMessageIsDisplayed(): Promise<void> {
+  async checkErrorMessageIsDisplayed(): Promise<void> {
     console.log('Check that error message is displayed');
     await this.driver.waitForSelector(this.errorMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_noPositionsMessageIsDisplayed(): Promise<void> {
+  async checkNoPositionsMessageIsDisplayed(): Promise<void> {
     console.log('Check that no positions message is displayed');
     await this.driver.waitForSelector(this.noPositionsMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_groupIconIsDisplayed(): Promise<void> {
+  async checkGroupIconIsDisplayed(): Promise<void> {
     console.log('Check that group icon is displayed');
     await this.driver.waitForSelector(this.groupIcon);
-  }
-
-  async waitForStakeLink(): Promise<void> {
-    console.log('Wait for stake link to be displayed');
-    await this.driver.waitForSelector(this.stakeLink);
   }
 }
 

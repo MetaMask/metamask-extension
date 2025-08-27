@@ -133,6 +133,7 @@ function QrCodeView({
         color={TextColor.primaryDefault}
         className="qr-code__copy-button"
         data-testid="address-copy-button-text"
+        data-clipboard-text={checksummedAddress}
         onClick={() => {
           handleCopy(checksummedAddress);
           trackEvent({

@@ -8,6 +8,7 @@ import {
   getAccountTypeForKeyring,
   getHardwareWalletType,
   getHDEntropyIndex,
+  getIsSocialLoginFlow,
   getUseBlockie,
   isSolanaAccount,
 } from '../../../selectors';
@@ -46,10 +47,8 @@ import {
   removeAccount,
   setAccountDetailsAddress,
 } from '../../../store/actions';
-import {
-  getWalletIdAndNameByAccountAddress,
-  WalletMetadata,
-} from '../../../selectors/multichain-accounts/account-tree';
+import { getWalletIdAndNameByAccountAddress } from '../../../selectors/multichain-accounts/account-tree';
+import { WalletMetadata } from '../../../selectors/multichain-accounts/account-tree.types';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
 import {
@@ -79,6 +78,7 @@ export const BaseAccountDetails = ({
   const chainId = useSelector(getCurrentChainId);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const deviceName = useSelector(getHardwareWalletType);
+  const socialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const {
     metadata: { name },
@@ -100,7 +100,7 @@ export const BaseAccountDetails = ({
 
   const handleNavigation = useCallback(() => {
     dispatch(setAccountDetailsAddress(''));
-    history.push(DEFAULT_ROUTE);
+    history.goBack();
   }, [history, dispatch]);
 
   // we can never have a scenario where an account is not associated with a wallet.
@@ -112,7 +112,8 @@ export const BaseAccountDetails = ({
 
   const isRemovable =
     account.metadata.keyring.type !== KeyringType.hdKeyTree &&
-    !isSolanaAccount(account);
+    !isSolanaAccount(account) &&
+    !socialLoginFlow; // social login accounts are not removable
 
   const [showAccountRemoveModal, setShowAccountRemoveModal] = useState(false);
 
@@ -181,7 +182,7 @@ export const BaseAccountDetails = ({
               : AvatarAccountVariant.Jazzicon
           }
           size={AvatarAccountSize.Xl}
-          style={{ margin: '0 auto', marginBottom: '32px' }}
+          style={{ margin: '0 auto', marginBottom: '8px' }}
         />
         <Box className="multichain-account-details__section">
           <AccountDetailsRow
@@ -193,10 +194,10 @@ export const BaseAccountDetails = ({
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('edit')}
-                onClick={() => setIsEditingAccountName(true)}
                 marginLeft={2}
               />
             }
+            onClick={() => setIsEditingAccountName(true)}
           />
           <AccountDetailsRow
             label={t('address')}
@@ -207,10 +208,11 @@ export const BaseAccountDetails = ({
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('next')}
-                onClick={handleShowAddress}
                 marginLeft={2}
+                data-testid="account-address-navigation-button"
               />
             }
+            onClick={handleShowAddress}
           />
           <AccountDetailsRow
             label={t('wallet')}
@@ -221,12 +223,13 @@ export const BaseAccountDetails = ({
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('next')}
-                onClick={() => {
-                  history.push(walletRoute);
-                }}
                 marginLeft={2}
+                data-testid="wallet-details-link"
               />
             }
+            onClick={() => {
+              history.push(walletRoute);
+            }}
           />
         </Box>
         {children}

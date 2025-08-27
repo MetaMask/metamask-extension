@@ -1,19 +1,14 @@
-import { createModuleLogger, createProjectLogger } from '@metamask/utils';
+import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
+import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
 
-const projectLogger = createProjectLogger('sentry');
 let installType = 'unknown';
-
-export const log = createModuleLogger(
-  projectLogger,
-  globalThis.document ? 'ui' : 'background',
-);
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -197,41 +192,6 @@ function getMetaMetricsEnabledFromPersistedState(persistedState) {
   );
 }
 
-/**
- * Returns whether onboarding has completed, given the application state.
- *
- * @param {Record<string, unknown>} appState - Application state
- * @returns `true` if onboarding has completed, `false` otherwise.
- */
-function getOnboardingCompleteFromAppState(appState) {
-  // during initialization after loading persisted state
-  if (appState.persistedState) {
-    return getOnboardingCompleteFromPersistedState(appState.persistedState);
-    // After initialization
-  } else if (appState.state) {
-    // UI
-    if (appState.state.metamask) {
-      return Boolean(appState.state.metamask.completedOnboarding);
-    }
-    // background
-    return Boolean(appState.state.OnboardingController?.completedOnboarding);
-  }
-  // during initialization, before first persisted state is read
-  return false;
-}
-
-/**
- * Returns whether onboarding has completed, given the persisted state.
- *
- * @param {Record<string, unknown>} persistedState - Persisted state
- * @returns `true` if onboarding has completed, `false` otherwise.
- */
-function getOnboardingCompleteFromPersistedState(persistedState) {
-  return Boolean(
-    persistedState.data?.OnboardingController?.completedOnboarding,
-  );
-}
-
 function getSentryEnvironment() {
   if (METAMASK_BUILD_TYPE === 'main') {
     return METAMASK_ENVIRONMENT;
@@ -277,20 +237,14 @@ async function getMetaMetricsEnabled() {
   const appState = getState();
 
   if (appState.state || appState.persistedState) {
-    return (
-      getMetaMetricsEnabledFromAppState(appState) &&
-      getOnboardingCompleteFromAppState(appState)
-    );
+    return getMetaMetricsEnabledFromAppState(appState);
   }
 
   // If we reach here, it means the error was thrown before initialization
   // completed, and before we loaded the persisted state for the first time.
   try {
     const persistedState = await globalThis.stateHooks.getPersistedState();
-    return (
-      getMetaMetricsEnabledFromPersistedState(persistedState) &&
-      getOnboardingCompleteFromPersistedState(persistedState)
-    );
+    return getMetaMetricsEnabledFromPersistedState(persistedState);
   } catch (error) {
     log('Error retrieving persisted state', error);
     return false;
@@ -361,7 +315,6 @@ export function beforeBreadcrumb() {
     const appState = getState();
     if (
       !getMetaMetricsEnabledFromAppState(appState) ||
-      !getOnboardingCompleteFromAppState(appState) ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;

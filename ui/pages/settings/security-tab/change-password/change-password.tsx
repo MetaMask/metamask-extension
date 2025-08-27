@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -25,7 +25,11 @@ import { isBeta, isFlask } from '../../../../helpers/utils/build-types';
 import Mascot from '../../../../components/ui/mascot';
 import Spinner from '../../../../components/ui/spinner';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { changePassword, verifyPassword } from '../../../../store/actions';
+import {
+  changePassword,
+  checkIsSeedlessPasswordOutdated,
+  verifyPassword,
+} from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import { setShowPasswordChangeToast } from '../../../../components/app/toast-master/utils';
@@ -99,12 +103,23 @@ const ChangePassword = () => {
       setStep(ChangePasswordSteps.ChangePasswordLoading);
       await dispatch(changePassword(newPassword, currentPassword));
 
+      // Track password changed event
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChanged,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          biometrics_enabled: false,
+        },
+      });
+
       // upon successful password change, go back to the settings page
       history.push(SECURITY_ROUTE);
       dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Success));
     } catch (error) {
       console.error(error);
-      setStep(ChangePasswordSteps.VerifyCurrentPassword);
+      setStep(ChangePasswordSteps.ChangePassword);
       dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Errored));
     }
   };
@@ -117,7 +132,7 @@ const ChangePassword = () => {
       properties: {
         text: 'Learn More',
         location: 'change_password',
-        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+        url: ZENDESK_URLS.PASSWORD_ARTICLE,
       },
     });
   };
@@ -126,7 +141,7 @@ const ChangePassword = () => {
     <a
       onClick={handleLearnMoreClick}
       key="change-password__link-text"
-      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
+      href={ZENDESK_URLS.PASSWORD_ARTICLE}
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -135,6 +150,15 @@ const ChangePassword = () => {
       </span>
     </a>
   );
+
+  useEffect(() => {
+    (async () => {
+      // check if the seedless password is outdated as long as the user land on the change password page
+      if (isSocialLoginFlow) {
+        await dispatch(checkIsSeedlessPasswordOutdated());
+      }
+    })();
+  }, [dispatch, isSocialLoginFlow]);
 
   return (
     <Box padding={4} className="change-password">
@@ -234,7 +258,9 @@ const ChangePassword = () => {
                 }}
                 label={
                   <>
-                    {t('passwordTermsWarning')}
+                    {isSocialLoginFlow
+                      ? t('passwordTermsWarningSocial')
+                      : t('passwordTermsWarning')}
                     &nbsp;
                     {createPasswordLink}
                   </>

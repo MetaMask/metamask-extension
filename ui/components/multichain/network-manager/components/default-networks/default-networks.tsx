@@ -1,4 +1,4 @@
-import { CaipChainId, parseCaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -23,19 +23,15 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  setActiveNetwork,
-  setEnabledNetworks,
-} from '../../../../../store/actions';
+import { hideModal, setActiveNetwork } from '../../../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
-  ButtonLink,
-  Checkbox,
   IconName,
+  IconSize,
   Text,
 } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
@@ -45,16 +41,13 @@ import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { AdditionalNetworksInfo } from '../additional-networks-info';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import {
-  getEnabledNetworksByNamespace,
-  getSelectedMultichainNetworkChainId,
-} from '../../../../../selectors/multichain/networks';
+import { getEnabledNetworksByNamespace } from '../../../../../selectors/multichain/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../../../selectors';
-import Tooltip from '../../../../ui/tooltip';
+import { enableAllPopularNetworks } from '../../../../../store/controller-actions/network-order-controller';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -66,8 +59,6 @@ const DefaultNetworks = memo(() => {
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   // Use the shared callbacks hook
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
-  const currentCaipChainId = useSelector(getSelectedMultichainNetworkChainId);
-  const { namespace } = parseCaipChainId(currentCaipChainId);
 
   // Use the shared network change handlers hook
   const { handleNetworkChange } = useNetworkChangeHandlers();
@@ -96,6 +87,31 @@ const DefaultNetworks = memo(() => {
     [evmNetworks],
   );
 
+  const allCurrentPopularNetworks = useMemo(() => {
+    const evmNetworksList = orderedNetworks.filter((network) => network.isEvm);
+    const evmChainIds = evmNetworksList
+      .map((network) => convertCaipToHexChainId(network.chainId))
+      .filter((chainId) => FEATURED_NETWORK_CHAIN_IDS.includes(chainId));
+    return evmChainIds;
+  }, [orderedNetworks]);
+
+  const isAllPopularNetworksSelected = useMemo(
+    () =>
+      allCurrentPopularNetworks.every(
+        (chainId) => chainId in enabledNetworksByNamespace,
+      ),
+    [allCurrentPopularNetworks, enabledNetworksByNamespace],
+  );
+
+  const isSingleNetworkSelected = useCallback(
+    (chainId: Hex) => {
+      return (
+        !isAllPopularNetworksSelected && chainId in enabledNetworksByNamespace
+      );
+    },
+    [enabledNetworksByNamespace, isAllPopularNetworksSelected],
+  );
+
   // Use useCallback for stable function references
   const selectAllDefaultNetworks = useCallback(() => {
     const evmNetworksList = orderedNetworks.filter((network) => network.isEvm);
@@ -103,10 +119,6 @@ const DefaultNetworks = memo(() => {
     if (evmNetworksList.length === 0) {
       return;
     }
-
-    const evmChainIds = evmNetworksList
-      .map((network) => convertCaipToHexChainId(network.chainId))
-      .filter((chainId) => FEATURED_NETWORK_CHAIN_IDS.includes(chainId));
 
     // Use the first EVM network's chain ID for getting RPC data
     const firstEvmChainId = evmNetworksList[0].chainId;
@@ -116,11 +128,13 @@ const DefaultNetworks = memo(() => {
     );
     const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-    dispatch(setEnabledNetworks(evmChainIds, namespace));
-    dispatch(setActiveNetwork(finalNetworkClientId));
-  }, [dispatch, evmNetworks, namespace, orderedNetworks]);
-
-  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+    dispatch(enableAllPopularNetworks());
+    dispatch(hideModal());
+    // deferring execution to keep select all unblocked
+    setTimeout(() => {
+      dispatch(setActiveNetwork(finalNetworkClientId));
+    }, 0);
+  }, [dispatch, evmNetworks, orderedNetworks]);
 
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
@@ -136,7 +150,7 @@ const DefaultNetworks = memo(() => {
 
   // Memoize the network list items to avoid recreation on every render
   const networkListItems = useMemo(() => {
-    const enabledChainIds = Object.keys(enabledNetworks);
+    const enabledChainIds = Object.keys(enabledNetworksByNamespace);
 
     return orderedNetworks
       .filter((network) => {
@@ -158,12 +172,10 @@ const DefaultNetworks = memo(() => {
           return null;
         }
 
-        const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
+        const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
           getItemCallbacks(network);
         const iconSrc = getNetworkIcon(network);
-        const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
-          hexChainId,
-        );
+        const isSelected = isSingleNetworkSelected(hexChainId as Hex);
 
         const singleRemainingNetwork = enabledChainIds.length === 1;
         const isLastRemainingNetwork =
@@ -171,18 +183,6 @@ const DefaultNetworks = memo(() => {
 
         return (
           <NetworkListItem
-            startAccessory={
-              singleRemainingNetwork && isLastRemainingNetwork ? (
-                <Tooltip
-                  title={'Must have at least one network enabled'}
-                  position="top"
-                >
-                  <Checkbox label="" isChecked={isEnabled} />
-                </Tooltip>
-              ) : (
-                <Checkbox label="" isChecked={isEnabled} />
-              )
-            }
             key={network.chainId}
             chainId={network.chainId}
             name={network.name}
@@ -194,26 +194,28 @@ const DefaultNetworks = memo(() => {
                     .defaultRpcEndpoint
                 : undefined
             }
-            onClick={() =>
-              handleNetworkChangeCallback(
+            onClick={async () => {
+              await handleNetworkChangeCallback(
                 network.chainId,
                 isLastRemainingNetwork,
-              )
-            }
+              );
+              await dispatch(hideModal());
+            }}
             onDeleteClick={onDelete}
             onEditClick={onEdit}
             onDiscoverClick={onDiscoverClick}
-            onRpcEndpointClick={onRpcConfigEdit}
+            onRpcEndpointClick={onRpcSelect}
+            selected={isSelected}
           />
         );
       });
   }, [
-    enabledNetworks,
+    enabledNetworksByNamespace,
     orderedNetworks,
     isEvmNetworkSelected,
     isNetworkInDefaultNetworkTab,
     getItemCallbacks,
-    enabledNetworksByNamespace,
+    isSingleNetworkSelected,
     hasMultiRpcOptions,
     evmNetworks,
     handleNetworkChangeCallback,
@@ -243,14 +245,6 @@ const DefaultNetworks = memo(() => {
           className="network-manager__additional-network-item"
           key={network.chainId}
         >
-          <ButtonIcon
-            size={ButtonIconSize.Md}
-            color={IconColor.iconAlternative}
-            iconName={IconName.Add}
-            padding={0}
-            margin={0}
-            ariaLabel={t('addNetwork')}
-          />
           <AvatarNetwork
             name={network.name}
             size={AvatarNetworkSize.Md}
@@ -263,6 +257,14 @@ const DefaultNetworks = memo(() => {
           >
             {network.name}
           </Text>
+          <ButtonIcon
+            size={ButtonIconSize.Md}
+            color={IconColor.iconDefault}
+            iconName={IconName.Add}
+            padding={0}
+            marginLeft={'auto'}
+            ariaLabel={t('addNetwork')}
+          />
         </Box>
       );
     });
@@ -271,16 +273,20 @@ const DefaultNetworks = memo(() => {
   return (
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.flexStart}
-          paddingTop={4}
-          paddingLeft={4}
-        >
-          <ButtonLink onClick={selectAllDefaultNetworks}>
-            {t('selectAll')}
-          </ButtonLink>
-        </Box>
+        {isEvmNetworkSelected ? (
+          <Box
+            className="network-manager__all-popular-networks"
+            data-testid="network-manager-select-all"
+          >
+            <NetworkListItem
+              name={t('allPopularNetworks')}
+              onClick={selectAllDefaultNetworks}
+              iconSrc={IconName.Global}
+              iconSize={IconSize.Xl}
+              selected={isAllPopularNetworksSelected}
+            />
+          </Box>
+        ) : null}
         {networkListItems}
         {isEvmNetworkSelected && (
           <>

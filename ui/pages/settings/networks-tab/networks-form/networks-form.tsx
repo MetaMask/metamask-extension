@@ -3,9 +3,10 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   type UpdateNetworkFields,
+  NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Hex, isStrictHexString, parseCaipChainId } from '@metamask/utils';
+import { Hex, isStrictHexString } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -33,7 +34,6 @@ import {
   addNetwork,
   setActiveNetwork,
   setEditedNetwork,
-  setEnabledNetworks,
   setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
@@ -72,11 +72,10 @@ import {
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import {
   getIsRpcFailoverEnabled,
-  getNetworkConfigurationIdByChainId,
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
-import { getSelectedMultichainNetworkChainId } from '../../../../selectors/multichain/networks';
+import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -100,9 +99,6 @@ export const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const networkConfigurationIdsByChainId = useSelector(
-    getNetworkConfigurationIdByChainId,
-  );
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
@@ -140,11 +136,6 @@ export const NetworksForm = ({
   const [fetchedChainId, setFetchedChainId] = useState<string>();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
-
-  const currentMultichainChainId = useSelector(
-    getSelectedMultichainNetworkChainId,
-  );
-  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const templateInfuraRpc = (endpoint: string) =>
     endpoint.endsWith('{infuraProjectId}')
@@ -306,24 +297,20 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
-            await dispatch(
-              setEnabledNetworks([existingNetwork.chainId], namespace),
-            );
+            await dispatch(enableSingleNetwork(existingNetwork.chainId));
           }
         } else {
-          await dispatch(addNetwork(networkPayload));
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          if (networkConfigurationIdsByChainId?.[chainIdHex]) {
-            const networkClientId =
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              networkConfigurationIdsByChainId?.[chainIdHex];
-            await dispatch(setActiveNetwork(networkClientId));
-          }
-          await dispatch(
-            setEnabledNetworks([networkPayload.chainId], namespace),
-          );
+          const addedNetworkConfiguration = (await dispatch(
+            addNetwork(networkPayload),
+          )) as unknown as NetworkConfiguration;
+
+          const networkClientId =
+            addedNetworkConfiguration?.rpcEndpoints?.[
+              addedNetworkConfiguration.defaultRpcEndpointIndex
+            ]?.networkClientId;
+
+          await dispatch(setActiveNetwork(networkClientId));
+          await dispatch(enableSingleNetwork(networkPayload.chainId));
         }
 
         trackEvent({

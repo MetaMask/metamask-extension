@@ -4,6 +4,7 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
 import { NetworkManager } from './network-manager';
 
 // Mock the store actions
@@ -124,6 +125,46 @@ describe('NetworkManager Component', () => {
     return renderWithProvider(<NetworkManager />, store);
   };
 
+  const renderNetworkManagerWithNonEvmNetworkSelected = () => {
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networkConfigurationsByChainId: mockNetworkConfigurations,
+        selectedNetworkClientId: 'mainnet',
+        multichainNetworkConfigurationsByChainId: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            isEvm: false,
+            name: 'Solana Mainnet',
+            nativeCurrency:
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          },
+        },
+      },
+      enabledNetworkMap: {
+        solana: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+        },
+      },
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x0',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            type: 'solana:data-account',
+            metadata: {
+              snap: {
+                id: SOLANA_WALLET_SNAP_ID,
+              },
+            },
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
+    });
+    return renderWithProvider(<NetworkManager />, store);
+  };
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -132,23 +173,28 @@ describe('NetworkManager Component', () => {
     renderNetworkManager();
 
     // Verify tabs are rendered
-    expect(screen.getByText('Default')).toBeInTheDocument();
+    expect(screen.getByText('Popular')).toBeInTheDocument();
     expect(screen.getByText('Custom')).toBeInTheDocument();
 
     // Verify default tab content is rendered
-    expect(screen.getByText('Select all')).toBeInTheDocument();
+    expect(screen.getByText('All popular networks')).toBeInTheDocument();
     expect(screen.getByText('Arbitrum One')).toBeInTheDocument();
     expect(screen.getByText('Optimism')).toBeInTheDocument();
     expect(screen.getByText('Avalanche')).toBeInTheDocument();
     expect(screen.getByText('Base')).toBeInTheDocument();
   });
 
+  it('should not render select all button when non-EVM network is selected', () => {
+    renderNetworkManagerWithNonEvmNetworkSelected();
+    expect(screen.queryByText('All popular networks')).not.toBeInTheDocument();
+  });
+
   it('switches tab when tab is clicked', () => {
     renderNetworkManager();
 
     // Verify that Default tab is active by default
-    expect(screen.getByText('Default')).toBeInTheDocument();
-    expect(screen.getByText('Select all')).toBeInTheDocument();
+    expect(screen.getByText('Popular')).toBeInTheDocument();
+    expect(screen.getByText('All popular networks')).toBeInTheDocument();
 
     // Click on Custom tab
     fireEvent.click(screen.getByText('Custom'));

@@ -7,7 +7,7 @@ import FixtureBuilder from '../../fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
@@ -116,8 +116,8 @@ describe('MetaMask onboarding', function () {
         await importSRPOnboardingFlow({ driver });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
@@ -127,13 +127,13 @@ describe('MetaMask onboarding', function () {
         await onboardingPrivacySettingsPage.toggleAssetsSettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
-        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await homePage.refreshErc20TokenList();
 
         for (const mockedEndpoint of mockedEndpoints) {
@@ -153,7 +153,13 @@ describe('MetaMask onboarding', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
           mockApis(
@@ -166,9 +172,9 @@ describe('MetaMask onboarding', function () {
         await completeImportSRPOnboardingFlow({ driver });
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await homePage.refreshErc20TokenList();
 
         // intended delay to allow for network requests to complete

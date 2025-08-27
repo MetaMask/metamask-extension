@@ -16,7 +16,6 @@ import {
   ButtonSecondarySize,
   IconName,
 } from '../../../components/component-library';
-import { ACCOUNT_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import {
   BackgroundColor,
   TextVariant,
@@ -32,6 +31,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
+import { getAccountTypeCategory } from '../account-details';
 
 export const AddressQRCode = () => {
   const t = useI18nContext();
@@ -70,6 +70,17 @@ export const AddressQRCode = () => {
     openBlockExplorer(addressLink, metricsLocation, trackEvent);
   }, [chainId, trackEvent, addressLink]);
 
+  const getExplorerButtonText = (): string => {
+    switch (getAccountTypeCategory(account)) {
+      case 'evm':
+        return t('viewAddressOnExplorer', ['Etherscan']);
+      case 'solana':
+        return t('viewAddressOnExplorer', ['Solscan']);
+      default:
+        return t('viewOnExplorer');
+    }
+  };
+
   return (
     <Page className="address-qr-code-page">
       <Header
@@ -79,7 +90,7 @@ export const AddressQRCode = () => {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.push(`${ACCOUNT_DETAILS_ROUTE}/${address}`)}
+            onClick={() => history.goBack()}
           />
         }
       >
@@ -96,6 +107,7 @@ export const AddressQRCode = () => {
         <ButtonSecondary
           onClick={handleNavigation}
           size={ButtonSecondarySize.Lg}
+          data-testid={addressLink}
           textProps={{
             variant: TextVariant.bodyMdMedium,
           }}
@@ -103,7 +115,7 @@ export const AddressQRCode = () => {
             width: '100%',
           }}
         >
-          {t('viewOnExplorer')}
+          {getExplorerButtonText()}
         </ButtonSecondary>
       </Footer>
     </Page>

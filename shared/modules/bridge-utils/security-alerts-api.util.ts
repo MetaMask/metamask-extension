@@ -145,7 +145,7 @@ export const CHAIN_ID_TO_SECURITY_API_NAME: Record<
   [CHAIN_IDS.AVALANCHE]: 'avalanche',
   [CHAIN_IDS.BSC]: 'bsc',
   [CHAIN_IDS.ARBITRUM]: 'arbitrum',
-  [CHAIN_IDS.OPTIMISM]: 'optimist',
+  [CHAIN_IDS.OPTIMISM]: 'optimism',
   [CHAIN_IDS.ZKSYNC_ERA]: 'zksync',
   [CHAIN_IDS.BASE]: 'base',
   [CHAIN_IDS.SEI]: 'sei',
@@ -216,10 +216,6 @@ export async function fetchTxAlerts({
   const respBody = await response.json();
 
   assert<MessageScanResponse, unknown>(respBody, MessageScanResponse);
-
-  if (respBody.error_details?.code === 'ResultWithNegativeLamports') {
-    return null;
-  }
 
   if (respBody.status === 'ERROR') {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

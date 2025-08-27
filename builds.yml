@@ -31,7 +31,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.0.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       # for seedless onboarding (social login)
       - GOOGLE_PROD_CLIENT_ID
@@ -64,7 +64,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.0.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       # for seedless onboarding (social login)
       - GOOGLE_BETA_CLIENT_ID
@@ -100,7 +100,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.0.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.1/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -177,7 +177,7 @@ env:
   - ACCOUNTS_USE_DEV_APIS: false
   - BRIDGE_USE_DEV_APIS: false
   - SWAPS_USE_DEV_APIS: false
-  - PORTFOLIO_URL: https://portfolio.metamask.io
+  - PORTFOLIO_URL: https://app.metamask.io
   - TOKEN_ALLOWANCE_IMPROVEMENTS: false
   - TRANSACTION_SECURITY_PROVIDER: false
   # The unlock password
@@ -194,7 +194,7 @@ env:
   - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
   # Blockaid public key for verifying signatures of data files downloaded from CDN
   - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
-  - REMOVE_GNS: ''
+  - REMOVE_GNS: true
 
   - ENABLE_MV3: true
   # These are exclusively used for MV3
@@ -249,6 +249,7 @@ env:
   - QUICKNODE_OPTIMISM_URL: null
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
+  - QUICKNODE_BSC_URL: null
 
   ###
   # API keys to 3rd party services
@@ -321,8 +322,6 @@ env:
   - SECURITY_ALERTS_API_ENABLED: 'true'
   # URL of security alerts API used to validate dApp requests
   - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
-  # Temporary mechanism to enable trust signals middleware in production
-  - TRUST_SIGNALS_PROD_ENABLED: 'false'
 
   # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
@@ -385,6 +384,19 @@ env:
   # OAuth (Social login)
   - GOOGLE_CLIENT_ID_REF
   - APPLE_CLIENT_ID_REF
-  - SEEDLESS_ONBOARDING_ENABLED: 'false'
+  - SEEDLESS_ONBOARDING_ENABLED: 'true'
   - GOOGLE_CLIENT_ID: ''
   - APPLE_CLIENT_ID: ''
+  # OAuth (Social login) for UAT(QA) builds
+  - GOOGLE_CLIENT_ID_FLASK_UAT: ''
+  - APPLE_CLIENT_ID_FLASK_UAT: ''
+  - GOOGLE_CLIENT_ID_UAT: ''
+  - APPLE_CLIENT_ID_UAT: ''
+
+  # Snaps
+  # This should only be used for local testing, and should not be enabled in any
+  # production builds (including beta and Flask).
+  - FORCE_PREINSTALLED_SNAPS: 'false'
+
+  # Enable new send implementation
+  - SEND_REDESIGN_ENABLED: false

@@ -304,18 +304,9 @@ describe('AssetPage', () => {
     const bridgeButton = queryByTestId('token-overview-bridge');
     expect(bridgeButton).toBeInTheDocument();
     expect(bridgeButton).not.toBeDisabled();
-
-    fireEvent.click(bridgeButton as HTMLElement);
-
-    await waitFor(() => {
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-      expect(openTabSpy).toHaveBeenCalledWith({
-        url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
-      });
-    });
   });
 
-  it('should disable Bridge button if chain id is not supported', async () => {
+  it('should not render Bridge button on testnet chains', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -326,8 +317,9 @@ describe('AssetPage', () => {
         },
       }),
     );
+    // bridge button is hidden on unified and testnet chains.
     const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).toBeDisabled();
+    expect(bridgeButton).toBeNull();
   });
 
   it('should render the network name', async () => {

@@ -70,11 +70,10 @@ exports[`NameDetails renders proposed names 1`] = `
                 class="name name__saved"
               >
                 <div
-                  class=""
+                  class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
                 >
                   <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
+                    class="flex [&>div]:!rounded-none"
                   >
                     <div
                       style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 196, 0);"
@@ -327,9 +326,12 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                 class="name name__missing"
               >
                 <div
-                  class="identicon__image-border"
-                  style="height: 16px; width: 16px; border-radius: 8px;"
-                />
+                  class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+                >
+                  <div
+                    class="flex [&>div]:!rounded-none"
+                  />
+                </div>
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 />
@@ -507,48 +509,11 @@ exports[`NameDetails renders with no saved name 1`] = `
                 class="name name__missing"
               >
                 <div
-                  class=""
+                  class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
                 >
                   <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
-                  >
-                    <div
-                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 196, 0);"
-                    >
-                      <svg
-                        height="16"
-                        width="16"
-                        x="0"
-                        y="0"
-                      >
-                        <rect
-                          fill="#C8144D"
-                          height="16"
-                          transform="translate(-0.8205726313476182 -2.375300755278998) rotate(408.5 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#FB1860"
-                          height="16"
-                          transform="translate(7.733089412585649 -1.3465466417019656) rotate(402.6 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#03505E"
-                          height="16"
-                          transform="translate(1.1000464230208766 -13.147318085284851) rotate(308.0 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                      </svg>
-                    </div>
-                  </div>
+                    class="flex [&>div]:!rounded-none"
+                  />
                 </div>
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
@@ -729,18 +694,16 @@ exports[`NameDetails renders with recognized name 1`] = `
                 class="name name__recognized_unsaved"
               >
                 <div
-                  class="identicon"
-                  style="height: 16px; width: 16px; border-radius: 8px;"
+                  class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
                 >
-                  <img
-                    src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png"
-                    style="width: 100%;"
+                  <div
+                    class="flex [&>div]:!rounded-none"
                   />
                 </div>
                 <p
                   class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
                 >
-                  iZUMi Bon...
+                  iZUMi Bond USD
                 </p>
               </div>
             </div>
@@ -916,48 +879,11 @@ exports[`NameDetails renders with saved name 1`] = `
                 class="name name__saved"
               >
                 <div
-                  class=""
+                  class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
                 >
                   <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
-                  >
-                    <div
-                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 196, 0);"
-                    >
-                      <svg
-                        height="16"
-                        width="16"
-                        x="0"
-                        y="0"
-                      >
-                        <rect
-                          fill="#C8144D"
-                          height="16"
-                          transform="translate(-0.8205726313476182 -2.375300755278998) rotate(408.5 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#FB1860"
-                          height="16"
-                          transform="translate(7.733089412585649 -1.3465466417019656) rotate(402.6 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#03505E"
-                          height="16"
-                          transform="translate(1.1000464230208766 -13.147318085284851) rotate(308.0 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                      </svg>
-                    </div>
-                  </div>
+                    class="flex [&>div]:!rounded-none"
+                  />
                 </div>
                 <p
                   class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"

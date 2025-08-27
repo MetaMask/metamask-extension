@@ -6,6 +6,7 @@ import {
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -176,6 +177,7 @@ export function validateAddEthereumChainParams(params) {
  * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.setTokenNetworkFilter - The callback to set the token network filter.
  * @param {Function} hooks.setEnabledNetworks - The callback to set the enabled networks.
+ * @param {Function} hooks.getEnabledNetworks - The callback to get the current enabled networks for a namespace.
  * @param {Function} hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
  * @param {Function} hooks.requestUserApproval - The callback to trigger user approval flow.
  * @param {Function} hooks.hasApprovalRequestsForOrigin - Function to check if there are pending approval requests from the origin.
@@ -198,6 +200,7 @@ export async function switchChain(
     requestPermittedChainsPermissionIncrementalForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
+    getEnabledNetworks,
     rejectApprovalRequestsForOrigin,
     requestUserApproval,
     hasApprovalRequestsForOrigin,
@@ -226,7 +229,11 @@ export async function switchChain(
           autoApprove,
           metadata,
         });
-      } else if (hasApprovalRequestsForOrigin?.() && !isAddFlow) {
+      } else if (
+        hasApprovalRequestsForOrigin?.() &&
+        !isAddFlow &&
+        !autoApprove
+      ) {
         await requestUserApproval({
           origin,
           type: ApprovalType.SwitchEthereumChain,
@@ -243,7 +250,9 @@ export async function switchChain(
       });
     }
 
-    rejectApprovalRequestsForOrigin?.();
+    if (!isSnapId(origin)) {
+      rejectApprovalRequestsForOrigin?.();
+    }
 
     await setActiveNetwork(networkClientId);
 
@@ -252,10 +261,20 @@ export async function switchChain(
     setTokenNetworkFilter(chainId);
 
     if (isPrefixedFormattedHexString(chainId)) {
-      setEnabledNetworks(chainId, KnownCaipNamespace.Eip155);
+      const existingEnabledNetworks = getEnabledNetworks(
+        KnownCaipNamespace.Eip155,
+      );
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+      if (!existingChainIds.includes(chainId)) {
+        setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
+      }
     } else {
       const { namespace } = parseCaipChainId(chainId);
-      setEnabledNetworks(chainId, namespace);
+      const existingEnabledNetworks = getEnabledNetworks(namespace);
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+      if (!existingChainIds.includes(chainId)) {
+        setEnabledNetworks([chainId], namespace);
+      }
     }
 
     response.result = null;

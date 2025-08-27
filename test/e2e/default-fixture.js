@@ -86,13 +86,16 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000',
           },
           {
-            networkId: '0x539',
+            networkId: inputChainId,
             networkRpcUrl: 'http://localhost:8545',
           },
         ],
         enabledNetworkMap: {
           eip155: {
             [inputChainId]: true,
+          },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
           },
         },
       },
@@ -148,6 +151,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
+        tracesBeforeMetricsOptIn: [],
         fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,

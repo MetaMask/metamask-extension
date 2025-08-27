@@ -24,7 +24,7 @@ export type SwapsFeatureFlags = {
   smartTransactions: SmartTransactionsFeatureFlag;
 };
 
-type FeatureFlagsMetaMaskState = {
+export type FeatureFlagsMetaMaskState = {
   metamask: {
     swapsState: {
       swapsFeatureFlags: SwapsFeatureFlags;

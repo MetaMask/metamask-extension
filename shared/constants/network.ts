@@ -195,6 +195,7 @@ export const CHAIN_IDS = {
   ABSTRACT: '0xab5',
   OMNI: '0xa6',
   XRPLEVM: '0x15f900',
+  FRAX: '0xfc',
   ACALA: '0x313',
   ACALA_TESTNET: '0x253',
   KARURA: '0x2ae',
@@ -337,7 +338,7 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
-export const SEI_DISPLAY_NAME = 'Sei Network';
+export const SEI_DISPLAY_NAME = 'Sei Mainnet';
 export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 export const SOPHON_DISPLAY_NAME = 'Sophon';
@@ -348,6 +349,7 @@ export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
 export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
+export const FRAX_DISPLAY_NAME = 'Fraxtal';
 export const ACALA_DISPLAY_NAME = 'Acala';
 export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
 export const KARURA_DISPLAY_NAME = 'Karura';
@@ -420,6 +422,7 @@ export const CURRENCY_SYMBOLS = {
   ABSTRACT: 'ETH',
   OMNI: 'OMNI',
   XRPLEVM: 'XRP',
+  FRAX: 'FRAX',
   ACALA: 'ACA',
   KARURA: 'KAR',
 } as const;
@@ -621,6 +624,8 @@ export const OMNI_IMAGE_URL = './images/omni.png';
 export const OMNI_NATIVE_TOKEN_IMAGE_URL = './images/omni-native.png';
 export const XRPLEVM_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_NATIVE_TOKEN_IMAGE_URL = './images/xrplevm-native.svg';
+export const FRAX_IMAGE_URL = './images/frax.svg';
+export const FRAX_NATIVE_TOKEN_IMAGE_URL = './images/frax-native.svg';
 export const ACALA_IMAGE_URL = './images/acala.svg';
 export const ACALA_TOKEN_IMAGE_URL = './images/acala-token.svg';
 export const KARURA_IMAGE_URL = './images/karura.svg';
@@ -775,6 +780,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_DISPLAY_NAME,
   [CHAIN_IDS.OMNI]: OMNI_DISPLAY_NAME,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_DISPLAY_NAME,
+  [CHAIN_IDS.FRAX]: FRAX_DISPLAY_NAME,
   [CHAIN_IDS.ACALA]: ACALA_DISPLAY_NAME,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.KARURA]: KARURA_DISPLAY_NAME,
@@ -924,6 +930,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.ABSTRACT]: CURRENCY_SYMBOLS.ABSTRACT,
   [CHAIN_IDS.OMNI]: CURRENCY_SYMBOLS.OMNI,
   [CHAIN_IDS.XRPLEVM]: CURRENCY_SYMBOLS.XRPLEVM,
+  [CHAIN_IDS.FRAX]: CURRENCY_SYMBOLS.FRAX,
   [CHAIN_IDS.ACALA]: CURRENCY_SYMBOLS.ACALA,
   [CHAIN_IDS.ACALA_TESTNET]: CURRENCY_SYMBOLS.ACALA,
   [CHAIN_IDS.KARURA]: CURRENCY_SYMBOLS.KARURA,
@@ -1082,6 +1089,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_IMAGE_URL,
   [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_IMAGE_URL,
+  [CHAIN_IDS.FRAX]: FRAX_IMAGE_URL,
   [CHAIN_IDS.ACALA]: ACALA_IMAGE_URL,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_IMAGE_URL,
@@ -1156,18 +1164,23 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_NATIVE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]:
     XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.FRAX]: FRAX_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ACALA]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_TOKEN_IMAGE_URL,
 } as const;
 
 /**
- * A mapping for networks with enabled profolio landing page to their URLs.
+ * A mapping for networks with enabled portfolio landing page to their URLs.
  */
-export const CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP: Record<Hex, string> = {
-  [CHAIN_IDS.LINEA_MAINNET]:
-    'https://portfolio.metamask.io/explore/networks/linea',
-  [CHAIN_IDS.SEI]: 'https://portfolio.metamask.io/explore/networks/sei',
+export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
+  Hex | `${string}:${string}`,
+  string
+> = {
+  [CHAIN_IDS.LINEA_MAINNET]: 'https://app.metamask.io/explore/networks/linea',
+  [CHAIN_IDS.SEI]: 'https://app.metamask.io/explore/networks/sei',
+  [MultichainNetworks.SOLANA]:
+    'https://app.metamask.io/explore/networks/solana',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -1293,6 +1306,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'optimism-mainnet': () => process.env.QUICKNODE_OPTIMISM_URL,
   'polygon-mainnet': () => process.env.QUICKNODE_POLYGON_URL,
   'base-mainnet': () => process.env.QUICKNODE_BASE_URL,
+  'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1357,8 +1371,8 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.BNB,
     rpcEndpoints: [
       {
-        url: 'https://bsc-dataseed.binance.org/',
-        failoverUrls: [],
+        url: `https://bsc-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('bsc-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],

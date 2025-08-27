@@ -28,8 +28,6 @@ export async function withBtcAccountSnap(
           },
           bip122: {
             [MultichainNetworks.BITCOIN]: true,
-            [MultichainNetworks.BITCOIN_SIGNET]: true,
-            [MultichainNetworks.BITCOIN_TESTNET]: true,
           },
         })
         .build(),
@@ -53,7 +51,7 @@ export async function withBtcAccountSnap(
       // create one BTC account
       await new HeaderNavbar(driver).openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
+      await accountListPage.checkPageIsLoaded();
       await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
       await test(driver, mockServer);
     },

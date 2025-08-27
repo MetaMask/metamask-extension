@@ -25,7 +25,7 @@ import {
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -63,7 +63,7 @@ describe('MetaMask onboarding', function () {
         });
 
         const secureWalletPage = new SecureWalletPage(driver);
-        await secureWalletPage.check_pageIsLoaded();
+        await secureWalletPage.checkPageIsLoaded();
         await secureWalletPage.revealAndConfirmSRP();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
@@ -71,13 +71,13 @@ describe('MetaMask onboarding', function () {
         }
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
       },
     );
   });
@@ -93,8 +93,8 @@ describe('MetaMask onboarding', function () {
           driver,
         });
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
       },
     );
   });
@@ -108,8 +108,8 @@ describe('MetaMask onboarding', function () {
       async ({ driver }: { driver: Driver }) => {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed();
       },
     );
   });
@@ -127,25 +127,25 @@ describe('MetaMask onboarding', function () {
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.checkPageIsLoaded();
           await onboardingMetricsPage.clickNoThanksButton();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.checkBannerPageIsLoaded();
         await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.importWallet();
 
         const onboardingSrpPage = new OnboardingSrpPage(driver);
-        await onboardingSrpPage.check_pageIsLoaded();
+        await onboardingSrpPage.checkPageIsLoaded();
 
         await onboardingSrpPage.fillSrp(wrongSeedPhrase);
         await onboardingSrpPage.clickConfirmButtonWithSrpError();
 
         // check the wrong SRP warning message is displayed
-        await onboardingSrpPage.check_srpError();
-        await onboardingSrpPage.check_confirmSrpButtonIsDisabled();
+        await onboardingSrpPage.checkSrpError();
+        await onboardingSrpPage.checkConfirmSrpButtonIsDisabled();
       },
     );
   });
@@ -162,26 +162,26 @@ describe('MetaMask onboarding', function () {
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.checkPageIsLoaded();
           await onboardingMetricsPage.clickNoThanksButton();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.checkBannerPageIsLoaded();
         await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
 
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-        await onboardingPasswordPage.check_pageIsLoaded();
+        await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.fillWalletPassword(
           WALLET_PASSWORD,
           wrongTestPassword,
         );
 
         // check the incorrect password warning message is displayed
-        await onboardingPasswordPage.check_incorrectPasswordWarningMessageIsDisplayed();
-        await onboardingPasswordPage.check_confirmPasswordButtonIsDisabled();
+        await onboardingPasswordPage.checkIncorrectPasswordWarningMessageIsDisplayed();
+        await onboardingPasswordPage.checkConfirmPasswordButtonIsDisabled();
       },
     );
   });
@@ -221,8 +221,8 @@ describe('MetaMask onboarding', function () {
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
@@ -236,17 +236,17 @@ describe('MetaMask onboarding', function () {
         );
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
-        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await switchToNetworkFlow(driver, networkName);
-        await homePage.check_addNetworkMessageIsDisplayed(networkName);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromSendFlow(driver, networkName);
+        await homePage.checkAddNetworkMessageIsDisplayed(networkName);
 
         // Check the correct balance for the custom network is displayed
         if (localNodes[1] && Array.isArray(localNodes)) {
-          await homePage.check_expectedBalanceIsDisplayed('10');
+          await homePage.checkExpectedBalanceIsDisplayed('10');
         } else {
           throw new Error('Custom network server not available');
         }
@@ -264,8 +264,8 @@ describe('MetaMask onboarding', function () {
         await importSRPOnboardingFlow({ driver });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
@@ -274,13 +274,13 @@ describe('MetaMask onboarding', function () {
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
-        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         // check the basic functionality is off warning message is displayed
-        await homePage.check_basicFunctionalityOffWarnigMessageIsDisplayed();
+        await homePage.checkBasicFunctionalityOffWarnigMessageIsDisplayed();
       },
     );
   });
@@ -311,12 +311,12 @@ describe('MetaMask onboarding', function () {
         await unlockWallet(driver);
         // First screen we should be on is MetaMetrics
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
+        await onboardingMetricsPage.checkPageIsLoaded();
         await onboardingMetricsPage.clickNoThanksButton();
 
         // Next screen should be Secure your wallet screen
         const secureWalletPage = new SecureWalletPage(driver);
-        await secureWalletPage.check_pageIsLoaded();
+        await secureWalletPage.checkPageIsLoaded();
       },
     );
   });

@@ -8,11 +8,9 @@ import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../../test/data/mock-accounts';
-import {
-  ACCOUNT_DETAILS_QR_CODE_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ACCOUNT_DETAILS_QR_CODE_ROUTE } from '../../../helpers/constants/routes';
 import { KeyringType } from '../../../../shared/constants/keyring';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { BaseAccountDetails } from './base-account-details';
 
 const middleware = [thunk];
@@ -20,10 +18,12 @@ const mockStore = configureMockStore(middleware);
 
 // Mock the useHistory hook
 const mockPush = jest.fn();
+const mockGoBack = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
     push: mockPush,
+    goBack: mockGoBack,
   }),
 }));
 
@@ -135,6 +135,7 @@ const createMockState = (
 describe('BaseAccountDetails', () => {
   beforeEach(() => {
     mockPush.mockClear();
+    mockGoBack.mockClear();
   });
 
   describe('Component Rendering', () => {
@@ -161,7 +162,7 @@ describe('BaseAccountDetails', () => {
       expect(screen.getByText('Wallet')).toBeInTheDocument();
 
       // Check if shortened address is displayed (short address stays as-is)
-      expect(screen.getByText('0x123')).toBeInTheDocument();
+      expect(screen.getByText('0xa0b86...f5e4b')).toBeInTheDocument();
 
       // Check if wallet name is displayed
       expect(screen.getByText('Mock Wallet')).toBeInTheDocument();
@@ -216,7 +217,7 @@ describe('BaseAccountDetails', () => {
   });
 
   describe('Navigation', () => {
-    it('should navigate to default route when back button is clicked', () => {
+    it('should go back when back button is clicked', () => {
       const state = createMockState(MOCK_ACCOUNT_EOA.address);
       const store = mockStore(state);
 
@@ -233,7 +234,7 @@ describe('BaseAccountDetails', () => {
       const backButton = screen.getByLabelText('Back');
       fireEvent.click(backButton);
 
-      expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockGoBack).toHaveBeenCalledTimes(1);
     });
 
     it('should navigate to QR code route when address row is clicked', () => {
@@ -474,6 +475,42 @@ describe('BaseAccountDetails', () => {
 
       const solanaRemoveButton = screen.queryByText('Remove account');
       expect(solanaRemoveButton).not.toBeInTheDocument();
+    });
+
+    it('should not display remove account button for social login accounts', () => {
+      const hardwareAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: 'hardware-account',
+        metadata: {
+          ...MOCK_ACCOUNT_EOA.metadata,
+          name: 'Hardware Account',
+          keyring: {
+            type: KeyringType.trezor,
+          },
+        },
+      };
+
+      const state = createMockState(hardwareAccount.address, hardwareAccount);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+
+      renderWithProvider(
+        <MemoryRouter>
+          <BaseAccountDetails
+            address={hardwareAccount.address}
+            account={hardwareAccount}
+          />
+        </MemoryRouter>,
+        store,
+      );
+
+      const removeButton = screen.queryByText('Remove account');
+      expect(removeButton).not.toBeInTheDocument();
     });
   });
 });

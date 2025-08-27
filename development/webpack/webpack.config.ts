@@ -9,7 +9,6 @@ import {
   ProvidePlugin,
   type Configuration,
   type WebpackPluginInstance,
-  type Chunk,
   type MemoryCacheOptions,
   type FileCacheOptions,
 } from 'webpack';
@@ -19,6 +18,7 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
+import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
@@ -27,6 +27,8 @@ import {
   getMinimizers,
   NODE_MODULES_RE,
   __HMR_READY__,
+  SNOW_MODULE_RE,
+  TREZOR_MODULE_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -158,7 +160,7 @@ const plugins: WebpackPluginInstance[] = [
     // Make a global `Buffer` variable that points to the `buffer` package.
     Buffer: ['buffer', 'Buffer'],
     // Make a global `process` variable that points to the `process` package.
-    process: 'process/browser',
+    process: 'process/browser.js',
     // polyfill usages of `setImmediate`, ideally this would be automatically
     // handled by `swcLoader`'s `env.usage = 'entry'` option, but that setting
     // results in a compilation error: `Module parse failed: 'import' and
@@ -166,7 +168,7 @@ const plugins: WebpackPluginInstance[] = [
     // hours trying to figure it out but couldn't. So, this is the workaround.
     // Note: we should probably remove usages of `setImmediate` from our
     // codebase so we don't have to polyfill it.
-    setImmediate: 'core-js-pure/actual/set-immediate',
+    setImmediate: 'core-js-pure/actual/set-immediate.js',
   }),
   new CopyPlugin({
     patterns: [
@@ -188,10 +190,11 @@ if (args.progress) {
 }
 // #endregion plugins
 
-const swcConfig = { args, safeVariables, browsersListQuery, isDevelopment };
-const tsxLoader = getSwcLoader('typescript', true, swcConfig);
-const jsxLoader = getSwcLoader('ecmascript', true, swcConfig);
-const ecmaLoader = getSwcLoader('ecmascript', false, swcConfig);
+const swcConfig = { args, browsersListQuery, isDevelopment };
+const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
+const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
+const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
+const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
 const config = {
   entry,
@@ -230,6 +233,28 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    // TODO: Remove this workaround after upgrading to React 18
+    // WORKAROUND: Alias for React JSX runtime to handle ESM module resolution issues.
+    // This is needed because @metamask/design-system-react uses @radix-ui/react-slot,
+    // which is distributed as an ESM module (.mjs) that imports 'react/jsx-runtime'
+    // without the file extension. Webpack 5's strict ESM resolution requires fully
+    // specified imports, so we explicitly map these to the actual files.
+    //
+    // This issue only affects React 17. React 18+ properly exports jsx-runtime
+    // with correct ESM module resolution, so this workaround can be removed after upgrading.
+    //
+    // Related issues:
+    // - https://github.com/radix-ui/primitives/issues/3413
+    // - Fix example: https://github.com/xyflow/xyflow/issues/4683#issuecomment-2388049017
+    //
+    // Potential solutions until React 18 upgrade:
+    // 1. Current workaround: webpack aliases (what we're using)
+    // 2. @metamask/design-system-react could patch the Radix UI packages
+    // 3. @metamask/design-system-react could re-export components with a build step that fixes imports
+    alias: {
+      'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
+      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
+    },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
@@ -259,8 +284,11 @@ const config = {
   // note: loaders in a `use` array are applied in *reverse* order, i.e., bottom
   // to top, (or right to left depending on the current formatting of the file)
   module: {
-    // don't parse lodash, as it's large and already minified
-    noParse: /^lodash$/u,
+    noParse: [
+      // don't parse lodash, as it's large, already minified, and doesn't need
+      // to be transformed
+      /^lodash$/u,
+    ],
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
@@ -282,15 +310,33 @@ const config = {
         exclude: NODE_MODULES_RE,
         use: [jsxLoader, codeFenceLoader],
       },
-      // vendor javascript
+      // vendor javascript. We must transform all npm modules to ensure browser
+      // compatibility.
       {
-        test: /\.(?:js|mjs)$/u,
-        include: NODE_MODULES_RE,
-        // never process `@lavamoat/snow/**.*`
-        exclude: /^.*\/node_modules\/@lavamoat\/snow\/.*$/u,
-        // can be removed once https://github.com/MetaMask/key-tree/issues/152 is resolved
-        resolve: { fullySpecified: false },
-        use: ecmaLoader,
+        oneOf: [
+          {
+            test: /\.m?js$/u,
+            include: NODE_MODULES_RE,
+            exclude: [
+              // security team requires that we never process `@lavamoat/snow/**.*`
+              SNOW_MODULE_RE,
+
+              // these trezor libraries are .js files with CJS exports, they
+              // must be processed with the CJS loader
+              TREZOR_MODULE_RE,
+            ],
+            use: npmLoader,
+          },
+          {
+            test: /\.c?js$/u,
+            include: NODE_MODULES_RE,
+            exclude: [
+              // security team requires that we never process `@lavamoat/snow/**.*`
+              SNOW_MODULE_RE,
+            ],
+            use: cjsLoader,
+          },
+        ],
       },
       // css, sass/scss
       {
@@ -303,6 +349,7 @@ const config = {
             options: {
               postcssOptions: {
                 plugins: [
+                  tailwindcss(),
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
                   discardFonts(['woff2']), // keep woff2 fonts
@@ -386,7 +433,9 @@ const config = {
     // platform is responsible for loading them and splitting these files
     // would require updating the manifest to include the other chunks.
     runtimeChunk: {
-      name: (chunk: Chunk) => (canBeChunked(chunk) ? 'runtime' : false),
+      // casting to string as webpack's types are wrong, `false` is allowed, and
+      // is actually the default value.
+      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false) as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations

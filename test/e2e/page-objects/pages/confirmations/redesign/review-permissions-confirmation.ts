@@ -3,16 +3,19 @@ import { Driver } from '../../../../webdriver/driver';
 class ReviewPermissionsConfirmation {
   driver: Driver;
 
-  private readonly reviewPermissionsConfirmationTitle = {
-    text: 'Review permissions',
-    tag: 'h3',
-  };
-
   private readonly cancelReviewPermissionsButton =
     '[data-testid="page-container-footer-cancel"]';
 
   private readonly confirmReviewPermissionsButton =
     '[data-testid="page-container-footer-next"]';
+
+  private readonly connectMoreChainsButton =
+    '[data-testid="connect-more-chains-button"]';
+
+  private readonly reviewPermissionsConfirmationTitle = {
+    text: 'Review permissions',
+    tag: 'h3',
+  };
 
   private readonly useEnabledNetworksMessage = {
     text: 'Use your enabled networks',
@@ -23,9 +26,7 @@ class ReviewPermissionsConfirmation {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(
         this.reviewPermissionsConfirmationTitle,
@@ -57,9 +58,7 @@ class ReviewPermissionsConfirmation {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkIsDisplayed(networkName: string): Promise<void> {
+  async checkNetworkIsDisplayed(networkName: string): Promise<void> {
     console.log(
       `Check network ${networkName} is displayed on review permissions confirmation page`,
     );
@@ -69,11 +68,22 @@ class ReviewPermissionsConfirmation {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_useEnabledNetworksMessageIsDisplayed(): Promise<void> {
+  async checkUseEnabledNetworksMessageIsDisplayed(): Promise<void> {
     console.log('Check use enabled networks message is displayed');
     await this.driver.waitForSelector(this.useEnabledNetworksMessage);
+  }
+
+  async clickConnectMoreChainsButton(): Promise<void> {
+    console.log('Click connect more chains button');
+    await this.driver.clickElement(this.connectMoreChainsButton);
+  }
+
+  async clickDisconnectNetwork(networkName: string): Promise<void> {
+    console.log(`Click to disconnect network: ${networkName}`);
+    await this.driver.clickElement({
+      text: networkName,
+      tag: 'p',
+    });
   }
 }
 

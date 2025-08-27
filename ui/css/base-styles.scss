@@ -41,12 +41,6 @@ html {
         color: var(--brand-colors-white);
       }
     }
-
-    @include design-system.screen-sm-max {
-      &:not([data-theme]) {
-        background-color: var(--brand-colors-grey-grey800);
-      }
-    }
   }
 }
 

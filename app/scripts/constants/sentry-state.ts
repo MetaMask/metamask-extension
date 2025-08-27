@@ -79,8 +79,6 @@ export const SENTRY_BACKGROUND_STATE = {
     showPermissionsTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
     showTestnetMessageInDropdown: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
@@ -171,6 +169,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
+    tracesBeforeMetricsOptIn: false,
     fragments: false,
     metaMetricsId: true,
     participateInMetaMetrics: true,
@@ -421,8 +420,6 @@ export const SENTRY_UI_STATE = {
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
     ///: END:ONLY_INCLUDE_IF
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
   },

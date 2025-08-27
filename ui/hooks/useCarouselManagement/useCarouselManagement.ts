@@ -4,23 +4,26 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
+import { Platform } from '@metamask/profile-sync-controller/sdk';
 import { isSolanaAddress } from '../../../shared/lib/multichain/accounts';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
-import { updateSlides } from '../../store/actions';
+import {
+  getUserProfileLineage as getUserProfileLineageAction,
+  updateSlides,
+} from '../../store/actions';
 import {
   getRemoteFeatureFlags,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
+  getShowDownloadMobileAppSlide,
   getSlides,
   getUseExternalServices,
 } from '../../selectors';
-import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
   FUND_SLIDE,
   BRIDGE_SLIDE,
   CARD_SLIDE,
   CASH_SLIDE,
-  REMOTE_MODE_SLIDE,
   SMART_ACCOUNT_UPGRADE_SLIDE,
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
@@ -32,6 +35,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
+  DOWNLOAD_MOBILE_APP_SLIDE,
 } from './constants';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
@@ -67,9 +71,9 @@ export const useCarouselManagement = ({
   const slides: CarouselSlide[] = useSelector(getSlides);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
-  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const useExternalServices = useSelector(getUseExternalServices);
+  const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
   const prevSlidesRef = useRef<CarouselSlide[]>();
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
@@ -104,10 +108,6 @@ export const useCarouselManagement = ({
     ///: END:ONLY_INCLUDE_IF
     defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 
-    if (isRemoteModeEnabled) {
-      defaultSlides.unshift(REMOTE_MODE_SLIDE);
-    }
-
     // Handle sweepstakes slide
     const currentDate = testDate
       ? new Date(testDate)
@@ -138,6 +138,19 @@ export const useCarouselManagement = ({
     const maybeFetchContentful = async () => {
       const contentfulEnabled =
         remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
+
+      if (useExternalServices && showDownloadMobileAppSlide) {
+        const userProfileLineage = await getUserProfileLineageAction();
+        if (userProfileLineage) {
+          const isUserAvailableOnMobile = userProfileLineage.lineage.some(
+            (lineage) => lineage.agent === Platform.MOBILE,
+          );
+
+          if (!isUserAvailableOnMobile) {
+            defaultSlides.unshift(DOWNLOAD_MOBILE_APP_SLIDE);
+          }
+        }
+      }
 
       if (contentfulEnabled) {
         try {
@@ -186,17 +199,23 @@ export const useCarouselManagement = ({
       }
     };
 
-    maybeFetchContentful();
+    (async () => {
+      try {
+        await maybeFetchContentful();
+      } catch (err) {
+        log.warn('Failed to load carousel slides:', err);
+      }
+    })();
   }, [
     dispatch,
     hasZeroBalance,
-    isRemoteModeEnabled,
     remoteFeatureFlags,
     testDate,
     inTest,
     slides,
     selectedAccount.address,
     useExternalServices,
+    showDownloadMobileAppSlide,
   ]);
 
   return { slides };

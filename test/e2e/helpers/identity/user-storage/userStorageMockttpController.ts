@@ -11,10 +11,6 @@ export const pathRegexps = {
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.accounts}`,
     'u',
   ),
-  [USER_STORAGE_FEATURE_NAMES.networks]: new RegExp(
-    `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.networks}`,
-    'u',
-  ),
   [USER_STORAGE_FEATURE_NAMES.notifications]: new RegExp(
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.notifications}`,
     'u',

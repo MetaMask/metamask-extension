@@ -1,7 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Hex } from '@metamask/utils';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
+
 import ToggleButton from '../../ui/toggle-button';
 import { Box, Text } from '../../component-library';
 import {
@@ -11,69 +15,207 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import { unconfirmedTransactionsListSelector } from '../../../selectors';
+import { setRedirectAfterDefaultPage } from '../../../ducks/history/history';
+import {
+  setToggleState,
+  selectToggleState,
+} from '../../../ducks/smart-accounts/smart-accounts';
+import type { MetaMaskReduxState } from '../../../store/store';
+
+type SmartContractAccountToggleProps = {
+  networkConfig: EIP7702NetworkConfiguration;
+  address: Hex;
+  returnToPage?: string;
+};
 
 export const SmartContractAccountToggle = ({
   networkConfig,
   address,
-}: {
-  networkConfig: EIP7702NetworkConfiguration;
-  address: Hex;
-}) => {
+  returnToPage,
+}: SmartContractAccountToggleProps) => {
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfig;
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const unconfirmedTransactions = useSelector(
+    unconfirmedTransactionsListSelector,
+  );
+
+  // Get toggleState from Redux
+  const toggleState = useSelector((state: MetaMaskReduxState) =>
+    selectToggleState(state, address, chainIdHex),
+  );
+
   const { downgradeAccount, upgradeAccount, isUpgraded } = useEIP7702Account({
     chainId: chainIdHex,
+    onRedirect: () => null,
   });
 
   const [addressSupportSmartAccount, setAddressSupportSmartAccount] =
     useState(isSupported);
 
-  const prevHasPendingRequests = useRef<boolean>();
   const { hasPendingRequests } = useBatchAuthorizationRequests(
     address,
     chainIdHex,
   );
 
-  // Check initial account state and verify transaction results
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+
+  // Use toggleState as primary source, fallback to actual account state
+  const toggleValue = toggleState ?? addressSupportSmartAccount;
+
+  // Keep toggle disabled when user has pending intent OR when there are pending requests
+  const isToggleDisabled = hasPendingRequests || hasUserInteracted;
+
+  // Check account state on mount and when transactions complete
   useEffect(() => {
-    const checkUpgradeStatus = async () => {
-      try {
-        const upgraded = await isUpgraded(address);
-        setAddressSupportSmartAccount(upgraded);
-      } catch (error) {
-        // Fall back to isSupported if we can't determine upgrade status
-        setAddressSupportSmartAccount(isSupported);
+    if (!hasPendingRequests) {
+      const checkUpgradeStatus = async () => {
+        try {
+          const upgraded = await isUpgraded(address);
+          setAddressSupportSmartAccount(upgraded);
+        } catch (error) {
+          setAddressSupportSmartAccount(isSupported);
+        }
+      };
+      checkUpgradeStatus();
+    }
+  }, [hasPendingRequests, isUpgraded, address, isSupported]);
+
+  // Separate effect for mismatch detection when toggleState changes
+  // Only runs when safe to check (no pending requests, user not actively clicking)
+  useEffect(() => {
+    if (!hasPendingRequests && toggleState !== null && !hasUserInteracted) {
+      const checkMismatch = async () => {
+        try {
+          const upgraded = await isUpgraded(address);
+
+          // If user intent doesn't match blockchain reality, clear the intent
+          if (toggleState !== upgraded) {
+            dispatch(
+              setToggleState({
+                address,
+                chainId: chainIdHex,
+                value: null,
+              }),
+            );
+          }
+        } catch (error) {
+          // If we can't check, assume no mismatch to avoid clearing valid user intent
+        }
+      };
+      checkMismatch();
+    }
+  }, [
+    toggleState,
+    hasPendingRequests,
+    hasUserInteracted,
+    isUpgraded,
+    address,
+    dispatch,
+    chainIdHex,
+  ]);
+
+  const findAndRedirectToTransaction = useCallback(() => {
+    const matchingTransactions = unconfirmedTransactions.filter(
+      (tx: TransactionMeta) =>
+        tx.txParams?.from === address && tx.chainId === chainIdHex,
+    );
+
+    if (matchingTransactions.length > 0) {
+      const latestTransaction = matchingTransactions.sort(
+        (a: TransactionMeta, b: TransactionMeta) => b.time - a.time,
+      )[0];
+
+      if (returnToPage) {
+        const redirectPath =
+          returnToPage === '/account-details'
+            ? `${returnToPage}/${address}`
+            : returnToPage;
+        dispatch(setRedirectAfterDefaultPage({ path: redirectPath, address }));
       }
-    };
 
-    // Check initial state (when component mounts)
-    if (prevHasPendingRequests.current === undefined) {
-      checkUpgradeStatus();
+      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${latestTransaction.id}`);
+      return true;
     }
-    // Verify transaction result when pending requests complete
-    else if (prevHasPendingRequests.current && !hasPendingRequests) {
-      checkUpgradeStatus();
-    }
+    return false;
+  }, [
+    unconfirmedTransactions,
+    address,
+    chainIdHex,
+    history,
+    returnToPage,
+    dispatch,
+  ]);
 
-    prevHasPendingRequests.current = hasPendingRequests;
-  }, [isUpgraded, address, isSupported, hasPendingRequests]);
+  // Monitor for transactions when toggleState is set
+  useEffect(() => {
+    if (hasPendingRequests) {
+      const found = findAndRedirectToTransaction();
+
+      // If no transaction is found, reset after timeout
+      if (!found) {
+        const timeoutId = setTimeout(() => {
+          dispatch(
+            setToggleState({
+              address,
+              chainId: chainIdHex,
+              value: null,
+            }),
+          );
+        }, 5000); // 5 second timeout
+
+        return () => clearTimeout(timeoutId);
+      }
+    }
+    return undefined;
+  }, [
+    hasPendingRequests,
+    findAndRedirectToTransaction,
+    dispatch,
+    address,
+    chainIdHex,
+  ]);
 
   const onSwitch = useCallback(async () => {
-    // Immediately update the toggle state to show user's intent
-    setAddressSupportSmartAccount(!addressSupportSmartAccount);
+    // Immediately update the pending toggle state to show user's action
+    dispatch(
+      setToggleState({
+        address,
+        chainId: chainIdHex,
+        value: !toggleValue,
+      }),
+    );
 
-    // Dispatch the transaction
-    if (addressSupportSmartAccount) {
-      await downgradeAccount(address);
-    } else if (upgradeContractAddress) {
-      await upgradeAccount(address, upgradeContractAddress);
+    setHasUserInteracted(true);
+
+    try {
+      // Dispatch the transaction
+      if (toggleValue) {
+        await downgradeAccount(address);
+      } else if (upgradeContractAddress) {
+        await upgradeAccount(address, upgradeContractAddress);
+      }
+    } catch (error) {
+      // Reset toggleState on error
+      dispatch(
+        setToggleState({
+          address,
+          chainId: chainIdHex,
+          value: null,
+        }),
+      );
     }
   }, [
     address,
+    chainIdHex,
     downgradeAccount,
-    addressSupportSmartAccount,
+    toggleValue,
     upgradeAccount,
     upgradeContractAddress,
+    dispatch,
   ]);
 
   return (
@@ -89,12 +231,9 @@ export const SmartContractAccountToggle = ({
         {name}
       </Text>
       <ToggleButton
-        value={addressSupportSmartAccount}
+        value={toggleValue}
         onToggle={onSwitch}
-        disabled={
-          hasPendingRequests ||
-          (!addressSupportSmartAccount && !upgradeContractAddress)
-        }
+        disabled={isToggleDisabled}
       />
     </Box>
   );

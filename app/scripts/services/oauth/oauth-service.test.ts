@@ -1,13 +1,10 @@
-import {
-  AuthConnection,
-  Web3AuthNetwork,
-} from '@metamask/seedless-onboarding-controller';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { ENVIRONMENT } from '../../../../development/build/constants';
-import { OAuthConfig, WebAuthenticator } from './types';
+import { WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
-import { OAUTH_CONFIG } from './constants';
+import { loadOAuthConfig } from './config';
 
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
@@ -33,19 +30,6 @@ function getOAuthLoginEnvs(): {
   };
 }
 
-function getOAuthConfig(): OAuthConfig {
-  const config = OAUTH_CONFIG.development;
-
-  return {
-    authServerUrl: config.AUTH_SERVER_URL,
-    web3AuthNetwork: config.WEB3AUTH_NETWORK as Web3AuthNetwork,
-    googleAuthConnectionId: config.GOOGLE_AUTH_CONNECTION_ID,
-    googleGrouppedAuthConnectionId: config.GOOGLE_GROUPED_AUTH_CONNECTION_ID,
-    appleAuthConnectionId: config.APPLE_AUTH_CONNECTION_ID,
-    appleGrouppedAuthConnectionId: config.APPLE_GROUPED_AUTH_CONNECTION_ID,
-  };
-}
-
 const getRedirectUrlSpy = jest.fn().mockReturnValue(MOCK_REDIRECT_URI);
 const launchWebAuthFlowSpy = jest.fn().mockImplementation((_options, cb) => {
   return cb(`${MOCK_REDIRECT_URI}?code=mocked-code&state=${MOCK_STATE}`);
@@ -62,6 +46,9 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateCodeVerifierAndChallenge: generateCodeVerifierAndChallengeSpy,
   generateNonce: generateNonceSpy,
 };
+
+const mockBufferedTrace = jest.fn();
+const mockBufferedEndTrace = jest.fn();
 
 describe('OAuthService - startOAuthLogin', () => {
   beforeAll(() => {
@@ -81,6 +68,8 @@ describe('OAuthService - startOAuthLogin', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             id_token: MOCK_JWT_TOKEN,
           }),
+          status: 200,
+          ok: true,
         });
       }) as jest.Mock,
     );
@@ -96,6 +85,8 @@ describe('OAuthService - startOAuthLogin', () => {
     const oauthService = new OAuthService({
       env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Google);
@@ -104,7 +95,7 @@ describe('OAuthService - startOAuthLogin', () => {
       AuthConnection.Google,
       {
         ...oauthEnv,
-        ...getOAuthConfig(),
+        ...loadOAuthConfig(),
       },
       mockWebAuthenticator,
     );
@@ -124,6 +115,8 @@ describe('OAuthService - startOAuthLogin', () => {
     const oauthService = new OAuthService({
       env: oauthEnv,
       webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Apple);
@@ -132,7 +125,7 @@ describe('OAuthService - startOAuthLogin', () => {
       AuthConnection.Apple,
       {
         ...oauthEnv,
-        ...getOAuthConfig(),
+        ...loadOAuthConfig(),
       },
       mockWebAuthenticator,
     );
@@ -155,6 +148,8 @@ describe('OAuthService - startOAuthLogin', () => {
         ...mockWebAuthenticator,
         generateNonce: jest.fn().mockReturnValue(Math.random().toString()),
       },
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
     });
 
     await expect(
@@ -164,8 +159,7 @@ describe('OAuthService - startOAuthLogin', () => {
 });
 
 describe('OAuthService - getNewRefreshToken', () => {
-  beforeEach(() => {
-    // mock the fetch call to auth-server
+  it('should be able to get new refresh token', async () => {
     jest.spyOn(global, 'fetch').mockImplementation(
       jest.fn(() => {
         return Promise.resolve({
@@ -180,17 +174,19 @@ describe('OAuthService - getNewRefreshToken', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
           }),
+          status: 200,
+          ok: true,
         });
       }) as jest.Mock,
     );
-  });
 
-  it('should be able to get new refresh token', async () => {
-    const oauthConfig = getOAuthConfig();
+    const oauthConfig = loadOAuthConfig();
 
     const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
     });
 
     const result = await oauthService.getNewRefreshToken({
@@ -227,10 +223,34 @@ describe('OAuthService - getNewRefreshToken', () => {
       },
     );
   });
+
+  it('should throw an error if the get refresh token api call fails', async () => {
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn(() => {
+        return Promise.resolve({
+          status: 401,
+        });
+      }) as jest.Mock,
+    );
+
+    const oauthService = new OAuthService({
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+    });
+
+    await expect(
+      oauthService.getNewRefreshToken({
+        connection: AuthConnection.Google,
+        refreshToken: 'MOCK_REFRESH_TOKEN',
+      }),
+    ).rejects.toThrow('Failed to get auth token');
+  });
 });
 
 describe('OAuthService - revokeAndGetNewRefreshToken', () => {
-  beforeEach(() => {
+  it('should be able to get new refresh token', async () => {
     // mock the fetch call to auth-server
     jest.spyOn(global, 'fetch').mockImplementation(
       jest.fn(() => {
@@ -240,22 +260,24 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
             message: 'Token revoked successfully',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            new_refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
+            refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            new_revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
+            revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
           }),
+          status: 201,
+          ok: true,
         });
       }) as jest.Mock,
     );
-  });
 
-  it('should be able to get new refresh token', async () => {
     const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
       webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
     });
-    const oauthConfig = getOAuthConfig();
+    const oauthConfig = loadOAuthConfig();
 
     const result = await oauthService.revokeAndGetNewRefreshToken({
       connection: AuthConnection.Google,
@@ -281,5 +303,29 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
         }),
       },
     );
+  });
+
+  it('should throw an error if the revoke refresh token api call fails', async () => {
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn(() => {
+        return Promise.resolve({
+          status: 401,
+        });
+      }) as jest.Mock,
+    );
+
+    const oauthService = new OAuthService({
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+    });
+
+    await expect(
+      oauthService.revokeAndGetNewRefreshToken({
+        connection: AuthConnection.Google,
+        revokeToken: 'MOCK_REVOKE_TOKEN',
+      }),
+    ).rejects.toThrow('Failed to revoke refresh token');
   });
 });

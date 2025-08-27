@@ -42,7 +42,6 @@ import {
   setRemoveNftMessage,
   setNewNftAddedMessage,
   setActiveNetworkWithError,
-  setSwitchedNetworkDetails,
 } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
@@ -307,11 +306,6 @@ export function NftDetailsComponent({
       try {
         const networkConfigurationId = networks[nftChainId as Hex];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
-        await dispatch(
-          setSwitchedNetworkDetails({
-            networkClientId: networkConfigurationId,
-          }),
-        );
       } catch (err) {
         console.error(`Failed to switch chains for NFT.
           Target chainId: ${nftChainId}, Current chainId: ${
@@ -341,7 +335,14 @@ export function NftDetailsComponent({
       }),
     );
     // We only allow sending one NFT at a time
-    history.push(SEND_ROUTE);
+    if (process.env.SEND_REDESIGN_ENABLED) {
+      const queryParams = new URLSearchParams();
+      queryParams.append('address', nft.address);
+      queryParams.append('tokenId', nft.tokenId);
+      history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
+    } else {
+      history.push(SEND_ROUTE);
+    }
   };
 
   const getDateCreatedTimestamp = (dateString: string) => {

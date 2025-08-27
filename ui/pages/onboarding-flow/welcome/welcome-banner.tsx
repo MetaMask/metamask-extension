@@ -2,13 +2,14 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Box,
-  ButtonBase,
-  ButtonBaseSize,
+  Button,
+  ButtonSize,
   IconName,
   Text,
 } from '../../../components/component-library';
 import {
   BlockSize,
+  BorderRadius,
   TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -48,16 +49,17 @@ export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
         >
           {t('welcomeDescription')}
         </Text>
-        <ButtonBase
+        <Button
           data-testid="onboarding-get-started-button"
           className="welcome-banner__button"
-          size={ButtonBaseSize.Lg}
+          size={ButtonSize.Lg}
           onClick={() => setShowTermsOfUse(true)}
           endIconName={IconName.Arrow2Right}
           textTransform={TextTransform.Uppercase}
+          borderRadius={BorderRadius.pill}
         >
           {t('welcomeGetStarted')}
-        </ButtonBase>
+        </Button>
       </Box>
       {showTermsOfUse && (
         <TermsOfUsePopup

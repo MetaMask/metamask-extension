@@ -1,5 +1,6 @@
 import { type DebounceSettings, type DebouncedFunc, debounce } from 'lodash';
 import log from 'loglevel';
+import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
 
 export type { DebounceSettings } from 'lodash';
 
@@ -115,7 +116,7 @@ export class OperationSafener<O extends Op = Op> {
       // rejection from running `this.#bouncer.flush()` *is* an unhandled
       // rejection; we want it to bubble up to the process/window's
       // `unhandledRejection` listener, i.e., Sentry.
-      const { promise, resolve } = Promise.withResolvers<void>();
+      const { promise, resolve } = withResolvers<void>();
       finalInvocation.finally(resolve);
       this.#evacuating = promise;
     } else {

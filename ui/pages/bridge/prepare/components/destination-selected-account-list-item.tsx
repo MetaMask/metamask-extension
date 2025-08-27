@@ -1,25 +1,17 @@
 import React from 'react';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
 
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
-  Text,
-} from '../../../../components/component-library';
+import { Box, Text } from '../../../../components/component-library';
 
 import {
   AlignItems,
   BackgroundColor,
-  BorderColor,
   Display,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 
-import { getUseBlockie } from '../../../../selectors';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { DestinationAccount } from '../types';
 
@@ -32,37 +24,27 @@ type DestinationSelectedAccountListItemProps = {
 const DestinationSelectedAccountListItem: React.FC<
   DestinationSelectedAccountListItemProps
 > = ({ account, selected, onClick }) => {
-  const useBlockie = useSelector(getUseBlockie);
   const t = useI18nContext();
   const isExternalAccount = 'isExternal' in account && account.isExternal;
 
   return (
     <Box
       display={Display.Flex}
-      padding={4}
       backgroundColor={
         selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
       }
-      className={classnames('multichain-account-list-item', {
+      className={classnames('multichain-account-list-item px-4 gap-2', {
         'multichain-account-list-item--selected': selected,
       })}
       onClick={onClick}
       alignItems={AlignItems.center}
       style={{ pointerEvents: 'none' }}
     >
-      <AvatarAccount
-        borderColor={BorderColor.transparent}
-        size={AvatarAccountSize.Md}
-        address={account.address}
-        variant={
-          useBlockie
-            ? AvatarAccountVariant.Blockies
-            : AvatarAccountVariant.Jazzicon
-        }
-        marginInlineEnd={2}
-      />
-
-      <Box display={Display.Flex} style={{ flexDirection: 'column' }}>
+      <PreferredAvatar address={account.address} />
+      <Box
+        display={Display.Flex}
+        style={{ flexDirection: 'column', maxWidth: 'calc(100% - 60px)' }}
+      >
         <Text
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
@@ -72,7 +54,7 @@ const DestinationSelectedAccountListItem: React.FC<
           {t('destinationAccountPickerReceiveAt')}
         </Text>
 
-        <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
+        <Text variant={TextVariant.bodyMdMedium} marginBottom={1} ellipsis>
           {(() => {
             if (isExternalAccount) {
               if (account.metadata.name.endsWith('.eth')) {

@@ -5,8 +5,9 @@ import FixtureBuilder from '../../../fixture-builder';
 import { Driver } from '../../../webdriver/driver';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
-
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+import NetworkManager, {
+  NetworkId,
+} from '../../../page-objects/pages/network-manager';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -95,34 +96,37 @@ describe('View NFT details', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
+        const networkManager = new NetworkManager(driver);
+
         // Click to open the NFT details page and check title
         const homePage = new Homepage(driver);
         await homePage.goToNftTab();
 
+        // Show Ethereum NFTs
         const nftListPage = new NftListPage(driver);
-        if (isGlobalNetworkSelectorRemoved) {
-          await nftListPage.toggleLineaEnablement();
-        } else {
-          await nftListPage.filterNftsByNetworks('Current network');
-        }
-        await nftListPage.check_numberOfNftsDisplayed(2);
-        await nftListPage.check_nftNameIsDisplayed(
+        await networkManager.openNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await nftListPage.checkNumberOfNftsDisplayed(2);
+
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #2 on mainnet',
         );
-        if (isGlobalNetworkSelectorRemoved) {
-          await nftListPage.toggleLineaEnablement();
-        } else {
-          await nftListPage.filterNftsByNetworks('Popular networks');
-        }
-        await nftListPage.check_numberOfNftsDisplayed(3);
-        await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #1');
-        await nftListPage.check_nftNameIsDisplayed(
+
+        // Show All NFTs
+        await networkManager.openNetworkManager();
+        await networkManager.selectAllNetworks();
+
+        await nftListPage.checkNumberOfNftsDisplayed(3);
+
+        await nftListPage.checkNftNameIsDisplayed('Test Dapp NFTs #1');
+
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #2 on mainnet',
         );
       },

@@ -141,14 +141,18 @@ export abstract class BaseLoginHandler {
       },
     );
 
+    if (!res.ok) {
+      throw new Error('Failed to revoke refresh token');
+    }
+
     const data = await res.json();
     return {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      refresh_token: data.new_refresh_token,
+      refresh_token: data.refresh_token,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      revoke_token: data.new_revoke_token,
+      revoke_token: data.revoke_token,
     };
   }
 
@@ -171,6 +175,10 @@ export abstract class BaseLoginHandler {
         body: requestData,
       },
     );
+
+    if (!res.ok) {
+      throw new Error('Failed to get auth token');
+    }
 
     const data = await res.json();
     return data;

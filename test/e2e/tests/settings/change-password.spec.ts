@@ -9,11 +9,12 @@ import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   completeCreateNewWalletOnboardingFlow,
-  createNewWalletWithSocialLoginOnboardingFlow,
+  importWalletWithSocialLoginOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
+import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 
 async function doPasswordChangeAndLockWallet(
   driver: Driver,
@@ -25,36 +26,36 @@ async function doPasswordChangeAndLockWallet(
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.openSettingsPage();
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.check_pageIsLoaded();
+  await settingsPage.checkPageIsLoaded();
   await settingsPage.goToPrivacySettings();
 
   const privacySettings = new PrivacySettings(driver);
-  await privacySettings.check_pageIsLoaded();
+  await privacySettings.checkPageIsLoaded();
   await privacySettings.openChangePassword();
 
   const changePasswordPage = new ChangePasswordPage(driver);
-  await changePasswordPage.check_pageIsLoaded();
+  await changePasswordPage.checkPageIsLoaded();
 
   await changePasswordPage.confirmCurrentPassword(currentPassword);
 
   await changePasswordPage.changePassword(newPassword);
   if (isSocialLogin) {
-    await changePasswordPage.check_passwordChangedWarning();
+    await changePasswordPage.checkPasswordChangedWarning();
     await changePasswordPage.confirmChangePasswordWarning();
   }
 
-  await privacySettings.check_passwordChangeSuccessToastIsDisplayed();
+  await privacySettings.checkPasswordChangeSuccessToastIsDisplayed();
 
-  if (isSocialLogin) {
-    // Wait for the password change to be applied to the social login user
-    await driver.delay(2_000);
-  }
+  await settingsPage.closeSettingsPage();
+
+  // Wait for the password change to be applied
+  await driver.delay(2_000);
 
   await headerNavbar.lockMetaMask();
 }
 
 describe('Change wallet password', function () {
-  const OLD_PASSWORD = 'oldPassword';
+  const OLD_PASSWORD = WALLET_PASSWORD;
   const NEW_PASSWORD = 'newPassword';
 
   it('should change wallet password and able to unlock with new password', async function () {
@@ -70,7 +71,7 @@ describe('Change wallet password', function () {
           password: OLD_PASSWORD,
         });
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         await doPasswordChangeAndLockWallet(driver, OLD_PASSWORD, NEW_PASSWORD);
 
@@ -78,11 +79,11 @@ describe('Change wallet password', function () {
 
         // Try to login with old password, should show incorrect password message
         await loginPage.loginToHomepage(OLD_PASSWORD);
-        await loginPage.check_incorrectPasswordMessageIsDisplayed();
+        await loginPage.checkIncorrectPasswordMessageIsDisplayed();
 
         // Login with new password, should login successfully
         await loginPage.loginToHomepage(NEW_PASSWORD);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
       },
     );
   });
@@ -95,20 +96,23 @@ describe('Change wallet password', function () {
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
-          return oAuthMockttpService.setup(server);
+          return oAuthMockttpService.setup(server, {
+            userEmail: MOCK_GOOGLE_ACCOUNT,
+          });
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await createNewWalletWithSocialLoginOnboardingFlow({
+        await importWalletWithSocialLoginOnboardingFlow({
           driver,
           password: OLD_PASSWORD,
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.completeOnboarding();
+        const isSocialImportFlow = true;
+        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         await doPasswordChangeAndLockWallet(
           driver,
@@ -121,11 +125,11 @@ describe('Change wallet password', function () {
 
         // // Try to login with old password, should show incorrect password message
         await loginPage.loginToHomepage(OLD_PASSWORD);
-        await loginPage.check_incorrectPasswordMessageIsDisplayed();
+        await loginPage.checkIncorrectPasswordMessageIsDisplayed();
 
         // Login with new password, should login successfully
         await loginPage.loginToHomepage(NEW_PASSWORD);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
       },
     );
   });

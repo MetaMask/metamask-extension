@@ -24,13 +24,6 @@ import {
   nonceSortedPendingTransactionsSelector,
   nonceSortedPendingTransactionsSelectorAllChains,
 } from '../../../selectors/transactions';
-import {
-  remoteModeNonceSortedCompletedTransactionsSelector,
-  remoteModeNonceSortedCompletedTransactionsSelectorAllChains,
-  remoteModeNonceSortedPendingTransactionsSelector,
-  remoteModeNonceSortedPendingTransactionsSelectorAllChains,
-  getIsRemoteModeEnabled,
-} from '../../../selectors/remote-mode';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getCurrentNetwork,
@@ -434,52 +427,6 @@ export default function TransactionList({
     unfilteredCompletedTransactionsAllChains,
   ]);
 
-  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-
-  const unfilteredRemoteModePendingTransactionsCurrentChain = useSelector(
-    remoteModeNonceSortedPendingTransactionsSelector,
-  );
-
-  const unfilteredRemoteModePendingTransactionsAllChains = useSelector(
-    remoteModeNonceSortedPendingTransactionsSelectorAllChains,
-  );
-
-  const unfilteredRemoteModePendingTransactions = useMemo(() => {
-    if (!isRemoteModeEnabled) {
-      return [];
-    }
-    return isTokenNetworkFilterEqualCurrentNetwork
-      ? unfilteredRemoteModePendingTransactionsCurrentChain
-      : unfilteredRemoteModePendingTransactionsAllChains;
-  }, [
-    isRemoteModeEnabled,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    unfilteredRemoteModePendingTransactionsAllChains,
-    unfilteredRemoteModePendingTransactionsCurrentChain,
-  ]);
-
-  const unfilteredRemoteModeCompletedTransactionsAllChains = useSelector(
-    remoteModeNonceSortedCompletedTransactionsSelectorAllChains,
-  );
-
-  const unfilteredRemoteModeCompletedTransactionsCurrentChain = useSelector(
-    remoteModeNonceSortedCompletedTransactionsSelector,
-  );
-
-  const unfilteredRemoteModeCompletedTransactions = useMemo(() => {
-    if (!isRemoteModeEnabled) {
-      return [];
-    }
-    return isTokenNetworkFilterEqualCurrentNetwork
-      ? unfilteredRemoteModeCompletedTransactionsCurrentChain
-      : unfilteredRemoteModeCompletedTransactionsAllChains;
-  }, [
-    isTokenNetworkFilterEqualCurrentNetwork,
-    unfilteredRemoteModeCompletedTransactionsAllChains,
-    unfilteredRemoteModeCompletedTransactionsCurrentChain,
-    isRemoteModeEnabled,
-  ]);
-
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -529,10 +476,7 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroups(
-          [
-            ...unfilteredPendingTransactions,
-            ...unfilteredRemoteModePendingTransactions,
-          ],
+          unfilteredPendingTransactions,
           hideTokenTransactions,
           tokenAddress,
           chainId,
@@ -540,7 +484,6 @@ export default function TransactionList({
       ),
     [
       unfilteredPendingTransactions,
-      unfilteredRemoteModePendingTransactions,
       hideTokenTransactions,
       tokenAddress,
       chainId,
@@ -551,12 +494,9 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroupsAllChains(
-          [
-            ...(isGlobalNetworkSelectorRemoved
-              ? enabledNetworksFilteredCompletedTransactions
-              : unfilteredCompletedTransactions),
-            ...unfilteredRemoteModeCompletedTransactions,
-          ],
+          isGlobalNetworkSelectorRemoved
+            ? enabledNetworksFilteredCompletedTransactions
+            : unfilteredCompletedTransactions,
           hideTokenTransactions,
           tokenAddress,
         ),
@@ -566,7 +506,6 @@ export default function TransactionList({
       tokenAddress,
       enabledNetworksFilteredCompletedTransactions,
       unfilteredCompletedTransactions,
-      unfilteredRemoteModeCompletedTransactions,
     ],
   );
 
@@ -613,6 +552,7 @@ export default function TransactionList({
         <AssetListControlBar
           showSortControl={false}
           showTokenFiatBalance={false}
+          showImportTokenButton={false}
         />
       );
     }
@@ -785,8 +725,7 @@ export default function TransactionList({
       ) : null}
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
-        {process.env.REMOVE_GNS &&
-        pendingTransactions.length === 0 &&
+        {pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
           <NoTransactions />
         ) : (

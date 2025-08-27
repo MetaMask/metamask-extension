@@ -65,6 +65,17 @@ const removedBackgroundFields = [
   'PPOMController.versionInfo',
   // This property is timing-dependent
   'MetaMetricsController.latestNonAnonymousEventTimestamp',
+  // PhishingController properties (except urlScanCache which is masked)
+  'PhishingController.c2DomainBlocklistLastFetched',
+  'PhishingController.hotlistLastFetched',
+  'PhishingController.phishingLists',
+  'PhishingController.stalelistLastFetched',
+  'PhishingController.whitelist',
+];
+
+const ignoredConsoleErrors = [
+  // The UI logs the expected error
+  "Cannot read properties of undefined (reading 'version')",
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
@@ -249,6 +260,7 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors,
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -279,10 +291,11 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors,
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -319,6 +332,7 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors,
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -364,6 +378,7 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors,
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -477,7 +492,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -522,7 +537,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -582,10 +597,11 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors,
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
 
           // Trigger error
           await driver.executeScript(
@@ -620,7 +636,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -651,10 +667,14 @@ describe('Sentry errors', function () {
           manifestFlags: {
             sentry: { forceEnable: false },
           },
+          ignoredConsoleErrors: [
+            // The UI logs the expected error
+            "TypeError: Cannot read properties of undefined (reading 'version')",
+          ],
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
 
           // Trigger error
           await driver.executeScript(
@@ -762,7 +782,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await new LoginPage(driver).check_pageIsLoaded();
+          await new LoginPage(driver).checkPageIsLoaded();
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -911,7 +931,7 @@ describe('Sentry errors', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await new LoginPage(driver).check_pageIsLoaded();
+        await new LoginPage(driver).checkPageIsLoaded();
 
         const fullUiState = await driver.executeScript(() =>
           (

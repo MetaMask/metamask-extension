@@ -1,7 +1,7 @@
 import log from 'loglevel';
-import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
+import { captureException } from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
@@ -140,7 +140,7 @@ export class PersistenceManager {
 
   #localStore: BaseStore;
 
-  #backupDb: IndexedDBStore;
+  #backupDb: IndexedDBStore | null = null;
 
   #backup?: string;
 
@@ -148,12 +148,36 @@ export class PersistenceManager {
 
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
-    this.#backupDb = new IndexedDBStore();
   }
 
   async open() {
     if (!this.#open) {
-      await this.#backupDb.open('metamask-backup', 1);
+      try {
+        const db = new IndexedDBStore();
+        await db.open('metamask-backup', 1);
+        this.#backupDb = db;
+      } catch (error) {
+        // `indexedDB` can't be used by addons in FF in some instances of
+        // private browsing mode due to this bug:
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
+        // cases we just won't have a backup vault.
+        if (
+          isObject(error) &&
+          error instanceof DOMException &&
+          error.name === 'InvalidStateError' &&
+          error.message ===
+            'A mutation operation was attempted on a database that did not allow mutations.'
+        ) {
+          captureException(error);
+          console.warn(
+            'Could not open backup database; automatic vault recovery will not be available.',
+          );
+          console.error(error);
+        } else {
+          // rethrow since we couldn't handle it here.
+          throw error;
+        }
+      }
       this.#open = true;
     }
   }
@@ -217,7 +241,7 @@ export class PersistenceManager {
             // and the backup has changed
             if (this.#backup !== stringifiedBackup) {
               // save it to the backup DB
-              await this.#backupDb.set(backup);
+              await this.#backupDb?.set(backup);
               this.#backup = stringifiedBackup;
             }
           }
@@ -272,7 +296,10 @@ export class PersistenceManager {
             // this check verifies if we have any keys saved in our backup.
             // we use this as a sigil to determine if we've ever saved a vault
             // before.
-            if (Object.values(backup).some((value) => value !== undefined)) {
+            if (
+              backup &&
+              Object.values(backup).some((value) => value !== undefined)
+            ) {
               // we've got some data (we haven't checked for a vault, as the
               // background+UI are responsible for determining what happens now)
               throw new PersistenceError(MISSING_VAULT_ERROR, backup);
@@ -304,7 +331,7 @@ export class PersistenceManager {
       async () => {
         await Promise.all([
           this.#localStore.reset(),
-          await this.#backupDb.reset(),
+          await this.#backupDb?.reset(),
         ]);
         this.#backup = undefined;
         this.#isExtensionInitialized = false;
@@ -318,9 +345,14 @@ export class PersistenceManager {
   /**
    * Retrieves the backup object containing the state of various controllers.
    */
-  async getBackup(): Promise<Backup> {
-    const [KeyringController, AppMetadataController, meta] =
-      await this.#backupDb.get([...backedUpStateKeys, `meta`]);
+  async getBackup(): Promise<Backup | undefined> {
+    const backupDb = this.#backupDb;
+    if (!backupDb) {
+      return undefined;
+    }
+    const [KeyringController, AppMetadataController, meta] = await backupDb.get(
+      [...backedUpStateKeys, `meta`],
+    );
     return {
       KeyringController,
       AppMetadataController,

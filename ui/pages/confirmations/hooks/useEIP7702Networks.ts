@@ -36,7 +36,8 @@ export const useEIP7702Networks = (address: string) => {
 
   const [nonTestNetworks = {}, testNetworks = {}] = useMemo(() => {
     if (!isSupportedKeyringType) {
-      return [];
+      // We return empty objects for unsupported keyring types
+      return [{}, {}];
     }
     return Object.entries(multichainNetworks).reduce(
       ([nonTestnetsList, testnetsList], [id, network]) => {
@@ -101,6 +102,13 @@ export const useEIP7702Networks = (address: string) => {
         } catch (err: unknown) {
           // console.log(err);
         }
+      });
+
+      // Sort by chainIdHex to ensure consistent ordering for comparison
+      networksSupporting7702.sort((a, b) => {
+        const aChainIdNum = parseInt(a.chainIdHex, 16);
+        const bChainIdNum = parseInt(b.chainIdHex, 16);
+        return aChainIdNum - bChainIdNum;
       });
 
       return networksSupporting7702;

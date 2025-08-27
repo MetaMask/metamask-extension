@@ -1,11 +1,11 @@
 import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 
 import {
   showModal,
   removeSlide,
+  setAccountDetailsAddress,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   setSelectedAccount,
   ///: END:ONLY_INCLUDE_IF
@@ -13,7 +13,7 @@ import {
 import { Carousel } from '..';
 import {
   getAppIsLoading,
-  getSwapsDefaultToken,
+  getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   hasCreatedSolanaAccount,
   ///: END:ONLY_INCLUDE_IF
@@ -35,12 +35,15 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
+  DOWNLOAD_MOBILE_APP_SLIDE,
 } from '../../../hooks/useCarouselManagement';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
+import { getUseSmartAccount } from '../../../pages/confirmations/selectors/preferences';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
+import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -59,6 +62,8 @@ export const AccountOverviewLayout = ({
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
   const history = useHistory();
+  const selectedAccount = useSelector(getSelectedAccount);
+  const smartAccountOptIn = useSelector(getUseSmartAccount);
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
@@ -67,7 +72,8 @@ export const AccountOverviewLayout = ({
   const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
   ///: END:ONLY_INCLUDE_IF
 
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+  const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
+    useState(false);
 
   const { slides } = useCarouselManagement();
 
@@ -75,11 +81,8 @@ export const AccountOverviewLayout = ({
 
   const handleCarouselClick = (id: string) => {
     if (id === 'bridge') {
-      openBridgeExperience(
-        'Carousel',
-        defaultSwapsToken,
-        location.pathname.includes('asset') ? '&token=native' : '',
-      );
+      // Handle clicking from the wallet overview page carousel
+      openBridgeExperience('Carousel');
     }
 
     if (id === BASIC_FUNCTIONALITY_SLIDE.id) {
@@ -101,7 +104,15 @@ export const AccountOverviewLayout = ({
     ///: END:ONLY_INCLUDE_IF
 
     if (id === SMART_ACCOUNT_UPGRADE_SLIDE.id) {
-      history.replace(SMART_ACCOUNT_UPDATE);
+      if (smartAccountOptIn) {
+        dispatch(setAccountDetailsAddress(selectedAccount.address));
+      } else {
+        history.replace(SMART_ACCOUNT_UPDATE);
+      }
+    }
+
+    if (id === DOWNLOAD_MOBILE_APP_SLIDE.id) {
+      setShowDownloadMobileAppModal(true);
     }
 
     trackEvent({
@@ -165,6 +176,11 @@ export const AccountOverviewLayout = ({
         )
         ///: END:ONLY_INCLUDE_IF
       }
+      {showDownloadMobileAppModal && (
+        <DownloadMobileAppModal
+          onClose={() => setShowDownloadMobileAppModal(false)}
+        />
+      )}
     </>
   );
 };

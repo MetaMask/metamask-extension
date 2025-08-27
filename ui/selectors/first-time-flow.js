@@ -6,9 +6,9 @@ import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../helpers/constants/routes';
 
@@ -38,7 +38,8 @@ export const getIsSocialLoginFlow = (state) => {
  * @returns {string} Route to redirect the user to
  */
 export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
-  const { firstTimeFlowType } = state.metamask;
+  const { firstTimeFlowType, participateInMetaMetrics } = state.metamask;
+  const hasSetMetaMetrics = participateInMetaMetrics !== null;
 
   if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_CREATE_PASSWORD_ROUTE;
@@ -47,12 +48,16 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_METAMETRICS;
   } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-    return ONBOARDING_METAMETRICS;
+    return hasSetMetaMetrics
+      ? ONBOARDING_COMPLETION_ROUTE
+      : ONBOARDING_METAMETRICS;
   } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
     if (getBrowserName() === PLATFORM_FIREFOX) {
-      return ONBOARDING_PIN_EXTENSION_ROUTE;
+      return ONBOARDING_DOWNLOAD_APP_ROUTE;
     }
-    return ONBOARDING_METAMETRICS;
+    return hasSetMetaMetrics
+      ? ONBOARDING_COMPLETION_ROUTE
+      : ONBOARDING_METAMETRICS;
   }
   return DEFAULT_ROUTE;
 }
@@ -81,7 +86,7 @@ export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
     return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-    return ONBOARDING_PIN_EXTENSION_ROUTE;
+    return ONBOARDING_DOWNLOAD_APP_ROUTE;
   }
   return DEFAULT_ROUTE;
 }

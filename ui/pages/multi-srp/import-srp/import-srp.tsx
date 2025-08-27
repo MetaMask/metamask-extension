@@ -10,7 +10,13 @@ import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import * as actions from '../../../store/actions';
+import {
+  hideWarning,
+  checkIsSeedlessPasswordOutdated,
+  importMnemonicToVault,
+  lockAccountSyncing,
+  unlockAccountSyncing,
+} from '../../../store/actions';
 import {
   Text,
   Box,
@@ -84,14 +90,14 @@ export const ImportSrp = () => {
   // We want to hide the warning when the component unmounts
   useEffect(() => {
     return () => {
-      dispatch(actions.hideWarning());
+      dispatch(hideWarning());
     };
   }, [dispatch]);
 
   async function importWallet() {
     if (isSocialLoginEnabled) {
       const isPasswordOutdated = await dispatch(
-        actions.checkIsSeedlessPasswordOutdated(true),
+        checkIsSeedlessPasswordOutdated(true),
       );
       if (isPasswordOutdated) {
         return;
@@ -100,20 +106,35 @@ export const ImportSrp = () => {
 
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
-      await dispatch(actions.importMnemonicToVault(joinedSrp));
+      const result = (await dispatch(
+        importMnemonicToVault(joinedSrp),
+      )) as unknown as {
+        newAccountAddress: string;
+        discoveredAccounts: { bitcoin: number; solana: number };
+      };
+
+      const { discoveredAccounts } = result;
+
       // Clear the secret recovery phrase after importing
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
+
+      // Track the event with the discovered accounts
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      trackEvent({
+        event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: newHdEntropyIndex,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_solana_accounts_discovered: discoveredAccounts?.solana,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_bitcoin_accounts_discovered: discoveredAccounts?.bitcoin,
+        },
+      });
     }
+
     history.push(DEFAULT_ROUTE);
     dispatch(setShowNewSrpAddedToast(true));
-    trackEvent({
-      event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: newHdEntropyIndex,
-      },
-    });
   }
 
   const isValidSrp = useMemo(() => {
@@ -406,7 +427,7 @@ export const ImportSrp = () => {
               description={srpError}
               actionButtonLabel={t('clear')}
               actionButtonOnClick={() => {
-                onSrpChange(Array(defaultNumberOfWords).fill(''));
+                onSrpChange(Array(numberOfWords).fill(''));
                 setSrpError('');
               }}
               data-testid="bannerAlert"
@@ -449,7 +470,7 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
-                await dispatch(actions.lockAccountSyncing());
+                await dispatch(lockAccountSyncing());
                 await importWallet();
               } catch (e) {
                 setSrpError(
@@ -460,7 +481,7 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
-                await dispatch(actions.unlockAccountSyncing());
+                await dispatch(unlockAccountSyncing());
               }
             }}
           >

@@ -152,7 +152,7 @@ export default function DefiList({ onClick }: DefiListProps) {
       ) : (
         <DeFiEmptyStateMessage
           primaryText={t('noDeFiPositions')}
-          secondaryText={t('startEarning')}
+          secondaryText={t('protocolNotSupported')}
         />
       )}
     </>

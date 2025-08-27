@@ -28,7 +28,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="button btn-secondary btn--large"
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
             data-testid="advanced-setting-state-logs-button"
           >
             Download state logs
@@ -59,7 +59,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="button btn-danger btn--large settings-tab__button--red"
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-button-primary--type-danger mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-inverse mm-box--background-color-error-default mm-box--rounded-xl"
           >
             Clear activity tab data
           </button>
@@ -67,7 +67,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-smart-account-optin"
     >
       <div
@@ -102,7 +102,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -143,7 +143,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-dismiss-smart-account-suggestion-enabled"
     >
       <div
@@ -170,7 +170,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -211,7 +211,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-enable-smart-transactions"
     >
       <div
@@ -291,7 +291,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-hex-data"
     >
       <div
@@ -317,7 +317,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -357,7 +357,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-show-testnet-conversion"
     >
       <div
@@ -383,7 +383,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -423,7 +423,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-show-testnet-conversion"
     >
       <div
@@ -489,7 +489,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-dismiss-reminder"
     >
       <div
@@ -515,7 +515,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -555,7 +555,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-show-extension-in-full-size-view"
     >
       <div
@@ -581,7 +581,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -663,7 +663,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             
           </div>
           <button
-            class="button btn-primary settings-tab__rpc-save-button"
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
             data-testid="auto-lockout-button"
           >
             Save
@@ -694,7 +694,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="button btn-secondary btn--large"
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
             data-testid="export-data-button"
           >
             Download
@@ -703,7 +703,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-dismiss-reminder"
     >
       <div
@@ -729,7 +729,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
           >
             <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(104, 110, 125);"
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
             >
               <div
                 style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"

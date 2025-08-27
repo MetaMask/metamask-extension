@@ -8,6 +8,7 @@ import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   METHOD_REPAIR_DATABASE,
 } from '../../../../shared/constants/state-corruption';
+import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';
 import {
   waitForMicrotask,
   PortPolyfill,
@@ -84,7 +85,7 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
                   method: '__INVALID__',
                 },
               });
-            } else if (message.data.method === 'RELOAD') {
+            } else if (message.data.method === RELOAD_WINDOW) {
               reloadFn(ui);
             }
           });

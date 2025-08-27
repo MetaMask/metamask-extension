@@ -1,5 +1,16 @@
 import { Driver } from '../../webdriver/driver';
 
+export enum NetworkId {
+  ETHEREUM = 'eip155:1',
+  LINEA = 'eip155:59144',
+  ARBITRUM = 'eip155:42161',
+  AVALANCHE = 'eip155:43114',
+  BSC = 'eip155:56',
+  BASE = 'eip155:8453',
+  OPTIMISM = 'eip155:10',
+  POLYGON = 'eip155:137',
+}
+
 class NetworkManager {
   protected readonly driver: Driver;
 
@@ -8,11 +19,17 @@ class NetworkManager {
   private readonly networkManagerCloseButton =
     '[data-testid="modal-header-close-button"]';
 
+  private readonly networkManagerSelectAllButton =
+    '[data-testid="network-manager-select-all"]';
+
+  private readonly selectedNetworkListItem = (selector: string) =>
+    `:is(${selector}.multichain-network-list-item--selected, ${selector} .multichain-network-list-item--selected)`;
+
+  private readonly deselectedNetworkListItem = (selector: string) =>
+    `:is(${selector}.multichain-network-list-item--deselected, ${selector} .multichain-network-list-item--deselected)`;
+
   private readonly networkListItem = (networkName: string) =>
     `[data-testid="network-list-item-${networkName}"]`;
-
-  private readonly networkCheckbox = (networkName: string) =>
-    `[data-testid="network-list-item-${networkName}"] input[type="checkbox"]`;
 
   private readonly tabList = '.tabs__list.network-manager__tab-list';
 
@@ -24,11 +41,14 @@ class NetworkManager {
   async openNetworkManager(): Promise<void> {
     console.log(`Opening the network manager`);
     await this.driver.clickElement(this.networkManagerToggle);
+    await this.driver.waitForSelector(this.networkManagerCloseButton);
   }
 
   async closeNetworkManager(): Promise<void> {
     console.log(`Closing the network manager`);
-    await this.driver.clickElement(this.networkManagerCloseButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.networkManagerCloseButton,
+    );
   }
 
   async selectTab(tabName: string): Promise<void> {
@@ -38,32 +58,57 @@ class NetworkManager {
     });
   }
 
-  // Method to select/click on a network item
-  async selectNetwork(networkName: string): Promise<void> {
-    console.log(`Selecting network: ${networkName}`);
-    await this.checkNetworkIsDeselected(networkName);
-    await this.driver.clickElementSafe(this.networkListItem(networkName));
+  async selectAllNetworks(): Promise<void> {
+    console.log('Selecting all networks');
+    await this.driver.clickElement(this.networkManagerSelectAllButton);
+    await this.driver.delay(1000); // small delay to ensure networks are all selected
   }
 
-  async deselectNetwork(networkName: string): Promise<void> {
-    console.log(`Deselecting network: ${networkName}`);
-    await this.checkNetworkIsSelected(networkName);
-    await this.driver.clickElementSafe(this.networkListItem(networkName));
+  async selectNetworkByChainId(chainId: string): Promise<void> {
+    await this.driver.clickElementSafe(this.networkListItem(chainId));
+  }
+
+  async checkAllPopularNetworksIsSelected(): Promise<void> {
+    console.log('Checking if "All popular networks" is selected');
+
+    try {
+      await this.driver.waitForSelector(
+        this.selectedNetworkListItem(this.networkManagerSelectAllButton),
+      );
+
+      console.log('All popular networks is properly selected');
+    } catch (error) {
+      throw new Error('All popular networks is not selected');
+    }
+  }
+
+  async checkAllPopularNetworksIsDeselected(): Promise<void> {
+    console.log('Checking if "All popular networks" is deselected');
+
+    try {
+      await this.driver.waitForSelector(
+        this.deselectedNetworkListItem(this.networkManagerSelectAllButton),
+      );
+
+      console.log('All popular networks is properly deselected');
+    } catch (error) {
+      throw new Error('All popular networks is selected');
+    }
   }
 
   // Method to check if a network is currently selected/active
   async checkNetworkIsSelected(networkName: string): Promise<void> {
     console.log(`Checking if network is selected: ${networkName}`);
-    const checkbox = await this.driver.waitForSelector(
-      this.networkCheckbox(networkName),
-    );
-    const isChecked = await checkbox.isSelected();
-    if (!isChecked) {
-      throw new Error(
-        `Network ${networkName} is not selected (checkbox not checked)`,
+
+    try {
+      await this.driver.waitForSelector(
+        this.selectedNetworkListItem(this.networkListItem(networkName)),
       );
+
+      console.log(`Network ${networkName} is properly selected`);
+    } catch (error) {
+      throw new Error(`Network ${networkName} is not selected`);
     }
-    console.log(`Network ${networkName} is properly selected`);
   }
 
   async checkCustomNetworkIsSelected(caipChainId: string) {
@@ -81,16 +126,16 @@ class NetworkManager {
 
   async checkNetworkIsDeselected(networkName: string): Promise<void> {
     console.log(`Checking if network is deselected: ${networkName}`);
-    const checkbox = await this.driver.waitForSelector(
-      this.networkCheckbox(networkName),
-    );
-    const isChecked = await checkbox.isSelected();
-    if (isChecked) {
-      throw new Error(
-        `Network ${networkName} is still selected (checkbox is checked)`,
+
+    try {
+      await this.driver.waitForSelector(
+        this.deselectedNetworkListItem(this.networkListItem(networkName)),
       );
+
+      console.log(`Network ${networkName} is properly deselected`);
+    } catch (error) {
+      throw new Error(`Network ${networkName} is selected`);
     }
-    console.log(`Network ${networkName} is properly deselected`);
   }
 
   async checkTabIsSelected(tabName: string): Promise<void> {
