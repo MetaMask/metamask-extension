@@ -435,7 +435,6 @@ import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
-import LockWithStatus from './lib/lock/custom-lock-with-status';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -544,7 +543,7 @@ export default class MetamaskController extends EventEmitter {
     this.createVaultMutex = new Mutex();
 
     // lock to ensure only one seedless onboarding operation is running at once
-    this.seedlessOperationMutex = new LockWithStatus();
+    this.seedlessOperationMutex = new Mutex();
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -8726,15 +8725,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async setLocked(skipSeedlessOperationLock = false) {
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-
-    if (
-      isSocialLoginFlow &&
-      !skipSeedlessOperationLock &&
-      this.seedlessOperationMutex.isLocked()
-    ) {
-      log.error('seedlessOperationMutex is locked');
-      throw new Error('seedlessOperationMutex is locked');
-    }
 
     let releaseLock;
     if (isSocialLoginFlow && !skipSeedlessOperationLock) {

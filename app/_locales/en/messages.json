@@ -3217,9 +3217,6 @@
   "lock": {
     "message": "Lock"
   },
-  "lockFailureToastText": {
-    "message": "Another operation is in progress. Please wait until it’s complete."
-  },
   "lockMetaMask": {
     "message": "Lock MetaMask"
   },

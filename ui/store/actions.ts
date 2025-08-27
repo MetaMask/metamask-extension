@@ -2179,7 +2179,7 @@ export function lockMetamask(): ThunkAction<
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
+    dispatch(showLoadingIndication('Locking MetaMask...'));
 
     return backgroundSetLocked()
       .then(() => forceUpdateMetamaskState(dispatch))
@@ -2193,16 +2193,8 @@ export function lockMetamask(): ThunkAction<
       })
       .catch(() => {
         dispatch(hideLoadingIndication());
-        dispatch(setShowLockFailureToast(true));
-        log.error('failed to lock metamask');
+        dispatch({ type: actionConstants.LOCK_METAMASK });
       });
-  };
-}
-
-export function setShowLockFailureToast(shouldDisplay: boolean) {
-  return {
-    type: actionConstants.SET_SHOW_LOCK_FAILURE_TOAST,
-    payload: shouldDisplay,
   };
 }
 

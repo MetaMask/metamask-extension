@@ -24,7 +24,6 @@ type State = {
       | 'showNewSrpAddedToast'
       | 'showPasswordChangeToast'
       | 'showCopyAddressToast'
-      | 'showLockFailureToast'
     >
   >;
   metamask: Partial<
@@ -150,10 +149,4 @@ export function selectShowCopyAddressToast(
   state: Pick<State, 'appState'>,
 ): boolean {
   return Boolean(state.appState.showCopyAddressToast);
-}
-
-export function selectShowLockFailureToast(
-  state: Pick<State, 'appState'>,
-): boolean {
-  return Boolean(state.appState.showLockFailureToast);
 }
