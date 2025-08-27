@@ -168,7 +168,7 @@ export const BridgeInputGroup = ({
   };
 
   return (
-    <Column paddingInline={6} gap={1}>
+    <Column paddingInline={4} gap={1}>
       <Row gap={4}>
         <TextField
           inputProps={{

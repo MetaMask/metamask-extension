@@ -68,6 +68,7 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
@@ -496,7 +497,7 @@ const PrepareBridgePage = ({
 
   return (
     <>
-      <Column className="prepare-bridge-page" gap={isToOrFromSolana ? 2 : 8}>
+      <Column className="prepare-bridge-page" gap={4}>
         <BridgeInputGroup
           header={getFromInputHeader()}
           token={fromToken}
@@ -569,7 +570,9 @@ const PrepareBridgePage = ({
 
         <Column
           height={BlockSize.Full}
-          paddingTop={isToOrFromSolana ? 4 : 8}
+          paddingTop={4}
+          paddingBottom={4}
+          gap={4}
           backgroundColor={BackgroundColor.backgroundAlternativeSoft}
           style={{
             position: 'relative',
@@ -736,152 +739,155 @@ const PrepareBridgePage = ({
           />
 
           {isToOrFromSolana && (
-            <Box padding={6} paddingBottom={3} paddingTop={3}>
-              <DestinationAccountPicker
-                onAccountSelect={setSelectedDestinationAccount}
-                selectedSwapToAccount={selectedDestinationAccount}
-              />
-            </Box>
+            <DestinationAccountPicker
+              onAccountSelect={setSelectedDestinationAccount}
+              selectedSwapToAccount={selectedDestinationAccount}
+            />
           )}
 
-          <Column
-            height={BlockSize.Full}
-            justifyContent={JustifyContent.center}
-          >
-            {isLoading && !activeQuote ? (
-              <>
-                <Text
-                  textAlign={TextAlign.Center}
-                  color={TextColor.textAlternativeSoft}
-                >
-                  {t('swapFetchingQuotes')}
-                </Text>
-                <MascotBackgroundAnimation height="64" width="64" />
-              </>
-            ) : null}
-          </Column>
-
-          <Row padding={6} paddingTop={6}>
+          {isLoading && !activeQuote ? (
             <Column
-              gap={3}
-              className={activeQuote ? 'highlight' : ''}
-              style={{
-                paddingBottom: activeQuote?.approval ? 16 : 'revert-layer',
-                paddingTop: activeQuote?.approval ? 16 : undefined,
-                paddingInline: 16,
-                position: 'relative',
-                overflow: 'hidden',
-                ...(activeQuote && !wasTxDeclined
-                  ? {
-                      boxShadow:
-                        'var(--shadow-size-sm) var(--color-shadow-default)',
-                      backgroundColor: 'var(--color-background-default)',
-                      borderRadius: 8,
-                    }
-                  : {}),
-              }}
+              height={BlockSize.Full}
+              justifyContent={JustifyContent.center}
             >
-              {activeQuote && isQuoteGoingToRefresh && (
-                <Row
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: `calc(100% * (${refreshRate} - ${millisecondsUntilNextRefresh}) / ${refreshRate})`,
-                    height: 4,
-                    maxWidth: '100%',
-                    transition: 'width 1s linear',
-                  }}
-                  backgroundColor={BackgroundColor.primaryMuted}
-                />
-              )}
-              {!wasTxDeclined && activeQuote && (
-                <MultichainBridgeQuoteCard
-                  onOpenSlippageModal={onOpenSettings}
-                />
-              )}
-              <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
-                <BridgeCTAButton
-                  onFetchNewQuotes={() => {
-                    debouncedUpdateQuoteRequestInController(quoteParams, {
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      stx_enabled: smartTransactionsEnabled,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_symbol_source: fromToken?.symbol ?? '',
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_symbol_destination: toToken?.symbol ?? '',
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      security_warnings: [], // TODO populate security warnings
-                    });
-                  }}
-                  needsDestinationAddress={
-                    isToOrFromSolana && !selectedDestinationAccount
-                  }
-                />
-                {activeQuote &&
-                activeQuote.approval &&
-                activeQuote.sentAmount &&
-                activeQuote.quote.srcAsset?.symbol ? (
-                  <Row justifyContent={JustifyContent.center} gap={1}>
-                    <Text
-                      color={TextColor.textAlternativeSoft}
-                      variant={TextVariant.bodyXs}
-                      textAlign={TextAlign.Center}
-                    >
-                      {(() => {
-                        if (isUsingHardwareWallet) {
-                          return t('willApproveAmountForBridgingHardware');
-                        }
-                        if (isSwap) {
-                          return t('willApproveAmountForSwapping', [
+              <Text
+                textAlign={TextAlign.Center}
+                color={TextColor.textAlternativeSoft}
+              >
+                {t('swapFetchingQuotes')}
+              </Text>
+              <MascotBackgroundAnimation height="64" width="64" />
+            </Column>
+          ) : (
+            <Row
+              paddingInline={4}
+              height={BlockSize.Full}
+              alignItems={AlignItems.flexEnd}
+            >
+              <Column
+                gap={3}
+                className={activeQuote ? 'highlight' : ''}
+                style={{
+                  paddingBottom: activeQuote?.approval ? 16 : 'revert-layer',
+                  paddingTop: activeQuote?.approval ? 16 : undefined,
+                  paddingInline: 16,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  ...(activeQuote && !wasTxDeclined
+                    ? {
+                        boxShadow:
+                          'var(--shadow-size-sm) var(--color-shadow-default)',
+                        backgroundColor: 'var(--color-background-default)',
+                        borderRadius: 8,
+                      }
+                    : {}),
+                }}
+              >
+                {activeQuote && isQuoteGoingToRefresh && (
+                  <Row
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      width: `calc(100% * (${refreshRate} - ${millisecondsUntilNextRefresh}) / ${refreshRate})`,
+                      height: 4,
+                      maxWidth: '100%',
+                      transition: 'width 1s linear',
+                    }}
+                    backgroundColor={BackgroundColor.primaryMuted}
+                  />
+                )}
+                {!wasTxDeclined && activeQuote && (
+                  <MultichainBridgeQuoteCard
+                    onOpenSlippageModal={onOpenSettings}
+                  />
+                )}
+                <Footer
+                  padding={0}
+                  flexDirection={FlexDirection.Column}
+                  gap={2}
+                >
+                  <BridgeCTAButton
+                    onFetchNewQuotes={() => {
+                      debouncedUpdateQuoteRequestInController(quoteParams, {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        stx_enabled: smartTransactionsEnabled,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_symbol_source: fromToken?.symbol ?? '',
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_symbol_destination: toToken?.symbol ?? '',
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        security_warnings: [], // TODO populate security warnings
+                      });
+                    }}
+                    needsDestinationAddress={
+                      isToOrFromSolana && !selectedDestinationAccount
+                    }
+                  />
+                  {activeQuote &&
+                  activeQuote.approval &&
+                  activeQuote.sentAmount &&
+                  activeQuote.quote.srcAsset?.symbol ? (
+                    <Row justifyContent={JustifyContent.center} gap={1}>
+                      <Text
+                        color={TextColor.textAlternativeSoft}
+                        variant={TextVariant.bodyXs}
+                        textAlign={TextAlign.Center}
+                      >
+                        {(() => {
+                          if (isUsingHardwareWallet) {
+                            return t('willApproveAmountForBridgingHardware');
+                          }
+                          if (isSwap) {
+                            return t('willApproveAmountForSwapping', [
+                              formatTokenAmount(
+                                locale,
+                                activeQuote.sentAmount.amount,
+                                activeQuote.quote.srcAsset.symbol,
+                              ),
+                            ]);
+                          }
+                          return t('willApproveAmountForBridging', [
                             formatTokenAmount(
                               locale,
                               activeQuote.sentAmount.amount,
                               activeQuote.quote.srcAsset.symbol,
                             ),
                           ]);
-                        }
-                        return t('willApproveAmountForBridging', [
-                          formatTokenAmount(
-                            locale,
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ),
-                        ]);
-                      })()}
-                    </Text>
-                    <Tooltip
-                      display={Display.InlineBlock}
-                      position={PopoverPosition.Top}
-                      offset={[-48, 8]}
-                      title={t('grantExactAccess')}
-                    >
-                      {isUsingHardwareWallet
-                        ? t('bridgeApprovalWarningForHardware', [
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ])
-                        : t('bridgeApprovalWarning', [
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ])}
-                    </Tooltip>
-                  </Row>
-                ) : null}
-              </Footer>
-            </Column>
-          </Row>
+                        })()}
+                      </Text>
+                      <Tooltip
+                        display={Display.InlineBlock}
+                        position={PopoverPosition.Top}
+                        offset={[-48, 8]}
+                        title={t('grantExactAccess')}
+                      >
+                        {isUsingHardwareWallet
+                          ? t('bridgeApprovalWarningForHardware', [
+                              activeQuote.sentAmount.amount,
+                              activeQuote.quote.srcAsset.symbol,
+                            ])
+                          : t('bridgeApprovalWarning', [
+                              activeQuote.sentAmount.amount,
+                              activeQuote.quote.srcAsset.symbol,
+                            ])}
+                      </Tooltip>
+                    </Row>
+                  ) : null}
+                </Footer>
+              </Column>
+            </Row>
+          )}
           {isUsingHardwareWallet &&
             isTxSubmittable &&
             hardwareWalletName &&
             activeQuote && (
               <BannerAlert
                 marginInline={4}
-                marginBottom={3}
                 title={t('hardwareWalletSubmissionWarningTitle')}
                 textAlign={TextAlign.Left}
               >
@@ -906,7 +912,6 @@ const PrepareBridgePage = ({
           {txAlert && activeQuote && (
             <BannerAlert
               marginInline={4}
-              marginBottom={10}
               severity={BannerAlertSeverity.Danger}
               title={t(txAlert.titleId)}
               description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
@@ -916,7 +921,6 @@ const PrepareBridgePage = ({
           {isNoQuotesAvailable && !isQuoteExpired && (
             <BannerAlert
               marginInline={4}
-              marginBottom={10}
               severity={BannerAlertSeverity.Danger}
               description={t('noOptionsAvailableMessage')}
               textAlign={TextAlign.Left}
@@ -933,7 +937,6 @@ const PrepareBridgePage = ({
                 title={t('bridgeTokenCannotVerifyTitle')}
                 description={t('bridgeTokenCannotVerifyDescription')}
                 marginInline={4}
-                marginBottom={3}
                 textAlign={TextAlign.Left}
                 onClose={() => setIsCannotVerifyTokenBannerOpen(false)}
               />
@@ -942,7 +945,6 @@ const PrepareBridgePage = ({
             <BannerAlert
               ref={tokenAlertBannerRef}
               marginInline={4}
-              marginBottom={3}
               title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
               severity={
                 tokenAlert.type === TokenFeatureType.MALICIOUS
@@ -965,7 +967,6 @@ const PrepareBridgePage = ({
               <BannerAlert
                 ref={isEstimatedReturnLowRef}
                 marginInline={4}
-                marginBottom={3}
                 title={t('bridgeValidationInsufficientGasTitle', [ticker])}
                 severity={BannerAlertSeverity.Danger}
                 description={t('bridgeValidationInsufficientGasMessage', [
@@ -980,7 +981,6 @@ const PrepareBridgePage = ({
             <BannerAlert
               ref={insufficientBalanceBannerRef}
               marginInline={4}
-              marginBottom={3}
               title={t('lowEstimatedReturnTooltipTitle')}
               severity={BannerAlertSeverity.Warning}
               description={t('lowEstimatedReturnTooltipMessage', [
