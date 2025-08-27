@@ -47,9 +47,6 @@ jobs:
 
       - name: Run page load benchmarks
         run: yarn test:e2e:benchmark
-        env:
-          BENCHMARK_BROWSER_LOADS: ${{ env.BENCHMARK_BROWSER_LOADS }}
-          BENCHMARK_PAGE_LOADS: ${{ env.BENCHMARK_PAGE_LOADS }}
 
       - name: Compare and comment
         if: ${{ github.event_name == 'pull_request' }}
