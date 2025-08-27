@@ -175,6 +175,9 @@
     "message": "Ajouter un compte $1",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Ajouter un compte ou un portefeuille"
+  },
   "addAccountToMetaMask": {
     "message": "Ajouter un compte à MetaMask"
   },
@@ -306,6 +309,9 @@
   "address": {
     "message": "Adresse"
   },
+  "addressCopied": {
+    "message": "Adresse copiée"
+  },
   "addressMismatch": {
     "message": "Inadéquation de l’adresse du site"
   },
@@ -414,6 +420,12 @@
   "alertMessageNoGasPrice": {
     "message": "Nous ne pouvons pas valider cette transaction tant que vous n’avez pas mis à jour manuellement les frais."
   },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Nous vous déconseillons d’interagir avec ce site qui a été identifié comme malveillant."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Nous vous déconseillons d’interagir avec ce site qui semble suspect."
+  },
   "alertMessageSignInDomainMismatch": {
     "message": "Le site auquel vous êtes en train de vous connecter n’est pas le site à l’origine de la demande. Il pourrait s’agir d’une tentative de vol de vos identifiants de connexion."
   },
@@ -455,6 +467,12 @@
   },
   "alertReasonNoGasPrice": {
     "message": "Estimation des frais non disponible"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Site malveillant"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Site suspect"
   },
   "alertReasonPendingTransactions": {
     "message": "Transaction en attente"
@@ -1438,6 +1456,12 @@
   "connectionRequest": {
     "message": "Demande de connexion"
   },
+  "connectionsRemovedModalDescription": {
+    "message": "Certaines connexions (par exemple, les portefeuilles matériels et snaps) ont été supprimées en raison d’une inactivité sur cet appareil. Vous pouvez les rétablir à tout moment dans les « Paramètres »."
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "Connections supprimées"
+  },
   "contactUs": {
     "message": "Nous contacter"
   },
@@ -1931,6 +1955,15 @@
   "downloadGoogleChrome": {
     "message": "Télécharger Google Chrome"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "La fonction Face ID disponible sur notre application vous permet d’accéder à votre compte même si vous avez oublié votre mot de passe. Emportez MetaMask partout avec vous !"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Scannez ce code QR pour commencer."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Téléchargez notre application mobile"
+  },
   "downloadNow": {
     "message": "Télécharger maintenant"
   },
@@ -2211,6 +2244,10 @@
     "message": "Code : $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
+  "errorDetails": {
+    "message": "Détails de l’erreur",
+    "description": "Label for the error details field in the error screen."
+  },
   "errorGettingSafeChainList": {
     "message": "Erreur lors de l’obtention de la liste des chaînes sécurisées, veuillez continuer avec précaution."
   },
@@ -2415,7 +2452,7 @@
     "message": "l’authentification biométrique est activée"
   },
   "forgotPasswordSocialStep2": {
-    "message": "Si vous disposez de votre $1, vous pouvez réinitialiser votre portefeuille actuel et le réimporter à l’aide de cette $1.",
+    "message": "Si vous disposez de votre $1, vous pouvez l’utiliser pour réinitialiser et réimporter votre portefeuille actuel.",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
@@ -2701,6 +2738,13 @@
   },
   "importAccountMsg": {
     "message": "Les comptes importés ne seront pas associés à la phrase secrète de récupération que vous avez créée au départ dans MetaMask. En savoir plus sur les comptes importés"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "Les clés privées importées sont sauvegardées sur votre compte et se synchronisent automatiquement lorsque vous vous connectez en utilisant le même identifiant Google ou Apple."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 pour savoir comment fonctionnent les clés importées",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "Importer le NFT"
@@ -3039,6 +3083,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Les données d’entrée de la transaction Ethereum ne sont pas suffisamment étoffées."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Nous ne parvenons pas à connecter votre Ledger. Consultez notre "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " pour savoir comment connecter un portefeuille matériel, puis réessayez."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger ne prend plus en charge Firefox, vous devrez donc utiliser un autre navigateur."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "guide"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox non pris en charge"
   },
   "ledgerLiveApp": {
     "message": "Appli Ledger Live"
@@ -3694,6 +3753,9 @@
   "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
   },
+  "noDeFiPositions": {
+    "message": "Vous ne trouvez pas ce que vous cherchez ?"
+  },
   "noDomainResolution": {
     "message": "Aucune résolution n’a été fournie pour le domaine."
   },
@@ -3702,6 +3764,9 @@
   },
   "noNFTs": {
     "message": "Aucun NFT pour le moment"
+  },
+  "noNetworksAvailable": {
+    "message": "Aucun réseau disponible"
   },
   "noNetworksFound": {
     "message": "Aucun réseau trouvé pour la requête donnée"
@@ -4069,7 +4134,7 @@
     "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
-    "message": "Continuer avec la phrase secrète de récupération"
+    "message": "Utiliser la phrase secrète de récupération"
   },
   "onboardingSrpImport": {
     "message": "Importer en utilisant la phrase secrète de récupération"
@@ -4176,6 +4241,9 @@
     "message": "Un mot de passe robuste peut améliorer la sécurité de votre portefeuille en cas de vol ou de compromission de votre appareil."
   },
   "passwordTermsWarning": {
+    "message": "Si j’oublie ce mot de passe, MetaMask ne pourra pas le réinitialiser pour moi."
+  },
+  "passwordTermsWarningSocial": {
     "message": "Si j’oublie ce mot de passe, je perdrai définitivement l’accès à mon portefeuille. MetaMask ne peut pas le réinitialiser pour moi."
   },
   "passwordToggleHide": {
@@ -4586,6 +4654,9 @@
   "proposedApprovalLimit": {
     "message": "Limite d’approbation proposée"
   },
+  "protocolNotSupported": {
+    "message": "Il se peut que nous ne prenions pas encore en charge votre protocole."
+  },
   "provide": {
     "message": "Fournir"
   },
@@ -4829,16 +4900,34 @@
     "message": "Reinitialiser"
   },
   "resetWallet": {
-    "message": "Réinitialiser le portefeuille"
+    "message": "Réinitialisez votre portefeuille"
   },
   "resetWalletSubHeader": {
     "message": "MetaMask ne conserve pas de copie de votre mot de passe. Si vous avez des difficultés à déverrouiller votre compte, vous devrez réinitialiser votre portefeuille. Vous pouvez le faire en fournissant la phrase de récupération secrète que vous avez saisie lors de la configuration de votre portefeuille."
   },
+  "resetWalletSubHeaderSocial": {
+    "message": "MetaMask ne conserve pas de copie de votre mot de passe. Si vous avez des difficultés à déverrouiller votre compte, vous devrez réinitialiser votre portefeuille. Si vous disposez d’une phrase secrète de récupération, vous pouvez l’utiliser pour effacer votre portefeuille actuel ainsi que la liste de vos comptes de cet appareil."
+  },
   "resetWalletUsingSRP": {
     "message": "Cette action supprimera votre portefeuille actuel et votre phrase de récupération secrète de cet appareil, ainsi que la liste des comptes que vous avez sélectionnés. Après la réinitialisation avec une phrase de récupération secrète, vous verrez une liste de comptes basés sur la phrase de récupération secrète que vous utilisez pour réinitialiser. Cette nouvelle liste comprendra automatiquement les comptes qui ont un solde. Vous pourrez également $1 créé auparavant. Les comptes personnalisés que vous avez importés devront être $2 et tous les jetons personnalisés que vous avez ajoutés à un compte devront également être $3."
   },
+  "resetWalletUsingSRPSocial": {
+    "message": "Après la réinitialisation à l’aide d’une phrase secrète de récupération, vous verrez s’afficher une nouvelle liste de comptes qui ont un solde. Vous pourrez $1 que vous avez créés auparavant. Mais vous devrez ajouter à nouveau tous les $2 et les $3 que vous avez importés. "
+  },
+  "resetWalletUsingSRPSocialAccounts": {
+    "message": "ajouter à nouveau tous les autres comptes"
+  },
+  "resetWalletUsingSRPSocialCustomAccounts": {
+    "message": "comptes personnalisés"
+  },
+  "resetWalletUsingSRPSocialCustomTokens": {
+    "message": "jetons personnalisés"
+  },
   "resetWalletWarning": {
     "message": "Vérifiez que vous avez saisi correctement la phrase de récupération secrète avant de continuer. Vous ne pourrez pas annuler cette action."
+  },
+  "resetWalletWarningSocial": {
+    "message": "Assurez-vous d’utiliser la bonne phrase secrète de récupération avant de procéder à la réinitialisation, car cette opération est irréversible."
   },
   "restartMetamask": {
     "message": "Redémarrer MetaMask"
@@ -4962,6 +5051,9 @@
   "searchAccounts": {
     "message": "Rechercher des comptes"
   },
+  "searchNetworks": {
+    "message": "Rechercher des réseaux"
+  },
   "searchNfts": {
     "message": "Recherche de NFT"
   },
@@ -5049,7 +5141,7 @@
     "message": "Activé"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Cette adresse e-mail et votre mot de passe MetaMask vous aideront à récupérer votre compte et vos phrases de récupération.",
+    "message": "Utilisez votre identifiant $1 et votre mot de passe MetaMask pour récupérer votre compte et vos phrases secrètes de récupération.",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
@@ -5341,6 +5433,12 @@
   "simulationErrorMessageV2": {
     "message": "Nous n’avons pas pu estimer le prix de carburant. Par conséquent, il se peut qu’il y ait une erreur dans le contrat et que cette transaction échoue."
   },
+  "simulationSettingsModalEnforceSlippage": {
+    "message": "Tolérance au slippage"
+  },
+  "simulationSettingsModalEnforceSlippageDescription": {
+    "message": "Fixez la différence qui vous convient pour les changements de solde. Les transactions ne seront pas effectuées si la différence est supérieure."
+  },
   "simulationSettingsModalEnforceToggle": {
     "message": "Appliquer les modifications de solde"
   },
@@ -5410,6 +5508,12 @@
   "slideDebitCardTitle": {
     "message": "Carte de débit MetaMask"
   },
+  "slideDownloadMobileAppDescription": {
+    "message": "Emportez votre portefeuille partout avec vous"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Télécharger MetaMask pour appareils mobiles"
+  },
   "slideFundWalletDescription": {
     "message": "Ajoutez ou transférez des jetons pour commencer"
   },
@@ -5466,6 +5570,9 @@
   },
   "smartAccountSameAccount": {
     "message": "Même compte, mais des fonctionnalités plus intelligentes."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Comptes intelligents"
   },
   "smartAccountSplashTitle": {
     "message": "Voulez-vous utiliser un compte intelligent ?"
@@ -5623,6 +5730,9 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1 est prêt à être utilisé"
+  },
+  "snapUIAccountSelectorTitle": {
+    "message": "Sélectionnez le compte"
   },
   "snapUIAssetSelectorTitle": {
     "message": "Sélectionner un actif"
@@ -5836,7 +5946,7 @@
     "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
-    "message": "Vous pouvez coller toute votre phrase de récupération secrète dans n’importe quel champ",
+    "message": "Vous pouvez coller toute votre phrase secrète de récupération dans n’importe quel champ.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
@@ -6542,7 +6652,7 @@
     "message": "J’accepte"
   },
   "termsOfUseAgreeText": {
-    "message": "J’accepte les conditions d’utilisation de MetaMask et de ses fonctionnalités"
+    "message": "J’accepte les conditions d’utilisation de MetaMask et de ses fonctionnalités."
   },
   "termsOfUseFooterText": {
     "message": "Faites défiler pour lire toutes les sections"
@@ -6780,6 +6890,12 @@
     "message": "Nous avons eu des difficultés à nous connecter à votre $1. Essayez de vérifier votre $2 et réessayez.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStartingMessage": {
+    "message": "Cette erreur peut être passagère. Essayez de redémarrer l’extension."
+  },
+  "troubleStartingTitle": {
+    "message": "MetaMask a rencontré des difficultés à démarrer."
+  },
   "tryAgain": {
     "message": "Réessayez"
   },
@@ -6867,7 +6983,7 @@
     "message": "Le mot de passe est incorrect. Veuillez réessayer."
   },
   "unlockPageTooManyFailedAttempts": {
-    "message": "Trop de tentatives infructueuses. Veuillez réessayer dans "
+    "message": "Trop de tentatives infructueuses. Réessayez dans "
   },
   "unpin": {
     "message": "Détacher"
@@ -6986,6 +7102,10 @@
   },
   "viewActivity": {
     "message": "Voir l’activité"
+  },
+  "viewAddressOnExplorer": {
+    "message": "Consulter sur $1",
+    "description": "$1 is the block explorer name"
   },
   "viewAllQuotes": {
     "message": "afficher toutes les cotations"
