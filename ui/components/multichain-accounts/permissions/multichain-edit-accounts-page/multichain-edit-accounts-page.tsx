@@ -134,7 +134,12 @@ export const MultichainEditAccountsPage: React.FC<
         paddingTop={8}
         paddingBottom={0}
         startAccessory={
-          <Icon name={IconName.Close} size={IconSize.Md} onClick={onClose} />
+          <Icon
+            name={IconName.Close}
+            size={IconSize.Md}
+            onClick={onClose}
+            data-testid="close-button"
+          />
         }
       >
         <Box
