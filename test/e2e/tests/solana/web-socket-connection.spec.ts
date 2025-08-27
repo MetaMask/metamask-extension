@@ -4,6 +4,7 @@ import {
   withSolanaAccountSnap,
   getWebsocketConnectionCount,
 } from './common-solana';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 describe('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
@@ -82,6 +83,8 @@ describe('Solana Web Socket', function (this: Suite) {
 
         // Open a new MetaMask window
         await driver.openNewPage(`${driver.extensionUrl}/home.html`);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
 
         // Verify that no new websocket connection is opened (give it some time)
         await driver.delay(3000);
