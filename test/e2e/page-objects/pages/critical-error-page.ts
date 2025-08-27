@@ -11,6 +11,9 @@ class CriticalErrorPage {
 
   readonly #errorMessage = '.critical-error__details';
 
+  readonly #troubleStartingDescription =
+    'This error could be intermittent, so try restarting the extension.';
+
   constructor(driver: Driver) {
     this.#driver = driver;
   }
@@ -36,7 +39,7 @@ class CriticalErrorPage {
    */
   async validateTroubleStartingDescription(): Promise<void> {
     await this.#driver.waitForSelector({
-      text: 'This error could be intermittent, so try restarting the extension.',
+      text: this.#troubleStartingDescription,
     });
   }
 
