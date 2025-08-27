@@ -2178,7 +2178,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/promise-kit@npm:^1.1.10, @endo/promise-kit@npm:^1.1.13":
+"@endo/promise-kit@npm:^1.1.10":
+  version: 1.1.10
+  resolution: "@endo/promise-kit@npm:1.1.10"
+  dependencies:
+    ses: "npm:^1.12.0"
+  checksum: 10/c73fba3d26ef7133d2d9ea5f14a8ff9b65ce7f8edab0462d22120ef57de99f9aacdcdfdf469793cf5d5ce699ed526d039e9717a294e8c2db7778b142886d93fd
+  languageName: node
+  linkType: hard
+
+"@endo/promise-kit@npm:^1.1.13":
   version: 1.1.13
   resolution: "@endo/promise-kit@npm:1.1.13"
   dependencies:
@@ -6080,9 +6089,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-onekey-keyring@npm:@metamask-previews/eth-onekey-keyring@0.1.0-a621908":
-  version: 0.1.0-a621908
-  resolution: "@metamask-previews/eth-onekey-keyring@npm:0.1.0-a621908"
+"@metamask/eth-onekey-keyring@npm:@metamask-previews/eth-onekey-keyring@0.1.0-3e52ac6":
+  version: 0.1.0-3e52ac6
+  resolution: "@metamask-previews/eth-onekey-keyring@npm:0.1.0-3e52ac6"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
@@ -6093,7 +6102,7 @@ __metadata:
     "@onekeyfe/hd-transport": "npm:1.1.6-patch.4"
     "@onekeyfe/hd-web-sdk": "npm:1.1.6-patch.4"
     hdkey: "npm:^2.1.0"
-  checksum: 10/dba372433d74cadfb70377c3130b125bdf1cf3a26e128ff48f4f877090022b9cad3676a6930d1c4cb38c8a2dfadcdf110e13bfb12fdcc173bc2aa5deba03f502
+  checksum: 10/9d446d14a8fc8aaea17cb7d5cf37e59de8d1ca678eed582f46c50c5be59b3c94f484d2de1bfa30aa5dfa379d58144fa6466bf2d329e2463bd1912173ee6ab707
   languageName: node
   linkType: hard
 
@@ -32239,7 +32248,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
-    "@metamask/eth-onekey-keyring": "npm:@metamask-previews/eth-onekey-keyring@0.1.0-a621908"
+    "@metamask/eth-onekey-keyring": "npm:@metamask-previews/eth-onekey-keyring@0.1.0-3e52ac6"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^16.0.0"
@@ -35463,7 +35472,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.54.2, playwright-core@npm:>=1.2.0":
+"playwright-core@npm:1.44.0":
+  version: 1.44.0
+  resolution: "playwright-core@npm:1.44.0"
+  bin:
+    playwright-core: cli.js
+  checksum: 10/50b1741b8e4e5f053f9756846e1064d796e8e54ee0c13d4d026926338d76969fa528bddf1e563a2f30e17b92f301b06895044d1080179f2d3b5b5f68fe01387f
+  languageName: node
+  linkType: hard
+
+"playwright-core@npm:1.54.2":
   version: 1.54.2
   resolution: "playwright-core@npm:1.54.2"
   bin:
@@ -35472,7 +35490,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.54.2, playwright@npm:^1.14.0":
+"playwright-core@npm:>=1.2.0":
+  version: 1.45.3
+  resolution: "playwright-core@npm:1.45.3"
+  bin:
+    playwright-core: cli.js
+  checksum: 10/6540ae149a8deaceb3dc6f60ea7a7052894aebb651b8c187c97c5532b50ee6c812e7f9644a15ecbfb146d5e7880dbb23010df2bac012493bd75b5624710df6bd
+  languageName: node
+  linkType: hard
+
+"playwright@npm:1.54.2":
   version: 1.54.2
   resolution: "playwright@npm:1.54.2"
   dependencies:
@@ -35484,6 +35511,21 @@ __metadata:
   bin:
     playwright: cli.js
   checksum: 10/3f4fedc1e2290b6da6960eedf0d78b9097251848b499b0627186ca85e94178fe6be1590c4926246ff4dad5729fc80ab63fee6554fe736d29c0a1808ec483467f
+  languageName: node
+  linkType: hard
+
+"playwright@npm:^1.14.0":
+  version: 1.44.0
+  resolution: "playwright@npm:1.44.0"
+  dependencies:
+    fsevents: "npm:2.3.2"
+    playwright-core: "npm:1.44.0"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    playwright: cli.js
+  checksum: 10/a7d8d6c0dee6262f97ab7fe52ec80ddeff7ad21178a9b90eefae56779fb573e8a3987f27619de6e98d8b9b78e9bb66b94f3caf9fbd51c0f1964dcd744dcb3cae
   languageName: node
   linkType: hard
 
