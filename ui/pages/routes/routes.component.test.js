@@ -380,31 +380,3 @@ describe('toast display', () => {
     expect(toastContainer).toBeInTheDocument();
   });
 });
-
-describe('Gator permissions page build-time feature flag', () => {
-  const originalEnv = process.env.GATOR_PERMISSIONS_PAGE;
-
-  afterEach(() => {
-    // Restore original environment variable
-    if (originalEnv === undefined) {
-      delete process.env.GATOR_PERMISSIONS_PAGE;
-    } else {
-      process.env.GATOR_PERMISSIONS_PAGE = originalEnv;
-    }
-  });
-
-  it('should use PermissionsPage when GATOR_PERMISSIONS_PAGE is not set to true', () => {
-    process.env.GATOR_PERMISSIONS_PAGE = 'false';
-    expect(process.env.GATOR_PERMISSIONS_PAGE).toBe('false');
-  });
-
-  it('should use PermissionsPageV2 when GATOR_PERMISSIONS_PAGE is set to true', () => {
-    process.env.GATOR_PERMISSIONS_PAGE = 'true';
-    expect(process.env.GATOR_PERMISSIONS_PAGE).toBe('true');
-  });
-
-  it('should default to PermissionsPage when GATOR_PERMISSIONS_PAGE is undefined', () => {
-    delete process.env.GATOR_PERMISSIONS_PAGE;
-    expect(process.env.GATOR_PERMISSIONS_PAGE).toBeUndefined();
-  });
-});

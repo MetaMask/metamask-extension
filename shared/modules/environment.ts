@@ -10,3 +10,12 @@ export const isProduction = (): boolean => {
 export const getIsSeedlessOnboardingFeatureEnabled = (): boolean => {
   return process.env.SEEDLESS_ONBOARDING_ENABLED?.toString() === 'true';
 };
+
+/**
+ * Returns true if the gator permissions feature is enabled
+ *
+ * @returns true if the gator permissions feature is enabled, false otherwise
+ */
+export const isGatorPermissionsFeatureEnabled = (): boolean => {
+  return process.env.GATOR_PERMISSIONS_ENABLED?.toString() === 'true';
+};

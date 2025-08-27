@@ -1,8 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Content, Header, Page } from '../page';
+import { Header, Page } from '../page';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -11,12 +10,7 @@ import {
 import {
   IconColor,
   BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -27,7 +21,11 @@ export const GatorPermissionsPage = () => {
   const history = useHistory();
 
   return (
-    <Page className="main-container" data-testid="permissions-page">
+    <Page
+      className="main-container"
+      data-testid="gator-permissions-page"
+      key="gator-permissions-page"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
@@ -45,37 +43,11 @@ export const GatorPermissionsPage = () => {
           as="span"
           variant={TextVariant.headingMd}
           textAlign={TextAlign.Center}
+          data-testid="gator-permissions-page-title"
         >
-          {t('permissions')}
+          Gator Permissions
         </Text>
       </Header>
-      <Content padding={0}>
-        <Box
-          data-testid="no-connections"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          height={BlockSize.Full}
-          gap={2}
-          padding={4}
-        >
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            backgroundColor={BackgroundColor.backgroundDefault}
-            textAlign={TextAlign.Center}
-          >
-            {t('permissionsPageEmptyContent')}
-          </Text>
-          <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            backgroundColor={BackgroundColor.backgroundDefault}
-            textAlign={TextAlign.Center}
-          >
-            {t('permissionsPageEmptySubContent')}
-          </Text>
-        </Box>
-      </Content>
     </Page>
   );
 };

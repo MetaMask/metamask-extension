@@ -142,6 +142,7 @@ import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-ac
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { AccountList } from '../multichain-accounts/account-list';
+import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -592,7 +593,7 @@ export default function Routes() {
           <Authenticated
             path={PERMISSIONS}
             component={
-              process.env.GATOR_PERMISSIONS_PAGE === 'true'
+              isGatorPermissionsFeatureEnabled()
                 ? GatorPermissionsPage
                 : PermissionsPage
             }
