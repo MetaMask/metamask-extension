@@ -37,7 +37,7 @@ exports[`PermissionsCellConnectionListItem renders correctly with required props
         <div
           aria-describedby="tippy-tooltip-1"
           class=""
-          data-original-title="This can be changed in "Settings > Alerts""
+          data-original-title="undefined"
           data-tooltipped=""
           style="display: inline;"
         >
