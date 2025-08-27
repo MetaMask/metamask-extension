@@ -3569,9 +3569,6 @@
   "networkIsBusy": {
     "message": "Das Netzwerk ist ausgelastet. Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Mindestens ein Netzwerk muss aktiviert sein"
-  },
   "networkMenu": {
     "message": "Netzwerkmenü"
   },

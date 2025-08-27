@@ -3569,9 +3569,6 @@
   "networkIsBusy": {
     "message": "Mạng đang bận. Giá gas cao và ước tính kém chính xác hơn."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Phải bật ít nhất một mạng"
-  },
   "networkMenu": {
     "message": "Trình đơn mạng"
   },
