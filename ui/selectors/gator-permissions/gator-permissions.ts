@@ -100,12 +100,15 @@ function getTotalCountOfGatorPermissionsPerChainId(
     SignerParam,
     PermissionTypes
   >[] = Object.values(permissionsMapByPermissionType).flat();
-  return flattenedStoredGatorPermissions.reduce((acc, gatorPermission) => {
-    const { permissionResponse } = gatorPermission;
-    acc[permissionResponse.chainId] =
-      (acc[permissionResponse.chainId] || 0) + 1;
-    return acc;
-  }, {} as Record<Hex, number>);
+  return flattenedStoredGatorPermissions.reduce(
+    (acc, gatorPermission) => {
+      const { permissionResponse } = gatorPermission;
+      acc[permissionResponse.chainId] =
+        (acc[permissionResponse.chainId] || 0) + 1;
+      return acc;
+    },
+    {} as Record<Hex, number>,
+  );
 }
 
 /**

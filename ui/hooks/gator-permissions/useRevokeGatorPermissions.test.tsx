@@ -272,9 +272,8 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        const transactionMeta = await result.current.revokeGatorPermission(
-          mockGatorPermission,
-        );
+        const transactionMeta =
+          await result.current.revokeGatorPermission(mockGatorPermission);
 
         expect(transactionMeta).toBe(mockTransactionMeta);
       });
@@ -524,9 +523,8 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        const transactionMeta = await result.current.revokeGatorPermission(
-          mockGatorPermission,
-        );
+        const transactionMeta =
+          await result.current.revokeGatorPermission(mockGatorPermission);
 
         expect(transactionMeta).toBe(mockTransactionMetaWithoutId);
       });
@@ -912,4 +910,3 @@ describe('useRevokeGatorPermissions', () => {
     });
   });
 });
-

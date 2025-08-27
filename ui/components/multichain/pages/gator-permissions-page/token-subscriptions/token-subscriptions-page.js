@@ -21,9 +21,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorAssetListDetail } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { GatorAssetItemList } from '../components';
