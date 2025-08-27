@@ -101,6 +101,10 @@
   "accountDetails": {
     "message": "Account details"
   },
+  "accountDetailsSrpBackUpMessage": {
+    "message": "Back up",
+    "description": "Text used to describe action for SRP backup. Used on multichain account details."
+  },
   "accountIdenticon": {
     "message": "Account identicon"
   },
@@ -320,6 +324,10 @@
   "addressCopied": {
     "message": "Address copied"
   },
+  "addressLabel": {
+    "message": "address",
+    "description": "Label for address count (single address). Used on multichain account details page."
+  },
   "addressMismatch": {
     "message": "Site address mismatch"
   },
@@ -330,6 +338,14 @@
   "addressMismatchPunycode": {
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "Addresses",
+    "description": "Multichain account menu item for linking to addresses page"
+  },
+  "addressesLabel": {
+    "message": "addresses",
+    "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
     "message": "Advanced"
@@ -1789,6 +1805,9 @@
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
   },
+  "deepLink_theSwapsRampsPage": {
+    "message": "the Swaps/Ramps page"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
@@ -2892,6 +2911,9 @@
   "insufficientFundsForGas": {
     "message": "Insufficient funds for gas"
   },
+  "insufficientFundsSend": {
+    "message": "Insufficient funds"
+  },
   "insufficientLockedLiquidityDescription": {
     "message": "The lack of adequately locked or burned liquidity leaves the token vulnerable to sudden liquidity withdrawals, potentially causing market instability."
   },
@@ -2968,6 +2990,9 @@
   },
   "invalidSeedPhraseNotFound": {
     "message": "Secret Recovery Phrase not found."
+  },
+  "invalidValue": {
+    "message": "Invalid value"
   },
   "ipfsGateway": {
     "message": "IPFS gateway"
@@ -4603,6 +4628,10 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "pin": {
+    "message": "Pin",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "Pin to top"
   },
@@ -4673,6 +4702,10 @@
   },
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
+  },
+  "privateKeys": {
+    "message": "Private keys",
+    "description": "Private keys row label on multichain account details page."
   },
   "privateNetwork": {
     "message": "Private network"
@@ -4895,6 +4928,10 @@
   },
   "removeSnapDescription": {
     "message": "This action will delete the snap, its data and revoke your given permissions."
+  },
+  "rename": {
+    "message": "Rename",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "replace"
@@ -5322,6 +5359,10 @@
   "setApprovalForAllTitle": {
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
+  },
+  "setUp": {
+    "message": "Set up",
+    "description": "Action label for Smart Accounts. Used on multichain details page."
   },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
@@ -7025,6 +7066,10 @@
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many attempts. Try again in "
+  },
+  "unlockToReveal": {
+    "message": "Unlock to reveal",
+    "description": "Label used for Private Keys row on multichain account details page."
   },
   "unpin": {
     "message": "Unpin"
