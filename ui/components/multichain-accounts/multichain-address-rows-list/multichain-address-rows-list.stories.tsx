@@ -88,16 +88,16 @@ const createMockState = () => ({
       ),
     },
     multichainNetworkConfigurationsByChainId: {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      [MultichainNetworks.SOLANA]: {
+        chainId: MultichainNetworks.SOLANA,
         name: 'Solana with a really long name',
-        nativeCurrency: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        nativeCurrency: 'SOL',
         isEvm: false,
       },
       [MultichainNetworks.SOLANA_TESTNET]: {
         chainId: MultichainNetworks.SOLANA_TESTNET,
         name: 'Solana Testnet',
-        nativeCurrency: 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY/slip44:501',
+        nativeCurrency: 'SOL',
         isEvm: false,
       },
     },
@@ -128,7 +128,14 @@ export default meta;
 type Story = StoryObj<typeof MultichainAddressRowsList>;
 
 export const MultipleDifferentAccounts: Story = {
-  args: { accounts: [accounts.ethereum, accounts.solana, accounts.solanaTestnet, accounts.bitcoin] },
+  args: {
+    accounts: [
+      accounts.ethereum,
+      accounts.solana,
+      accounts.solanaTestnet,
+      accounts.bitcoin,
+    ],
+  },
 };
 
 export const SingleEthereumAccount: Story = {

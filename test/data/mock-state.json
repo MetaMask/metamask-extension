@@ -455,21 +455,6 @@
         ],
         "blockExplorerUrls": []
       },
-      "0x5": {
-        "chainId": "0x5",
-        "name": "Goerli",
-        "nativeCurrency": "ETH",
-        "defaultRpcEndpointIndex": 0,
-        "ticker": "ETH",
-        "rpcEndpoints": [
-          {
-            "type": "custom",
-            "url": "https://goerli.com",
-            "networkClientId": "goerli"
-          }
-        ],
-        "blockExplorerUrls": []
-      },
       "0xaa36a7": {
         "chainId": "0xaa36a7",
         "name": "Sepolia",
