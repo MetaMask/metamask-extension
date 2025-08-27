@@ -6,7 +6,9 @@ import { Asset } from '../types/send';
 import {
   prepareEVMTransaction,
   submitEvmTransaction,
+  fromTokenMinimalUnits,
   toTokenMinimalUnit,
+  formatToFixedDecimals,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -17,14 +19,34 @@ jest.mock('../../../store/actions', () => {
 });
 
 describe('Send - utils', () => {
-  describe('toTokenMinimalUnit', () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
+  describe('fromTokenMinimalUnit', () => {
     it('return hex for the value with decimals multiplied', async () => {
-      expect(toTokenMinimalUnit('0xA', 18)).toBe('8ac7230489e80000');
-      expect(toTokenMinimalUnit('0xA', 0)).toBe('0xA');
+      expect(fromTokenMinimalUnits('0xA', 18)).toBe('8ac7230489e80000');
+      expect(fromTokenMinimalUnits('0xA', 0)).toBe('a');
+    });
+  });
+
+  describe('toTokenMinimalUnit', () => {
+    it('return hex for the value with decimals multiplied', async () => {
+      expect(toTokenMinimalUnit('0xA', 18)).toBe('0.00000000000000001');
+      expect(toTokenMinimalUnit('0x5', 5)).toBe('0.00005');
+      expect(toTokenMinimalUnit('0xA', 0)).toBe('10');
+    });
+  });
+
+  describe('formatToFixedDecimals', () => {
+    it('return `0` is value is equivalent to 0', () => {
+      expect(formatToFixedDecimals('0.0000')).toEqual('0');
+    });
+    it('return correct string for very small values', () => {
+      expect(formatToFixedDecimals('0.01', 1)).toEqual('< 0.1');
+      expect(formatToFixedDecimals('0.001', 2)).toEqual('< 0.01');
+      expect(formatToFixedDecimals('0.0001', 3)).toEqual('< 0.001');
+      expect(formatToFixedDecimals('0.00001', 4)).toEqual('< 0.0001');
+    });
+    it('formats value with passed number of decimals', () => {
+      expect(formatToFixedDecimals('1', 4)).toEqual('1');
+      expect(formatToFixedDecimals('1.01010101', 4)).toEqual('1.0101');
     });
   });
 
