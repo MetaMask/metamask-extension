@@ -90,7 +90,7 @@ ${Object.entries(env)
     const stats = options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
     const fallback = options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(typeof fallback['react-devtools'], 'string');
+    assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
     assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
     assert.strictEqual(options.optimization.minimize, false);
     assert.strictEqual(options.optimization.sideEffects, false);
@@ -224,7 +224,7 @@ ${Object.entries(env)
     const stats = instance.options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'normal');
     const fallback = instance.options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(fallback['react-devtools'], false);
+    assert.strictEqual(fallback['react-devtools-core'], false);
     assert.strictEqual(fallback['remote-redux-devtools'], false);
     assert.strictEqual(instance.options.optimization.minimize, true);
     assert.strictEqual(instance.options.optimization.sideEffects, true);
