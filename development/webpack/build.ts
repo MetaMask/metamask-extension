@@ -1,7 +1,7 @@
 import { webpack } from 'webpack';
 import type WebpackDevServerType from 'webpack-dev-server';
 import { noop, logStats, __HMR_READY__ } from './utils/helpers';
-import configs from './webpack.config';
+import config from './webpack.config';
 
 // disable browserslist stats as it needlessly traverses the filesystem multiple
 // times looking for a stats file that doesn't exist.
@@ -13,9 +13,9 @@ require('browserslist/node').getStat = noop;
  * @param onComplete
  */
 export function build(onComplete: () => void = noop) {
-  const isDevelopment = configs[0].mode === 'development';
-  const { watch, ...options } = configs[0];
-  const compiler = webpack(configs);
+  const isDevelopment = config.mode === 'development';
+  const { watch, ...options } = config;
+  const compiler = webpack(config);
   if (__HMR_READY__ && watch) {
     // DISABLED BECAUSE WE AREN'T `__HMR_READY__` YET
     // Use `webpack-dev-server` to enable HMR
@@ -44,13 +44,13 @@ export function build(onComplete: () => void = noop) {
     console.error(`🦊 Running ${options.mode} build…`);
     if (watch) {
       // once HMR is ready (__HMR_READY__ variable), this section should be removed.
-      compiler.watch(options.watchOptions, (err, multiStats) => {
-        logStats(err ?? undefined, multiStats?.stats[0]);
+      compiler.watch(options.watchOptions, (err, stats) => {
+        logStats(err ?? undefined, stats);
         console.error('🦊 Watching for changes…');
       });
     } else {
-      compiler.run((err, multiStats) => {
-        logStats(err ?? undefined, multiStats?.stats[0]);
+      compiler.run((err, stats) => {
+        logStats(err ?? undefined, stats);
         // `onComplete` must be called synchronously _before_ `compiler.close`
         // or the caller might observe output from the `close` command.
         onComplete();
