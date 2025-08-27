@@ -1,18 +1,44 @@
 /* eslint-disable require-unicode-regexp */
 import SETTINGS_CONSTANTS from '../constants/settings';
+import {
+  getIsMetamaskShieldFeatureEnabled,
+  getIsSettingsPageDevOptionsEnabled,
+} from '../../../shared/modules/environment';
 
 let settingsRoutes;
+
+const FEATURE_FLAG_CHECKERS = {
+  METAMASK_SHIELD_ENABLED: getIsMetamaskShieldFeatureEnabled,
+  ENABLE_SETTINGS_PAGE_DEV_OPTIONS: getIsSettingsPageDevOptionsEnabled,
+};
+
+/**
+ * Checks if a feature flag is enabled
+ * @param {string} featureFlag - The feature flag to check
+ * @returns {boolean} Whether the feature flag is enabled
+ */
+function isFeatureFlagEnabled(featureFlag) {
+  const checker = FEATURE_FLAG_CHECKERS[featureFlag];
+  if (checker) {
+    return checker();
+  }
+
+  console.warn(`Unknown feature flag: ${featureFlag}`);
+  return false;
+}
 
 /** @returns {SettingRouteConfig[]} */
 export function getSettingsRoutes() {
   if (settingsRoutes) {
     return settingsRoutes;
   }
-  settingsRoutes = SETTINGS_CONSTANTS.filter(
-    (routeObject) =>
-      (routeObject.featureFlag ? process.env[routeObject.featureFlag] : true) &&
-      !routeObject.hidden,
-  );
+  settingsRoutes = SETTINGS_CONSTANTS.filter((routeObject) => {
+    return (
+      (routeObject.featureFlag
+        ? isFeatureFlagEnabled(routeObject.featureFlag)
+        : true) && !routeObject.hidden
+    );
+  });
   return settingsRoutes;
 }
 
