@@ -8,8 +8,11 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Box } from '../../../../component-library';
 import { IconName } from '../../../../component-library/icon';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../../selectors/selectors.types';
-import { PermissionsCellConnectionListItem } from './permissions-cell-connection-list-item.js';
-import { TOKEN_STREAMS_ROUTE, TOKEN_SUBSCRIPTIONS_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  TOKEN_STREAMS_ROUTE,
+  TOKEN_SUBSCRIPTIONS_ROUTE,
+} from '../../../../../helpers/constants/routes';
+import { PermissionsCellConnectionListItem } from './permissions-cell-connection-list-item';
 
 type PermissionsCellProps = {
   nonTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];

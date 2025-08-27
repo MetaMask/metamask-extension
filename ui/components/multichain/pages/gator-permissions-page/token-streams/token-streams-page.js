@@ -22,7 +22,6 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import {
-  PERMISSIONS,
   REVIEW_TOKEN_STREAMS_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';

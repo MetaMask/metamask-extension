@@ -1,10 +1,10 @@
 import React from 'react';
 import { renderWithProvider } from '../../../../../../test/jest';
 import { fireEvent } from '@testing-library/react';
+import { IconName } from '../../../../component-library/icon';
+import { PermissionsCellConnectionListItem } from './permissions-cell-connection-list-item';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { PermissionsCellConnectionListItem } from './permissions-cell-connection-list-item';
-import { IconName } from '../../../../component-library/icon';
 
 describe('PermissionsCellConnectionListItem', () => {
   const store = configureStore({

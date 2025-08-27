@@ -8,7 +8,15 @@ import {
   parseCaipAccountId,
   KnownCaipNamespace,
 } from '@metamask/utils';
+import type {
+  GatorPermissionsMap,
+  StoredGatorPermissionSanitized,
+  SignerParam,
+  PermissionTypes,
+} from '@metamask/gator-permissions-controller';
 import { uniq } from 'lodash';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import {
   AlignItems,
   BlockSize,
@@ -57,17 +65,9 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
-import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
+import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
 import { SiteCell } from './site-cell/site-cell';
 import { PermissionsCell } from './permissions-cell/permissions-cell';
-import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
-import type {
-  GatorPermissionsMap,
-  StoredGatorPermissionSanitized,
-  SignerParam,
-  PermissionTypes,
-} from '@metamask/gator-permissions-controller';
 
 /**
  * Filters and groups gator permissions by type and site origin, returning counts and chain lists.
@@ -99,14 +99,22 @@ const getFilteredGatorPermissionsByType = (
   };
 
   // Process stream permissions (native-token-stream + erc20-token-stream)
-  const streamTypes: (keyof GatorPermissionsMap)[] = ['native-token-stream', 'erc20-token-stream'];
+  const streamTypes: (keyof GatorPermissionsMap)[] = [
+    'native-token-stream',
+    'erc20-token-stream',
+  ];
   streamTypes.forEach((permissionType) => {
     const permissionsForType = gatorPermissions[permissionType];
     if (permissionsForType) {
       Object.entries(permissionsForType).forEach(([chainId, permissions]) => {
         // Filter permissions by site origin
         const filteredPermissions = permissions.filter(
-          (permission: StoredGatorPermissionSanitized<SignerParam, PermissionTypes>) => permission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase()
+          (
+            permission: StoredGatorPermissionSanitized<
+              SignerParam,
+              PermissionTypes
+            >,
+          ) => permission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
         );
 
         if (filteredPermissions.length > 0) {
@@ -118,14 +126,22 @@ const getFilteredGatorPermissionsByType = (
   });
 
   // Process subscription permissions (native-token-periodic + erc20-token-periodic)
-  const subscriptionTypes: (keyof GatorPermissionsMap)[] = ['native-token-periodic', 'erc20-token-periodic'];
+  const subscriptionTypes: (keyof GatorPermissionsMap)[] = [
+    'native-token-periodic',
+    'erc20-token-periodic',
+  ];
   subscriptionTypes.forEach((permissionType) => {
     const permissionsForType = gatorPermissions[permissionType];
     if (permissionsForType) {
       Object.entries(permissionsForType).forEach(([chainId, permissions]) => {
         // Filter permissions by site origin
         const filteredPermissions = permissions.filter(
-          (permission: StoredGatorPermissionSanitized<SignerParam, PermissionTypes>) => permission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase()
+          (
+            permission: StoredGatorPermissionSanitized<
+              SignerParam,
+              PermissionTypes
+            >,
+          ) => permission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
         );
 
         if (filteredPermissions.length > 0) {
@@ -241,10 +257,7 @@ export const ReviewPermissions = () => {
 
   // Get filtered gator permissions grouped by type
   const filteredGatorPermissions = useMemo(() => {
-    return getFilteredGatorPermissionsByType(
-      gatorPermissions,
-      activeTabOrigin,
-    );
+    return getFilteredGatorPermissionsByType(gatorPermissions, activeTabOrigin);
   }, [gatorPermissions, activeTabOrigin]);
 
   const handleSelectChainIds = async (chainIds: string[]) => {
@@ -261,7 +274,6 @@ export const ReviewPermissions = () => {
   const allAccounts = useSelector(
     getUpdatedAndSortedAccountsWithCaipAccountId,
   ) as MergedInternalAccountWithCaipAccountId[];
-
 
   const nonRemappedConnectedAccountAddresses = useSelector((state) =>
     getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
@@ -325,20 +337,25 @@ export const ReviewPermissions = () => {
               selectedChainIds={connectedChainIds}
               hideAllToasts={hideAllToasts}
             />
-          ) : null }
-          {(filteredGatorPermissions.streams.count > 0 || filteredGatorPermissions.subscriptions.count > 0) ? (
+          ) : null}
+          {filteredGatorPermissions.streams.count > 0 ||
+          filteredGatorPermissions.subscriptions.count > 0 ? (
             <PermissionsCell
               nonTestNetworks={nonTestNetworks}
               testNetworks={testNetworks}
               streamsCount={filteredGatorPermissions.streams.count}
               subscriptionsCount={filteredGatorPermissions.subscriptions.count}
               streamsChainIds={filteredGatorPermissions.streams.chains}
-              subscriptionsChainIds={filteredGatorPermissions.subscriptions.chains}
+              subscriptionsChainIds={
+                filteredGatorPermissions.subscriptions.chains
+              }
             />
-          ) : null }
-          {connectedAccountAddresses.length === 0 && filteredGatorPermissions.streams.count === 0 && filteredGatorPermissions.subscriptions.count === 0 ? (
+          ) : null}
+          {connectedAccountAddresses.length === 0 &&
+          filteredGatorPermissions.streams.count === 0 &&
+          filteredGatorPermissions.subscriptions.count === 0 ? (
             <NoConnectionContent />
-          ) : null }
+          ) : null}
           {showDisconnectAllModal ? (
             <DisconnectAllModal
               type={DisconnectType.Account}

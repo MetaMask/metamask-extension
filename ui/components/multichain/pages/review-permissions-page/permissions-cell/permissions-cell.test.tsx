@@ -1,6 +1,6 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../../test/jest';
 import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { PermissionsCell } from './permissions-cell';
