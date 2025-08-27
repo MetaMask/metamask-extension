@@ -506,6 +506,9 @@
   "allPermissions": {
     "message": "All permissions"
   },
+  "allPopularNetworks": {
+    "message": "All popular networks"
+  },
   "allTimeHigh": {
     "message": "All time high"
   },
@@ -3568,9 +3571,6 @@
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Must have at least one network enabled"
-  },
   "networkMenu": {
     "message": "Network Menu"
   },
@@ -3648,6 +3648,12 @@
   "networkSwitchConnectionError": {
     "message": "We can't connect to $1",
     "description": "$1 represents the network name"
+  },
+  "networkTabCustom": {
+    "message": "Custom"
+  },
+  "networkTabPopular": {
+    "message": "Popular"
   },
   "networkURL": {
     "message": "Network URL"
