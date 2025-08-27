@@ -533,21 +533,7 @@ export class PreferencesController extends BaseController<
     this.setUseNftDetection(useExternalServices);
     this.setUseSafeChainsListValidation(useExternalServices);
 
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    // Set basic functionality and trigger alignment if enabled
-    // This single call handles both provider disable/enable and alignment
-    this.messagingSystem
-      .call(
-        'MultichainAccountService:setBasicFunctionality',
-        useExternalServices,
-      )
-      .catch((error) => {
-        console.error(
-          'Failed to set basic functionality on MultichainAccountService:',
-          error,
-        );
-      });
-    ///: END:ONLY_INCLUDE_IF
+
   }
 
   /**

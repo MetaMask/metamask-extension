@@ -1860,6 +1860,32 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    // MultichainAccountService has subscription for preferences changes
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        const { useExternalServices: prevUseExternalServices } = prevState;
+        const { useExternalServices: currUseExternalServices } = currState;
+        if (prevUseExternalServices !== currUseExternalServices) {
+          // Set basic functionality and trigger alignment when enabled
+          // This single call handles both provider disable/enable and alignment
+          this.controllerMessenger
+            .call(
+              'MultichainAccountService:setBasicFunctionality',
+              currUseExternalServices,
+            )
+            .catch((error) => {
+              console.error(
+                'Failed to set basic functionality on MultichainAccountService:',
+                error,
+              );
+            });
+        }
+      }, this.preferencesController.state),
+    );
+    ///: END:ONLY_INCLUDE_IF
+
     // Initialize RemoteFeatureFlagController
     const remoteFeatureFlagControllerMessenger =
       this.controllerMessenger.getRestricted({
