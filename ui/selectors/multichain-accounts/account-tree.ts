@@ -3,6 +3,7 @@ import {
   type AccountGroupId,
   type AccountWalletId,
 } from '@metamask/account-api';
+import { createSelector } from 'reselect';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
 import {
@@ -32,7 +33,7 @@ import {
   MultichainAccountGroupToScopesMap,
   MultichainAccountsState,
 } from './account-tree.types';
-import { getSanitizedChainId } from './utils';
+import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
 
 /**
  * Retrieve account tree state.
@@ -274,7 +275,7 @@ export const getMultichainAccountGroupById = createDeepEqualSelector(
   (accountTree: AccountTreeState, accountId: AccountGroupId) => {
     const { wallets } = accountTree;
 
-    const [walletId] = accountId.split('/');
+    const walletId = extractWalletIdFromGroupId(accountId);
     const wallet = wallets[walletId as AccountWalletId];
 
     return wallet?.groups[accountId as AccountGroupId];
@@ -646,3 +647,64 @@ export const getInternalAccountBySelectedAccountGroupAndCaip =
       return getInternalAccountFromGroup(group, caipChainId, internalAccounts);
     },
   );
+
+/**
+ * Retrieve wallet from account tree state.
+ *
+ * @param state - Redux state.
+ * @param state.metamask - MetaMask state object.
+ * @param state.metamask.accountTree - Account tree state object.
+ * @param walletId - The ID of the wallet to retrieve.
+ * @returns Wallet object from account tree state.
+ */
+export const getWallet = createSelector(
+  (state: MultichainAccountsState) => state.metamask?.accountTree?.wallets,
+  (_, walletId: AccountWalletId) => walletId,
+  (wallets, walletId: AccountWalletId) => {
+    return wallets?.[walletId];
+  },
+);
+
+/**
+ * Get the number of internal accounts in a specific group.
+ *
+ * @param accountTree - Account tree state.
+ * @param groupId - The account group ID.
+ * @returns The number of accounts in the group, or 0 if the group is not found.
+ */
+export const getNetworkAddressCount = createSelector(
+  getAccountTree,
+  (_, accountGroupId: AccountGroupId) => accountGroupId,
+  (accountTree: AccountTreeState, accountGroupId: AccountGroupId): number => {
+    const { wallets } = accountTree;
+
+    const walletId = extractWalletIdFromGroupId(accountGroupId);
+    const wallet = wallets[walletId as AccountWalletId];
+
+    if (!wallet?.groups[accountGroupId]) {
+      return 0;
+    }
+
+    return wallet.groups[accountGroupId].accounts.length;
+  },
+);
+
+/**
+ * Returns all account groups that belong to a specific wallet ID.
+ *
+ * @param state - Redux state.
+ * @param walletId - The wallet ID to filter account groups by.
+ * @returns Object containing all account groups for the specified wallet.
+ */
+export const getMultichainAccountsByWalletId = createSelector(
+  getAccountTree,
+  (_: MultichainAccountsState, walletId: AccountWalletId) => walletId,
+  (
+    accountTree,
+    walletId,
+  ): Record<AccountGroupId, AccountGroupObject> | undefined => {
+    const wallet = accountTree.wallets[walletId];
+
+    return wallet?.groups;
+  },
+);

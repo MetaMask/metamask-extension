@@ -61,6 +61,7 @@ import {
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+  MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
 } from '../../helpers/constants/routes';
 import {
@@ -142,6 +143,7 @@ import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-ac
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { AccountList } from '../multichain-accounts/account-list';
+import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
 import {
   getConnectingLabel,
@@ -536,7 +538,7 @@ export default function Routes() {
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
           />
-          <Authenticated path={SEND_ROUTE} component={SendPage} exact />
+          <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
@@ -612,6 +614,11 @@ export default function Routes() {
           <Authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
             component={MultichainAccountDetailsPage}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
+            component={WalletDetailsPage}
             exact
           />
           <Authenticated
