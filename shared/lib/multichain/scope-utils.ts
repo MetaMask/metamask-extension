@@ -69,25 +69,6 @@ export const scopeMatches = (
 };
 
 /**
- * Extracts addresses from CAIP account IDs for efficient lookup
- *
- * @param caipAccountIds - Array of CAIP account IDs to extract addresses from
- * @returns Set of lowercase addresses for O(1) lookup
- */
-export const extractAddressesFromCaipAccountIds = (
-  caipAccountIds: string[],
-): Set<string> => {
-  const addresses = new Set<string>();
-  for (const caipAccountId of caipAccountIds) {
-    const parts = caipAccountId.split(':');
-    if (parts.length >= 3) {
-      addresses.add(parts[2].toLowerCase());
-    }
-  }
-  return addresses;
-};
-
-/**
  * Checks if an account supports the requested chain IDs
  *
  * @param accountScopes - Array of account scopes to check
@@ -104,9 +85,7 @@ export const hasChainIdSupport = (
 
   for (const accountScope of accountScopes) {
     for (const requestedChainId of requestedChainIds) {
-      if (anyScopesMatch([accountScope], requestedChainId)) {
-        return true;
-      }
+      return anyScopesMatch([accountScope], requestedChainId);
     }
   }
   return false;

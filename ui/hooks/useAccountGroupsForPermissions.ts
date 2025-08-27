@@ -2,13 +2,13 @@ import { useSelector } from 'react-redux';
 import {
   Caip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
+  isInternalAccountInPermittedAccountIds,
 } from '@metamask/chain-agnostic-permission';
-import { CaipChainId, CaipNamespace } from '@metamask/utils';
+import { CaipAccountId, CaipChainId, CaipNamespace } from '@metamask/utils';
 import { useMemo } from 'react';
 import { getAccountGroupWithInternalAccounts } from '../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../selectors/multichain-accounts/account-tree.types';
 import {
-  extractAddressesFromCaipAccountIds,
   hasChainIdSupport,
   hasNamespaceSupport,
 } from '../../shared/lib/multichain/scope-utils';
@@ -17,16 +17,23 @@ import {
  * Checks if an account group has any connected accounts
  *
  * @param accountGroup - Account group to check for connected accounts
- * @param connectedAddresses - Set of connected account addresses
+ * @param connectedAddresses - Array of connected account addresses
  * @returns True if any account in the group is connected
  */
 const hasConnectedAccounts = (
   accountGroup: AccountGroupWithInternalAccounts,
-  connectedAddresses: Set<string>,
+  connectedAddresses: CaipAccountId[],
 ): boolean => {
-  return accountGroup.accounts.some((account) =>
-    connectedAddresses.has(account.address.toLowerCase()),
-  );
+  return accountGroup.accounts.some((account) => {
+    try {
+      return isInternalAccountInPermittedAccountIds(
+        account,
+        connectedAddresses,
+      );
+    } catch {
+      return false;
+    }
+  });
 };
 
 /**
@@ -78,8 +85,6 @@ export const useAccountGroupsForPermissions = (
   } = useMemo(() => {
     const connectedAccountIds =
       getCaipAccountIdsFromCaip25CaveatValue(existingPermission);
-    const connectedAddresses =
-      extractAddressesFromCaipAccountIds(connectedAccountIds);
     const requestedNamespaceSet = new Set(requestedNamespacesWithoutWallet);
 
     const connectedAccountGroupsArray: AccountGroupWithInternalAccounts[] = [];
@@ -89,7 +94,7 @@ export const useAccountGroupsForPermissions = (
     for (const accountGroup of accountGroups) {
       const isConnected = hasConnectedAccounts(
         accountGroup,
-        connectedAddresses,
+        connectedAccountIds,
       );
       const isSupported = hasSupportedScopes(
         accountGroup,
