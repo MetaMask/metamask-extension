@@ -410,8 +410,8 @@ function hasChangelogEntry(body: string): boolean {
     return false;
   }
 
-  // Extract text after the colon
-  const entry = changelogLine.split(":")[1]?.trim() ?? "";
+  // Extract text after the "CHANGELOG entry:" prefix
+  const entry = changelogLine.slice("CHANGELOG entry:".length).trim();
 
   if (entry === "") {
     console.log("Changelog entry is empty");
