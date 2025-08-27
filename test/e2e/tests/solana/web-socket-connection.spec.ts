@@ -7,7 +7,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
-import { getWebsocketConnectionCount } from './common-solana';
+import { getWebsocketConnectionCount } from './solana-websocket';
 
 describe('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {

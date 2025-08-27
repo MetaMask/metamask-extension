@@ -28,7 +28,7 @@ const {
 const {
   startSolanaWebsocketServer,
   stopSolanaWebsocketServer,
-} = require('./tests/solana/common-solana');
+} = require('./tests/solana/solana-websocket');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
