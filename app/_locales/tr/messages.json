@@ -2675,12 +2675,6 @@
   "honeypotTitle": {
     "message": "Bal Tuzağı"
   },
-  "howQuotesWork": {
-    "message": "Teklifler nasıl çalışır?"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Arama yaptığımız teklifler arasında en iyi getiriye sahip olan teklif budur. Bu, köprü ücretlerini ve $1 MetaMask ücreti eksi gaz ücretlerini içeren swap oranına dayanır. Gaz ücretleri, ağın ne kadar yoğun olduğuna ve işlemin ne kadar karmaşık olduğuna bağlıdır."
-  },
   "id": {
     "message": "Kimlik"
   },
@@ -3350,12 +3344,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Bu ağı MetaMask'e ekliyor ve bu siteye ağı kullanma izni veriyorsunuz."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Köprü"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Fiyat Teklifi"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "Zaman"

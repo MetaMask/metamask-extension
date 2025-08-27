@@ -2675,12 +2675,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howQuotesWork": {
-    "message": "Como as cotações funcionam"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Das cotações que pesquisamos, essa é a que apresenta o melhor retorno. Isso é baseado na taxa de swap, que inclui taxas de ponte e uma taxa da MetaMask de $1%, menos taxas de gás. As taxas de gás dependem da carga da rede e da complexidade da transação."
-  },
   "id": {
     "message": "ID"
   },
@@ -3350,12 +3344,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Você está adicionando esta rede à MetaMask e dando a este site permissão para usá-la."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Fazer ponte"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Cotação"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "Hora"

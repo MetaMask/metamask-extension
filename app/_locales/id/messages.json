@@ -2708,12 +2708,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howQuotesWork": {
-    "message": "Cara kerja kuotasi"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Kuotasi ini memiliki laba terbaik dari kuotasi yang kami cari. Ini berdasarkan pada nilai tukar, yang mencakup biaya bridge dan biaya MetaMask sebesar $1%, dikurangi biaya gas. Biaya gas bergantung pada seberapa sibuk jaringan dan seberapa rumit transaksinya."
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,12 +3377,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Anda menambahkan jaringan ini ke MetaMask dan memberikan situs ini izin untuk menggunakannya."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Bridge"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Kuotasi"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "Waktu"

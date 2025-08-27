@@ -2708,12 +2708,6 @@
   "honeypotTitle": {
     "message": "Honey Pot (Bẫy trong bẫy)"
   },
-  "howQuotesWork": {
-    "message": "Cách báo giá hoạt động"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Báo giá này có lợi nhuận cao nhất trong các báo giá mà chúng tôi đã tìm kiếm. Báo giá này dựa trên tỷ giá hoán đổi, bao gồm phí cầu nối và $1% phí MetaMask, trừ phí gas. Phí gas phụ thuộc vào mức độ bận rộn của mạng và độ phức tạp của giao dịch."
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,12 +3377,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Bạn đang thêm mạng này vào MetaMask và cấp cho trang web này quyền sử dụng mạng này."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Cầu nối"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Báo giá"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "Thời gian"

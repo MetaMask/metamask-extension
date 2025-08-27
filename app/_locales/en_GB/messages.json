@@ -946,13 +946,13 @@
     "message": "Net cost"
   },
   "bridgePriceImpact": {
-    "message": "Price Impact"
+    "message": "Price impact"
   },
   "bridgePriceImpactGaslessWarning": {
-    "message": "Price impact reflects how your swap order affects the market price of the asset. If you do not hold enough funds for gas, part of your source token is automatically allocated to cover fees, which will reduce the amount swapped. MetaMask does not influence or control price impact."
+    "message": "Price impact reflects how your swap order affects the market price of the asset. If you do not hold enough funds for gas, part of your source token is automatically allocated to cover fees, which increases price impact. MetaMask does not influence or control price impact."
   },
   "bridgePriceImpactNormalWarning": {
-    "message": "Price impact reflects how your swap order affects the market price of the asset. It depends on the trade size and the available liquidity in the pool. MetaMask does not influence or control price impact."
+    "message": "Price impact reflects how your swap order affects the market price of the asset. It depends on the trade size and the available liquidity. MetaMask does not influence or control price impact."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Price Impact"
@@ -2771,12 +2771,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howQuotesWork": {
-    "message": "How quotes work"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "The best rate we found from providers, including provider fees and a $1% MetaMask fee."
-  },
   "id": {
     "message": "ID"
   },
@@ -3419,6 +3413,15 @@
     "message": "M",
     "description": "Shortened form of 'million'"
   },
+  "minimumReceivedExplanation": {
+    "message": "The minimum you'll receive if the price changes while your transaction is processing, based on your slippage tolerance. This is an estimate from our liquidity providers. Final amounts may differ."
+  },
+  "minimumReceivedExplanationTitle": {
+    "message": "Minimum Amount Received"
+  },
+  "minimumReceivedLabel": {
+    "message": "Minimum received"
+  },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3470,10 +3473,10 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Bridging"
+  "multichainQuoteCardRateExplanation": {
+    "message": "The best rate we found from providers, including provider fees and a $1% MetaMask fee."
   },
-  "multichainQuoteCardQuoteLabel": {
+  "multichainQuoteCardRateLabel": {
     "message": "Rate"
   },
   "multichainQuoteCardTimeLabel": {
@@ -3633,6 +3636,12 @@
   },
   "networkFee": {
     "message": "Network fee"
+  },
+  "networkFeeExplanation": {
+    "message": "Network fees depend on how busy the network is and how complex your transaction is."
+  },
+  "networkFeeExplanationTitle": {
+    "message": "Network Fee"
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
@@ -5794,6 +5803,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "Edit slippage"
+  },
+  "slippageExplanation": {
+    "message": "The % change in price you're willing to allow before your transaction is canceled."
   },
   "smartAccount": {
     "message": "Smart account"

@@ -2708,12 +2708,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howQuotesWork": {
-    "message": "Funktionsweise von Angeboten"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Dieses Angebot hat die höchste Rendite von den von uns gesuchten Angeboten. Dieser Wert basiert auf dem Swap-Satz, der Bridging-Gebühren und eine MetaMask-Gebühr von $1 % einschließt, abzüglich der Gasgebühren. Die Gasgebühren hängen von der Auslastung des Netzwerks sowie der Komplexität der Transaktion ab."
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,12 +3377,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Sie fügen dieses Netzwerk zu MetaMask hinzu und geben dieser Website die Genehmigung, es zu nutzen."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Bridging"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Angebot"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "Zeit"

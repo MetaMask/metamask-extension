@@ -2768,12 +2768,8 @@
   "honeypotDescription": {
     "message": "This token might pose a honeypot risk. It is advised to conduct due diligence before interacting to prevent any potential financial loss."
   },
-
   "honeypotTitle": {
     "message": "Honey Pot"
-  },
-  "howQuotesWork": {
-    "message": "How quotes work"
   },
   "id": {
     "message": "ID"
@@ -3476,9 +3472,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Bridging"
   },
   "multichainQuoteCardRateExplanation": {
     "message": "The best rate we found from providers, including provider fees and a $1% MetaMask fee."

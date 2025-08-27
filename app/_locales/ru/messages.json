@@ -2708,12 +2708,6 @@
   "honeypotTitle": {
     "message": "Ловушка"
   },
-  "howQuotesWork": {
-    "message": "Как работают котировки"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Эта котировка имеет лучшую доходность из всех котировок, которые мы искали. Она основана на курсе свопа, который включает комиссию за промежуточное соединение и комиссию MetaMask в размере $1% за вычетом платы за газ. Плата за газ зависит от загруженности сети и сложности транзакции."
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,12 +3377,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Вы добавляете эту сеть в MetaMask и разрешаете этому сайту использовать ее."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Создание моста"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Котировка"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "Время"
