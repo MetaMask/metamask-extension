@@ -14,7 +14,6 @@ import {
 } from '@metamask/keyring-controller';
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 
-
 type Actions =
   | AccountsControllerListMultichainAccountsAction
   | AccountsControllerGetAccountAction

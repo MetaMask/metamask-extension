@@ -81,7 +81,7 @@ export type AllowedActions =
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   | MultichainAccountServiceSetBasicFunctionalityAction
   | MultichainAccountServiceAlignWalletsAction;
-  ///: END:ONLY_INCLUDE_IF
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -532,8 +532,6 @@ export class PreferencesController extends BaseController<
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
     this.setUseSafeChainsListValidation(useExternalServices);
-
-
   }
 
   /**
