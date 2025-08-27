@@ -150,33 +150,59 @@ async function handleRestartAction(
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
-export async function displayCriticalError(
+export async function displayCriticalErrorMessage(
   container: HTMLElement,
   errorKey: CriticalErrorTranslationKey,
   error: ErrorLike,
   currentLocale?: string,
-): Promise<never> {
+) {
   const localeContext = await maybeGetLocaleContext(currentLocale);
-  container.innerHTML = getErrorHtml(
-    errorKey,
-    error,
-    localeContext,
-    SUPPORT_LINK,
-  );
+  const html = getErrorHtml(errorKey, error, localeContext, SUPPORT_LINK);
 
-  const restartButton = container.querySelector<HTMLButtonElement>(
-    '#critical-error-button',
-  );
-  const reportCheckbox = container.querySelector<HTMLInputElement>(
-    '#critical-error-checkbox',
-  );
+  const criticalErrorContainer = displayCriticalErrorPage(container, html);
+  if (criticalErrorContainer) {
+    const restartButton = container.querySelector<HTMLButtonElement>(
+      '#critical-error-button',
+    );
+    const reportCheckbox = container.querySelector<HTMLInputElement>(
+      '#critical-error-checkbox',
+    );
 
-  // Restart button: report error and restart MetaMask
-  restartButton?.addEventListener('click', async () => {
-    const shouldReport = reportCheckbox?.checked ?? false;
-    await handleRestartAction(error, shouldReport);
-  });
+    // Restart button: report error and restart MetaMask
+    restartButton?.addEventListener('click', async () => {
+      const shouldReport = reportCheckbox?.checked ?? false;
+      await handleRestartAction(error, shouldReport);
+    });
+  }
 
   log.error(error.stack);
   throw error;
+}
+
+/**
+ * Displays a critical error in the given container using the given HTML.
+ *
+ * @param container - The HTML element to display the error in.
+ * @param html - The HTML contents of the critical error page.
+ */
+export function displayCriticalErrorPage(
+  container: HTMLElement,
+  html: string,
+): HTMLElement | undefined {
+  const appContainerParent = container.parentElement;
+  if (!appContainerParent) {
+    console.warn(
+      'Cannot display critical error. Another critical error may already be shown.',
+    );
+    return undefined;
+  }
+
+  const criticalErrorContainer = document.createElement('div');
+  criticalErrorContainer.setAttribute('id', 'critical-error-content');
+  criticalErrorContainer.innerHTML = html;
+
+  // Prevent app contents from writing over critical error by removing application root.
+  appContainerParent.removeChild(container);
+  appContainerParent.prepend(criticalErrorContainer);
+  return criticalErrorContainer;
 }
