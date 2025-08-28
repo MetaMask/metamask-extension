@@ -2391,7 +2391,7 @@ export default class MetamaskController extends EventEmitter {
   // initial rollout, such that we can remotely modify polling interval
   getInfuraFeatureFlags() {
     fetchWithCache({
-      url: 'https://swap.api.cx.metamask.io/featureFlags',
+      url: 'https://bridge.api.cx.metamask.io/featureFlags',
       cacheRefreshTime: MINUTE * 20,
     })
       .then(this.onFeatureFlagResponseReceived)

@@ -568,7 +568,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: AGGREGATOR_METADATA,
+        json: JSON.parse(AGGREGATOR_METADATA),
       };
     });
 
@@ -657,7 +657,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: AGGREGATOR_METADATA,
+        json: JSON.parse(AGGREGATOR_METADATA),
       };
     });
 
