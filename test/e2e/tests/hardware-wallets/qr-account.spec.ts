@@ -29,7 +29,7 @@ describe('QR Hardware', function () {
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
-        await connectHardwareWalletPage.openConnectQRPage();
+        await connectHardwareWalletPage.openConnectQrPage();
 
         const selectQRAccountPage = new SelectHardwareWalletAccountPage(driver);
         await selectQRAccountPage.checkPageIsLoaded();
@@ -75,16 +75,16 @@ describe('QR Hardware', function () {
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
-        await connectHardwareWalletPage.openConnectQRPage();
+        await connectHardwareWalletPage.openConnectQrPage();
 
         // Unlock 3 QR accounts
-        const selectQRAccountPage = new SelectHardwareWalletAccountPage(driver);
-        await selectQRAccountPage.checkPageIsLoaded();
-        await selectQRAccountPage.checkAccountNumber();
+        const selectQrAccountPage = new SelectHardwareWalletAccountPage(driver);
+        await selectQrAccountPage.checkPageIsLoaded();
+        await selectQrAccountPage.checkAccountNumber();
         for (let i = 1; i <= 3; i++) {
-          await selectQRAccountPage.selectAccount(i);
+          await selectQrAccountPage.selectAccount(i);
         }
-        await selectQRAccountPage.clickUnlockButton();
+        await selectQrAccountPage.clickUnlockButton();
 
         // Check that all 3 QR accounts are displayed in account list
         const homePage = new HomePage(driver);
