@@ -35,6 +35,7 @@ import { TransactionControllerInitMessenger } from '../messengers/transaction-co
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
+import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -80,6 +81,11 @@ export const TransactionControllerInit: ControllerInitFunction<
     getSavedGasFees: () => {
       const globalChainId = getGlobalChainId();
       return preferencesController().state.advancedGasFee[globalChainId];
+    },
+    getSimulationConfig: async (url) => {
+      const getToken = () =>
+        initMessenger.call('AuthenticationController:getBearerToken');
+      return getShieldGatewayConfig(getToken, url);
     },
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
