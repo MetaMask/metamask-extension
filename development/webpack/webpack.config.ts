@@ -38,7 +38,6 @@ import { getSwcLoader } from './utils/loaders/swcLoader';
 import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
-import { lavamoatPlugin } from './utils/plugins/LavamoatPlugin';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -179,6 +178,7 @@ const plugins: WebpackPluginInstance[] = [
   }),
 ];
 if (args.lavamoat) {
+  const { lavamoatPlugin } = require('./utils/plugins/LavamoatPlugin');
   plugins.push(lavamoatPlugin);
 }
 // enable React Refresh in 'development' mode when `watch` is enabled
