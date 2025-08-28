@@ -3,7 +3,7 @@ import { checkActivityTransaction } from '../../swaps/shared';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -11,6 +11,7 @@ import AdvancedSettings from '../../../page-objects/pages/settings/advanced-sett
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
 
 import { mockLedgerTransactionRequests } from './mocks';
+import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -25,10 +26,20 @@ describe('Ledger Swap', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockLedgerTransactionRequests,
       },
-      async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        (await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x1158e460913d00000',
+        )) ?? console.error('localNodes is undefined or empty');
+
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '20',
+        );
+
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedTokenBalanceIsDisplayed('20', 'ETH');
 
         // disable smart transactions
         const headerNavbar = new HeaderNavbar(driver);
