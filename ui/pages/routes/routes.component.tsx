@@ -295,7 +295,7 @@ const SitesPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
-      '../../components/multichain/pages/sites-page/sites-page.js'
+      '../../components/multichain/pages/gator-permissions-page/token-streams/token-streams-page.js'
     )) as unknown as DynamicImportType,
 );
 const TokenStreamsPage = mmLazy(
@@ -306,21 +306,24 @@ const TokenStreamsPage = mmLazy(
 );
 const ReviewTokenStreamsPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  import(
-    '../../components/multichain/pages/gator-permissions-page/token-streams/review-token-streams-page.js'
-  ) as unknown as DynamicImportType,
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions-page/token-streams/review-token-streams-page.js'
+    )) as unknown as DynamicImportType,
 );
 const TokenSubscriptionsPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  import(
-    '../../components/multichain/pages/gator-permissions-page/token-subscriptions/token-subscriptions-page.js'
-  ) as unknown as DynamicImportType,
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions-page/token-subscriptions/token-subscriptions-page.js'
+    )) as unknown as DynamicImportType,
 );
 const ReviewTokenSubscriptionsPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  import(
-    '../../components/multichain/pages/gator-permissions-page/token-subscriptions/review-token-subscriptions-page.js'
-  ) as unknown as DynamicImportType,
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions-page/token-subscriptions/review-token-subscriptions-page.js'
+    )) as unknown as DynamicImportType,
 );
 
 const Home = mmLazy(
@@ -627,7 +630,7 @@ export default function Routes() {
             }
             exact
           />
-             <Authenticated path={SITES} component={SitesPage} exact />
+          <Authenticated path={SITES} component={SitesPage} exact />
           <Authenticated
             path={TOKEN_STREAMS_ROUTE}
             component={TokenStreamsPage}

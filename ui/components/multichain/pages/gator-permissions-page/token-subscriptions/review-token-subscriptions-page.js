@@ -21,7 +21,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { TOKEN_SUBSCRIPTIONS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { extractNetworkName } from '../gator-permissions-page-helper';
@@ -87,7 +86,7 @@ export const ReviewTokenSubscriptionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={Color.iconDefault}
-            onClick={() => history.push(TOKEN_SUBSCRIPTIONS_ROUTE)}
+            onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />
         }

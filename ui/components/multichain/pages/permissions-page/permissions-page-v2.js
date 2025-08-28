@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
 import {
   Box,
@@ -56,7 +57,9 @@ export const PermissionsPageV2 = () => {
     useGatorPermissions();
 
   useEffect(() => {
-    const totalSites = Object.keys(sitesConnectionsList).length;
+    const totalSites = Object.keys(sitesConnectionsList).filter(
+      (site) => !isSnapId(site),
+    ).length;
     const nativeTokenStream =
       Object.values(gatorPermissionsMap['native-token-stream']).flat().length ||
       0;
