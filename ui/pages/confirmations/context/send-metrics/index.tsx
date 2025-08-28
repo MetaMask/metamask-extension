@@ -31,7 +31,7 @@ export const RecipientInputMethod = {
   SelectContact: 'select_contact',
 };
 
-export interface SendMetricsContextType {
+export type SendMetricsContextType = {
   accountType?: string;
   assetListSize: string;
   amountInputMethod: string;
@@ -43,7 +43,7 @@ export interface SendMetricsContextType {
   setAssetFilterMethod: (value: string) => void;
   setAssetListSize: (value: string) => void;
   setRecipientInputMethod: (value: string) => void;
-}
+};
 
 export const SendMetricsContext = createContext<SendMetricsContextType>({
   accountType: undefined,

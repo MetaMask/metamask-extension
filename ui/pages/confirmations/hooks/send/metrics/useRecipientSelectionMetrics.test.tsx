@@ -1,3 +1,4 @@
+import React, { ReactChildren } from 'react';
 import { MetaMetricsEventName } from '../../../../../../shared/constants/metametrics';
 import mockTestState from '../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
@@ -5,29 +6,20 @@ import { RecipientInputMethod } from '../../../context/send-metrics';
 
 import { useSendType } from '../useSendType';
 import { useRecipientSelectionMetrics } from './useRecipientSelectionMetrics';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 
 const mockTrackEvent = jest.fn();
-const mockCreateEventBuilder = jest.fn().mockReturnValue({
-  addProperties: jest.fn().mockReturnValue({
-    build: jest.fn().mockReturnValue({
-      event: 'test_event',
-      properties: {},
-    }),
-  }),
-});
 
-jest.mock('../../../../../hooks/useMetrics', () => ({
-  ...jest.requireActual('../../../../../hooks/useMetrics'),
-  useMetrics: () => ({
-    trackEvent: mockTrackEvent,
-    createEventBuilder: mockCreateEventBuilder,
-  }),
-}));
+const Container = ({ children }: { children: ReactChildren }) => (
+  <MetaMetricsContext.Provider value={mockTrackEvent}>
+    {children}
+  </MetaMetricsContext.Provider>
+);
 
 const mockSetRecipientInputMethod = jest.fn();
 
-jest.mock('../../../context/send-context/send-metrics-context', () => ({
-  ...jest.requireActual('../../../context/send-context/send-metrics-context'),
+jest.mock('../../../context/send-metrics', () => ({
+  ...jest.requireActual('../../../context/send-metrics'),
   useSendMetricsContext: () => ({
     accountType: 'EOA',
     recipientInputMethod: 'manual',
@@ -35,9 +27,9 @@ jest.mock('../../../context/send-context/send-metrics-context', () => ({
   }),
 }));
 
-jest.mock('../../../context/send-context', () => ({
+jest.mock('../../../context/send', () => ({
   useSendContext: () => ({
-    chainId: '0x1',
+    asset: { chainId: '0x1' },
   }),
 }));
 
@@ -115,64 +107,25 @@ describe('useRecipientSelectionMetrics', () => {
   });
 
   describe('captureRecipientSelected', () => {
-    it('tracks recipient selected event with EVM properties when called for EVM chain', async () => {
+    it('tracks recipient selected event with correct properties', async () => {
       const { result } = renderHookWithProvider(
         () => useRecipientSelectionMetrics(),
         mockState,
+        undefined,
+        Container,
       );
-
-      const expectedEventBuilder = {
-        addProperties: jest.fn().mockReturnValue({
-          build: jest.fn().mockReturnValue({ event: 'test_event' }),
-        }),
-      };
-      mockCreateEventBuilder.mockReturnValue(expectedEventBuilder);
 
       await result.current.captureRecipientSelected();
 
-      expect(mockCreateEventBuilder).toHaveBeenCalledWith(
-        MetaMetricsEventName.SendRecipientSelected,
-      );
-      expect(expectedEventBuilder.addProperties).toHaveBeenCalledWith({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: 'EOA',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        input_method: 'manual',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: '0x1',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id_caip: undefined,
-      });
-      expect(mockTrackEvent).toHaveBeenCalledWith({ event: 'test_event' });
-    });
-
-    it('tracks recipient selected event with non-EVM properties when called for non-EVM chain', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      mockUseSendType.mockReturnValue({ isEvmSendType: false } as any);
-
-      const { result } = renderHookWithProvider(
-        () => useRecipientSelectionMetrics(),
-        mockState,
-      );
-
-      const expectedEventBuilder = {
-        addProperties: jest.fn().mockReturnValue({
-          build: jest.fn().mockReturnValue({ event: 'test_event' }),
-        }),
-      };
-      mockCreateEventBuilder.mockReturnValue(expectedEventBuilder);
-
-      await result.current.captureRecipientSelected();
-
-      expect(expectedEventBuilder.addProperties).toHaveBeenCalledWith({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: 'EOA',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        input_method: 'manual',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: undefined,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id_caip: '0x1',
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: 'Send',
+        event: 'Send Recipient Selected',
+        properties: {
+          account_type: 'EOA',
+          chain_id: '0x1',
+          chain_id_caip: undefined,
+          input_method: 'manual',
+        },
       });
     });
   });
