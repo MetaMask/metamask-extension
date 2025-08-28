@@ -5439,14 +5439,17 @@
     "message": "Pay with $1",
     "description": "The $1 is token"
   },
+  "shieldPlanPaymentTitle": {
+    "message": "Change payment method"
+  },
   "shieldPlanSave": {
     "message": "Save 16%"
   },
+  "shieldPlanSelectToken": {
+    "message": "Select a token"
+  },
   "shieldPlanTitle": {
     "message": "Choose your plan"
-  },
-  "shieldPlanPaymentTitle": {
-    "message": "Change payment method"
   },
   "show": {
     "message": "Show"

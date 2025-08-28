@@ -43,7 +43,6 @@ import {
   PaymentMethod,
   SUPPORTED_STABLE_TOKENS,
 } from './types';
-import { MACRO_05 } from '@zxing/library/esm/core/datamatrix/encoder/constants';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_IDS,
@@ -104,9 +103,7 @@ export const ShieldPaymentModal = ({
           yield {
             ...token,
             type: token.isNative ? AssetType.native : AssetType.token,
-          } as
-            | AssetWithDisplayData<ERC20Asset>
-            | AssetWithDisplayData<NativeAsset>;
+          } as AssetWithDisplayData<ERC20Asset>;
         }
       }
     };
@@ -298,7 +295,7 @@ export const ShieldPaymentModal = ({
             setShowAssetPickerModal(false);
             onClose();
           }}
-          header="Select a token"
+          header={t('shieldPlanSelectToken')}
           autoFocus={false}
           visibleTabs={[TabName.TOKENS]}
           customTokenListGenerator={customTokenListGenerator}

@@ -39,11 +39,7 @@ import {
   Button,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  AssetWithDisplayData,
-  ERC20Asset,
-  NativeAsset,
-} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+
 import {
   PAYMENT_METHODS,
   PaymentMethod,
@@ -59,6 +55,11 @@ import {
   CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
+import {
+  AssetWithDisplayData,
+  ERC20Asset,
+  NativeAsset,
+} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 
 const ShieldPlan = () => {
   const history = useHistory();
@@ -84,12 +85,16 @@ const ShieldPlan = () => {
     );
 
   const [selectedToken, setSelectedToken] = useState<
-    AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>
+    AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset> | null
   >(() => {
     const stableToken = multichainTokensWithBalance.find((token) =>
       SUPPORTED_STABLE_TOKENS.includes(token.symbol),
-    ) as AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>;
-    return stableToken;
+    );
+    return stableToken
+      ? (stableToken as
+          | AssetWithDisplayData<ERC20Asset>
+          | AssetWithDisplayData<NativeAsset>)
+      : null;
   });
 
   const handleBack = () => {
@@ -220,8 +225,8 @@ const ShieldPlan = () => {
                   }
                 >
                   <AvatarToken
-                    name={selectedToken.symbol}
-                    src={selectedToken.image}
+                    name={selectedToken?.symbol || ''}
+                    src={selectedToken?.image || ''}
                     borderColor={BorderColor.borderMuted}
                   />
                 </BadgeWrapper>
@@ -230,7 +235,7 @@ const ShieldPlan = () => {
               )}
               <Text variant={TextVariant.bodyLgMedium}>
                 {selectedPaymentMethod === PAYMENT_METHODS.TOKEN
-                  ? selectedToken.symbol
+                  ? selectedToken?.symbol || ''
                   : t('shieldPlanCard')}
               </Text>
               <Icon size={IconSize.Md} name={IconName.ArrowRight} />
@@ -270,17 +275,17 @@ const ShieldPlan = () => {
             </Box>
           </Box>
         </Box>
-        <ShieldPaymentModal
-          isOpen={showPaymentModal}
-          onClose={() => setShowPaymentModal(false)}
-          selectedToken={selectedToken}
-          selectedPaymentMethod={selectedPaymentMethod}
-          hasStableTokenWithBalance={hasStableTokenWithBalance}
-          setSelectedPaymentMethod={setSelectedPaymentMethod}
-          onAssetChange={(asset) => {
-            setSelectedToken(asset);
-          }}
-        />
+        {selectedToken && (
+          <ShieldPaymentModal
+            isOpen={showPaymentModal}
+            onClose={() => setShowPaymentModal(false)}
+            selectedToken={selectedToken}
+            selectedPaymentMethod={selectedPaymentMethod}
+            hasStableTokenWithBalance={hasStableTokenWithBalance}
+            setSelectedPaymentMethod={setSelectedPaymentMethod}
+            onAssetChange={setSelectedToken}
+          />
+        )}
       </Content>
       <Footer
         className="shield-plan-page__footer"

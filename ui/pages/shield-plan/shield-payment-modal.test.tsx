@@ -54,7 +54,7 @@ describe('Change payment method', () => {
   it('should show change payment method modal', async () => {
     const mockStore = configureMockStore([])(mockState);
     const { getByTestId } = renderWithProvider(
-      <ShieldPaymentModal {...defaultProps} />,
+      <ShieldPaymentModal {...defaultProps} hasStableTokenWithBalance={true} />,
       mockStore,
     );
 
@@ -64,7 +64,11 @@ describe('Change payment method', () => {
   it('should show asset picker modal when token payment method is selected', async () => {
     const mockStore = configureMockStore([])(mockState);
     const { getByTestId } = renderWithProvider(
-      <ShieldPaymentModal {...defaultProps} onClose={onCloseStub} />,
+      <ShieldPaymentModal
+        {...defaultProps}
+        onClose={onCloseStub}
+        hasStableTokenWithBalance={true}
+      />,
       mockStore,
     );
 
@@ -83,6 +87,7 @@ describe('Change payment method', () => {
         {...defaultProps}
         onClose={onCloseStub}
         setSelectedPaymentMethod={setSelectedPaymentMethodStub}
+        hasStableTokenWithBalance={true}
       />,
       mockStore,
     );
