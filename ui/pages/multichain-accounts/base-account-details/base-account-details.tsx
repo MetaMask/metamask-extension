@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   getAccountTypeForKeyring,
   getHardwareWalletType,
@@ -13,9 +14,6 @@ import {
   isSolanaAccount,
 } from '../../../selectors';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   Button,
   ButtonIcon,
@@ -58,6 +56,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { formatAccountType } from '../../../helpers/utils/metrics';
+import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 
 type BaseAccountDetailsProps = {
   children?: React.ReactNode | React.ReactNode[];
@@ -174,16 +173,9 @@ export const BaseAccountDetails = ({
         {name}
       </Header>
       <Content paddingTop={3} gap={4}>
-        <AvatarAccount
-          address={address}
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
-          }
-          size={AvatarAccountSize.Xl}
-          style={{ margin: '0 auto', marginBottom: '8px' }}
-        />
+        <Box className="flex justify-center">
+          <PreferredAvatar address={address} size={AvatarAccountSize.Xl} />
+        </Box>
         <Box className="multichain-account-details__section">
           <AccountDetailsRow
             label={t('accountName')}
