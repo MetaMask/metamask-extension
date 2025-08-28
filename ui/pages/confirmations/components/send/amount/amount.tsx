@@ -41,7 +41,7 @@ export const Amount = () => {
     const maxValue = getMaxAmount() ?? '0';
     updateValue(fiatMode ? getNativeValue(maxValue) : maxValue);
     setAmount(maxValue);
-  }, [fiatMode, getMaxAmount, setAmount, setFiatMode, updateValue]);
+  }, [fiatMode, getMaxAmount, getNativeValue, setAmount, updateValue]);
 
   const isERC1155 = asset?.standard === ERC1155;
   const isERC721 = asset?.standard === ERC721;
