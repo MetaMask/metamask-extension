@@ -10,7 +10,6 @@ import {
   getHardwareWalletType,
   getHDEntropyIndex,
   getIsSocialLoginFlow,
-  getUseBlockie,
   isSolanaAccount,
 } from '../../../selectors';
 import {
@@ -69,7 +68,6 @@ export const BaseAccountDetails = ({
   account,
   address,
 }: BaseAccountDetailsProps) => {
-  const useBlockie = useSelector(getUseBlockie);
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useI18nContext();
