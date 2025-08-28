@@ -1,5 +1,4 @@
 import { Hex } from '@metamask/utils';
-import { toHex } from '@metamask/controller-utils';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { isNativeAddress } from '@metamask/bridge-controller';
 import { useCallback, useMemo } from 'react';
@@ -75,16 +74,16 @@ const validateAmountFn = ({
 export const useEvmAmountValidation = () => {
   const t = useI18nContext();
   const tokenBalances = useSelector(getTokenBalances);
-  const { asset, from, value } = useSendContext();
+  const { asset, chainId, from, value } = useSendContext();
   const accountsByChainId = useSelector(
     (state: MetamaskSendState) => state.metamask.accountsByChainId,
   ) as AccountWithBalances;
   const accountsWithBalances = useMemo(() => {
-    if (asset?.chainId && asset?.address && isEvmAddress(asset?.address)) {
-      return accountsByChainId[toHex(asset?.chainId)];
+    if (chainId && asset?.address && isEvmAddress(asset?.address)) {
+      return accountsByChainId[chainId as Hex];
     }
     return undefined;
-  }, [accountsByChainId, asset?.address, asset?.chainId]);
+  }, [accountsByChainId, asset?.address, chainId]);
 
   const validateEvmAmount = useCallback(
     () =>

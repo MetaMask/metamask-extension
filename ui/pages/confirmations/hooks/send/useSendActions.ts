@@ -19,12 +19,12 @@ import { useSendType } from './useSendType';
 export const useSendActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { asset, from, fromAccount, to, value } = useSendContext();
+  const { asset, chainId, from, fromAccount, to, value } = useSendContext();
   const { isEvmSendType } = useSendType();
 
   const handleSubmit = useCallback(
     async (recipientAddress?: string) => {
-      if (!asset?.chainId) {
+      if (!asset) {
         return;
       }
       const toAddress = recipientAddress || to;
@@ -33,7 +33,7 @@ export const useSendActions = () => {
         dispatch(
           await submitEvmTransaction({
             asset,
-            chainId: toHex(asset.chainId),
+            chainId: chainId as Hex,
             from: from as Hex,
             to: toAddress as Hex,
             value: value as string,
@@ -53,7 +53,17 @@ export const useSendActions = () => {
         );
       }
     },
-    [asset, dispatch, from, fromAccount, history, isEvmSendType, to, value],
+    [
+      asset,
+      chainId,
+      dispatch,
+      from,
+      fromAccount,
+      history,
+      isEvmSendType,
+      to,
+      value,
+    ],
   );
 
   const handleBack = useCallback(() => {

@@ -1,7 +1,6 @@
 import { Hex } from '@metamask/utils';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { toHex } from '@metamask/controller-utils';
 import { useCallback, useMemo } from 'react';
 import { DefaultRootState, useSelector } from 'react-redux';
 
@@ -100,17 +99,17 @@ const getNonEvmMaxAmount = (asset?: Asset) => {
 };
 
 export const useMaxAmount = () => {
-  const { asset, from } = useSendContext();
+  const { asset, chainId, from } = useSendContext();
   const tokenBalances = useSelector(getTokenBalances);
   const { isEvmSendType } = useSendType();
   const gasFeeEstimates = useSelector((state) => {
-    if (asset?.chainId && isEvmSendType) {
+    if (chainId && isEvmSendType) {
       return (
         getGasFeeEstimatesByChainId as (
           state: DefaultRootState,
           chainId: Hex,
         ) => GasFeeEstimatesType
-      )(state, toHex(asset?.chainId));
+      )(state, chainId as Hex);
     }
     return undefined;
   });
@@ -118,11 +117,11 @@ export const useMaxAmount = () => {
     (state: MetamaskSendState) => state.metamask.accountsByChainId,
   ) as AccountWithBalances;
   const accountsWithBalances = useMemo(() => {
-    if (asset?.chainId && asset?.address && isEvmAddress(asset?.address)) {
-      return accountsByChainId[toHex(asset?.chainId)];
+    if (chainId && asset?.address && isEvmAddress(asset?.address)) {
+      return accountsByChainId[chainId as Hex];
     }
     return undefined;
-  }, [accountsByChainId, asset?.address, asset?.chainId]);
+  }, [accountsByChainId, asset?.address, chainId]);
 
   const getMaxAmount = useCallback(() => {
     if (isEvmSendType) {

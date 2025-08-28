@@ -1,5 +1,5 @@
 import { Hex } from '@metamask/utils';
-import { ERC1155, toHex } from '@metamask/controller-utils';
+import { ERC1155 } from '@metamask/controller-utils';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { isNativeAddress } from '@metamask/bridge-controller';
 import { useMemo } from 'react';
@@ -67,18 +67,18 @@ const getNonEvmBalance = (asset?: Asset) => {
 };
 
 export const useBalance = () => {
-  const { asset, from } = useSendContext();
+  const { asset, chainId, from } = useSendContext();
   const tokenBalances = useSelector(getTokenBalances);
   const { isEvmSendType } = useSendType();
   const accountsByChainId = useSelector(
     (state: MetamaskSendState) => state.metamask.accountsByChainId,
   ) as AccountWithBalances;
   const accountsWithBalances = useMemo(() => {
-    if (asset?.chainId && asset?.address && isEvmAddress(asset?.address)) {
-      return accountsByChainId[toHex(asset?.chainId)];
+    if (chainId && asset?.address && isEvmAddress(asset?.address)) {
+      return accountsByChainId[chainId as Hex];
     }
     return undefined;
-  }, [accountsByChainId, asset?.address, asset?.chainId]);
+  }, [accountsByChainId, asset?.address, chainId]);
 
   const balance = useMemo(() => {
     if (asset?.standard === ERC1155) {

@@ -24,6 +24,7 @@ describe('useBalance', () => {
   it('return correct balance for native assets', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_NATIVE_ASSET,
+      chainId: '0x5',
       from: MOCK_ADDRESS_1,
     } as unknown as SendContext.SendContextType);
     const result = renderHook({
@@ -48,6 +49,7 @@ describe('useBalance', () => {
   it('return correct balance for ERC20 assets', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_ASSET,
+      chainId: '0x5',
       from: MOCK_ADDRESS_1,
     } as unknown as SendContext.SendContextType);
     const result = renderHook({
