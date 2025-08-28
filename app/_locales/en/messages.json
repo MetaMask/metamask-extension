@@ -1667,6 +1667,10 @@
   "customizeYourNotificationsText": {
     "message": "Turn on the types of notifications you want to receive:"
   },
+  "daily": {
+    "message": "daily",
+    "description": "Time period for daily recurring events"
+  },
   "dappSuggested": {
     "message": "Site suggested"
   },
@@ -2363,6 +2367,22 @@
   },
   "etherscanViewOn": {
     "message": "View on Etherscan"
+  },
+  "everyXDays": {
+    "message": "every $1 days",
+    "description": "Custom time period in days, $1 is the number"
+  },
+  "everyXHours": {
+    "message": "every $1 hours",
+    "description": "Custom time period in hours, $1 is the number"
+  },
+  "everyXMinutes": {
+    "message": "every $1 minutes",
+    "description": "Custom time period in minutes, $1 is the number"
+  },
+  "everyXSeconds": {
+    "message": "every $1 seconds",
+    "description": "Custom time period in seconds, $1 is the number"
   },
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
@@ -3385,6 +3405,10 @@
   "missingSettingRequest": {
     "message": "Request here"
   },
+  "monthly": {
+    "message": "monthly",
+    "description": "Time period for monthly recurring events"
+  },
   "more": {
     "message": "more"
   },
@@ -4232,6 +4256,12 @@
   "other": {
     "message": "other"
   },
+  "otherPermissionsOnSiteDescription": {
+    "message": "The following permissions were also found on this site. Do you want to remove them?"
+  },
+  "otherPermissionsOnSiteTitle": {
+    "message": "Other permissions on this site"
+  },
   "otherSnaps": {
     "message": "other snaps",
     "description": "Used in the 'permission_rpc' message."
@@ -4316,6 +4346,9 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Learn how to cancel or speed up a transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
+  },
+  "perSecond": {
+    "message": "per second"
   },
   "permissionDetails": {
     "message": "Permission details"
@@ -4872,6 +4905,9 @@
   "removeAccountModalBannerTitle": {
     "message": "This account will be removed from MetaMask.",
     "description": "Title of a banner alert used on account remove modal."
+  },
+  "removeAll": {
+    "message": "Remove all"
   },
   "removeKeyringSnap": {
     "message": "Removing this Snap removes these accounts from MetaMask:"
@@ -5518,6 +5554,9 @@
   },
   "siweURI": {
     "message": "URL"
+  },
+  "skip": {
+    "message": "Skip"
   },
   "skipAccountSecurity": {
     "message": "Skip account security?"
@@ -6799,8 +6838,14 @@
   "tokenStandard": {
     "message": "Token standard"
   },
+  "tokenStream": {
+    "message": "Token Stream"
+  },
   "tokenStreams": {
     "message": "Token Streams"
+  },
+  "tokenSubscription": {
+    "message": "Token Subscription"
   },
   "tokenSubscriptions": {
     "message": "Token Subscriptions"
@@ -7312,6 +7357,10 @@
   "websites": {
     "message": "websites",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "weekly": {
+    "message": "weekly",
+    "description": "Time period for weekly recurring events"
   },
   "welcomeBack": {
     "message": "Welcome back"

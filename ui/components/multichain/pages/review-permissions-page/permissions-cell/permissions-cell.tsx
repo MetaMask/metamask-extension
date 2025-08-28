@@ -54,7 +54,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
   return (
     <Box
       padding={4}
-      paddingTop={paddingTop !== undefined ? paddingTop : 0}
+      paddingTop={paddingTop === undefined ? 0 : paddingTop}
       gap={4}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.LG}
