@@ -11,8 +11,8 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
 
 describe('MultichainBridgeQuoteCard', () => {
   beforeEach(() => {

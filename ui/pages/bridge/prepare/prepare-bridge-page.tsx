@@ -760,11 +760,6 @@ const PrepareBridgePage = ({
               )}
             </Column>
           )}
-          {/* <Row
-            paddingInline={4}
-            height={BlockSize.Full}
-            alignItems={AlignItems.flexEnd}
-          > */}
           {(activeQuote || !isLoading) && (
             <Column
               marginInline={4}
@@ -884,7 +879,6 @@ const PrepareBridgePage = ({
               </Footer>
             </Column>
           )}
-          {/* </Row> */}
           {isUsingHardwareWallet &&
             isTxSubmittable &&
             hardwareWalletName &&
