@@ -20,7 +20,6 @@ describe('Ledger Swap', function () {
       {
         fixtures: new FixtureBuilder().withLedgerAccount().build(),
         localNodeOptions: {
-          hardfork: 'london',
           loadState: './test/e2e/seeder/network-states/with50Dai.json',
         },
         title: this.test?.fullTitle(),
@@ -48,7 +47,6 @@ describe('Ledger Swap', function () {
 
         await homePage.startSwapFlow();
 
-        await driver.delay(5000);
         if (isFirefox) {
           // firefox will open swap page in another tab with same name, so we need to close it
           await driver.switchToWindowWithTitle(
@@ -68,6 +66,7 @@ describe('Ledger Swap', function () {
         await swapPage.selectDestinationToken('DAI');
 
         await swapPage.dismissManualTokenWarning();
+        // we need to wait for the quote to be loaded
         await driver.delay(1500);
         await swapPage.submitSwap();
 
