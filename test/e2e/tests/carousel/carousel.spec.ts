@@ -6,7 +6,11 @@ import { MAX_SLIDES } from '../../../../ui/components/multichain/carousel/consta
 import type { Driver } from '../../webdriver/driver';
 
 async function skipIfCarouselDisabled(driver: Driver, mochaCtx: Mocha.Context) {
-  const exists = await driver.isElementPresent('.mm-carousel');
+  let exists = await driver.isElementPresent('.mm-carousel');
+  if (!exists) {
+    await driver.delay(300);
+    exists = await driver.isElementPresent('.mm-carousel');
+  }
   if (!exists) {
     mochaCtx.skip();
   }
