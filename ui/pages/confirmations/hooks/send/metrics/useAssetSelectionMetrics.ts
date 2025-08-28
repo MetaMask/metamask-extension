@@ -49,12 +49,19 @@ export const useAssetSelectionMetrics = () => {
         event: MetaMetricsEventName.SendAssetSelected,
         category: MetaMetricsEventCategory.Send,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: accountType,
-          assetType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          asset_type: assetType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_list_position: position,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_list_size: assetListSize,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: isEvmSendType ? sendAsset?.chainId : undefined,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id_caip: isEvmSendType ? undefined : sendAsset?.chainId,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           filter_method: assetFilterMethod,
         },
       });

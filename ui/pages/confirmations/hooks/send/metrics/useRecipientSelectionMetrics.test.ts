@@ -134,9 +134,13 @@ describe('useRecipientSelectionMetrics', () => {
         MetaMetricsEventName.SendRecipientSelected,
       );
       expect(expectedEventBuilder.addProperties).toHaveBeenCalledWith({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: 'EOA',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         input_method: 'manual',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: '0x1',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_caip: undefined,
       });
       expect(mockTrackEvent).toHaveBeenCalledWith({ event: 'test_event' });
@@ -161,9 +165,13 @@ describe('useRecipientSelectionMetrics', () => {
       await result.current.captureRecipientSelected();
 
       expect(expectedEventBuilder.addProperties).toHaveBeenCalledWith({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: 'EOA',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         input_method: 'manual',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: undefined,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_caip: '0x1',
       });
     });
