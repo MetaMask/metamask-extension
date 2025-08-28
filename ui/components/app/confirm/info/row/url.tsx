@@ -89,11 +89,13 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     // Priority 1: Malicious
     if (originTrustSignals.state === TrustSignalDisplayState.Malicious) {
       return (
-        <Icon
-          name={IconName.Danger}
-          color={IconColor.errorDefault}
-          size={IconSize.Sm}
-        />
+        <Tooltip title="Malicious site" position="bottom">
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.errorDefault}
+            size={IconSize.Sm}
+          />
+        </Tooltip>
       );
     }
 
@@ -105,11 +107,13 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     // Priority 3: Warning
     if (originTrustSignals.state === TrustSignalDisplayState.Warning) {
       return (
-        <Icon
-          name={IconName.Danger}
-          color={IconColor.warningDefault}
-          size={IconSize.Sm}
-        />
+        <Tooltip title="Suspicious site" position="bottom">
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.warningDefault}
+            size={IconSize.Sm}
+          />
+        </Tooltip>
       );
     }
 
