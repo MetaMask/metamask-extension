@@ -182,7 +182,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                       class="mm-box mm-box--display-none mm-box--sm:display-flex"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 shrink-0"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
