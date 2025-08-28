@@ -660,6 +660,7 @@ const PrepareBridgePage = ({
                       },
                     ),
                   );
+
                 setRotateSwitchTokens(!rotateSwitchTokens);
 
                 const shouldFlipNetworks = isUnifiedUIEnabled || !isSwap;
@@ -677,6 +678,7 @@ const PrepareBridgePage = ({
               }}
             />
           </Box>
+
           <BridgeInputGroup
             header={getToInputHeader()}
             token={toToken}
@@ -736,12 +738,14 @@ const PrepareBridgePage = ({
               setToastTriggerCounter((prev) => prev + 1);
             }}
           />
+
           {isToOrFromSolana && (
             <DestinationAccountPicker
               onAccountSelect={setSelectedDestinationAccount}
               selectedSwapToAccount={selectedDestinationAccount}
             />
           )}
+
           {!activeQuote && (
             <Column
               height={BlockSize.Full}
@@ -760,6 +764,8 @@ const PrepareBridgePage = ({
               )}
             </Column>
           )}
+
+          {/** QuoteCard and CTA button */}
           {(activeQuote || !isLoading) && (
             <Column
               marginInline={4}
@@ -879,6 +885,8 @@ const PrepareBridgePage = ({
               </Footer>
             </Column>
           )}
+
+          {/** Alert banners */}
           {isUsingHardwareWallet &&
             isTxSubmittable &&
             hardwareWalletName &&
