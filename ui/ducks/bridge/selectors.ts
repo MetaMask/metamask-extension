@@ -4,6 +4,7 @@ import type {
   ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   isSolanaChainId,
   isNativeAddress,
@@ -38,6 +39,10 @@ import type {
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import {
+  type AccountGroupObject,
+  type AccountTreeControllerState,
+} from '@metamask/account-tree-controller';
+import {
   MultichainNetworks,
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -51,7 +56,6 @@ import {
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
-import {} from '../../pages/bridge/utils/quote';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainBalances,
@@ -66,8 +70,16 @@ import {
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import {
+  getInternalAccountsByScope,
+  getSelectedInternalAccount,
+} from '../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
+import {
+  getAllAccountGroups,
+  getInternalAccountBySelectedAccountGroupAndCaip,
+} from '../../selectors/multichain-accounts/account-tree';
+
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
@@ -82,6 +94,7 @@ export type BridgeAppState = {
     GasFeeState &
     NetworkState &
     AccountsControllerState &
+    AccountTreeControllerState &
     MultichainAssetsRatesControllerState &
     TokenRatesControllerState &
     RatesControllerState &
@@ -178,9 +191,7 @@ export const getFromChain = createDeepEqualSelector(
   getMultichainProviderConfig,
   getFromChains,
   (providerConfig, fromChains) => {
-    return providerConfig?.chainId
-      ? fromChains.find(({ chainId }) => chainId === providerConfig.chainId)
-      : undefined;
+    return fromChains.find(({ chainId }) => chainId === providerConfig.chainId);
   },
 );
 
@@ -264,6 +275,53 @@ export const getToToken = createSelector(
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
+export const getAccountGroupNameByInternalAccount = createSelector(
+  [getAllAccountGroups, (_, account: InternalAccount | null) => account],
+  (accountGroups: AccountGroupObject[], account) => {
+    if (!account?.id) {
+      return null;
+    }
+    return (
+      accountGroups.find(({ accounts }) => accounts.includes(account.id))
+        ?.metadata.name ?? account?.metadata?.name
+    );
+  },
+);
+
+export const getFromAccount = createSelector(
+  [(state) => getFromChain(state)?.chainId, (state) => state],
+  (fromChainId, state) => {
+    if (fromChainId) {
+      return getInternalAccountBySelectedAccountGroupAndCaip(
+        state,
+        formatChainIdToCaip(fromChainId),
+      );
+    }
+    return null;
+  },
+);
+
+export const getToAccounts = createSelector(
+  [getToChain, (state) => state],
+  (toChain, state) => {
+    if (!toChain) {
+      return [];
+    }
+    const internalAccounts = getInternalAccountsByScope(
+      state,
+      formatChainIdToCaip(toChain.chainId),
+    );
+
+    return internalAccounts.map((account) => ({
+      ...account,
+      isExternal: false,
+      displayName:
+        getAccountGroupNameByInternalAccount(state, account) ??
+        account.metadata.name,
+    }));
+  },
+);
+
 const _getFromNativeBalance = createSelector(
   getFromChain,
   (state: BridgeAppState) => state.bridge.fromNativeBalance,
@@ -296,17 +354,18 @@ export const getFromTokenBalance = createSelector(
   getFromChain,
   (state: BridgeAppState) => state.bridge.fromTokenBalance,
   getMultichainBalances,
-  getSelectedInternalAccount,
+  getFromAccount,
   (
     fromToken,
     fromChain,
     fromTokenBalance,
     nonEvmBalancesByAccountId,
-    { id },
+    fromAccount,
   ) => {
-    if (!fromToken || !fromChain) {
+    if (!fromToken || !fromChain || !fromAccount) {
       return null;
     }
+    const { id } = fromAccount;
     const { chainId, decimals, address, assetId } = fromToken;
 
     // Use the balance provided by the multichain balances controller

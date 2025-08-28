@@ -672,12 +672,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "当社のプライバシー保護への取り組みについて見る"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "アカウントをバックアップして設定を同期します。"
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "バックアップと同期のご紹介"
-  },
   "backupApprovalInfo": {
     "message": "このシークレット コードは、デバイスをなくしたとき、パスワードを忘れたとき、MetaMaskの再インストールが必要なとき、または別のデバイスでウォレットにアクセスするときに必要です。"
   },
@@ -701,9 +695,6 @@
   },
   "basic": {
     "message": "基本"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "基本機能はオフになっています"
   },
   "basicConfigurationDescription": {
     "message": "MetaMaskは、インターネットサービスを通じてトークンの詳細やガス設定などの基本的な機能を提供します。インターネットサービスを使用すると、この場合はMetaMaskに、ユーザーのIPアドレスが共有されます。これは他のどのWebサイトにアクセスした場合も同様で、MetaMaskはこのデータを一時的に使用し、ユーザーのデータを販売することは一切ありません。VPNを使用したり、これらのサービスをオフにしたりすることもできますが、MetaMaskでのエクスペリエンスに影響を与える可能性があります。詳細は$1をお読みください。",
@@ -2146,9 +2137,6 @@
   },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
-  },
-  "enableIt": {
-    "message": "有効にする"
   },
   "enableSmartContractAccount": {
     "message": "スマートコントラクトアカウントを有効にする"
@@ -5489,60 +5477,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "このオプションを有効にすると、MetaMaskでディープリンクを開く際に表示されるインタースティシャル画面がスキップされます。「ディープリンク」とは、https://link.metamask.io/homeなど、MetaMaskが開くようになっているリンクのことです。これらのリンクは、第三者によって偽装されている場合があります。インタースティシャル画面は、MetaMask内でユーザーのアカウント、トークン、履歴、残高、設定、その他機微情報に該当する可能性のある情報を表示する恐れのあるページを誤って開かないように、ユーザーを保護するものです。この設定は、MetaMaskによって署名されたリンクにのみ適用されます。"
-  },
-  "slideBridgeDescription": {
-    "message": "9つのチェーン間での移動がすべてウォレット内で"
-  },
-  "slideBridgeTitle": {
-    "message": "ブリッジの準備はいいですか？"
-  },
-  "slideCashOutDescription": {
-    "message": "仮想通貨を売ってキャッシュを入手"
-  },
-  "slideCashOutTitle": {
-    "message": "MetaMaskでキャッシュアウト"
-  },
-  "slideDebitCardDescription": {
-    "message": "一部地域で利用可能"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMaskデビットカード"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "ウォレットをどこからでも利用できます"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "MetaMask Mobileをダウンロード"
-  },
-  "slideFundWalletDescription": {
-    "message": "トークンを追加または送金して開始します"
-  },
-  "slideFundWalletTitle": {
-    "message": "ウォレットに入金"
-  },
-  "slideMultiSrpDescription": {
-    "message": "MetaMaskで複数のウォレットをインポートして使用します"
-  },
-  "slideMultiSrpTitle": {
-    "message": "複数のシークレットリカバリーフレーズの追加"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "同じアドレスでよりスマートな機能"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "スマートアカウントの使用を開始"
-  },
-  "slideSolanaDescription": {
-    "message": "Solanaアカウントを作成して開始します"
-  },
-  "slideSolanaTitle": {
-    "message": "Solanaがサポートされるようになりました"
-  },
-  "slideSweepStakeDescription": {
-    "message": "今NFTをミントすると、次のものが当たるチャンスです:"
-  },
-  "slideSweepStakeTitle": {
-    "message": "$5000 USDCプレゼントにご応募ください！"
   },
   "smartAccountAccept": {
     "message": "スマートアカウントを使用"
