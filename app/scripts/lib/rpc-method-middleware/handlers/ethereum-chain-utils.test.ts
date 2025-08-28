@@ -72,7 +72,7 @@ describe('Ethereum Chain Utils', () => {
         ).toHaveBeenCalledWith({
           chainId: '0x1',
           autoApprove: false,
-          metadata: {},
+          metadata: { options: {} },
           origin: 'www.test.com',
         });
       });
@@ -127,7 +127,7 @@ describe('Ethereum Chain Utils', () => {
         ).toHaveBeenCalledWith({
           chainId: '0x1',
           autoApprove: true,
-          metadata: {},
+          metadata: { options: {} },
           origin: 'www.test.com',
         });
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
@@ -155,7 +155,7 @@ describe('Ethereum Chain Utils', () => {
         ).toHaveBeenCalledWith({
           chainId: '0x1',
           autoApprove: false,
-          metadata: {},
+          metadata: { options: {} },
           origin: 'www.test.com',
         });
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
@@ -234,7 +234,7 @@ describe('Ethereum Chain Utils', () => {
           chainId: '0x1',
           autoApprove: false,
           metadata: {
-            isSwitchEthereumChain: true,
+            options: { isSwitchEthereumChain: true },
           },
           origin: 'www.test.com',
         });
@@ -359,7 +359,7 @@ describe('Ethereum Chain Utils', () => {
         });
       }).toThrow(
         rpcErrors.invalidParams({
-          message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
+          message: `Received unexpected keys on object parameter. Unsupported keys:\n${JSON.stringify([unexpectedParam])}`,
         }),
       );
     });
@@ -402,7 +402,7 @@ describe('Ethereum Chain Utils', () => {
         });
       }).toThrow(
         rpcErrors.invalidParams({
-          message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
+          message: `Received unexpected keys on object parameter. Unsupported keys:\n${JSON.stringify([unexpectedParam])}`,
         }),
       );
     });
