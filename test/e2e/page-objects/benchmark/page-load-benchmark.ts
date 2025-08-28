@@ -425,7 +425,7 @@ export class PageLoadBenchmark {
 
   /**
    * Saves benchmark results to a JSON file with comprehensive metadata.
-   * Includes timestamp, git commit SHA, statistical summaries, and raw measurement data.
+   * Includes timestamp, git commit SHA, and statistical summaries.
    *
    * @param outputPath - File path where results should be saved
    * @throws {Error} If file writing fails or git command fails
@@ -438,9 +438,8 @@ export class PageLoadBenchmark {
 
     const output = {
       timestamp: new Date().getTime(),
-      summary: this.calculateStatistics(),
       commit: commitSha,
-      rawResults: this.results,
+      summary: this.calculateStatistics(),
     };
 
     await fs.writeFile(outputPath, JSON.stringify(output, null, 2));
