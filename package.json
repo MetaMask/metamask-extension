@@ -691,7 +691,7 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "tweetnacl": "^1.0.3",
-    "typescript": "~5.5.0",
+    "typescript": "~5.5.4",
     "unzipper": "^0.12.3",
     "viem": "^2.21.8",
     "vinyl": "^2.2.1",

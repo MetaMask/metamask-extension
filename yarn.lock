@@ -32059,7 +32059,7 @@ __metadata:
     tslib: "npm:~2.6.0"
     tsx: "npm:^4.19.2"
     tweetnacl: "npm:^1.0.3"
-    typescript: "npm:~5.5.0"
+    typescript: "npm:~5.5.4"
     unicode-confusables: "npm:^0.1.1"
     unzipper: "npm:^0.12.3"
     uri-js: "npm:^4.4.1"
@@ -41831,7 +41831,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.5.0":
+"typescript@npm:~5.5.4":
   version: 5.5.4
   resolution: "typescript@npm:5.5.4"
   bin:
@@ -41851,7 +41851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.5.0#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A~5.5.4#optional!builtin<compat/typescript>":
   version: 5.5.4
   resolution: "typescript@patch:typescript@npm%3A5.5.4#optional!builtin<compat/typescript>::version=5.5.4&hash=379a07"
   bin:
