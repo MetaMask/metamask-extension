@@ -111,7 +111,7 @@ global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
 
 // Read the infuraProjectId from manifestFlags at this startup state
-process.env.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS =
+globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS =
   getManifestFlags().testing?.infuraProjectId;
 
 /**
@@ -1039,7 +1039,7 @@ export function setupController(
   //
   controller = new MetamaskController({
     infuraProjectId:
-      process.env.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS ??
+      globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS ??
       process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
