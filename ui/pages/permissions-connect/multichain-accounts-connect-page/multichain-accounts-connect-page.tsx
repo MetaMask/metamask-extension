@@ -558,16 +558,16 @@ export const MultichainAccountsConnectPage: React.FC<
             disabled={selectedAccountGroupIds.length === 0}
           >
             <Box marginTop={4}>
-              {/* <MultichainSiteCell
+              <MultichainSiteCell
                 nonTestNetworks={nonTestNetworkConfigurations}
                 testNetworks={testNetworkConfigurations}
                 supportedAccountGroups={supportedAccountGroups}
-                onSelectAccountGroupIds={handleAccountGroupIdsSelected}
+                showEditAccounts={setModeToEditAccounts}
                 onSelectChainIds={handleChainIdsSelected}
                 selectedAccountGroupIds={selectedAccountGroupIds}
                 selectedChainIds={selectedChainIds}
                 isConnectFlow
-              /> */}
+              />
             </Box>
           </Tab>
         </Tabs>
