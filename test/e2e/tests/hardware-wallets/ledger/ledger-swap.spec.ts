@@ -1,10 +1,10 @@
 import { Browser } from 'selenium-webdriver';
-import { checkActivityTransaction } from '../../swaps/shared';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
+import { checkActivityTransaction } from '../../swaps/shared';
 
 import HomePage from '../../../page-objects/pages/home/homepage';
 import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
@@ -72,6 +72,8 @@ describe('Ledger Swap', function () {
         await swapPage.selectDestinationToken('DAI');
         await swapPage.dismissManualTokenWarning();
 
+        // This delay is needed to avoid occasional failures in firefox. 1500 second is enough to avoid most of failures cases in firefox.
+        // this delay code was copied from smart-transactions.spec.ts
         await driver.delay(1500);
         await swapPage.submitSwap();
 

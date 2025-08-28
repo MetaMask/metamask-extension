@@ -2,9 +2,9 @@ import { MockttpServer } from 'mockttp';
 import {
   AGGREGATOR_METADATA_API_MOCK_RESULT,
   GAS_PRICE_API_MOCK_RESULT,
+  TOP_ASSETS_API_MOCK_RESULT,
 } from '../../../../data/mock-data';
 import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
-import { mockServerJsonRpc } from '../../ppom/mocks/mock-server-json-rpc';
 
 const TRANSACTION_HASH =
   '0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa6';
@@ -453,20 +453,7 @@ async function mockSwapTopAssets(mockServer: MockttpServer) {
     .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
     .thenCallback(() => ({
       statusCode: 200,
-      json: [
-        {
-          symbol: 'ETH',
-          address: '0x0000000000000000000000000000000000000000',
-        },
-        {
-          symbol: 'DAI',
-          address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-        },
-        {
-          symbol: 'USDC',
-          address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-        },
-      ],
+      json: TOP_ASSETS_API_MOCK_RESULT,
     }));
 }
 
@@ -528,7 +515,6 @@ async function mockSuggestedGasFees(mockServer: MockttpServer) {
 
 async function mockLedgerTransactionRequestsBase(mockServer: MockttpServer) {
   await mockMultiNetworkBalancePolling(mockServer);
-
 }
 
 // Mock external accounts API for activity list display
