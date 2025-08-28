@@ -350,10 +350,13 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     const finalNetworkClientId =
       networkClientId ?? defaultRpcEndpoint.networkClientId;
 
-    dispatch(setActiveNetwork(finalNetworkClientId));
-    dispatch(updateCustomNonce(''));
-    dispatch(setNextNonce(''));
-    dispatch(detectNfts(allChainIds));
+    // Only change global network when NOT accessed from dapp popover
+    if (!isAccessedFromDappConnectedSitePopover) {
+      dispatch(setActiveNetwork(finalNetworkClientId));
+      dispatch(updateCustomNonce(''));
+      dispatch(setNextNonce(''));
+      dispatch(detectNfts(allChainIds));
+    }
 
     dispatch(toggleNetworkMenu());
 
@@ -383,13 +386,24 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     // If presently on a dapp, communicate a change to
     // the dapp via silent switchEthereumChain that the
     // network has changed due to user action
-    if (selectedTabOrigin && domains[selectedTabOrigin]) {
+    // Update dapp connection when:
+    // 1. Accessed from dapp connected site popover (always), OR
+    // 2. Accessed from global menu AND dapp has permission for the target network
+    const dappHasPermissionForNetwork = permittedChainIds.includes(hexChainId);
+    if (
+      selectedTabOrigin &&
+      (isAccessedFromDappConnectedSitePopover || dappHasPermissionForNetwork)
+    ) {
       dispatch(
         setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId),
       );
     }
 
-    if (permittedAccountAddresses.length > 0) {
+    // Only add new permissions when accessed from dapp connected site popover
+    if (
+      permittedAccountAddresses.length > 0 &&
+      isAccessedFromDappConnectedSitePopover
+    ) {
       dispatch(addPermittedChain(selectedTabOrigin, chainId));
       if (!permittedChainIds.includes(hexChainId)) {
         dispatch(showPermittedNetworkToast());
@@ -791,6 +805,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         <SelectRpcUrlModal
           networkConfiguration={evmNetworks[editedNetwork.chainId]}
           onNetworkChange={handleEvmNetworkChange}
+          isAccessedFromDappConnectedSitePopover={
+            isAccessedFromDappConnectedSitePopover
+          }
         />
       );
     } else if (
