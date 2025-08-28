@@ -86,7 +86,7 @@ describe('useSendQueryParams', () => {
     expect(mockGetNativeAssetForChainId).toHaveBeenCalledWith('0x1');
   });
 
-  it('get asset details from state of ERC20 token is passed', () => {
+  it('get asset details from state of ERC20 token if passed', () => {
     const mockUpdateAsset = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateAsset: mockUpdateAsset,
@@ -97,7 +97,7 @@ describe('useSendQueryParams', () => {
     mockUseSearchParams.mockReturnValue([
       {
         get: (param: string) => {
-          return param === 'address' ? EVM_ASSET.address : undefined;
+          return param === 'asset' ? EVM_ASSET.address : undefined;
         },
       },
     ] as unknown as [URLSearchParams, SetURLSearchParams]);
@@ -125,7 +125,7 @@ describe('useSendQueryParams', () => {
     mockUseSearchParams.mockReturnValue([
       {
         get: (param: string) => {
-          return param === 'address' ? SOLANA_ASSET.address : undefined;
+          return param === 'asset' ? SOLANA_ASSET.address : undefined;
         },
       },
     ] as unknown as [URLSearchParams, SetURLSearchParams]);
@@ -142,5 +142,65 @@ describe('useSendQueryParams', () => {
     } as unknown as SendContext.SendContextType);
     renderHook();
     expect(mockUpdateAsset).not.toHaveBeenCalled();
+  });
+
+  it('update amount if it is present in the params', () => {
+    const mockUpdateValue = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateValue: mockUpdateValue,
+      updateCurrentPage: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+
+    const mockUseSearchParams = jest.mocked(useSearchParams);
+    mockUseSearchParams.mockReturnValue([
+      {
+        get: (param: string) => {
+          return param === 'amount' ? '10' : undefined;
+        },
+      },
+    ] as unknown as [URLSearchParams, SetURLSearchParams]);
+    renderHook();
+    expect(mockUpdateValue).toHaveBeenCalledWith('10');
+  });
+
+  it('does not update amount if it is already defined in send context', () => {
+    const mockUpdateValue = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateValue: mockUpdateValue,
+      updateCurrentPage: jest.fn(),
+      value: '10',
+    } as unknown as SendContext.SendContextType);
+    renderHook();
+    expect(mockUpdateValue).not.toHaveBeenCalled();
+  });
+
+  it('update amount if it is present in the params', () => {
+    const mockUpdateTo = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateTo: mockUpdateTo,
+      updateCurrentPage: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+
+    const mockUseSearchParams = jest.mocked(useSearchParams);
+    mockUseSearchParams.mockReturnValue([
+      {
+        get: (param: string) => {
+          return param === 'recipient' ? 'abc' : undefined;
+        },
+      },
+    ] as unknown as [URLSearchParams, SetURLSearchParams]);
+    renderHook();
+    expect(mockUpdateTo).toHaveBeenCalledWith('abc');
+  });
+
+  it('does not update recipient if it is already defined in send context', () => {
+    const mockUpdateTo = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateTo: mockUpdateTo,
+      updateCurrentPage: jest.fn(),
+      to: 'acb',
+    } as unknown as SendContext.SendContextType);
+    renderHook();
+    expect(mockUpdateTo).not.toHaveBeenCalled();
   });
 });
