@@ -15,7 +15,6 @@ import {
   BackgroundColor,
   Display,
   FlexDirection,
-  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
