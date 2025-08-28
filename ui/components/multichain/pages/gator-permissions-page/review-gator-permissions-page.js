@@ -1,15 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Content, Header, Page } from '../../page';
+import { Content, Header, Page } from '../page';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
   Text,
-} from '../../../../component-library';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+} from '../../../component-library';
 import {
   BackgroundColor,
   BlockSize,
@@ -20,42 +19,52 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
-import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
-import { extractNetworkName } from '../gator-permissions-page-helper';
-import { ReviewGatorAssetItem } from '../components';
+} from '../../../../helpers/constants/design-system';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getAggregatedGatorPermissionByChainId } from '../../../../selectors/gator-permissions/gator-permissions';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useRevokeGatorPermissions } from '../../../../hooks/gator-permissions/useRevokeGatorPermissions';
+import { extractNetworkName } from './gator-permissions-page-helper';
+import { ReviewGatorAssetItem } from './components';
 
-export const ReviewTokenSubscriptionsPage = () => {
+export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const headerRef = useRef();
-  const { chainId } = useParams();
+  const { chainId, aggregatedPermissionType } = useParams();
   const [networkName, setNetworkName] = useState('');
-  const [totalTokenSubscriptions, setTotalTokenSubscriptions] = useState(0);
+  const [totalGatorPermissions, setTotalGatorPermissions] = useState(0);
 
   const networks = useSelector(getNetworkConfigurationsByChainId);
-  const nativeTokenPeriodicPermissions = useSelector((state) =>
-    getGatorPermissionByPermissionTypeAndChainId(
+  const gatorPermissions = useSelector((state) =>
+    getAggregatedGatorPermissionByChainId(
       state,
-      'native-token-periodic',
+      aggregatedPermissionType,
       chainId,
     ),
   );
 
+  const { revokeGatorPermission } = useRevokeGatorPermissions({
+    chainId,
+  });
+
   useEffect(() => {
     setNetworkName(extractNetworkName(networks, chainId));
-    setTotalTokenSubscriptions(nativeTokenPeriodicPermissions.length);
-  }, [chainId, nativeTokenPeriodicPermissions, networks]);
+    setTotalGatorPermissions(gatorPermissions.length);
+  }, [chainId, gatorPermissions, networks]);
 
-  const handleRevokeClick = (subscription) => {
-    // TODO: Implement revoke logic
-    console.log('subscription to revoke:', subscription);
+  const handleRevokeClick = async (permission) => {
+    try {
+      console.log('permission to revoke:', permission);
+      await revokeGatorPermission(permission);
+    } catch (error) {
+      console.error('Error revoking gator permission:', error);
+    }
   };
 
-  const renderTokenSubscriptions = (subscriptions) =>
-    subscriptions.map((subscription) => {
-      const { permissionResponse, siteOrigin } = subscription;
+  const renderGatorPermissions = (permissions) =>
+    permissions.map((permission) => {
+      const { permissionResponse, siteOrigin } = permission;
       const fullNetworkName = extractNetworkName(
         networks,
         permissionResponse.chainId,
@@ -68,7 +77,7 @@ export const ReviewTokenSubscriptionsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() => handleRevokeClick(subscription)}
+          onRevokeClick={() => handleRevokeClick(permission)}
         />
       );
     });
@@ -76,7 +85,7 @@ export const ReviewTokenSubscriptionsPage = () => {
   return (
     <Page
       className="main-container"
-      data-testid="review-token-subscriptions-page"
+      data-testid="review-gator-permissions-page"
     >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
@@ -101,8 +110,8 @@ export const ReviewTokenSubscriptionsPage = () => {
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
-        {totalTokenSubscriptions > 0 ? (
-          renderTokenSubscriptions(nativeTokenPeriodicPermissions)
+        {totalGatorPermissions > 0 ? (
+          renderGatorPermissions(gatorPermissions)
         ) : (
           <Box
             data-testid="no-connections"

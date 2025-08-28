@@ -23,7 +23,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import {
   PERMISSIONS,
-  REVIEW_TOKEN_STREAMS_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorAssetListDetail } from '../../../../../selectors/gator-permissions/gator-permissions';
@@ -46,7 +46,7 @@ export const TokenStreamsPage = () => {
   }, [gatorAssetList]);
 
   const handleTokenStreamsPermissionClick = (chainId) => {
-    history.push(`${REVIEW_TOKEN_STREAMS_ROUTE}/${chainId}`);
+    history.push(`${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/token-transfer`);
   };
 
   const renderTokenStreamsPermissionsList = (gatorAssetItemList) =>

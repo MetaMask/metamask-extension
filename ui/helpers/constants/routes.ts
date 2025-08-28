@@ -59,11 +59,9 @@ export const PERMISSIONS = '/permissions';
 export const REVIEW_PERMISSIONS = '/review-permissions';
 export const SITES = '/sites';
 export const TOKEN_STREAMS_ROUTE = '/gator-permissions/token-streams';
-export const REVIEW_TOKEN_STREAMS_ROUTE = '/review-token-streams/:chainId';
+export const REVIEW_GATOR_PERMISSIONS_ROUTE = '/review-gator-permissions';
 export const TOKEN_SUBSCRIPTIONS_ROUTE =
   '/gator-permissions/token-subscriptions';
-export const REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE =
-  '/review-token-subscriptions/:chainId';
 export const CONNECT_ROUTE = '/connect';
 export const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
 export const CONNECT_SNAPS_CONNECT_ROUTE = '/snaps-connect';

@@ -245,9 +245,8 @@ export function useRevokeGatorPermissions({
     ): Promise<TransactionMeta> => {
       assertEmptyGatorPermission(gatorPermission);
       assertChainId(gatorPermission);
-      const transactionMeta = await addRevokeGatorPermissionTransaction(
-        gatorPermission,
-      );
+      const transactionMeta =
+        await addRevokeGatorPermissionTransaction(gatorPermission);
 
       setTransactionId(transactionMeta?.id);
 
@@ -288,9 +287,8 @@ export function useRevokeGatorPermissions({
       // so the user does not need to sequentially sign transactions
       const revokeTransactionMetas: TransactionMeta[] = [];
       for (const gatorPermission of gatorPermissions) {
-        const transactionMeta = await addRevokeGatorPermissionTransaction(
-          gatorPermission,
-        );
+        const transactionMeta =
+          await addRevokeGatorPermissionTransaction(gatorPermission);
         revokeTransactionMetas.push(transactionMeta);
       }
 
