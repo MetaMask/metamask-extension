@@ -131,6 +131,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
+    "@metamask/eth-json-rpc-provider": "npm:@metamask-previews/eth-json-rpc-provider@4.1.8-preview-789d703",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",

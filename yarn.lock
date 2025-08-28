@@ -5938,16 +5938,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:^4.1.5, @metamask/eth-json-rpc-provider@npm:^4.1.6, @metamask/eth-json-rpc-provider@npm:^4.1.7, @metamask/eth-json-rpc-provider@npm:^4.1.8":
-  version: 4.1.8
-  resolution: "@metamask/eth-json-rpc-provider@npm:4.1.8"
+"@metamask/eth-json-rpc-provider@npm:@metamask-previews/eth-json-rpc-provider@4.1.8-preview-789d703":
+  version: 4.1.8-preview-789d703
+  resolution: "@metamask-previews/eth-json-rpc-provider@npm:4.1.8-preview-789d703"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.0.3"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.4.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/8247f22a23ec0cae7f80c7755b00bfa337a27cc4d2ea416ed08f65a898cd6110057a3710e55e0454db7406c114a4a570b9a286baa8136db6f1c485f62a6c2800
+  checksum: 10/9b62a3a4d7af260689b95f8c9a6e6830df6ba234fe70b8ebdc6f38066e2524da136c9b4e7a36118a800d53f7bd34d555fe2431437d1a90794f8cf080ff68203e
   languageName: node
   linkType: hard
 
