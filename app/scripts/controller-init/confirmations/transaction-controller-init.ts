@@ -4,6 +4,7 @@ import {
   TransactionController,
   TransactionControllerMessenger,
   TransactionMeta,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
@@ -89,7 +90,20 @@ export const TransactionControllerInit: ControllerInitFunction<
         onboardingController().state.completedOnboarding,
       updateTransactions: true,
     },
-    isAutomaticGasFeeUpdateEnabled: () => true,
+    isAutomaticGasFeeUpdateEnabled: ({ type }) => {
+      if (
+        type &&
+        [
+          TransactionType.swap,
+          TransactionType.swapApproval,
+          TransactionType.bridge,
+          TransactionType.bridgeApproval,
+        ].includes(type)
+      ) {
+        return false;
+      }
+      return true;
+    },
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
       const { chainId } = transactionMeta;
       const uiState = getUIState(getFlatState());
