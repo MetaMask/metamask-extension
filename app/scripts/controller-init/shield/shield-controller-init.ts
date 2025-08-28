@@ -14,10 +14,9 @@ export const ShieldControllerInit: ControllerInitFunction<
 > = (request) => {
   const { controllerMessenger, initMessenger, persistedState } = request;
 
-  const baseUrl = process.env.SHIELD_RULE_ENGINE_URL;
-  if (!baseUrl) {
-    throw new Error('SHIELD_RULE_ENGINE_URL is not set');
-  }
+  const baseUrl =
+    process.env.SHIELD_RULE_ENGINE_URL ||
+    'https://shield-rule-engine.dev-api.cx.metamask.io';
 
   const getAccessToken = () =>
     initMessenger.call('AuthenticationController:getBearerToken');
