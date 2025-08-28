@@ -34,12 +34,6 @@ describe('Solana Web Socket', function (this: Suite) {
           accountName: `Solana ${1}`,
         });
 
-        assert.equal(
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount(),
-          1,
-          'Expected a websocket connection to be established when MetaMask opens',
-        );
-
         const connectionCount =
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
