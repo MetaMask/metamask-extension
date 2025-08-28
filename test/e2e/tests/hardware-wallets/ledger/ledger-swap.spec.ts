@@ -71,6 +71,8 @@ describe('Ledger Swap', function () {
         await swapPage.enterSwapAmount('2');
         await swapPage.selectDestinationToken('DAI');
         await swapPage.dismissManualTokenWarning();
+
+        await driver.delay(1500);
         await swapPage.submitSwap();
 
         await swapPage.waitForTransactionToComplete();
