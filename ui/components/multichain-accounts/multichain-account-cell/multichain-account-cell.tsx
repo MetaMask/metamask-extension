@@ -11,7 +11,6 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BorderColor,
   BorderRadius,
   Display,
@@ -29,6 +28,7 @@ export type MultichainAccountCellProps = {
   endAccessory?: React.ReactNode;
   selected?: boolean;
   walletName?: string;
+  disableHoverEffect?: boolean;
 };
 
 export const MultichainAccountCell = ({
@@ -39,12 +39,12 @@ export const MultichainAccountCell = ({
   endAccessory,
   selected = false,
   walletName,
+  disableHoverEffect = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
@@ -53,7 +53,7 @@ export const MultichainAccountCell = ({
       }}
       padding={4}
       onClick={handleClick}
-      className="multichain-account-cell"
+      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}`}
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
     >

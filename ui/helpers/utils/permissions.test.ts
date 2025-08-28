@@ -8,7 +8,7 @@ const mockNonEvmAccount = {
   ...mockAccount,
   id: '4b94987c-165c-4287-bbc6-bee9c440e82a',
   type: BtcAccountType.P2wpkh,
-  methods: [BtcMethod.SendBitcoin],
+  methods: Object.values(BtcMethod),
   address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
 };
 

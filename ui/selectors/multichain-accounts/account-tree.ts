@@ -674,3 +674,23 @@ export const getAccountGroupByAccountId = createDeepEqualSelector(
     return null;
   },
 );
+
+/**
+ * Returns all account groups that belong to a specific wallet ID.
+ *
+ * @param state - Redux state.
+ * @param walletId - The wallet ID to filter account groups by.
+ * @returns Object containing all account groups for the specified wallet.
+ */
+export const getMultichainAccountsByWalletId = createSelector(
+  getAccountTree,
+  (_: MultichainAccountsState, walletId: AccountWalletId) => walletId,
+  (
+    accountTree,
+    walletId,
+  ): Record<AccountGroupId, AccountGroupObject> | undefined => {
+    const wallet = accountTree.wallets[walletId];
+
+    return wallet?.groups;
+  },
+);

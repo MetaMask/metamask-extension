@@ -23,6 +23,7 @@ import {
   getMultichainAccountGroups,
   getMultichainAccountsToScopesMap,
   getSingleAccountGroups,
+  getMultichainAccountsByWalletId,
   getSelectedAccountGroup,
   getWalletIdAndNameByAccountAddress,
   getWalletsWithAccounts,
@@ -964,6 +965,37 @@ describe('Multichain Accounts Selectors', () => {
         accountGroup as unknown as AccountGroupObject,
         SOLANA_MAINNET_SCOPE,
       );
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('getMultichainAccountsByWalletId', () => {
+    it('returns all account groups for a specified wallet ID', () => {
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ' as AccountWalletId;
+
+      const result = getMultichainAccountsByWalletId(
+        mockState as unknown as MultichainAccountsState,
+        walletId,
+      );
+
+      const firstGroupId =
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
+
+      expect(result).toBeDefined();
+
+      if (result) {
+        expect(result[firstGroupId]).toBeDefined();
+      }
+    });
+
+    it('returns undefined for a non-existent wallet ID', () => {
+      const nonExistentWalletId = 'entropy:non-existent-id' as AccountWalletId;
+
+      const result = getMultichainAccountsByWalletId(
+        mockState as unknown as MultichainAccountsState,
+        nonExistentWalletId,
+      );
+
       expect(result).toBeUndefined();
     });
   });
