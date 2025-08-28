@@ -103,9 +103,10 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   // add content_scripts to entries
   manifest.content_scripts?.forEach((s) =>
     s.js
+      // TODO(https://github.com/MetaMask/metamask-extension/issues/35218)
       // scripts/disable-console.js is only relevant for the browserify build
       // console is disabled by the lavamoat webpack plugin automatically
-      // TODO(34913): clean up after browserify builds are removed
+      // clean up after browserify builds are removed
       // the file should be deleted, and the script should be removed from the manifest
       ?.filter((filename) => filename !== 'scripts/disable-console.js')
       ?.forEach(addManifestScript),
