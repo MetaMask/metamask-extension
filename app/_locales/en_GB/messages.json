@@ -6601,6 +6601,9 @@
     "message": "here",
     "description": "Text for link in swapGasFeesExplanation"
   },
+  "swapGasFeesIncluded": {
+    "message": " Included"
+  },
   "swapGasFeesLearnMore": {
     "message": "Learn more about gas fees"
   },
