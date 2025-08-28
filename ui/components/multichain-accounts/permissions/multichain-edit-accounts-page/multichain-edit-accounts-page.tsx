@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
-  ButtonPrimary,
-  ButtonPrimarySize,
   IconName,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSecondary,
+  ButtonSecondarySize,
 } from '../../../component-library';
 
 import {
@@ -160,16 +160,14 @@ export const MultichainEditAccountsPage: React.FC<
         </Box>
       </Content>
       <Footer>
-        <ButtonPrimary
+        <ButtonSecondary
           data-testid="connect-more-accounts-button"
-          backgroundColor={BackgroundColor.infoMuted}
-          color={TextColor.primaryDefault}
           onClick={handleConnect}
-          size={ButtonPrimarySize.Lg}
+          size={ButtonSecondarySize.Lg}
           block
         >
           {t('connect')}
-        </ButtonPrimary>
+        </ButtonSecondary>
       </Footer>
     </Page>
   );
