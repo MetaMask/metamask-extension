@@ -3,8 +3,6 @@ import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
 import FixtureBuilder from '../../../fixture-builder';
 import { withFixtures } from '../../../helpers';
-
-
 import HomePage from '../../../page-objects/pages/home/homepage';
 
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
