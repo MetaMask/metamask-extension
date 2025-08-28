@@ -14,7 +14,7 @@ const BLOCK_HASH =
 
 // Removed Smart Transactions related constants since Smart Transactions are disabled
 
-const GET_TRANSACTION_RECEIPT_RESPONSE = {
+const GET_LEDGER_TRANSACTION_RECEIPT_RESPONSE = {
   id: 2901696354742565,
   jsonrpc: '2.0',
   result: {
@@ -36,7 +36,7 @@ const GET_TRANSACTION_RECEIPT_RESPONSE = {
   },
 };
 
-const GET_TRANSACTION_BY_HASH_RESPONSE = {
+const GET_LEDGER_TRANSACTION_BY_HASH_RESPONSE = {
   id: 2901696354742565,
   jsonrpc: '2.0',
   result: {
@@ -65,7 +65,7 @@ const GET_TRANSACTION_BY_HASH_RESPONSE = {
 
 // Removed SWAP_TEST_GAS_INCLUDED_TRADES_MOCK since it's not used in our test
 
-const GET_BLOCK_BY_HASH_RESPONSE = {
+const GET_LEDGER_BLOCK_BY_HASH_RESPONSE = {
   id: 2901696354742565,
   jsonrpc: '2.0',
   result: {
@@ -577,21 +577,21 @@ async function mockLedgerTransactionRequestsBase(mockServer: MockttpServer) {
       method: 'eth_getTransactionReceipt',
       params: [TRANSACTION_HASH],
     })
-    .thenJson(200, GET_TRANSACTION_RECEIPT_RESPONSE);
+    .thenJson(200, GET_LEDGER_TRANSACTION_RECEIPT_RESPONSE);
 
   await mockServer
     .forJsonRpcRequest({
       method: 'eth_getTransactionByHash',
       params: [TRANSACTION_HASH],
     })
-    .thenJson(200, GET_TRANSACTION_BY_HASH_RESPONSE);
+    .thenJson(200, GET_LEDGER_TRANSACTION_BY_HASH_RESPONSE);
 
   await mockServer
     .forJsonRpcRequest({
       method: 'eth_getBlockByHash',
       params: [BLOCK_HASH],
     })
-    .thenJson(200, GET_BLOCK_BY_HASH_RESPONSE);
+    .thenJson(200, GET_LEDGER_BLOCK_BY_HASH_RESPONSE);
 }
 
 // Mock external accounts API for activity list display
