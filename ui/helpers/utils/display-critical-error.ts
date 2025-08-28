@@ -155,7 +155,7 @@ export async function displayCriticalErrorMessage(
   errorKey: CriticalErrorTranslationKey,
   error: ErrorLike,
   currentLocale?: string,
-) {
+): Promise<never> {
   const localeContext = await maybeGetLocaleContext(currentLocale);
   const html = getErrorHtml(errorKey, error, localeContext, SUPPORT_LINK);
 
