@@ -60,7 +60,9 @@ class ConnectHardwareWalletPage {
 
   async clickCloseButton(): Promise<void> {
     console.log(`Click close button`);
-    await this.driver.clickElement(this.closeButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.closeButton,
+    );
   }
 
   async openConnectTrezorPage(): Promise<void> {
