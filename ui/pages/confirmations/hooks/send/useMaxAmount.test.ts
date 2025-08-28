@@ -3,17 +3,16 @@ import mockState from '../../../../../test/data/mock-state.json';
 import {
   EVM_ASSET,
   EVM_NATIVE_ASSET,
-  MOCK_NFT1155,
   SOLANA_ASSET,
 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import * as SendContext from '../../context/send';
-import { useBalance } from './useBalance';
+import { useMaxAmount } from './useMaxAmount';
 
 const MOCK_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 function renderHook(state?: DefaultRootState) {
-  const { result } = renderHookWithProvider(useBalance, state ?? mockState);
+  const { result } = renderHookWithProvider(useMaxAmount, state ?? mockState);
   return result.current;
 }
 
@@ -22,21 +21,28 @@ describe('useBalance', () => {
     jest.clearAllMocks();
   });
 
-  it('return correct balance for ERC1155 assets', () => {
-    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: MOCK_NFT1155,
-    } as unknown as SendContext.SendContextType);
-    const result = renderHook();
-    expect(result.balance).toEqual('5');
-  });
-
   it('return correct balance for native assets', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_NATIVE_ASSET,
       from: MOCK_ADDRESS_1,
     } as unknown as SendContext.SendContextType);
-    const result = renderHook();
-    expect(result.balance).toEqual('966.98798');
+    const result = renderHook({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        gasFeeEstimatesByChainId: {
+          '0x5': {
+            gasFeeEstimates: {
+              medium: {
+                suggestedMaxFeePerGas: '20.44436136',
+              },
+            },
+          },
+        },
+      },
+    });
+
+    expect(result.getMaxAmount()).toEqual('966.98755713791800405905');
   });
 
   it('return correct balance for ERC20 assets', () => {
@@ -57,7 +63,7 @@ describe('useBalance', () => {
         },
       },
     });
-    expect(result.balance).toEqual('48573');
+    expect(result.getMaxAmount()).toEqual('48573');
   });
 
   it('return correct balance for solana assets', () => {
@@ -65,6 +71,6 @@ describe('useBalance', () => {
       asset: SOLANA_ASSET,
     } as unknown as SendContext.SendContextType);
     const result = renderHook();
-    expect(result.balance).toEqual('1.00724');
+    expect(result.getMaxAmount()).toEqual('1.007248');
   });
 });

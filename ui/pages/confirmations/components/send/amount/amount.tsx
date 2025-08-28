@@ -21,8 +21,6 @@ export const Amount = () => {
   const [fiatMode, setFiatMode] = useState(false);
   const { getNativeValue } = useCurrencyConversions();
   const { getMaxAmount } = useMaxAmount();
-  const isERC1155 = asset?.standard === ERC1155;
-  const isERC721 = asset?.standard === ERC721;
   const { isNonEvmNativeSendType } = useSendType();
 
   const onChange = useCallback(
@@ -44,6 +42,9 @@ export const Amount = () => {
     updateValue(fiatMode ? getNativeValue(maxValue) : maxValue);
     setAmount(maxValue);
   }, [fiatMode, getMaxAmount, setAmount, setFiatMode, updateValue]);
+
+  const isERC1155 = asset?.standard === ERC1155;
+  const isERC721 = asset?.standard === ERC721;
 
   if (isERC721) {
     return null;

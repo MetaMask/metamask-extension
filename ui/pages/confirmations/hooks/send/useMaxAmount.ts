@@ -3,7 +3,7 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { toHex } from '@metamask/controller-utils';
 import { useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { DefaultRootState, useSelector } from 'react-redux';
 
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import {
@@ -24,9 +24,9 @@ export interface GasFeeEstimatesType {
   };
 }
 
-export const getEstimatedTotalGas = (gasFeeEstimates: GasFeeEstimatesType) => {
+export const getEstimatedTotalGas = (gasFeeEstimates?: GasFeeEstimatesType) => {
   if (!gasFeeEstimates) {
-    return new Numeric(0);
+    return new Numeric('0', 10);
   }
   const {
     medium: { suggestedMaxFeePerGas },
@@ -49,7 +49,7 @@ type GetEvmMaxAmountArgs = {
   asset?: Asset;
   from: string;
   tokenBalances: TokenBalances;
-  gasFeeEstimates: GasFeeEstimatesType;
+  gasFeeEstimates?: GasFeeEstimatesType;
 };
 
 const getEvmMaxAmount = ({
@@ -103,9 +103,17 @@ export const useMaxAmount = () => {
   const { asset, from } = useSendContext();
   const tokenBalances = useSelector(getTokenBalances);
   const { isEvmSendType } = useSendType();
-  const gasFeeEstimates = useSelector((state) =>
-    (getGasFeeEstimatesByChainId as any)(state, asset?.chainId),
-  );
+  const gasFeeEstimates = useSelector((state) => {
+    if (asset?.chainId && isEvmSendType) {
+      return (
+        getGasFeeEstimatesByChainId as (
+          state: DefaultRootState,
+          chainId: Hex,
+        ) => GasFeeEstimatesType
+      )(state, toHex(asset?.chainId));
+    }
+    return undefined;
+  });
   const accountsByChainId = useSelector(
     (state: MetamaskSendState) => state.metamask.accountsByChainId,
   ) as AccountWithBalances;
