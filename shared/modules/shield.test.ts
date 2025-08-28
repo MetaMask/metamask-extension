@@ -8,7 +8,7 @@ const setup = ({
   gatewayUrl?: string | null;
 } = {}) => {
   process.env.METAMASK_SHIELD_ENABLED = isShieldEnabled ? 'true' : 'false';
-  if (!gatewayUrl) {
+  if (gatewayUrl === null) {
     delete process.env.SHIELD_GATEWAY_URL;
   } else {
     process.env.SHIELD_GATEWAY_URL = gatewayUrl;
@@ -26,7 +26,7 @@ describe('getShieldGatewayConfig', () => {
     const { gatewayUrl, targetUrl, mockGetToken } = setup();
 
     const config = await getShieldGatewayConfig(mockGetToken, targetUrl);
-    expect(config).toEqual({
+    expect(config).toStrictEqual({
       newUrl: `${gatewayUrl}/proxy?url=${encodeURIComponent(targetUrl)}`,
       authorization: 'token',
     });
@@ -36,7 +36,7 @@ describe('getShieldGatewayConfig', () => {
     const { targetUrl, mockGetToken } = setup({ isShieldEnabled: false });
 
     const config = await getShieldGatewayConfig(mockGetToken, targetUrl);
-    expect(config).toEqual({
+    expect(config).toStrictEqual({
       newUrl: targetUrl,
       authorization: undefined,
     });
@@ -47,7 +47,7 @@ describe('getShieldGatewayConfig', () => {
     mockGetToken.mockRejectedValue(new Error('Failed to get token'));
 
     const config = await getShieldGatewayConfig(mockGetToken, targetUrl);
-    expect(config).toEqual({
+    expect(config).toStrictEqual({
       newUrl: targetUrl,
       authorization: undefined,
     });
@@ -55,8 +55,8 @@ describe('getShieldGatewayConfig', () => {
 
   it('throws an error if the feature is enabled but the gateway URL is not set', async () => {
     const { targetUrl, mockGetToken } = setup({ gatewayUrl: null });
-    await expect(getShieldGatewayConfig(mockGetToken, targetUrl)).rejects.toThrow(
-      'Shield gateway URL is not set',
-    );
+    await expect(
+      getShieldGatewayConfig(mockGetToken, targetUrl),
+    ).rejects.toThrow('Shield gateway URL is not set');
   });
 });
