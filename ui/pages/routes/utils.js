@@ -30,8 +30,7 @@ import {
   SITES,
   TOKEN_STREAMS_ROUTE,
   TOKEN_SUBSCRIPTIONS_ROUTE,
-  REVIEW_TOKEN_STREAMS_ROUTE,
-  REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -174,13 +173,7 @@ export function hideAppHeader(props) {
     ) ||
     Boolean(
       matchPath(location.pathname, {
-        path: REVIEW_TOKEN_STREAMS_ROUTE,
-        exact: false,
-      }),
-    ) ||
-    Boolean(
-      matchPath(location.pathname, {
-        path: REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
+        path: REVIEW_GATOR_PERMISSIONS_ROUTE,
         exact: false,
       }),
     );

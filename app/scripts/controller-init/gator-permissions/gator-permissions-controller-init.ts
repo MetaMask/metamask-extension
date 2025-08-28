@@ -2,8 +2,8 @@ import {
   GatorPermissionsController,
   type GatorPermissionsControllerMessenger,
 } from '@metamask/gator-permissions-controller';
-import { ControllerInitFunction } from '../types';
 import { SnapId } from '@metamask/snaps-sdk';
+import { ControllerInitFunction } from '../types';
 import { GatorPermissionsControllerInitMessenger } from '../messengers/gator-permissions';
 
 export const GatorPermissionsControllerInit: ControllerInitFunction<

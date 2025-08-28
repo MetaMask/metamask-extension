@@ -24,16 +24,7 @@ export type GatorAssetItemListDetail = {
   };
 };
 
-export type GatorAssetListType =
-  | 'token-streams'
-  | 'token-subscriptions'
-  | 'other';
-
-export type GatorAssetListDescriptionLookup = {
-  'token-streams': string;
-  'token-subscriptions': string;
-  other: string;
-};
+export type GatorAssetListDescriptionLookup = Record<string, string>;
 
 const defaultGatorAssetListDescriptionLookup: GatorAssetListDescriptionLookup =
   {
@@ -100,12 +91,15 @@ function getTotalCountOfGatorPermissionsPerChainId(
     SignerParam,
     PermissionTypes
   >[] = Object.values(permissionsMapByPermissionType).flat();
-  return flattenedStoredGatorPermissions.reduce((acc, gatorPermission) => {
-    const { permissionResponse } = gatorPermission;
-    acc[permissionResponse.chainId] =
-      (acc[permissionResponse.chainId] || 0) + 1;
-    return acc;
-  }, {} as Record<Hex, number>);
+  return flattenedStoredGatorPermissions.reduce(
+    (acc, gatorPermission) => {
+      const { permissionResponse } = gatorPermission;
+      acc[permissionResponse.chainId] =
+        (acc[permissionResponse.chainId] || 0) + 1;
+      return acc;
+    },
+    {} as Record<Hex, number>,
+  );
 }
 
 /**
@@ -151,7 +145,7 @@ function mergeRecords(
  */
 export function getGatorAssetListDetail(
   state: GatorPermissionState,
-  listType: GatorAssetListType,
+  listType: string,
   descriptionLookup: GatorAssetListDescriptionLookup = defaultGatorAssetListDescriptionLookup,
 ): GatorAssetItemListDetail {
   const gatorPermissionsMap = getGatorPermissionsMap(state);
@@ -202,4 +196,49 @@ export function getGatorAssetListDetail(
   }
 
   return gatorAssetItemList;
+}
+
+/**
+ * Get aggregated list of gator permissions for a specific chainId.
+ *
+ * @param state - The current state
+ * @param aggregatedPermissionType - The aggregated permission type to get permissions for (e.g. 'token-transfer' is a combination of the token streams and token subscriptions types)
+ * @param chainId - The chainId to get permissions for (e.g. 0x1)
+ * @returns A aggregated list of gator permissions filtered by chainId.
+ */
+export function getAggregatedGatorPermissionByChainId(
+  state: GatorPermissionState,
+  aggregatedPermissionType: string,
+  chainId: Hex,
+): StoredGatorPermissionSanitized<SignerParam, PermissionTypes>[] {
+  const gatorPermissionsMap = getGatorPermissionsMap(state);
+
+  switch (aggregatedPermissionType) {
+    case 'token-transfer': {
+      const nativeTokenStreams =
+        gatorPermissionsMap['native-token-stream'][chainId] || [];
+
+      const erc20TokenStreams =
+        gatorPermissionsMap['erc20-token-stream'][chainId] || [];
+
+      const nativeTokenPeriodicPermissions =
+        gatorPermissionsMap['native-token-periodic'][chainId] || [];
+
+      const erc20TokenPeriodicPermissions =
+        gatorPermissionsMap['erc20-token-periodic'][chainId] || [];
+
+      return [
+        ...nativeTokenStreams,
+        ...erc20TokenStreams,
+        ...nativeTokenPeriodicPermissions,
+        ...erc20TokenPeriodicPermissions,
+      ];
+    }
+    default: {
+      console.warn(
+        `Unknown aggregated permission type: ${aggregatedPermissionType}`,
+      );
+      return [];
+    }
+  }
 }
