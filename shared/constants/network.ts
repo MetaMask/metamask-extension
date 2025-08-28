@@ -349,7 +349,10 @@ export const OMNI_DISPLAY_NAME = 'Omni';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
 export const FRAX_DISPLAY_NAME = 'Fraxtal';
 
-export const infuraProjectId = process.env.INFURA_PROJECT_ID;
+export const infuraProjectId =
+  process.env.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS ??
+  process.env.INFURA_PROJECT_ID;
+
 export const getRpcUrl = ({
   network,
   excludeProjectId = false,
