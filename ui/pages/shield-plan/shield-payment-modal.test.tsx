@@ -1,22 +1,22 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
-import { ShieldPaymentModal } from './shield-payment-modal';
-import { PAYMENT_METHODS } from './types';
 import { AssetType } from '../../../shared/constants/transaction';
 import {
   AssetWithDisplayData,
   ERC20Asset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
-import { fireEvent } from '@testing-library/react';
+import { PAYMENT_METHODS } from './types';
+import { ShieldPaymentModal } from './shield-payment-modal';
 
 const defaultProps = {
   isOpen: true,
-  onClose: () => {},
+  onClose: jest.fn(),
   selectedPaymentMethod: PAYMENT_METHODS.TOKEN,
-  setSelectedPaymentMethod: () => {},
+  setSelectedPaymentMethod: jest.fn(),
   selectedToken: {
     address: '0x0000000000000000000000000000000000000000',
     symbol: 'USDC',
@@ -25,7 +25,7 @@ const defaultProps = {
     type: AssetType.token,
     chainId: '0x1',
   } as unknown as AssetWithDisplayData<ERC20Asset>,
-  onAssetChange: () => {},
+  onAssetChange: jest.fn(),
   paymentTokens: [
     {
       address: '0x0000000000000000000000000000000000000000',
@@ -49,7 +49,6 @@ const defaultProps = {
 describe('Change payment method', () => {
   const onCloseStub = jest.fn();
   const setSelectedPaymentMethodStub = jest.fn();
-  const onAssetChangeStub = jest.fn();
 
   it('should show change payment method modal', async () => {
     const mockStore = configureMockStore([])(mockState);
