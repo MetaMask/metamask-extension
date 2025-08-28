@@ -91,10 +91,10 @@ export const MultichainEditAccountsPage: React.FC<
     [selectedAccountGroups],
   );
 
-  const defaultSet = new Set(defaultSelectedAccountGroups);
-  const selectedSet = new Set(selectedAccountGroups);
-
   const handleConnect = useCallback(() => {
+    const defaultSet = new Set(defaultSelectedAccountGroups);
+    const selectedSet = new Set(selectedAccountGroups);
+
     const addedAccounts = selectedAccountGroups.filter(
       (accountGroup) => !defaultSet.has(accountGroup),
     );
@@ -116,7 +116,6 @@ export const MultichainEditAccountsPage: React.FC<
     onClose();
   }, [
     selectedAccountGroups,
-    defaultSet,
     defaultSelectedAccountGroups,
     onSubmit,
     trackEvent,
