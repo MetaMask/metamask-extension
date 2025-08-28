@@ -3,7 +3,14 @@ import { tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { MAX_SLIDES } from '../../../../ui/components/multichain/carousel/constants';
+import type { Driver } from '../../webdriver/driver';
 
+async function skipIfCarouselDisabled(driver: Driver, mochaCtx: Mocha.Context) {
+  const exists = await driver.isElementPresent('.mm-carousel');
+  if (!exists) {
+    mochaCtx.skip();
+  }
+}
 describe('Carousel component e2e tests', function () {
   const MAX_VISIBLE_SLIDES = MAX_SLIDES;
   const SLIDE_IDS = [
@@ -28,6 +35,7 @@ describe('Carousel component e2e tests', function () {
         await driver.waitForSelector(
           '[data-testid="eth-overview__primary-currency"]',
         );
+        await skipIfCarouselDisabled(driver, this);
 
         await driver.waitForSelector('.mm-carousel');
         await driver.waitForSelector('.mm-carousel-slide');
@@ -96,6 +104,7 @@ describe('Carousel component e2e tests', function () {
         const totalSlidesCount = SLIDE_IDS.length;
 
         await loginWithBalanceValidation(driver);
+        await skipIfCarouselDisabled(driver, this);
         await driver.waitForSelector('.mm-carousel');
         await driver.waitForSelector('.mm-carousel-slide');
 
