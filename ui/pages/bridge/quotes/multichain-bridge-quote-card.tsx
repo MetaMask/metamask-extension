@@ -287,7 +287,7 @@ export const MultichainBridgeQuoteCard = ({
                 width={BlockSize.Max}
                 title={t('minimumReceivedExplanationTitle')}
                 position={PopoverPosition.TopStart}
-                offset={[-16, 16]}
+                offset={[-48, 16]}
               >
                 {t('minimumReceivedExplanation')}
               </Tooltip>
