@@ -30,7 +30,11 @@ export const getAssetFromList = (
 };
 
 export const useSendQueryParams = () => {
-  const { updateCurrentPage, updateAsset } = useSendContext();
+  const {
+    asset: existingAsset,
+    updateCurrentPage,
+    updateAsset,
+  } = useSendContext();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
   const multiChainAssets = useMultiChainAssets();
@@ -48,6 +52,9 @@ export const useSendQueryParams = () => {
   }, [pathname, updateCurrentPage]);
 
   useEffect(() => {
+    if (existingAsset) {
+      return;
+    }
     let asset;
     if (address) {
       if (isEvmAddress(address)) {
