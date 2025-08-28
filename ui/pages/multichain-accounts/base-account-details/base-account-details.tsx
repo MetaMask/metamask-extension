@@ -172,7 +172,11 @@ export const BaseAccountDetails = ({
       </Header>
       <Content paddingTop={3} gap={4}>
         <Box className="flex justify-center">
-          <PreferredAvatar address={address} size={AvatarAccountSize.Xl} />
+          <PreferredAvatar
+            address={address}
+            size={AvatarAccountSize.Xl}
+            data-testid="avatar"
+          />
         </Box>
         <Box className="multichain-account-details__section">
           <AccountDetailsRow
