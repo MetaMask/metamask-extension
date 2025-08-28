@@ -55,7 +55,9 @@ jobs:
 
   smoketest-pr:
     if: |
-      github.event_name == 'pull_request' && contains(toJson(github.event.pull_request.labels), 'smoke-test')
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(toJson(github.event.pull_request.labels), 'smoke-test')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment:
