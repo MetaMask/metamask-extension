@@ -73,6 +73,7 @@ describe('useEvmAmountValidation', () => {
   it('return error if amount of native asset is more than balance', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_NATIVE_ASSET,
+      chainId: '0x5',
       from: MOCK_ADDRESS_1,
       value: 10,
     } as unknown as SendContext.SendContextType);
