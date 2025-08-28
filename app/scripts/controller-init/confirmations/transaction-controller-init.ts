@@ -91,18 +91,16 @@ export const TransactionControllerInit: ControllerInitFunction<
       updateTransactions: true,
     },
     isAutomaticGasFeeUpdateEnabled: ({ type }) => {
-      if (
-        type &&
-        [
-          TransactionType.swap,
-          TransactionType.swapApproval,
-          TransactionType.bridge,
-          TransactionType.bridgeApproval,
-        ].includes(type)
-      ) {
-        return false;
-      }
-      return true;
+      // Disables automatic gas fee updates for swap and bridge transactions
+      // which provide their own gas parameters when they are submitted
+      const disabledTypes = [
+        TransactionType.swap,
+        TransactionType.swapApproval,
+        TransactionType.bridge,
+        TransactionType.bridgeApproval,
+      ];
+
+      return !type || !disabledTypes.includes(type);
     },
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
       const { chainId } = transactionMeta;
