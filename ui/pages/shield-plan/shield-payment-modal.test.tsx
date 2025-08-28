@@ -8,7 +8,6 @@ import {
   AssetWithDisplayData,
   ERC20Asset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
 import { PAYMENT_METHODS } from './types';
 import { ShieldPaymentModal } from './shield-payment-modal';
 
@@ -26,24 +25,6 @@ const defaultProps = {
     chainId: '0x1',
   } as unknown as AssetWithDisplayData<ERC20Asset>,
   onAssetChange: jest.fn(),
-  paymentTokens: [
-    {
-      address: '0x0000000000000000000000000000000000000000',
-      symbol: 'USDC',
-      image:
-        'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
-      type: AssetType.token,
-      chainId: '0x1',
-    },
-    {
-      address: '0x0000000000000000000000000000000000000000',
-      symbol: 'USDT',
-      image:
-        'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
-      type: AssetType.token,
-      chainId: '0x1',
-    },
-  ] as unknown as (keyof typeof AssetPickerModal)['customTokenListGenerator'],
 };
 
 describe('Change payment method', () => {
