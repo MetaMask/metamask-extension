@@ -49,6 +49,7 @@ export const PermissionsHeader = ({
           size={ButtonIconSize.Sm}
         />
       }
+      textProps={{ as: 'div' }}
     >
       <Box
         display={Display.Flex}
