@@ -716,7 +716,7 @@ export const getMultichainAccountsByWalletId = createSelector(
  * @param groupId - The ID of the account group.
  * @returns Array of internal accounts in the specified group, or empty array if not found.
  */
-export const getInternalAccountsFromGroupById = createDeepEqualSelector(
+export const getInternalAccountsFromGroupById = createSelector(
   getAccountTree,
   getInternalAccountsObject,
   (_, groupId: AccountGroupId) => groupId,
