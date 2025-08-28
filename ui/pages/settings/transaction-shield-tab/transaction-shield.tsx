@@ -248,11 +248,11 @@ const TransactionShield = () => {
           ))}
         </Box>
         {buttonRow(t('shieldTxMembershipViewFullBenefits'), () => {
-          console.log('View full benefits');
+          // todo: link to benefits page
         })}
         {isActiveMembership &&
           buttonRow(t('shieldTxMembershipSubmitCase'), () => {
-            console.log('Submit a case');
+            // todo: link to submit claim page
           })}
         {isActiveMembership &&
           buttonRow(
@@ -298,7 +298,7 @@ const TransactionShield = () => {
         {buttonRow(
           t('shieldTxMembershipBillingDetailsViewBillingHistory'),
           () => {
-            console.log('View billing history');
+            // todo: link to billing history page
           },
         )}
       </Box>
