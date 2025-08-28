@@ -6935,14 +6935,14 @@
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
   },
-  "trustSignalUrlVerified": {
-    "message": "Verified site"
+  "trustSignalUrlMalicious": {
+    "message": "Malicious site"
   },
   "trustSignalUrlSuspicious": {
     "message": "Suspicious site"
   },
-  "trustSignalUrlMalicious": {
-    "message": "Malicious site"
+  "trustSignalUrlVerified": {
+    "message": "Verified site"
   },
   "tryAgain": {
     "message": "Try again"
