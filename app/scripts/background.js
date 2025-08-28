@@ -110,6 +110,10 @@ const persistenceManager = new PersistenceManager({ localStore });
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
 
+// Read the infuraProjectId from manifestFlags at this startup state
+process.env.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS =
+  getManifestFlags().testing?.infuraProjectId;
+
 /**
  * A helper function to log the current state of the vault. Useful for debugging
  * purposes, to, in the case of database corruption, an possible way for an end
@@ -1034,7 +1038,9 @@ export function setupController(
   // MetaMask Controller
   //
   controller = new MetamaskController({
-    infuraProjectId: process.env.INFURA_PROJECT_ID,
+    infuraProjectId:
+      process.env.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS ??
+      process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
     // initial state

@@ -355,7 +355,10 @@ export const ACALA_DISPLAY_NAME = 'Acala';
 export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
 export const KARURA_DISPLAY_NAME = 'Karura';
 
-export const infuraProjectId = process.env.INFURA_PROJECT_ID;
+export const infuraProjectId =
+  process.env.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS ??
+  process.env.INFURA_PROJECT_ID;
+
 export const getRpcUrl = ({
   network,
   excludeProjectId = false,
