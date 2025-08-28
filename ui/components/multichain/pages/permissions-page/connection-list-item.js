@@ -41,23 +41,34 @@ export const ConnectionListItem = ({ connection, onClick }) => {
 
   const isState2Enabled = useSelector(getIsMultichainAccountsState2Enabled);
 
-  const acccountsToShow = useMemo(() => {
-    if (isState2Enabled) {
-      const accountAddressesSet = new Set();
-      accountGroups.forEach((group) => {
-        group.accounts.forEach((account) => {
-          accountAddressesSet.add(account.address);
-        });
-      });
-
-      const uniqueConnectedAccounts = connection.addresses.filter((address) =>
-        accountAddressesSet.has(address),
-      );
-
-      return uniqueConnectedAccounts.length;
+  const accountAddressSet = useMemo(() => {
+    if (!isState2Enabled) {
+      return null;
     }
-    return connection.addresses.length;
-  }, [accountGroups, connection.addresses, isState2Enabled]);
+    const set = new Set();
+    (accountGroups ?? []).forEach((group) => {
+      (group.accounts ?? []).forEach((account) => {
+        set.add(account.address);
+      });
+    });
+    return set;
+  }, [isState2Enabled, accountGroups]);
+
+  const accountsToShow = useMemo(() => {
+    if (!isState2Enabled) {
+      return connection.addresses?.length ?? 0;
+    }
+    if (!accountAddressSet || !connection.addresses?.length) {
+      return 0;
+    }
+    let count = 0;
+    for (const address of connection.addresses) {
+      if (accountAddressSet.has(address)) {
+        count += 1;
+      }
+    }
+    return count;
+  }, [isState2Enabled, accountAddressSet, connection.addresses]);
 
   return (
     <Box
@@ -113,7 +124,11 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {acccountsToShow} {t('accountsSmallCase')} •&nbsp;
+              {accountsToShow}{' '}
+              {accountsToShow === 1
+                ? t('accountSmallCase')
+                : t('accountsSmallCase')}
+              •&nbsp;
               {permittedChains.length} {t('networksSmallCase')}
             </Text>
           </Box>
