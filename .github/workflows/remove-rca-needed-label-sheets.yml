@@ -1,0 +1,17 @@
+name: Remove RCA-needed Label
+
+on:
+  # Run every 6 hours
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  remove-rca-labels:
+    name: Remove RCA-needed Labels
+    uses: MetaMask/github-tools/.github/workflows/remove-rca-needed-label-sheets.yml@d354252842b91355deb6d57c752812f745f99679
+    with:
+      spreadsheet_id: '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24'
+      sheet_name: 'Form Responses 1'
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
