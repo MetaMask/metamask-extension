@@ -1,19 +1,20 @@
 /* eslint-disable require-unicode-regexp */
 import SETTINGS_CONSTANTS from '../constants/settings';
 import {
-  getIsMetamaskShieldFeatureEnabled,
+  getIsMetaMaskShieldFeatureEnabled,
   getIsSettingsPageDevOptionsEnabled,
 } from '../../../shared/modules/environment';
 
 let settingsRoutes;
 
 const FEATURE_FLAG_CHECKERS = {
-  METAMASK_SHIELD_ENABLED: getIsMetamaskShieldFeatureEnabled,
+  METAMASK_SHIELD_ENABLED: getIsMetaMaskShieldFeatureEnabled,
   ENABLE_SETTINGS_PAGE_DEV_OPTIONS: getIsSettingsPageDevOptionsEnabled,
 };
 
 /**
  * Checks if a feature flag is enabled
+ *
  * @param {string} featureFlag - The feature flag to check
  * @returns {boolean} Whether the feature flag is enabled
  */

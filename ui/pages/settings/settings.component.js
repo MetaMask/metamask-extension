@@ -53,7 +53,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
-import { getIsMetamaskShieldFeatureEnabled } from '../../../shared/modules/environment';
+import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -355,7 +355,7 @@ class SettingsPage extends PureComponent {
     const { history, currentPath, useExternalServices, settingsPageSnaps } =
       this.props;
     const { t } = this.context;
-    const isMetamaskShieldFeatureEnabled = getIsMetamaskShieldFeatureEnabled();
+    const isMetamaskShieldFeatureEnabled = getIsMetaMaskShieldFeatureEnabled();
 
     const snapsSettings = settingsPageSnaps.map(({ id, name }) => {
       return {
