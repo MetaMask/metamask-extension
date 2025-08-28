@@ -7,7 +7,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
-import { getWebsocketConnectionCount } from './solana-websocket';
+import LocalWebSocketServer from '../../websocket-server';
 
 describe('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
@@ -35,12 +35,13 @@ describe('Solana Web Socket', function (this: Suite) {
         });
 
         assert.equal(
-          getWebsocketConnectionCount(),
+          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount(),
           1,
           'Expected a websocket connection to be established when MetaMask opens',
         );
 
-        const connectionCount = getWebsocketConnectionCount();
+        const connectionCount =
+          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
           1,
@@ -84,7 +85,8 @@ describe('Solana Web Socket', function (this: Suite) {
         // Wait a moment for the websocket to be stopped
         await driver.delay(5000);
 
-        const activeWebSocketConnections = getWebsocketConnectionCount();
+        const activeWebSocketConnections =
+          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           activeWebSocketConnections,
           0,
@@ -119,7 +121,8 @@ describe('Solana Web Socket', function (this: Suite) {
         });
 
         // Verify that a websocket connection has been established with first window
-        let connectionCount = getWebsocketConnectionCount();
+        let connectionCount =
+          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
           1,
@@ -134,7 +137,8 @@ describe('Solana Web Socket', function (this: Suite) {
 
         // Verify that no new websocket connection is opened (give it some time)
         await driver.delay(5000);
-        connectionCount = getWebsocketConnectionCount();
+        connectionCount =
+          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
           1,
@@ -147,7 +151,8 @@ describe('Solana Web Socket', function (this: Suite) {
 
         // Verify that websocket connection is NOT closed - second MM window still open (give it some time)
         await driver.delay(5000);
-        connectionCount = getWebsocketConnectionCount();
+        connectionCount =
+          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
           1,
@@ -159,7 +164,8 @@ describe('Solana Web Socket', function (this: Suite) {
         await driver.closeWindow();
 
         // Verify that websocket connection is now closed
-        const activeWebSocketConnections = getWebsocketConnectionCount();
+        const activeWebSocketConnections =
+          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           activeWebSocketConnections,
           0,
