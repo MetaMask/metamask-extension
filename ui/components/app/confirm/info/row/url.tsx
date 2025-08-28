@@ -22,6 +22,7 @@ import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
 import { useOriginTrustSignals } from '../../../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import Tooltip from '../../../../ui/tooltip';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type ConfirmInfoRowUrlProps = {
   url: string;
@@ -49,6 +50,7 @@ const HttpWarning = () => (
 );
 
 export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
+  const t = useI18nContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handlePillClick = useCallback(
     () => setIsModalOpen(true),
@@ -89,7 +91,11 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     // Priority 1: Malicious
     if (originTrustSignals.state === TrustSignalDisplayState.Malicious) {
       return (
-        <Tooltip title="Malicious site" position="bottom">
+        <Tooltip
+          title={t('trustSignalUrlMalicious')}
+          position="bottom"
+          style={{ display: 'flex' }}
+        >
           <Icon
             name={IconName.Danger}
             color={IconColor.errorDefault}
@@ -107,7 +113,11 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     // Priority 3: Warning
     if (originTrustSignals.state === TrustSignalDisplayState.Warning) {
       return (
-        <Tooltip title="Suspicious site" position="bottom">
+        <Tooltip
+          title={t('trustSignalUrlSuspicious')}
+          position="bottom"
+          style={{ display: 'flex' }}
+        >
           <Icon
             name={IconName.Danger}
             color={IconColor.warningDefault}
@@ -120,7 +130,11 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     // Priority 4: Verified
     if (originTrustSignals.state === TrustSignalDisplayState.Verified) {
       return (
-        <Tooltip title="Verified site" position="bottom">
+        <Tooltip
+          title={t('trustSignalUrlVerified')}
+          position="bottom"
+          style={{ display: 'flex' }}
+        >
           <Icon
             name={IconName.VerifiedFilled}
             color={IconColor.infoDefault}
