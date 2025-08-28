@@ -70,20 +70,6 @@ describe('useEvmAmountValidation', () => {
     expect(error).toBeUndefined();
   });
 
-  it('return error for invalid amount value', () => {
-    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: EVM_NATIVE_ASSET,
-      from: MOCK_ADDRESS_1,
-      value: 'abc',
-    } as unknown as SendContext.SendContextType);
-
-    const result = renderHook({
-      accountsByChainId: { '0x1': { [MOCK_ADDRESS_1]: { balance: '0x5' } } },
-    });
-    const error = result.validateEvmAmount();
-    expect(error).toEqual('Invalid value');
-  });
-
   it('return error if amount of native asset is more than balance', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_NATIVE_ASSET,

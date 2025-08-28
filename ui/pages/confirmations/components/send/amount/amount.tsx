@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import {
   Button,
@@ -8,15 +9,21 @@ import {
 import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useBalance } from '../../../hooks/send/useBalance';
 import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversions';
+import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
 import { useSendContext } from '../../../context/send';
+import { useSendType } from '../../../hooks/send/useSendType';
 
 export const Amount = () => {
-  const { value, updateValue } = useSendContext();
+  const { asset, updateValue, value } = useSendContext();
   const [amount, setAmount] = useState(value ?? '');
   const { amountError } = useAmountValidation();
   const { balance } = useBalance();
   const [fiatMode, setFiatMode] = useState(false);
   const { getNativeValue } = useCurrencyConversions();
+  const { getMaxAmount } = useMaxAmount();
+  const isERC1155 = asset?.standard === ERC1155;
+  const isERC721 = asset?.standard === ERC721;
+  const { isNonEvmNativeSendType } = useSendType();
 
   const onChange = useCallback(
     (event) => {
@@ -32,15 +39,32 @@ export const Amount = () => {
     setFiatMode(!fiatMode);
   }, [fiatMode, setAmount, setFiatMode]);
 
+  const updateToMax = useCallback(() => {
+    const maxValue = getMaxAmount() ?? '0';
+    updateValue(fiatMode ? getNativeValue(maxValue) : maxValue);
+    setAmount(maxValue);
+  }, [fiatMode, getMaxAmount, setAmount, setFiatMode, updateValue]);
+
+  if (isERC721) {
+    return null;
+  }
+
   return (
     <div>
       <p>AMOUNT</p>
       <TextField value={amount} onChange={onChange} />
       <Text>Balance: {balance}</Text>
       <Text>Error: {amountError}</Text>
-      <Button onClick={toggleFiatMode}>
-        {fiatMode ? 'Native Mode' : 'Fiat Mode'}
-      </Button>
+      {!isERC1155 && (
+        <>
+          <Button onClick={toggleFiatMode}>
+            {fiatMode ? 'Native Mode' : 'Fiat Mode'}
+          </Button>
+          {!isNonEvmNativeSendType && (
+            <Button onClick={updateToMax}>Max</Button>
+          )}
+        </>
+      )}
     </div>
   );
 };

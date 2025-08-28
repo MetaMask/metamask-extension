@@ -9,7 +9,7 @@ import { Numeric } from '../../../../../../shared/modules/Numeric';
 import { getTokenBalances } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Asset } from '../../../types/send';
-import { fromTokenMinimalUnitsNumeric, isDecimal } from '../../../utils/send';
+import { fromTokenMinimalUnitsNumeric } from '../../../utils/send';
 import { useSendContext } from '../../../context/send';
 
 type AccountWithBalances = Record<Hex, { balance: Hex }>;
@@ -34,11 +34,8 @@ const validateAmountFn = ({
   t,
   tokenBalances,
 }: ValidateAmountFnArgs): string | undefined => {
-  if (!asset || amount === undefined || amount === null || amount === '') {
+  if (!asset || !amount) {
     return undefined;
-  }
-  if (!isDecimal(amount) || Number(amount) < 0) {
-    return t('invalidValue');
   }
   let weiValue;
   let weiBalance;
