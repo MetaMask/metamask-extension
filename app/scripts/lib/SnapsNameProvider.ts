@@ -20,6 +20,7 @@ import {
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
 import { RestrictedMessenger } from '@metamask/base-controller';
+import { getChainIdsCaveat } from '@metamask/snaps-rpc-methods';
 
 type AllowedActions =
   | GetAllSnaps
@@ -73,7 +74,10 @@ export class SnapsNameProvider implements NameProvider {
   async getProposedNames(
     request: NameProviderRequest,
   ): Promise<NameProviderResult> {
-    const nameSnaps = this.#getNameLookupSnaps();
+    const { variation: chainIdHex } = request;
+    const caipChainId = `eip155:${parseInt(chainIdHex, 16)}`;
+
+    const nameSnaps = this.#getNameLookupSnaps(caipChainId);
 
     const snapResults = await Promise.all(
       nameSnaps.map((snap) => this.#getSnapProposedName(snap, request)),
@@ -93,16 +97,29 @@ export class SnapsNameProvider implements NameProvider {
     return { results };
   }
 
-  #getNameLookupSnaps(): TruncatedSnap[] {
+  #getNameLookupSnaps(chainId?: string): TruncatedSnap[] {
     const permissionSubjects = this.#messenger.call(
       'PermissionController:getState',
     ).subjects;
 
     const snaps = this.#messenger.call('SnapController:getAll');
 
-    return snaps.filter(
-      ({ id }) => permissionSubjects[id]?.permissions['endowment:name-lookup'],
-    );
+    return snaps.filter(({ id }) => {
+      const permission =
+        permissionSubjects[id]?.permissions['endowment:name-lookup'];
+
+      if (!permission) {
+        return false;
+      }
+
+      const chainIdCaveat = getChainIdsCaveat(permission);
+
+      if (chainId && chainIdCaveat && !chainIdCaveat.includes(chainId)) {
+        return false;
+      }
+
+      return true;
+    });
   }
 
   async #getSnapProposedName(
