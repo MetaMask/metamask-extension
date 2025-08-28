@@ -103,17 +103,12 @@ export const MultichainEditAccountsPage: React.FC<
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header
-        paddingTop={8}
         paddingBottom={0}
         startAccessory={
           <Icon name={IconName.Close} size={IconSize.Md} onClick={onClose} />
         }
       >
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          marginBottom={8}
-        >
+        <Box display={Display.Flex} justifyContent={JustifyContent.center}>
           <Text variant={TextVariant.headingMd}>{t('editAccounts')}</Text>
         </Box>
       </Header>
@@ -121,6 +116,7 @@ export const MultichainEditAccountsPage: React.FC<
         paddingLeft={4}
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
+        scrollable
       >
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <MultichainAccountList

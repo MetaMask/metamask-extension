@@ -19,13 +19,30 @@ interface ContentProps extends StyleUtilityProps {
    * Additional CSS class provided to the content
    */
   className?: string;
+  /**
+   * Whether the content should be scrollable
+   */
+  scrollable?: boolean;
+  /**
+   * Custom scrollbar color
+   */
+  scrollbarColor?: string;
 }
 
 export const Content = ({
   children,
   className = '',
+  scrollable = false,
+  scrollbarColor = 'var(--color-icon-muted) transparent',
   ...props
 }: ContentProps) => {
+  const style = scrollable
+    ? {
+        overflow: 'auto',
+        scrollbarColor,
+      }
+    : undefined;
+
   return (
     <Box
       display={Display.Flex}
@@ -34,6 +51,7 @@ export const Content = ({
       padding={4}
       height={BlockSize.Full}
       className={classnames('multichain-page-content', className)}
+      style={style}
       {...props}
     >
       {children}
