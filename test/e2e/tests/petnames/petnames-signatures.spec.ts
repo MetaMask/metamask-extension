@@ -113,7 +113,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.checkProposedNames('0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
-          ['cd2.1337.test.domain', 'Name Lookup Example Snap'],
+          ['cd2.1.test.domain', 'Name Lookup Example Snap'],
         ]);
       },
     );
