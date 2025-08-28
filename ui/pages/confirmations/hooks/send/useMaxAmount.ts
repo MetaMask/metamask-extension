@@ -18,11 +18,11 @@ import { useSendType } from './useSendType';
 const NATIVE_TRANSFER_GAS_LIMIT = 21000;
 const GWEI_TO_WEI_CONVERSION_RATE = 1e9;
 
-export interface GasFeeEstimatesType {
+export type GasFeeEstimatesType = {
   medium: {
     suggestedMaxFeePerGas: number;
   };
-}
+};
 
 export const getEstimatedTotalGas = (gasFeeEstimates?: GasFeeEstimatesType) => {
   if (!gasFeeEstimates) {

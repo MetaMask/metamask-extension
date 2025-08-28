@@ -16,7 +16,7 @@ export const validateERC1155Balance = (
   t: ReturnType<typeof useI18nContext>,
 ) => {
   if (asset?.balance && value) {
-    if (parseInt(value) > parseInt(asset.balance.toString())) {
+    if (parseInt(value, 10) > parseInt(asset.balance.toString(), 10)) {
       return t('insufficientFunds');
     }
   }

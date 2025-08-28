@@ -1,3 +1,5 @@
+import { waitFor } from '@testing-library/react';
+
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_NATIVE_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
@@ -7,7 +9,6 @@ import {
   useAmountValidation,
   validateERC1155Balance,
 } from './useAmountValidation';
-import { waitFor } from '@testing-library/react';
 
 const MOCK_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
