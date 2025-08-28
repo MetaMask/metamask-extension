@@ -285,7 +285,7 @@
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^17.0.0",
     "@metamask/eth-ledger-bridge-keyring": "11.1.2",
-    "@metamask/eth-qr-keyring": "patch:@metamask/eth-qr-keyring@npm%3A1.0.0#~/.yarn/patches/@metamask-eth-qr-keyring-npm-1.0.0-8a180e9772.patch",
+    "@metamask/eth-qr-keyring": "^1.1.0",
     "@metamask/eth-sig-util": "^8.2.0",
     "@metamask/eth-snap-keyring": "^16.0.0",
     "@metamask/eth-token-tracker": "^10.0.2",

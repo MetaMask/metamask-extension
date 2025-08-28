@@ -5917,9 +5917,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-qr-keyring@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/eth-qr-keyring@npm:1.0.0"
+"@metamask/eth-qr-keyring@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/eth-qr-keyring@npm:1.1.0"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -5931,25 +5931,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     hdkey: "npm:^2.1.0"
     uuid: "npm:^9.0.1"
-  checksum: 10/5501dcc7ba4a011a8f1cdbd2d929d3a2a86cfade5f72280fb88c2962e39e00e6952d1c94222be9594e61055242d3a31c5cbbae138d7bdaafbeecea7b58369168
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-qr-keyring@patch:@metamask/eth-qr-keyring@npm%3A1.0.0#~/.yarn/patches/@metamask-eth-qr-keyring-npm-1.0.0-8a180e9772.patch":
-  version: 1.0.0
-  resolution: "@metamask/eth-qr-keyring@patch:@metamask/eth-qr-keyring@npm%3A1.0.0#~/.yarn/patches/@metamask-eth-qr-keyring-npm-1.0.0-8a180e9772.patch::version=1.0.0&hash=f5511d"
-  dependencies:
-    "@ethereumjs/rlp": "npm:^5.0.2"
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    async-mutex: "npm:^0.5.0"
-    hdkey: "npm:^2.1.0"
-    uuid: "npm:^9.0.1"
-  checksum: 10/e84a191b492779ba1001b18b1f396b2c927d4a88e16a6645412208ba1f2e5274192d616a4d124bf608abac567543c74c300bcdda763b7707280b03a18f76a2b9
+  checksum: 10/ec72d2dff1662b2332169969f730722b87af2f361b7f97bd59c4e23e539a05a3229b76e767ddc0a8126ac01eea9ca3e63591b854ba9dd1c39227d0faba6c594c
   languageName: node
   linkType: hard
 
@@ -31675,7 +31657,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
-    "@metamask/eth-qr-keyring": "patch:@metamask/eth-qr-keyring@npm%3A1.0.0#~/.yarn/patches/@metamask-eth-qr-keyring-npm-1.0.0-8a180e9772.patch"
+    "@metamask/eth-qr-keyring": "npm:^1.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^16.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
