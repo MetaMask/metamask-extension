@@ -44,6 +44,6 @@ describe('Shield Entry Modal', () => {
       'shield-entry-modal-get-started-button',
     );
     fireEvent.click(getStartedButton);
-    expect(onCloseStub).toHaveBeenCalled();
+    expect(onGetStartedStub).toHaveBeenCalled();
   });
 });

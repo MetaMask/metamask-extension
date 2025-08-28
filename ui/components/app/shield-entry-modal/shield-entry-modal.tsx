@@ -16,9 +16,7 @@ import {
   ModalFooter,
   ModalBody,
   ButtonSize,
-  ButtonIconSize,
   IconName,
-  ButtonIcon,
   Box,
   AvatarIcon,
   AvatarIconSize,
@@ -63,6 +61,7 @@ export default function ShieldEntryModal({
             {t('shieldEntryModalSubtitle')}
           </Text>
           <Text variant={TextVariant.bodySm} marginBottom={4}>
+            {/* TODO: update link to learn more page */}
             {t('shieldEntryModalDescription', [
               '$8',
               <ButtonLink
@@ -70,6 +69,7 @@ export default function ShieldEntryModal({
                 size={ButtonLinkSize.Inherit}
                 target="_blank"
                 rel="noopener noreferrer"
+                href="#"
               >
                 {t('learnMoreUpperCase')}
               </ButtonLink>,

@@ -5387,9 +5387,6 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
   },
-  "shieldEntryModalTitle": {
-    "message": "Trade assets without fear"
-  },
   "shieldEntryModalSubtitle": {
     "message": "Transaction Shield, free for 14 days."
   },
