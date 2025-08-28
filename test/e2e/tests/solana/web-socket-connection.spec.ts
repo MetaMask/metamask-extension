@@ -163,6 +163,9 @@ describe('Solana Web Socket', function (this: Suite) {
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
+        // Wait a moment for the websocket to be stopped
+        await driver.delay(5000);
+
         // Verify that websocket connection is now closed
         const activeWebSocketConnections =
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
