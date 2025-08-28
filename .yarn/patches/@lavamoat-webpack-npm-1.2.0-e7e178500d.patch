@@ -1,0 +1,12 @@
+diff --git a/src/runtime/repairs/messageevent.js b/src/runtime/repairs/messageevent.js
+index 0b3016621bf36c5756b03e71df7cf8fde22c6786..127f55d6477a13c74366772069d4748572566890 100644
+--- a/src/runtime/repairs/messageevent.js
++++ b/src/runtime/repairs/messageevent.js
+@@ -29,7 +29,6 @@ if (original && original.get) {
+         return w
+       }
+     },
+-    configurable: false,
+   })
+ }
+ 
