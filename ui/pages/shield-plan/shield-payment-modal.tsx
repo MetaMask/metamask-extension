@@ -100,12 +100,17 @@ export const ShieldPaymentModal = ({
           isMainnet &&
           filterPredicate(token.symbol, token.address, token.chainId)
         ) {
-          yield {
-            ...token,
-            type: token.isNative ? AssetType.native : AssetType.token,
-          } as
-            | AssetWithDisplayData<ERC20Asset>
-            | AssetWithDisplayData<NativeAsset>;
+          if (token.isNative) {
+            yield {
+              ...token,
+              type: AssetType.native,
+            } as AssetWithDisplayData<NativeAsset>;
+          } else {
+            yield {
+              ...token,
+              type: AssetType.token,
+            } as AssetWithDisplayData<ERC20Asset>;
+          }
         }
       }
     };
