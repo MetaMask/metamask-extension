@@ -270,6 +270,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
+import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -1999,15 +2000,13 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
 
-    // For now, we return undefined here, which means that the Security Alerts
-    // API falls back to default behavior. In the future, we plan to use this
-    // configuration option for conditional re-routing of API requests.
     this.getSecurityAlertsConfig = () => {
-      return (_url) => {
-        return Promise.resolve({
-          newUrl: undefined,
-          authorization: undefined,
-        });
+      return async (url) => {
+        const getToken = () =>
+          this.controllerMessenger.call(
+            'AuthenticationController:getBearerToken',
+          );
+        return getShieldGatewayConfig(getToken, url);
       };
     };
 
