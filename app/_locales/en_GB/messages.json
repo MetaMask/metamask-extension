@@ -3231,6 +3231,9 @@
   "lockMetaMask": {
     "message": "Lock MetaMask"
   },
+  "lockMetaMaskLoadingMessage": {
+    "message": "Locking MetaMask..."
+  },
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
   },
