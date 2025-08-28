@@ -188,6 +188,7 @@ env:
   - WITH_STATE: null
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
+  - METAMASK_REACT_REDUX_DEVTOOLS: null
   - SUPPORT_LINK: https://support.metamask.io
   - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
