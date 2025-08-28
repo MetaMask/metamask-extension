@@ -7,7 +7,7 @@ export default {
 };
 
 export const DefaultStory = () => {
-  return <ShieldEntryModal />;
+  return <ShieldEntryModal onClose={() => {}} onGetStarted={() => {}} />;
 };
 
 DefaultStory.storyName = 'Default';
