@@ -19,7 +19,7 @@ import {
 } from '../../selectors';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
-type UseSlideManagementProps = { testDate?: string };
+type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
 const ZERO_BALANCE = '0x0';
 
 export function isActive(
@@ -89,6 +89,7 @@ function orderByCardPlacement(slides: CarouselSlide[]): CarouselSlide[] {
 
 export const useCarouselManagement = ({
   testDate,
+  enabled = true,
 }: UseSlideManagementProps = {}) => {
   const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
@@ -104,6 +105,15 @@ export const useCarouselManagement = ({
   );
 
   useEffect(() => {
+    // If carousel is disabled, clear the slides
+    if (!enabled) {
+      const empty: CarouselSlide[] = [];
+      if (!isEqual(prevSlidesRef.current, empty)) {
+        dispatch(updateSlides(empty));
+        prevSlidesRef.current = empty;
+      }
+      return;
+    }
     const maybeFetchContentful = async () => {
       const contentfulEnabled =
         remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
@@ -198,6 +208,7 @@ export const useCarouselManagement = ({
       }
     })();
   }, [
+    enabled,
     dispatch,
     hasZeroBalance,
     remoteFeatureFlags,
