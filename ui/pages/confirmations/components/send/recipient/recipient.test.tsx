@@ -4,7 +4,6 @@ import { fireEvent } from '@testing-library/dom';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
-import * as SendActions from '../../../hooks/send/useSendActions';
 import * as SendContext from '../../../context/send';
 import { Recipient } from './recipient';
 
@@ -22,15 +21,14 @@ jest.mock('react-router-dom', () => ({
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? mockState);
 
-  return renderWithProvider(<Recipient />, store);
+  return renderWithProvider(<Recipient setTo={() => undefined} />, store);
 };
 
 describe('Recipient', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Previous')).toBeInTheDocument();
-    expect(getByText('Continue')).toBeInTheDocument();
+    expect(getByText('TO')).toBeInTheDocument();
   });
 
   it('call update value method when value is changed', () => {
@@ -43,25 +41,5 @@ describe('Recipient', () => {
 
     fireEvent.change(getByRole('textbox'), { target: { value: MOCK_ADDRESS } });
     expect(mockUpdateTo).toHaveBeenCalledWith(MOCK_ADDRESS);
-  });
-
-  it('submit transaction when continue button is clicked', () => {
-    const mockHandleSubmit = jest.fn();
-    jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
-      handleSubmit: mockHandleSubmit,
-    } as unknown as ReturnType<typeof SendActions.useSendActions>);
-
-    const { getByRole, getByText } = render();
-
-    fireEvent.change(getByRole('textbox'), { target: { value: MOCK_ADDRESS } });
-    fireEvent.click(getByText('Continue'));
-    expect(mockHandleSubmit).toHaveBeenCalledWith(MOCK_ADDRESS);
-  });
-
-  it('go to amount page when previous button is clicked', () => {
-    const { getByText } = render();
-
-    fireEvent.click(getByText('Previous'));
-    expect(mockHistory.goBack).toHaveBeenCalled();
   });
 });
