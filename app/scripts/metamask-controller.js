@@ -4939,7 +4939,7 @@ export default class MetamaskController extends EventEmitter {
 
         // lock app again on error after submitPassword succeeded
         // here we skip the seedless operation lock as we are already in the seedless operation lock
-        await this.setLocked(true);
+        await this.setLocked({ skipSeedlessOperationLock: true });
         throw err;
       } finally {
         this.metaMetricsController.bufferedEndTrace?.({
@@ -8721,9 +8721,11 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Locks MetaMask
    *
-   * @param {boolean} skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
+   * @param {object} options - The options for setting the locked state.
+   * @param {boolean} options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
-  async setLocked(skipSeedlessOperationLock = false) {
+  async setLocked(options = { skipSeedlessOperationLock: false }) {
+    const { skipSeedlessOperationLock } = options;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     let releaseLock;
