@@ -5,6 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Messenger } from '@metamask/base-controller';
 import { NetworkController } from '@metamask/network-controller';
+import { BridgeStatusControllerGetStateAction } from '@metamask/bridge-status-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import {
   getTransactionControllerInitMessenger,

@@ -1,3 +1,5 @@
+import { Interface } from '@ethersproject/abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   AuthorizationList,
   GasFeeToken,
@@ -6,31 +8,29 @@ import {
   PublishHook,
   PublishHookResult,
   TransactionMeta,
-  TransactionParams,
 } from '@metamask/transaction-controller';
-import { Hex, add0x, createProjectLogger, remove0x } from '@metamask/utils';
-import { abiERC20 } from '@metamask/metamask-eth-abis';
-import { Interface } from '@ethersproject/abi';
+import { Hex, createProjectLogger } from '@metamask/utils';
 import {
-  ANY_BENEFICIARY,
-  Caveat,
-  Delegation,
-  Execution,
-  ExecutionMode,
-  ROOT_AUTHORITY,
+  DeleGatorEnvironment,
   UnsignedDelegation,
-  encodeRedeemDelegations,
-  signDelegation,
-} from '../delegation';
+  createCaveatBuilder,
+  createDelegation,
+  getDeleGatorEnvironment,
+} from '../../../../../shared/lib/delegation';
+import { exactExecution } from '../../../../../shared/lib/delegation/caveatBuilder/exactExecutionBuilder';
+import { specificActionERC20TransferBatch } from '../../../../../shared/lib/delegation/caveatBuilder/specificActionERC20TransferBatchBuilder';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { generateCalldata } from '../containers/enforced-simulations';
+import { Caveat } from '../delegation';
 import {
   RelayStatus,
   RelaySubmitRequest,
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
+import { BridgeStatusControllerGetStateAction } from '@metamask/bridge-status-controller';
 
-const EMPTY_HEX = '0x';
 const POLLING_INTERVAL_MS = 1000; // 1 Second
 
 const EMPTY_RESULT = {
@@ -106,37 +106,58 @@ export class Delegation7702PublishHook {
     const { delegationAddress, upgradeContractAddress } =
       atomicBatchChainSupport;
 
-    if (!selectedGasFeeToken || !gasFeeTokens?.length) {
+    const isGasless7702Tx = await this.#isBridgeTxGasless7702(transactionMeta);
+
+    if ((!selectedGasFeeToken || !gasFeeTokens?.length) && !isGasless7702Tx) {
       log('Skipping as no selected gas fee token');
       return EMPTY_RESULT;
     }
 
-    const gasFeeToken = gasFeeTokens.find(
-      (token) =>
-        token.tokenAddress.toLowerCase() === selectedGasFeeToken.toLowerCase(),
-    );
+    const gasFeeToken = isGasless7702Tx
+      ? undefined
+      : gasFeeTokens?.find(
+          (token) =>
+            token.tokenAddress.toLowerCase() ===
+            selectedGasFeeToken?.toLowerCase(),
+        );
 
-    if (!gasFeeToken) {
+    if (!gasFeeToken && !isGasless7702Tx) {
       throw new Error('Selected gas fee token not found');
     }
 
-    const delegation = await this.#buildDelegation(
+    const delegationEnvironment = getDeleGatorEnvironment(
+      Number(hexToDecimal(transactionMeta.chainId)),
+    );
+    const delegationManagerAddress = delegationEnvironment.DelegationManager;
+    const includeTransfer = !isGasless7702Tx;
+    const delegation = this.#buildUnsignedDelegation(
+      delegationEnvironment,
       transactionMeta,
       gasFeeToken,
+      includeTransfer,
     );
 
-    const executions = this.#buildExecutions(transactionMeta, gasFeeToken);
+    log('Signing delegation');
 
-    const transactionData = encodeRedeemDelegations(
-      [[delegation]],
-      [ExecutionMode.BATCH_DEFAULT_MODE],
-      [executions],
-    );
+    const delegationSignature = (await this.#messenger.call(
+      'DelegationController:signDelegation',
+      {
+        chainId,
+        delegation,
+      },
+    )) as Hex;
+
+    log('Delegation signature', delegationSignature);
+
+    const transactionData = generateCalldata({
+      transaction: txParams,
+      delegation: { ...delegation, signature: delegationSignature },
+    });
 
     const relayRequest: RelaySubmitRequest = {
       chainId,
       data: transactionData,
-      to: process.env.DELEGATION_MANAGER_ADDRESS as Hex,
+      to: delegationManagerAddress,
     };
 
     if (!delegationAddress) {
@@ -165,97 +186,89 @@ export class Delegation7702PublishHook {
     };
   }
 
-  #buildExecutions(
+  async #isBridgeTxGasless7702(
     transactionMeta: TransactionMeta,
-    gasFeeToken: GasFeeToken,
-  ): Execution[] {
-    const { txParams } = transactionMeta;
-    const { data, to, value } = txParams;
-
-    const userExecution: Execution = {
-      target: to as Hex,
-      value: (value as Hex) ?? '0x0',
-      callData: (data as Hex) ?? EMPTY_HEX,
-    };
-
-    const transferExecution: Execution = {
-      target: gasFeeToken.tokenAddress,
-      value: '0x0',
-      callData: this.#buildTokenTransferData(
-        gasFeeToken.recipient,
-        gasFeeToken.amount,
-      ),
-    };
-
-    return [userExecution, transferExecution];
+  ): Promise<boolean> {
+    try {
+      const state = (await this.#messenger.call(
+        'BridgeStatusController:getState',
+      ));
+      const gasIncluded7702 =
+        state?.submissionRequests?.[transactionMeta.chainId]?.[transactionMeta.id]
+          ?.quoteResponse?.quote?.gasIncluded7702;
+      return Boolean(gasIncluded7702);
+    } catch (error) {
+      log(
+        'Failed to determine whether the quoted transaction is intended to be gasless through EIP-7702',
+        error,
+      );
+      return false;
+    }
   }
 
-  async #buildDelegation(
+  #buildUnsignedDelegation(
+    environment: DeleGatorEnvironment,
     transactionMeta: TransactionMeta,
-    gasFeeToken: GasFeeToken,
-  ): Promise<Delegation> {
-    const { chainId, txParams } = transactionMeta;
-    const { from } = txParams;
-
-    const caveats = this.#buildCaveats(txParams, gasFeeToken);
+    gasFeeToken: GasFeeToken | undefined,
+    includeTransfer: boolean,
+  ): UnsignedDelegation {
+    const caveats = this.#createCaveats(
+      environment,
+      transactionMeta,
+      gasFeeToken,
+      includeTransfer,
+    );
 
     log('Caveats', caveats);
 
-    const delegation: UnsignedDelegation = {
-      authority: ROOT_AUTHORITY,
+    const delegation = createDelegation({
+      from: transactionMeta.txParams.from as Hex,
+      to: transactionMeta.txParams.from as Hex,
       caveats,
-      delegate: ANY_BENEFICIARY,
-      delegator: from as Hex,
-      salt: new Date().getTime(),
-    };
-
-    log('Unsigned delegation', delegation);
-
-    const signature = await signDelegation({
-      chainId,
-      delegation,
-      from: from as Hex,
-      messenger: this.#messenger,
     });
 
-    log('Delegation signature', signature);
+    log('Delegation', delegation);
 
-    return {
-      ...delegation,
-      signature,
-    };
+    return delegation;
   }
 
-  #buildCaveats(
-    txParams: TransactionParams,
-    gasFeeToken: GasFeeToken,
+  #createCaveats(
+    environment: DeleGatorEnvironment,
+    transactionMeta: TransactionMeta,
+    gasFeeToken: GasFeeToken | undefined,
+    includeTransfer: boolean,
   ): Caveat[] {
-    const { amount, recipient, tokenAddress } = gasFeeToken;
+    const caveatBuilder = createCaveatBuilder(environment);
+
+    const { txParams } = transactionMeta;
     const { data, to } = txParams;
-    const tokenAmountPadded = add0x(remove0x(amount).padStart(64, '0'));
-    const enforcer = process.env.GASLESS_7702_ENFORCER_ADDRESS as Hex;
 
-    const enforcerTerms = add0x(
-      (
-        [
-          tokenAddress,
-          recipient,
-          tokenAmountPadded,
-          to,
-          data ?? EMPTY_HEX,
-        ] as Hex[]
-      )
-        .map(remove0x)
-        .join(''),
-    );
+    if (includeTransfer && gasFeeToken !== undefined) {
+      const {
+        tokenAddress: erc20TokenAddress,
+        recipient: tokenTransferRecipientAddress,
+        amount: transferAmount,
+      } = gasFeeToken;
+      const firstTxRecipientAddress = to as Hex;
+      const firstTxCalldata = (data as Hex) ?? '0x';
+      // TODO: should value be somehow equally passed here?
 
-    return [
-      {
-        enforcer,
-        terms: enforcerTerms,
-        args: EMPTY_HEX,
-      },
-    ];
+      caveatBuilder.addCaveat(
+        specificActionERC20TransferBatch,
+        erc20TokenAddress,
+        tokenTransferRecipientAddress,
+        BigInt(transferAmount),
+        firstTxRecipientAddress,
+        firstTxCalldata,
+      );
+    } else {
+      const expectedExecution = (data as Hex) ?? '0x';
+      // TODO: should value be somehow equally passed here?
+
+      caveatBuilder.addCaveat(exactExecution, expectedExecution);
+    }
+
+    return caveatBuilder.build();
   }
 
   async #buildAuthorizationList(

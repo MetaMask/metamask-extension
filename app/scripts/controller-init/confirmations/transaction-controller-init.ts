@@ -1,3 +1,5 @@
+import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
@@ -5,17 +7,17 @@ import {
   TransactionControllerMessenger,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
+import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   SmartTransactionHookMessenger,
-  publishSmartTransactionHook,
   publishBatchSmartTransactionHook,
+  publishSmartTransactionHook,
 } from '../../lib/smart-transaction/smart-transactions';
-import { trace } from '../../../../shared/lib/trace';
 
+import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
 import {
   handlePostTransactionBalanceUpdate,
   handleTransactionAdded,
@@ -26,15 +28,13 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
 } from '../../lib/transaction/metrics';
+import { ControllerFlatState } from '../controller-list';
+import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
   ControllerInitFunction,
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
-import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
-import { ControllerFlatState } from '../controller-list';
-import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
-import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
