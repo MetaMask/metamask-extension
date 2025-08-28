@@ -263,7 +263,19 @@ const CoinButtons = ({
     // Native Send flow
     await setCorrectChain();
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    history.push(SEND_ROUTE);
+    if (process.env.SEND_REDESIGN_ENABLED) {
+      let route;
+      if (trackingLocation === 'home') {
+        route = `${SEND_ROUTE}/asset`;
+      } else {
+        const queryParams = new URLSearchParams();
+        queryParams.append('chainId', chainId.toString());
+        route = `${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`;
+      }
+      history.push(route);
+    } else {
+      history.push(SEND_ROUTE);
+    }
   }, [
     chainId,
     account,
@@ -271,6 +283,7 @@ const CoinButtons = ({
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     handleSendNonEvm,
     ///: END:ONLY_INCLUDE_IF
+    trackingLocation,
   ]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
@@ -423,7 +436,10 @@ const CoinButtons = ({
         round={!displayNewIconButtons}
       />
       {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
-      {isUnifiedUIEnabled || isTestnet || !isBridgeChain ? null : (
+      {isUnifiedUIEnabled ||
+      isTestnet ||
+      !isBridgeChain ||
+      isNonEvmAccountWithoutExternalServices ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={

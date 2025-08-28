@@ -7,15 +7,8 @@ import React, {
 } from 'react';
 import browser from 'webextension-polyfill';
 
-import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  AvatarBaseShape,
-} from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
@@ -53,7 +46,6 @@ import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
-  getUseBlockie,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
@@ -76,12 +68,9 @@ import {
   getShowSupportDataConsentModal,
   setShowCopyAddressToast,
 } from '../../../ducks/app/app';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 
 type AppHeaderUnlockedContentProps = {
-  popupStatus: boolean;
-  currentNetwork: MultichainNetworkConfiguration;
-  networkOpenCallback: () => void;
-  disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
   menuRef: React.RefObject<HTMLButtonElement>;
 };
@@ -96,7 +85,6 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const useBlockie = useSelector(getUseBlockie);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
@@ -208,16 +196,9 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
-          // TODO: Remove this once we are using PreferredAvatar
-          <AvatarAccount
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
+          <PreferredAvatar
             address={internalAccount.address}
-            size={AvatarAccountSize.Md}
-            shape={AvatarBaseShape.Circle}
+            className="shrink-0"
           />
         )}
         {internalAccount && (
@@ -256,11 +237,8 @@ export const AppHeaderUnlockedContent = ({
     disableAccountPicker,
     dispatch,
     internalAccount,
-    t,
     trackEvent,
-    useBlockie,
     CopyButton,
-    copied,
     history,
     isMultichainAccountsState2Enabled,
   ]);
@@ -272,6 +250,7 @@ export const AppHeaderUnlockedContent = ({
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         gap={2}
+        className="min-w-0"
       >
         {AppContent}
       </Box>
@@ -283,7 +262,7 @@ export const AppHeaderUnlockedContent = ({
       >
         <Box display={Display.Flex} gap={3}>
           {showConnectedStatus && (
-            <Box ref={menuRef} data-testid="connection-menu">
+            <Box ref={menuRef} data-testid="connection-menu" margin="auto">
               <ConnectedStatusIndicator
                 onClick={() => handleConnectionsRoute()}
               />
@@ -294,12 +273,10 @@ export const AppHeaderUnlockedContent = ({
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
+            style={{ position: 'relative' }}
           >
             {!accountOptionsMenuOpen && (
-              <Box
-                style={{ position: 'relative' }}
-                onClick={() => handleMainMenuOpened()}
-              >
+              <Box onClick={() => handleMainMenuOpened()}>
                 <NotificationsTagCounter noLabel />
               </Box>
             )}
@@ -310,7 +287,7 @@ export const AppHeaderUnlockedContent = ({
               onClick={() => {
                 handleMainMenuOpened();
               }}
-              size={ButtonIconSize.Sm}
+              size={ButtonIconSize.Lg}
             />
           </Box>
         </Box>

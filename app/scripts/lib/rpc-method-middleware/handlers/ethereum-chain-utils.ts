@@ -25,7 +25,6 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 import type {
   NetworkOrderControllerState,
   NetworkOrderController,
@@ -277,8 +276,8 @@ type SwitchChainOptions = {
  * @param hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
  * @param hooks.requestUserApproval - The callback to trigger user approval flow.
  * @param hooks.hasApprovalRequestsForOrigin - Function to check if there are pending approval requests from the origin.
- * @param hooks.toNetworkConfiguration - Network configutation of network switching to.
- * @param hooks.fromNetworkConfiguration - Network configutation of network switching from.
+ * @param hooks.toNetworkConfiguration - Network configuration of network switching to.
+ * @param hooks.fromNetworkConfiguration - Network configuration of network switching from.
  * @returns a null response on success or an error if user rejects an approval when autoApprove is false or on unexpected errors.
  */
 export async function switchChain<Result extends Json = never>(
@@ -373,25 +372,15 @@ export async function switchChain<Result extends Json = never>(
         KnownCaipNamespace.Eip155,
       );
       const existingChainIds = Object.keys(existingEnabledNetworks);
-
       if (!existingChainIds.includes(chainId)) {
-        const isFeaturedNetwork = FEATURED_NETWORK_CHAIN_IDS.find(
-          (featuredChainId) => featuredChainId === chainId,
-        );
-
-        if (isFeaturedNetwork) {
-          const featuredExistingChainIds = existingChainIds.filter((id) =>
-            FEATURED_NETWORK_CHAIN_IDS.find(
-              (featuredChainId) => featuredChainId === id,
-            ),
-          );
-          setEnabledNetworks(
-            [...featuredExistingChainIds, chainId],
-            KnownCaipNamespace.Eip155,
-          );
-        } else {
-          setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
-        }
+        setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
+      }
+    } else if (isCaipChainId(chainId)) {
+      const { namespace } = parseCaipChainId(chainId);
+      const existingEnabledNetworks = getEnabledNetworks(namespace);
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+      if (!existingChainIds.includes(chainId)) {
+        setEnabledNetworks([chainId], namespace);
       }
     }
 
