@@ -94,6 +94,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
+          .withNetworkControllerOnMainnet()
           .build(),
         testSpecificMock: mockLookupSnap,
         title: this.test?.fullTitle(),
