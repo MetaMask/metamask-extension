@@ -26,8 +26,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { Skeleton } from '../../../components/component-library/skeleton';
-import CancelMembershipModal from './cancel-membership-modal';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import CancelMembershipModal from './cancel-membership-modal';
 
 const TransactionShield = () => {
   const t = useI18nContext();
