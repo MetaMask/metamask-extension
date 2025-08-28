@@ -3,10 +3,10 @@
 exports[`PrepareBridgePage should render the component, with initial state 1`] = `
 <div>
   <div
-    class="mm-box mm-container mm-container--max-width-undefined prepare-bridge-page mm-box--display-flex mm-box--gap-8 mm-box--flex-direction-column mm-box--width-full"
+    class="mm-box mm-container mm-container--max-width-undefined prepare-bridge-page mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
   >
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-6 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
     >
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -86,7 +86,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       </div>
     </div>
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-8 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative-soft"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative-soft"
       style="position: relative;"
     >
       <div
@@ -107,7 +107,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         </button>
       </div>
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-6 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
       >
         <div
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -198,24 +198,20 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full mm-box--height-full"
       />
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-6 mm-box--padding-top-6 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--margin-inline-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--align-items-flex-end mm-box--width-full"
+        style="width: auto; min-height: max-content; position: relative; overflow: hidden;"
       >
         <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
-          style="padding-inline: 16px; position: relative; overflow: hidden;"
+          class="mm-box multichain-page-footer mm-box--padding-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
         >
           <div
-            class="mm-box multichain-page-footer mm-box--padding-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
           >
-            <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
-              >
-                Select amount
-              </p>
-            </div>
+              Select amount
+            </p>
           </div>
         </div>
       </div>
@@ -227,10 +223,10 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
 exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
 <div>
   <div
-    class="mm-box mm-container mm-container--max-width-undefined prepare-bridge-page mm-box--display-flex mm-box--gap-8 mm-box--flex-direction-column mm-box--width-full"
+    class="mm-box mm-container mm-container--max-width-undefined prepare-bridge-page mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
   >
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-6 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
     >
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -310,7 +306,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-8 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative-soft"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative-soft"
       style="position: relative;"
     >
       <div
@@ -331,7 +327,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         </button>
       </div>
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-6 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
       >
         <div
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -422,24 +418,20 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full mm-box--height-full"
       />
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-6 mm-box--padding-top-6 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--margin-inline-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--align-items-flex-end mm-box--width-full"
+        style="width: auto; min-height: max-content; position: relative; overflow: hidden;"
       >
         <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
-          style="padding-inline: 16px; position: relative; overflow: hidden;"
+          class="mm-box multichain-page-footer mm-box--padding-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
         >
           <div
-            class="mm-box multichain-page-footer mm-box--padding-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
           >
-            <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
-              >
-                Select amount
-              </p>
-            </div>
+              Select amount
+            </p>
           </div>
         </div>
       </div>

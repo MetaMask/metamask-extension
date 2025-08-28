@@ -19,7 +19,7 @@ exports[`BridgeCTAButton should enable the component when quotes are loading and
     data-testid="bridge-cta-button"
     style="box-shadow: none;"
   >
-    Submit
+    Swap
   </button>
 </div>
 `;
