@@ -38,6 +38,7 @@ import {
   ButtonLink,
   ButtonSize,
   ButtonVariant,
+  Checkbox,
   Icon,
   IconName,
   IconSize,
@@ -202,6 +203,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     useState(false);
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
+    useState(false);
+  const [maliciousSiteAcknowledged, setMaliciousSiteAcknowledged] =
     useState(false);
 
   // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
@@ -418,6 +421,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     setShowCreateSolanaAccountModal(false);
   }, []);
 
+  const handleMaliciousSiteCheckbox = useCallback(() => {
+    setMaliciousSiteAcknowledged(!maliciousSiteAcknowledged);
+  }, [maliciousSiteAcknowledged]);
+
   const handleCloseEditAccountsModal = useCallback(() => {
     setShowEditAccountsModal(false);
   }, []);
@@ -451,6 +458,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const originTrustSignals = useOriginTrustSignals(
     targetSubjectMetadata.origin,
   );
+  const isMaliciousSite =
+    originTrustSignals.state === TrustSignalDisplayState.Malicious;
 
   return (
     <Page
@@ -509,6 +518,24 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           marginBottom={1}
         >
           <Text variant={TextVariant.headingLg}>{title}</Text>
+          {originTrustSignals.state === TrustSignalDisplayState.Malicious && (
+            <Tooltip title="Malicious site" position="bottom">
+              <Icon
+                name={IconName.Danger}
+                color={IconColor.errorDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+          {originTrustSignals.state === TrustSignalDisplayState.Warning && (
+            <Tooltip title="Suspicious site" position="bottom">
+              <Icon
+                name={IconName.Danger}
+                color={IconColor.warningDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
           {originTrustSignals.state === TrustSignalDisplayState.Verified && (
             <Tooltip title="Verified site" position="bottom">
               <Icon
@@ -672,6 +699,26 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           gap={4}
           width={BlockSize.Full}
         >
+          {isMaliciousSite && (
+            <Box
+              display={Display.Flex}
+              padding={4}
+              width={BlockSize.Full}
+              backgroundColor={BackgroundColor.errorMuted}
+              borderRadius={BorderRadius.LG}
+            >
+              <Checkbox
+                label={
+                  t('connectPageMaliciousSiteWarning') ||
+                  'I understand this site has been flagged as malicious and still want to connect'
+                }
+                data-testid="malicious-site-acknowledgment-checkbox"
+                isChecked={maliciousSiteAcknowledged}
+                onChange={handleMaliciousSiteCheckbox}
+                alignItems={AlignItems.flexStart}
+              />
+            </Box>
+          )}
           <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
             <Button
               block
@@ -689,8 +736,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               onClick={onConfirm}
               disabled={
                 selectedCaipAccountAddresses.length === 0 ||
-                selectedChainIds.length === 0
+                selectedChainIds.length === 0 ||
+                (isMaliciousSite && !maliciousSiteAcknowledged)
               }
+              danger={isMaliciousSite}
+              startIconName={isMaliciousSite ? IconName.Danger : undefined}
             >
               {t('connect')}
             </Button>
