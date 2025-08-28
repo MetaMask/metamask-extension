@@ -39,15 +39,15 @@ import {
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import { AssetType } from '../../../shared/constants/transaction';
 import {
-  PAYMENT_METHODS,
-  PaymentMethod,
-  SUPPORTED_STABLE_TOKENS,
-} from './types';
-import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
+import {
+  PAYMENT_METHODS,
+  PaymentMethod,
+  SUPPORTED_STABLE_TOKENS,
+} from './types';
 
 export const ShieldPaymentModal = ({
   isOpen,
@@ -62,7 +62,7 @@ export const ShieldPaymentModal = ({
   onClose: () => void;
   selectedPaymentMethod: PaymentMethod;
   setSelectedPaymentMethod: (method: PaymentMethod) => void;
-  selectedToken:
+  selectedToken?:
     | AssetWithDisplayData<ERC20Asset>
     | AssetWithDisplayData<NativeAsset>;
   onAssetChange: (
@@ -103,7 +103,9 @@ export const ShieldPaymentModal = ({
           yield {
             ...token,
             type: token.isNative ? AssetType.native : AssetType.token,
-          } as AssetWithDisplayData<ERC20Asset>;
+          } as
+            | AssetWithDisplayData<ERC20Asset>
+            | AssetWithDisplayData<NativeAsset>;
         }
       }
     };
@@ -194,8 +196,8 @@ export const ShieldPaymentModal = ({
                     }
                   >
                     <AvatarToken
-                      name={selectedToken.symbol}
-                      src={selectedToken.image}
+                      name={selectedToken?.symbol}
+                      src={selectedToken?.image}
                       marginTop={1}
                       borderColor={BorderColor.borderMuted}
                     />
@@ -208,7 +210,7 @@ export const ShieldPaymentModal = ({
                   <Text variant={TextVariant.bodyMdMedium}>
                     {t('shieldPlanPayWithToken', [
                       hasStableTokenWithBalance
-                        ? selectedToken.symbol
+                        ? selectedToken?.symbol
                         : 'Crypto',
                     ])}
                   </Text>
@@ -217,7 +219,7 @@ export const ShieldPaymentModal = ({
                     color={TextColor.textAlternative}
                   >
                     {hasStableTokenWithBalance
-                      ? `${t('balance')}: ${selectedToken.string} ${selectedToken.symbol}`
+                      ? `${t('balance')}: ${selectedToken?.string} ${selectedToken?.symbol}`
                       : t('shieldPlanNoFunds')}
                   </Text>
                 </Box>

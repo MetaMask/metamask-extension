@@ -40,15 +40,6 @@ import {
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
-import {
-  PAYMENT_METHODS,
-  PaymentMethod,
-  Plan,
-  PLAN_TYPES,
-  SHIELD_PLAN_PRICES,
-  SUPPORTED_STABLE_TOKENS,
-} from './types';
-import { ShieldPaymentModal } from './shield-payment-modal';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -60,6 +51,15 @@ import {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { ShieldPaymentModal } from './shield-payment-modal';
+import {
+  PAYMENT_METHODS,
+  PaymentMethod,
+  Plan,
+  PLAN_TYPES,
+  SHIELD_PLAN_PRICES,
+  SUPPORTED_STABLE_TOKENS,
+} from './types';
 
 const ShieldPlan = () => {
   const history = useHistory();
@@ -275,17 +275,15 @@ const ShieldPlan = () => {
             </Box>
           </Box>
         </Box>
-        {selectedToken && (
-          <ShieldPaymentModal
-            isOpen={showPaymentModal}
-            onClose={() => setShowPaymentModal(false)}
-            selectedToken={selectedToken}
-            selectedPaymentMethod={selectedPaymentMethod}
-            hasStableTokenWithBalance={hasStableTokenWithBalance}
-            setSelectedPaymentMethod={setSelectedPaymentMethod}
-            onAssetChange={setSelectedToken}
-          />
-        )}
+        <ShieldPaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          selectedToken={selectedToken ?? undefined}
+          selectedPaymentMethod={selectedPaymentMethod}
+          hasStableTokenWithBalance={hasStableTokenWithBalance}
+          setSelectedPaymentMethod={setSelectedPaymentMethod}
+          onAssetChange={setSelectedToken}
+        />
       </Content>
       <Footer
         className="shield-plan-page__footer"
