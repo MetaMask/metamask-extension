@@ -29,8 +29,7 @@ describe('Amount', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Previous')).toBeInTheDocument();
-    expect(getByText('Continue')).toBeInTheDocument();
+    expect(getByText('AMOUNT')).toBeInTheDocument();
   });
 
   it('call update value method when value is changed', () => {
@@ -71,20 +70,6 @@ describe('Amount', () => {
     fireEvent.click(getByText('Fiat Mode'));
     fireEvent.change(getByRole('textbox'), { target: { value: 1 } });
     expect(mockUpdateValue).toHaveBeenCalledWith('20');
-  });
-
-  it('go to sendTo page when continue button is clicked', () => {
-    const { getByText } = render();
-
-    fireEvent.click(getByText('Continue'));
-    expect(mockHistory.push).toHaveBeenCalledWith('/send/recipient');
-  });
-
-  it('go to previous page when previous button is clicked', () => {
-    const { getByText } = render();
-
-    fireEvent.click(getByText('Previous'));
-    expect(mockHistory.goBack).toHaveBeenCalled();
   });
 
   it('display balance returned by useBalance hook', () => {
