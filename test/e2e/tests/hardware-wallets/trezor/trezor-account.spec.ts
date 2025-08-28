@@ -1,13 +1,13 @@
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures } from '../../helpers';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/home/homepage';
-import SelectHardwareWalletAccountPage from '../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilder from '../../../fixture-builder';
+import { withFixtures } from '../../../helpers';
+import { shortenAddress } from '../../../../../ui/helpers/utils/util';
+import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
+import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 describe('Trezor Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {

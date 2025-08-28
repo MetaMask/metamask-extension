@@ -40,7 +40,7 @@ export const Amount = () => {
       <div className="send__container">
         <div className="send__content">
           <Header />
-          <p>AMOUNTs</p>
+          <p>AMOUNT</p>
           <TextField value={amount} onChange={onChange} />
           <Text>Balance: {balance}</Text>
           <Text>Error: {amountError}</Text>
