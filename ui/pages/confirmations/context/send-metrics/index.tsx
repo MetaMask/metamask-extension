@@ -2,12 +2,18 @@ import React, {
   ReactElement,
   createContext,
   useContext,
+  useMemo,
   useState,
 } from 'react';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 
-import { getAccountType } from '../../../../selectors';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import {
+  getAccountTypeForKeyring,
+  getInternalAccounts,
+} from '../../../../selectors';
 import { useSendContext } from '../send';
+import { useSelector } from 'react-redux';
 
 export const AssetFilterMethod = {
   None: 'none',
@@ -62,6 +68,8 @@ export const SendMetricsContext = createContext<SendMetricsContextType>({
 export const SendMetricsContextProvider: React.FC<{
   children: ReactElement[] | ReactElement;
 }> = ({ children }) => {
+  const { from } = useSendContext();
+  const internalAccounts = useSelector(getInternalAccounts);
   const [assetFilterMethod, setAssetFilterMethod] = useState(
     AssetFilterMethod.None,
   );
@@ -73,14 +81,20 @@ export const SendMetricsContextProvider: React.FC<{
   const [recipientInputMethod, setRecipientInputMethod] = useState(
     RecipientInputMethod.Manual,
   );
-  const { from } = useSendContext();
+  const accountType = useMemo(() => {
+    if (!internalAccounts?.length || !from || !isEvmAddress(from as string)) {
+      return undefined;
+    }
+    const fromAccount = Object.values(internalAccounts).find((account) =>
+      isEqualCaseInsensitive(account.address, from),
+    );
+    getAccountTypeForKeyring(fromAccount?.metadata?.keyring);
+  }, [from, internalAccounts]);
 
   return (
     <SendMetricsContext.Provider
       value={{
-        accountType: isEvmAddress(from as string)
-          ? getAccountType(from as string)
-          : undefined,
+        accountType: accountType,
         assetListSize,
         amountInputMethod,
         amountInputType,
