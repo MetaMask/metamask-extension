@@ -5405,6 +5405,9 @@
   "shieldPlanDetails2": {
     "message": "Pre-approve membership (default 1 year), with fees charged only on a monthly basis"
   },
+  "shieldPlanDetails2Card": {
+    "message": "Plan auto-renews at the end of the term"
+  },
   "shieldPlanDetails3": {
     "message": "Secures your assets from risky transactions"
   },
@@ -5414,6 +5417,9 @@
   "shieldPlanMonthlyPrice": {
     "message": "$1/month",
     "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanNoFunds": {
+    "message": "No available funds"
   },
   "shieldPlanPayWith": {
     "message": "Pay with"

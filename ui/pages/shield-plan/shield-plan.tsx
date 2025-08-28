@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import {
@@ -44,50 +44,53 @@ import {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
-import { AssetType } from '../../../shared/constants/transaction';
 import {
   PAYMENT_METHODS,
   PaymentMethod,
   Plan,
   PLAN_TYPES,
   SHIELD_PLAN_PRICES,
+  SUPPORTED_STABLE_TOKENS,
 } from './types';
 import { ShieldPaymentModal } from './shield-payment-modal';
+import { useMultichainBalances } from '../../hooks/useMultichainBalances';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_IDS,
+  NETWORK_TO_NAME_MAP,
+} from '../../../shared/constants/network';
 
 const ShieldPlan = () => {
   const history = useHistory();
   const t = useI18nContext();
 
-  const paymentTokens = [
-    {
-      address: '0x0000000000000000000000000000000000000000',
-      symbol: 'USDC',
-      image:
-        'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
-      type: AssetType.token,
-      chainId: '0x1',
-    },
-    {
-      address: '0x0000000000000000000000000000000000000000',
-      symbol: 'USDT',
-      image:
-        'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
-      type: AssetType.token,
-      chainId: '0x1',
-    },
-  ] as unknown as (keyof typeof AssetPickerModal)['customTokenListGenerator'];
+  // Get multichain balances to filter tokens with balance
+  const { assetsWithBalance: multichainTokensWithBalance } =
+    useMultichainBalances();
+
+  const hasStableTokenWithBalance = useMemo(() => {
+    return multichainTokensWithBalance.some((token) =>
+      SUPPORTED_STABLE_TOKENS.includes(token.symbol),
+    );
+  }, [multichainTokensWithBalance]);
 
   const [selectedPlan, setSelectedPlan] = useState<Plan['id']>(
     PLAN_TYPES.ANNUAL,
   );
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<PaymentMethod>(PAYMENT_METHODS.TOKEN);
+    useState<PaymentMethod>(
+      hasStableTokenWithBalance ? PAYMENT_METHODS.TOKEN : PAYMENT_METHODS.CARD,
+    );
 
   const [selectedToken, setSelectedToken] = useState<
     AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>
-  >(paymentTokens[0]);
+  >(() => {
+    const stableToken = multichainTokensWithBalance.find((token) =>
+      SUPPORTED_STABLE_TOKENS.includes(token.symbol),
+    ) as AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>;
+    return stableToken;
+  });
 
   const handleBack = () => {
     history.goBack();
@@ -108,7 +111,11 @@ const ShieldPlan = () => {
 
   const planDetails = [
     t('shieldPlanDetails1'),
-    t('shieldPlanDetails2'),
+    t(
+      selectedPaymentMethod === PAYMENT_METHODS.TOKEN
+        ? 'shieldPlanDetails2'
+        : 'shieldPlanDetails2Card',
+    ),
     t('shieldPlanDetails3'),
   ];
 
@@ -206,8 +213,8 @@ const ShieldPlan = () => {
                   badge={
                     <AvatarNetwork
                       size={AvatarNetworkSize.Xs}
-                      name="Ethereum Mainnet"
-                      src="./images/eth_logo.svg"
+                      name={NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]}
+                      src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.MAINNET]}
                       borderColor={BorderColor.borderMuted}
                     />
                   }
@@ -268,11 +275,11 @@ const ShieldPlan = () => {
           onClose={() => setShowPaymentModal(false)}
           selectedToken={selectedToken}
           selectedPaymentMethod={selectedPaymentMethod}
+          hasStableTokenWithBalance={hasStableTokenWithBalance}
           setSelectedPaymentMethod={setSelectedPaymentMethod}
           onAssetChange={(asset) => {
             setSelectedToken(asset);
           }}
-          paymentTokens={paymentTokens}
         />
       </Content>
       <Footer

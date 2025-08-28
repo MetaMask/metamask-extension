@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import classnames from 'classnames';
 import {
   AvatarNetwork,
@@ -36,7 +36,19 @@ import {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { PAYMENT_METHODS, PaymentMethod } from './types';
+import { useMultichainBalances } from '../../hooks/useMultichainBalances';
+import { AssetType } from '../../../shared/constants/transaction';
+import {
+  PAYMENT_METHODS,
+  PaymentMethod,
+  SUPPORTED_STABLE_TOKENS,
+} from './types';
+import { MACRO_05 } from '@zxing/library/esm/core/datamatrix/encoder/constants';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_IDS,
+  NETWORK_TO_NAME_MAP,
+} from '../../../shared/constants/network';
 
 export const ShieldPaymentModal = ({
   isOpen,
@@ -45,7 +57,7 @@ export const ShieldPaymentModal = ({
   setSelectedPaymentMethod,
   selectedToken,
   onAssetChange,
-  paymentTokens,
+  hasStableTokenWithBalance,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -57,10 +69,48 @@ export const ShieldPaymentModal = ({
   onAssetChange: (
     asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => void;
-  paymentTokens: (keyof typeof AssetPickerModal)['customTokenListGenerator'];
+  hasStableTokenWithBalance: boolean;
 }) => {
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
+
+  // Get multichain balances to filter tokens with balance
+  const { assetsWithBalance: multichainTokensWithBalance } =
+    useMultichainBalances();
+
+  // Create custom token list generator that filters for USDT/USDC with balance
+  const customTokenListGenerator = useMemo(() => {
+    return function* (
+      filterPredicate: (
+        symbol: string,
+        address?: null | string,
+        chainId?: string,
+      ) => boolean,
+    ): Generator<
+      AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
+    > {
+      // Filter for USDT and USDC tokens that have balance
+      for (const token of multichainTokensWithBalance) {
+        const isUSDTorUSDC = SUPPORTED_STABLE_TOKENS.includes(token.symbol);
+        const hasBalance = token.balance && parseFloat(token.balance) > 0;
+        const isMainnet = token.chainId === '0x1';
+
+        if (
+          isUSDTorUSDC &&
+          hasBalance &&
+          isMainnet &&
+          filterPredicate(token.symbol, token.address, token.chainId)
+        ) {
+          yield {
+            ...token,
+            type: token.isNative ? AssetType.native : AssetType.token,
+          } as
+            | AssetWithDisplayData<ERC20Asset>
+            | AssetWithDisplayData<NativeAsset>;
+        }
+      }
+    };
+  }, [multichainTokensWithBalance]);
 
   const selectPaymentMethod = useCallback(
     (selectedMethod: PaymentMethod) => {
@@ -113,6 +163,7 @@ export const ShieldPaymentModal = ({
             onClick={() => {
               selectPaymentMethod(PAYMENT_METHODS.TOKEN);
             }}
+            disabled={!hasStableTokenWithBalance}
           >
             {selectedPaymentMethod === PAYMENT_METHODS.TOKEN && (
               <Box
@@ -132,37 +183,51 @@ export const ShieldPaymentModal = ({
                 alignItems={AlignItems.center}
                 gap={4}
               >
-                <BadgeWrapper
-                  badge={
-                    <AvatarNetwork
-                      size={AvatarNetworkSize.Xs}
-                      name="Avalanche"
-                      src="./images/avax-token.svg"
+                {hasStableTokenWithBalance ? (
+                  <BadgeWrapper
+                    badge={
+                      <AvatarNetwork
+                        size={AvatarNetworkSize.Xs}
+                        name={NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]}
+                        src={
+                          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.MAINNET]
+                        }
+                        borderColor={BorderColor.borderMuted}
+                      />
+                    }
+                  >
+                    <AvatarToken
+                      name={selectedToken.symbol}
+                      src={selectedToken.image}
+                      marginTop={1}
                       borderColor={BorderColor.borderMuted}
                     />
-                  }
-                >
-                  <AvatarToken
-                    name={selectedToken.symbol}
-                    src={selectedToken.image}
-                    marginTop={1}
-                    borderColor={BorderColor.borderMuted}
-                  />
-                </BadgeWrapper>
+                  </BadgeWrapper>
+                ) : (
+                  <Icon size={IconSize.Xl} name={IconName.Coin} />
+                )}
+
                 <Box textAlign={TextAlign.Left}>
                   <Text variant={TextVariant.bodyMdMedium}>
-                    {t('shieldPlanPayWithToken', [selectedToken.symbol])}
+                    {t('shieldPlanPayWithToken', [
+                      hasStableTokenWithBalance
+                        ? selectedToken.symbol
+                        : 'Crypto',
+                    ])}
                   </Text>
                   <Text
                     variant={TextVariant.bodySm}
                     color={TextColor.textAlternative}
                   >
-                    {t('balance')}: 123.43 {selectedToken.symbol}
+                    {hasStableTokenWithBalance
+                      ? `${t('balance')}: ${selectedToken.string} ${selectedToken.symbol}`
+                      : t('shieldPlanNoFunds')}
                   </Text>
                 </Box>
               </Box>
-
-              <Icon size={IconSize.Md} name={IconName.ArrowRight} />
+              {hasStableTokenWithBalance && (
+                <Icon size={IconSize.Md} name={IconName.ArrowRight} />
+              )}
             </Box>
           </Box>
           <Box
@@ -236,9 +301,7 @@ export const ShieldPaymentModal = ({
           header="Select a token"
           autoFocus={false}
           visibleTabs={[TabName.TOKENS]}
-          customTokenListGenerator={() => {
-            return paymentTokens;
-          }}
+          customTokenListGenerator={customTokenListGenerator}
         />
       </ModalContent>
     </Modal>

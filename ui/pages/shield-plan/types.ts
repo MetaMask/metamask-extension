@@ -21,3 +21,5 @@ export type Plan = {
   label: string;
   price: string;
 };
+
+export const SUPPORTED_STABLE_TOKENS = ['USDT', 'USDC', 'MUSD'];
