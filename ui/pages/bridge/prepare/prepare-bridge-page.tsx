@@ -868,7 +868,6 @@ const PrepareBridgePage = ({
                       position={PopoverPosition.Top}
                       offset={[-48, 8]}
                       title={t('grantExactAccess')}
-                      iconName={IconName.Info}
                     >
                       {isUsingHardwareWallet
                         ? t('bridgeApprovalWarningForHardware', [

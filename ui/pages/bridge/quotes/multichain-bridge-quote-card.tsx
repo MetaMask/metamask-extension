@@ -30,7 +30,6 @@ import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   BlockSize,
-  FontStyle,
   IconColor,
   JustifyContent,
   TextColor,
@@ -119,7 +118,6 @@ export const MultichainBridgeQuoteCard = ({
                 title={t('multichainQuoteCardRateLabel')}
                 position={PopoverPosition.TopStart}
                 offset={[-16, 16]}
-                iconName={IconName.Info}
               >
                 {t('multichainQuoteCardRateExplanation', [
                   new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(
@@ -151,7 +149,6 @@ export const MultichainBridgeQuoteCard = ({
                 title={t('networkFeeExplanationTitle')}
                 position={PopoverPosition.TopStart}
                 offset={[-16, 16]}
-                iconName={IconName.Info}
               >
                 {t('networkFeeExplanation')}
               </Tooltip>
@@ -171,7 +168,9 @@ export const MultichainBridgeQuoteCard = ({
                         2,
                       )}
                 </Text>
-                <Text fontStyle={FontStyle.Italic}>{' Included'}</Text>
+                <Text variant={TextVariant.bodyMd}>
+                  {t('swapGasFeesIncluded')}
+                </Text>
               </Row>
             )}
             {!activeQuote.quote.gasIncluded && (
@@ -203,7 +202,6 @@ export const MultichainBridgeQuoteCard = ({
                   }
                   position={PopoverPosition.TopStart}
                   offset={[-16, 16]}
-                  iconName={IconName.Info}
                 >
                   {t(
                     gasIncluded
@@ -238,7 +236,6 @@ export const MultichainBridgeQuoteCard = ({
                 title={t('slippage')}
                 position={PopoverPosition.TopStart}
                 offset={[-16, 16]}
-                iconName={IconName.Info}
               >
                 {t('slippageExplanation')}
               </Tooltip>
@@ -291,7 +288,6 @@ export const MultichainBridgeQuoteCard = ({
                 title={t('minimumReceivedExplanationTitle')}
                 position={PopoverPosition.TopStart}
                 offset={[-16, 16]}
-                iconName={IconName.Info}
               >
                 {t('minimumReceivedExplanation')}
               </Tooltip>
