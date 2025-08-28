@@ -8,17 +8,13 @@ describe('First install', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         // Wait for MetaMask to automatically open a new tab
-        await driver.waitUntilXWindowHandles(2);
-
-        const windowHandles = await driver.getAllWindowHandles();
-
-        // Switch to new tab and verify it's the start onboarding page
-        await driver.driver.switchTo().window(windowHandles[1]);
+        await driver.waitAndSwitchToWindowWithTitle(2, 'MetaMask');
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.checkBannerPageIsLoaded();
 
         await driver.executeScript('window.stateHooks.reloadExtension()');
 
