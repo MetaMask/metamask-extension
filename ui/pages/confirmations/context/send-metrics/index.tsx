@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
+import { useSelector } from 'react-redux';
 
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import {
@@ -13,7 +14,6 @@ import {
   getInternalAccounts,
 } from '../../../../selectors';
 import { useSendContext } from '../send';
-import { useSelector } from 'react-redux';
 
 export const AssetFilterMethod = {
   None: 'none',
@@ -88,13 +88,13 @@ export const SendMetricsContextProvider: React.FC<{
     const fromAccount = Object.values(internalAccounts).find((account) =>
       isEqualCaseInsensitive(account.address, from),
     );
-    getAccountTypeForKeyring(fromAccount?.metadata?.keyring);
+    return getAccountTypeForKeyring(fromAccount?.metadata?.keyring);
   }, [from, internalAccounts]);
 
   return (
     <SendMetricsContext.Provider
       value={{
-        accountType: accountType,
+        accountType,
         assetListSize,
         amountInputMethod,
         amountInputType,
