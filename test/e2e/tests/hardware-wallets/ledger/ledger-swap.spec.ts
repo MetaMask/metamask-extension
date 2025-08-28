@@ -10,8 +10,8 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
 
-import { mockLedgerTransactionRequests } from './mocks';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
+import { mockLedgerTransactionRequests } from './mocks';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -32,12 +32,7 @@ describe('Ledger Swap', function () {
           '0x1158e460913d00000',
         )) ?? console.error('localNodes is undefined or empty');
 
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '20',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '20');
 
         const homePage = new HomePage(driver);
 
