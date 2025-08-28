@@ -75,10 +75,7 @@ describe('Ledger Swap', function () {
         await swapPage.checkPageIsLoaded();
         await swapPage.enterSwapAmount('2');
         await swapPage.selectDestinationToken('DAI');
-
         await swapPage.dismissManualTokenWarning();
-        // we need to wait for the quote to be loaded
-        await driver.delay(1500);
         await swapPage.submitSwap();
 
         await swapPage.waitForTransactionToComplete();
