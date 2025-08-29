@@ -55,7 +55,6 @@ export const ReviewGatorPermissionsPage = () => {
 
   const handleRevokeClick = async (permission) => {
     try {
-      console.log('permission to revoke:', permission);
       await revokeGatorPermission(permission);
     } catch (error) {
       console.error('Error revoking gator permission:', error);
@@ -64,19 +63,11 @@ export const ReviewGatorPermissionsPage = () => {
 
   const renderGatorPermissions = (permissions) =>
     permissions.map((permission) => {
-      const { permissionResponse, siteOrigin } = permission;
-      const fullNetworkName = extractNetworkName(
-        networks,
-        permissionResponse.chainId,
-        true,
-      );
       return (
         <ReviewGatorAssetItem
-          key={`${siteOrigin}-${permissionResponse.context}`}
-          chainId={permissionResponse.chainId}
-          networkName={fullNetworkName}
-          permissionType={permissionResponse.permission.type}
-          siteOrigin={siteOrigin}
+          key={`${permission.siteOrigin}-${permission.permissionResponse.context}`}
+          networks={networks}
+          gatorPermission={permission}
           onRevokeClick={() => handleRevokeClick(permission)}
         />
       );

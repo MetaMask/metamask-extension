@@ -299,9 +299,10 @@ const SitesPage = mmLazy(
 );
 const TokenStreamsPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  import(
-    '../../components/multichain/pages/gator-permissions-page/token-streams/token-streams-page.js'
-  ) as unknown as DynamicImportType,
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions-page/token-streams/token-streams-page.js'
+    )) as unknown as DynamicImportType,
 );
 const ReviewGatorPermissionsPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
