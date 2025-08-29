@@ -9,3 +9,6 @@ export type { NftDetectionControllerMessenger } from './nft-detection-controller
 
 export { getAssetsContractControllerMessenger } from './assets-contract-controller-messenger';
 export type { AssetsContractControllerMessenger } from './assets-contract-controller-messenger';
+
+export { getNetworkOrderControllerMessenger } from './network-order-controller-messenger';
+export type { NetworkOrderControllerMessenger } from './network-order-controller-messenger';

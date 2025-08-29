@@ -152,3 +152,7 @@ test/e2e/mock-e2e-allowlist.js                    @MetaMask/qa
 test/e2e/mock-e2e.js                              @MetaMask/qa
 test/e2e/tests/settings/state-logs-helpers.ts     @MetaMask/qa
 test/e2e/tests/settings/state-logs.json           @MetaMask/qa @MetaMask/extension-privacy-reviewers
+
+# Wallet API Platform - Page Load Benchmark
+test/e2e/page-objects/benchmark           @MetaMask/wallet-api-platform-engineers
+test/e2e/playwright/benchmark             @MetaMask/wallet-api-platform-engineers
