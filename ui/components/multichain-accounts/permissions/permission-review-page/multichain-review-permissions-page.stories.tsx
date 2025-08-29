@@ -1,8 +1,8 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
 export default {

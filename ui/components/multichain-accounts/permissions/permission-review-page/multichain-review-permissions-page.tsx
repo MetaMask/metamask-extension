@@ -1,29 +1,29 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { CaipAccountId, CaipChainId, NonEmptyArray } from '@metamask/utils';
+import { CaipChainId, NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
   BlockSize,
   Display,
   FlexDirection,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
   getPermissions,
   getPermissionSubjects,
   getShowPermittedNetworkToastOpen,
-} from '../../../selectors';
+} from '../../../../selectors';
 import {
   hidePermittedNetworkToast,
   removePermissionsFor,
   requestAccountsAndChainPermissionsWithId,
   setPermittedAccounts,
   setPermittedChains,
-} from '../../../store/actions';
+} from '../../../../store/actions';
 import {
   AvatarFavicon,
   AvatarFaviconSize,
@@ -34,25 +34,26 @@ import {
   ButtonSize,
   ButtonVariant,
   IconName,
-} from '../../component-library';
-import { ToastContainer, Toast } from '../../multichain/toast/toast';
-import { NoConnectionContent } from '../../multichain/pages/connections/components/no-connection';
-import { Content, Footer, Page } from '../../multichain/pages/page';
-import { SubjectsType } from '../../multichain/pages/connections/components/connections.types';
-import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
+} from '../../../component-library';
+import { ToastContainer, Toast } from '../../../multichain/toast/toast';
+import { NoConnectionContent } from '../../../multichain/pages/connections/components/no-connection';
+import { Content, Footer, Page } from '../../../multichain/pages/page';
+import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
+import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   DisconnectAllModal,
   DisconnectType,
-} from '../../multichain/disconnect-all-modal/disconnect-all-modal';
-import { PermissionsHeader } from '../../multichain/permissions-header/permissions-header';
-import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../shared/constants/network';
-import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
-import { MultichainSiteCell } from '../multichain-site-cell/multichain-site-cell';
-import { useAccountGroupsForPermissions } from '../../../hooks/useAccountGroupsForPermissions';
-import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
+} from '../../../multichain/disconnect-all-modal/disconnect-all-modal';
+import { PermissionsHeader } from '../../../multichain/permissions-header/permissions-header';
+import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
+import { MultichainSiteCell } from '../../multichain-site-cell/multichain-site-cell';
+import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
+import { getCaip25CaveatValueFromPermissions } from '../../../../pages/permissions-connect/connect-page/utils';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import { MultichainEditAccountsPage } from './edit-accounts-page/multichain-edit-accounts-page';
+import { MultichainEditAccountsPage } from '../edit-accounts-page/multichain-edit-accounts-page';
+import { getCaip25AccountFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 
 export enum MultichainReviewPermissionsPageMode {
   Summary = 'summary',
@@ -192,8 +193,9 @@ export const MultichainReviewPermissions = () => {
     [],
   );
 
-  const selectedAccountGroupIds = connectedAccountGroups.map(
-    (group) => group.id,
+  const selectedAccountGroupIds = useMemo(
+    () => connectedAccountGroups.map((group) => group.id),
+    [connectedAccountGroups],
   );
 
   const setModeToEditAccounts = useCallback(() => {
@@ -202,28 +204,25 @@ export const MultichainReviewPermissions = () => {
 
   const handleAccountGroupIdsSelected = useCallback(
     (accountGroupIds: string[]) => {
-      // TODO: Implement account group selection logic for review page
-      console.log('Selected account groups:', accountGroupIds);
+      if (accountGroupIds.length === 0) {
+        setShowDisconnectAllModal(true);
+        return;
+      }
+
+      const accountGroups = supportedAccountGroups.filter((group) =>
+        accountGroupIds.includes(group.id),
+      );
+
+      const caipAccountIds = getCaip25AccountFromAccountGroupAndScope(
+        accountGroups,
+        connectedChainIds,
+      );
+
       setPageMode(MultichainReviewPermissionsPageMode.Summary);
+      dispatch(setPermittedAccounts(activeTabOrigin, caipAccountIds));
     },
     [],
   );
-
-  const handleSelectAccountAddresses = (caipAccountIds: CaipAccountId[]) => {
-    if (caipAccountIds.length === 0) {
-      setShowDisconnectAllModal(true);
-      return;
-    }
-
-    dispatch(setPermittedAccounts(activeTabOrigin, caipAccountIds));
-
-    setShowAccountToast(true);
-  };
-
-  const hideAllToasts = () => {
-    setShowAccountToast(false);
-    setShowNetworkToast(false);
-  };
 
   return pageMode === MultichainReviewPermissionsPageMode.Summary ? (
     <Page
