@@ -895,7 +895,6 @@ describe('Sentry errors', function () {
         autoLockTimeLimit: true, // Initialized as undefined
         showConfirmationAdvancedDetails: true,
         privacyMode: false,
-        avatarType: true,
       },
       balances: false,
       accountsAssets: false,
