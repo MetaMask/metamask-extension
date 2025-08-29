@@ -8,7 +8,7 @@ import { Platform } from '@metamask/profile-sync-controller/sdk';
 import { isSolanaAddress } from '../../../shared/lib/multichain/accounts';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
 import {
-  getUserProfileMetaMetrics as getUserProfileMetaMetricsAction,
+  getUserProfileLineage as getUserProfileLineageAction,
   updateSlides,
 } from '../../store/actions';
 import {
@@ -41,6 +41,7 @@ import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromCont
 
 type UseSlideManagementProps = {
   testDate?: string; // Only used in unit/e2e tests to simulate dates for sweepstakes campaign
+  enabled?: boolean;
 };
 
 export function getSweepstakesCampaignActive(currentDate: Date) {
@@ -65,6 +66,7 @@ export function isActive(
 
 export const useCarouselManagement = ({
   testDate,
+  enabled = true,
 }: UseSlideManagementProps = {}) => {
   const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
@@ -80,6 +82,15 @@ export const useCarouselManagement = ({
   );
 
   useEffect(() => {
+    // If carousel is disabled, clear the slides
+    if (!enabled) {
+      const empty: CarouselSlide[] = [];
+      if (!isEqual(prevSlidesRef.current, empty)) {
+        dispatch(updateSlides(empty));
+        prevSlidesRef.current = empty;
+      }
+      return;
+    }
     const defaultSlides: CarouselSlide[] = [];
     const existingSweepstakesSlide = slides.find(
       (slide: CarouselSlide) => slide.id === SWEEPSTAKES_SLIDE.id,
@@ -140,9 +151,9 @@ export const useCarouselManagement = ({
         remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
       if (useExternalServices && showDownloadMobileAppSlide) {
-        const userProfileMetaMetrics = await getUserProfileMetaMetricsAction();
-        if (userProfileMetaMetrics) {
-          const isUserAvailableOnMobile = userProfileMetaMetrics.lineage.some(
+        const userProfileLineage = await getUserProfileLineageAction();
+        if (userProfileLineage) {
+          const isUserAvailableOnMobile = userProfileLineage.lineage.some(
             (lineage) => lineage.agent === Platform.MOBILE,
           );
 
@@ -207,6 +218,7 @@ export const useCarouselManagement = ({
       }
     })();
   }, [
+    enabled,
     dispatch,
     hasZeroBalance,
     remoteFeatureFlags,

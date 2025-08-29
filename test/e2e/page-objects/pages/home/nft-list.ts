@@ -25,11 +25,6 @@ class NftListPage {
 
   private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  private readonly LineaMainnet =
-    '[data-testid="network-list-item-eip155:59144"]';
-
   private readonly noNftInfo = {
     text: 'No NFTs yet',
     tag: 'p',
@@ -45,26 +40,13 @@ class NftListPage {
     tag: 'h6',
   };
 
-  private readonly modalCloseButton =
-    '[data-testid="modal-header-close-button"]';
-
-  private readonly nftFilterByNetworks = '[data-testid="sort-by-networks"]';
-
-  private readonly nftFilterByPopularNetworks =
-    '[data-testid="network-filter-all"]';
-
-  private readonly nftFilterByCurrentNetwork =
-    '[data-testid="network-filter-current"]';
-
   private readonly nftListItem = '[data-testid="nft-wrapper"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.clickElement(this.actionBarButton);
       await this.driver.waitForSelector(this.importNftButton);
@@ -111,9 +93,7 @@ class NftListPage {
     }
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_nftImageIsDisplayed(): Promise<void> {
+  async checkNftImageIsDisplayed(): Promise<void> {
     console.log('Check that NFT image is displayed in NFT tab on homepage');
     await this.driver.waitForSelector(this.nftIconOnActivityList);
   }
@@ -123,9 +103,7 @@ class NftListPage {
    *
    * @param nftName - The name of the NFT to check for.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_nftNameIsDisplayed(nftName: string): Promise<void> {
+  async checkNftNameIsDisplayed(nftName: string): Promise<void> {
     console.log(
       `Check that NFT item ${nftName} is displayed in NFT tab on homepage`,
     );
@@ -135,34 +113,26 @@ class NftListPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_noNftInfoIsDisplayed(): Promise<void> {
+  async checkNoNftInfoIsDisplayed(): Promise<void> {
     console.log('Check that no NFT info is displayed on nft tab');
     await this.driver.waitForSelector(this.noNftInfo);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_successImportNftMessageIsDisplayed(): Promise<void> {
+  async checkSuccessImportNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success imported NFT message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.successImportNftMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_successRemoveNftMessageIsDisplayed(): Promise<void> {
+  async checkSuccessRemoveNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success removed NFT message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.successRemoveNftMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_numberOfNftsDisplayed(
+  async checkNumberOfNftsDisplayed(
     expectedNumberOfNfts: number,
   ): Promise<void> {
     console.log(
@@ -176,27 +146,6 @@ class NftListPage {
     }, 10000);
 
     console.log(`${expectedNumberOfNfts} NFTs found in NFT list on homepage`);
-  }
-
-  async filterNftsByNetworks(networkName: string): Promise<void> {
-    await this.driver.clickElement(this.nftFilterByNetworks);
-    if (networkName === 'Popular networks') {
-      await this.driver.waitForSelector(this.nftFilterByPopularNetworks);
-      await this.driver.clickElement(this.nftFilterByPopularNetworks);
-    } else if (networkName === 'Current network') {
-      await this.driver.waitForSelector(this.nftFilterByCurrentNetwork);
-      await this.driver.clickElement(this.nftFilterByCurrentNetwork);
-    } else {
-      throw new Error(
-        `Invalid network name selected for filtering NFTs: ${networkName}`,
-      );
-    }
-  }
-
-  async toggleLineaEnablement(): Promise<void> {
-    await this.driver.clickElement(this.nftFilterByNetworks);
-    await this.driver.clickElementSafe(this.LineaMainnet);
-    await this.driver.clickElementSafe(this.modalCloseButton);
   }
 
   async clickNFTFromList(index = 0, timeout = 10000): Promise<void> {

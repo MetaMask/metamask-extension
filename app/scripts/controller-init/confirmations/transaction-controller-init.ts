@@ -4,15 +4,12 @@ import {
   TransactionController,
   TransactionControllerMessenger,
   TransactionMeta,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
-import {
-  getChainSupportsSmartTransactions,
-  getIsSmartTransaction,
-  getSmartTransactionsPreferenceEnabled,
-} from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   SmartTransactionHookMessenger,
   publishSmartTransactionHook,
@@ -93,7 +90,18 @@ export const TransactionControllerInit: ControllerInitFunction<
         onboardingController().state.completedOnboarding,
       updateTransactions: true,
     },
-    isAutomaticGasFeeUpdateEnabled: () => true,
+    isAutomaticGasFeeUpdateEnabled: ({ type }) => {
+      // Disables automatic gas fee updates for swap and bridge transactions
+      // which provide their own gas parameters when they are submitted
+      const disabledTypes = [
+        TransactionType.swap,
+        TransactionType.swapApproval,
+        TransactionType.bridge,
+        TransactionType.bridgeApproval,
+      ];
+
+      return !type || !disabledTypes.includes(type);
+    },
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
       const { chainId } = transactionMeta;
       const uiState = getUIState(getFlatState());
@@ -107,13 +115,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       preferencesController().state.useTransactionSimulations,
     messenger: controllerMessenger,
     pendingTransactions: {
-      isResubmitEnabled: () => {
-        const uiState = getUIState(getFlatState());
-        return !(
-          getSmartTransactionsPreferenceEnabled(uiState) &&
-          getChainSupportsSmartTransactions(uiState)
-        );
-      },
+      isResubmitEnabled: () => false,
     },
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),

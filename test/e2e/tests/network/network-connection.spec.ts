@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Hex } from '@metamask/utils';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -15,6 +16,7 @@ type NetworkConfig = {
   tokenSymbol: string;
   fixtureMethod: (builder: FixtureBuilder) => FixtureBuilder;
   testTitle: string;
+  chainId: Hex;
 };
 
 // Network configurations
@@ -24,12 +26,14 @@ const networkConfigs: NetworkConfig[] = [
     tokenSymbol: 'MON',
     fixtureMethod: (builder) => builder.withNetworkControllerOnMonad(),
     testTitle: 'Monad Network Connection Tests',
+    chainId: CHAIN_IDS.MONAD_TESTNET,
   },
   {
     name: 'Mega Testnet',
     tokenSymbol: 'ETH',
     fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
     testTitle: 'MegaETH Network Connection Tests',
+    chainId: CHAIN_IDS.MEGAETH_TESTNET,
   },
 ];
 
@@ -57,8 +61,7 @@ networkConfigs.forEach((config) => {
             .withPermissionControllerConnectedToTestDapp()
             .withEnabledNetworks({
               eip155: {
-                [CHAIN_IDS.MONAD_TESTNET]: true,
-                [CHAIN_IDS.MEGAETH_TESTNET]: true,
+                [config.chainId]: true,
               },
             })
             .build(),
@@ -73,16 +76,16 @@ networkConfigs.forEach((config) => {
           );
 
           // Verify token is displayed
-          await tokenList.check_tokenName(config.tokenSymbol);
+          await tokenList.checkTokenName(config.tokenSymbol);
 
           // Open the test dapp and verify balance
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
           // Verify dapp can access the account
-          await testDapp.check_getAccountsResult(WALLET_ADDRESS.toLowerCase());
+          await testDapp.checkGetAccountsResult(WALLET_ADDRESS.toLowerCase());
 
           // Test various Dapp functionalities
           await performDappActionAndVerify(

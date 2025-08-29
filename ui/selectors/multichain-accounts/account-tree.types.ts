@@ -1,7 +1,6 @@
 import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import type {
-  AccountGroupMetadata,
-  AccountWalletMetadata,
+  AccountGroupObject,
   AccountWalletObject,
 } from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -13,10 +12,13 @@ export type WalletMetadata = {
   name: string;
 };
 
+export type AccountTreeWallets = {
+  [walletId: AccountWalletId]: AccountWalletObject;
+};
+
 export type AccountTreeState = {
-  wallets: {
-    [walletId: AccountWalletId]: AccountWalletObject;
-  };
+  wallets: AccountTreeWallets;
+  selectedAccountGroup: AccountGroupId;
 };
 
 export type InternalAccountsState = {
@@ -32,14 +34,16 @@ export type MultichainAccountsState = {
 };
 
 export type ConsolidatedAccountGroup = {
-  id: AccountGroupId;
-  metadata: AccountGroupMetadata;
+  id: AccountGroupObject['id'];
+  type: AccountGroupObject['type'];
+  metadata: AccountGroupObject['metadata'];
   accounts: MergedInternalAccount[];
 };
 
 export type ConsolidatedAccountWallet = {
-  id: AccountWalletId;
-  metadata: AccountWalletMetadata;
+  id: AccountWalletObject['id'];
+  type: AccountWalletObject['type'];
+  metadata: AccountWalletObject['metadata'];
   groups: {
     [groupId: AccountGroupId]: ConsolidatedAccountGroup;
   };

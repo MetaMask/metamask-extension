@@ -161,6 +161,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                 >
                   <span
                     class="mm-box mm-text multichain-account-picker__label mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                    style="font-weight: medium;"
                   >
                     Test Account
                   </span>
@@ -203,18 +204,18 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
            
           <div
             class="mm-box mm-box--display-flex mm-box--justify-content-flex-end mm-box--width-full"
+            style="position: relative;"
           >
             <div
               class="mm-box"
-              style="position: relative;"
             />
             <button
               aria-label="Account options"
-              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               data-testid="account-options-menu-button"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/menu.svg');"
               />
             </button>

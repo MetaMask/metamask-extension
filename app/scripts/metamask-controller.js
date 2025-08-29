@@ -14,7 +14,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, pick, uniq } from 'lodash';
+import { debounce, uniq } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -138,7 +138,6 @@ import {
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
-  KnownCaipNamespace,
   add0x,
   hexToBytes,
   bytesToHex,
@@ -165,10 +164,11 @@ import {
   getEthAccounts,
   getSessionScopes,
   setPermittedEthChainIds,
-  setEthAccounts,
   getPermittedAccountsForScopes,
   KnownSessionProperties,
   getAllScopesFromCaip25CaveatValue,
+  requestPermittedChainsPermissionIncremental,
+  getCaip25PermissionFromLegacyPermissions,
 } from '@metamask/chain-agnostic-permission';
 import {
   BridgeStatusController,
@@ -208,7 +208,6 @@ import {
   RestrictedMethods,
   ExcludedSnapPermissions,
   ExcludedSnapEndowments,
-  CaveatTypes,
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
@@ -299,7 +298,6 @@ import {
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
-import { NetworkOrderController } from './controllers/network-order';
 import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
@@ -335,7 +333,6 @@ import {
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
   unrestrictedMethods,
-  PermissionNames,
   getRemovedAuthorizations,
   getChangedAuthorizations,
   getAuthorizedScopesByOrigin,
@@ -391,6 +388,7 @@ import {
 } from './controller-init/multichain';
 import {
   AssetsContractControllerInit,
+  NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
   TokenRatesControllerInit,
@@ -433,6 +431,10 @@ import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
+import {
+  getSendBundleSupportedChains,
+  isSendBundleSupported,
+} from './lib/transaction/sentinel-api';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1048,44 +1050,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: announcementMessenger,
       allAnnouncements: UI_NOTIFICATIONS,
       state: initState.AnnouncementController,
-    });
-
-    const networkOrderMessenger = this.controllerMessenger.getRestricted({
-      name: 'NetworkOrderController',
-      allowedEvents: [
-        'NetworkController:stateChange',
-        'NetworkController:networkRemoved',
-      ],
-      allowedActions: [
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'NetworkController:setActiveNetwork',
-      ],
-    });
-
-    let initialNetworkOrderControllerState = initState.NetworkOrderController;
-    if (
-      !initialNetworkOrderControllerState &&
-      process.env.METAMASK_DEBUG &&
-      process.env.METAMASK_ENVIRONMENT === 'development' &&
-      !process.env.IN_TEST
-    ) {
-      initialNetworkOrderControllerState = {
-        orderedNetworkList: [],
-        enabledNetworkMap: {
-          [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.SEPOLIA]: true,
-          },
-          [KnownCaipNamespace.Solana]: {
-            [SolScope.Mainnet]: true,
-          },
-        },
-      };
-    }
-
-    this.networkOrderController = new NetworkOrderController({
-      messenger: networkOrderMessenger,
-      state: initialNetworkOrderControllerState,
     });
 
     const accountOrderMessenger = this.controllerMessenger.getRestricted({
@@ -1975,6 +1939,7 @@ export default class MetamaskController extends EventEmitter {
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
+      NetworkOrderController: NetworkOrderControllerInit,
     };
 
     const {
@@ -2032,6 +1997,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTreeController = controllersByName.AccountTreeController;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
+    this.networkOrderController = controllersByName.NetworkOrderController;
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -2175,6 +2141,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
           isRelaySupported,
+          getSendBundleSupportedChains,
         },
         this.controllerMessenger,
       ),
@@ -3685,6 +3652,11 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setAccountName(account.id, label);
       },
 
+      // AccountTreeController
+      setSelectedMultichainAccount: (accountGroupId) => {
+        this.accountTreeController.setSelectedAccountGroup(accountGroupId);
+      },
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTokenSymbol: this.getTokenSymbol.bind(this),
@@ -4276,8 +4248,8 @@ export default class MetamaskController extends EventEmitter {
       performSignOut: authenticationController.performSignOut.bind(
         authenticationController,
       ),
-      getUserProfileMetaMetrics:
-        authenticationController.getUserProfileMetaMetrics.bind(
+      getUserProfileLineage:
+        authenticationController.getUserProfileLineage.bind(
           authenticationController,
         ),
 
@@ -4359,7 +4331,7 @@ export default class MetamaskController extends EventEmitter {
           notificationServicesController,
         ),
 
-      // E2E testing
+      // Testing
       throwTestError: this.throwTestError.bind(this),
       captureTestError: this.captureTestError.bind(this),
 
@@ -4410,6 +4382,7 @@ export default class MetamaskController extends EventEmitter {
       // Other
       endTrace,
       isRelaySupported,
+      isSendBundleSupported,
       openUpdateTabAndReload: () =>
         openUpdateTabAndReload(this.requestSafeReload.bind(this)),
       requestSafeReload: this.requestSafeReload.bind(this),
@@ -4816,11 +4789,18 @@ export default class MetamaskController extends EventEmitter {
     let isPasswordSynced = false;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     // check if the password is outdated
-    const isPasswordOutdated = isSocialLoginFlow
-      ? await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache: false,
-        })
-      : false;
+    let isPasswordOutdated = false;
+    if (isSocialLoginFlow) {
+      try {
+        isPasswordOutdated =
+          await this.seedlessOnboardingController.checkIsPasswordOutdated({
+            skipCache: false,
+          });
+      } catch (error) {
+        // we don't want to block the unlock flow if the password outdated check fails
+        log.error('error while checking if password is outdated', error);
+      }
+    }
 
     // if the flow is not social login or the password is not outdated,
     // we will proceed with the normal flow and use the password to unlock the vault
@@ -6608,138 +6588,6 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  /**
-   * Requests incremental permittedChains permission for the specified origin.
-   * and updates the existing CAIP-25 permission.
-   * Allows for granting without prompting for user approval which
-   * would be used as part of flows like `wallet_addEthereumChain`
-   * requests where the addition of the network and the permitting
-   * of the chain are combined into one approval.
-   *
-   * @param {object} options - The options object
-   * @param {string} options.origin - The origin to request approval for.
-   * @param {Hex} options.chainId - The chainId to add to the existing permittedChains.
-   * @param {boolean} options.autoApprove - If the chain should be granted without prompting for user approval.
-   * @param {object} options.metadata - Request data for the approval.
-   */
-  async requestPermittedChainsPermissionIncremental({
-    origin,
-    chainId,
-    autoApprove,
-    metadata,
-  }) {
-    const caveatValueWithChains = setPermittedEthChainIds(
-      {
-        requiredScopes: {},
-        optionalScopes: {},
-        sessionProperties: {},
-        isMultichainOrigin: false,
-      },
-      [chainId],
-    );
-
-    if (!autoApprove) {
-      let options;
-      if (metadata) {
-        options = { metadata };
-      }
-      await this.permissionController.requestPermissionsIncremental(
-        { origin },
-        {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: caveatValueWithChains,
-              },
-            ],
-          },
-        },
-        options,
-      );
-      return;
-    }
-
-    await this.permissionController.grantPermissionsIncremental({
-      subject: { origin },
-      approvedPermissions: {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: caveatValueWithChains,
-            },
-          ],
-        },
-      },
-    });
-  }
-
-  /**
-   * Requests user approval for the CAIP-25 permission for the specified origin
-   * and returns a granted permissions object.
-   *
-   * @param {string} _origin - The origin to request approval for.
-   * @param requestedPermissions - The legacy permissions to request approval for.
-   * @returns the approved permissions object.
-   */
-  getCaip25PermissionFromLegacyPermissions(_origin, requestedPermissions = {}) {
-    const permissions = pick(requestedPermissions, [
-      RestrictedMethods.eth_accounts,
-      PermissionNames.permittedChains,
-    ]);
-
-    if (!permissions[RestrictedMethods.eth_accounts]) {
-      permissions[RestrictedMethods.eth_accounts] = {};
-    }
-
-    if (!permissions[PermissionNames.permittedChains]) {
-      permissions[PermissionNames.permittedChains] = {};
-    }
-
-    const requestedAccounts =
-      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-      )?.value ?? [];
-
-    const requestedChains =
-      permissions[PermissionNames.permittedChains]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value ?? [];
-
-    const newCaveatValue = {
-      requiredScopes: {},
-      optionalScopes: {
-        'wallet:eip155': {
-          accounts: [],
-        },
-      },
-      sessionProperties: {},
-      isMultichainOrigin: false,
-    };
-
-    const caveatValueWithChains = setPermittedEthChainIds(
-      newCaveatValue,
-      requestedChains,
-    );
-
-    const caveatValueWithAccountsAndChains = setEthAccounts(
-      caveatValueWithChains,
-      requestedAccounts,
-    );
-
-    return {
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: caveatValueWithAccountsAndChains,
-          },
-        ],
-      },
-    };
-  }
-
   getNonEvmSupportedMethods(scope) {
     return this.controllerMessenger.call(
       'MultichainRouter:getSupportedMethods',
@@ -7482,9 +7330,19 @@ export default class MetamaskController extends EventEmitter {
         return undefined;
       },
       requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
-        this.requestPermittedChainsPermissionIncremental({
+        requestPermittedChainsPermissionIncremental({
           ...options,
           origin,
+          hooks: {
+            requestPermissionsIncremental:
+              this.permissionController.requestPermissionsIncremental.bind(
+                this.permissionController,
+              ),
+            grantPermissionsIncremental:
+              this.permissionController.grantPermissionsIncremental.bind(
+                this.permissionController,
+              ),
+          },
         }),
 
       // Network configuration-related
@@ -7744,8 +7602,9 @@ export default class MetamaskController extends EventEmitter {
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        getCaip25PermissionFromLegacyPermissionsForOrigin:
-          this.getCaip25PermissionFromLegacyPermissions.bind(this, origin),
+        getCaip25PermissionFromLegacyPermissionsForOrigin: (
+          requestedPermissions,
+        ) => getCaip25PermissionFromLegacyPermissions(requestedPermissions),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
@@ -8529,7 +8388,7 @@ export default class MetamaskController extends EventEmitter {
    * Throw an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
    * use this for handling errors.
    */
   throwTestError(message) {
@@ -8544,7 +8403,7 @@ export default class MetamaskController extends EventEmitter {
    * Capture an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
    * use this for handling errors.
    */
   captureTestError(message) {

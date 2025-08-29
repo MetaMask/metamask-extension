@@ -51,7 +51,7 @@ import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
   USER_STORAGE_FEATURE_NAMES,
-  UserProfileMetaMetrics,
+  UserProfileLineage,
 } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -60,6 +60,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { AccountGroupId } from '@metamask/account-api';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -2200,6 +2201,32 @@ export function lockMetamask(): ThunkAction<
 async function _setSelectedInternalAccount(accountId: string): Promise<void> {
   log.debug(`background.setSelectedInternalAccount`);
   await submitRequestToBackground('setSelectedInternalAccount', [accountId]);
+}
+
+/**
+ * Update the selected multichain account.
+ *
+ * @param accountGroupId - ID of an account group representing the multichain account.
+ */
+export function setSelectedMultichainAccount(
+  accountGroupId: AccountGroupId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch, _getState) => {
+    log.debug(`background.setSelectedMultichainAccount`);
+    try {
+      dispatch(showLoadingIndication());
+      await submitRequestToBackground('setSelectedMultichainAccount', [
+        accountGroupId,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
 }
 
 /**
@@ -4804,6 +4831,9 @@ export function updateAccountsList(
  * This method updates the enabledNetworkMap to mark specified networks as enabled.
  * It can handle both a single chain ID or an array of chain IDs.
  *
+ * @deprecated - this unsafely sets the EnabledNetworkMap,
+ * - we want to have better control on how we enable networks (either single network or all, not in between)
+ * Please use controller-actions/network-order-controller.ts actions
  * @param chainIds - A single chainId (e.g. 'eip155:1') or an array of chain IDs
  * to be enabled. All other networks will be implicitly disabled.
  * @param networkId - The CAIP-2 chain ID of the currently selected network
@@ -6126,7 +6156,7 @@ export function requestUserApproval({
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('requestUserApproval', [
+      return await submitRequestToBackground('requestUserApproval', [
         {
           origin,
           type,
@@ -6136,6 +6166,7 @@ export function requestUserApproval({
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had trouble requesting user approval'));
+      return null;
     }
   };
 }
@@ -6232,7 +6263,7 @@ export async function updateDataDeletionTaskStatus() {
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not use
  * this for handling errors.
  */
 export async function throwTestBackgroundError(message: string): Promise<void> {
@@ -6243,7 +6274,7 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
  * Capture an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only meant to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not use
  * this for handling errors.
  */
 export async function captureTestBackgroundError(
@@ -6408,18 +6439,18 @@ export function setIsBackupAndSyncFeatureEnabled(
 }
 
 /**
- * Fetches the user profile meta metrics from the profile-sync.
+ * Fetches the user profile lineage from the authentication API.
  *
- * @returns A thunk action that, when dispatched, attempts to fetch the user profile meta metrics.
+ * @returns A thunk action that, when dispatched, attempts to fetch the user profile lineage.
  */
-export async function getUserProfileMetaMetrics(): Promise<
-  UserProfileMetaMetrics | undefined
+export async function getUserProfileLineage(): Promise<
+  UserProfileLineage | undefined
 > {
   try {
-    const userProfileMetaMetrics = await submitRequestToBackground(
-      'getUserProfileMetaMetrics',
+    const userProfileLineage = await submitRequestToBackground(
+      'getUserProfileLineage',
     );
-    return userProfileMetaMetrics;
+    return userProfileLineage;
   } catch (error) {
     logErrorWithMessage(error);
     return undefined;
@@ -7023,6 +7054,12 @@ export function setTransactionActive(
 
 export async function isRelaySupported(chainId: Hex): Promise<boolean> {
   return await submitRequestToBackground<boolean>('isRelaySupported', [
+    chainId,
+  ]);
+}
+
+export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
+  return await submitRequestToBackground<boolean>('isSendBundleSupported', [
     chainId,
   ]);
 }
