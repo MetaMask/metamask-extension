@@ -45,7 +45,7 @@ describe('Solana Web Socket', function (this: Suite) {
     );
   });
 
-  it('the websocket connection is closed when MetaMask window is closed', async function () {
+  it('the websocket connection is maintained for a grace period when MetaMask window is closed', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -76,15 +76,15 @@ describe('Solana Web Socket', function (this: Suite) {
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        // Wait a moment for the websocket to be stopped
+        // Wait a moment
         await driver.delay(5000);
 
         const activeWebSocketConnections =
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           activeWebSocketConnections,
-          0,
-          `Expected 0 websocket connections after closing MetaMask, but found ${activeWebSocketConnections}`,
+          1,
+          `Expected 1 websocket connections after closing MetaMask, but found ${activeWebSocketConnections}`,
         );
       },
     );
@@ -131,6 +131,7 @@ describe('Solana Web Socket', function (this: Suite) {
 
         // Verify that no new websocket connection is opened (give it some time)
         await driver.delay(5000);
+        // jest.advanceTimersByTime(Duration.Second * 5);
         connectionCount =
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
@@ -157,17 +158,19 @@ describe('Solana Web Socket', function (this: Suite) {
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        // Wait a moment for the websocket to be stopped
+        // Wait for a short time (less than websocket close grace period)
         await driver.delay(5000);
 
-        // Verify that websocket connection is now closed
+        // Verify that websocket connection is NOT closed
         const activeWebSocketConnections =
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           activeWebSocketConnections,
-          0,
-          `Expected 0 websocket connections after closing all MM windows, but found ${activeWebSocketConnections}`,
+          1,
+          `Expected 1 websocket connections after closing all MM windows, but found ${activeWebSocketConnections}`,
         );
+
+        // The websocket close grace period is 5 minutes, we can't wait for this long to check if it's closed
       },
     );
   });
