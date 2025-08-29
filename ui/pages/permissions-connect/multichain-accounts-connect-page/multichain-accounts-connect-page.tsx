@@ -79,7 +79,7 @@ import {
   getCaip25CaveatValueFromPermissions,
 } from '../connect-page/utils';
 import { MultichainSiteCell } from '../../../components/multichain-accounts/multichain-site-cell/multichain-site-cell';
-import { MultichainEditAccountsPage } from '../../../components/multichain-accounts/permissions/edit-accounts-page/multichain-edit-accounts-page';
+import { MultichainEditAccountsPage } from '../../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { getCaip25AccountFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
 
 export type MultichainAccountsConnectPageRequest = {
