@@ -12,8 +12,6 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerStateChangeEvent,
 } from '@metamask/keyring-controller';
-import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
-
 type Actions =
   | AccountsControllerListMultichainAccountsAction
   | AccountsControllerGetAccountAction
@@ -25,8 +23,7 @@ type Actions =
 type Events =
   | KeyringControllerStateChangeEvent
   | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRemovedEvent
-  | PreferencesControllerStateChangeEvent;
+  | AccountsControllerAccountRemovedEvent;
 
 export type MultichainAccountServiceMessenger = ReturnType<
   typeof getMultichainAccountServiceMessenger
@@ -48,7 +45,6 @@ export function getMultichainAccountServiceMessenger(
       'KeyringController:stateChange',
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
-      'PreferencesController:stateChange',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
