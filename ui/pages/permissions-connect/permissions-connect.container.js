@@ -14,7 +14,6 @@ import {
   getSnapsInstallPrivacyWarningShown,
   getRequestType,
   getTargetSubjectMetadata,
-  getIsMultichainAccountsState2Enabled,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
@@ -51,9 +50,6 @@ const mapStateToProps = (state, ownProps) => {
     ...getSnapInstallOrUpdateRequests(state),
   ];
   const { address: currentAddress } = getSelectedInternalAccount(state);
-  const isMultichainAccountState2Active =
-    getIsMultichainAccountsState2Enabled(state);
-
   const permissionsRequest = permissionsRequests.find(
     (req) => req.metadata.id === permissionsRequestId,
   );
@@ -159,7 +155,6 @@ const mapStateToProps = (state, ownProps) => {
     totalPages,
     page,
     targetSubjectMetadata,
-    isMultichainAccountState2Active,
   };
 };
 

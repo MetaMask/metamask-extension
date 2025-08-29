@@ -80,6 +80,7 @@ import {
 } from '../connect-page/utils';
 import { MultichainSiteCell } from '../../../components/multichain-accounts/multichain-site-cell/multichain-site-cell';
 import { MultichainEditAccountsPage } from '../../../components/multichain-accounts/permissions/edit-accounts-page/multichain-edit-accounts-page';
+import { getCaip25AccountFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
 
 export type MultichainAccountsConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -266,60 +267,11 @@ export const MultichainAccountsConnectPage: React.FC<
       }
       const updatedSelectedChains = [...selectedChainIds];
 
-      // Pre-parse all chain namespaces and cache common strings
-      const chainNamespaces = new Map<CaipChainId, string>();
-      const eip155Scope = `${KnownCaipNamespace.Eip155}:0`;
-
-      updatedSelectedChains.forEach((chainId) => {
-        try {
-          const { namespace } = parseCaipChainId(chainId);
-          chainNamespaces.set(chainId, namespace);
-        } catch (err) {
-          // Skip invalid chain IDs
-        }
-      });
-
-      // Create lookup sets for selected account group IDs
-      const selectedGroupIds = new Set(accountGroupIds);
-      console.log('new group ids', selectedGroupIds);
-
-      // Filter to only selected account groups
-      const selectedAccountGroups = supportedAccountGroups.filter((group) =>
-        selectedGroupIds.has(group.id),
-      );
-
-      // Build account addresses more efficiently
-      const updatedSelectedCaipAccountAddresses = new Set<CaipAccountId>();
-
-      // Process each selected account group
-      selectedAccountGroups.forEach((accountGroup) => {
-        accountGroup.accounts.forEach((account) => {
-          // Convert scopes to Set for O(1) lookup
-          const accountScopesSet = new Set(account.scopes);
-
-          // Check each selected chain
-          updatedSelectedChains.forEach((chainId) => {
-            const namespace = chainNamespaces.get(chainId);
-            if (!namespace) {
-              return;
-            }
-
-            let shouldAdd = false;
-
-            if (namespace === KnownCaipNamespace.Eip155) {
-              shouldAdd = accountScopesSet.has(eip155Scope);
-            } else if (chainId) {
-              shouldAdd = accountScopesSet.has(chainId);
-            }
-
-            if (shouldAdd) {
-              updatedSelectedCaipAccountAddresses.add(
-                `${chainId}:${account.address}`,
-              );
-            }
-          });
-        });
-      });
+      const updatedSelectedCaipAccountAddresses =
+        getCaip25AccountFromAccountGroupAndScope(
+          supportedAccountGroups,
+          selectedChainIds,
+        );
 
       handleChainIdsSelected(updatedSelectedChains, { isUserModified });
       setSelectedAccountGroupIds(accountGroupIds);
@@ -472,15 +424,17 @@ export const MultichainAccountsConnectPage: React.FC<
             width={BlockSize.Full}
             data-testid="accounts-tab"
           >
-            <Box marginTop={4}>
+            <Box
+              marginTop={4}
+              style={{
+                overflow: 'auto',
+                maxHeight: '268px',
+                scrollbarColor: 'var(--color-icon-muted) transparent',
+              }}
+            >
               <Box
                 backgroundColor={BackgroundColor.backgroundDefault}
                 borderRadius={BorderRadius.XL}
-                style={{
-                  overflow: 'auto',
-                  maxHeight: '268px',
-                  scrollbarColor: 'var(--color-icon-muted) transparent',
-                }}
               >
                 {selectedAccountGroupIds.map((accountGroupId) => {
                   const accountGroup = supportedAccountGroups.find(
@@ -607,6 +561,7 @@ export const MultichainAccountsConnectPage: React.FC<
     </Page>
   ) : (
     <MultichainEditAccountsPage
+      displayChooseAccountPage={false}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}
