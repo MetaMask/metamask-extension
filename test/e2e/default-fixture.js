@@ -283,6 +283,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         allIgnoredTokens: {},
         allTokens: {},
       },
+      MultichainAccountService: {},
       TransactionController: {
         transactions: {},
       },

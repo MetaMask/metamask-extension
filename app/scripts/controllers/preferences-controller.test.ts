@@ -63,6 +63,8 @@ const setupController = ({
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
         'NetworkController:getState',
+        'MultichainAccountService:setBasicFunctionality',
+        'MultichainAccountService:alignWallets',
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
@@ -73,6 +75,17 @@ const setupController = ({
       networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
     }),
   );
+
+  messenger.registerActionHandler(
+    'MultichainAccountService:setBasicFunctionality',
+    jest.fn().mockResolvedValue(undefined),
+  );
+
+  messenger.registerActionHandler(
+    'MultichainAccountService:alignWallets',
+    jest.fn().mockResolvedValue(undefined),
+  );
+
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
     state,

@@ -827,6 +827,8 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
         'NetworkController:getState',
+        'MultichainAccountService:setBasicFunctionality',
+        'MultichainAccountService:alignWallets',
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
@@ -1857,6 +1859,38 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
+    // MultichainAccountService has subscription for preferences changes
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        const { useExternalServices: prevUseExternalServices } = prevState;
+        const { useExternalServices: currUseExternalServices } = currState;
+        if (prevUseExternalServices !== currUseExternalServices) {
+          // Set basic functionality and trigger alignment when enabled
+          // This single call handles both provider disable/enable and alignment
+          try {
+            this.controllerMessenger
+              .call(
+                'MultichainAccountService:setBasicFunctionality',
+                currUseExternalServices,
+              )
+              .catch((error) => {
+                console.error(
+                  'Failed to set basic functionality on MultichainAccountService:',
+                  error,
+                );
+              });
+          } catch (error) {
+            // Handle case where MultichainAccountService is not available (e.g., in tests)
+            console.warn(
+              'MultichainAccountService:setBasicFunctionality not available:',
+              error.message,
+            );
+          }
+        }
+      }, this.preferencesController.state),
+    );
+
     // Initialize RemoteFeatureFlagController
     const remoteFeatureFlagControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -1934,8 +1968,8 @@ export default class MetamaskController extends EventEmitter {
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
-      MultichainAccountService: MultichainAccountServiceInit,
       ///: END:ONLY_INCLUDE_IF
+      MultichainAccountService: MultichainAccountServiceInit,
       MultichainNetworkController: MultichainNetworkControllerInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
@@ -1988,8 +2022,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainTransactionsController;
     this.multichainAssetsRatesController =
       controllersByName.MultichainAssetsRatesController;
-    this.multichainAccountService = controllersByName.MultichainAccountService;
     ///: END:ONLY_INCLUDE_IF
+    this.multichainAccountService = controllersByName.MultichainAccountService;
     this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;

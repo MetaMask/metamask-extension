@@ -22,6 +22,16 @@ import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 
+type MultichainAccountServiceAlignWalletsAction = {
+  type: 'MultichainAccountService:alignWallets';
+  handler: () => Promise<void>;
+};
+
+type MultichainAccountServiceSetBasicFunctionalityAction = {
+  type: 'MultichainAccountService:setBasicFunctionality';
+  handler: (enabled: boolean) => Promise<void>;
+};
+
 type AccountIdentityEntry = {
   address: string;
   name: string;
@@ -64,7 +74,9 @@ export type AllowedActions =
   | AccountsControllerSetAccountNameAction
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerSetSelectedAccountAction
-  | NetworkControllerGetStateAction;
+  | NetworkControllerGetStateAction
+  | MultichainAccountServiceSetBasicFunctionalityAction
+  | MultichainAccountServiceAlignWalletsAction;
 
 /**
  * Events that this controller is allowed to subscribe.
