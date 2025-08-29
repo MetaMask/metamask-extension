@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Button, ButtonSize, ButtonVariant } from '@metamask/design-system-react';
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
 import {
   Box,
   ButtonIcon,
@@ -11,6 +15,7 @@ import {
 } from '../../../components/component-library';
 import {
   Content,
+  Footer,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
@@ -30,7 +35,7 @@ export const AccountList = () => {
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
-  
+
   const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
 
   const handleOpenAddWalletModal = () => {
@@ -59,21 +64,28 @@ export const AccountList = () => {
         {t('accounts')}
       </Header>
       <Content className="account-list-page__content">
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box className="flex flex-col">
           <MultichainAccountList
             wallets={wallets}
             selectedAccountGroups={[selectedAccountGroup]}
           />
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            onClick={handleOpenAddWalletModal}
-          >
-            {t('addWallet')}
-          </Button>
         </Box>
+        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}></Box>
       </Content>
-      <AddWalletModal isOpen={isAddWalletModalOpen} onClose={handleCloseAddWalletModal} />
+      <Footer className="shadow-sm">
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          onClick={handleOpenAddWalletModal}
+          isFullWidth
+        >
+          {t('addWallet')}
+        </Button>
+      </Footer>
+      <AddWalletModal
+        isOpen={isAddWalletModalOpen}
+        onClose={handleCloseAddWalletModal}
+      />
     </Page>
   );
 };
