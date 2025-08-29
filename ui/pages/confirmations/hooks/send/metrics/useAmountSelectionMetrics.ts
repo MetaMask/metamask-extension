@@ -29,6 +29,10 @@ export const useAmountSelectionMetrics = () => {
     setAmountInputMethod(AmountInputMethod.Manual);
   }, [setAmountInputMethod]);
 
+  const setAmountInputMethodPasted = useCallback(() => {
+    setAmountInputMethod(AmountInputMethod.Pasted);
+  }, [setAmountInputMethod]);
+
   const setAmountInputMethodPressedMax = useCallback(() => {
     setAmountInputMethod(AmountInputMethod.PressedMax);
   }, [setAmountInputMethod]);
@@ -70,6 +74,7 @@ export const useAmountSelectionMetrics = () => {
   return {
     captureAmountSelected,
     setAmountInputMethodManual,
+    setAmountInputMethodPasted,
     setAmountInputMethodPressedMax,
     setAmountInputTypeFiat,
     setAmountInputTypeToken,

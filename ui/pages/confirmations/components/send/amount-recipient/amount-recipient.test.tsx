@@ -4,6 +4,7 @@ import { fireEvent } from '@testing-library/dom';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
+import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import * as SendActions from '../../../hooks/send/useSendActions';
 import { AmountRecipient } from './amount-recipient';
 
@@ -44,6 +45,14 @@ describe('AmountRecipient', () => {
     jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
       handleSubmit: mockHandleSubmit,
     } as unknown as ReturnType<typeof SendActions.useSendActions>);
+    const mockCaptureAmountSelected = jest.fn();
+    jest
+      .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
+      .mockReturnValue({
+        captureAmountSelected: mockCaptureAmountSelected,
+      } as unknown as ReturnType<
+        typeof AmountSelectionMetrics.useAmountSelectionMetrics
+      >);
 
     const { getAllByRole, getByText } = render();
 
@@ -53,6 +62,7 @@ describe('AmountRecipient', () => {
 
     fireEvent.click(getByText('Continue'));
     expect(mockHandleSubmit).toHaveBeenCalledWith(MOCK_ADDRESS);
+    expect(mockCaptureAmountSelected).toHaveBeenCalled();
   });
 
   it('go to previous page when previous button is clicked', () => {
