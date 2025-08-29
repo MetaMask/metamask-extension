@@ -40,7 +40,7 @@ function transformState(state: Record<string, unknown>) {
       !hasProperty(preferences, 'avatarType') ||
       preferences.avatarType === undefined
     ) {
-      preferences.avatarType = 'jazzicon';
+      preferences.avatarType = 'maskicon';
     }
   }
 

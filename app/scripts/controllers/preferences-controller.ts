@@ -108,7 +108,7 @@ export type Preferences = {
   dismissSmartAccountSuggestionEnabled: boolean;
   skipDeepLinkInterstitial: boolean;
   smartAccountOptIn: boolean;
-  avatarType?: string;
+  avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -206,7 +206,7 @@ export const getDefaultPreferencesControllerState =
       },
       tokenNetworkFilter: {},
       skipDeepLinkInterstitial: false,
-      avatarType: 'jazzicon',
+      avatarType: 'maskicon',
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -485,7 +485,7 @@ export class PreferencesController extends BaseController<
    *
    * @param avatarType - The user's preferred avatar type
    */
-  setAvatarType(avatarType: string): void {
+  setAvatarType(avatarType: 'maskicon' | 'jazzicon' | 'blockies'): void {
     this.setPreference('avatarType', avatarType);
   }
 

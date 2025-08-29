@@ -28,7 +28,7 @@ describe('migration #174', () => {
 
     expect(newState.data.PreferencesController).toStrictEqual({
       preferences: {
-        avatarType: 'jazzicon',
+        avatarType: 'maskicon',
       },
     });
   });
