@@ -766,7 +766,7 @@ export const getBridgeFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
-      testing: { disableSmartTransactionsMigration: true },
+      testing: { disableSmartTransactionsOverride: true },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
@@ -816,7 +816,7 @@ export const getQuoteNegativeCasesFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
-      testing: { disableSmartTransactionsMigration: true },
+      testing: { disableSmartTransactionsOverride: true },
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -864,7 +864,7 @@ export const getBridgeNegativeCasesFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
-      testing: { disableSmartTransactionsMigration: true },
+      testing: { disableSmartTransactionsOverride: true },
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -976,7 +976,7 @@ export const getBridgeL2Fixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
-      testing: { disableSmartTransactionsMigration: true },
+      testing: { disableSmartTransactionsOverride: true },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,

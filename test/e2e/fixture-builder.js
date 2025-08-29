@@ -949,7 +949,7 @@ class FixtureBuilder {
    * migration in your test by adding the following manifest flag:
    * ```
    * manifestFlags: {
-   *   testing: { disableSmartTransactionsMigration: true },
+   *   testing: { disableSmartTransactionsOverride: true },
    * }
    * ```
    */

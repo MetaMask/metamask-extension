@@ -100,7 +100,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         manifestFlags: {
-          testing: { disableSmartTransactionsMigration: true },
+          testing: { disableSmartTransactionsOverride: true },
         },
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [

@@ -228,7 +228,7 @@ describe('Swap-Send ETH', function () {
             })
             .build(),
           manifestFlags: {
-            testing: { disableSmartTransactionsMigration: true },
+            testing: { disableSmartTransactionsOverride: true },
           },
           title: this.test?.fullTitle(),
           testSpecificMock: mockSwapQuotes,
