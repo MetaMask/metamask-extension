@@ -6383,19 +6383,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^20.0.0, @metamask/keyring-api@npm:^20.1.0":
-  version: 20.1.0
-  resolution: "@metamask/keyring-api@npm:20.1.0"
-  dependencies:
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/9b98fd1a2eb151f5be39fb6f4ae4de838afab9a0316937ed8f0443a203db5022fd0e297e44b48b777428d96e5079fee24af981b0ff46005fae728472fb37bf7a
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-api@npm:^20.1.1":
+"@metamask/keyring-api@npm:^20.0.0, @metamask/keyring-api@npm:^20.1.0, @metamask/keyring-api@npm:^20.1.1":
   version: 20.1.1
   resolution: "@metamask/keyring-api@npm:20.1.1"
   dependencies:
@@ -6588,11 +6576,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@0.5.0-preview-970969ca":
-  version: 0.5.0-preview-970969ca
-  resolution: "@metamask-previews/multichain-account-service@npm:0.5.0-preview-970969ca"
+"@metamask/multichain-account-service@npm:0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/multichain-account-service@npm:0.5.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^8.1.0"
     "@metamask/eth-snap-keyring": "npm:^16.1.0"
     "@metamask/keyring-api": "npm:^20.1.0"
     "@metamask/keyring-internal-api": "npm:^8.1.0"
@@ -6608,7 +6596,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/6f97a435d2e3c566ade8cee592caed837c00dc2a7032de59e545c9e97cd13713dbfaa692b06c2c32606aa6236857a2670ddec4fdaff74b57db5390fb2dba2037
+  checksum: 10/cb617a19e572f9364b246c63fa160ecd491630a3f5c555982302b6f4456a26714035e1595ac169078ce13882d697d01eaf8a957ebf39e29f538f98909997c222
   languageName: node
   linkType: hard
 
@@ -31772,7 +31760,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:1.1.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@0.5.0-preview-970969ca"
+    "@metamask/multichain-account-service": "npm:0.5.0"
     "@metamask/multichain-api-client": "npm:^0.6.5"
     "@metamask/multichain-api-middleware": "npm:1.0.0"
     "@metamask/multichain-network-controller": "npm:^0.11.1"
@@ -34952,16 +34940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.44.0":
-  version: 1.44.0
-  resolution: "playwright-core@npm:1.44.0"
-  bin:
-    playwright-core: cli.js
-  checksum: 10/50b1741b8e4e5f053f9756846e1064d796e8e54ee0c13d4d026926338d76969fa528bddf1e563a2f30e17b92f301b06895044d1080179f2d3b5b5f68fe01387f
-  languageName: node
-  linkType: hard
-
-"playwright-core@npm:1.55.0":
+"playwright-core@npm:1.55.0, playwright-core@npm:>=1.2.0":
   version: 1.55.0
   resolution: "playwright-core@npm:1.55.0"
   bin:
@@ -34970,16 +34949,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:>=1.2.0":
-  version: 1.45.3
-  resolution: "playwright-core@npm:1.45.3"
-  bin:
-    playwright-core: cli.js
-  checksum: 10/6540ae149a8deaceb3dc6f60ea7a7052894aebb651b8c187c97c5532b50ee6c812e7f9644a15ecbfb146d5e7880dbb23010df2bac012493bd75b5624710df6bd
-  languageName: node
-  linkType: hard
-
-"playwright@npm:1.55.0":
+"playwright@npm:1.55.0, playwright@npm:^1.14.0":
   version: 1.55.0
   resolution: "playwright@npm:1.55.0"
   dependencies:
@@ -34991,21 +34961,6 @@ __metadata:
   bin:
     playwright: cli.js
   checksum: 10/df02529693923b9b671822dac8a2ac8a8471c9142a05e14a24f8d0038a7dcf705712363991a070fc927466bbbe70e485145cf7a77882613822f56960afc4b892
-  languageName: node
-  linkType: hard
-
-"playwright@npm:^1.14.0":
-  version: 1.44.0
-  resolution: "playwright@npm:1.44.0"
-  dependencies:
-    fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.44.0"
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    playwright: cli.js
-  checksum: 10/a7d8d6c0dee6262f97ab7fe52ec80ddeff7ad21178a9b90eefae56779fb573e8a3987f27619de6e98d8b9b78e9bb66b94f3caf9fbd51c0f1964dcd744dcb3cae
   languageName: node
   linkType: hard
 
