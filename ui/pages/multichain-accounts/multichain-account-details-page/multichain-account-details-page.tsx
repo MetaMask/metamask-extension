@@ -3,14 +3,15 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import classnames from 'classnames';
+import { AvatarAccountSize } from '@metamask/design-system-react';
+
 import {
-  AvatarAccount,
-  AvatarAccountSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../../components/component-library';
+import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import {
   Content,
   Header,
@@ -108,12 +109,15 @@ export const MultichainAccountDetailsPage = () => {
         paddingTop={3}
         gap={4}
       >
-        <AvatarAccount
-          address={accountGroupId}
-          size={AvatarAccountSize.Xl}
-          style={{ margin: '0 auto' }}
-        />
         <Box className="multichain-account-details-page__section">
+          <Box className="flex justify-center">
+            <PreferredAvatar
+              address={accountGroupId}
+              size={AvatarAccountSize.Xl}
+            />
+          </Box>
+        </Box>
+        <Box className="multichain-account-details__section">
           <AccountDetailsRow
             label={t('accountName')}
             value={multichainAccount.metadata.name}
