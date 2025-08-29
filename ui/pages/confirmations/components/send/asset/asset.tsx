@@ -5,7 +5,7 @@ import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { Header } from '../header';
 
 export const Asset = () => {
-  const { goToAmountPage, goToPreviousPage } = useNavigateSendPage();
+  const { goToAmountRecipientPage, goToPreviousPage } = useNavigateSendPage();
 
   return (
     <div className="send__wrapper">
@@ -14,7 +14,7 @@ export const Asset = () => {
           <Header />
           <p>asset</p>
           <Button onClick={goToPreviousPage}>Previous</Button>
-          <Button onClick={goToAmountPage}>Continue</Button>
+          <Button onClick={goToAmountRecipientPage}>Continue</Button>
         </div>
       </div>
     </div>

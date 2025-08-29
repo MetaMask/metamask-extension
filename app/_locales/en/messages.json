@@ -141,6 +141,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountSmallCase": {
+    "message": "account"
+  },
   "accountTypeNotSupported": {
     "message": "Account type not supported"
   },
@@ -4849,6 +4852,10 @@
   },
   "received": {
     "message": "Received"
+  },
+  "receivingAddress": {
+    "message": "Receiving address",
+    "description": "Page title when viewing addresses for receiving funds"
   },
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"

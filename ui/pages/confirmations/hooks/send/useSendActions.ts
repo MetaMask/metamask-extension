@@ -19,8 +19,7 @@ import { useSendType } from './useSendType';
 export const useSendActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { asset, from, fromAccount, to, updateCurrentPage, value } =
-    useSendContext();
+  const { asset, from, fromAccount, to, value } = useSendContext();
   const { isEvmSendType } = useSendType();
 
   const handleSubmit = useCallback(
@@ -54,17 +53,7 @@ export const useSendActions = () => {
         );
       }
     },
-    [
-      asset,
-      dispatch,
-      from,
-      fromAccount,
-      history,
-      isEvmSendType,
-      to,
-      updateCurrentPage,
-      value,
-    ],
+    [asset, dispatch, from, fromAccount, history, isEvmSendType, to, value],
   );
 
   const handleBack = useCallback(() => {
