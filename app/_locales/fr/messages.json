@@ -2947,9 +2947,6 @@
   "isSigningOrSubmitting": {
     "message": "Une transaction antérieure est toujours en cours de signature ou d’envoi"
   },
-  "jazzAndBlockies": {
-    "message": "Les Jazzicons et les Blockies sont deux styles différents d’icônes uniques qui vous aident à identifier un compte en un coup d’œil."
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },

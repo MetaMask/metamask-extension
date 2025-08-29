@@ -3027,9 +3027,6 @@
   "isSigningOrSubmitting": {
     "message": "A previous transaction is still being signed or submitted"
   },
-  "jazzAndBlockies": {
-    "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },

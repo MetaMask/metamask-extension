@@ -2980,9 +2980,6 @@
   "isSigningOrSubmitting": {
     "message": "先前的交易仍在签署或提交中"
   },
-  "jazzAndBlockies": {
-    "message": "哈希头像是帮助您一眼识别账户的独特图标，有 Jazzicons 和 Blockies 两种不同风格。"
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },

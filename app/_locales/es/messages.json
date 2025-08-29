@@ -2980,9 +2980,6 @@
   "isSigningOrSubmitting": {
     "message": "Aún se está firmando o enviando una transacción anterior"
   },
-  "jazzAndBlockies": {
-    "message": "Jazzicons y Blockies son dos estilos distintos de íconos únicos que pueden ayudarlo a identificar rápidamente una cuenta."
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },
