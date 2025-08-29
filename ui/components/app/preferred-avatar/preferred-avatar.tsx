@@ -7,8 +7,6 @@ import {
 } from '@metamask/design-system-react';
 import type { MetaMaskReduxState } from '../../../store/store';
 
-const defaultVariant = AvatarAccountVariant.Maskicon;
-
 /**
  * Renders an avatar for an address based on the user's settings. This wraps AvatarAccount.
  *
@@ -20,23 +18,13 @@ export const PreferredAvatar = (props: Omit<AvatarAccountProps, 'ref'>) => {
   return <AvatarAccount {...props} variant={variant} />;
 };
 
-function getAvatarType({
-  metamask: { useBlockie, preferences },
-}: MetaMaskReduxState) {
+const avatarTypeMap = {
+  maskicon: AvatarAccountVariant.Maskicon,
+  jazzicon: AvatarAccountVariant.Jazzicon,
+  blockies: AvatarAccountVariant.Blockies,
+};
+
+function getAvatarType({ metamask: { preferences } }: MetaMaskReduxState) {
   const avatarType = preferences?.avatarType;
-
-  if (avatarType === undefined) {
-    return useBlockie ? AvatarAccountVariant.Blockies : defaultVariant;
-  }
-  if (avatarType === 'maskicon') {
-    return AvatarAccountVariant.Maskicon;
-  }
-  if (avatarType === 'jazzicon') {
-    return AvatarAccountVariant.Jazzicon;
-  }
-  if (avatarType === 'blockies') {
-    return AvatarAccountVariant.Blockies;
-  }
-
-  return defaultVariant;
+  return avatarType ? avatarTypeMap[avatarType] : undefined;
 }
