@@ -9,8 +9,13 @@ import {
   fromTokenMinimalUnits,
   toTokenMinimalUnit,
   formatToFixedDecimals,
+<<<<<<< HEAD
   isDecimal,
   convertedCurrency,
+  navigateToSendRoute,
+=======
+  navigateToSendRoute,
+>>>>>>> cd85effc666c6165724a8d1c33549bf4a9c4c546
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -139,6 +144,16 @@ describe('Send - utils', () => {
       expect(findNetworkClientIdByChainId).toHaveBeenCalledWith('0x1');
     });
   });
+
+  describe('navigateToSendRoute', () => {
+    it('call history.push with send route', () => {
+      const mockHistoryPush = jest.fn();
+      navigateToSendRoute({
+        push: mockHistoryPush,
+      });
+      expect(mockHistoryPush).toHaveBeenCalled();
+    });
+    });
 
   describe('isDecimal', () => {
     it('return true for decimal values and false otherwise', () => {
