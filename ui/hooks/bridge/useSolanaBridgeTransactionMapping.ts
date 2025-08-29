@@ -166,7 +166,7 @@ export default function useSolanaBridgeTransactionMapping(
     ? {
         ...initialNonEvmTransactions,
         transactions: (initialNonEvmTransactions.transactions || []).map(
-          (tx) => ({ ...tx, isBridgeOriginated: false }) as ExtendedTransaction,
+          (tx) => ({ ...tx, isBridgeOriginated: false }),
         ),
       }
     : { transactions: [], next: null, lastUpdated: Date.now() };
@@ -247,7 +247,7 @@ export default function useSolanaBridgeTransactionMapping(
     nonEvmTransactions = {
       ...nonEvmTransactions,
       transactions: [
-        ...(nonEvmTransactions.transactions as ExtendedTransaction[]),
+        ...nonEvmTransactions.transactions,
         ...bridgeOriginatedTxs,
       ],
     };
@@ -276,7 +276,7 @@ export default function useSolanaBridgeTransactionMapping(
       sourceTxStatusKey === TransactionStatus.confirmed;
 
     if (tx.type === 'swap' && !tx.isBridgeOriginated) {
-      return tx as Transaction;
+      return tx;
     }
 
     // Find matching bridge history data.
@@ -294,7 +294,7 @@ export default function useSolanaBridgeTransactionMapping(
         srcChainId !== destChainId;
 
       if (!isBridgeTx) {
-        return tx as Transaction;
+        return tx;
       }
 
       // Construct bridgeInfo only if it's a true cross-chain bridge.
@@ -331,10 +331,10 @@ export default function useSolanaBridgeTransactionMapping(
           isBridgeTx,
           bridgeInfo,
           isSourceTxConfirmed,
-        } as BridgeOriginatedItem;
+        };
       }
       return {
-        ...(tx as Transaction),
+        ...tx,
         from: [
           {
             address: matchingBridgeTx.account,
@@ -353,7 +353,7 @@ export default function useSolanaBridgeTransactionMapping(
         bridgeInfo,
         isBridgeOriginated: false,
         isSourceTxConfirmed,
-      } as ExtendedTransaction;
+      };
     }
 
     // Case 2: Transaction was originated, but no matching bridge history found now?
@@ -372,12 +372,12 @@ export default function useSolanaBridgeTransactionMapping(
         isBridgeTx: false,
         bridgeInfo: undefined,
         isSourceTxConfirmed,
-      } as BridgeOriginatedItem;
+      };
     }
 
     // Case 3: Default - Not a swap, not originated, no bridge history match.
     // Return the original transaction without modification
-    return tx as Transaction;
+    return tx;
   });
 
   // Return the final data structure.

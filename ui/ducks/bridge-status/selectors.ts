@@ -96,7 +96,7 @@ export const selectIncomingBridgeHistory = createSelector(
         const hexDestChainId = new Numeric(
           bridgeHistoryItem.quote.destChainId,
           10,
-        ).toPrefixedHexString() as Hex;
+        ).toPrefixedHexString();
 
         return hexDestChainId === currentChainId;
       })

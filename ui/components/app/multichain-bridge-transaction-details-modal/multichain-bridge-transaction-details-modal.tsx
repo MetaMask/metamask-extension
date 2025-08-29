@@ -83,20 +83,15 @@ function MultichainBridgeTransactionDetailsModal({
 
   // --- Extract data directly from transaction ---
   const { id, timestamp, from, bridgeInfo, isBridgeOriginated } = transaction;
-  const chain =
-    transaction.network ??
-    (transaction as ExtendedTransaction).chain ??
-    undefined;
+  const chain = transaction.network ?? transaction.chain ?? undefined;
   // Use TransactionStatus.submitted as the default
   const sourceTxRawStatus = isBridgeOriginated
     ? TransactionStatus.submitted
-    : (transaction as ExtendedTransaction).status;
+    : transaction.status;
   const assetData = from?.[0]?.asset;
   const baseFeeAsset = isBridgeOriginated
     ? null
-    : (transaction as ExtendedTransaction).fees?.find(
-        (fee) => fee.type === 'base',
-      )?.asset;
+    : transaction.fees?.find((fee) => fee.type === 'base')?.asset;
   // --- End direct extraction ---
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
