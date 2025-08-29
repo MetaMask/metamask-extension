@@ -1,13 +1,25 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import {
-  Button,
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonLink,
+  IconName,
   Text,
   TextField,
 } from '../../../../../components/component-library';
-import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
+import {
+  BlockSize,
+  Display,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
+import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useBalance } from '../../../hooks/send/useBalance';
 import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversions';
 import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
@@ -15,12 +27,13 @@ import { useSendContext } from '../../../context/send';
 import { useSendType } from '../../../hooks/send/useSendType';
 
 export const Amount = () => {
+  const t = useI18nContext();
   const { asset, updateValue, value } = useSendContext();
   const [amount, setAmount] = useState(value ?? '');
-  const { amountError } = useAmountValidation();
   const { balance } = useBalance();
   const [fiatMode, setFiatMode] = useState(false);
-  const { getNativeValue } = useCurrencyConversions();
+  const { getFiatDisplayValue, getNativeValue, getNativeDisplayValue } =
+    useCurrencyConversions();
   const { getMaxAmount } = useMaxAmount();
   const { isNonEvmNativeSendType } = useSendType();
   const {
@@ -30,21 +43,20 @@ export const Amount = () => {
     setAmountInputTypeFiat,
     setAmountInputTypeToken,
   } = useAmountSelectionMetrics();
+  const alternateDisplayValue = useMemo(
+    () =>
+      fiatMode ? getNativeDisplayValue(amount) : getFiatDisplayValue(amount),
+    [amount, fiatMode, getFiatDisplayValue, getNativeDisplayValue],
+  );
+  const { amountError } = useAmountValidation();
 
   const onChange = useCallback(
     (event) => {
       const newValue = event.target.value;
       updateValue(fiatMode ? getNativeValue(newValue) : newValue);
       setAmount(newValue);
-      setAmountInputMethodManual();
     },
-    [
-      fiatMode,
-      getNativeValue,
-      setAmount,
-      setAmountInputMethodManual,
-      updateValue,
-    ],
+    [fiatMode, getNativeValue, setAmount, updateValue],
   );
 
   const toggleFiatMode = useCallback(() => {
@@ -86,25 +98,57 @@ export const Amount = () => {
   }
 
   return (
-    <div>
-      <p>AMOUNT</p>
+    <Box marginTop={4}>
+      <Text variant={TextVariant.bodyMd}>{t('amount')}</Text>
       <TextField
+        error={Boolean(amountError)}
         onChange={onChange}
         onPaste={setAmountInputMethodPasted}
+        onInput={setAmountInputMethodManual}
         value={amount}
+        endAccessory={
+          <div>
+            {!isERC1155 && (
+              <ButtonIcon
+                ariaLabel="toggle fiat mode"
+                iconName={IconName.SwapVertical}
+                onClick={toggleFiatMode}
+                size={ButtonIconSize.Sm}
+                data-testid="toggle-fiat-mode"
+              />
+            )}
+          </div>
+        }
+        width={BlockSize.Full}
       />
-      <Text>Balance: {balance}</Text>
-      <Text>Error: {amountError}</Text>
-      {!isERC1155 && (
-        <>
-          <Button onClick={toggleFiatMode}>
-            {fiatMode ? 'Native Mode' : 'Fiat Mode'}
-          </Button>
-          {!isNonEvmNativeSendType && (
-            <Button onClick={updateToMax}>Max</Button>
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.spaceBetween}
+        marginTop={1}
+      >
+        <Text
+          color={
+            amountError ? TextColor.errorDefault : TextColor.textAlternative
+          }
+          variant={TextVariant.bodySm}
+        >
+          {amountError || `~${alternateDisplayValue}`}
+        </Text>
+        <Box display={Display.Flex}>
+          <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
+            {balance} {asset?.symbol} {t('available')}
+          </Text>
+          {!isERC1155 && !isNonEvmNativeSendType && (
+            <ButtonLink
+              marginLeft={1}
+              onClick={updateToMax}
+              variant={TextVariant.bodySm}
+            >
+              {t('max')}
+            </ButtonLink>
           )}
-        </>
-      )}
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
