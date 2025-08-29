@@ -270,7 +270,7 @@ const CoinButtons = ({
       } else {
         const queryParams = new URLSearchParams();
         queryParams.append('chainId', chainId.toString());
-        route = `${SEND_ROUTE}/amount?${queryParams.toString()}`;
+        route = `${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`;
       }
       history.push(route);
     } else {
@@ -436,7 +436,10 @@ const CoinButtons = ({
         round={!displayNewIconButtons}
       />
       {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
-      {isUnifiedUIEnabled || isTestnet || !isBridgeChain ? null : (
+      {isUnifiedUIEnabled ||
+      isTestnet ||
+      !isBridgeChain ||
+      isNonEvmAccountWithoutExternalServices ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={

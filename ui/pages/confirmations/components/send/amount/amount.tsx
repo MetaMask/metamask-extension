@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import {
   Button,
@@ -8,49 +9,63 @@ import {
 import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useBalance } from '../../../hooks/send/useBalance';
 import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversions';
-import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
+import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
 import { useSendContext } from '../../../context/send';
-import { Header } from '../header';
+import { useSendType } from '../../../hooks/send/useSendType';
 
 export const Amount = () => {
-  const [amount, setAmount] = useState('');
+  const { asset, updateValue, value } = useSendContext();
+  const [amount, setAmount] = useState(value ?? '');
   const { amountError } = useAmountValidation();
   const { balance } = useBalance();
-  const [faitMode, setFiatMode] = useState(false);
+  const [fiatMode, setFiatMode] = useState(false);
   const { getNativeValue } = useCurrencyConversions();
-  const { goToSendToPage, goToPreviousPage } = useNavigateSendPage();
-  const { updateValue } = useSendContext();
+  const { getMaxAmount } = useMaxAmount();
+  const { isNonEvmNativeSendType } = useSendType();
 
   const onChange = useCallback(
     (event) => {
       const newValue = event.target.value;
-      updateValue(faitMode ? getNativeValue(newValue) : newValue);
+      updateValue(fiatMode ? getNativeValue(newValue) : newValue);
       setAmount(newValue);
     },
-    [faitMode, getNativeValue, setAmount, updateValue],
+    [fiatMode, getNativeValue, setAmount, updateValue],
   );
 
   const toggleFiatMode = useCallback(() => {
     setAmount('');
-    setFiatMode(!faitMode);
-  }, [faitMode, setAmount, setFiatMode]);
+    setFiatMode(!fiatMode);
+  }, [fiatMode, setAmount, setFiatMode]);
+
+  const updateToMax = useCallback(() => {
+    const maxValue = getMaxAmount() ?? '0';
+    updateValue(fiatMode ? getNativeValue(maxValue) : maxValue);
+    setAmount(maxValue);
+  }, [fiatMode, getMaxAmount, getNativeValue, setAmount, updateValue]);
+
+  const isERC1155 = asset?.standard === ERC1155;
+  const isERC721 = asset?.standard === ERC721;
+
+  if (isERC721) {
+    return null;
+  }
 
   return (
-    <div className="send__wrapper">
-      <div className="send__container">
-        <div className="send__content">
-          <Header />
-          <p>AMOUNT</p>
-          <TextField value={amount} onChange={onChange} />
-          <Text>Balance: {balance}</Text>
-          <Text>Error: {amountError}</Text>
+    <div>
+      <p>AMOUNT</p>
+      <TextField value={amount} onChange={onChange} />
+      <Text>Balance: {balance}</Text>
+      <Text>Error: {amountError}</Text>
+      {!isERC1155 && (
+        <>
           <Button onClick={toggleFiatMode}>
-            {faitMode ? 'Native Mode' : 'Fiat Mode'}
+            {fiatMode ? 'Native Mode' : 'Fiat Mode'}
           </Button>
-          <Button onClick={goToPreviousPage}>Previous</Button>
-          <Button onClick={goToSendToPage}>Continue</Button>
-        </div>
-      </div>
+          {!isNonEvmNativeSendType && (
+            <Button onClick={updateToMax}>Max</Button>
+          )}
+        </>
+      )}
     </div>
   );
 };
