@@ -3606,7 +3606,7 @@
     "message": "테스트넷"
   },
   "networkNameZkSyncEra": {
-    "message": "zkSync Era"
+    "message": "ZKsync Era"
   },
   "networkOptions": {
     "message": "네트워크 옵션"

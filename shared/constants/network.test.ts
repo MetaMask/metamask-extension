@@ -33,7 +33,7 @@ describe('NetworkConstants', () => {
         'Binance Smart Chain': CHAIN_IDS.BSC,
         'OP Mainnet': CHAIN_IDS.OPTIMISM,
         'Polygon Mainnet': CHAIN_IDS.POLYGON,
-        'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
+        'ZKsync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
         'Base Mainnet': CHAIN_IDS.BASE,
         'Linea Mainnet': CHAIN_IDS.LINEA_MAINNET,
         'Sei Mainnet': CHAIN_IDS.SEI,
@@ -81,7 +81,7 @@ describe('NetworkConstants', () => {
       expect(polygonRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
-    it('zkSync Era entry should not use Infura', () => {
+    it('ZKsync Era entry should not use Infura', () => {
       const [zksyncEraRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.ZKSYNC_ERA,
       );

@@ -205,7 +205,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
           >
             <img
-              alt="zkSync Era Mainnet logo"
+              alt="ZKsync Era Mainnet logo"
               class="mm-avatar-token__token-image"
               src="./images/zk-sync.svg"
             />
