@@ -23,7 +23,7 @@ import {
   selectBalanceByWallet,
   type BalanceCalculationState,
   selectBalanceChangeForAllWallets,
-  selectBalancePercentChange,
+  selectBalanceChangeBySelectedAccountGroup,
 } from './assets';
 
 jest.mock('@metamask/assets-controllers', () => {
@@ -881,17 +881,9 @@ describe('Balance change selectors', () => {
     expect(a).toBe(b);
   });
 
-  it('selectBalancePercentChange returns percent only', () => {
-    (calculateBalanceChangeForAllWallets as jest.Mock).mockReturnValueOnce({
-      period: '30d',
-      currentTotalInUserCurrency: 0,
-      previousTotalInUserCurrency: 0,
-      amountChangeInUserCurrency: 0,
-      percentChange: 42.5,
-      userCurrency: 'usd',
-    });
-    const selectPct = selectBalancePercentChange('30d');
-    const pct = selectPct(baseState);
-    expect(pct).toBe(42.5);
+  it('selectBalanceChangeBySelectedAccountGroup returns null when none selected', () => {
+    const selector = selectBalanceChangeBySelectedAccountGroup('7d');
+    const out = selector(baseState);
+    expect(out).toBeNull();
   });
 });

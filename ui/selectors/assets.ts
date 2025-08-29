@@ -563,15 +563,16 @@ const EMPTY_ACCOUNT_TREE = Object.freeze({
 /**
  * Derives the minimal Account Tree payload needed by core balance functions.
  * Provides stable empty fallbacks for memoization resilience.
+ *
+ * @param state
  */
 const selectAccountTreeStateForBalances = createSelector(
   [
-    /** @param state - Redux state */
     (state: BalanceCalculationState) => getMetamaskState(state).accountTree,
-    /** @param state - Redux state */
+
     (state: BalanceCalculationState) =>
       getMetamaskState(state).accountGroupsMetadata,
-    /** @param state - Redux state */
+
     (state: BalanceCalculationState) =>
       getMetamaskState(state).accountWalletsMetadata,
   ],
@@ -584,10 +585,11 @@ const selectAccountTreeStateForBalances = createSelector(
 
 /**
  * Picks internal accounts with defaults in the shape expected by core.
+ *
+ * @param state
  */
 const selectAccountsStateForBalances = createSelector(
   [
-    /** @param state - Redux state */
     (state: BalanceCalculationState) =>
       getMetamaskState(state).internalAccounts,
   ],
@@ -759,11 +761,7 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
  *
  * @param period - Balance change period.
  */
-export const selectBalancePercentChange = (period: BalanceChangePeriod) =>
-  createSelector(
-    [selectBalanceChangeForAllWallets(period)],
-    (change) => change.percentChange,
-  );
+// Removed percent-only selector for all wallets to match mobile API surface
 
 // Per-account-group balance change selectors using core helper
 /**
@@ -826,11 +824,13 @@ export const selectBalancePercentChangeByAccountGroup = (
 
 /**
  * Computes balance change for the currently selected account group.
- * Returns a zeroed result when no group is selected.
+ * Returns null when no group is selected.
  *
  * @param period - Balance change period.
  */
-export const selectSelectedGroupBalanceChange = (period: BalanceChangePeriod) =>
+export const selectBalanceChangeBySelectedAccountGroup = (
+  period: BalanceChangePeriod,
+) =>
   createSelector(
     [
       selectAccountTreeStateForBalances,
@@ -853,17 +853,10 @@ export const selectSelectedGroupBalanceChange = (period: BalanceChangePeriod) =>
       tokensState,
       currencyRateState,
       enabledNetworkMap,
-    ): BalanceChangeResult => {
+    ): BalanceChangeResult | null => {
       const groupId = accountTreeState?.accountTree?.selectedAccountGroup;
       if (!groupId) {
-        return {
-          period,
-          currentTotalInUserCurrency: 0,
-          previousTotalInUserCurrency: 0,
-          amountChangeInUserCurrency: 0,
-          percentChange: 0,
-          userCurrency: currencyRateState.currentCurrency,
-        };
+        return null;
       }
       return calculateBalanceChangeForAccountGroup(
         accountTreeState,
@@ -881,21 +874,13 @@ export const selectSelectedGroupBalanceChange = (period: BalanceChangePeriod) =>
     },
   );
 
-export const selectSelectedGroupBalancePercentChange = (
-  period: BalanceChangePeriod,
-) =>
-  createSelector(
-    [selectSelectedGroupBalanceChange(period)],
-    (change) => change.percentChange,
-  );
-
 /**
  * Selects the selected account group's balance entry from the aggregated
  * balances output, returning a minimal fallback when not present.
  *
  * @param state - Redux state used to read selection and aggregated balances.
  */
-export const selectSelectedGroupBalance = createSelector(
+export const selectBalanceBySelectedAccountGroup = createSelector(
   [selectAccountTreeStateForBalances, selectBalanceForAllWallets],
   (accountTreeState, allBalances) => {
     const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
