@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -10,6 +10,7 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { AccountGroupId } from '@metamask/account-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Content,
   Header,
@@ -18,6 +19,7 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list';
+import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal';
 import {
   getInternalAccountsFromGroupById,
   getMultichainAccountGroupById,
@@ -58,6 +60,35 @@ export const MultichainAccountAddressListPage = () => {
     ? t('receivingAddress')
     : `${accountGroup?.metadata?.name || t('account')} / ${t('addresses')}`;
 
+  // QR Modal state
+  const [qrModal, setQrModal] = useState<{
+    isOpen: boolean;
+    address?: string;
+    chainId?: string;
+    account?: InternalAccount;
+    accountGroupName?: string;
+  }>({ isOpen: false });
+
+  const handleQrClick = (
+    address: string,
+    chainId: string,
+    account: InternalAccount,
+  ) => {
+    setQrModal({
+      isOpen: true,
+      address,
+      chainId,
+      account,
+      accountGroupName: accountGroup?.metadata?.name,
+    });
+  };
+
+  const handleQrModalClose = () => {
+    setQrModal({ isOpen: false });
+  };
+
+  // Account is now passed directly from the callback
+
   return (
     <Page className="max-w-[600px]">
       <Header
@@ -78,8 +109,21 @@ export const MultichainAccountAddressListPage = () => {
       </Header>
       <Content>
         <Box flexDirection={BoxFlexDirection.Column}>
-          <MultichainAddressRowsList accounts={accounts} />
+          <MultichainAddressRowsList
+            accounts={accounts}
+            onQrClick={handleQrClick}
+          />
         </Box>
+        {qrModal.isOpen && qrModal.address && qrModal.chainId && (
+          <AddressQRCodeModal
+            isOpen={qrModal.isOpen}
+            onClose={handleQrModalClose}
+            address={qrModal.address}
+            chainId={qrModal.chainId}
+            account={qrModal.account}
+            accountGroupName={qrModal.accountGroupName}
+          />
+        )}
       </Content>
     </Page>
   );

@@ -10,6 +10,20 @@ import {
 
 describe('MultichainAddressRowsList Utils', () => {
   describe('sortNetworkAddressItems', () => {
+    const mockAccount: InternalAccount = {
+      id: 'test-account-id',
+      address: '0xa0b86991c431e50c0dd0b653aa1e8c7b7c66f5e4b',
+      options: {},
+      methods: [],
+      type: 'eip155:eoa',
+      scopes: ['eip155:1' as `${string}:${string}`],
+      metadata: {
+        name: 'Test Account',
+        importTime: Date.now(),
+        keyring: { type: 'HD Key Tree' },
+      },
+    };
+
     const createNetworkItem = (
       chainId: string,
       networkName: string,
@@ -18,6 +32,7 @@ describe('MultichainAddressRowsList Utils', () => {
       chainId,
       networkName,
       address,
+      account: mockAccount,
     });
 
     it('sorts networks with correct priority: Ethereum first, Solana second, test networks last, alphabetical within category', () => {

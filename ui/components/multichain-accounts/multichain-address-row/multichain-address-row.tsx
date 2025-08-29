@@ -1,4 +1,5 @@
 import React from 'react';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   AlignItems,
   BlockSize,
@@ -37,16 +38,30 @@ type MultichainAddressRowProps = {
    */
   address: string;
   /**
+   * Account object associated with this address
+   */
+  account: InternalAccount;
+  /**
    * Optional className for additional styling
    */
   className?: string;
+  /**
+   * Callback function when QR code button is clicked
+   */
+  onQrClick?: (
+    address: string,
+    chainId: string,
+    account: InternalAccount,
+  ) => void;
 };
 
 export const MultichainAddressRow = ({
   chainId,
   networkName,
   address,
+  account,
   className = '',
+  onQrClick,
 }: MultichainAddressRowProps) => {
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -58,7 +73,7 @@ export const MultichainAddressRow = ({
   };
 
   const handleQrClick = () => {
-    console.log('QR code clicked for address:', address);
+    onQrClick?.(address, chainId, account);
   };
 
   return (

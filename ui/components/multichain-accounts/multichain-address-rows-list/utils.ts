@@ -15,6 +15,7 @@ export type NetworkAddressItem = {
   chainId: string;
   networkName: string;
   address: string;
+  account: InternalAccount;
 };
 
 /**
@@ -63,23 +64,26 @@ export const sortNetworkAddressItems = (
 };
 
 /**
- * Creates a NetworkAddressItem from chain ID, network config, and address
+ * Creates a NetworkAddressItem from chain ID, network config, address, and account
  *
  * @param chainId - CAIP chain ID
  * @param network - Network configuration
  * @param network.name - Network name
  * @param network.chainId - Network chain ID
  * @param address - Address to associate with the network
+ * @param account - InternalAccount object
  * @returns NetworkAddressItem object
  */
 const createNetworkAddressItem = (
   chainId: CaipChainId,
   network: { name: string; chainId: CaipChainId },
   address: string,
+  account: InternalAccount,
 ): NetworkAddressItem => ({
   chainId,
   networkName: network.name,
   address,
+  account,
 });
 
 /**
@@ -111,6 +115,7 @@ export const getCompatibleNetworksForAccount = (
               chainId as CaipChainId,
               network,
               account.address,
+              account,
             ),
           );
         }
@@ -120,7 +125,7 @@ export const getCompatibleNetworksForAccount = (
       const network = allNetworks[scope];
       if (network) {
         compatibleItems.push(
-          createNetworkAddressItem(scope, network, account.address),
+          createNetworkAddressItem(scope, network, account.address, account),
         );
       }
     }

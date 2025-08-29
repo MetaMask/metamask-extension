@@ -32,10 +32,19 @@ export type MultichainAddressRowsListProps = {
    * Array of InternalAccount objects to determine compatible networks for
    */
   accounts?: InternalAccount[];
+  /**
+   * Callback function when QR code button is clicked
+   */
+  onQrClick?: (
+    address: string,
+    chainId: string,
+    account: InternalAccount,
+  ) => void;
 };
 
 export const MultichainAddressRowsList = ({
   accounts = [],
+  onQrClick,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
@@ -109,9 +118,11 @@ export const MultichainAddressRowsList = ({
         chainId={item.chainId}
         networkName={item.networkName}
         address={item.address}
+        account={item.account}
+        onQrClick={onQrClick}
       />
     ));
-  }, [filteredItems]);
+  }, [filteredItems, onQrClick]);
 
   return (
     <Box

@@ -9,10 +9,26 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
 
 const mockHandleCopy = jest.fn();
 
+const mockAccount = {
+  id: 'test-account-id',
+  address: '0x1234567890123456789012345678901234567890',
+  options: {},
+  methods: [],
+  type: 'eip155:eoa' as const,
+  scopes: ['eip155:1' as const],
+  metadata: {
+    name: 'Test Account',
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+};
+
 const defaultProps = {
   chainId: '0x1',
   networkName: 'Ethereum Mainnet',
   address: '0x1234567890123456789012345678901234567890',
+  account: mockAccount,
 };
 
 const renderComponent = (props = {}) => {
