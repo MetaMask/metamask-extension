@@ -9,5 +9,5 @@ export const extractNetworkName = (
       ? network.name
       : `networkName${network.name.split(' ')[0]}`;
   }
-  return 'unknownNetworkForGatorPermissions';
+  return 'unknownNetworkForKeyEntropy';
 };

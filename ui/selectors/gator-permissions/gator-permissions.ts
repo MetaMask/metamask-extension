@@ -35,6 +35,27 @@ export type GatorAssetListDescriptionLookup = {
   other: string;
 };
 
+export type FilteredGatorPermissionsByType = {
+  streams: {
+    count: number;
+    chains: Hex[];
+    permissions: {
+      permission: StoredGatorPermissionSanitized<SignerParam, PermissionTypes>;
+      chainId: Hex;
+      permissionType: string;
+    }[];
+  };
+  subscriptions: {
+    count: number;
+    chains: Hex[];
+    permissions: {
+      permission: StoredGatorPermissionSanitized<SignerParam, PermissionTypes>;
+      chainId: Hex;
+      permissionType: string;
+    }[];
+  };
+};
+
 const defaultGatorAssetListDescriptionLookup: GatorAssetListDescriptionLookup =
   {
     'token-streams': 'streaming permissions',
@@ -205,4 +226,155 @@ export function getGatorAssetListDetail(
   }
 
   return gatorAssetItemList;
+}
+
+/**
+ * Get filtered gator permissions by type and site origin.
+ *
+ * This function takes the full gator permissions map and filters it to return
+ * only permissions that match the specified site origin.
+ * It groups the results into two main categories:
+ * - streams: Combined count of native-token-stream and erc20-token-stream permissions
+ * - subscriptions: Combined count of native-token-periodic and erc20-token-periodic permissions
+ * Each category includes a list of all chains on which these permissions occur.
+ *
+ * @param state - The current state
+ * @param siteOrigin - The site origin to filter by (e.g., 'https://example.com')
+ * @returns Object with counts and chain lists for streams and subscriptions
+ */
+export function getFilteredGatorPermissionsByType(
+  state: GatorPermissionState,
+  siteOrigin: string,
+): FilteredGatorPermissionsByType {
+  // Cast the state to the expected type for the internal function
+  const gatorPermissions = getGatorPermissionsMap(state as GatorPermissionState);
+
+  const result = {
+    streams: {
+      count: 0,
+      chains: new Set<Hex>(),
+      permissions: [] as {
+        permission: StoredGatorPermissionSanitized<
+          SignerParam,
+          PermissionTypes
+        >;
+        chainId: Hex;
+        permissionType: string;
+      }[],
+    },
+    subscriptions: {
+      count: 0,
+      chains: new Set<Hex>(),
+      permissions: [] as {
+        permission: StoredGatorPermissionSanitized<
+          SignerParam,
+          PermissionTypes
+        >;
+        chainId: Hex;
+        permissionType: string;
+      }[],
+    },
+  };
+
+  // Process stream permissions (native-token-stream + erc20-token-stream)
+  const streamTypes: (keyof GatorPermissionsMap)[] = [
+    'native-token-stream',
+    'erc20-token-stream',
+  ];
+  streamTypes.forEach((permissionType) => {
+    const permissionsForType = gatorPermissions[permissionType];
+    if (permissionsForType) {
+      Object.entries(permissionsForType).forEach(([chainId, permissions]) => {
+        const chainIdHex = chainId as Hex;
+        // Filter permissions by site origin
+        const filteredPermissions = permissions.filter(
+          (
+            permission: StoredGatorPermissionSanitized<
+              SignerParam,
+              PermissionTypes
+            >,
+          ) => permission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
+        );
+
+        if (filteredPermissions.length > 0) {
+          result.streams.count += filteredPermissions.length;
+          result.streams.chains.add(chainIdHex);
+
+          // Add raw permission data only
+          filteredPermissions.forEach(
+            (
+              permission: StoredGatorPermissionSanitized<
+                SignerParam,
+                PermissionTypes
+              >,
+            ) => {
+              result.streams.permissions.push({
+                permission,
+                chainId: chainIdHex,
+                permissionType,
+              });
+            },
+          );
+        }
+      });
+    }
+  });
+
+  // Process subscription permissions (native-token-periodic + erc20-token-periodic)
+  const subscriptionTypes: (keyof GatorPermissionsMap)[] = [
+    'native-token-periodic',
+    'erc20-token-periodic',
+  ];
+  subscriptionTypes.forEach((permissionType) => {
+    const permissionsForType = gatorPermissions[permissionType];
+    if (permissionsForType) {
+      Object.entries(permissionsForType).forEach(([chainId, permissions]) => {
+        const chainIdHex = chainId as Hex;
+        // Filter permissions by site origin
+        const filteredPermissions = permissions.filter(
+          (
+            permission: StoredGatorPermissionSanitized<
+              SignerParam,
+              PermissionTypes
+            >,
+          ) => permission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
+        );
+
+        if (filteredPermissions.length > 0) {
+          result.subscriptions.count += filteredPermissions.length;
+          result.subscriptions.chains.add(chainIdHex);
+
+          // Add raw permission data only
+          filteredPermissions.forEach(
+            (
+              permission: StoredGatorPermissionSanitized<
+                SignerParam,
+                PermissionTypes
+              >,
+            ) => {
+              result.subscriptions.permissions.push({
+                permission,
+                chainId: chainIdHex,
+                permissionType,
+              });
+            },
+          );
+        }
+      });
+    }
+  });
+
+  // Convert Sets to arrays for the final result
+  return {
+    streams: {
+      count: result.streams.count,
+      chains: Array.from(result.streams.chains),
+      permissions: result.streams.permissions,
+    },
+    subscriptions: {
+      count: result.subscriptions.count,
+      chains: Array.from(result.subscriptions.chains),
+      permissions: result.subscriptions.permissions,
+    },
+  };
 }
