@@ -38,7 +38,13 @@ export const Amount = () => {
       setAmount(newValue);
       setAmountInputMethodManual();
     },
-    [fiatMode, getNativeValue, setAmount, updateValue],
+    [
+      fiatMode,
+      getNativeValue,
+      setAmount,
+      setAmountInputMethodManual,
+      updateValue,
+    ],
   );
 
   const toggleFiatMode = useCallback(() => {
