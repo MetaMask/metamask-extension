@@ -1,5 +1,4 @@
 import { Hex } from '@metamask/utils';
-import { toHex } from '@metamask/controller-utils';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { isNativeAddress } from '@metamask/bridge-controller';
 import { useCallback, useMemo } from 'react';
@@ -9,7 +8,7 @@ import { Numeric } from '../../../../../../shared/modules/Numeric';
 import { getTokenBalances } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Asset } from '../../../types/send';
-import { fromTokenMinimalUnitsNumeric, isDecimal } from '../../../utils/send';
+import { fromTokenMinimalUnitsNumeric } from '../../../utils/send';
 import { useSendContext } from '../../../context/send';
 
 type AccountWithBalances = Record<Hex, { balance: Hex }>;
@@ -34,11 +33,8 @@ const validateAmountFn = ({
   t,
   tokenBalances,
 }: ValidateAmountFnArgs): string | undefined => {
-  if (!asset || amount === undefined || amount === null || amount === '') {
+  if (!asset || !amount) {
     return undefined;
-  }
-  if (!isDecimal(amount) || Number(amount) < 0) {
-    return t('invalidValue');
   }
   let weiValue;
   let weiBalance;
@@ -78,16 +74,16 @@ const validateAmountFn = ({
 export const useEvmAmountValidation = () => {
   const t = useI18nContext();
   const tokenBalances = useSelector(getTokenBalances);
-  const { asset, from, value } = useSendContext();
+  const { asset, chainId, from, value } = useSendContext();
   const accountsByChainId = useSelector(
     (state: MetamaskSendState) => state.metamask.accountsByChainId,
   ) as AccountWithBalances;
   const accountsWithBalances = useMemo(() => {
-    if (asset?.chainId && asset?.address && isEvmAddress(asset?.address)) {
-      return accountsByChainId[toHex(asset?.chainId)];
+    if (chainId && asset?.address && isEvmAddress(asset?.address)) {
+      return accountsByChainId[chainId as Hex];
     }
     return undefined;
-  }, [accountsByChainId, asset?.address, asset?.chainId]);
+  }, [accountsByChainId, asset?.address, chainId]);
 
   const validateEvmAmount = useCallback(
     () =>
