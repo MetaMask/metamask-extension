@@ -25,14 +25,14 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
-} from '../../../../shared/constants/network';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
+  formatGatorAmountLabel,
+  getGatorPermissionDisplayMetadata,
+  getGatorPermissionTokenInfo,
+} from '../../../../shared/lib/gator-permissions-utils';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { getPeriodDescription } from '../../../../shared/lib/gator-permissions-utils';
+import { getUseExternalServices } from '../../../selectors';
 import {
   TextColor,
   TextVariant,
@@ -62,137 +62,68 @@ const PermissionItem = ({
   const permissionData =
     permission.permission.permissionResponse.permission.data;
 
-  // Helper function to get token information based on permission type and chain
-  const getTokenInfo = React.useCallback(
-    (
-      permissionType: string,
-      chainId: string,
-      networkConfig: { nativeCurrency?: string } | null | undefined,
-    ) => {
-      const isNativeToken = permissionType.includes('native-token');
+  const allowExternalServices = useSelector(getUseExternalServices);
 
-      if (isNativeToken) {
-        const nativeSymbol =
-          networkConfig?.nativeCurrency ||
-          CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-            chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-          ] ||
-          'ETH';
-        return {
-          name: nativeSymbol,
-          decimals: 18,
-        };
+  // Resolve token info (native or ERC-20) for this permission
+  const [resolvedTokenInfo, setResolvedTokenInfo] = React.useState<{
+    symbol: string;
+    decimals: number;
+  }>({ symbol: 'Unknown Token', decimals: 18 });
+
+  // Resolve token info (native or ERC-20) for this permission
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const info = await getGatorPermissionTokenInfo({
+        permissionType: permission.permissionType,
+        chainId: permission.chainId,
+        networkConfig: networkConfigurationsByCaipChainId?.[permission.chainId],
+        permissionData,
+        allowExternalServices,
+      });
+      if (!cancelled) {
+        setResolvedTokenInfo(info);
       }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    allowExternalServices,
+    permission.permissionType,
+    permission.chainId,
+    permissionData,
+    networkConfigurationsByCaipChainId,
+  ]);
 
-      // TODO: Get actual token data for ERC20 tokens
-      return {
-        name: 'Unknown Token',
-        decimals: 18,
-      };
-    },
-    [],
-  );
-
-  // Helper function to format amount with proper frequency
+  // Format amount description for this permission
   const formatAmountDescription = React.useCallback(
     (
       amount: string,
       tokenName: string,
       frequency: string,
       tokenDecimals: number,
-      permissionType: string,
-    ) => {
-      if (!amount || amount === '0') {
-        return 'Permission details unavailable';
-      }
-
-      try {
-        let numericAmount: number;
-
-        if (amount.startsWith('0x')) {
-          const tokenAmount = calcTokenAmount(amount, tokenDecimals);
-          numericAmount = tokenAmount.toNumber();
-        } else {
-          numericAmount = parseFloat(amount);
-          if (isNaN(numericAmount)) {
-            return 'Permission details unavailable';
-          }
-        }
-
-        const formattedAmount = formatWithThreshold(
-          numericAmount,
-          0.00001,
-          locale,
-          {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 5,
-          },
-        );
-
-        const isStreaming = permissionType.includes('stream');
-        const frequencyText = isStreaming ? t('perSecond') : frequency;
-
-        return `${formattedAmount} ${tokenName} ${frequencyText}`;
-      } catch (error) {
-        console.error('Error formatting amount:', error);
-        return 'Permission details unavailable';
-      }
-    },
-    [locale, t],
+    ) =>
+      formatGatorAmountLabel({
+        amount,
+        tokenSymbol: tokenName,
+        frequency,
+        tokenDecimals,
+        locale,
+      }),
+    [locale],
   );
 
-  // Helper function to get permission metadata
+  // Get permission metadata for this permission
   const getPermissionMetadata = React.useCallback(
-    (permissionType: string, permissionDataParam: unknown) => {
-      if (
-        permissionType === 'native-token-stream' ||
-        permissionType === 'erc20-token-stream'
-      ) {
-        return {
-          displayName: t('tokenStream'),
-          amount: (permissionDataParam as any).amountPerSecond as string,
-          frequency: t('perSecond'),
-        };
-      }
-
-      if (
-        permissionType === 'native-token-periodic' ||
-        permissionType === 'erc20-token-periodic'
-      ) {
-        const periodDuration = (permissionDataParam as any)
-          .periodDuration as string;
-        return {
-          displayName: t('tokenSubscription'),
-          amount: (permissionDataParam as any).periodAmount as string,
-          frequency: getPeriodDescription(periodDuration, t),
-        };
-      }
-
-      return {
-        displayName: 'Permission',
-        amount: '',
-        frequency: '',
-      };
-    },
-    [t, permissionData],
+    (permissionType: string, permissionDataParam: unknown) =>
+      getGatorPermissionDisplayMetadata(permissionType, permissionDataParam, t),
+    [t],
   );
 
   const computedValues = React.useMemo(() => {
-    if (
-      !networkConfigurationsByCaipChainId ||
-      typeof networkConfigurationsByCaipChainId !== 'object'
-    ) {
-      return {
-        displayName: 'Permission',
-        formattedDescription: 'Permission details unavailable',
-        networkIcon: '',
-        networkName: permission.chainId,
-        canRender: false,
-      };
-    }
-
     const networkConfig =
-      networkConfigurationsByCaipChainId[permission.chainId];
+      networkConfigurationsByCaipChainId?.[permission.chainId];
     const networkIcon =
       CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[permission.chainId] || '';
     const networkName = networkConfig?.name || permission.chainId;
@@ -202,18 +133,11 @@ const PermissionItem = ({
       permissionData,
     );
 
-    const { name: tokenName, decimals: tokenDecimals } = getTokenInfo(
-      permission.permissionType,
-      permission.chainId,
-      networkConfig,
-    );
-
     const formattedDescription = formatAmountDescription(
       amount,
-      tokenName,
+      resolvedTokenInfo.symbol,
       frequency,
-      tokenDecimals,
-      permission.permissionType,
+      resolvedTokenInfo.decimals,
     );
 
     return {
@@ -221,44 +145,15 @@ const PermissionItem = ({
       formattedDescription,
       networkIcon,
       networkName,
-      canRender: true,
     };
   }, [
     permission,
     permissionData,
     networkConfigurationsByCaipChainId,
-    getTokenInfo,
+    resolvedTokenInfo,
     formatAmountDescription,
     getPermissionMetadata,
   ]);
-
-  if (!computedValues.canRender) {
-    return (
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        gap={4}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
-        paddingBottom={4}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
-      >
-        <Box width={BlockSize.Full}>
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
-          >
-            {computedValues.displayName}
-          </Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            {computedValues.formattedDescription}
-          </Text>
-        </Box>
-      </Box>
-    );
-  }
 
   return (
     <Box
@@ -299,14 +194,12 @@ export const DisconnectPermissionsModal = ({
   onClose,
   onSkip,
   onRemoveAll,
-  hostname,
   permissions = [],
 }: {
   isOpen: boolean;
   onClose: () => void;
   onSkip: () => void;
   onRemoveAll: () => void;
-  hostname: string;
   permissions?: {
     permission: StoredGatorPermissionSanitized<SignerParam, PermissionTypes>;
     chainId: Hex;
@@ -330,7 +223,7 @@ export const DisconnectPermissionsModal = ({
           <Box padding={4}>
             <Text>{t('otherPermissionsOnSiteDescription')}</Text>
           </Box>
-          {permissions && permissions.length > 0 && (
+          {permissions.length > 0 && (
             <Box>
               {permissions.map((permission, index) => {
                 return (

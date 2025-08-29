@@ -360,7 +360,6 @@ export const ReviewPermissions = () => {
                 removeAllPermissionsIncludingGator();
                 setShowDisconnectPermissionsModal(false);
               }}
-              hostname={activeTabOrigin}
               permissions={allSiteGatorPermissions}
             />
           ) : null}

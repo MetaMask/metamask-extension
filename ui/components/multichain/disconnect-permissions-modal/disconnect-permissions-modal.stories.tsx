@@ -17,10 +17,6 @@ export default {
       control: 'boolean',
       description: 'Controls whether the modal is visible',
     },
-    hostname: {
-      control: 'text',
-      description: 'The hostname of the site',
-    },
     onClose: {
       action: 'closed',
       description: 'Called when the modal is closed',
@@ -41,7 +37,6 @@ const Template = (args) => <DisconnectPermissionsModal {...args} />;
 export const Default = Template.bind({});
 Default.args = {
   isOpen: true,
-  hostname: 'example.com',
   permissions: [
     {
       permission: {
@@ -78,5 +73,4 @@ Default.args = {
 export const Closed = Template.bind({});
 Closed.args = {
   isOpen: false,
-  hostname: 'example.com',
 };
