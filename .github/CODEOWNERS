@@ -54,6 +54,7 @@ ui/components/component-library      @MetaMask/design-system-engineers
 tailwind.config.js                   @MetaMask/design-system-engineers
 
 # The Notifications team is responsible for code related to notifications
+# This includes Carousel Banners. Please use Contentful for managing banners.
 
 # Controllers
 **/controllers/metamask-notifications/**            @MetaMask/notifications
@@ -64,6 +65,10 @@ tailwind.config.js                   @MetaMask/design-system-engineers
 **/multichain/notification*/**                      @MetaMask/notifications
 **/pages/notification*/**                           @MetaMask/notifications
 **/utils/notification.util.ts                       @MetaMask/notifications
+
+# Carousel Banner
+ui/components/multichain/carousel/**                @MetaMask/notifications
+ui/hooks/useCarouselManagement/**                   @MetaMask/notifications
 
 # Identity team is responsible for authentication and backup and sync inside the Extension.
 # Slack handle: @identity_team | Slack channel: #metamask-identity
@@ -103,7 +108,6 @@ ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/c
 ui/components/app/whats-new-popup     @MetaMask/wallet-ux
 ui/css                                @MetaMask/wallet-ux
 ui/pages/home                         @MetaMask/wallet-ux
-ui/components/multichain/             @MetaMask/wallet-ux
 
 # Co-owned by accounts and wallet-ux
 ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/wallet-ux
