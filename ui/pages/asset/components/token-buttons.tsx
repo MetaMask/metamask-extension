@@ -197,9 +197,10 @@ const TokenButtons = ({
       );
       if (process.env.SEND_REDESIGN_ENABLED) {
         const queryParams = new URLSearchParams();
-        queryParams.append('chainId', token.chainId);
-        queryParams.append('address', token.address);
-        history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
+        queryParams.append('asset', token.address);
+        history.push(
+          `${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`,
+        );
       } else {
         history.push(SEND_ROUTE);
       }
