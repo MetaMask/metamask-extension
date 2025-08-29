@@ -944,6 +944,15 @@ class FixtureBuilder {
     });
   }
 
+  /**
+   * Note: When using this method, you also need to disable the smart transactions
+   * migration in your test by adding the following manifest flag:
+   * ```
+   * manifestFlags: {
+   *   testing: { disableSmartTransactionsMigration: true },
+   * }
+   * ```
+   */
   withPreferencesControllerSmartTransactionsOptedOut() {
     return this.withPreferencesController({
       preferences: {
