@@ -9,6 +9,8 @@ import {
   fromTokenMinimalUnits,
   toTokenMinimalUnit,
   formatToFixedDecimals,
+  isDecimal,
+  convertedCurrency,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -135,6 +137,29 @@ describe('Send - utils', () => {
         value: '0x64',
       });
       expect(findNetworkClientIdByChainId).toHaveBeenCalledWith('0x1');
+    });
+  });
+
+  describe('isDecimal', () => {
+    it('return true for decimal values and false otherwise', () => {
+      expect(isDecimal('10')).toBe(true);
+      expect(isDecimal('10.01')).toBe(true);
+      expect(isDecimal('.01')).toBe(true);
+      expect(isDecimal('-0.01')).toBe(true);
+      expect(isDecimal('abc')).toBe(false);
+      expect(isDecimal(' ')).toBe(false);
+    });
+  });
+
+  describe('convertedCurrency', () => {
+    it('return undefined for invalid input value', () => {
+      expect(convertedCurrency('abc', 15)).not.toBeDefined();
+      expect(convertedCurrency('-10', 15)).not.toBeDefined();
+    });
+
+    it('apply conversion rate to a currency', () => {
+      expect(convertedCurrency('10.100', 15)).toBe('151.5');
+      expect(convertedCurrency('250', 0.001)).toBe('0.25');
     });
   });
 });

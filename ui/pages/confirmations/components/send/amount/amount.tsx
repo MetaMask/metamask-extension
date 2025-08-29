@@ -110,10 +110,11 @@ export const Amount = () => {
           <div>
             {!isERC1155 && (
               <ButtonIcon
-                iconName={IconName.SwapVertical}
                 ariaLabel="toggle fiat mode"
-                size={ButtonIconSize.Sm}
+                iconName={IconName.SwapVertical}
                 onClick={toggleFiatMode}
+                size={ButtonIconSize.Sm}
+                data-testid="toggle-fiat-mode"
               />
             )}
           </div>

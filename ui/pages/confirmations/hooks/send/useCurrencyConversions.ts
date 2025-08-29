@@ -127,7 +127,7 @@ export const useCurrencyConversions = () => {
         conversionRate,
         currentCurrency,
       }),
-    [conversionRate],
+    [conversionRate, currentCurrency],
   );
 
   const getNativeValue = useCallback(
@@ -146,7 +146,7 @@ export const useCurrencyConversions = () => {
         amount,
         conversionRate,
       }),
-    [conversionRate],
+    [asset, conversionRate],
   );
 
   return {
