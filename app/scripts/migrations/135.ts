@@ -32,8 +32,8 @@ export const version = 135;
 function transformState(state: VersionedData['data']) {
   // Check if smart transactions migration should be disabled
   const manifestFlags = getManifestFlags();
-  if (manifestFlags.testing?.disableSmartTransactionsMigration === true) {
-    // Skip the migration if the flag is enabled
+  if (manifestFlags.testing?.disableSmartTransactionsOverride === true) {
+    // Skip the stx override if the flag is enabled
     return state;
   }
 
