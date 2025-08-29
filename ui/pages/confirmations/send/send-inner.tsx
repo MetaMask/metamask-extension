@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { Amount } from '../components/send/amount';
+import { AmountRecipient } from '../components/send/amount-recipient';
 import { Asset } from '../components/send/asset';
 import { Loader } from '../components/send/loader';
 import { SendPages } from '../constants/send';
-import { Recipient } from '../components/send/recipient';
 import { useSendContext } from '../context/send';
 import { useSendQueryParams } from '../hooks/send/useSendQueryParams';
 
@@ -18,11 +17,8 @@ export const SendInner = () => {
   if (currentPage === SendPages.ASSET) {
     return <Asset />;
   }
-  if (currentPage === SendPages.AMOUNT) {
-    return <Amount />;
-  }
-  if (currentPage === SendPages.RECIPIENT) {
-    return <Recipient />;
+  if (currentPage === SendPages.AMOUNTRECIPIENT) {
+    return <AmountRecipient />;
   }
 
   return null;

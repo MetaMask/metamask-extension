@@ -2170,18 +2170,15 @@ const backgroundSetLocked = (): Promise<void> => {
   });
 };
 
-export function lockMetamask(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function lockMetamask(
+  message?: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.setLocked`);
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
+    dispatch(showLoadingIndication(message));
 
     return backgroundSetLocked()
       .then(() => forceUpdateMetamaskState(dispatch))

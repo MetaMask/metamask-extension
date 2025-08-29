@@ -130,9 +130,8 @@ export function AssetPickerModalNftTab({
     );
     if (process.env.SEND_REDESIGN_ENABLED) {
       const queryParams = new URLSearchParams();
-      queryParams.append('address', nft.address);
-      queryParams.append('tokenId', nft.tokenId.toString());
-      history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
+      queryParams.append('asset', nft.address);
+      history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
     } else {
       history.push(SEND_ROUTE);
     }
