@@ -1,37 +1,46 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import {
   Button,
   Text,
   TextField,
 } from '../../../../../components/component-library';
+import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useBalance } from '../../../hooks/send/useBalance';
-import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
+import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversions';
 import { useSendContext } from '../../../context/send';
-import { Header } from '../header';
 
 export const Amount = () => {
-  const { goToSendToPage, goToPreviousPage } = useNavigateSendPage();
-  const { updateValue } = useSendContext();
+  const { value, updateValue } = useSendContext();
+  const [amount, setAmount] = useState(value ?? '');
+  const { amountError } = useAmountValidation();
   const { balance } = useBalance();
+  const [fiatMode, setFiatMode] = useState(false);
+  const { getNativeValue } = useCurrencyConversions();
 
   const onChange = useCallback(
-    (event) => updateValue(event.target.value),
-    [updateValue],
+    (event) => {
+      const newValue = event.target.value;
+      updateValue(fiatMode ? getNativeValue(newValue) : newValue);
+      setAmount(newValue);
+    },
+    [fiatMode, getNativeValue, setAmount, updateValue],
   );
 
+  const toggleFiatMode = useCallback(() => {
+    setAmount('');
+    setFiatMode(!fiatMode);
+  }, [fiatMode, setAmount, setFiatMode]);
+
   return (
-    <div className="send__wrapper">
-      <div className="send__container">
-        <div className="send__content">
-          <Header />
-          <p>AMOUNTs</p>
-          <TextField onChange={onChange} />
-          <Text>Balance: {balance}</Text>
-          <Button onClick={goToPreviousPage}>Previous</Button>
-          <Button onClick={goToSendToPage}>Continue</Button>
-        </div>
-      </div>
+    <div>
+      <p>AMOUNT</p>
+      <TextField value={amount} onChange={onChange} />
+      <Text>Balance: {balance}</Text>
+      <Text>Error: {amountError}</Text>
+      <Button onClick={toggleFiatMode}>
+        {fiatMode ? 'Native Mode' : 'Fiat Mode'}
+      </Button>
     </div>
   );
 };

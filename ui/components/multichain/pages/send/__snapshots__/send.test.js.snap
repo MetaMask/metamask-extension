@@ -66,10 +66,10 @@ exports[`SendPage render and initialization should render correctly even when a 
                   class="mm-box min-w-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                    class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="flex [&>div]:!rounded-none"
                     >
                       <div
                         style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
