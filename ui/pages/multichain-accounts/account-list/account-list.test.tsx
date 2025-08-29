@@ -7,17 +7,21 @@ import configureStore from '../../../store/store';
 import { AccountList } from './account-list';
 
 const mockHistoryGoBack = jest.fn();
+const mockHistoryPush = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
     goBack: mockHistoryGoBack,
+    push: mockHistoryPush,
   }),
 }));
 
 describe('AccountList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Disable reselect dev mode checks for testing
+    process.env.NODE_ENV = 'production';
   });
 
   const renderComponent = () => {
@@ -68,6 +72,10 @@ describe('AccountList', () => {
         current: {
           back: 'Back',
           accounts: 'Accounts',
+          addWallet: 'Add wallet',
+          importAWallet: 'Import a wallet',
+          importAnAccount: 'Import an account',
+          addAHardwareWallet: 'Add a hardware wallet',
         },
       },
     });
@@ -99,5 +107,20 @@ describe('AccountList', () => {
     fireEvent.click(backButton);
 
     expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+  });
+
+  it('opens the add wallet modal when the add wallet button is clicked', () => {
+    renderComponent();
+
+    // First, let's verify the button is rendered by looking for it with role
+    const addWalletButton = screen.getByRole('button', { name: 'Add wallet' });
+    expect(addWalletButton).toBeInTheDocument();
+
+    fireEvent.click(addWalletButton);
+
+    // The modal renders with portal, so we need to look for modal content
+    expect(screen.getByText('Import a wallet')).toBeInTheDocument();
+    expect(screen.getByText('Import an account')).toBeInTheDocument();
+    expect(screen.getByText('Add a hardware wallet')).toBeInTheDocument();
   });
 });
