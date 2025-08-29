@@ -50,7 +50,6 @@ const mapStateToProps = (state, ownProps) => {
     ...getSnapInstallOrUpdateRequests(state),
   ];
   const { address: currentAddress } = getSelectedInternalAccount(state);
-
   const permissionsRequest = permissionsRequests.find(
     (req) => req.metadata.id === permissionsRequestId,
   );
