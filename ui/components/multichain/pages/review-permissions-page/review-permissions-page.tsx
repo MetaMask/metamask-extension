@@ -18,6 +18,21 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useRevokeGatorPermissions } from '../../../../hooks/gator-permissions/useRevokeGatorPermissions';
+
+// Custom hook to handle revoking gator permissions across multiple chain IDs so we don't violate calling hooks in a function.
+const useMultiChainGatorRevoke = (chainIds: string[]) => {
+  const revokeFunctions: Record<string, any> = {};
+
+  chainIds.forEach((chainId) => {
+    const { revokeGatorPermissionBatch } = useRevokeGatorPermissions({
+      chainId: chainId as any,
+    });
+    revokeFunctions[chainId] = revokeGatorPermissionBatch;
+  });
+
+  return revokeFunctions;
+};
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllPermittedAccountsForSelectedTab,
@@ -125,10 +140,34 @@ export const ReviewPermissions = () => {
     dispatch(hidePermittedNetworkToast());
   };
 
-  const removeAllPermissionsIncludingGator = () => {
-    // TODO: Implement this function to remove all permissions including gator permissions
-    // For now, just call the existing disconnectAllPermissions function
+  const removeAllPermissionsIncludingGator = async () => {
+
+    // First, remove all regular permissions
     disconnectAllPermissions();
+
+    // Then, revoke all gator permissions grouped by chain ID
+    if (allSiteGatorPermissions.length > 0) {
+      // Group gator permissions by chain ID
+      const gatorPermissionsByChainId = allSiteGatorPermissions.reduce((acc, { permission, chainId }) => {
+        if (!acc[chainId]) {
+          acc[chainId] = [];
+        }
+        acc[chainId].push(permission);
+        return acc;
+      }, {} as Record<string, any[]>);
+
+      // Revoke gator permissions for each chain ID
+      for (const [chainId, permissions] of Object.entries(gatorPermissionsByChainId)) {
+        try {
+          const revokeFunction = revokeFunctionsByChainId[chainId];
+          if (revokeFunction && permissions.length > 0) {
+            await revokeFunction(permissions);
+          }
+        } catch (error) {
+          console.error(`Failed to revoke gator permissions for chain ${chainId}:`, error);
+        }
+      }
+    }
   };
 
   const networkConfigurationsByCaipChainId = useSelector(
@@ -173,6 +212,18 @@ export const ReviewPermissions = () => {
     ];
     return allPermissions;
   }, [filteredGatorPermissions]);
+
+  // Get all unique chain IDs from gator permissions
+  const uniqueGatorChainIds = useMemo(() => {
+    const chainIds = new Set<string>();
+    allSiteGatorPermissions.forEach(({ chainId }) => {
+      chainIds.add(chainId);
+    });
+    return Array.from(chainIds);
+  }, [allSiteGatorPermissions]);
+
+  // Get revoke functions for each unique chain ID
+  const revokeFunctionsByChainId = useMultiChainGatorRevoke(uniqueGatorChainIds);
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
