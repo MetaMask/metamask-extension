@@ -162,6 +162,12 @@ class SwapPage {
     }, 10000);
   }
 
+  async checkSwapButtonIsEnabled(): Promise<void> {
+    await this.driver.waitForSelector(this.swapButton, {
+      state: 'enabled',
+    });
+  }
+
   async submitSwap(): Promise<void> {
     console.log('Submit Swap');
     await this.driver.clickElement(this.swapButton);

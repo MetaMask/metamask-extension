@@ -72,9 +72,7 @@ describe('Ledger Swap', function () {
         await swapPage.selectDestinationToken('DAI');
         await swapPage.dismissManualTokenWarning();
 
-        // This delay is needed to avoid occasional failures in firefox. 1500 second is enough to avoid most of failures cases in firefox.
-        // this delay code was copied from smart-transactions.spec.ts
-        await driver.delay(1500);
+        await swapPage.checkSwapButtonIsEnabled();
         await swapPage.submitSwap();
 
         await swapPage.waitForTransactionToComplete();
