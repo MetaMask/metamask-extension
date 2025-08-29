@@ -125,11 +125,8 @@ exports[`ConnectPage should render correctly 1`] = `
                           <div
                             class="items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
-                            <img
-                              alt="maskicon"
-                              height="32"
-                              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
-                              width="32"
+                            <div
+                              class="flex [&>div]:!rounded-none"
                             />
                           </div>
                           <div
@@ -144,11 +141,8 @@ exports[`ConnectPage should render correctly 1`] = `
                       <div
                         class="inline-flex items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
-                        <img
-                          alt="maskicon"
-                          height="32"
-                          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
-                          width="32"
+                        <div
+                          class="flex [&>div]:!rounded-none"
                         />
                       </div>
                     </div>
@@ -472,12 +466,45 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                           <div
                             class="items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
-                            <img
-                              alt="maskicon"
-                              height="32"
-                              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
-                              width="32"
-                            />
+                            <div
+                              class="flex [&>div]:!rounded-none"
+                            >
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                              >
+                                <svg
+                                  height="32"
+                                  width="32"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#18CDF2"
+                                    height="32"
+                                    transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#035E56"
+                                    height="32"
+                                    transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#F26602"
+                                    height="32"
+                                    transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
@@ -491,12 +518,45 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                       <div
                         class="inline-flex items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
-                        <img
-                          alt="maskicon"
-                          height="32"
-                          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
-                          width="32"
-                        />
+                        <div
+                          class="flex [&>div]:!rounded-none"
+                        >
+                          <div
+                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                          >
+                            <svg
+                              height="32"
+                              width="32"
+                              x="0"
+                              y="0"
+                            >
+                              <rect
+                                fill="#18CDF2"
+                                height="32"
+                                transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                                width="32"
+                                x="0"
+                                y="0"
+                              />
+                              <rect
+                                fill="#035E56"
+                                height="32"
+                                transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                                width="32"
+                                x="0"
+                                y="0"
+                              />
+                              <rect
+                                fill="#F26602"
+                                height="32"
+                                transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                                width="32"
+                                x="0"
+                                y="0"
+                              />
+                            </svg>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div

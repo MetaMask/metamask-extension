@@ -31,11 +31,8 @@ exports[`SendPageAccountPicker render renders correctly 1`] = `
             <div
               class="inline-flex items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
-              <img
-                alt="maskicon"
-                height="32"
-                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
-                width="32"
+              <div
+                class="flex [&>div]:!rounded-none"
               />
             </div>
             <span
