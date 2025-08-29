@@ -4119,6 +4119,10 @@ export function setDataCollectionForMarketing(
   };
 }
 
+/**
+ * @deprecated Use setAvatarType instead
+ * @param val - Boolean value for blockie preference
+ */
 export function setUseBlockie(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4127,6 +4131,23 @@ export function setUseBlockie(
     log.debug(`background.setUseBlockie`);
     callBackgroundMethod('setUseBlockie', [val], (err) => {
       dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
+export function setAvatarType(
+  value: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch({
+      type: 'SET_AVATAR_TYPE',
+      value,
+    });
+
+    callBackgroundMethod('setAvatarType', [value], (err) => {
       if (err) {
         dispatch(displayWarning(err));
       }

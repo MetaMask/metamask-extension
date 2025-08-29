@@ -10,7 +10,7 @@ exports[`Badge Status should not render the badge if showConnectedStatus is fals
       class="mm-box mm-badge-wrapper mm-box--display-inline-block"
     >
       <div
-        class="items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 flex"
+        class="items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
       >
         <img
           alt="Blockies for 0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
@@ -46,7 +46,7 @@ exports[`Badge Status should render correctly 1`] = `
           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
           <div
-            class="items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 flex"
+            class="items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
           >
             <img
               alt="Blockies for 0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"

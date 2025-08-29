@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import {
+  AvatarAccount,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import {
   TextVariant,
@@ -15,8 +19,6 @@ import ToggleButton from '../../../components/ui/toggle-button';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
-import Jazzicon from '../../../components/ui/jazzicon';
-import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -55,7 +57,8 @@ export default class SettingsTab extends PureComponent {
   };
 
   static propTypes = {
-    setUseBlockie: PropTypes.func,
+    avatarType: PropTypes.string,
+    setAvatarType: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
     updateCurrentLocale: PropTypes.func,
     currentLocale: PropTypes.string,
@@ -66,7 +69,6 @@ export default class SettingsTab extends PureComponent {
     hideZeroBalanceTokens: PropTypes.bool,
     setHideZeroBalanceTokens: PropTypes.func,
     selectedAddress: PropTypes.string,
-    tokenList: PropTypes.object,
     theme: PropTypes.string,
     setTheme: PropTypes.func,
   };
@@ -206,15 +208,17 @@ export default class SettingsTab extends PureComponent {
 
   renderBlockieOptIn() {
     const { t } = this.context;
-    const { useBlockie, setUseBlockie, selectedAddress, tokenList } =
+    const { useBlockie, avatarType, setAvatarType, selectedAddress } =
       this.props;
 
-    const getIconStyles = () => ({
-      display: 'block',
-      borderRadius: '16px',
-      width: '32px',
-      height: '32px',
-    });
+    let currentAvatarType;
+    if (avatarType !== undefined) {
+      currentAvatarType = avatarType;
+    } else if (useBlockie) {
+      currentAvatarType = 'blockies';
+    } else {
+      currentAvatarType = 'jazzicon';
+    }
 
     return (
       <Box
@@ -238,72 +242,74 @@ export default class SettingsTab extends PureComponent {
             marginBottom={3}
             className="settings-page__content-item__description"
           >
-            {t('jazzAndBlockies')}
+            {t('accountIdenticonDescription')}
           </Text>
-          <div className="settings-page__content-item__identicon">
+          <div className="settings-page__content-item__identicon gap-8">
             <button
-              data-testid="jazz_icon"
-              onClick={() => setUseBlockie(false)}
-              className="settings-page__content-item__identicon__item"
+              data-testid="maskicon_icon"
+              onClick={() => setAvatarType('maskicon')}
+              className="flex items-center gap-2 justify-center flex-wrap"
             >
-              <div
-                className={classnames(
-                  'settings-page__content-item__identicon__item__icon',
-                  {
-                    'settings-page__content-item__identicon__item__icon--active':
-                      !useBlockie,
-                  },
-                )}
-              >
-                <Jazzicon
-                  id="jazzicon"
-                  address={selectedAddress}
-                  diameter={32}
-                  tokenList={tokenList}
-                  style={getIconStyles()}
-                />
-              </div>
+              <AvatarAccount
+                address={selectedAddress}
+                variant={AvatarAccountVariant.Maskicon}
+                className={classnames({
+                  'outline outline-2 outline-primary-default':
+                    currentAvatarType === 'maskicon',
+                })}
+              />
+
               <Text
                 color={TextColor.textDefault}
                 variant={TextVariant.bodySm}
                 as="h6"
-                marginTop={0}
-                marginRight={12}
-                marginBottom={0}
-                marginLeft={3}
+              >
+                {/* {t('maskicons')} */}
+                Mask icons
+              </Text>
+            </button>
+            <button
+              data-testid="jazz_icon"
+              onClick={() => setAvatarType('jazzicon')}
+              className="flex items-center gap-2 justify-center flex-wrap"
+            >
+              <AvatarAccount
+                id="jazzicon"
+                address={selectedAddress}
+                variant={AvatarAccountVariant.Jazzicon}
+                className={classnames({
+                  'outline outline-2 outline-primary-default':
+                    currentAvatarType === 'jazzicon',
+                })}
+              />
+
+              <Text
+                color={TextColor.textDefault}
+                variant={TextVariant.bodySm}
+                as="h6"
               >
                 {t('jazzicons')}
               </Text>
             </button>
             <button
               data-testid="blockie_icon"
-              onClick={() => setUseBlockie(true)}
-              className="settings-page__content-item__identicon__item"
+              onClick={() => setAvatarType('blockies')}
+              className="flex items-center gap-2 justify-center flex-wrap"
             >
-              <div
-                className={classnames(
-                  'settings-page__content-item__identicon__item__icon',
-                  {
-                    'settings-page__content-item__identicon__item__icon--active':
-                      useBlockie,
-                  },
-                )}
-              >
-                <BlockieIdenticon
-                  id="blockies"
-                  address={selectedAddress}
-                  diameter={32}
-                  borderRadius="50%"
-                />
-              </div>
+              <AvatarAccount
+                id="blockies"
+                address={selectedAddress}
+                variant={AvatarAccountVariant.Blockies}
+                className={classnames({
+                  'outline outline-2 outline-primary-default':
+                    currentAvatarType === 'blockies',
+                })}
+              />
+
               <Text
                 color={TextColor.textDefault}
                 variant={TextVariant.bodySm}
                 as="h6"
-                marginTop={3}
-                marginRight={0}
-                marginBottom={3}
-                marginLeft={3}
               >
                 {t('blockies')}
               </Text>

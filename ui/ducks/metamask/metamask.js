@@ -184,6 +184,16 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.SET_AVATAR_TYPE: {
+      return {
+        ...metamaskState,
+        preferences: {
+          ...metamaskState.preferences,
+          avatarType: action.value,
+        },
+      };
+    }
+
     default:
       return metamaskState;
   }
