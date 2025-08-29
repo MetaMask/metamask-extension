@@ -1,12 +1,15 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import configureStore from '../../../store/store';
+import mockDefaultState from '../../../../test/data/mock-state.json';
 import {
   MultichainAccountCell,
   MultichainAccountCellProps,
 } from './multichain-account-cell';
 
 describe('MultichainAccountCell', () => {
+  const store = configureStore(mockDefaultState);
   const defaultProps: MultichainAccountCellProps = {
     accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
     accountName: 'Test Account',
@@ -15,7 +18,7 @@ describe('MultichainAccountCell', () => {
   };
 
   it('renders with all required props and displays account information correctly', () => {
-    renderWithProvider(<MultichainAccountCell {...defaultProps} />);
+    renderWithProvider(<MultichainAccountCell {...defaultProps} />, store);
 
     const cellElement = screen.getByTestId(
       `multichain-account-cell-${defaultProps.accountId}`,
@@ -36,6 +39,7 @@ describe('MultichainAccountCell', () => {
   it('shows selection state correctly and applies proper styling', () => {
     renderWithProvider(
       <MultichainAccountCell {...defaultProps} selected={true} />,
+      store,
     );
 
     expect(
@@ -59,6 +63,7 @@ describe('MultichainAccountCell', () => {
     const handleClick = jest.fn();
     renderWithProvider(
       <MultichainAccountCell {...defaultProps} onClick={handleClick} />,
+      store,
     );
 
     const cellElement = screen.getByTestId(
@@ -78,6 +83,7 @@ describe('MultichainAccountCell', () => {
         accountName="Minimal Account"
         balance="$100"
       />,
+      store,
     );
 
     expect(screen.getByText('Minimal Account')).toBeInTheDocument();
@@ -106,6 +112,7 @@ describe('MultichainAccountCell', () => {
         endAccessory={<span data-testid="end-accessory">More</span>}
         selected={true}
       />,
+      store,
     );
 
     expect(screen.getByText('Complete Account')).toBeInTheDocument();
