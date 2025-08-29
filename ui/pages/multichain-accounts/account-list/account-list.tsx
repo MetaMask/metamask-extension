@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Button, ButtonSize, ButtonVariant } from '@metamask/design-system-react';
 import {
   Box,
   ButtonIcon,
@@ -21,6 +22,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 
 export const AccountList = () => {
   const t = useI18nContext();
@@ -28,6 +30,16 @@ export const AccountList = () => {
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
+  
+  const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
+
+  const handleOpenAddWalletModal = () => {
+    setIsAddWalletModalOpen(true);
+  };
+
+  const handleCloseAddWalletModal = () => {
+    setIsAddWalletModalOpen(false);
+  };
 
   return (
     <Page className="account-list-page">
@@ -52,8 +64,16 @@ export const AccountList = () => {
             wallets={wallets}
             selectedAccountGroups={[selectedAccountGroup]}
           />
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
+            onClick={handleOpenAddWalletModal}
+          >
+            {t('addWallet')}
+          </Button>
         </Box>
       </Content>
+      <AddWalletModal isOpen={isAddWalletModalOpen} onClose={handleCloseAddWalletModal} />
     </Page>
   );
 };

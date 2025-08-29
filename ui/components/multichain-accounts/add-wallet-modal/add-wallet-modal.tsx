@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
@@ -25,6 +26,11 @@ import {
 import type { ModalProps } from '../../component-library';
 import { FlexDirection } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  CONNECT_HARDWARE_ROUTE,
+  IMPORT_SRP_ROUTE,
+  NEW_ACCOUNT_ROUTE,
+} from '../../../helpers/constants/routes';
 
 export type AddWalletModalProps = Omit<
   ModalProps,
@@ -38,6 +44,7 @@ type WalletOption = {
   id: string;
   titleKey: string;
   iconName: IconName;
+  route: string;
 };
 
 export const AddWalletModal: React.FC<AddWalletModalProps> = ({
@@ -46,28 +53,32 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   ...props
 }) => {
   const t = useI18nContext();
+  const history = useHistory();
 
   const walletOptions: WalletOption[] = [
     {
       id: 'import-wallet',
       titleKey: 'importAWallet',
       iconName: IconName.Wallet,
+      route: IMPORT_SRP_ROUTE,
     },
     {
       id: 'import-account',
       titleKey: 'importAnAccount',
       iconName: IconName.Download,
+      route: NEW_ACCOUNT_ROUTE,
     },
     {
       id: 'hardware-wallet',
       titleKey: 'addAHardwareWallet',
       iconName: IconName.Hardware,
+      route: CONNECT_HARDWARE_ROUTE,
     },
   ];
 
-  const handleOptionClick = () => {
-    // TODO Handle optionId selection logic here in subsequent PR
+  const handleOptionClick = (option: WalletOption) => {
     onClose?.();
+    history.push(option.route);
   };
 
   return (
@@ -84,11 +95,11 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
           {walletOptions.map((option) => (
             <Box
               key={option.id}
-              onClick={() => handleOptionClick()}
+              onClick={() => handleOptionClick(option)}
               onKeyDown={(e: React.KeyboardEvent) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  handleOptionClick();
+                  handleOptionClick(option);
                 }
               }}
               alignItems={BoxAlignItems.Center}
