@@ -4853,6 +4853,10 @@
   "received": {
     "message": "Received"
   },
+  "receivingAddress": {
+    "message": "Receiving address",
+    "description": "Page title when viewing addresses for receiving funds"
+  },
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
