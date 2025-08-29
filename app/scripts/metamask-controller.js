@@ -3421,9 +3421,8 @@ export default class MetamaskController extends EventEmitter {
       setUseBlockie: preferencesController.setUseBlockie.bind(
         preferencesController,
       ),
-      setAvatarType: preferencesController.setAvatarType.bind(
-        preferencesController,
-      ),
+      setAvatarType: (avatarType) =>
+        preferencesController.setPreference('avatarType', avatarType),
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
       ),

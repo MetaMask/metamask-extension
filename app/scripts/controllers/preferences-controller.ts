@@ -481,15 +481,6 @@ export class PreferencesController extends BaseController<
   }
 
   /**
-   * Setter for the `avatarType` property
-   *
-   * @param avatarType - The user's preferred avatar type
-   */
-  setAvatarType(avatarType: 'maskicon' | 'jazzicon' | 'blockies'): void {
-    this.setPreference('avatarType', avatarType);
-  }
-
-  /**
    * Setter for the `usePhishDetect` property
    *
    * @param val - Whether or not the user prefers phishing domain protection
