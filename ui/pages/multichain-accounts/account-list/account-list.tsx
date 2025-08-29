@@ -6,13 +6,13 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-} from '@metamask/design-system-react';
-import {
   Box,
+  BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-} from '../../../components/component-library';
+  Text,
+} from '@metamask/design-system-react';
 import {
   Content,
   Footer,
@@ -64,13 +64,12 @@ export const AccountList = () => {
         {t('accounts')}
       </Header>
       <Content className="account-list-page__content">
-        <Box className="flex flex-col">
+        <Box flexDirection={BoxFlexDirection.Column}>
           <MultichainAccountList
             wallets={wallets}
             selectedAccountGroups={[selectedAccountGroup]}
           />
         </Box>
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}></Box>
       </Content>
       <Footer className="shadow-sm">
         <Button
