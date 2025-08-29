@@ -544,6 +544,12 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
 );
 
 // Aggregated balance selectors using core pure function
+/**
+ * Returns the `metamask` slice with a safe empty fallback.
+ *
+ * @param state - Redux state used by balance selectors.
+ * @returns The `metamask` slice or an empty object.
+ */
 const getMetamaskState = (state: BalanceCalculationState) =>
   state.metamask ?? {};
 
@@ -554,11 +560,18 @@ const EMPTY_ACCOUNT_TREE = Object.freeze({
 });
 
 // Renamed for clarity
+/**
+ * Derives the minimal Account Tree payload needed by core balance functions.
+ * Provides stable empty fallbacks for memoization resilience.
+ */
 const selectAccountTreeStateForBalances = createSelector(
   [
+    /** @param state - Redux state */
     (state: BalanceCalculationState) => getMetamaskState(state).accountTree,
+    /** @param state - Redux state */
     (state: BalanceCalculationState) =>
       getMetamaskState(state).accountGroupsMetadata,
+    /** @param state - Redux state */
     (state: BalanceCalculationState) =>
       getMetamaskState(state).accountWalletsMetadata,
   ],
@@ -569,8 +582,12 @@ const selectAccountTreeStateForBalances = createSelector(
   }),
 );
 
+/**
+ * Picks internal accounts with defaults in the shape expected by core.
+ */
 const selectAccountsStateForBalances = createSelector(
   [
+    /** @param state - Redux state */
     (state: BalanceCalculationState) =>
       getMetamaskState(state).internalAccounts,
   ],
@@ -579,11 +596,17 @@ const selectAccountsStateForBalances = createSelector(
   }),
 );
 
+/**
+ * Wraps token balances for core balance computations.
+ */
 const selectTokenBalancesStateForBalances = createSelector(
   [getTokenBalances],
   (tokenBalances) => ({ tokenBalances }),
 );
 
+/**
+ * Exposes market data (rates) for core balance computations.
+ */
 const selectTokenRatesStateForBalances = createSelector(
   [getMarketData],
   (marketData) => ({
@@ -591,6 +614,9 @@ const selectTokenRatesStateForBalances = createSelector(
   }),
 );
 
+/**
+ * Provides conversion rates and historical prices with stable fallbacks.
+ */
 const selectMultichainRatesStateForBalances = createSelector(
   [getAssetsRates, getHistoricalPrices],
   (conversionRates, historicalPrices) => ({
@@ -599,11 +625,19 @@ const selectMultichainRatesStateForBalances = createSelector(
   }),
 );
 
+/**
+ * Wraps multichain balances for core balance computations.
+ */
 const selectMultichainBalancesStateForBalances = createSelector(
   [getMultichainBalances],
   (balances) => ({ balances }),
 );
 
+/**
+ * Normalizes tokens state and supplies explicit empty maps for optional pieces.
+ *
+ * @param state - Redux state providing `metamask.allTokens`.
+ */
 const selectTokensStateForBalances = createSelector(
   [(state: BalanceCalculationState) => getMetamaskState(state).allTokens],
   (allTokens) => ({
@@ -613,6 +647,9 @@ const selectTokensStateForBalances = createSelector(
   }),
 );
 
+/**
+ * Exposes current user currency and currency rates with safe defaults.
+ */
 const selectCurrencyRateStateForBalances = createSelector(
   [getCurrentCurrency, getCurrencyRates],
   (currentCurrency, currencyRates) => ({
@@ -621,11 +658,21 @@ const selectCurrencyRateStateForBalances = createSelector(
   }),
 );
 
+/**
+ * Returns the enabled network map as-is for filtering and eligibility checks.
+ */
 const selectEnabledNetworkMapForBalances = createSelector(
   [getEnabledNetworks],
   (map) => map,
 );
 
+/**
+ * Aggregates balances for all wallets and groups using core pure function.
+ * Only the minimal controller state is composed to keep this selector lean.
+ *
+ * @param state - Redux state from which the required slices are derived.
+ * @returns Aggregated balances structure for all wallets and groups.
+ */
 export const selectBalanceForAllWallets = createSelector(
   [
     selectAccountTreeStateForBalances,
@@ -663,6 +710,12 @@ export const selectBalanceForAllWallets = createSelector(
 );
 
 // Balance change selectors (period: '1d' | '7d' | '30d')
+/**
+ * Factory returning a selector that computes balance change across all wallets
+ * for the provided period.
+ *
+ * @param period - Balance change period.
+ */
 export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
   createSelector(
     [
@@ -701,6 +754,11 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
       ),
   );
 
+/**
+ * Convenience factory returning only the percent change for the given period.
+ *
+ * @param period - Balance change period.
+ */
 export const selectBalancePercentChange = (period: BalanceChangePeriod) =>
   createSelector(
     [selectBalanceChangeForAllWallets(period)],
@@ -708,6 +766,13 @@ export const selectBalancePercentChange = (period: BalanceChangePeriod) =>
   );
 
 // Per-account-group balance change selectors using core helper
+/**
+ * Factory returning a selector that computes balance change for a specific
+ * account group and period.
+ *
+ * @param groupId - Account group identifier.
+ * @param period - Balance change period.
+ */
 export const selectBalanceChangeByAccountGroup = (
   groupId: string,
   period: BalanceChangePeriod,
@@ -759,6 +824,12 @@ export const selectBalancePercentChangeByAccountGroup = (
     (change) => change.percentChange,
   );
 
+/**
+ * Computes balance change for the currently selected account group.
+ * Returns a zeroed result when no group is selected.
+ *
+ * @param period - Balance change period.
+ */
 export const selectSelectedGroupBalanceChange = (period: BalanceChangePeriod) =>
   createSelector(
     [
@@ -818,6 +889,12 @@ export const selectSelectedGroupBalancePercentChange = (
     (change) => change.percentChange,
   );
 
+/**
+ * Selects the selected account group's balance entry from the aggregated
+ * balances output, returning a minimal fallback when not present.
+ *
+ * @param state - Redux state used to read selection and aggregated balances.
+ */
 export const selectSelectedGroupBalance = createSelector(
   [selectAccountTreeStateForBalances, selectBalanceForAllWallets],
   (accountTreeState, allBalances) => {
@@ -856,6 +933,12 @@ export const selectBalanceByAccountGroup = (groupId: string) =>
     return wallet.groups[groupId];
   });
 
+/**
+ * Returns a summary for a wallet's balance and its groups, with zeroed fallback
+ * when the wallet entry does not exist in the aggregated output.
+ *
+ * @param walletId - Wallet identifier.
+ */
 export const selectBalanceByWallet = (walletId: string) =>
   createSelector([selectBalanceForAllWallets], (allBalances) => {
     const wallet = allBalances.wallets[walletId] ?? null;
