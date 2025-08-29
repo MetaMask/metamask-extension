@@ -10,14 +10,14 @@ const addAccountToSrp = async (driver: Driver, srpIndex: number) => {
   await headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.check_pageIsLoaded();
+  await accountListPage.checkPageIsLoaded();
 
   // This will create 'Account 3'.
   await accountListPage.addAccount({
     accountType: ACCOUNT_TYPE.Ethereum,
     srpIndex,
   });
-  await accountListPage.check_accountBelongsToSrp('Account 3', srpIndex);
+  await accountListPage.checkAccountBelongsToSrp('Account 3', srpIndex);
 };
 
 describe('Multi SRP - Add accounts', function (this: Suite) {

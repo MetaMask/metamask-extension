@@ -79,6 +79,14 @@ export type ManifestFlags = {
      * The public key used to verify deep links
      */
     deepLinkPublicKey?: string;
+    /**
+     * Whether to disable all of the syncing features that get automatically enabled in migrations 158 and 167
+     */
+    disableSync?: boolean;
+    /**
+     * Whether to simulate an unresponsive background by ignoring connections from the UI
+     */
+    simulateUnresponsiveBackground?: boolean;
   };
 };
 

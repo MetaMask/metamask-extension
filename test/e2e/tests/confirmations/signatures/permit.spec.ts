@@ -67,7 +67,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
-          decodingChangeTypes: ['LISTING', 'RECEIVE'],
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
@@ -106,7 +106,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           location: 'confirmation',
-          decodingChangeTypes: ['LISTING', 'RECEIVE'],
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
@@ -168,7 +168,7 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  await testDapp.check_successSignPermit(publicAddress);
+  await testDapp.checkSuccessSignPermit(publicAddress);
   await testDapp.verifySignPermitResult(expectedSignature);
   await testDapp.verifySignPermitResultR(expectedR);
   await testDapp.verifySignPermitResultS(expectedS);

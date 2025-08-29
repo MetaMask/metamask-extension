@@ -26,9 +26,9 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
-        await accountListPage.check_walletDetailsButtonIsDisplayed();
+        await accountListPage.checkWalletDetailsButtonIsDisplayed();
         await accountListPage.clickWalletDetailsButton();
 
         const walletDetailsPage = new WalletDetailsPage(driver);
@@ -58,9 +58,9 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
-        await accountListPage.check_walletDetailsButtonIsDisplayed();
+        await accountListPage.checkWalletDetailsButtonIsDisplayed();
         await accountListPage.clickWalletDetailsButton();
 
         const walletDetailsPage = new WalletDetailsPage(driver);

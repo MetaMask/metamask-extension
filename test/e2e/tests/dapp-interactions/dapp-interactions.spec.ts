@@ -38,15 +38,15 @@ describe('Dapp interactions', function () {
         await driver.navigate();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // Trigger Notification
         await testDapp.clickAddNetworkButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
-        await new AddNetworkConfirmation(driver).check_pageIsLoaded(
+        await new AddNetworkConfirmation(driver).checkPageIsLoaded(
           'Localhost 8546',
         );
       },
@@ -69,36 +69,36 @@ describe('Dapp interactions', function () {
         // Connect to 2nd dapp => DAPP_ONE
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: DAPP_ONE_URL });
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.clickConnectAccountButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_connectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
+        await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
 
         // Login to homepage
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
         const homepage = new Homepage(driver);
-        await homepage.check_pageIsLoaded();
+        await homepage.checkPageIsLoaded();
 
         // Assert Connection
         await homepage.headerNavbar.openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
-        await permissionListPage.check_connectedToSite(DAPP_HOST_ADDRESS);
-        await permissionListPage.check_connectedToSite(DAPP_ONE_ADDRESS);
+        await permissionListPage.checkPageIsLoaded();
+        await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);
+        await permissionListPage.checkConnectedToSite(DAPP_ONE_ADDRESS);
       },
     );
   });
@@ -115,6 +115,8 @@ describe('Dapp interactions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
+        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -132,14 +134,13 @@ describe('Dapp interactions', function () {
         // Attempt interaction with DApp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.findAndClickCreateToken();
-        await testDapp.clickConnectAccountButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
+        await loginPage.checkPageIsLoaded();
         console.log('Prompted to unlock the wallet');
         await loginPage.loginToHomepage('123456');
-        await loginPage.check_incorrectPasswordMessageIsDisplayed();
+        await loginPage.checkIncorrectPasswordMessageIsDisplayed();
         await loginPage.loginToHomepage();
       },
     );

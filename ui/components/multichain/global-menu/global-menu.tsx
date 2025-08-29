@@ -355,7 +355,7 @@ export const GlobalMenu = ({
         ref={lastItemRef} // ref for last item in GlobalMenu
         iconName={IconName.Lock}
         onClick={() => {
-          dispatch(lockMetamask());
+          dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           history.push(DEFAULT_ROUTE);
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,

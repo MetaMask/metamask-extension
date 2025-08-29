@@ -31,9 +31,9 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getSocialLoginType } from '../../../selectors';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
@@ -129,7 +129,7 @@ export default function CreationSuccessful() {
       history.push(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
-    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+    history.push(ONBOARDING_DOWNLOAD_APP_ROUTE);
   }, [history, isFromReminder, isFromSettingsSecurity]);
 
   return (

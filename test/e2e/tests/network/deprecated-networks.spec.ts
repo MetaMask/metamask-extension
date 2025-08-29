@@ -49,8 +49,8 @@ describe('Deprecated networks', function (this: Suite) {
         });
 
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.check_networkOptionIsDisplayed(
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.checkNetworkOptionIsDisplayed(
           'Goerli',
           false,
         );
@@ -89,7 +89,7 @@ describe('Deprecated networks', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         await driver.executeScript(`
         var params = [{
@@ -110,12 +110,12 @@ describe('Deprecated networks', function (this: Suite) {
       `);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.check_pageIsLoaded('Arbitrum Goerli');
+        await addNetworkConfirmation.checkPageIsLoaded('Arbitrum Goerli');
         await addNetworkConfirmation.approveAddNetwork();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new Homepage(driver).check_warningMessageIsDisplayed(
+        await new Homepage(driver).checkWarningMessageIsDisplayed(
           'Because of updates to the Ethereum system, the Goerli test network will be phased out soon.',
         );
       },
@@ -153,7 +153,7 @@ describe('Deprecated networks', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         await driver.executeScript(`
         var params = [{
@@ -175,12 +175,12 @@ describe('Deprecated networks', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.check_pageIsLoaded('Optimism Goerli');
+        await addNetworkConfirmation.checkPageIsLoaded('Optimism Goerli');
         await addNetworkConfirmation.approveAddNetwork();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new Homepage(driver).check_warningMessageIsDisplayed(
+        await new Homepage(driver).checkWarningMessageIsDisplayed(
           'Because of updates to the Ethereum system, the Goerli test network will be phased out soon.',
         );
       },
@@ -218,7 +218,7 @@ describe('Deprecated networks', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         await driver.executeScript(`
         var params = [{
@@ -240,12 +240,12 @@ describe('Deprecated networks', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.check_pageIsLoaded('Polygon Mumbai');
+        await addNetworkConfirmation.checkPageIsLoaded('Polygon Mumbai');
         await addNetworkConfirmation.approveAddNetwork();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new Homepage(driver).check_warningMessageIsDisplayed(
+        await new Homepage(driver).checkWarningMessageIsDisplayed(
           'This network is deprecated',
         );
       },

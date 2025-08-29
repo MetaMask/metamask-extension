@@ -1,1 +1,1 @@
-export { default } from './routes.container';
+export { default } from './routes.component';

@@ -20,12 +20,12 @@ export const completeOnboardFlowIdentity = async (
   });
 
   const homePage = new HomePage(driver);
-  await homePage.check_pageIsLoaded();
-  await homePage.check_expectedBalanceIsDisplayed('0');
+  await homePage.checkPageIsLoaded();
+  await homePage.checkExpectedBalanceIsDisplayed('0');
 
   const header = new HeaderNavbar(driver);
-  await header.check_pageIsLoaded();
-  await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+  await header.checkPageIsLoaded();
+  await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
   return { homePage, header };
 };
 
@@ -36,24 +36,24 @@ export const completeNewWalletFlowIdentity = async (driver: Driver) => {
   });
 
   const homePage = new HomePage(driver);
-  await homePage.check_pageIsLoaded();
-  await homePage.check_expectedBalanceIsDisplayed('0');
+  await homePage.checkPageIsLoaded();
+  await homePage.checkExpectedBalanceIsDisplayed('0');
 
   const header = new HeaderNavbar(driver);
-  await header.check_pageIsLoaded();
+  await header.checkPageIsLoaded();
   return { homePage, header };
 };
 
 export const getSRP = async (driver: Driver) => {
   const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.check_pageIsLoaded();
+  await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openSettingsPage();
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.check_pageIsLoaded();
+  await settingsPage.checkPageIsLoaded();
   await settingsPage.goToPrivacySettings();
 
   const privacySettings = new PrivacySettings(driver);
-  await privacySettings.check_pageIsLoaded();
+  await privacySettings.checkPageIsLoaded();
   await privacySettings.openRevealSrpQuiz();
   await privacySettings.completeRevealSrpQuiz();
   await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);

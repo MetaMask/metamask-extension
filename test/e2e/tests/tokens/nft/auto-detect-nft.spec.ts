@@ -34,24 +34,22 @@ describe('NFT detection', function () {
         // navigate to security & privacy settings and toggle on NFT autodetection
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleAutodetectNft();
         await settingsPage.closeSettingsPage();
 
         // check that nft is displayed
         const homepage = new Homepage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed();
+        await homepage.checkPageIsLoaded();
+        await homepage.checkExpectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
-        await nftListPage.check_nftNameIsDisplayed(
-          'ENS: Ethereum Name Service',
-        );
-        await nftListPage.check_nftImageIsDisplayed();
+        await nftListPage.checkNftNameIsDisplayed('ENS: Ethereum Name Service');
+        await nftListPage.checkNftImageIsDisplayed();
       },
     );
   });

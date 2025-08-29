@@ -21,7 +21,7 @@ describe('eth_subscribe', function () {
         // eth_subscribe
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const subscribeRequest: string = JSON.stringify({
           jsonrpc: '2.0',

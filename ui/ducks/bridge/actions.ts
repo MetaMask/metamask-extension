@@ -2,6 +2,8 @@ import {
   BridgeBackgroundAction,
   type BridgeController,
   BridgeUserAction,
+  formatChainIdToCaip,
+  isNativeAddress,
   isSolanaChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
@@ -12,10 +14,10 @@ import type {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   forceUpdateMetamaskState,
   setActiveNetworkWithError,
-  setSelectedAccount,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
@@ -25,9 +27,11 @@ import {
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setTxAlerts,
+  setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
+  setEVMSrcNativeBalance,
 } from './bridge';
-import { isNetworkAdded } from './utils';
 import type { TokenPayload } from './types';
+import { isNetworkAdded } from './utils';
 
 const {
   setToChainId,
@@ -55,6 +59,7 @@ export {
   setWasTxDeclined,
   setSlippage,
   setTxAlerts,
+  setEVMSrcNativeBalance,
 };
 
 const callBridgeControllerMethod = (
@@ -112,38 +117,80 @@ export const updateQuoteRequestParams = (
   };
 };
 
+export const setEVMSrcTokenBalance = (
+  token: TokenPayload['payload'],
+  selectedAddress?: string,
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    if (token) {
+      trace({
+        name: TraceName.BridgeBalancesUpdated,
+        data: {
+          srcChainId: formatChainIdToCaip(token.chainId),
+          isNative: isNativeAddress(token.address),
+        },
+        startTime: Date.now(),
+      });
+      await dispatch(
+        setEVMSrcTokenBalance_({
+          selectedAddress,
+          tokenAddress: token.address,
+          chainId: token.chainId,
+        }),
+      );
+    }
+  };
+};
+
 export const setFromChain = ({
   networkConfig,
-  selectedSolanaAccount,
-  selectedEvmAccount,
+  selectedAccount,
   token = null,
 }: {
   networkConfig?:
     | NetworkConfiguration
     | AddNetworkFields
     | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
-  selectedSolanaAccount?: InternalAccount;
-  selectedEvmAccount?: InternalAccount;
+  selectedAccount: InternalAccount | null;
   token?: TokenPayload['payload'];
 }) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    if (
-      networkConfig &&
-      isSolanaChainId(networkConfig.chainId) &&
-      selectedSolanaAccount
-    ) {
-      await dispatch(setSelectedAccount(selectedSolanaAccount.address));
-    } else if (isNetworkAdded(networkConfig) && selectedEvmAccount) {
-      await dispatch(setSelectedAccount(selectedEvmAccount.address));
-      await dispatch(
-        setActiveNetworkWithError(
-          networkConfig.rpcEndpoints[networkConfig.defaultRpcEndpointIndex]
-            .networkClientId || networkConfig.chainId,
-        ),
-      );
+    if (!networkConfig) {
+      return;
     }
+    const isSolana = isSolanaChainId(networkConfig.chainId);
+    // Set the src network
+    if (isSolana) {
+      dispatch(setActiveNetworkWithError(networkConfig.chainId));
+    } else {
+      const networkId = isNetworkAdded(networkConfig)
+        ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
+            ?.networkClientId
+        : null;
+      if (networkId) {
+        dispatch(setActiveNetworkWithError(networkId));
+      }
+    }
+    // Set the src token
     if (token) {
-      await dispatch(setFromToken(token));
+      dispatch(setFromToken(token));
+    }
+    // Fetch the native EVM balance
+    if (selectedAccount && !isSolana) {
+      trace({
+        name: TraceName.BridgeBalancesUpdated,
+        data: {
+          srcChainId: formatChainIdToCaip(networkConfig.chainId),
+          isNative: true,
+        },
+        startTime: Date.now(),
+      });
+      await dispatch(
+        setEVMSrcNativeBalance({
+          selectedAddress: selectedAccount.address,
+          chainId: networkConfig.chainId,
+        }),
+      );
     }
   };
 };

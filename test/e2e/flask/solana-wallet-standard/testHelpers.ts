@@ -41,7 +41,7 @@ const onboardSolanaAccount = async (driver: Driver): Promise<void> => {
   console.log('onboarding a new solana account');
 
   const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.check_isCreateSolanaAccountModalButtonVisible();
+  await connectAccountConfirmation.isCreateSolanaAccountModalButtonVisible();
   await connectAccountConfirmation.createCreateSolanaAccountFromModal();
 };
 
@@ -50,11 +50,11 @@ const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
     'select all accounts without deselecting the already selected accounts',
   );
   const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.openEditAccountsModal();
 
   const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
-  await editConnectedAccountsModal.check_pageIsLoaded();
+  await editConnectedAccountsModal.checkPageIsLoaded();
   await editConnectedAccountsModal.selectAllAccounts();
 };
 
@@ -67,12 +67,12 @@ const selectDevnet = async (driver: Driver): Promise<void> => {
   console.log('select devnet on permissions tab');
 
   const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.goToPermissionsTab();
   await connectAccountConfirmation.openEditNetworksModal();
 
   const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
-  await networkPermissionSelectModal.check_pageIsLoaded();
+  await networkPermissionSelectModal.checkPageIsLoaded();
   await networkPermissionSelectModal.selectNetwork({
     networkName: 'Solana Devnet',
   });
@@ -99,7 +99,7 @@ export const connectSolanaTestDapp = async (
   } = {},
 ): Promise<void> => {
   console.log('connect solana test dapp');
-  await testDapp.check_pageIsLoaded();
+  await testDapp.checkPageIsLoaded();
   const header = await testDapp.getHeader();
   // Set the endpoint to devnet
   await header.setEndpoint(SOLANA_DEVNET_URL);
@@ -129,7 +129,7 @@ export const connectSolanaTestDapp = async (
   }
 
   const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.confirmConnect();
 
   // Go back to the test dapp window
@@ -176,15 +176,15 @@ export const switchToAccount = async (
   accountName: string,
 ): Promise<void> => {
   const nonEvmHomepage = new NonEvmHomepage(driver);
-  await nonEvmHomepage.check_pageIsLoaded();
+  await nonEvmHomepage.checkPageIsLoaded();
   await nonEvmHomepage.headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.check_pageIsLoaded();
-  await accountListPage.check_accountDisplayedInAccountList(accountName);
+  await accountListPage.checkPageIsLoaded();
+  await accountListPage.checkAccountDisplayedInAccountList(accountName);
   await accountListPage.switchToAccount(accountName);
-  await nonEvmHomepage.headerNavbar.check_accountLabel(accountName);
-  await nonEvmHomepage.check_pageIsLoaded();
+  await nonEvmHomepage.headerNavbar.checkAccountLabel(accountName);
+  await nonEvmHomepage.checkPageIsLoaded();
 };
 
 /**

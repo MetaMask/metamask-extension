@@ -68,18 +68,18 @@ describe('Contact syncing - New User', function () {
 
         // Add a test contact to trigger syncing
         const header = new HeaderNavbar(driver);
-        await header.check_pageIsLoaded();
+        await header.checkPageIsLoaded();
 
         // Add a small delay to ensure the menu is ready
         await driver.delay(1000);
 
         await header.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToContactsSettings();
 
         const contactsSettings = new ContactsSettings(driver);
-        await contactsSettings.check_pageIsLoaded();
+        await contactsSettings.checkPageIsLoaded();
 
         // First, let's check if the page is actually showing the right content
         console.log('About to add contact...');
@@ -110,7 +110,7 @@ describe('Contact syncing - New User', function () {
         });
 
         // Verify contact was added locally and synced
-        await contactsSettings.check_contactDisplayed({
+        await contactsSettings.checkContactDisplayed({
           contactName: testContact.name,
           address: '0x12345...67890', // Properly shortened address format
         });

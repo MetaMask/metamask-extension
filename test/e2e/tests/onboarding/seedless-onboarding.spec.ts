@@ -35,13 +35,13 @@ describe('Metamask onboarding (with social login)', function () {
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
       },
     );
   });
@@ -69,7 +69,7 @@ describe('Metamask onboarding (with social login)', function () {
         await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         const displayedWalletAddress = await homePage.getAccountAddress();
 
         assert.deepStrictEqual(

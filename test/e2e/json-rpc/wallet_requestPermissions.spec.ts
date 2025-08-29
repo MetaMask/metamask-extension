@@ -18,7 +18,7 @@ describe('wallet_requestPermissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // wallet_requestPermissions
         const requestPermissionsRequest = JSON.stringify({

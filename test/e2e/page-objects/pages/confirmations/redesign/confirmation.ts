@@ -60,9 +60,7 @@ class Confirmation {
     this.scrollToBottomButton = '.confirm-scroll-to-bottom__button';
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.footerCancelButton,
@@ -129,9 +127,7 @@ class Confirmation {
     await this.driver.clickElement(this.previousPageButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageNumbers(
+  async checkPageNumbers(
     currentPage: number,
     totalPages: number,
   ): Promise<void> {
@@ -161,9 +157,7 @@ class Confirmation {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_nameIsDisplayed(
+  async checkNameIsDisplayed(
     expectedValue: string,
     isSaved: boolean,
   ): Promise<void> {
@@ -218,9 +212,7 @@ class Confirmation {
     await this.driver.clickElement(this.saveButtonSelector);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_proposedNames(
+  async checkProposedNames(
     value: string,
     options: [string, string][],
   ): Promise<void> {

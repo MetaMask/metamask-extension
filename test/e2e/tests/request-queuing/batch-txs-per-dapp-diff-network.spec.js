@@ -128,8 +128,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
             tag: 'button',
           });
         }
-
-        await driver.waitUntilXWindowHandles(3);
       },
     );
   });

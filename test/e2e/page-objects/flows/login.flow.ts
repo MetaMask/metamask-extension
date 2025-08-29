@@ -17,12 +17,12 @@ export const loginWithoutBalanceValidation = async (
   console.log('Navigate to unlock page and try to login with password');
   await driver.navigate();
   const loginPage = new LoginPage(driver);
-  await loginPage.check_pageIsLoaded();
+  await loginPage.checkPageIsLoaded();
   await loginPage.loginToHomepage(password);
 
   // user should land on homepage after successfully logging in with password
   const homePage = new HomePage(driver);
-  await homePage.check_pageIsLoaded();
+  await homePage.checkPageIsLoaded();
 };
 
 /**
@@ -44,8 +44,8 @@ export const loginWithBalanceValidation = async (
 
   // Verify the expected balance on the homepage
   if (localNode) {
-    await homePage.check_localNodeBalanceIsDisplayed(localNode);
+    await homePage.checkLocalNodeBalanceIsDisplayed(localNode);
   } else {
-    await homePage.check_expectedBalanceIsDisplayed(value);
+    await homePage.checkExpectedBalanceIsDisplayed(value);
   }
 };

@@ -18,7 +18,7 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { isBalanceSufficient } from '../../../send/send.utils';
+import { isBalanceSufficient } from '../../../send-legacy/send.utils';
 import { useConfirmContext } from '../../../context/confirm';
 
 export function useInsufficientBalanceAlerts({

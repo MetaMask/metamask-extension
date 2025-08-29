@@ -10,14 +10,14 @@ import SettingsPage from '../pages/settings/settings-page';
  */
 export async function toggleStxSetting(driver: Driver) {
   const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.check_pageIsLoaded();
+  await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openSettingsPage();
 
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.check_pageIsLoaded();
+  await settingsPage.checkPageIsLoaded();
   await settingsPage.clickAdvancedTab();
   const advancedSettingsPage = new AdvancedSettings(driver);
-  await advancedSettingsPage.check_pageIsLoaded();
+  await advancedSettingsPage.checkPageIsLoaded();
   await advancedSettingsPage.toggleSmartTransactions();
   await settingsPage.closeSettingsPage();
 }
@@ -29,14 +29,14 @@ export async function toggleStxSetting(driver: Driver) {
  */
 export async function disableStxSetting(driver: Driver) {
   const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.check_pageIsLoaded();
+  await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openSettingsPage();
 
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.check_pageIsLoaded();
+  await settingsPage.checkPageIsLoaded();
   await settingsPage.clickAdvancedTab();
   const advancedSettingsPage = new AdvancedSettings(driver);
-  await advancedSettingsPage.check_pageIsLoaded();
+  await advancedSettingsPage.checkPageIsLoaded();
   await advancedSettingsPage.toggleSmartTransactionsOff();
   await settingsPage.closeSettingsPage();
 }

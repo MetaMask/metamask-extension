@@ -1,9 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  setEnabledNetworks,
-  setTokenNetworkFilter,
-} from '../../../../../store/actions';
+import { setTokenNetworkFilter } from '../../../../../store/actions';
 import {
   getCurrentNetwork,
   getShouldHideZeroBalanceTokens,
@@ -43,6 +40,7 @@ import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormat
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
+import { enableSingleNetwork } from '../../../../../store/controller-actions/network-order-controller';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -103,7 +101,7 @@ const NetworkFilter = ({
       handleFilterNetwork(chainFilters);
     } else {
       isGlobalNetworkSelectorRemoved
-        ? dispatch(setEnabledNetworks(Object.keys(chainFilters), chainId))
+        ? dispatch(enableSingleNetwork(chainId))
         : dispatch(setTokenNetworkFilter(chainFilters));
     }
 

@@ -20,13 +20,13 @@ class ConnectHardwareWalletPage {
 
   private readonly continueButton = { text: 'Continue', tag: 'button' };
 
+  private readonly closeButton = '[data-testid="hardware-connect-close-btn"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.connectHardwareWalletPageTitle,
@@ -56,6 +56,11 @@ class ConnectHardwareWalletPage {
   async clickContinueButton(): Promise<void> {
     console.log(`Click continue button`);
     await this.driver.clickElement(this.continueButton);
+  }
+
+  async clickCloseButton(): Promise<void> {
+    console.log(`Click close button`);
+    await this.driver.clickElementAndWaitToDisappear(this.closeButton);
   }
 
   async openConnectTrezorPage(): Promise<void> {

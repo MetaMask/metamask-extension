@@ -51,7 +51,7 @@ export async function withBtcAccountSnap(
       // create one BTC account
       await new HeaderNavbar(driver).openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
+      await accountListPage.checkPageIsLoaded();
       await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
       await test(driver, mockServer);
     },

@@ -211,7 +211,6 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function () {
         await driver.clickElement('#maliciousContractInteractionButton');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.assertElementNotPresent('.loading-indicator');

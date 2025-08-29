@@ -134,7 +134,7 @@ async function createWalletInitiatedTransactionAndAssertDetails(
   await homePage.startSendFlow();
 
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
   await sendToPage.fillAmount('1');
 
@@ -144,10 +144,10 @@ async function createWalletInitiatedTransactionAndAssertDetails(
 
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
 }
@@ -182,10 +182,10 @@ async function createDAppInitiatedTransactionAndAssertDetails(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.check_dappInitiatedHeadingTitle();
-  await tokenTransferTransactionConfirmation.check_networkParagraph();
-  await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
-  await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+  await tokenTransferTransactionConfirmation.checkDappInitiatedHeadingTitle();
+  await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
+  await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
 }

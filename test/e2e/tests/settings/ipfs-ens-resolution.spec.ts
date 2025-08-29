@@ -71,12 +71,12 @@ describe('Settings', function () {
         // navigate to security & privacy settings screen
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         // turns off IPFS setting and ENS domain resolution
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleIpfsGateway();
         await privacySettings.toggleEnsDomainResolution();
 

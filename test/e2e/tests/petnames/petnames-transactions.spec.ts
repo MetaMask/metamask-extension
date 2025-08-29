@@ -30,7 +30,7 @@ describe('Petnames - Transactions', function () {
         await testDapp.openTestDappPage();
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.check_nameIsDisplayed(
+        await confirmation.checkNameIsDisplayed(
           ABBREVIATED_ADDRESS_MOCK,
           false,
         );
@@ -40,24 +40,24 @@ describe('Petnames - Transactions', function () {
           value: ABBREVIATED_ADDRESS_MOCK,
           name: CUSTOM_NAME_MOCK,
         });
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.check_nameIsDisplayed(CUSTOM_NAME_MOCK, true);
+        await confirmation.checkNameIsDisplayed(CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
         await confirmation.saveName({
           value: CUSTOM_NAME_MOCK,
           proposedName: PROPOSED_NAME_MOCK,
         });
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.check_nameIsDisplayed(PROPOSED_NAME_MOCK, true);
+        await confirmation.checkNameIsDisplayed(PROPOSED_NAME_MOCK, true);
       },
     );
   });
@@ -79,7 +79,7 @@ describe('Petnames - Transactions', function () {
         const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.check_nameIsDisplayed(
+        await confirmation.checkNameIsDisplayed(
           ABBREVIATED_ADDRESS_MOCK,
           false,
         );
@@ -90,26 +90,26 @@ describe('Petnames - Transactions', function () {
           name: CUSTOM_NAME_MOCK,
         });
 
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterCancelButtonAndWaitToDisappear();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.check_nameIsDisplayed(CUSTOM_NAME_MOCK, true);
+        await confirmation.checkNameIsDisplayed(CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
         await confirmation.saveName({
           value: CUSTOM_NAME_MOCK,
           proposedName: PROPOSED_NAME_MOCK,
         });
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterCancelButtonAndWaitToDisappear();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.check_nameIsDisplayed(PROPOSED_NAME_MOCK, true);
+        await confirmation.checkNameIsDisplayed(PROPOSED_NAME_MOCK, true);
       },
     );
   });
@@ -122,7 +122,7 @@ async function createWalletSendTransaction(
   const homePage = new HomePage(driver);
   await homePage.startSendFlow();
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient(recipientAddress);
   await sendToPage.goToNextScreen();
 }

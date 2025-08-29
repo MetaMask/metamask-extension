@@ -972,4 +972,185 @@ describe('AccountTrackerController', () => {
       );
     });
   });
+
+  describe('updateNativeBalances', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should update balances for multiple accounts across different chains', async () => {
+      await withController(({ controller }) => {
+        const balances = [
+          {
+            address: VALID_ADDRESS,
+            chainId: '0x1' as const,
+            balance: '0x123456789',
+          },
+          {
+            address: VALID_ADDRESS_TWO,
+            chainId: '0x1' as const,
+            balance: '0x987654321',
+          },
+          {
+            address: VALID_ADDRESS,
+            chainId: '0x89' as const,
+            balance: '0xabcdef123',
+          },
+        ];
+
+        controller.updateNativeBalances(balances);
+
+        expect(controller.state.accountsByChainId).toStrictEqual({
+          '0x1': {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: '0x123456789',
+            },
+            [VALID_ADDRESS_TWO]: {
+              address: VALID_ADDRESS_TWO,
+              balance: '0x987654321',
+            },
+          },
+          '0x89': {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: '0xabcdef123',
+            },
+          },
+        });
+      });
+    });
+
+    it('should update existing balances without affecting other properties', async () => {
+      await withController(
+        {
+          state: {
+            accounts: {},
+            accountsByChainId: {
+              '0x1': {
+                [VALID_ADDRESS]: {
+                  address: VALID_ADDRESS,
+                  balance: '0x111',
+                  stakedBalance: '0xstaked123',
+                },
+              },
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          },
+        },
+        ({ controller }) => {
+          const balances = [
+            {
+              address: VALID_ADDRESS,
+              chainId: '0x1' as const,
+              balance: '0x222',
+            },
+          ];
+
+          controller.updateNativeBalances(balances);
+
+          expect(
+            controller.state.accountsByChainId['0x1'][VALID_ADDRESS],
+          ).toStrictEqual({
+            address: VALID_ADDRESS,
+            balance: '0x222',
+            stakedBalance: '0xstaked123',
+          });
+        },
+      );
+    });
+  });
+
+  describe('updateStakedBalances', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should update staked balances for multiple accounts across different chains', async () => {
+      await withController(({ controller }) => {
+        const stakedBalances = [
+          {
+            address: VALID_ADDRESS,
+            chainId: '0x1' as const,
+            stakedBalance: '0x1',
+          },
+          {
+            address: VALID_ADDRESS_TWO,
+            chainId: '0x1' as const,
+            stakedBalance: '0x1',
+          },
+          {
+            address: VALID_ADDRESS,
+            chainId: '0x89' as const,
+            stakedBalance: '0x1',
+          },
+        ];
+
+        controller.updateStakedBalances(stakedBalances);
+
+        expect(controller.state.accountsByChainId).toStrictEqual({
+          '0x1': {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: '0x0',
+              stakedBalance: '0x1',
+            },
+            [VALID_ADDRESS_TWO]: {
+              address: VALID_ADDRESS_TWO,
+              balance: '0x0',
+              stakedBalance: '0x1',
+            },
+          },
+          '0x89': {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: '0x0',
+              stakedBalance: '0x1',
+            },
+          },
+        });
+      });
+    });
+
+    it('should update existing staked balances without affecting other properties', async () => {
+      await withController(
+        {
+          state: {
+            accounts: {},
+            accountsByChainId: {
+              '0x1': {
+                [VALID_ADDRESS]: {
+                  address: VALID_ADDRESS,
+                  balance: '0x123',
+                  stakedBalance: '0x1',
+                },
+              },
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          },
+        },
+        ({ controller }) => {
+          const stakedBalances = [
+            {
+              address: VALID_ADDRESS,
+              chainId: '0x1' as const,
+              stakedBalance: '0x1',
+            },
+          ];
+
+          controller.updateStakedBalances(stakedBalances);
+
+          expect(
+            controller.state.accountsByChainId['0x1'][VALID_ADDRESS],
+          ).toStrictEqual({
+            address: VALID_ADDRESS,
+            balance: '0x123',
+            stakedBalance: '0x1',
+          });
+        },
+      );
+    });
+  });
 });

@@ -24,7 +24,7 @@ describe('Test Snap Background Events', function () {
           driver,
           'connectBackgroundEventsButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectBackgroundEventsButton',
           'Reconnect to Background Events Snap',
         );
@@ -48,7 +48,7 @@ describe('Test Snap Background Events', function () {
         );
         await driver.waitForNonEmptyElement(eventsResult);
 
-        await testSnaps.check_messageResultSpanIncludes(
+        await testSnaps.checkMessageResultSpanIncludes(
           'getBackgroundEventResultSpan',
           'fireDialog',
         );
@@ -88,7 +88,7 @@ describe('Test Snap Background Events', function () {
           'connectBackgroundEventsButton',
         );
 
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectBackgroundEventsButton',
           'Reconnect to Background Events Snap',
         );
@@ -117,7 +117,7 @@ describe('Test Snap Background Events', function () {
         );
         await driver.waitForNonEmptyElement(eventsResult);
 
-        await testSnaps.check_messageResultSpanIncludes(
+        await testSnaps.checkMessageResultSpanIncludes(
           'getBackgroundEventResultSpan',
           'fireDialog',
         );
@@ -155,7 +155,7 @@ describe('Test Snap Background Events', function () {
           driver,
           'connectBackgroundEventsButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectBackgroundEventsButton',
           'Reconnect to Background Events Snap',
         );
@@ -178,7 +178,7 @@ describe('Test Snap Background Events', function () {
         );
         await driver.waitForNonEmptyElement(eventsResult);
 
-        await testSnaps.check_messageResultSpanIncludes(
+        await testSnaps.checkMessageResultSpanIncludes(
           'getBackgroundEventResultSpan',
           'fireDialog',
         );
@@ -193,7 +193,7 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
 
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'getBackgroundEventResultSpan',
           '[]',
         );

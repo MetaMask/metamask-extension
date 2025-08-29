@@ -30,10 +30,10 @@ describe('MetaMetrics ID persistence', function () {
         // goes to the privacy settings screen and toggle off participate in metaMetrics
         await new HomePage(driver).headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleParticipateInMetaMetrics();
 
         // wait for state to update

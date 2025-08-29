@@ -23,9 +23,9 @@ describe('Ledger Hardware Signatures', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
-        await testDappPage.check_pageIsLoaded();
+        await testDappPage.checkPageIsLoaded();
         await testDappPage.personalSign();
-        await testDappPage.check_successPersonalSign(
+        await testDappPage.checkSuccessPersonalSign(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
         );
       },

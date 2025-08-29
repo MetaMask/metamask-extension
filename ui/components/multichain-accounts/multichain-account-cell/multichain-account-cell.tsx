@@ -1,4 +1,5 @@
 import React from 'react';
+import { AccountGroupId } from '@metamask/account-api';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -10,7 +11,6 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BorderColor,
   BorderRadius,
   Display,
@@ -20,12 +20,13 @@ import {
 } from '../../../helpers/constants/design-system';
 
 export type MultichainAccountCellProps = {
-  accountId: string;
+  accountId: AccountGroupId;
   accountName: string;
-  onClick?: () => void;
+  onClick?: (accountGroupId: AccountGroupId) => void;
   balance: string;
   endAccessory?: React.ReactNode;
   selected?: boolean;
+  disableHoverEffect?: boolean;
 };
 
 export const MultichainAccountCell = ({
@@ -35,10 +36,12 @@ export const MultichainAccountCell = ({
   balance,
   endAccessory,
   selected = false,
+  disableHoverEffect = false,
 }: MultichainAccountCellProps) => {
+  const handleClick = () => onClick?.(accountId);
+
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
@@ -46,8 +49,8 @@ export const MultichainAccountCell = ({
         cursor: onClick ? 'pointer' : 'default',
       }}
       padding={4}
-      onClick={onClick}
-      className="multichain-account-cell"
+      onClick={handleClick}
+      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}`}
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
     >
@@ -102,6 +105,7 @@ export const MultichainAccountCell = ({
       >
         <Text
           className="multichain-account-cell__account-balance"
+          data-testid="balance-display"
           variant={TextVariant.bodyMdMedium}
           marginRight={2}
         >

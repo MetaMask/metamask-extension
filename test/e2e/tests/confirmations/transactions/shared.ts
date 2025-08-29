@@ -40,7 +40,6 @@ export async function createContractDeploymentTransaction(driver: Driver) {
 }
 
 export async function confirmContractDeploymentTransaction(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -63,7 +62,6 @@ export async function confirmContractDeploymentTransaction(driver: Driver) {
 export async function confirmRedesignedContractDeploymentTransaction(
   driver: Driver,
 ) {
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -94,8 +92,6 @@ export async function createDepositTransaction(driver: Driver) {
 }
 
 export async function confirmDepositTransaction(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
-
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -119,7 +115,6 @@ export async function confirmDepositTransactionWithCustomNonce(
   driver: Driver,
   customNonce: string,
 ) {
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({

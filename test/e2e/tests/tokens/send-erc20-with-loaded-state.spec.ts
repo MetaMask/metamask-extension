@@ -51,16 +51,16 @@ describe('Send ERC20', function () {
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await assetListPage.clickOnAsset('DAI');
 
         // Send DAI
         const tokenOverviewPage = new TokenOverviewPage(driver);
-        await tokenOverviewPage.check_pageIsLoaded();
+        await tokenOverviewPage.checkPageIsLoaded();
         await tokenOverviewPage.clickSend();
 
         const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.check_pageIsLoaded();
+        await sendTokenPage.checkPageIsLoaded();
         await sendTokenPage.fillRecipient(
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
@@ -70,15 +70,15 @@ describe('Send ERC20', function () {
         // Check transaction in the Activity list
         const tokenTransferTransactionConfirmation =
           new TokenTransferTransactionConfirmation(driver);
-        await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
-        await tokenTransferTransactionConfirmation.check_networkParagraph();
-        await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+        await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
+        await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+        await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
         await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity();
-        await activityList.check_txAmountInActivity('-10 DAI');
+        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        await activityList.checkTxAmountInActivity('-10 DAI');
       },
     );
   });

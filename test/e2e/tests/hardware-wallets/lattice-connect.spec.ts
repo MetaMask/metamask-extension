@@ -23,11 +23,11 @@ describe('Lattice hardware wallet', function (this: Suite) {
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.openConnectHardwareWalletModal();
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
-        await connectHardwareWalletPage.check_pageIsLoaded();
+        await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.openConnectLatticePage();
 
         const allWindows = await driver.waitUntilXWindowHandles(2);

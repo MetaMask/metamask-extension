@@ -16,7 +16,7 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { MIN_GAS_LIMIT_DEC } from '../../../send/send.constants';
+import { MIN_GAS_LIMIT_DEC } from '../../../send-legacy/send.constants';
 import { Confirmation } from '../../../types/confirm';
 import { useGasTooLowAlerts } from './useGasTooLowAlerts';
 

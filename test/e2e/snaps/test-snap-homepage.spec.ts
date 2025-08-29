@@ -36,7 +36,7 @@ describe('Test Snap Homepage', function (this: Suite) {
         await snapListPage.clickHomePageSnap();
 
         // check that the home page appears and contains the right info
-        await snapListPage.check_homePageTitle();
+        await snapListPage.checkHomePageTitle();
       },
     );
   });

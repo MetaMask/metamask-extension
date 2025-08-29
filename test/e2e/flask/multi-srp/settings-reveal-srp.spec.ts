@@ -14,14 +14,14 @@ import {
 const verifySrp = async (driver: Driver, srp: string, srpIndex: number) => {
   await new HeaderNavbar(driver).openSettingsPage();
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.check_pageIsLoaded();
+  await settingsPage.checkPageIsLoaded();
   await settingsPage.goToPrivacySettings();
 
   const privacySettings = new PrivacySettings(driver);
   await privacySettings.openRevealSrpQuiz(srpIndex);
   await privacySettings.completeRevealSrpQuiz();
   await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
-  await privacySettings.check_srpTextIsDisplayed(srp);
+  await privacySettings.checkSrpTextIsDisplayed(srp);
 };
 
 describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {

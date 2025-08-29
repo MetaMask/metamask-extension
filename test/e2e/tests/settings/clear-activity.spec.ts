@@ -28,21 +28,21 @@ describe('Clear account activity', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
         const activityList = new ActivityList(driver);
-        await activityList.check_completedTxNumberDisplayedInActivity(2);
-        await activityList.check_txAction('Received', 1);
-        await activityList.check_txAction('Sent', 2);
+        await activityList.checkCompletedTxNumberDisplayedInActivity(2);
+        await activityList.checkTxAction('Received', 1);
+        await activityList.checkTxAction('Sent', 2);
 
         // Clear activity and nonce data
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.clickAdvancedTab();
         const advancedSettings = new AdvancedSettings(driver);
-        await advancedSettings.check_pageIsLoaded();
+        await advancedSettings.checkPageIsLoaded();
         await advancedSettings.clearActivityTabData();
         await settingsPage.closeSettingsPage();
 
-        await activityList.check_noTxInActivity();
+        await activityList.checkNoTxInActivity();
       },
     );
   });

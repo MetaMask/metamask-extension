@@ -47,13 +47,12 @@ import {
   setNextNonce,
   addPermittedChain,
   setTokenNetworkFilter,
-  setEnabledNetworks,
   detectNfts,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
   TEST_CHAINS,
-  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
+  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME } from '../../../../shared/constants/multichain/networks';
 import {
@@ -115,6 +114,10 @@ import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import {
+  enableAllPopularNetworks,
+  enableSingleNetwork,
+} from '../../../store/controller-actions/network-order-controller';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -371,12 +374,10 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       dispatch(setTokenNetworkFilter(allOpts));
     }
 
-    const { namespace } = parseCaipChainId(currentChainId);
-
     if (Object.keys(enabledNetworksByNamespace).length === 1) {
-      dispatch(setEnabledNetworks([hexChainId], namespace));
+      dispatch(enableSingleNetwork(hexChainId));
     } else {
-      dispatch(setEnabledNetworks(Object.keys(evmNetworks), namespace));
+      dispatch(enableAllPopularNetworks());
     }
 
     // If presently on a dapp, communicate a change to
@@ -454,13 +455,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   };
 
   const isDiscoverBtnEnabled = useCallback(
-    (hexChainId: Hex): boolean => {
+    (chainId: Hex | `${string}:${string}`): boolean => {
       // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
-      // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      // and in the constants `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`.
       return (
-        (isNetworkDiscoverButtonEnabled as Record<Hex, boolean>)?.[
-          hexChainId
-        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+        Boolean(
+          isNetworkDiscoverButtonEnabled?.[
+            chainId as keyof typeof isNetworkDiscoverButtonEnabled
+          ],
+        ) && CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
       );
     },
     [isNetworkDiscoverButtonEnabled],
@@ -491,7 +494,16 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       const { chainId, isEvm } = network;
 
       if (!isEvm) {
-        return {};
+        return {
+          onDiscoverClick: isDiscoverBtnEnabled(chainId)
+            ? () => {
+                openWindow(
+                  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId],
+                  '_blank',
+                );
+              }
+            : undefined,
+        };
       }
 
       // Non-EVM networks cannot be deleted, edited or have
@@ -527,7 +539,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
               openWindow(
-                CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
+                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
                 '_blank',
               );
             }

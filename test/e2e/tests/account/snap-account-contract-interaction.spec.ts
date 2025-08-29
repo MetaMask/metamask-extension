@@ -52,7 +52,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('SSK Account');
+        await headerNavbar.checkAccountLabel('SSK Account');
 
         // Open Dapp with contract
         const testDapp = new TestDapp(driver);
@@ -60,7 +60,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
         await testDapp.openTestDappPage({ contractAddress });
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.createDepositTransaction();
 
         // Confirm the transaction in activity list on MetaMask
@@ -68,11 +68,11 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity();
-        await activityList.check_txAmountInActivity('-4 ETH');
+        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        await activityList.checkTxAmountInActivity('-4 ETH');
       },
     );
   });

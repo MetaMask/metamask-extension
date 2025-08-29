@@ -21,7 +21,7 @@ describe('MetaMask', function (this: Suite) {
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         for (const unsupportedMethod of ['eth_signTransaction']) {
           assert.equal(

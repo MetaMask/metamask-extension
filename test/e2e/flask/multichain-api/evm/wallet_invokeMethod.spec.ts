@@ -48,7 +48,7 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(
               GANACHE_SCOPES,
@@ -101,7 +101,7 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(
               GANACHE_SCOPES,
@@ -112,7 +112,7 @@ describe('Multichain API', function () {
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
 
             for (const [i, scope] of GANACHE_SCOPES.entries()) {
               await testDapp.selectMethod({
@@ -131,43 +131,43 @@ describe('Multichain API', function () {
             // first confirmation page should display Account 1 as sender account
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const confirmation = new TransactionConfirmation(driver);
-            await confirmation.check_pageIsLoaded();
+            await confirmation.checkPageIsLoaded();
             assert.equal(
-              await confirmation.check_isSenderAccountDisplayed('Account 1'),
+              await confirmation.checkIsSenderAccountDisplayed('Account 1'),
               true,
             );
             await confirmation.clickFooterConfirmButton();
 
             // check which account confirmation page is displayed on second screen
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-            await confirmation.check_pageIsLoaded();
+            await confirmation.checkPageIsLoaded();
             const screenForAccount2 =
-              await confirmation.check_isSenderAccountDisplayed('Account 2');
+              await confirmation.checkIsSenderAccountDisplayed('Account 2');
             if (screenForAccount2) {
-              await confirmation.check_networkIsDisplayed('Localhost 8546');
+              await confirmation.checkNetworkIsDisplayed('Localhost 8546');
               await confirmation.clickFooterConfirmButton();
 
               // third confirmation page should display Account 1 as sender account
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-              await confirmation.check_pageIsLoaded();
+              await confirmation.checkPageIsLoaded();
               assert.equal(
-                await confirmation.check_isSenderAccountDisplayed('Account 1'),
+                await confirmation.checkIsSenderAccountDisplayed('Account 1'),
                 true,
               );
-              await confirmation.check_networkIsDisplayed('Localhost 7777');
+              await confirmation.checkNetworkIsDisplayed('Localhost 7777');
               await confirmation.clickFooterConfirmButton();
             } else {
-              await confirmation.check_networkIsDisplayed('Localhost 7777');
+              await confirmation.checkNetworkIsDisplayed('Localhost 7777');
               await confirmation.clickFooterConfirmButton();
 
               // third confirmation page should display Account 2 as sender account
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-              await confirmation.check_pageIsLoaded();
+              await confirmation.checkPageIsLoaded();
               assert.equal(
-                await confirmation.check_isSenderAccountDisplayed('Account 2'),
+                await confirmation.checkIsSenderAccountDisplayed('Account 2'),
                 true,
               );
-              await confirmation.check_networkIsDisplayed('Localhost 8546');
+              await confirmation.checkNetworkIsDisplayed('Localhost 8546');
               await confirmation.clickFooterConfirmButton();
             }
           },
@@ -188,7 +188,7 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(
               GANACHE_SCOPES,
@@ -197,13 +197,13 @@ describe('Multichain API', function () {
             const connectAccountConfirmation = new ConnectAccountConfirmation(
               driver,
             );
-            await connectAccountConfirmation.check_pageIsLoaded();
+            await connectAccountConfirmation.checkPageIsLoaded();
             await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             for (const scope of GANACHE_SCOPES) {
               await testDapp.selectMethod({
                 scope,
@@ -216,7 +216,7 @@ describe('Multichain API', function () {
             for (let i = 0; i < totalNumberOfScopes; i++) {
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
               const confirmation = new Confirmation(driver);
-              await confirmation.check_pageIsLoaded();
+              await confirmation.checkPageIsLoaded();
               await confirmation.clickFooterConfirmButton();
             }
 
@@ -224,16 +224,16 @@ describe('Multichain API', function () {
               WINDOW_TITLES.ExtensionInFullScreenView,
             );
             const homePage = new HomePage(driver);
-            await homePage.check_pageIsLoaded();
+            await homePage.checkPageIsLoaded();
             await homePage.goToActivityList();
             await new ActivityListPage(
               driver,
-            ).check_confirmedTxNumberDisplayedInActivity();
+            ).checkConfirmedTxNumberDisplayedInActivity();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             for (const scope of GANACHE_SCOPES) {
               await driver.delay(largeDelayMs);
               const currentBalance = await testDapp.invokeMethodAndReturnResult(
@@ -292,7 +292,7 @@ describe('Multichain API', function () {
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.invokeMethodAndCheckResult({
               scope,
               method,
@@ -332,7 +332,7 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes([scope]);
 
@@ -341,7 +341,7 @@ describe('Multichain API', function () {
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.invokeMethod({
               scope,
               method,
@@ -357,7 +357,7 @@ describe('Multichain API', function () {
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
 
             const invokeResult = await testDapp.getInvokeMethodResult({
               scope,
@@ -407,7 +407,7 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes([scope]);
 
@@ -416,7 +416,7 @@ describe('Multichain API', function () {
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
             await testDapp.invokeMethod({
               scope,
               method,
@@ -432,7 +432,7 @@ describe('Multichain API', function () {
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
-            await testDapp.check_pageIsLoaded();
+            await testDapp.checkPageIsLoaded();
 
             const sendCallsResult = await testDapp.getInvokeMethodResult({
               scope,

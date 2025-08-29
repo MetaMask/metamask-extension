@@ -182,4 +182,10 @@ describe('Transaction Controller Init', () => {
 
     expect(isSimulationEnabled?.()).toBe(true);
   });
+
+  it('always disables pending transaction resubmit', () => {
+    const pendingTransactions = testConstructorOption('pendingTransactions');
+
+    expect(pendingTransactions?.isResubmitEnabled?.()).toBe(false);
+  });
 });

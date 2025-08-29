@@ -18,14 +18,6 @@
     flex-direction: row;
   }
 
-  & &__dismiss-button {
-    background: var(--color-primary-default);
-    color: var(--color-primary-inverse);
-    height: 40px;
-    width: 100px;
-    border: 0;
-  }
-
   &__error {
     @include design-system.H6;
 

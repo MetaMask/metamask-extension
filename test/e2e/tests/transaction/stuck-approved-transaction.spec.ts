@@ -21,8 +21,8 @@ describe('Editing Confirm Transaction', function (this: Suite) {
 
         new HomePage(driver).goToActivityList();
         const activityList = new ActivityListPage(driver);
-        await activityList.check_completedTxNumberDisplayedInActivity();
-        await activityList.check_txAmountInActivity();
+        await activityList.checkCompletedTxNumberDisplayedInActivity();
+        await activityList.checkTxAmountInActivity();
       },
     );
   });

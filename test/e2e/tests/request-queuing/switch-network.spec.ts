@@ -54,7 +54,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
 
         // Confirm transaction
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.check_pageIsLoaded();
+        await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
         // Switch back to the extension
@@ -64,7 +64,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
 
         // Check correct network switched and on the correct network
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
       },
     );
   });

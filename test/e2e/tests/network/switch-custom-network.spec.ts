@@ -34,19 +34,19 @@ describe('Switch ethereum chain', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         await testDapp.clickAddNetworkButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.check_pageIsLoaded('Localhost 8546');
+        await addNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
         await addNetworkConfirmation.approveAddNetwork();
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const assetList = new AssetListPage(driver);
-        await assetList.check_networkFilterText('Localhost 8546');
+        await assetList.checkNetworkFilterText('Localhost 8546');
       },
     );
   });
@@ -68,7 +68,7 @@ describe('Switch ethereum chain', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -113,7 +113,7 @@ describe('Switch ethereum chain', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',

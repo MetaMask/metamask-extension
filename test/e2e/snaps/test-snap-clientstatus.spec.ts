@@ -29,22 +29,22 @@ describe('Test Snap Client Status', function () {
         await testSnaps.scrollAndClickButton('submitClientStatusButton');
 
         // Validate the client status is false when the wallet is unlocked
-        await testSnaps.check_clientStatus('false');
+        await testSnaps.checkClientStatus('false');
 
         // Switch to the extension MetaMask and lock it
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.checkPageIsLoaded();
         await headerNavbar.lockMetaMask();
 
         // Click submit client status on test snap page
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.check_pageIsLoaded();
+        await testSnaps.checkPageIsLoaded();
         await testSnaps.scrollAndClickButton('submitClientStatusButton');
 
         // Validate the client status is accurate
-        await testSnaps.check_clientStatus(
+        await testSnaps.checkClientStatus(
           JSON.stringify({ locked: true, active: true }, null, 2),
         );
       },

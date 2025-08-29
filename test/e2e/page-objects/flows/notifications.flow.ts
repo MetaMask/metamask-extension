@@ -18,13 +18,13 @@ export const enableNotificationsThroughGlobalMenu = async (
 ): Promise<void> => {
   console.log('Enabling notifications through global menu');
   const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.check_pageIsLoaded();
+  await headerNavbar.checkPageIsLoaded();
   await headerNavbar.enableNotifications();
 
   if (goToNotificationsSettings === true) {
     // Click to notifications gear icon
     const notificationsListPage = new NotificationsListPage(driver);
-    await notificationsListPage.check_pageIsLoaded();
+    await notificationsListPage.checkPageIsLoaded();
     await notificationsListPage.goToNotificationsSettings();
   }
 };
@@ -39,7 +39,7 @@ export const navigateToNotificationSettingsAndClickDisable = async (
   driver: Driver,
 ): Promise<void> => {
   const notificationsListPage = new NotificationsListPage(driver);
-  await notificationsListPage.check_pageIsLoaded();
+  await notificationsListPage.checkPageIsLoaded();
   await notificationsListPage.goToNotificationsSettings();
   await new NotificationsSettingsPage(driver).disableNotifications();
 };
@@ -53,18 +53,18 @@ export const enableNotificationsThroughSettingsPage = async (
 ) => {
   console.log('Enabling notifications through Settings Page');
   const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.check_pageIsLoaded();
+  await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openSettingsPage();
 
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.check_pageIsLoaded();
+  await settingsPage.checkPageIsLoaded();
   await settingsPage.goToNotificationsSettings();
 
   const notificationsSettingsPage = new NotificationsSettingsPage(driver);
-  await notificationsSettingsPage.check_pageIsLoaded();
+  await notificationsSettingsPage.checkPageIsLoaded();
 
   const isEnabled = await notificationsSettingsPage
-    .check_notificationState({
+    .checkNotificationState({
       toggleType: 'general',
       expectedState: 'enabled',
     })
@@ -94,8 +94,8 @@ export async function clickNotificationItemAndDetailsPage(
   const notificationsListPage = new NotificationsListPage(driver);
   const notificationDetailsPage = new NotificationDetailsPage(driver);
 
-  await notificationsListPage.check_pageIsLoaded();
-  await notificationsListPage.check_notificationItemByTestId(
+  await notificationsListPage.checkPageIsLoaded();
+  await notificationsListPage.checkNotificationItemByTestId(
     dynamicGeneratedTestId,
   );
   await notificationsListPage.clickNotificationItemByTestId(
@@ -103,6 +103,6 @@ export async function clickNotificationItemAndDetailsPage(
   );
 
   // inspect and click notification details
-  await notificationDetailsPage.check_pageIsLoaded();
+  await notificationDetailsPage.checkPageIsLoaded();
   await notificationDetailsPage.clickBackButton();
 }

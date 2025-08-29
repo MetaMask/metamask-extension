@@ -31,14 +31,14 @@ describe('Token List Sorting', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
 
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await assetListPage.importCustomTokenByChain(
           CHAIN_IDS.MAINNET,
           customTokenAddress,
           customTokenSymbol,
         );
 
-        await assetListPage.check_tokenExistsInList('Ethereum');
+        await assetListPage.checkTokenExistsInList('Ethereum');
         await assetListPage.sortTokenList('alphabetically');
 
         await driver.waitUntil(
