@@ -3,8 +3,10 @@ import {
   parseCaipChainId,
   CaipChainId,
   CaipNamespace,
+  CaipAccountId,
 } from '@metamask/utils';
 import { EthScope } from '@metamask/keyring-api';
+import { AccountGroupWithInternalAccounts } from '../../../ui/selectors/multichain-accounts/account-tree.types';
 
 /**
  * Helper function to check if any of the account scopes match the target scope.
@@ -116,4 +118,52 @@ export const hasNamespaceSupport = (
     }
   }
   return false;
+};
+
+export const getCaip25AccountFromAccountGroupAndScope = (
+  accountGroups: AccountGroupWithInternalAccounts[],
+  scopes: CaipChainId[],
+) => {
+  // Pre-parse all chain namespaces and cache common strings
+  const chainNamespaces = new Map<CaipChainId, string>();
+  const eip155Scope = `${KnownCaipNamespace.Eip155}:0`;
+  scopes.forEach((chainId) => {
+    try {
+      const { namespace } = parseCaipChainId(chainId);
+      chainNamespaces.set(chainId, namespace);
+    } catch (err) {
+      // Skip invalid chain IDs
+    }
+  });
+
+  const updatedSelectedCaipAccountAddresses = new Set<CaipAccountId>();
+
+  accountGroups.forEach((accountGroup) => {
+    accountGroup.accounts.forEach((account) => {
+      const accountScopesSet = new Set(account.scopes);
+
+      scopes.forEach((chainId) => {
+        const namespace = chainNamespaces.get(chainId);
+        if (!namespace) {
+          return;
+        }
+
+        let shouldAdd = false;
+
+        if (namespace === KnownCaipNamespace.Eip155) {
+          shouldAdd = accountScopesSet.has(eip155Scope);
+        } else {
+          shouldAdd = accountScopesSet.has(chainId);
+        }
+
+        if (shouldAdd) {
+          updatedSelectedCaipAccountAddresses.add(
+            `${chainId}:${account.address}`,
+          );
+        }
+      });
+    });
+  });
+
+  return Array.from(updatedSelectedCaipAccountAddresses);
 };

@@ -1,22 +1,235 @@
+import { AccountGroupType } from '@metamask/account-api';
 import { EthScope } from '@metamask/keyring-api';
-import { anyScopesMatch, scopeMatches } from './scope-utils';
+import { KnownCaipNamespace, CaipChainId } from '@metamask/utils';
+
+// Import the actual type to avoid linting issues with restricted paths
+// eslint-disable-next-line import/no-restricted-paths
+import type { AccountGroupWithInternalAccounts } from '../../../ui/selectors/multichain-accounts/account-tree.types';
+
+import {
+  anyScopesMatch,
+  getCaip25AccountFromAccountGroupAndScope,
+  scopeMatches,
+} from './scope-utils';
+
+const createMockFactory = () => {
+  // Common account metadata
+  const createAccountMetadata = (name: string) => ({
+    name,
+    keyring: { type: 'HD Key Tree' },
+    importTime: 0,
+  });
+
+  // Common group metadata
+  const createGroupMetadata = (name: string, groupIndex: number = 0) => ({
+    name,
+    pinned: false,
+    hidden: false,
+    entropy: { groupIndex },
+  });
+
+  // Account factory with common defaults
+  const createMockAccount = (
+    overrides: Partial<AccountGroupWithInternalAccounts['accounts'][0]> = {},
+  ) => ({
+    id: 'mock-account-id',
+    address: '0x1234567890123456789012345678901234567890',
+    metadata: createAccountMetadata('Mock Account'),
+    options: {},
+    methods: [],
+    scopes: [`${KnownCaipNamespace.Eip155}:0`],
+    type: 'eip155:eoa',
+    ...overrides,
+  });
+
+  // Group factory with common defaults
+  const createMockAccountGroup = (
+    overrides: Partial<AccountGroupWithInternalAccounts> = {},
+  ) => ({
+    id: 'entropy:mock-group-id/0',
+    type: AccountGroupType.MultichainAccount,
+    metadata: createGroupMetadata('Mock Group'),
+    walletName: 'Mock Wallet',
+    accounts: [createMockAccount()],
+    ...overrides,
+  });
+
+  // Predefined accounts for reuse
+  const accounts = {
+    eip155Wildcard: createMockAccount({
+      id: 'account1',
+      address: '0x1234567890123456789012345678901234567890',
+      metadata: createAccountMetadata('Account 1'),
+      scopes: [`${KnownCaipNamespace.Eip155}:0`],
+    }),
+    eip155Specific: createMockAccount({
+      id: 'account2',
+      address: '0x2345678901234567890123456789012345678901',
+      metadata: createAccountMetadata('Account 2'),
+      scopes: [`${KnownCaipNamespace.Eip155}:1`],
+    }),
+    solana: createMockAccount({
+      id: 'account3',
+      address: '0x3456789012345678901234567890123456789012',
+      metadata: createAccountMetadata('Account 3'),
+      scopes: ['solana:mainnet'],
+      type: 'solana:data-account',
+    }),
+    multiScope: createMockAccount({
+      id: 'account4',
+      address: '0x4567890123456789012345678901234567890123',
+      metadata: createAccountMetadata('Account 4'),
+      scopes: [`${KnownCaipNamespace.Eip155}:0`, 'solana:mainnet'],
+    }),
+    emptyScopes: createMockAccount({
+      id: 'account1',
+      address: '0x1234567890123456789012345678901234567890',
+      metadata: createAccountMetadata('Account 1'),
+      scopes: [],
+    }),
+    undefinedScopes: createMockAccount({
+      id: 'account1',
+      address: '0x1234567890123456789012345678901234567890',
+      metadata: createAccountMetadata('Account 1'),
+      scopes: undefined as unknown as `${string}:${string}`[],
+    }),
+    multipleScopes: createMockAccount({
+      id: 'account1',
+      address: '0x1234567890123456789012345678901234567890',
+      metadata: createAccountMetadata('Account 1'),
+      scopes: [
+        `${KnownCaipNamespace.Eip155}:0`,
+        'solana:mainnet',
+        'solana:devnet',
+      ],
+    }),
+  };
+
+  // Main account groups using predefined accounts
+  const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
+    {
+      id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      type: AccountGroupType.MultichainAccount,
+      metadata: createGroupMetadata('Test Group 1'),
+      walletName: 'Test Wallet',
+      accounts: [
+        accounts.eip155Wildcard,
+        accounts.eip155Specific,
+        accounts.solana,
+      ],
+    },
+    {
+      id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/1',
+      type: AccountGroupType.MultichainAccount,
+      metadata: createGroupMetadata('Test Group 2', 1),
+      walletName: 'Test Wallet 2',
+      accounts: [accounts.multiScope],
+    },
+  ];
+
+  // Specialized account groups using predefined accounts
+  const createMockAccountGroupsWithEmptyScopes =
+    (): AccountGroupWithInternalAccounts[] => [
+      {
+        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+        type: AccountGroupType.MultichainAccount,
+        metadata: createGroupMetadata('Test Group'),
+        walletName: 'Test Wallet',
+        accounts: [accounts.emptyScopes],
+      },
+    ];
+
+  const createMockAccountGroupsWithUndefinedScopes =
+    (): AccountGroupWithInternalAccounts[] => [
+      {
+        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+        type: AccountGroupType.MultichainAccount,
+        metadata: createGroupMetadata('Test Group'),
+        walletName: 'Test Wallet',
+        accounts: [accounts.undefinedScopes],
+      },
+    ];
+
+  const createMockAccountGroupsWithMultipleScopes =
+    (): AccountGroupWithInternalAccounts[] => [
+      {
+        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+        type: AccountGroupType.MultichainAccount,
+        metadata: createGroupMetadata('Test Group'),
+        walletName: 'Test Wallet',
+        accounts: [accounts.multipleScopes],
+      },
+    ];
+
+  const createMockScopes = {
+    eip155Wildcard: [`${KnownCaipNamespace.Eip155}:0`] as CaipChainId[],
+    eip155Specific: [`${KnownCaipNamespace.Eip155}:1`] as CaipChainId[],
+    solanaMainnet: ['solana:mainnet'] as CaipChainId[],
+    multiple: [
+      `${KnownCaipNamespace.Eip155}:0`,
+      'solana:mainnet',
+    ] as CaipChainId[],
+    invalid: ['invalid:chain:id'] as CaipChainId[],
+    mixed: [
+      `${KnownCaipNamespace.Eip155}:0`,
+      'invalid:chain:id' as CaipChainId,
+      'solana:mainnet',
+    ] as CaipChainId[],
+    multipleSolana: [
+      `${KnownCaipNamespace.Eip155}:0`,
+      'solana:mainnet',
+      'solana:devnet',
+    ] as CaipChainId[],
+    empty: [] as CaipChainId[],
+  };
+
+  const createMockAccountScopes = {
+    eip155Only: ['eip155:1', 'eip155:137'],
+    solanaOnly: ['solana:mainnet'],
+    mixed: ['eip155:1', 'solana:mainnet'],
+    bitcoinOnly: ['bip122:000000000019d6689c085ae165831e93'],
+    eip155Wildcard: [`${KnownCaipNamespace.Eip155}:0`],
+    eip155Specific: [`${KnownCaipNamespace.Eip155}:1`],
+    empty: [],
+    undefined: undefined as unknown as string[],
+  };
+
+  return {
+    createMockAccount,
+    createMockAccountGroup,
+    createMockAccountGroups,
+    createMockAccountGroupsWithEmptyScopes,
+    createMockAccountGroupsWithUndefinedScopes,
+    createMockAccountGroupsWithMultipleScopes,
+    createMockScopes,
+    createMockAccountScopes,
+  };
+};
+
+const mockFactory = createMockFactory();
 
 describe('scope-utils', () => {
   describe('anyScopesMatch', () => {
     it('returns false for empty account scopes', () => {
-      expect(anyScopesMatch([], 'eip155:1')).toBe(false);
-      // @ts-expect-error - testing undefined scope
-      expect(anyScopesMatch(undefined, 'eip155:1')).toBe(false);
+      expect(
+        anyScopesMatch(mockFactory.createMockAccountScopes.empty, 'eip155:1'),
+      ).toBe(false);
+      expect(
+        anyScopesMatch(
+          mockFactory.createMockAccountScopes.undefined,
+          'eip155:1',
+        ),
+      ).toBe(false);
     });
 
     it('returns true for direct scope match', () => {
-      const accountScopes = ['eip155:1', 'solana:mainnet'];
+      const accountScopes = mockFactory.createMockAccountScopes.mixed;
       expect(anyScopesMatch(accountScopes, 'eip155:1')).toBe(true);
       expect(anyScopesMatch(accountScopes, 'solana:mainnet')).toBe(true);
     });
 
     it('returns false for non-matching scope', () => {
-      const accountScopes = ['eip155:1', 'solana:mainnet'];
+      const accountScopes = mockFactory.createMockAccountScopes.mixed;
       expect(anyScopesMatch(accountScopes, 'eip155:137')).toBe(false);
       expect(
         anyScopesMatch(
@@ -28,20 +241,18 @@ describe('scope-utils', () => {
 
     describe('eip155:0 wildcard handling', () => {
       it('returns true when requesting eip155:0 and account has any EVM scope', () => {
-        const accountScopes = ['eip155:1', 'eip155:137'];
+        const accountScopes = mockFactory.createMockAccountScopes.eip155Only;
         expect(anyScopesMatch(accountScopes, 'eip155:0')).toBe(true);
       });
 
       it('returns true when requesting eip155:0 and account has eip155:0 scope', () => {
-        const accountScopes = ['eip155:0'];
+        const accountScopes =
+          mockFactory.createMockAccountScopes.eip155Wildcard;
         expect(anyScopesMatch(accountScopes, 'eip155:0')).toBe(true);
       });
 
       it('returns false when requesting eip155:0 and account has no EVM scopes', () => {
-        const accountScopes = [
-          'solana:mainnet',
-          'bip122:000000000019d6689c085ae165831e93',
-        ];
+        const accountScopes = mockFactory.createMockAccountScopes.bitcoinOnly;
         expect(anyScopesMatch(accountScopes, 'eip155:0')).toBe(false);
       });
     });
@@ -54,7 +265,8 @@ describe('scope-utils', () => {
       });
 
       it('returns true when requesting specific EVM chain and account has exact match', () => {
-        const accountScopes = ['eip155:1'];
+        const accountScopes =
+          mockFactory.createMockAccountScopes.eip155Specific;
         expect(anyScopesMatch(accountScopes, 'eip155:1')).toBe(true);
       });
 
@@ -80,7 +292,7 @@ describe('scope-utils', () => {
       });
 
       it('returns false for non-matching non-EVM scope', () => {
-        const accountScopes = ['solana:mainnet'];
+        const accountScopes = mockFactory.createMockAccountScopes.solanaOnly;
         expect(
           anyScopesMatch(
             accountScopes,
@@ -92,7 +304,8 @@ describe('scope-utils', () => {
 
     describe('malformed scope handling', () => {
       it('returns false for malformed target scope', () => {
-        const accountScopes = ['eip155:1'];
+        const accountScopes =
+          mockFactory.createMockAccountScopes.eip155Specific;
         expect(anyScopesMatch(accountScopes, 'invalid-scope')).toBe(false);
         expect(anyScopesMatch(accountScopes, 'eip155')).toBe(false);
         expect(anyScopesMatch(accountScopes, '')).toBe(false);
@@ -115,6 +328,149 @@ describe('scope-utils', () => {
       expect(scopeMatches('eip155:1', 'eip155:0')).toBe(true);
       expect(scopeMatches('eip155:0', 'eip155:1')).toBe(true);
       expect(scopeMatches('solana:mainnet', 'eip155:0')).toBe(false);
+    });
+  });
+
+  describe('getCaip25AccountFromAccountGroupAndScope', () => {
+    const mockAccountGroups = mockFactory.createMockAccountGroups();
+
+    it('should return CAIP-25 account IDs for EIP-155 wildcard scope', () => {
+      const scopes = mockFactory.createMockScopes.eip155Wildcard;
+      const result = getCaip25AccountFromAccountGroupAndScope(
+        mockAccountGroups,
+        scopes,
+      );
+
+      expect(result).toStrictEqual([
+        `${KnownCaipNamespace.Eip155}:0:0x1234567890123456789012345678901234567890`,
+        `${KnownCaipNamespace.Eip155}:0:0x4567890123456789012345678901234567890123`,
+      ]);
+    });
+
+    it('should return CAIP-25 account IDs for specific EIP-155 chain', () => {
+      const scopes = mockFactory.createMockScopes.eip155Specific;
+      const result = getCaip25AccountFromAccountGroupAndScope(
+        mockAccountGroups,
+        scopes,
+      );
+
+      // For EIP-155 chains, only accounts with eip155:0 wildcard scope are included
+      expect(result).toStrictEqual([
+        `${KnownCaipNamespace.Eip155}:1:0x1234567890123456789012345678901234567890`,
+        `${KnownCaipNamespace.Eip155}:1:0x4567890123456789012345678901234567890123`,
+      ]);
+    });
+
+    it('should return CAIP-25 account IDs for non-EIP-155 namespaces', () => {
+      const scopes = mockFactory.createMockScopes.solanaMainnet;
+      const result = getCaip25AccountFromAccountGroupAndScope(
+        mockAccountGroups,
+        scopes,
+      );
+
+      expect(result).toStrictEqual([
+        'solana:mainnet:0x3456789012345678901234567890123456789012',
+        'solana:mainnet:0x4567890123456789012345678901234567890123',
+      ]);
+    });
+
+    it('should handle multiple scopes and return unique CAIP-25 account IDs', () => {
+      const scopes = mockFactory.createMockScopes.multiple;
+      const result = getCaip25AccountFromAccountGroupAndScope(
+        mockAccountGroups,
+        scopes,
+      );
+
+      expect(result).toStrictEqual([
+        `${KnownCaipNamespace.Eip155}:0:0x1234567890123456789012345678901234567890`,
+        'solana:mainnet:0x3456789012345678901234567890123456789012',
+        `${KnownCaipNamespace.Eip155}:0:0x4567890123456789012345678901234567890123`,
+        'solana:mainnet:0x4567890123456789012345678901234567890123',
+      ]);
+    });
+
+    it('should handle empty account groups', () => {
+      const scopes = mockFactory.createMockScopes.eip155Wildcard;
+      const result = getCaip25AccountFromAccountGroupAndScope([], scopes);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('should handle empty scopes', () => {
+      const result = getCaip25AccountFromAccountGroupAndScope(
+        mockAccountGroups,
+        mockFactory.createMockScopes.empty,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('should handle invalid chain IDs gracefully', () => {
+      const scopes = mockFactory.createMockScopes.invalid;
+      const result = getCaip25AccountFromAccountGroupAndScope(
+        mockAccountGroups,
+        scopes,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('should handle accounts with empty scopes', () => {
+      const accountGroupsWithEmptyScopes =
+        mockFactory.createMockAccountGroupsWithEmptyScopes();
+
+      const scopes = mockFactory.createMockScopes.eip155Wildcard;
+      const result = getCaip25AccountFromAccountGroupAndScope(
+        accountGroupsWithEmptyScopes,
+        scopes,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('should handle accounts with undefined scopes', () => {
+      const accountGroupsWithUndefinedScopes =
+        mockFactory.createMockAccountGroupsWithUndefinedScopes();
+
+      const scopes = mockFactory.createMockScopes.eip155Wildcard;
+      const result = getCaip25AccountFromAccountGroupAndScope(
+        accountGroupsWithUndefinedScopes,
+        scopes,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('should handle mixed valid and invalid chain IDs', () => {
+      const scopes = mockFactory.createMockScopes.mixed;
+      const result = getCaip25AccountFromAccountGroupAndScope(
+        mockAccountGroups,
+        scopes,
+      );
+
+      expect(result).toStrictEqual([
+        `${KnownCaipNamespace.Eip155}:0:0x1234567890123456789012345678901234567890`,
+        'solana:mainnet:0x3456789012345678901234567890123456789012',
+        `${KnownCaipNamespace.Eip155}:0:0x4567890123456789012345678901234567890123`,
+        'solana:mainnet:0x4567890123456789012345678901234567890123',
+      ]);
+    });
+
+    it('should handle accounts with multiple scopes including EIP-155 wildcard', () => {
+      const accountGroupsWithMultipleScopes =
+        mockFactory.createMockAccountGroupsWithMultipleScopes();
+
+      const scopes = mockFactory.createMockScopes.multipleSolana;
+      const result = getCaip25AccountFromAccountGroupAndScope(
+        accountGroupsWithMultipleScopes,
+        scopes,
+      );
+
+      expect(result).toStrictEqual([
+        `${KnownCaipNamespace.Eip155}:0:0x1234567890123456789012345678901234567890`,
+        'solana:mainnet:0x1234567890123456789012345678901234567890',
+        'solana:devnet:0x1234567890123456789012345678901234567890',
+      ]);
     });
   });
 });
