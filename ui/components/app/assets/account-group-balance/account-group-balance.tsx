@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { selectSelectedGroupBalance } from '../../../selectors/assets';
+import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
 
 import {
   AlignItems,
@@ -10,36 +10,37 @@ import {
   IconColor,
   JustifyContent,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
-  IconName,
   SensitiveText,
-} from '../../component-library';
-import { getPreferences } from '../../../selectors';
-import { getIntlLocale } from '../../../ducks/locale/locale';
-import Spinner from '../spinner';
-import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+  IconName,
+} from '../../../component-library';
+import { getPreferences } from '../../../../selectors';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import Spinner from '../../../ui/spinner';
+import { formatWithThreshold } from '../util/formatWithThreshold';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 
-type AggregatedBalanceState2Props = {
+type AccountGroupBalanceProps = {
   classPrefix: string;
   balanceIsCached: boolean;
   handleSensitiveToggle: () => void;
 };
 
-export const AggregatedBalanceState2: React.FC<
-  AggregatedBalanceState2Props
-> = ({ classPrefix, balanceIsCached, handleSensitiveToggle }) => {
+export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
+  classPrefix,
+  balanceIsCached,
+  handleSensitiveToggle,
+}) => {
   const { privacyMode } = useSelector(getPreferences);
   const locale = useSelector(getIntlLocale);
 
-  const selectedGroupBalance = useSelector(selectSelectedGroupBalance);
+  const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const fallbackCurrency = useSelector(getCurrentCurrency);
 
-  // Only depend on selected group balance; show loader while not available
   if (!selectedGroupBalance) {
     return <Spinner className="loading-overlay__spinner" />;
   }
@@ -98,4 +99,4 @@ export const AggregatedBalanceState2: React.FC<
   );
 };
 
-export default AggregatedBalanceState2;
+export default AccountGroupBalance;
