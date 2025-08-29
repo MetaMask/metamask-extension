@@ -925,23 +925,11 @@ class FixtureBuilder {
   }
 
   withPreferencesControllerSmartTransactionsOptedOut() {
-    this.withPreferencesController({
+    return this.withPreferencesController({
       preferences: {
         smartTransactionsOptInStatus: false,
       },
     });
-
-    // Disables the smart transactions migration (migration 135) by setting the manifest flag.
-    // This allows tests to control the smart transactions opt-in status without being overridden by the migration.
-    this.fixture.manifestFlags = {
-      ...this.fixture.manifestFlags,
-      testing: {
-        ...this.fixture.manifestFlags?.testing,
-        disableSmartTransactionsMigration: true,
-      },
-    };
-
-    return this;
   }
 
   withAccountsController(data) {
@@ -1913,10 +1901,6 @@ class FixtureBuilder {
     this.fixture.meta = {
       version: FIXTURE_STATE_METADATA_VERSION,
     };
-    // Add manifest flags to the fixture if they exist
-    if (this.fixture.manifestFlags) {
-      this.fixture.manifestFlags = this.fixture.manifestFlags;
-    }
     return this.fixture;
   }
 }

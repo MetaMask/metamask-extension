@@ -249,6 +249,9 @@ describe.skip('Swap', function () {
               },
             })
             .build(),
+          manifestFlags: {
+            testing: { disableSmartTransactionsMigration: true },
+          },
           title: this.test?.fullTitle(),
           testSpecificMock: mockSwapQuotes,
           localNodeOptions: [

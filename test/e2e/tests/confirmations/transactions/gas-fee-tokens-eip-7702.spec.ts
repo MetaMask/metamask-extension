@@ -27,6 +27,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
+        manifestFlags: {
+          testing: { disableSmartTransactionsMigration: true },
+        },
         localNodeOptions: {
           hardfork: 'prague',
           loadState:

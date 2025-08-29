@@ -271,10 +271,6 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    // Extract manifest flags from fixture if they exist
-    const fixtureManifestFlags = fixtures?.manifestFlags || {};
-    const finalManifestFlags = { ...manifestFlags, ...fixtureManifestFlags };
-
     await setManifestFlags(finalManifestFlags);
 
     const wd = await buildWebDriver({

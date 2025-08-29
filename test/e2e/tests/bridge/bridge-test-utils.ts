@@ -765,6 +765,7 @@ export const getBridgeFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        disableSmartTransactionsMigration: true,
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
@@ -814,6 +815,7 @@ export const getQuoteNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        disableSmartTransactionsMigration: true,
       },
     },
     smartContract: SMART_CONTRACTS.HST,
@@ -861,6 +863,7 @@ export const getBridgeNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        disableSmartTransactionsMigration: true,
       },
     },
     smartContract: SMART_CONTRACTS.HST,
@@ -972,6 +975,7 @@ export const getBridgeL2Fixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        disableSmartTransactionsMigration: true,
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
