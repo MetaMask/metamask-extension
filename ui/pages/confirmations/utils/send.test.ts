@@ -9,13 +9,9 @@ import {
   fromTokenMinimalUnits,
   toTokenMinimalUnit,
   formatToFixedDecimals,
-<<<<<<< HEAD
   isDecimal,
   convertedCurrency,
   navigateToSendRoute,
-=======
-  navigateToSendRoute,
->>>>>>> cd85effc666c6165724a8d1c33549bf4a9c4c546
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -153,7 +149,7 @@ describe('Send - utils', () => {
       });
       expect(mockHistoryPush).toHaveBeenCalled();
     });
-    });
+  });
 
   describe('isDecimal', () => {
     it('return true for decimal values and false otherwise', () => {
