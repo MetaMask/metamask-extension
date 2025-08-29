@@ -279,8 +279,6 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        // check the basic functionality is off warning message is displayed
-        await homePage.checkBasicFunctionalityOffWarnigMessageIsDisplayed();
       },
     );
   });

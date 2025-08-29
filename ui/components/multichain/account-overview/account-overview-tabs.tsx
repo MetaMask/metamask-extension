@@ -112,7 +112,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__asset-tab"
             {...tabProps}
           >
-            <Box marginTop={2} marginBottom={2}>
+            <Box marginBottom={2}>
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
@@ -128,7 +128,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__defi-tab"
             {...tabProps}
           >
-            <Box marginTop={2}>
+            <Box>
               <DeFiTab
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
@@ -156,7 +156,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__activity-tab"
             {...tabProps}
           >
-            <TransactionList boxProps={{ paddingTop: 3 }} />
+            <TransactionList />
           </Tab>
         )}
       </Tabs>

@@ -101,6 +101,10 @@
   "accountDetails": {
     "message": "Account details"
   },
+  "accountDetailsSrpBackUpMessage": {
+    "message": "Back up",
+    "description": "Text used to describe action for SRP backup. Used on multichain account details."
+  },
   "accountIdenticon": {
     "message": "Account identicon"
   },
@@ -137,6 +141,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountSmallCase": {
+    "message": "account"
+  },
   "accountTypeNotSupported": {
     "message": "Account type not supported"
   },
@@ -166,6 +173,9 @@
   },
   "addACustomNetwork": {
     "message": "Add a custom network"
+  },
+  "addAHardwareWallet": {
+    "message": "Add a hardware wallet"
   },
   "addANetwork": {
     "message": "Add a network"
@@ -305,6 +315,9 @@
   "addUrl": {
     "message": "Add URL"
   },
+  "addWallet": {
+    "message": "Add wallet"
+  },
   "addingAccount": {
     "message": "Adding account"
   },
@@ -320,6 +333,10 @@
   "addressCopied": {
     "message": "Address copied"
   },
+  "addressLabel": {
+    "message": "address",
+    "description": "Label for address count (single address). Used on multichain account details page."
+  },
   "addressMismatch": {
     "message": "Site address mismatch"
   },
@@ -330,6 +347,14 @@
   "addressMismatchPunycode": {
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "Addresses",
+    "description": "Multichain account menu item for linking to addresses page"
+  },
+  "addressesLabel": {
+    "message": "addresses",
+    "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
     "message": "Advanced"
@@ -506,6 +531,9 @@
   "allPermissions": {
     "message": "All permissions"
   },
+  "allPopularNetworks": {
+    "message": "All popular networks"
+  },
   "allTimeHigh": {
     "message": "All time high"
   },
@@ -680,12 +708,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Learn how we protect your privacy"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Back up your accounts and sync settings."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Introducing backup and sync"
-  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -709,9 +731,6 @@
   },
   "basic": {
     "message": "Basic"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "Basic functionality is off"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our $1.",
@@ -744,9 +763,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
-  },
-  "bestPrice": {
-    "message": "Best price"
   },
   "beta": {
     "message": "Beta"
@@ -913,6 +929,21 @@
   "bridgeNetCost": {
     "message": "Net cost"
   },
+  "bridgePriceImpact": {
+    "message": "Price Impact"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "Price impact reflects how your swap order affects the market price of the asset. If you do not hold enough funds for gas, part of your source token is automatically allocated to cover fees, which will reduce the amount swapped. MetaMask does not influence or control price impact."
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "Price impact reflects how your swap order affects the market price of the asset. It depends on the trade size and the available liquidity in the pool. MetaMask does not influence or control price impact."
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Price Impact"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "Price Impact Warning"
+  },
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
@@ -961,9 +992,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTerms": {
-    "message": "Terms"
   },
   "bridgeTimingMinutes": {
     "message": "$1 min",
@@ -1051,9 +1079,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Busy"
@@ -1537,6 +1562,14 @@
   "create": {
     "message": "Create"
   },
+  "createMultichainAccountButton": {
+    "message": "Create account",
+    "description": "Name of a button used on multichain account related pages for triggering the account creation process."
+  },
+  "createMultichainAccountButtonLoading": {
+    "message": "Creating account...",
+    "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
+  },
   "createNewAccountHeader": {
     "message": "Create a new account"
   },
@@ -1782,6 +1815,9 @@
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
+  },
+  "deepLink_theSwapsRampsPage": {
+    "message": "the Swaps/Ramps page"
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
@@ -2169,9 +2205,6 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
-  },
-  "enableIt": {
-    "message": " Enable it"
   },
   "enableSmartContractAccount": {
     "message": "Enable smart contract account"
@@ -2716,9 +2749,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Estimated fee required to process the transaction. The max fee is $1."
-  },
   "howQuotesWork": {
     "message": "How quotes work"
   },
@@ -2771,6 +2801,9 @@
   "importAccountWithSocialMsgLearnMore": {
     "message": "$1 about how imported keys work",
     "description": "$1 is a link to learn more about imported keys"
+  },
+  "importAnAccount": {
+    "message": "Import an account"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -2889,6 +2922,9 @@
   "insufficientFundsForGas": {
     "message": "Insufficient funds for gas"
   },
+  "insufficientFundsSend": {
+    "message": "Insufficient funds"
+  },
   "insufficientLockedLiquidityDescription": {
     "message": "The lack of adequately locked or burned liquidity leaves the token vulnerable to sudden liquidity withdrawals, potentially causing market instability."
   },
@@ -2965,6 +3001,9 @@
   },
   "invalidSeedPhraseNotFound": {
     "message": "Secret Recovery Phrase not found."
+  },
+  "invalidValue": {
+    "message": "Invalid value"
   },
   "ipfsGateway": {
     "message": "IPFS gateway"
@@ -3061,9 +3100,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Learn more about privacy best practices."
-  },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Learn more about Solana accounts"
   },
   "learnMoreKeystone": {
     "message": "Learn More"
@@ -3197,6 +3233,9 @@
   },
   "lockMetaMask": {
     "message": "Lock MetaMask"
+  },
+  "lockMetaMaskLoadingMessage": {
+    "message": "Locking MetaMask..."
   },
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
@@ -3565,9 +3604,6 @@
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Must have at least one network enabled"
-  },
   "networkMenu": {
     "message": "Network Menu"
   },
@@ -3645,6 +3681,12 @@
   "networkSwitchConnectionError": {
     "message": "We can't connect to $1",
     "description": "$1 represents the network name"
+  },
+  "networkTabCustom": {
+    "message": "Custom"
+  },
+  "networkTabPopular": {
+    "message": "Popular"
   },
   "networkURL": {
     "message": "Network URL"
@@ -3847,9 +3889,6 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
-  },
-  "notNow": {
-    "message": "Not now"
   },
   "notificationDetail": {
     "message": "Details"
@@ -4606,6 +4645,10 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "pin": {
+    "message": "Pin",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "Pin to top"
   },
@@ -4676,6 +4719,10 @@
   },
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
+  },
+  "privateKeys": {
+    "message": "Private keys",
+    "description": "Private keys row label on multichain account details page."
   },
   "privateNetwork": {
     "message": "Private network"
@@ -4806,6 +4853,10 @@
   "received": {
     "message": "Received"
   },
+  "receivingAddress": {
+    "message": "Receiving address",
+    "description": "Page title when viewing addresses for receiving funds"
+  },
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
@@ -4898,6 +4949,10 @@
   },
   "removeSnapDescription": {
     "message": "This action will delete the snap, its data and revoke your given permissions."
+  },
+  "rename": {
+    "message": "Rename",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "replace"
@@ -5326,6 +5381,10 @@
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
   },
+  "setUp": {
+    "message": "Set up",
+    "description": "Action label for Smart Accounts. Used on multichain details page."
+  },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
   },
@@ -5524,60 +5583,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A \"deep link\" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information. This setting only applies to links signed by MetaMask."
-  },
-  "slideBridgeDescription": {
-    "message": "Move across 9 chains, all within your wallet"
-  },
-  "slideBridgeTitle": {
-    "message": "Ready to bridge?"
-  },
-  "slideCashOutDescription": {
-    "message": "Sell your crypto for cash"
-  },
-  "slideCashOutTitle": {
-    "message": "Cash out with MetaMask"
-  },
-  "slideDebitCardDescription": {
-    "message": "Available in select regions"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMask debit card"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Take your wallet everywhere you go"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "Download MetaMask mobile"
-  },
-  "slideFundWalletDescription": {
-    "message": "Add or transfer tokens to get started"
-  },
-  "slideFundWalletTitle": {
-    "message": "Fund your wallet"
-  },
-  "slideMultiSrpDescription": {
-    "message": "Import and use multiple wallets in MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Add multiple Secret Recovery Phrases"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Same address, smarter features"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Start using smart accounts"
-  },
-  "slideSolanaDescription": {
-    "message": "Create a Solana account to get started"
-  },
-  "slideSolanaTitle": {
-    "message": "Solana is now supported"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Mint an NFT now for a chance to win"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Enter the $5000 USDC Giveaway!"
   },
   "slippage": {
     "message": "Slippage"
@@ -5845,27 +5850,6 @@
   },
   "solanaAccountRequired": {
     "message": "A Solana account is required to connect to this site."
-  },
-  "solanaImportAccounts": {
-    "message": "Import Solana accounts"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Import a Secret Recovery Phrase to migrate your Solana account from another wallet."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "More features coming soon"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "NFTs, hardware wallet support, and more coming soon."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana on MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Send, receive, and swap tokens"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Transfer and transact with tokens such as SOL, USDC, and more."
   },
   "someNetworks": {
     "message": "$1 networks"
@@ -7050,6 +7034,10 @@
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many attempts. Try again in "
   },
+  "unlockToReveal": {
+    "message": "Unlock to reveal",
+    "description": "Label used for Private Keys row on multichain account details page."
+  },
   "unpin": {
     "message": "Unpin"
   },
@@ -7200,9 +7188,6 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
-  },
-  "viewSolanaAccount": {
-    "message": "View Solana account"
   },
   "viewTransaction": {
     "message": "View transaction"

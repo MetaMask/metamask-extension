@@ -20,6 +20,7 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -1318,6 +1319,99 @@ describe('Actions', () => {
 
       await store.dispatch(actions.setSelectedAccount('0x123'));
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setSelectedMultichainAccount', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('#setSelectedMultichainAccount', async () => {
+      const store = mockStore({
+        activeTab: {},
+        metamask: {
+          accountTree: {},
+        },
+      });
+
+      const setSelectedMultichainAccountSpy = sinon.stub().resolves();
+
+      background.getApi.returns({
+        setSelectedMultichainAccount: setSelectedMultichainAccountSpy,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.setSelectedMultichainAccount(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      );
+      expect(setSelectedMultichainAccountSpy.callCount).toStrictEqual(1);
+      expect(
+        setSelectedMultichainAccountSpy.calledWith(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      ).toBe(true);
+    });
+
+    it('handles gracefully when setSelectedMultichainAccount throws', async () => {
+      const store = mockStore({
+        activeTab: {},
+        metamask: {
+          alertEnabledness: {},
+          accountTree: {},
+        },
+      });
+
+      const setSelectedMultichainAccountSpy = sinon
+        .stub()
+        .rejects(new Error('error'));
+
+      background.getApi.returns({
+        setSelectedMultichainAccount: setSelectedMultichainAccountSpy,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(
+        actions.setSelectedMultichainAccount(
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+        ),
+      );
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#createNextMultichainAccountGroup', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createNextMultichainAccountGroup in background', () => {
+      const store = mockStore();
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+      const walletIdWithoutPrefix = stripWalletTypePrefixFromWalletId(walletId);
+      const createNextMultichainAccountGroup = sinon.stub().resolves();
+
+      background.getApi = sinon.stub().returns({
+        createNextMultichainAccountGroup,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      store.dispatch(actions.createNextMultichainAccountGroup(walletId));
+
+      expect(createNextMultichainAccountGroup.callCount).toStrictEqual(1);
+      expect(
+        createNextMultichainAccountGroup.calledWith(walletIdWithoutPrefix),
+      ).toStrictEqual(true);
     });
   });
 

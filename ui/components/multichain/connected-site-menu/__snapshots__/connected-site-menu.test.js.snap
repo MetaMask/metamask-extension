@@ -7,7 +7,7 @@ exports[`Connected Site Menu should render the site menu in connected state 1`] 
     data-testid="connection-menu"
   >
     <span
-      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-default"
       style="mask-image: url('./images/icons/global.svg');"
     />
   </button>
@@ -21,7 +21,7 @@ exports[`Connected Site Menu should render the site menu in not connected state 
     data-testid="connection-menu"
   >
     <span
-      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-default"
       style="mask-image: url('./images/icons/global.svg');"
     />
   </button>
@@ -35,7 +35,7 @@ exports[`Connected Site Menu should render the site menu in not connected to cur
     data-testid="connection-menu"
   >
     <span
-      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-default"
       style="mask-image: url('./images/icons/global.svg');"
     />
   </button>

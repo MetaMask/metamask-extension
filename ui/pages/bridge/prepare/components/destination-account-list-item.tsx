@@ -1,13 +1,9 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   Text,
   AvatarToken,
@@ -27,7 +23,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import {
-  getUseBlockie,
   getShouldHideZeroBalanceTokens,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
@@ -41,6 +36,7 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../../hooks/useAccou
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import {
   getMultichainNetwork,
   getMultichainIsTestnet,
@@ -48,21 +44,21 @@ import {
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
 } from '../../../../selectors/multichain';
+import { type InternalDestinationAccount } from '../types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 
 type DestinationAccountListItemProps = {
-  account: InternalAccount;
-  selected: boolean;
+  account: InternalDestinationAccount;
+  selected?: boolean;
   onClick?: () => void;
 };
 
 const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   account,
-  selected,
+  selected = false,
   onClick,
 }) => {
-  const useBlockie = useSelector(getUseBlockie);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -131,24 +127,13 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
       backgroundColor={
         selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
       }
-      className={classnames('multichain-account-list-item', {
+      className={classnames('multichain-account-list-item gap-2', {
         'multichain-account-list-item--selected': selected,
       })}
       onClick={onClick}
       alignItems={AlignItems.center}
     >
-      <AvatarAccount
-        borderColor={BorderColor.transparent}
-        size={AvatarAccountSize.Md}
-        address={account.address}
-        variant={
-          useBlockie
-            ? AvatarAccountVariant.Blockies
-            : AvatarAccountVariant.Jazzicon
-        }
-        marginInlineEnd={2}
-      />
-
+      <PreferredAvatar address={account.address} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -170,7 +155,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
               ellipsis
               style={{ maxWidth: '200px' }}
             >
-              {account.metadata.name}
+              {account.displayName}
             </Text>
           </Box>
           <Box

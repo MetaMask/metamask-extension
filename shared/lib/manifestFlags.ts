@@ -83,6 +83,14 @@ export type ManifestFlags = {
      * Whether to disable the smart transactions migration (migration 135)
      */
     disableSmartTransactionsMigration?: boolean;
+    /**
+     * Whether to disable all of the syncing features that get automatically enabled in migrations 158 and 167
+     */
+    disableSync?: boolean;
+    /**
+     * Whether to simulate an unresponsive background by ignoring connections from the UI
+     */
+    simulateUnresponsiveBackground?: boolean;
   };
 };
 

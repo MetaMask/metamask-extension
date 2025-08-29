@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import {
   isSolanaChainId,
   BRIDGE_MM_FEE_RATE,
@@ -29,6 +30,8 @@ import {
   getFromToken,
   getSlippage,
   getIsSolanaSwap,
+  getPriceImpactThresholds,
+  getQuoteRequest,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -51,6 +54,7 @@ import {
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { formatPriceImpact } from '../utils/price-impact';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const MultichainBridgeQuoteCard = ({
@@ -62,6 +66,7 @@ export const MultichainBridgeQuoteCard = ({
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
 
+  const { insufficientBal } = useSelector(getQuoteRequest);
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
   const locale = useSelector(getIntlLocale);
@@ -76,6 +81,38 @@ export const MultichainBridgeQuoteCard = ({
   const dispatch = useDispatch();
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
+
+  const priceImpactThresholds = useSelector(getPriceImpactThresholds);
+
+  // Calculate if price impact warning should show
+  const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
+  const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
+
+  const shouldRenderPriceImpactRow = useMemo(() => {
+    const priceImpactThreshold = priceImpactThresholds;
+    return (
+      priceImpactThreshold && priceImpact !== undefined && priceImpact !== null
+    );
+  }, [priceImpactThresholds, priceImpact]);
+
+  // Red state if above threshold
+  const shouldShowPriceImpactWarning = React.useMemo(() => {
+    if (!shouldRenderPriceImpactRow) {
+      return false;
+    }
+    const threshold = gasIncluded
+      ? priceImpactThresholds?.gasless
+      : priceImpactThresholds?.normal;
+    if (threshold === null || threshold === undefined) {
+      return false;
+    }
+    return Number(priceImpact) >= Number(threshold);
+  }, [
+    gasIncluded,
+    priceImpact,
+    shouldRenderPriceImpactRow,
+    priceImpactThresholds,
+  ]);
 
   const getNetworkImage = (chainId: string | number) => {
     if (isSolanaChainId(chainId)) {
@@ -172,7 +209,7 @@ export const MultichainBridgeQuoteCard = ({
                 {t('networkFee')}
               </Text>
               {activeQuote.quote.gasIncluded && (
-                <Row gap={1}>
+                <Row gap={1} data-testid="network-fees-included">
                   <Text style={{ textDecoration: 'line-through' }}>
                     {activeQuote.includedTxFees?.valueInCurrency
                       ? formatCurrencyAmount(
@@ -181,7 +218,7 @@ export const MultichainBridgeQuoteCard = ({
                           2,
                         )
                       : formatCurrencyAmount(
-                          activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                          activeQuote.totalNetworkFee?.valueInCurrency,
                           currency,
                           2,
                         )}
@@ -190,9 +227,9 @@ export const MultichainBridgeQuoteCard = ({
                 </Row>
               )}
               {!activeQuote.quote.gasIncluded && (
-                <Text>
+                <Text data-testid="network-fees">
                   {formatCurrencyAmount(
-                    activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                    activeQuote.totalNetworkFee?.valueInCurrency,
                     currency,
                     2,
                   )}
@@ -225,6 +262,45 @@ export const MultichainBridgeQuoteCard = ({
               </Text>
             </Row>
 
+            {shouldRenderPriceImpactRow && (
+              <Row justifyContent={JustifyContent.spaceBetween}>
+                <Row gap={1}>
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textAlternative}
+                  >
+                    {t('bridgePriceImpact')}
+                  </Text>
+                  <Tooltip
+                    title={
+                      shouldShowPriceImpactWarning
+                        ? t('bridgePriceImpactWarningTitle')
+                        : t('bridgePriceImpactTooltipTitle')
+                    }
+                    position={PopoverPosition.TopStart}
+                    offset={[-16, 16]}
+                    iconName={IconName.Question}
+                  >
+                    {t(
+                      gasIncluded
+                        ? 'bridgePriceImpactGaslessWarning'
+                        : 'bridgePriceImpactNormalWarning',
+                    )}
+                  </Tooltip>
+                </Row>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={
+                    shouldShowPriceImpactWarning
+                      ? TextColor.errorDefault
+                      : TextColor.textDefault
+                  }
+                >
+                  {formatPriceImpact(priceImpact)}
+                </Text>
+              </Row>
+            )}
+
             {/* Time */}
             <Row justifyContent={JustifyContent.spaceBetween}>
               <Text
@@ -248,7 +324,11 @@ export const MultichainBridgeQuoteCard = ({
               color={TextColor.textAlternative}
             >
               <Text variant={TextVariant.bodyMd}>
-                {t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])}
+                {new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(
+                  0,
+                )
+                  ? t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])
+                  : ''}
               </Text>
               <ButtonLink
                 variant={TextVariant.bodyMd}
@@ -259,6 +339,9 @@ export const MultichainBridgeQuoteCard = ({
                       trackUnifiedSwapBridgeEvent(
                         UnifiedSwapBridgeEventName.AllQuotesOpened,
                         {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          can_submit: !insufficientBal,
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
                           stx_enabled: isStxEnabled,
