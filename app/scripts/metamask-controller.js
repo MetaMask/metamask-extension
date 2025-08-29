@@ -270,6 +270,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
+import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -542,8 +543,8 @@ export default class MetamaskController extends EventEmitter {
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex();
 
-    // lock to ensure only one seedless password sync is running at once
-    this.syncSeedlessGlobalPasswordMutex = new Mutex();
+    // lock to ensure only one seedless onboarding operation is running at once
+    this.seedlessOperationMutex = new Mutex();
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -2005,15 +2006,13 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
 
-    // For now, we return undefined here, which means that the Security Alerts
-    // API falls back to default behavior. In the future, we plan to use this
-    // configuration option for conditional re-routing of API requests.
     this.getSecurityAlertsConfig = () => {
-      return (_url) => {
-        return Promise.resolve({
-          newUrl: undefined,
-          authorization: undefined,
-        });
+      return async (url) => {
+        const getToken = () =>
+          this.controllerMessenger.call(
+            'AuthenticationController:getBearerToken',
+          );
+        return getShieldGatewayConfig(getToken, url);
       };
     };
 
@@ -4844,7 +4843,7 @@ export default class MetamaskController extends EventEmitter {
       isPasswordSynced = true;
       return isPasswordSynced;
     }
-    const releaseLock = await this.syncSeedlessGlobalPasswordMutex.acquire();
+    const releaseLock = await this.seedlessOperationMutex.acquire();
 
     try {
       const isKeyringPasswordValid = await this.keyringController
@@ -4957,7 +4956,8 @@ export default class MetamaskController extends EventEmitter {
         });
 
         // lock app again on error after submitPassword succeeded
-        await this.setLocked();
+        // here we skip the seedless operation lock as we are already in the seedless operation lock
+        await this.setLocked({ skipSeedlessOperationLock: true });
         throw err;
       } finally {
         this.metaMetricsController.bufferedEndTrace?.({
@@ -5084,6 +5084,7 @@ export default class MetamaskController extends EventEmitter {
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
     if (syncWithSocial) {
+      const releaseLock = await this.seedlessOperationMutex.acquire();
       let addNewSeedPhraseBackupSuccess = false;
       try {
         this.metaMetricsController.bufferedTrace?.({
@@ -5117,6 +5118,7 @@ export default class MetamaskController extends EventEmitter {
           name: TraceName.OnboardingAddSrp,
           data: { success: addNewSeedPhraseBackupSuccess },
         });
+        releaseLock();
       }
     } else {
       // Do not sync the seed phrase to the server, only update the local state
@@ -5137,6 +5139,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} oldPassword - The old password.
    */
   async changePassword(newPassword, oldPassword) {
+    const releaseLock = await this.seedlessOperationMutex.acquire();
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     try {
       await this.keyringController.changePassword(newPassword);
@@ -5170,6 +5173,8 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.error('error while changing password', error);
       throw error;
+    } finally {
+      releaseLock();
     }
   }
 
@@ -6538,13 +6543,19 @@ export default class MetamaskController extends EventEmitter {
     const bufferedPrivateKey = hexToBytes(add0x(privateKey));
 
     if (syncWithSocial) {
-      await this.seedlessOnboardingController.addNewSecretData(
-        bufferedPrivateKey,
-        SecretType.PrivateKey,
-        {
-          keyringId,
-        },
-      );
+      const releaseLock = await this.seedlessOperationMutex.acquire();
+      try {
+        await this.seedlessOnboardingController.addNewSecretData(
+          bufferedPrivateKey,
+          SecretType.PrivateKey,
+          { keyringId },
+        );
+      } catch (error) {
+        log.error('Error adding new private key backup', error);
+        throw error;
+      } finally {
+        releaseLock();
+      }
     } else {
       // Do not sync the seed phrase to the server, only update the local state
       this.seedlessOnboardingController.updateBackupMetadataState({
@@ -8730,9 +8741,32 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Locks MetaMask
+   *
+   * @param {object} options - The options for setting the locked state.
+   * @param {boolean} options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
-  setLocked() {
-    return this.keyringController.setLocked();
+  async setLocked(options = { skipSeedlessOperationLock: false }) {
+    const { skipSeedlessOperationLock } = options;
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+
+    let releaseLock;
+    if (isSocialLoginFlow && !skipSeedlessOperationLock) {
+      releaseLock = await this.seedlessOperationMutex.acquire();
+    }
+
+    try {
+      if (isSocialLoginFlow) {
+        await this.seedlessOnboardingController.setLocked();
+      }
+      await this.keyringController.setLocked();
+    } catch (error) {
+      log.error('Error setting locked state', error);
+      throw error;
+    } finally {
+      if (releaseLock) {
+        releaseLock();
+      }
+    }
   }
 
   removePermissionsFor = (subjects) => {

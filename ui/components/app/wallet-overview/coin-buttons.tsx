@@ -12,10 +12,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
-import {
-  PREPARE_SWAP_ROUTE,
-  SEND_ROUTE,
-} from '../../../helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import {
   getCurrentKeyring,
   getUseExternalServices,
@@ -61,6 +58,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 import { trace, TraceName } from '../../../../shared/lib/trace';
+import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
@@ -263,19 +261,11 @@ const CoinButtons = ({
     // Native Send flow
     await setCorrectChain();
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    if (process.env.SEND_REDESIGN_ENABLED) {
-      let route;
-      if (trackingLocation === 'home') {
-        route = `${SEND_ROUTE}/asset`;
-      } else {
-        const queryParams = new URLSearchParams();
-        queryParams.append('chainId', chainId.toString());
-        route = `${SEND_ROUTE}/amount?${queryParams.toString()}`;
-      }
-      history.push(route);
-    } else {
-      history.push(SEND_ROUTE);
+    let params;
+    if (trackingLocation !== 'home') {
+      params = { chainId: chainId.toString() };
     }
+    navigateToSendRoute(history, params);
   }, [
     chainId,
     account,
@@ -436,7 +426,10 @@ const CoinButtons = ({
         round={!displayNewIconButtons}
       />
       {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
-      {isUnifiedUIEnabled || isTestnet || !isBridgeChain ? null : (
+      {isUnifiedUIEnabled ||
+      isTestnet ||
+      !isBridgeChain ||
+      isNonEvmAccountWithoutExternalServices ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={

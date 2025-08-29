@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -14,6 +14,7 @@ import {
   LINEA_SEPOLIA_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
@@ -26,6 +27,8 @@ const mockSetTokenNetworkFilter = jest.fn();
 const mockDetectNfts = jest.fn();
 const mockEnableAllPopularNetworks = jest.fn();
 const mockEnableSingleNetwork = jest.fn();
+const mockAddPermittedChain = jest.fn();
+const mockShowPermittedNetworkToast = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => {
@@ -60,6 +63,14 @@ jest.mock('../../../store/actions.ts', () => ({
     mockDetectNfts();
     return { type: 'DETECT_NFTS' };
   },
+  addPermittedChain: (...args: unknown[]) => {
+    mockAddPermittedChain(...args);
+    return { type: 'MOCK_ADD_PERMITTED_CHAIN' };
+  },
+  showPermittedNetworkToast: () => {
+    mockShowPermittedNetworkToast();
+    return { type: 'MOCK_SHOW_PERMITTED_NETWORK_TOAST' };
+  },
 }));
 
 jest.mock('../../../store/controller-actions/network-order-controller', () => ({
@@ -75,6 +86,19 @@ jest.mock('../../../store/controller-actions/network-order-controller', () => ({
 
 const MOCK_ORIGIN = 'https://app.metamask.io';
 
+type TestRenderProps = Partial<{
+  currentChainId?: string;
+  showTestNetworks?: boolean;
+  selectedNetworkClientId?: string;
+  isUnlocked?: boolean;
+  origin?: string;
+  selectedTabOriginInDomainsState?: boolean;
+  isAddingNewNetwork?: boolean;
+  isAccessedFromDappConnectedSitePopover?: boolean;
+  editedNetwork?: { chainId: string };
+  neNetworkDiscoverButton?: Record<string, boolean>;
+}>;
+
 const render = ({
   showTestNetworks = false,
   selectedNetworkClientId = 'goerli',
@@ -85,7 +109,7 @@ const render = ({
   isAccessedFromDappConnectedSitePopover = false,
   editedNetwork = undefined,
   neNetworkDiscoverButton = { '0x531': true, '0xe708': true },
-} = {}) => {
+}: TestRenderProps = {}) => {
   const state = {
     appState: {
       isAddingNewNetwork,
@@ -251,11 +275,11 @@ describe('NetworkListMenu', () => {
   });
 
   it('disables toggle when on test network', () => {
-    render(false, { currentChainId: CHAIN_IDS.GOERLI });
+    render({ currentChainId: CHAIN_IDS.GOERLI });
     expect(document.querySelector('.toggle-button--disabled')).toBeDefined();
   });
 
-  it('switches networks when an item is clicked', () => {
+  it('switches networks when an item is clicked', async () => {
     const origin = 'https://app.metamask.io';
     const { getByText } = render({
       selectedTabOriginInDomainsState: true,
@@ -266,11 +290,11 @@ describe('NetworkListMenu', () => {
     const mainnetItem = getByText(MAINNET_DISPLAY_NAME);
     expect(mainnetItem).toBeInTheDocument();
     fireEvent.click(mainnetItem);
-    expect(mockToggleNetworkMenu).toHaveBeenCalled();
-    expect(mockSetActiveNetwork).toHaveBeenCalled();
-    expect(mockUpdateCustomNonce).toHaveBeenCalled();
-    expect(mockSetNextNonce).toHaveBeenCalled();
-    expect(mockDetectNfts).toHaveBeenCalled();
+    await waitFor(() => expect(mockToggleNetworkMenu).toHaveBeenCalled());
+    await waitFor(() => expect(mockSetActiveNetwork).toHaveBeenCalled());
+    await waitFor(() => expect(mockUpdateCustomNonce).toHaveBeenCalled());
+    await waitFor(() => expect(mockSetNextNonce).toHaveBeenCalled());
+    await waitFor(() => expect(mockDetectNfts).toHaveBeenCalled());
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {
@@ -328,13 +352,13 @@ describe('NetworkListMenu', () => {
   });
 
   it('enables the "Discover" for Linea Mainnet button when the Feature Flag `neNetworkDiscoverButton` is true for Linea and the network is supported', () => {
-    const { queryByTestId } = render({
+    const { queryByTestId, getByTestId } = render({
       neNetworkDiscoverButton: {
         '0xe708': true,
       },
     });
 
-    const menuButton = queryByTestId(
+    const menuButton = getByTestId(
       `network-list-item-options-button-eip155:${hexToDecimal(
         CHAIN_IDS.LINEA_MAINNET,
       )}`,
@@ -347,33 +371,32 @@ describe('NetworkListMenu', () => {
   });
 
   it('disables the "Discover" button when the Feature Flag `neNetworkDiscoverButton` is false for Linea even if the network is supported', () => {
-    const { queryByTestId } = render({
+    const { queryByTestId, getByTestId } = render({
       neNetworkDiscoverButton: {
         '0x531': true,
         '0xe708': false,
       },
     });
 
-    const menuButton = queryByTestId(
+    const menuButton = getByTestId(
       `network-list-item-options-button-eip155:${hexToDecimal(
         CHAIN_IDS.LINEA_MAINNET,
       )}`,
     );
     fireEvent.click(menuButton);
-
     expect(
       queryByTestId('network-list-item-options-discover'),
     ).not.toBeInTheDocument();
   });
 
   it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`', () => {
-    const { queryByTestId } = render({
+    const { queryByTestId, getByTestId } = render({
       neNetworkDiscoverButton: {
         '0x1': true,
       },
     });
 
-    const menuButton = queryByTestId(
+    const menuButton = getByTestId(
       `network-list-item-options-button-eip155:${hexToDecimal(
         CHAIN_IDS.MAINNET,
       )}`,
@@ -386,7 +409,7 @@ describe('NetworkListMenu', () => {
   });
 
   describe('selectedTabOrigin is connected to wallet', () => {
-    it('fires setNetworkClientIdForDomain when network item is clicked', () => {
+    it('fires setNetworkClientIdForDomain when network item is clicked', async () => {
       const state = {
         appState: {
           isAddingNewNetwork: false,
@@ -437,16 +460,24 @@ describe('NetworkListMenu', () => {
         store,
       );
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-      expect(store.dispatch).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'SET_NETWORK_CLIENT_ID_FOR_DOMAIN',
-          network: MOCK_ORIGIN,
-          id: NETWORK_TYPES.MAINNET,
-        }),
+      await waitFor(() =>
+        expect(mockAddPermittedChain).toHaveBeenCalledWith(
+          MOCK_ORIGIN,
+          'eip155:1',
+        ),
+      );
+      await waitFor(() =>
+        expect(mockShowPermittedNetworkToast).toHaveBeenCalled(),
+      );
+      await waitFor(() =>
+        expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+          MOCK_ORIGIN,
+          NETWORK_TYPES.MAINNET,
+        ),
       );
     });
 
-    it('fires setNetworkClientIdForDomain when test network item is clicked', () => {
+    it('fires setNetworkClientIdForDomain when test network item is clicked', async () => {
       const state = {
         appState: {
           isAddingNewNetwork: false,
@@ -497,12 +528,20 @@ describe('NetworkListMenu', () => {
         store,
       );
       fireEvent.click(getByText(SEPOLIA_DISPLAY_NAME));
-      expect(store.dispatch).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'SET_NETWORK_CLIENT_ID_FOR_DOMAIN',
-          network: MOCK_ORIGIN,
-          id: NETWORK_TYPES.SEPOLIA,
-        }),
+      await waitFor(() =>
+        expect(mockAddPermittedChain).toHaveBeenCalledWith(
+          MOCK_ORIGIN,
+          'eip155:1337',
+        ),
+      );
+      await waitFor(() =>
+        expect(mockShowPermittedNetworkToast).toHaveBeenCalled(),
+      );
+      await waitFor(() =>
+        expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+          MOCK_ORIGIN,
+          NETWORK_TYPES.SEPOLIA,
+        ),
       );
     });
   });
@@ -597,17 +636,17 @@ describe('NetworkListMenu', () => {
       expect(mockDetectNfts).not.toHaveBeenCalled();
     });
 
-    it('should fire network switch when isAccessedFromDappConnectedSitePopover is true', () => {
+    it('should fire network switch when isAccessedFromDappConnectedSitePopover is true', async () => {
       const { getByText } = render({
         isAccessedFromDappConnectedSitePopover: true,
       });
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
 
-      expect(mockToggleNetworkMenu).toHaveBeenCalled();
-      expect(mockSetActiveNetwork).toHaveBeenCalled();
-      expect(mockUpdateCustomNonce).toHaveBeenCalled();
-      expect(mockSetNextNonce).toHaveBeenCalled();
-      expect(mockDetectNfts).toHaveBeenCalled();
+      await waitFor(() => expect(mockToggleNetworkMenu).toHaveBeenCalled());
+      await waitFor(() => expect(mockSetActiveNetwork).toHaveBeenCalled());
+      await waitFor(() => expect(mockUpdateCustomNonce).toHaveBeenCalled());
+      await waitFor(() => expect(mockSetNextNonce).toHaveBeenCalled());
+      await waitFor(() => expect(mockDetectNfts).toHaveBeenCalled());
     });
   });
 });
