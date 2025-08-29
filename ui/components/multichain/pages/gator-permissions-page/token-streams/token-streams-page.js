@@ -21,10 +21,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  PERMISSIONS,
-  REVIEW_TOKEN_STREAMS_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { REVIEW_TOKEN_STREAMS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getGatorAssetListDetail } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { GatorAssetItemList } from '../components';
@@ -74,7 +71,7 @@ export const TokenStreamsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={Color.iconDefault}
-            onClick={() => history.push(PERMISSIONS)}
+            onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />
         }
@@ -84,7 +81,7 @@ export const TokenStreamsPage = () => {
           variant={TextVariant.headingMd}
           textAlign={TextAlign.Center}
         >
-          {t('permissions_tokenStreams')}
+          {t('tokenStreams')}
         </Text>
       </Header>
       <Content padding={0}>

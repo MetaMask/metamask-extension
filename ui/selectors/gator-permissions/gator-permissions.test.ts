@@ -47,7 +47,7 @@ function createMockGatorPermissionsSanitizedEntries(
       ({
         ...mockStorageEntry,
         expiry: mockStorageEntry.permissionResponse.expiry + index,
-      } as StoredGatorPermissionSanitized<SignerParam, PermissionTypes>),
+      }) as StoredGatorPermissionSanitized<SignerParam, PermissionTypes>,
   );
 }
 
