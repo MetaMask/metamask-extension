@@ -271,7 +271,7 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    await setManifestFlags(finalManifestFlags);
+    await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver({
       ...driverOptions,
