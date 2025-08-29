@@ -19,11 +19,8 @@ exports[`AccountPicker renders properly 1`] = `
           <div
             class="inline-flex items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
-            <img
-              alt="Blockies for 0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
-              height="16"
-              src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiIHNoYXBlLXJlbmRlcmluZz0ib3B0aW1pemVTcGVlZCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij48cGF0aCBmaWxsPSJoc2woMTM5IDg5JSA1OSUpIiBkPSJNMCwwSDhWOEgweiIvPjxwYXRoIGZpbGw9ImhzbCgzMjEgOTIlIDU2JSkiIGQ9Ik0xLDJoMXYxaC0xek02LDJoMXYxaC0xek0yLDJoMXYxaC0xek01LDJoMXYxaC0xek0zLDJoMXYxaC0xek00LDJoMXYxaC0xek0zLDNoMXYxaC0xek00LDNoMXYxaC0xek0wLDRoMXYxaC0xek03LDRoMXYxaC0xek0yLDRoMXYxaC0xek01LDRoMXYxaC0xek0wLDZoMXYxaC0xek03LDZoMXYxaC0xek0xLDZoMXYxaC0xek02LDZoMXYxaC0xek0zLDZoMXYxaC0xek00LDZoMXYxaC0xek0wLDdoMXYxaC0xek03LDdoMXYxaC0xek0yLDdoMXYxaC0xek01LDdoMXYxaC0xek0zLDdoMXYxaC0xek00LDdoMXYxaC0xeiIvPjxwYXRoIGZpbGw9ImhzbCgzMjUgNDclIDU1JSkiIGQ9Ik0xLDBoMXYxaC0xek02LDBoMXYxaC0xek0zLDFoMXYxaC0xek00LDFoMXYxaC0xek0wLDVoMXYxaC0xek03LDVoMXYxaC0xeiIvPjwvc3ZnPg=="
-              width="16"
+            <div
+              class="flex [&>div]:!rounded-none"
             />
           </div>
           <span
