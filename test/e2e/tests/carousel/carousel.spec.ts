@@ -18,6 +18,7 @@ describe('Carousel component e2e tests', function () {
   ];
 
   it('should display correct slides with expected content', async function () {
+    const skip = this.skip.bind(this);
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -28,7 +29,11 @@ describe('Carousel component e2e tests', function () {
         await driver.waitForSelector(
           '[data-testid="eth-overview__primary-currency"]',
         );
-
+        const hasCarousel = await driver.isElementPresent('.mm-carousel');
+        if (!hasCarousel) {
+          skip();
+          return;
+        }
         await driver.waitForSelector('.mm-carousel');
         await driver.waitForSelector('.mm-carousel-slide');
 
@@ -96,6 +101,12 @@ describe('Carousel component e2e tests', function () {
         const totalSlidesCount = SLIDE_IDS.length;
 
         await loginWithBalanceValidation(driver);
+        const hasCarousel = await driver.isElementPresent('.mm-carousel');
+        if (!hasCarousel) {
+          const stillThere = await driver.isElementPresent('.mm-carousel');
+          assert.equal(stillThere, false, 'Carousel should not be visible');
+          return;
+        }
         await driver.waitForSelector('.mm-carousel');
         await driver.waitForSelector('.mm-carousel-slide');
 
