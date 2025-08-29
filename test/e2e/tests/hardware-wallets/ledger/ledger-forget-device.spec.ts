@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Browser } from 'selenium-webdriver';
 import FixtureBuilder from '../../../fixture-builder';
 import { withFixtures } from '../../../helpers';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -9,6 +10,8 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 describe('Ledger Hardware', function (this: Suite) {
   it('forgets device and checks if it is removed from the list', async function () {
@@ -30,6 +33,12 @@ describe('Ledger Hardware', function (this: Suite) {
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.clickConnectLedgerButton();
+
+        // if browser is firefox
+        if (isFirefox) {
+          await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
+          return;
+        }
 
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.clickContinueButton();
