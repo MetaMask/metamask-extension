@@ -4138,21 +4138,8 @@ export function setUseBlockie(
   };
 }
 
-export function setAvatarType(
-  value: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch({
-      type: 'SET_AVATAR_TYPE',
-      value,
-    });
-
-    callBackgroundMethod('setAvatarType', [value], (err) => {
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
-  };
+export function setAvatarType(value: string) {
+  return setPreference('avatarType', value);
 }
 
 export function setUsePhishDetect(
