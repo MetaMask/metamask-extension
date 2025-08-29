@@ -10,6 +10,7 @@ import {
 import { Carousel } from '..';
 import {
   getAppIsLoading,
+  getRemoteFeatureFlags,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   hasCreatedSolanaAccount,
   ///: END:ONLY_INCLUDE_IF
@@ -41,6 +42,8 @@ export const AccountOverviewLayout = ({
 }: AccountOverviewLayoutProps) => {
   const dispatch = useDispatch();
   const isLoading = useSelector(getAppIsLoading);
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+  const isCarouselEnabled = Boolean(remoteFeatureFlags?.carouselBanners);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
 
@@ -54,7 +57,7 @@ export const AccountOverviewLayout = ({
   const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
     useState(false);
 
-  const { slides } = useCarouselManagement();
+  const { slides } = useCarouselManagement({ enabled: isCarouselEnabled });
 
   const slideById = useMemo(() => {
     const m = new Map<string, CarouselSlide>();
@@ -124,13 +127,16 @@ export const AccountOverviewLayout = ({
   return (
     <>
       <div className="account-overview__balance-wrapper">{children}</div>
-      <Carousel
-        slides={slides}
-        isLoading={isLoading}
-        onClick={handleCarouselClick}
-        onClose={handleRemoveSlide}
-        onRenderSlides={handleRenderSlides}
-      />
+
+      {isCarouselEnabled && (
+        <Carousel
+          slides={slides}
+          isLoading={isLoading}
+          onClick={handleCarouselClick}
+          onClose={handleRemoveSlide}
+          onRenderSlides={handleRenderSlides}
+        />
+      )}
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
       {
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
