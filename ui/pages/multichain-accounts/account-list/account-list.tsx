@@ -11,7 +11,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
 } from '@metamask/design-system-react';
 import {
   Content,
@@ -19,11 +18,7 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import {
-  Display,
-  FlexDirection,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';

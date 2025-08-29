@@ -78,7 +78,17 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
 
   const handleOptionClick = (option: WalletOption) => {
     onClose?.();
-    history.push(option.route);
+    
+    // Hardware wallet connections require expanded view
+    if (option.id === 'hardware-wallet') {
+      if (global.platform.openExtensionInBrowser) {
+        global.platform.openExtensionInBrowser(option.route);
+      } else {
+        history.push(option.route);
+      }
+    } else {
+      history.push(option.route);
+    }
   };
 
   return (
