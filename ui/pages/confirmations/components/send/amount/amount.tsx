@@ -139,7 +139,11 @@ export const Amount = () => {
             {balance} {asset?.symbol} {t('available')}
           </Text>
           {!isERC1155 && !isNonEvmNativeSendType && (
-            <ButtonLink marginLeft={1} onClick={updateToMax}>
+            <ButtonLink
+              marginLeft={1}
+              onClick={updateToMax}
+              variant={TextVariant.bodySm}
+            >
               {t('max')}
             </ButtonLink>
           )}
