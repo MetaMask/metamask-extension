@@ -23,7 +23,7 @@ class GeneralSettings {
   private readonly selectLanguageField = '[data-testid="locale-select"]';
 
   private readonly identicons = {
-    maskicon: '[data-testid="mask_icon"]',
+    maskicon: '[data-testid="maskicon_icon"]',
     blockies: '[data-testid="blockie_icon"]',
     jazzicon: '[data-testid="jazz_icon"]',
   };
