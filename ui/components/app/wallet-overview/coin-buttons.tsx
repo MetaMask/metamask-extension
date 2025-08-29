@@ -426,7 +426,10 @@ const CoinButtons = ({
         round={!displayNewIconButtons}
       />
       {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
-      {isUnifiedUIEnabled || isTestnet || !isBridgeChain ? null : (
+      {isUnifiedUIEnabled ||
+      isTestnet ||
+      !isBridgeChain ||
+      isNonEvmAccountWithoutExternalServices ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={

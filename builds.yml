@@ -53,6 +53,7 @@ buildTypes:
       - bitcoin
       - solana
       - solana-swaps
+      - bitcoin-swaps
       - multi-srp
     env:
       - INFURA_BETA_PROJECT_ID
@@ -164,6 +165,7 @@ features:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   solana-swaps:
+  bitcoin-swaps:
   multichain:
   ocap-kernel:
     assets:
@@ -186,6 +188,7 @@ env:
   - WITH_STATE: null
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
+  - METAMASK_REACT_REDUX_DEVTOOLS: null
   - SUPPORT_LINK: https://support.metamask.io
   - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
@@ -395,6 +398,8 @@ env:
 
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'false'
+  # URL of Shield gateway
+  - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
 
   # Snaps
   # This should only be used for local testing, and should not be enabled in any
