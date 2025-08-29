@@ -16,7 +16,7 @@ const mockSelectedAccountGroup = mockState.metamask.accountTree
 const defaultArgs: MultichainAccountListProps = {
   wallets: mockState.metamask.accountTree
     .wallets as unknown as AccountTreeWallets,
-  selectedAccountGroup: mockSelectedAccountGroup,
+  selectedAccountGroups: [mockSelectedAccountGroup],
 };
 
 const store = configureStore({
