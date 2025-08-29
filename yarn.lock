@@ -1983,10 +1983,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/env-options@npm:^1.1.11, @endo/env-options@npm:^1.1.7, @endo/env-options@npm:^1.1.8":
+"@endo/env-options@npm:1.1.11":
   version: 1.1.11
   resolution: "@endo/env-options@npm:1.1.11"
   checksum: 10/a85326b2f422ebb3f5895ed263d230bf9c4915ed2f798210bebb3941daf94d97495f4767f4113bab8f3781b0534ecbe1d29067d7806478fd6237ab69e97fe5c1
+  languageName: node
+  linkType: hard
+
+"@endo/env-options@patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch":
+  version: 1.1.11
+  resolution: "@endo/env-options@patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch::version=1.1.11&hash=832523"
+  checksum: 10/1f9653e86bec445220b7b914f316cf3e00c018c7d14ef392b7fb4b884f19f6753e68e377d4ee47464ce514a04f21c4a99f98a0b00d5e00339c307dc2131e8624
   languageName: node
   linkType: hard
 
