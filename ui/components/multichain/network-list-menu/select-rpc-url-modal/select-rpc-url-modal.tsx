@@ -27,9 +27,11 @@ import { getMultichainNetworkConfigurationsByChainId } from '../../../../selecto
 export const SelectRpcUrlModal = ({
   networkConfiguration,
   onNetworkChange,
+  isAccessedFromDappConnectedSitePopover = false,
 }: {
   networkConfiguration?: NetworkConfiguration;
   onNetworkChange: (chainId: CaipChainId, networkClientId: string) => void;
+  isAccessedFromDappConnectedSitePopover?: boolean;
 }) => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -82,17 +84,21 @@ export const SelectRpcUrlModal = ({
           paddingRight={4}
           display={Display.Flex}
           key={rpcEndpoint.url}
-          onClick={() => {
+          onClick={async () => {
             const network = {
               ...networkConfigurationToUse,
               defaultRpcEndpointIndex: index,
             };
-            dispatch(updateNetwork(network));
+
+            await dispatch(updateNetwork(network, {}));
             dispatch(setEditedNetwork());
-            onNetworkChange(
-              toEvmCaipChainId(network.chainId),
-              rpcEndpoint.networkClientId,
-            );
+
+            if (!isAccessedFromDappConnectedSitePopover) {
+              onNetworkChange(
+                toEvmCaipChainId(network.chainId),
+                rpcEndpoint.networkClientId,
+              );
+            }
           }}
           className={classnames('select-rpc-url__item', {
             'select-rpc-url__item--selected':

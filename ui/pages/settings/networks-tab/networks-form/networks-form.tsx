@@ -284,12 +284,9 @@ export const NetworksForm = ({
         };
 
         if (existingNetwork) {
-          const options = {
-            replacementSelectedRpcEndpointIndex:
-              chainIdHex === existingNetwork.chainId
-                ? rpcUrls?.defaultRpcEndpointIndex
-                : undefined,
-          };
+          // Don't automatically update dapp connections when editing RPC URLs
+          // Users should manually switch networks if they want dapps to use different RPCs
+          const options = {};
           await dispatch(updateNetwork(networkPayload, options));
           if (Object.keys(tokenNetworkFilter).length === 1) {
             await dispatch(
