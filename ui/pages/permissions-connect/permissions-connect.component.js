@@ -110,7 +110,6 @@ export default class PermissionConnect extends Component {
       subjectType: PropTypes.string,
     }),
     isRequestingAccounts: PropTypes.bool.isRequired,
-    isMultichainAccountState2Active: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
