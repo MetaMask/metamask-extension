@@ -333,38 +333,38 @@ const state = {
     isInitialized: true,
     isUnlocked: true,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
-    "accountTree": {
-      "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
-      "wallets": {
-        "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
-          "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
-          "type": "entropy",
-          "groups": {
-            "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
-              "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
-              "type": "multichain-account",
-              "accounts": [
-                "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
-                "07c2cfec-36c9-46c4-8115-3836d3ac9047"
+    accountTree: {
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      wallets: {
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+          id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+          type: 'entropy',
+          groups: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+              id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+              type: 'multichain-account',
+              accounts: [
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                '07c2cfec-36c9-46c4-8115-3836d3ac9047',
               ],
-              "metadata": {
-                "name": "Account 1",
-                "entropy": {
-                  "groupIndex": 0
+              metadata: {
+                name: 'Account 1',
+                entropy: {
+                  groupIndex: 0,
                 },
-                "hidden": false,
-                "pinned": false
-              }
-            }
+                hidden: false,
+                pinned: false,
+              },
+            },
           },
-          "metadata": {
-            "name": "Wallet 1",
-            "entropy": {
-              "id": "01JKAF3DSGM3AB87EM9N0K41AJ"
-            }
-          }
-        }
-      }
+          metadata: {
+            name: 'Wallet 1',
+            entropy: {
+              id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+            },
+          },
+        },
+      },
     },
     internalAccounts: {
       accounts: {
@@ -1704,33 +1704,6 @@ const state = {
       },
     },
     openSeaEnabled: true,
-    accountTree: {
-      selectedAccountGroup: null,
-      wallets: {
-        '01JN08SYECPZHFHB3K0J1NHJ4H': {
-          id: '01JN08SYECPZHFHB3K0J1NHJ4H',
-          type: 'hdKeyTree',
-          metadata: {
-            name: 'HD Key Tree',
-          },
-          groups: {
-            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
-              id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-              type: 'evm',
-              metadata: {
-                name: 'Account 1',
-              },
-              accounts: [
-                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                '07c2cfec-36c9-46c4-8115-3836d3ac9047',
-                '15e69915-2a1a-4019-93b3-916e11fd432f',
-                '784225f4-d30b-4e77-a900-c8bbce735b88',
-              ],
-            },
-          },
-        },
-      },
-    },
   },
   appState: {
     isAccountMenuOpen: false,
