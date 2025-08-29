@@ -11,6 +11,7 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
+const { registerShieldServerMocks } = require('./tests/shield/mock');
 const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
@@ -233,6 +234,9 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
         json: {
           block: 20733513,
           result_type: 'Benign',
@@ -989,6 +993,9 @@ async function setupMocking(
         },
       };
     });
+
+  // Shield services
+  await registerShieldServerMocks(server);
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested

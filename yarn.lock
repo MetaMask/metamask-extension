@@ -32081,6 +32081,7 @@ __metadata:
     tsx: "npm:^4.19.2"
     tweetnacl: "npm:^1.0.3"
     typescript: "npm:~5.4.5"
+    undici: "npm:^6.21.3"
     unicode-confusables: "npm:^0.1.1"
     unzipper: "npm:^0.12.3"
     uri-js: "npm:^4.4.1"
@@ -42059,6 +42060,13 @@ __metadata:
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
   checksum: 10/ec8f41aa4359d50f9b59fa61fe3efce3477cc681908c8f84354d8567bb3701fafdddf36ef6bff307024d3feb42c837cf6f670314ba37fc8145e219560e473d14
+  languageName: node
+  linkType: hard
+
+"undici@npm:^6.21.3":
+  version: 6.21.3
+  resolution: "undici@npm:6.21.3"
+  checksum: 10/b6b8f4a90e294c11fabbb174b471a310840695ed0154a44b81e9bb4a08867ed738c8a7eac4eb46c7902d502fbccf03fa2cf2e5f18d9a2218d82e4294e3f74a2b
   languageName: node
   linkType: hard
 
