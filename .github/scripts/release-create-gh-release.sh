@@ -51,18 +51,72 @@ if [[ "${current_commit_msg}" =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.
     tag="${BASH_REMATCH[1]}"
     flask_version="$(print_build_version 'flask')"
 
-    printf '%s\n' 'Creating GitHub Release'
-    release_body="$(awk -v version="[${tag##v}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
-    gh release create "${tag}" \
-        build-dist-browserify/builds/metamask-chrome-*.zip \
-        build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
-        build-flask-browserify/builds/metamask-flask-chrome-*.zip \
-        build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip \
-        --title "Version ${tag##v}" \
-        --notes "${release_body}" \
-        --target "${GITHUB_SHA}"
+        # Check if the tag already exists (it should have been created on the release branch)
+    if git rev-parse "${tag}" >/dev/null 2>&1; then
+        printf '%s\n' "Tag ${tag} already exists (created on release branch)"
+        tag_sha=$(git rev-parse "${tag}")
+        printf '%s\n' "Tag SHA: ${tag_sha}"
 
-    publish_tag 'Flask' "${flask_version}"
+        # Verify the tag is in the current commit's history (not just floating)
+        if git merge-base --is-ancestor "${tag_sha}" HEAD; then
+            printf '%s\n' "✅ Tag ${tag} is in the current branch history"
+        else
+            printf '%s\n' "⚠️  WARNING: Tag ${tag} exists but is not in the current branch history!"
+            printf '%s\n' "This may indicate the tag was not created properly on the release branch."
+            printf '%s\n' "Please verify the release process was followed correctly."
+        fi
+
+        # Check if GitHub release already exists
+        if gh release view "${tag}" >/dev/null 2>&1; then
+            printf '%s\n' "GitHub release ${tag} already exists; skipping creation"
+        else
+            printf '%s\n' 'Creating GitHub Release at existing tag'
+            release_body="$(awk -v version="[${tag##v}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
+
+            # Create release at the existing tag (not at current SHA)
+            gh release create "${tag}" \
+                build-dist-browserify/builds/metamask-chrome-*.zip \
+                build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
+                build-flask-browserify/builds/metamask-flask-chrome-*.zip \
+                build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip \
+                --title "Version ${tag##v}" \
+                --notes "${release_body}" \
+                --target "${tag_sha}"
+        fi
+    else
+        # Fallback: Create tag if it doesn't exist (shouldn't happen with new process)
+        printf '%s\n' "⚠️  WARNING: Tag ${tag} not found!"
+        printf '%s\n' "This indicates the 'Tag Release Branch' workflow was not run before merge."
+        printf '%s\n' "Creating tag now at merge commit (not recommended - should tag release branch instead)"
+        printf '%s\n' ""
+        printf '%s\n' "To avoid this in the future:"
+        printf '%s\n' "1. Run 'Tag Release Branch' workflow BEFORE merging the release PR"
+        printf '%s\n' "2. This ensures the tag points to the tested release branch code"
+        printf '%s\n' ""
+
+        git config user.email "metamaskbot@users.noreply.github.com"
+        git config user.name "MetaMask Bot"
+        git tag -a "${tag}" -m "Version ${tag##v}" "${GITHUB_SHA}"
+        git push "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}" "${tag}"
+
+        printf '%s\n' 'Creating GitHub Release'
+        release_body="$(awk -v version="[${tag##v}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
+        gh release create "${tag}" \
+            build-dist-browserify/builds/metamask-chrome-*.zip \
+            build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
+            build-flask-browserify/builds/metamask-flask-chrome-*.zip \
+            build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip \
+            --title "Version ${tag##v}" \
+            --notes "${release_body}" \
+            --target "${GITHUB_SHA}"
+    fi
+
+    # Handle Flask tagging
+    if git rev-parse "v${flask_version}" >/dev/null 2>&1; then
+        printf '%s\n' "Flask tag v${flask_version} already exists"
+    else
+        publish_tag 'Flask' "${flask_version}"
+    fi
 else
     printf '%s\n' 'Version not found in commit message; skipping GitHub Release'
     exit 0

@@ -1,0 +1,255 @@
+name: Tag Release Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-version:
+        description: 'Release version (e.g., 12.0.0)'
+        required: true
+        type: string
+      release-branch:
+        description: 'Release branch name (e.g., Version-v12.0.0)'
+        required: false
+        type: string
+      target-branch:
+        description: 'Target branch for the merge PR (master or stable)'
+        required: true
+        type: choice
+        options:
+          - master
+          - stable
+        default: master
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+
+jobs:
+  tag-release-branch:
+    name: Tag Release Branch HEAD
+    runs-on: ubuntu-latest
+    outputs:
+      release-branch: ${{ steps.determine-branch.outputs.branch }}
+      tag-name: ${{ steps.tag-release.outputs.tag }}
+      tag-sha: ${{ steps.tag-release.outputs.sha }}
+    steps:
+      - name: Determine release branch
+        id: determine-branch
+        env:
+          VERSION: ${{ inputs.release-version }}
+          PROVIDED_BRANCH: ${{ inputs.release-branch }}
+        run: |
+          # If branch not provided, construct it from version
+          if [[ -z "${PROVIDED_BRANCH}" ]]; then
+            BRANCH="Version-v${VERSION}"
+          else
+            BRANCH="${PROVIDED_BRANCH}"
+          fi
+
+          echo "branch=${BRANCH}" >> "${GITHUB_OUTPUT}"
+          echo "Using release branch: ${BRANCH}"
+
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.determine-branch.outputs.branch }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify branch has successful builds
+        env:
+          BRANCH_NAME: ${{ steps.determine-branch.outputs.branch }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Checking build status for branch: ${BRANCH_NAME}"
+
+          # Get the most recent workflow runs for this branch
+          LATEST_RUNS=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${{ github.repository }}/actions/runs?branch=${BRANCH_NAME}&status=completed&per_page=10" \
+            --jq '.workflow_runs[]')
+
+          # Check if there's at least one successful build
+          if echo "${LATEST_RUNS}" | jq -e 'select(.conclusion == "success")' > /dev/null 2>&1; then
+            echo "✅ Found successful builds on ${BRANCH_NAME}"
+          else
+            echo "::warning::No recent successful builds found on ${BRANCH_NAME}. Please verify build status before proceeding."
+          fi
+
+      - name: Create release tag
+        id: tag-release
+        env:
+          VERSION: ${{ inputs.release-version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="v${VERSION}"
+
+          # Check if tag already exists
+          if git rev-parse "${TAG_NAME}" >/dev/null 2>&1; then
+            echo "::error::Tag ${TAG_NAME} already exists"
+            exit 1
+          fi
+
+          # Configure git
+          git config user.email "metamaskbot@users.noreply.github.com"
+          git config user.name "MetaMask Bot"
+
+          # Get the current SHA
+          SHA=$(git rev-parse HEAD)
+
+          # Create annotated tag at HEAD
+          git tag -a "${TAG_NAME}" -m "Release ${VERSION}"
+
+          # Push the tag
+          git push origin "${TAG_NAME}"
+
+          echo "tag=${TAG_NAME}" >> "${GITHUB_OUTPUT}"
+          echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
+          echo "✅ Created and pushed tag: ${TAG_NAME} at ${SHA}"
+
+      - name: Set status check on release branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_SHA: ${{ steps.tag-release.outputs.sha }}
+          TAG_NAME: ${{ steps.tag-release.outputs.tag }}
+        run: |
+          # Set a successful status check to indicate the release has been tagged
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            /repos/${{ github.repository }}/statuses/${TAG_SHA} \
+            -f state='success' \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/releases/tag/${TAG_NAME}" \
+            -f description='Release has been tagged' \
+            -f context='release/tagged'
+
+      - name: Create or update merge PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCH: ${{ steps.determine-branch.outputs.branch }}
+          VERSION: ${{ inputs.release-version }}
+          TARGET_BRANCH: ${{ inputs.target-branch }}
+          TAG_NAME: ${{ steps.tag-release.outputs.tag }}
+          TAG_SHA: ${{ steps.tag-release.outputs.sha }}
+        run: |
+          # Check if PR already exists
+          EXISTING_PR=$(gh pr list --base "${TARGET_BRANCH}" --head "${RELEASE_BRANCH}" --json number --jq '.[0].number' || echo "")
+
+          if [[ -n "${EXISTING_PR}" ]]; then
+            echo "PR already exists: #${EXISTING_PR}"
+
+            # Add label to indicate it's been tagged
+            gh pr edit "${EXISTING_PR}" --add-label "release-tagged" || true
+
+            # Update the PR description to note that it's been tagged
+            gh pr edit "${EXISTING_PR}" \
+              --body "## Release Information
+
+              - **Version**: ${TAG_NAME}
+              - **Release Branch**: ${RELEASE_BRANCH}
+              - **Tag SHA**: ${TAG_SHA}
+              - **Target Branch**: ${TARGET_BRANCH}
+
+              ## ✅ Release Status
+
+              This release has been **tagged** at commit ${TAG_SHA:0:7}.
+
+              The tag \`${TAG_NAME}\` has been created on the release branch HEAD.
+
+              ## ⚠️ Merge Instructions
+
+              **REQUIRED**: This PR must be merged using a **merge commit** (NOT squash and merge).
+
+              **IMPORTANT**: The release has already been tagged. DO NOT create another tag after merge.
+
+              After merging:
+              1. The tagged commit will be part of ${TARGET_BRANCH} history
+              2. The publish-release workflow will trigger
+              3. GitHub release will be created from the existing tagged commit
+              4. Sentry artifacts will be uploaded
+
+              ## Checklist
+
+              - [x] Release branch created
+              - [x] Version bumped
+              - [x] Changelog updated
+              - [x] QA testing completed
+              - [x] **Release tagged at branch HEAD** ✅
+              - [ ] Ready to merge to ${TARGET_BRANCH}"
+
+            echo "Updated PR #${EXISTING_PR} with tag information"
+          else
+            # Create new PR with label indicating it's been tagged
+            PR_URL=$(gh pr create \
+              --title "Release: v${VERSION} to ${TARGET_BRANCH}" \
+              --body "## Release Information
+
+              - **Version**: ${TAG_NAME}
+              - **Release Branch**: ${RELEASE_BRANCH}
+              - **Tag SHA**: ${TAG_SHA}
+              - **Target Branch**: ${TARGET_BRANCH}
+
+              ## ✅ Release Status
+
+              This release has been **tagged** at commit ${TAG_SHA:0:7}.
+
+              The tag \`${TAG_NAME}\` has been created on the release branch HEAD.
+
+              ## ⚠️ Merge Instructions
+
+              **REQUIRED**: This PR must be merged using a **merge commit** (NOT squash and merge).
+
+              **IMPORTANT**: The release has already been tagged. DO NOT create another tag after merge.
+
+              After merging:
+              1. The tagged commit will be part of ${TARGET_BRANCH} history
+              2. The publish-release workflow will trigger
+              3. GitHub release will be created from the existing tagged commit
+              4. Sentry artifacts will be uploaded
+
+              ## Checklist
+
+              - [x] Release branch created
+              - [x] Version bumped
+              - [x] Changelog updated
+              - [x] QA testing completed
+              - [x] **Release tagged at branch HEAD** ✅
+              - [ ] Ready to merge to ${TARGET_BRANCH}" \
+              --base "${TARGET_BRANCH}" \
+              --head "${RELEASE_BRANCH}" \
+              --label "release-${VERSION}" \
+              --label "release-tagged")
+
+            PR_NUMBER=$(echo "${PR_URL}" | grep -oE '[0-9]+$')
+            echo "Created PR #${PR_NUMBER} with release-tagged label"
+          fi
+
+      - name: Output summary
+        env:
+          VERSION: ${{ inputs.release-version }}
+          RELEASE_BRANCH: ${{ steps.determine-branch.outputs.branch }}
+          TARGET_BRANCH: ${{ inputs.target-branch }}
+          TAG_NAME: ${{ steps.tag-release.outputs.tag }}
+          TAG_SHA: ${{ steps.tag-release.outputs.sha }}
+        run: |
+          echo "## 📋 Release Summary" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "### Release Details" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- **Version**: ${TAG_NAME}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- **Release Branch**: ${RELEASE_BRANCH}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- **Target Branch**: ${TARGET_BRANCH}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- **Tag SHA**: \`${TAG_SHA}\`" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "### ✅ Completed Actions" >> "${GITHUB_STEP_SUMMARY}"
+          echo "1. Tagged release branch HEAD with ${TAG_NAME}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "2. Created/updated PR to merge ${RELEASE_BRANCH} → ${TARGET_BRANCH}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "### 📝 Next Steps" >> "${GITHUB_STEP_SUMMARY}"
+          echo "1. Review and approve the merge PR" >> "${GITHUB_STEP_SUMMARY}"
+          echo "2. **Merge using a merge commit** (NOT squash and merge)" >> "${GITHUB_STEP_SUMMARY}"
+          echo "3. The publish-release workflow will automatically:" >> "${GITHUB_STEP_SUMMARY}"
+          echo "   - Create GitHub release from the tagged commit" >> "${GITHUB_STEP_SUMMARY}"
+          echo "   - Upload artifacts to Sentry" >> "${GITHUB_STEP_SUMMARY}"
+          echo "   - Complete post-release tasks" >> "${GITHUB_STEP_SUMMARY}"
