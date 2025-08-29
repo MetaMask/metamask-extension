@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.3.0",
+  "version": "13.4.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -336,7 +336,7 @@
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/seedless-onboarding-controller": "^2.6.0",
+    "@metamask/seedless-onboarding-controller": "^3.0.0",
     "@metamask/selected-network-controller": "^22.1.0",
     "@metamask/signature-controller": "^32.0.0",
     "@metamask/smart-transactions-controller": "^18.1.0",
@@ -660,7 +660,8 @@
     "process": "^0.11.10",
     "pumpify": "^2.0.1",
     "randomcolor": "^0.5.4",
-    "react-devtools": "^4.11.0",
+    "react-devtools": "^6.1.5",
+    "react-devtools-core": "^6.1.5",
     "react-syntax-highlighter": "^15.5.0",
     "read-installed": "^4.0.3",
     "readable-stream-2": "^2.3.3",
