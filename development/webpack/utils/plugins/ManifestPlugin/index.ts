@@ -255,6 +255,16 @@ export class ManifestPlugin<Z extends boolean> {
       : baseManifest.description;
     const { version } = this.options;
 
+    // TODO(https://github.com/MetaMask/metamask-extension/issues/35218)
+    // scripts/disable-console.js is only relevant for the browserify build
+    // console is disabled by the lavamoat webpack plugin automatically
+    // clean up after browserify builds are removed
+    // the file should be deleted, and the script should be removed from the manifest
+    baseManifest.content_scripts = baseManifest.content_scripts?.map((s) => ({
+      ...s,
+      js: s.js?.filter((filename) => filename !== 'scripts/disable-console.js'),
+    }));
+
     this.options.browsers.forEach((browser) => {
       let manifest: Manifest = { ...baseManifest, description, version };
 

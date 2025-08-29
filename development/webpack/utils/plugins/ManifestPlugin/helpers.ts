@@ -5,11 +5,9 @@ import { MANIFEST_DEV_KEY } from '../../../../build/constants';
  * given build args.
  *
  * Applies the following transformations:
- * - If `lockdown` is `false`, removes lockdown scripts from content_scripts
  * - If `test` is `true`, adds the "tabs" permission to the manifest
  *
  * @param args
- * @param args.lockdown
  * @param args.test
  * @param isDevelopment
  * @param manifestOverridesPath
@@ -18,7 +16,7 @@ import { MANIFEST_DEV_KEY } from '../../../../build/constants';
  * `test` is `true`
  */
 export function transformManifest(
-  args: { lockdown: boolean; test: boolean },
+  args: { test: boolean },
   isDevelopment: boolean,
   manifestOverridesPath?: string | undefined,
 ) {
@@ -26,19 +24,6 @@ export function transformManifest(
     manifest: chrome.runtime.Manifest,
     browser?: string,
   ) => chrome.runtime.Manifest | void)[] = [];
-
-  function removeLockdown(browserManifest: chrome.runtime.Manifest) {
-    const mainScripts = browserManifest.content_scripts?.[0];
-    if (mainScripts) {
-      const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
-      mainScripts.js = mainScripts.js?.filter((js) => keep.includes(js));
-    }
-  }
-
-  if (!args.lockdown) {
-    // remove lockdown scripts from content_scripts
-    transforms.push(removeLockdown);
-  }
 
   /**
    * This function sets predefined flags in the manifest's _flags property

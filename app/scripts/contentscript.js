@@ -52,4 +52,20 @@ const start = () => {
   }
 };
 
+(function () {
+  let once = false;
+  Object.defineProperty(document, 'INJECT_ONCE', {
+    value: (textContent) => {
+      if (once) {
+        return;
+      }
+      once = true;
+      const d = document;
+      const s = d.createElement('script');
+      s.textContent = textContent;
+      d.documentElement.appendChild(s).remove();
+    },
+  });
+})();
+
 start();

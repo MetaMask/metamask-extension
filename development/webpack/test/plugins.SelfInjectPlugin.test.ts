@@ -55,7 +55,7 @@ describe('SelfInjectPlugin', () => {
           // reference the `sourceMappingURL`
           assert.strictEqual(
             newSource,
-            `{let d=document,s=d.createElement('script');s.textContent="${source}\\n//# sourceMappingURL=${filename}.map"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;s.nonce=btoa((globalThis.browser||chrome).runtime.getURL("/"));d.documentElement.appendChild(s).remove()}`,
+            `document.INJECT_ONCE("${source}\\n//# sourceMappingURL=${filename}.map");`,
           );
         } else {
           // the new source should NOT reference the new sourcemap, since it's
@@ -64,10 +64,7 @@ describe('SelfInjectPlugin', () => {
           // (and development) gives the injected source a name that will show
           // in the console if the source throws an exception or logs to the
           // console.
-          assert.strictEqual(
-            newSource,
-            `{let d=document,s=d.createElement('script');s.textContent="console.log(3);"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;s.nonce=btoa((globalThis.browser||chrome).runtime.getURL("/"));d.documentElement.appendChild(s).remove()}`,
-          );
+          assert.strictEqual(newSource, `document.INJECT_ONCE("${source}");`);
         }
 
         if (map) {
