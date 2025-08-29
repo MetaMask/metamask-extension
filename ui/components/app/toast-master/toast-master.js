@@ -25,7 +25,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
-  getDappActiveNetwork,
   getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getSelectedAccount,
@@ -46,6 +45,7 @@ import {
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
+import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,

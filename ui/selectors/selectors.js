@@ -2462,32 +2462,6 @@ export const getCurrentNetwork = createDeepEqualSelector(
   },
 );
 
-export const getDappActiveNetwork = createDeepEqualSelector(
-  getOriginOfCurrentTab,
-  getAllDomains,
-  getNetworkConfigurationsByChainId,
-  (activeTabOrigin, allDomains, networkConfigurationsByChainId) => {
-    if (!activeTabOrigin || !allDomains) {
-      return null;
-    }
-
-    const networkClientId = allDomains[activeTabOrigin];
-    if (!networkClientId) {
-      return null;
-    }
-
-    const networkConfiguration = Object.values(
-      networkConfigurationsByChainId,
-    ).find((network) => {
-      return network.rpcEndpoints.some(
-        (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
-      );
-    });
-
-    return networkConfiguration || null;
-  },
-);
-
 export const getSelectedNetwork = createDeepEqualSelector(
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
