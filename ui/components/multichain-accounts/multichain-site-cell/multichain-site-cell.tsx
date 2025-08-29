@@ -21,7 +21,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { SiteCellConnectionListItem } from '../../multichain/pages/review-permissions-page/site-cell/site-cell-connection-list-item';
-import { MultichainEditAccountsModal } from '../permissions/edit-accounts-modal/multichain-edit-accounts-modal';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
 import { MultichainSiteCellTooltip } from './tool-tip/multichain-site-cell-tooltip';
 
@@ -29,7 +28,7 @@ type MultichainSiteCellProps = {
   nonTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
   testNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
   supportedAccountGroups: AccountGroupWithInternalAccounts[];
-  onSelectAccountGroupIds: (groupIds: AccountGroupId[]) => void;
+  showEditAccounts: () => void;
   onSelectChainIds: (chainIds: CaipChainId[]) => void;
   selectedAccountGroupIds: AccountGroupId[];
   selectedChainIds: CaipChainId[];
@@ -41,7 +40,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
   nonTestNetworks,
   testNetworks,
   supportedAccountGroups,
-  onSelectAccountGroupIds,
+  showEditAccounts,
   onSelectChainIds,
   selectedAccountGroupIds,
   selectedChainIds,
@@ -52,7 +51,6 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
   const trackEvent = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
-  const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
   const selectedNetworks = allNetworks.filter(({ caipChainId }) =>
@@ -61,36 +59,8 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
 
   const selectedChainIdsLength = selectedChainIds.length;
 
-  // Determine the messages for connected and not connected states
-  const accountMessageConnectedState =
-    selectedAccountGroupIds.length === 1
-      ? t('connectedWithAccountName', [
-          supportedAccountGroups.find(
-            (account) => account.id === selectedAccountGroupIds[0],
-          )?.metadata.name,
-        ])
-      : t('connectedWithAccount', [selectedAccountGroupIds.length]);
-  const accountMessageNotConnectedState =
-    selectedAccountGroupIds.length === 1
-      ? t('requestingForAccount', [
-          supportedAccountGroups.find(
-            (account) => account.id === selectedAccountGroupIds[0],
-          )?.metadata.name,
-        ])
-      : t('requestingFor');
-
-  const networkMessageConnectedState =
-    selectedChainIdsLength === 1
-      ? t('connectedWithNetworkName', [selectedNetworks[0].name])
-      : t('connectedWithNetwork', [selectedChainIdsLength]);
-  const networkMessageNotConnectedState =
-    selectedChainIdsLength === 1
-      ? t('requestingForNetwork', [selectedNetworks[0].name])
-      : t('requestingFor');
-
   const handleOpenAccountsModal = () => {
     hideAllToasts?.();
-    setShowEditAccountsModal(true);
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.ViewPermissionedAccounts,
@@ -99,6 +69,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
       },
     });
+    showEditAccounts();
   };
 
   const handleOpenNetworksModal = () => {
@@ -125,8 +96,12 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
         <SiteCellConnectionListItem
           title={t('accountsPermissionsTitle')}
           iconName={IconName.Eye}
-          connectedMessage={accountMessageConnectedState}
-          unconnectedMessage={accountMessageNotConnectedState}
+          connectedMessage={t('requestingFor', [
+            selectedAccountGroupIds.length,
+          ])}
+          unconnectedMessage={t('requestingFor', [
+            selectedAccountGroupIds.length,
+          ])}
           isConnectFlow={isConnectFlow}
           onClick={handleOpenAccountsModal}
           paddingBottomValue={2}
@@ -154,8 +129,10 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
         <SiteCellConnectionListItem
           title={t('permission_walletSwitchEthereumChain')}
           iconName={IconName.Global}
-          connectedMessage={networkMessageConnectedState}
-          unconnectedMessage={networkMessageNotConnectedState}
+          connectedMessage={t('connectedWithNetwork', [selectedChainIdsLength])}
+          unconnectedMessage={t('requestingForNetwork', [
+            selectedChainIdsLength,
+          ])}
           isConnectFlow={isConnectFlow}
           onClick={handleOpenNetworksModal}
           paddingTopValue={2}
@@ -163,14 +140,6 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           content={<MultichainSiteCellTooltip networks={selectedNetworks} />}
         />
       </Box>
-      {showEditAccountsModal && (
-        <MultichainEditAccountsModal
-          supportedAccountGroups={supportedAccountGroups}
-          defaultSelectedAccountGroups={selectedAccountGroupIds}
-          onClose={() => setShowEditAccountsModal(false)}
-          onSubmit={onSelectAccountGroupIds}
-        />
-      )}
 
       {showEditNetworksModal && (
         <EditNetworksModal
