@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
+import classnames from 'classnames';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -29,6 +30,8 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
 import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
+import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
 
 export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
@@ -40,6 +43,7 @@ export const MultichainAccountDetailsPage = () => {
   );
   const walletId = extractWalletIdFromGroupId(accountGroupId);
   const wallet = useSelector((state) => getWallet(state, walletId));
+  const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
   const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`;
   const isRemovable =
     wallet?.type !== AccountWalletType.Entropy &&
@@ -47,6 +51,9 @@ export const MultichainAccountDetailsPage = () => {
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
   );
+
+  const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
+  const shouldShowBackupReminder = isSRPBackedUp === false;
 
   return (
     <Page className="multichain-account-details">
@@ -152,20 +159,17 @@ export const MultichainAccountDetailsPage = () => {
               history.push(walletRoute);
             }}
           />
-          <AccountDetailsRow
-            label={t('secretRecoveryPhrase')}
-            value={t('accountDetailsSrpBackUpMessage')}
-            endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Md}
-                ariaLabel={t('accountDetailsSrpBackUpMessage')}
-                marginLeft={2}
-                data-testid="srp-backup-action"
-              />
-            }
-          />
+          {isEntropyWallet ? (
+            <MultichainSrpBackup
+              className={classnames(
+                'multichain-account-details-page__row',
+                'multichain-account-details-page__row--last',
+                'multichain-account-details-page__srp-button',
+              )}
+              shouldShowBackupReminder={shouldShowBackupReminder}
+              keyringId={keyringId}
+            />
+          ) : null}
         </Box>
         {isRemovable && (
           <Box className="multichain-account-details__section">
