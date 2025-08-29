@@ -91,7 +91,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
     >
       <div
         class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-alternative-soft"
-        style="position: absolute; top: calc(-20px + 1px); right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
+        style="position: absolute; top: -20px; right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
       >
         <button
           aria-label="switch-tokens"
@@ -199,7 +199,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       />
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--margin-inline-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--align-items-flex-end mm-box--width-full"
-        style="width: auto; min-height: max-content; position: relative; overflow: hidden;"
+        style="width: auto; min-height: max-content; position: relative; overflow: hidden; margin-top: auto;"
       >
         <div
           class="mm-box multichain-page-footer mm-box--padding-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
@@ -311,7 +311,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
     >
       <div
         class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-alternative-soft"
-        style="position: absolute; top: calc(-20px + 1px); right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
+        style="position: absolute; top: -20px; right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
       >
         <button
           aria-label="switch-tokens"
@@ -419,7 +419,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       />
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--margin-inline-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--align-items-flex-end mm-box--width-full"
-        style="width: auto; min-height: max-content; position: relative; overflow: hidden;"
+        style="width: auto; min-height: max-content; position: relative; overflow: hidden; margin-top: auto;"
       >
         <div
           class="mm-box multichain-page-footer mm-box--padding-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"

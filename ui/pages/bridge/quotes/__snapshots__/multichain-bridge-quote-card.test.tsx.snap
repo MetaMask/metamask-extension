@@ -7,7 +7,7 @@ exports[`MultichainBridgeQuoteCard should not render when there is no quote 1`] 
 exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
 <div>
   <div
-    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
   >
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -178,7 +178,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
 exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fee) 1`] = `
 <div>
   <div
-    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
   >
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -347,7 +347,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
 exports[`MultichainBridgeQuoteCard should render the recommended quote while loading new quotes 1`] = `
 <div>
   <div
-    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
   >
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
