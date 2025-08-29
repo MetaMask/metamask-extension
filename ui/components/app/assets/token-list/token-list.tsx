@@ -5,6 +5,7 @@ import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
@@ -21,7 +22,10 @@ import {
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
 } from '../../../../selectors/multichain/networks';
-import { getTokenBalancesEvm } from '../../../../selectors/assets';
+import {
+  getAllAssetsForSelectedAccountGroup,
+  getTokenBalancesEvm,
+} from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -54,12 +58,18 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     chainIds: chainIdsToPoll as Hex[],
   });
 
+  const accountGroupIdAssets = useSelector(getAllAssetsForSelectedAccountGroup);
+
   const multichainAssets = useMultiChainAssets();
 
   // network filter to determine which tokens to show in list
   // on EVM we want to filter based on network filter controls, on non-evm we only want tokens from that chain identifier
   const { networkFilter } = useNetworkFilter();
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   const networksToShow = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
@@ -68,17 +78,56 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   }, [enabledNetworksByNamespace, networkFilter]);
 
   const sortedFilteredTokens = useMemo(() => {
-    const balances = isEvm ? evmBalances : multichainAssets;
-    const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
-      {
-        key: 'chainId',
-        opts: isEvm ? networksToShow : { [currentNetwork.chainId]: true },
-        filterCallback: 'inclusive',
-      },
-    ]);
+    if (!isMultichainAccountsState2Enabled) {
+      const balances = isEvm ? evmBalances : multichainAssets;
+      const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
+        {
+          key: 'chainId',
+          opts: isEvm ? networksToShow : { [currentNetwork.chainId]: true },
+          filterCallback: 'inclusive',
+        },
+      ]);
 
-    // sort filtered tokens based on the tokenSortConfig in state
-    return sortAssets([...filteredAssets], tokenSortConfig);
+      return sortAssets([...filteredAssets], tokenSortConfig);
+    }
+
+    const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
+      ([chainId, assets]) => {
+        if (
+          chainId.startsWith('0x') &&
+          !Object.entries(networksToShow)
+            .filter(([_, shouldShow]) => shouldShow)
+            .map(([networkKey]) => networkKey)
+            .includes(chainId)
+        ) {
+          return [];
+        }
+
+        return assets.map((asset) => {
+          const token: TokenWithFiatAmount = {
+            ...asset,
+            // TODO: When state2 flag is permanently on, this can be refactored and removed
+            tokenFiatAmount: asset.fiat?.balance,
+            primary: '',
+            secondary: null,
+            title: '',
+            address:
+              'address' in asset ? asset.address : (asset.assetId as Hex),
+            chainId: asset.chainId as Hex,
+          };
+
+          return token;
+        });
+      },
+    );
+
+    const accountAssets = sortAssets(
+      [...accountAssetsPreSort],
+      tokenSortConfig,
+    );
+
+    return accountAssets;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isEvm,
@@ -87,9 +136,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     networksToShow,
     currentNetwork.chainId,
     tokenSortConfig,
+    isMultichainAccountsState2Enabled,
+    accountGroupIdAssets,
     // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
   ]);
+
+  console.log('SORTED TOKEN LIST', sortedFilteredTokens);
 
   useEffect(() => {
     if (sortedFilteredTokens) {
