@@ -168,6 +168,9 @@ export function isDecimal(value: string) {
 }
 
 export function convertedCurrency(value: string, conversionRate?: number) {
+  if (!isDecimal(value) || parseFloat(value) < 0) {
+    return undefined;
+  }
   return new Numeric(value, 10)
     .applyConversionRate(conversionRate)
     .toBase(10)

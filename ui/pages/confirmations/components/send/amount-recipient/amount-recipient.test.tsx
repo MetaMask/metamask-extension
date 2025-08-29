@@ -5,6 +5,7 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
+import * as AmountValidation from '../../../hooks/send/useAmountValidation';
 import * as SendActions from '../../../hooks/send/useSendActions';
 import { AmountRecipient } from './amount-recipient';
 
@@ -36,7 +37,7 @@ describe('AmountRecipient', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Previous')).toBeInTheDocument();
+    expect(getByText('Amount')).toBeInTheDocument();
     expect(getByText('Continue')).toBeInTheDocument();
   });
 
@@ -65,10 +66,30 @@ describe('AmountRecipient', () => {
     expect(mockCaptureAmountSelected).toHaveBeenCalled();
   });
 
-  it('go to previous page when previous button is clicked', () => {
-    const { getByText } = render();
+  it('in case of error in amount submit button displays error and is disabled', async () => {
+    const mockHandleSubmit = jest.fn();
+    jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+      handleSubmit: mockHandleSubmit,
+    } as unknown as ReturnType<typeof SendActions.useSendActions>);
+    const mockCaptureAmountSelected = jest.fn();
+    jest
+      .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
+      .mockReturnValue({
+        captureAmountSelected: mockCaptureAmountSelected,
+      } as unknown as ReturnType<
+        typeof AmountSelectionMetrics.useAmountSelectionMetrics
+      >);
+    jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+      amountError: 'Insufficient Funds',
+    } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
 
-    fireEvent.click(getByText('Previous'));
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    const { getAllByRole, getByRole } = render();
+
+    fireEvent.change(getAllByRole('textbox')[0], {
+      target: { value: MOCK_ADDRESS },
+    });
+
+    fireEvent.click(getByRole('button', { name: 'Insufficient Funds' }));
+    expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 });
