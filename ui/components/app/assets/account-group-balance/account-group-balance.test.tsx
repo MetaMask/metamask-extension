@@ -3,23 +3,24 @@ import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import type { Store } from 'redux';
+import { AccountGroupBalance as AccountGroupBalanceType } from '@metamask/assets-controllers';
 import { AccountGroupBalance } from './account-group-balance';
 
-let mockSelectedGroupBalance: any = null;
+let mockSelectedGroupBalance: AccountGroupBalanceType | null = null;
 
-jest.mock('../../../selectors/assets', () => ({
+jest.mock('../../../../selectors/assets', () => ({
   selectBalanceBySelectedAccountGroup: () => mockSelectedGroupBalance,
 }));
 
-jest.mock('../../../selectors', () => ({
+jest.mock('../../../../selectors', () => ({
   getPreferences: () => ({ privacyMode: false }),
 }));
 
-jest.mock('../../../ducks/locale/locale', () => ({
+jest.mock('../../../../ducks/locale/locale', () => ({
   getIntlLocale: () => 'en',
 }));
 
-jest.mock('../../../ducks/metamask/metamask', () => ({
+jest.mock('../../../../ducks/metamask/metamask', () => ({
   getCurrentCurrency: () => 'usd',
 }));
 
