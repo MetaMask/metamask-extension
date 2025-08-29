@@ -269,7 +269,7 @@
     "@metamask/address-book-controller": "^6.1.0",
     "@metamask/announcement-controller": "^7.0.3",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "^74.1.0",
+    "@metamask/assets-controllers": "^74.3.1",
     "@metamask/base-controller": "^8.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.0.0",
     "@metamask/bridge-controller": "^39.1.0",
