@@ -9,8 +9,8 @@ type VersionedData = {
 export const version = 174;
 
 /**
- * This migration adds the default `avatarType` property to the PreferencesController preferences
- * for existing users who don't have it set yet.
+ * This migration adds `avatarType` to PreferencesController preferences
+ * If useBlockie was set to true, sets avatarType to 'blockies', otherwise sets it to 'maskicon'
  *
  * @param originalVersionedData - The original state data to migrate
  */
@@ -26,21 +26,32 @@ export async function migrate(
 function transformState(state: Record<string, unknown>) {
   if (
     hasProperty(state, 'PreferencesController') &&
-    isObject(state.PreferencesController) &&
-    hasProperty(state.PreferencesController, 'preferences') &&
-    isObject(state.PreferencesController.preferences)
+    isObject(state.PreferencesController)
   ) {
-    const preferences = state.PreferencesController.preferences as Record<
+    const preferencesController = state.PreferencesController as Record<
       string,
       unknown
     >;
+    const useBlockie = preferencesController.useBlockie as boolean;
 
-    // Only set default avatarType if it doesn't exist
+    // Check if preferences object exists
     if (
-      !hasProperty(preferences, 'avatarType') ||
-      preferences.avatarType === undefined
+      hasProperty(preferencesController, 'preferences') &&
+      isObject(preferencesController.preferences)
     ) {
-      preferences.avatarType = 'maskicon';
+      const preferences = preferencesController.preferences as Record<
+        string,
+        unknown
+      >;
+
+      // Only set default avatarType if it doesn't exist
+      if (
+        !hasProperty(preferences, 'avatarType') ||
+        preferences.avatarType === undefined
+      ) {
+        // Respect existing useBlockie setting, otherwise default to 'maskicon'
+        preferences.avatarType = useBlockie === true ? 'blockies' : 'maskicon';
+      }
     }
   }
 

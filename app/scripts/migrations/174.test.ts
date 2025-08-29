@@ -19,6 +19,7 @@ describe('migration #174', () => {
       meta: { version: oldVersion },
       data: {
         PreferencesController: {
+          useBlockie: false,
           preferences: {},
         },
       },
@@ -27,8 +28,30 @@ describe('migration #174', () => {
     const newState = await migrate(oldState);
 
     expect(newState.data.PreferencesController).toStrictEqual({
+      useBlockie: false,
       preferences: {
         avatarType: 'maskicon',
+      },
+    });
+  });
+
+  it('sets avatarType to blockies when useBlockie is true', async () => {
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        PreferencesController: {
+          useBlockie: true,
+          preferences: {},
+        },
+      },
+    };
+
+    const newState = await migrate(oldState);
+
+    expect(newState.data.PreferencesController).toStrictEqual({
+      useBlockie: true,
+      preferences: {
+        avatarType: 'blockies',
       },
     });
   });
@@ -38,8 +61,9 @@ describe('migration #174', () => {
       meta: { version: oldVersion },
       data: {
         PreferencesController: {
+          useBlockie: false,
           preferences: {
-            avatarType: 'maskicon',
+            avatarType: 'jazzicon',
           },
         },
       },
@@ -47,8 +71,9 @@ describe('migration #174', () => {
 
     const newState = await migrate(oldState);
     expect(newState.data.PreferencesController).toStrictEqual({
+      useBlockie: false,
       preferences: {
-        avatarType: 'maskicon',
+        avatarType: 'jazzicon',
       },
     });
   });
