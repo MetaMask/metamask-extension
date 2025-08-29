@@ -5,34 +5,38 @@ import { MemoryRouter } from 'react-router-dom';
 import type { Store } from 'redux';
 import { AccountGroupBalanceChange } from './account-group-balance-change';
 
-// Mutable mocks to control selector outputs per test
-let mockFeatureFlagEnabled = true;
-const mockPercentByPeriod: Record<string, number> = {};
-const mockChangeByPeriod: Record<
-  string,
-  { amountChangeInUserCurrency: number }
-> = {};
+let mockIsMultichainEnabled: boolean = true;
+type TestAggregatedChange = {
+  period: '1d' | '7d' | '30d';
+  currentTotalInUserCurrency: number;
+  previousTotalInUserCurrency: number;
+  amountChangeInUserCurrency: number;
+  percentChange: number;
+  userCurrency: string;
+} | null;
+
+let mockAggregatedChange: TestAggregatedChange = null;
+let mockPrivacyMode: boolean = false;
 
 jest.mock('../../../../selectors', () => ({
-  getIsMultichainAccountsState2Enabled: () => mockFeatureFlagEnabled,
-  getCurrentCurrency: () => 'USD',
-  getIntlLocale: () => 'en',
+  getIsMultichainAccountsState2Enabled: () => mockIsMultichainEnabled,
+  getPreferences: () => ({ privacyMode: mockPrivacyMode }),
 }));
 
 jest.mock('../../../../selectors/assets', () => ({
-  // Return selector factory that itself returns a constant selector for change
-  selectBalanceChangeBySelectedAccountGroup: (period: string) => () => ({
-    period,
-    currentTotalInUserCurrency: 0,
-    previousTotalInUserCurrency: 0,
-    amountChangeInUserCurrency:
-      mockChangeByPeriod[period]?.amountChangeInUserCurrency ?? 0,
-    percentChange: mockPercentByPeriod[period] ?? 0,
-    userCurrency: 'USD',
-  }),
+  selectBalanceChangeBySelectedAccountGroup:
+    (_period: '1d' | '7d' | '30d') => () =>
+      mockAggregatedChange,
 }));
 
-// Minimal Redux store stub compatible with Provider
+jest.mock('../../../../ducks/locale/locale', () => ({
+  getIntlLocale: () => 'en',
+}));
+
+jest.mock('../../../../ducks/metamask/metamask', () => ({
+  getCurrentCurrency: () => 'usd',
+}));
+
 type MinimalStore = {
   getState: () => unknown;
   dispatch: (action: unknown) => unknown;
@@ -44,13 +48,8 @@ type MinimalStore = {
 const buildStore = () =>
   ({
     getState: () => ({
-      metamask: {
-        currentCurrency: 'USD',
-      },
-      localeMessages: {
-        currentLocale: 'en',
-        current: {},
-      },
+      metamask: {},
+      localeMessages: { currentLocale: 'en', current: {} },
     }),
     dispatch: () => undefined,
     subscribe: () => () => undefined,
@@ -60,7 +59,7 @@ const buildStore = () =>
     }),
   }) as MinimalStore;
 
-const renderWithMinimalProvider = (ui: React.ReactElement) => {
+const renderWithProvider = (ui: React.ReactElement) => {
   const store = buildStore();
   const typedStore = store as unknown as Store;
   return render(
@@ -72,43 +71,61 @@ const renderWithMinimalProvider = (ui: React.ReactElement) => {
 
 describe('AccountGroupBalanceChange', () => {
   beforeEach(() => {
-    mockFeatureFlagEnabled = true;
-    for (const key of Object.keys(mockPercentByPeriod)) {
-      delete mockPercentByPeriod[key];
-    }
-    for (const key of Object.keys(mockChangeByPeriod)) {
-      delete mockChangeByPeriod[key];
-    }
+    mockIsMultichainEnabled = true;
+    mockPrivacyMode = false;
+    mockAggregatedChange = null;
   });
 
   it('returns null when feature flag is disabled', () => {
-    mockFeatureFlagEnabled = false;
-    const { container } = renderWithMinimalProvider(
+    mockIsMultichainEnabled = false;
+    const { container } = renderWithProvider(
       <AccountGroupBalanceChange period="1d" />,
     );
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders positive percent and amount for 1d', () => {
-    mockPercentByPeriod['1d'] = 1.23;
-    mockChangeByPeriod['1d'] = { amountChangeInUserCurrency: 100 };
-    renderWithMinimalProvider(<AccountGroupBalanceChange period="1d" />);
+  it('renders masked when privacyMode is on', () => {
+    mockPrivacyMode = true;
+    mockAggregatedChange = {
+      period: '1d',
+      currentTotalInUserCurrency: 200,
+      previousTotalInUserCurrency: 100,
+      amountChangeInUserCurrency: 100,
+      percentChange: 100,
+      userCurrency: 'usd',
+    };
 
-    expect(screen.getByText(/\+1\.23%/u)).toBeInTheDocument();
-    // Accept various currency formatting (e.g., "$100", "$100.00") and optional space suffix
-    expect(
-      screen.getByText(/\+\$?100(\.00)?\s?/u, { exact: false }),
-    ).toBeInTheDocument();
+    renderWithProvider(<AccountGroupBalanceChange period="1d" />);
+
+    const valueEl = screen.getByTestId('account-group-balance-change-value');
+    const pctEl = screen.getByTestId('account-group-balance-change-percentage');
+    expect(valueEl).toBeInTheDocument();
+    expect(pctEl).toBeInTheDocument();
+
+    expect(screen.queryByText(/\+\$?100\.00/u)).toBeNull();
+    expect(screen.queryByText(/\(\+100\.00%\)/u)).toBeNull();
   });
 
-  it('renders negative percent and amount for 7d', () => {
-    mockPercentByPeriod['7d'] = -2.34;
-    mockChangeByPeriod['7d'] = { amountChangeInUserCurrency: -50 };
-    renderWithMinimalProvider(<AccountGroupBalanceChange period="7d" />);
+  it('renders amount and percent when privacyMode is off', () => {
+    mockPrivacyMode = false;
+    mockAggregatedChange = {
+      period: '1d',
+      currentTotalInUserCurrency: 200,
+      previousTotalInUserCurrency: 100,
+      amountChangeInUserCurrency: 100,
+      percentChange: 100,
+      userCurrency: 'usd',
+    };
 
-    expect(screen.getByText(/-2\.34%/u)).toBeInTheDocument();
-    expect(
-      screen.getByText(/-\$?50(\.00)?\s?/u, { exact: false }),
-    ).toBeInTheDocument();
+    renderWithProvider(<AccountGroupBalanceChange period="1d" />);
+
+    const valueEl = screen.getByTestId('account-group-balance-change-value');
+    const pctEl = screen.getByTestId('account-group-balance-change-percentage');
+
+    expect(valueEl).toBeInTheDocument();
+    expect(pctEl).toBeInTheDocument();
+
+    expect(valueEl).toHaveTextContent(/\+\$?100\.00/u);
+    expect(pctEl).toHaveTextContent(/\(\+100\.00%\)/u);
   });
 });

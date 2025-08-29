@@ -1,12 +1,19 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TextColor } from '../../../../helpers/constants/design-system';
+import {
+  Display,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
+import {
+  getIsMultichainAccountsState2Enabled,
+  getPreferences,
+} from '../../../../selectors';
 import { selectBalanceChangeBySelectedAccountGroup } from '../../../../selectors/assets';
-import { renderPercentageWithNumber } from '../../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { formatWithThreshold } from '../util/formatWithThreshold';
+import { Box, SensitiveText } from '../../../component-library';
 
 // Simple inline implementations to avoid restricted imports
 const isValidAmount = (value: unknown): value is number =>
@@ -36,6 +43,7 @@ export const AccountGroupBalanceChange: React.FC<
   ) as boolean;
   const fiatCurrency = useSelector(getCurrentCurrency) as string;
   const locale = useSelector(getIntlLocale) as string;
+  const { privacyMode } = useSelector(getPreferences);
 
   // Memoized selector for the specified period
   const changeSelector = useMemo(
@@ -55,7 +63,9 @@ export const AccountGroupBalanceChange: React.FC<
   }
 
   let color = TextColor.textDefault;
-  if (
+  if (privacyMode) {
+    color = TextColor.textAlternative;
+  } else if (
     portfolioChange &&
     isValidAmount(portfolioChange.amountChangeInUserCurrency)
   ) {
@@ -103,9 +113,29 @@ export const AccountGroupBalanceChange: React.FC<
     formattedAmount = `${sign}${localizedAmount} `;
   }
 
-  return renderPercentageWithNumber(
-    formattedPercentWithParens,
-    formattedAmount,
-    color,
+  return (
+    <Box display={Display.Flex}>
+      <SensitiveText
+        variant={TextVariant.bodyMdMedium}
+        color={color}
+        style={{ whiteSpace: 'pre' }}
+        data-testid="account-group-balance-change-value"
+        isHidden={privacyMode}
+        ellipsis
+        length="10"
+      >
+        {formattedAmount}
+      </SensitiveText>
+      <SensitiveText
+        variant={TextVariant.bodyMdMedium}
+        color={color}
+        data-testid="account-group-balance-change-percentage"
+        isHidden={privacyMode}
+        ellipsis
+        length="10"
+      >
+        {formattedPercentWithParens}
+      </SensitiveText>
+    </Box>
   );
 };
