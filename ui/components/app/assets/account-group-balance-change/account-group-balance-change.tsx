@@ -4,31 +4,15 @@ import { TextColor } from '../../../../helpers/constants/design-system';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
-import {
-  selectSelectedGroupBalancePercentChange,
-  selectSelectedGroupBalanceChange,
-} from '../../../../selectors/assets';
+import { selectBalanceChangeBySelectedAccountGroup } from '../../../../selectors/assets';
 import { renderPercentageWithNumber } from '../../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
+import { formatWithThreshold } from '../util/formatWithThreshold';
 
 // Simple inline implementations to avoid restricted imports
 const isValidAmount = (value: unknown): value is number =>
   typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value);
 
-const formatValue = (
-  value: number | null | undefined,
-  isPercentage: boolean,
-): string => {
-  if (value === null || value === undefined || Number.isNaN(value)) {
-    return '0%';
-  }
-
-  if (isPercentage) {
-    const sign = value >= 0 ? '+' : '';
-    return `${sign}${value.toFixed(2)}%`;
-  }
-
-  return value.toFixed(2);
-};
+// removed: replaced by formatWithThreshold-based formatting
 
 export type AccountGroupBalanceChangeProps = {
   period: '1d' | '7d' | '30d';
@@ -53,32 +37,17 @@ export const AccountGroupBalanceChange: React.FC<
   const fiatCurrency = useSelector(getCurrentCurrency) as string;
   const locale = useSelector(getIntlLocale) as string;
 
-  // Memoized selectors for the specified period
-  const percentSelector = useMemo(
-    () => selectSelectedGroupBalancePercentChange(period),
-    [period],
-  );
+  // Memoized selector for the specified period
   const changeSelector = useMemo(
-    () => selectSelectedGroupBalanceChange(period),
+    () => selectBalanceChangeBySelectedAccountGroup(period),
     [period],
   );
 
   // Get the data
-  const portfolioPercent = useSelector(
-    isMultichainAccountsState2Enabled ? percentSelector : () => 0,
-  ) as number;
   const portfolioChange = useSelector(
-    isMultichainAccountsState2Enabled
-      ? changeSelector
-      : () => ({
-          period,
-          currentTotalInUserCurrency: 0,
-          previousTotalInUserCurrency: 0,
-          amountChangeInUserCurrency: 0,
-          percentChange: 0,
-          userCurrency: 'usd',
-        }),
-  ) as AggregatedChange;
+    isMultichainAccountsState2Enabled ? changeSelector : () => null,
+  ) as AggregatedChange | null;
+  const portfolioPercent = portfolioChange?.percentChange ?? 0;
 
   // Early return if feature flag is off
   if (!isMultichainAccountsState2Enabled) {
@@ -86,7 +55,10 @@ export const AccountGroupBalanceChange: React.FC<
   }
 
   let color = TextColor.textDefault;
-  if (isValidAmount(portfolioChange.amountChangeInUserCurrency)) {
+  if (
+    portfolioChange &&
+    isValidAmount(portfolioChange.amountChangeInUserCurrency)
+  ) {
     const amt = Number(portfolioChange.amountChangeInUserCurrency);
     if (amt > 0) {
       color = TextColor.successDefault;
@@ -104,31 +76,36 @@ export const AccountGroupBalanceChange: React.FC<
 
   const percentNumber =
     typeof portfolioPercent === 'number' ? portfolioPercent : 0;
-  const formattedPercent = formatValue(percentNumber, true);
+  const percentSign = percentNumber >= 0 ? '+' : '-';
+  const localizedPercent = formatWithThreshold(
+    Math.abs(percentNumber) / 100,
+    0.0001,
+    locale,
+    {
+      style: 'percent',
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+    },
+  );
+  const formattedPercentWithParens = `(${percentSign}${localizedPercent})`;
 
   let formattedAmount = '';
-  if (isValidAmount(portfolioChange.amountChangeInUserCurrency)) {
+  if (
+    portfolioChange &&
+    isValidAmount(portfolioChange.amountChangeInUserCurrency)
+  ) {
     const amt = Number(portfolioChange.amountChangeInUserCurrency);
-    const sign = amt >= 0 ? '+' : '';
-    const options = {
-      notation: 'compact',
-      compactDisplay: 'short',
-      maximumFractionDigits: 2,
-    } as const;
-    try {
-      formattedAmount = `${sign}${Intl.NumberFormat(locale, {
-        ...options,
-        style: 'currency',
-        currency: fiatCurrency,
-      }).format(amt)} `;
-    } catch {
-      formattedAmount = `${sign}${Intl.NumberFormat(locale, {
-        ...options,
-        minimumFractionDigits: 2,
-        style: 'decimal',
-      }).format(amt)} `;
-    }
+    const sign = amt >= 0 ? '+' : '-';
+    const localizedAmount = formatWithThreshold(Math.abs(amt), 0.01, locale, {
+      style: 'currency',
+      currency: fiatCurrency,
+    });
+    formattedAmount = `${sign}${localizedAmount} `;
   }
 
-  return renderPercentageWithNumber(formattedPercent, formattedAmount, color);
+  return renderPercentageWithNumber(
+    formattedPercentWithParens,
+    formattedAmount,
+    color,
+  );
 };

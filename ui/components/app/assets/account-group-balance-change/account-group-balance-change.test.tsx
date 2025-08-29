@@ -20,10 +20,8 @@ jest.mock('../../../../selectors', () => ({
 }));
 
 jest.mock('../../../../selectors/assets', () => ({
-  // Return selector factories that themselves return constant selectors
-  selectSelectedGroupPortfolioPercentChange: (period: string) => () =>
-    mockPercentByPeriod[period] ?? 0,
-  selectSelectedGroupPortfolioChange: (period: string) => () => ({
+  // Return selector factory that itself returns a constant selector for change
+  selectBalanceChangeBySelectedAccountGroup: (period: string) => () => ({
     period,
     currentTotalInUserCurrency: 0,
     previousTotalInUserCurrency: 0,
