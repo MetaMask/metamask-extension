@@ -28,6 +28,7 @@ describe('useCurrencyConversions', () => {
   it('return correct rate for Native assets', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_NATIVE_ASSET,
+      chainId: '0x5',
     } as unknown as SendContext.SendContextType);
 
     const result = renderHook();
@@ -37,6 +38,7 @@ describe('useCurrencyConversions', () => {
   it('return correct rate for ERC20 assets', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_ASSET,
+      chainId: '0x5',
     } as unknown as SendContext.SendContextType);
 
     const result = renderHook({

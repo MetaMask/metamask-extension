@@ -28,7 +28,7 @@ jest.mock('../../../context/send-metrics', () => ({
 
 jest.mock('../../../context/send', () => ({
   useSendContext: () => ({
-    asset: { chainId: '0x1' },
+    chainId: '0x1',
   }),
 }));
 
