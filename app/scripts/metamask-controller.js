@@ -1868,17 +1868,25 @@ export default class MetamaskController extends EventEmitter {
         if (prevUseExternalServices !== currUseExternalServices) {
           // Set basic functionality and trigger alignment when enabled
           // This single call handles both provider disable/enable and alignment
-          this.controllerMessenger
-            .call(
-              'MultichainAccountService:setBasicFunctionality',
-              currUseExternalServices,
-            )
-            .catch((error) => {
-              console.error(
-                'Failed to set basic functionality on MultichainAccountService:',
-                error,
-              );
-            });
+          try {
+            this.controllerMessenger
+              .call(
+                'MultichainAccountService:setBasicFunctionality',
+                currUseExternalServices,
+              )
+              .catch((error) => {
+                console.error(
+                  'Failed to set basic functionality on MultichainAccountService:',
+                  error,
+                );
+              });
+          } catch (error) {
+            // Handle case where MultichainAccountService is not available (e.g., in tests)
+            console.warn(
+              'MultichainAccountService:setBasicFunctionality not available:',
+              error.message,
+            );
+          }
         }
       }, this.preferencesController.state),
     );
