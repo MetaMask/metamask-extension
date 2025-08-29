@@ -51,9 +51,12 @@ import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { MultichainSiteCell } from '../../multichain-site-cell/multichain-site-cell';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import { getCaip25CaveatValueFromPermissions } from '../../../../pages/permissions-connect/connect-page/utils';
-import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import { MultichainEditAccountsPage } from '../edit-accounts-page/multichain-edit-accounts-page';
+import {
+  getAllScopesFromCaip25CaveatValue,
+  getCaipAccountIdsFromCaip25CaveatValue,
+} from '@metamask/chain-agnostic-permission';
 import { getCaip25AccountFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
+import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
 
 export enum MultichainReviewPermissionsPageMode {
   Summary = 'summary',
@@ -174,6 +177,17 @@ export const MultichainReviewPermissions = () => {
     [existingPermissions],
   );
 
+  const existingCaip25AccountIds = useMemo(() => {
+    return getCaipAccountIdsFromCaip25CaveatValue(
+      existingCaip25CaveatValue ?? {
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: {},
+        isMultichainOrigin: false,
+      },
+    );
+  }, [existingCaip25CaveatValue]);
+
   const existingCaipChainIds = existingCaip25CaveatValue
     ? getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue)
     : [];
@@ -189,6 +203,7 @@ export const MultichainReviewPermissions = () => {
       sessionProperties: {},
       isMultichainOrigin: false,
     },
+    existingCaip25AccountIds,
     existingCaipChainIds,
     [],
   );
