@@ -18,6 +18,7 @@ import {
   getCaip25IdByAccountGroupAndScope,
   getInternalAccountByGroupAndCaip,
   getInternalAccountBySelectedAccountGroupAndCaip,
+  getInternalAccountsFromGroupById,
   getMultichainAccountGroupById,
   getMultichainAccountGroups,
   getMultichainAccountsToScopesMap,
@@ -1027,6 +1028,157 @@ describe('Multichain Accounts Selectors', () => {
       );
 
       expect(result).toBe(0);
+    });
+  });
+
+  describe('getInternalAccountsFromGroupById', () => {
+    it('returns internal accounts for a valid group ID', () => {
+      const result = getInternalAccountsFromGroupById(
+        typedMockState,
+        ENTROPY_GROUP_1_ID as AccountGroupId,
+      );
+
+      expect(result).toHaveLength(2);
+      expect(result[0].id).toBe(ACCOUNT_1_ID);
+      expect(result[0].address).toBe(ACCOUNT_1_ADDRESS);
+      expect(result[1].id).toBe(ACCOUNT_2_ID);
+      expect(result[1].address).toBe(ACCOUNT_2_ADDRESS);
+    });
+
+    it('returns empty array when group ID is null', () => {
+      const result = getInternalAccountsFromGroupById(
+        typedMockState,
+        null as unknown as AccountGroupId,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    it('returns empty array when group does not exist', () => {
+      const nonExistentGroupId = 'entropy:nonexistent/0' as AccountGroupId;
+      const result = getInternalAccountsFromGroupById(
+        typedMockState,
+        nonExistentGroupId,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    it('returns empty array when wallet does not exist', () => {
+      const invalidWalletGroupId = 'invalid-wallet/0' as AccountGroupId;
+      const result = getInternalAccountsFromGroupById(
+        typedMockState,
+        invalidWalletGroupId,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    it('filters out accounts that do not exist in internalAccounts', () => {
+      const stateWithMixedAccounts = createStateWithMixedAccounts();
+      const result = getInternalAccountsFromGroupById(
+        stateWithMixedAccounts,
+        'entropy:test/0' as AccountGroupId,
+      );
+
+      // Should only return the existing account, not the missing one
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('existing-account');
+    });
+
+    it('returns empty array when no accounts in the group exist in internalAccounts', () => {
+      const stateWithNoMatchingAccounts = createStateWithNoMatchingAccounts();
+      const result = getInternalAccountsFromGroupById(
+        stateWithNoMatchingAccounts,
+        'entropy:test/0' as AccountGroupId,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    it('works with ledger hardware wallet groups', () => {
+      const result = getInternalAccountsFromGroupById(
+        typedMockState,
+        LEDGER_GROUP_ID as AccountGroupId,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].address).toBe(
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+      );
+      expect(result[0].metadata.keyring.type).toBe('Ledger Hardware');
+    });
+
+    it('returns empty array for empty account tree state', () => {
+      const emptyState = createEmptyState();
+      const result = getInternalAccountsFromGroupById(
+        emptyState,
+        ENTROPY_GROUP_1_ID as AccountGroupId,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    it('maintains the order of accounts as specified in the group', () => {
+      // Create a state with specific account order
+      const orderedState = createMockMultichainAccountsState(
+        {
+          wallets: {
+            'entropy:ordered': {
+              id: 'entropy:ordered',
+              type: AccountWalletType.Entropy,
+              groups: {
+                'entropy:ordered/0': {
+                  id: 'entropy:ordered/0',
+                  type: AccountGroupType.MultichainAccount,
+                  accounts: ['account-3', 'account-1', 'account-2'],
+                  metadata: {
+                    name: 'Ordered Group',
+                    entropy: { groupIndex: 0 },
+                    pinned: false,
+                    hidden: false,
+                  },
+                },
+              },
+              metadata: {
+                name: 'Ordered Wallet',
+                entropy: { id: 'ordered' },
+              },
+            },
+          },
+          selectedAccountGroup: 'entropy:ordered/0' as AccountGroupId,
+        },
+        {
+          accounts: {
+            'account-1': createMockInternalAccount({
+              id: 'account-1',
+              name: 'Account 1',
+              address: '0x111',
+            }),
+            'account-2': createMockInternalAccount({
+              id: 'account-2',
+              name: 'Account 2',
+              address: '0x222',
+            }),
+            'account-3': createMockInternalAccount({
+              id: 'account-3',
+              name: 'Account 3',
+              address: '0x333',
+            }),
+          },
+          selectedAccount: 'account-1',
+        },
+      );
+
+      const result = getInternalAccountsFromGroupById(
+        orderedState,
+        'entropy:ordered/0' as AccountGroupId,
+      );
+
+      expect(result).toHaveLength(3);
+      expect(result[0].id).toBe('account-3');
+      expect(result[1].id).toBe('account-1');
+      expect(result[2].id).toBe('account-2');
     });
   });
 });
