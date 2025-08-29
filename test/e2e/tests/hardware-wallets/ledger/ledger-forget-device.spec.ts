@@ -31,6 +31,9 @@ describe('Ledger Hardware', function (this: Suite) {
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.clickConnectLedgerButton();
 
+        await connectHardwareWalletPage.checkPageIsLoaded();
+        await connectHardwareWalletPage.clickContinueButton();
+
         const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
           driver,
         );
