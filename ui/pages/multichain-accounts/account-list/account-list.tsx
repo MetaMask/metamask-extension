@@ -90,7 +90,7 @@ export const AccountList = () => {
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <MultichainAccountList
             wallets={wallets}
-            selectedAccountGroup={selectedAccountGroup}
+            selectedAccountGroups={[selectedAccountGroup]}
             formattedAccountGroupBalancesByWallet={
               formattedAccountGroupBalancesByWallet
             }

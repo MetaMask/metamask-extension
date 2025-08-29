@@ -1,0 +1,56 @@
+@use "design-system";
+
+.send {
+  &__wrapper {
+    display: flex;
+    flex: 1 0 auto;
+    justify-content: center;
+    min-height: 0;
+    width: 100%;
+  }
+
+  &__container {
+    align-items: center;
+    background-color: var(--color-background-default);
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__content {
+    max-width: 650px;
+    width: 100%;
+  }
+
+  @include design-system.screen-sm-min {
+    &__container {
+      min-height: 90vh;
+      width: 85vw;
+    }
+  }
+
+  @include design-system.screen-md-min {
+    &__container {
+      min-height: 82vh;
+      width: 80vw;
+    }
+  }
+
+  @include design-system.screen-lg-min {
+    &__container {
+      min-height: 82vh;
+      width: 62vw;
+    }
+  }
+
+  @include design-system.screen-sm-max {
+    &__container {
+      background-color: var(--color-background-default);
+      overflow-y: auto;
+      width: 100%;
+    }
+
+    &__wrapper {
+      flex: 1;
+    }
+  }
+}

@@ -1,6 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 
-import { AccountGroupId } from '@metamask/account-api';
+import {
+  AccountGroupId,
+  AccountWalletId,
+  AccountWalletType,
+} from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, Text } from '../../component-library';
@@ -31,10 +35,12 @@ import {
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
+import { AddMultichainAccount } from '../add-multichain-account';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
-  selectedAccountGroup: AccountGroupId;
+  selectedAccountGroups: AccountGroupId[];
+  handleAccountClick?: (accountGroupId: AccountGroupId) => void;
   formattedAccountGroupBalancesByWallet?: Record<
     string,
     Record<string, string>
@@ -43,7 +49,8 @@ export type MultichainAccountListProps = {
 
 export const MultichainAccountList = ({
   wallets,
-  selectedAccountGroup,
+  selectedAccountGroups,
+  handleAccountClick,
   formattedAccountGroupBalancesByWallet,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
@@ -54,8 +61,14 @@ export const MultichainAccountList = ({
   );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
+  // Convert selectedAccountGroups array to Set for O(1) lookup
+  const selectedAccountGroupsSet = useMemo(
+    () => new Set(selectedAccountGroups),
+    [selectedAccountGroups],
+  );
+
   const walletTree = useMemo(() => {
-    const handleAccountClick = (accountGroupId: AccountGroupId) => {
+    const defaultHandleAccountClick = (accountGroupId: AccountGroupId) => {
       trackEvent({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.NavAccountSwitched,
@@ -80,6 +93,9 @@ export const MultichainAccountList = ({
       dispatch(setSelectedMultichainAccount(accountGroupId));
       history.push(DEFAULT_ROUTE);
     };
+
+    const handleAccountClickToUse =
+      handleAccountClick ?? defaultHandleAccountClick;
 
     return Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
@@ -121,8 +137,10 @@ export const MultichainAccountList = ({
                 accountId={groupId as AccountGroupId}
                 accountName={groupData.metadata.name}
                 balance={balanceText}
-                selected={selectedAccountGroup === groupId}
-                onClick={handleAccountClick}
+                selected={selectedAccountGroupsSet.has(
+                  groupId as AccountGroupId,
+                )}
+                onClick={handleAccountClickToUse}
                 endAccessory={
                   <MultichainAccountMenu
                     accountGroupId={groupId as AccountGroupId}
@@ -134,18 +152,28 @@ export const MultichainAccountList = ({
           },
         );
 
+        if (walletData.type === AccountWalletType.Entropy) {
+          groupsItems.push(
+            <AddMultichainAccount
+              walletId={walletId as AccountWalletId}
+              key={`add-multichain-account-${walletId}`}
+            />,
+          );
+        }
+
         return [...walletsAccumulator, walletHeader, ...groupsItems];
       },
       [] as React.ReactNode[],
     );
   }, [
+    handleAccountClick,
     wallets,
     trackEvent,
     hdEntropyIndex,
     defaultHomeActiveTabName,
     dispatch,
     history,
-    selectedAccountGroup,
+    selectedAccountGroupsSet,
     formattedAccountGroupBalancesByWallet,
   ]);
 
