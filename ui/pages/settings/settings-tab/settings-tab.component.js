@@ -216,8 +216,6 @@ export default class SettingsTab extends PureComponent {
       currentAvatarType = avatarType;
     } else if (useBlockie) {
       currentAvatarType = 'blockies';
-    } else {
-      currentAvatarType = 'jazzicon';
     }
 
     return (
