@@ -41,6 +41,7 @@ import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromCont
 
 type UseSlideManagementProps = {
   testDate?: string; // Only used in unit/e2e tests to simulate dates for sweepstakes campaign
+  enabled?: boolean;
 };
 
 export function getSweepstakesCampaignActive(currentDate: Date) {
@@ -65,6 +66,7 @@ export function isActive(
 
 export const useCarouselManagement = ({
   testDate,
+  enabled = true,
 }: UseSlideManagementProps = {}) => {
   const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
@@ -80,6 +82,15 @@ export const useCarouselManagement = ({
   );
 
   useEffect(() => {
+    // If carousel is disabled, clear the slides
+    if (!enabled) {
+      const empty: CarouselSlide[] = [];
+      if (!isEqual(prevSlidesRef.current, empty)) {
+        dispatch(updateSlides(empty));
+        prevSlidesRef.current = empty;
+      }
+      return;
+    }
     const defaultSlides: CarouselSlide[] = [];
     const existingSweepstakesSlide = slides.find(
       (slide: CarouselSlide) => slide.id === SWEEPSTAKES_SLIDE.id,
@@ -207,6 +218,7 @@ export const useCarouselManagement = ({
       }
     })();
   }, [
+    enabled,
     dispatch,
     hasZeroBalance,
     remoteFeatureFlags,
