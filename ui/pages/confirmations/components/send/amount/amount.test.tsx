@@ -90,7 +90,9 @@ describe('Amount', () => {
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { getByRole, getByText } = render();
@@ -172,7 +174,9 @@ describe('Amount', () => {
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { container } = render();
@@ -189,7 +193,9 @@ describe('Amount', () => {
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { queryByText } = render();
@@ -210,7 +216,9 @@ describe('Amount', () => {
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { queryByText } = render();

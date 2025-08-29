@@ -660,6 +660,9 @@
   "autoLockTimeLimitDescription": {
     "message": "Set the idle time in minutes before MetaMask will become locked."
   },
+  "available": {
+    "message": "available"
+  },
   "average": {
     "message": "Average"
   },
