@@ -584,7 +584,7 @@ const PrepareBridgePage = ({
             backgroundColor={BackgroundColor.backgroundAlternativeSoft}
             style={{
               position: 'absolute',
-              top: 'calc(-20px + 1px)',
+              top: '-20px',
               right: 'calc(50% - 20px)',
               border: '2px solid var(--color-background-default)',
               borderRadius: '100%',
@@ -746,7 +746,7 @@ const PrepareBridgePage = ({
             />
           )}
 
-          {!activeQuote && (
+          {!activeQuote_ && (
             <Column
               height={BlockSize.Full}
               justifyContent={JustifyContent.center}
@@ -781,6 +781,7 @@ const PrepareBridgePage = ({
                 minHeight: 'max-content',
                 position: 'relative',
                 overflow: 'hidden',
+                marginTop: 'auto',
                 ...(activeQuote && !wasTxDeclined
                   ? {
                       boxShadow:
