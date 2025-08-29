@@ -333,6 +333,39 @@ const state = {
     isInitialized: true,
     isUnlocked: true,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
+    "accountTree": {
+      "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+      "wallets": {
+        "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
+          "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
+          "type": "entropy",
+          "groups": {
+            "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
+              "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+              "type": "multichain-account",
+              "accounts": [
+                "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
+                "07c2cfec-36c9-46c4-8115-3836d3ac9047"
+              ],
+              "metadata": {
+                "name": "Account 1",
+                "entropy": {
+                  "groupIndex": 0
+                },
+                "hidden": false,
+                "pinned": false
+              }
+            }
+          },
+          "metadata": {
+            "name": "Wallet 1",
+            "entropy": {
+              "id": "01JKAF3DSGM3AB87EM9N0K41AJ"
+            }
+          }
+        }
+      }
+    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
