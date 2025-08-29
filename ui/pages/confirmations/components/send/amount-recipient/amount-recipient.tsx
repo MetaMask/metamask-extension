@@ -17,7 +17,7 @@ export const AmountRecipient = () => {
   const onClick = useCallback(() => {
     handleSubmit(to);
     captureAmountSelected();
-  }, [handleSubmit, to]);
+  }, [captureAmountSelected, handleSubmit, to]);
 
   return (
     <div className="send__wrapper">
