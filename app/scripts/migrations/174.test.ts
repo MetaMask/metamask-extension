@@ -1,16 +1,5 @@
 import { migrate, version } from './174';
 
-type TestState = {
-  meta: { version: number };
-  data: {
-    PreferencesController?: {
-      preferences?: {
-        avatarType?: string;
-      };
-    };
-  };
-};
-
 const oldVersion = 173;
 const newVersion = version;
 
@@ -26,7 +15,7 @@ describe('migration #174', () => {
   });
 
   it('adds default avatarType to preferences when missing', async () => {
-    const oldState: TestState = {
+    const oldState = {
       meta: { version: oldVersion },
       data: {
         PreferencesController: {
@@ -36,14 +25,16 @@ describe('migration #174', () => {
     };
 
     const newState = await migrate(oldState);
-    const result = newState as TestState;
-    expect(result.data.PreferencesController?.preferences?.avatarType).toBe(
-      'jazzicon',
-    );
+
+    expect(newState.data.PreferencesController).toStrictEqual({
+      preferences: {
+        avatarType: 'jazzicon',
+      },
+    });
   });
 
   it('does not overwrite existing avatarType', async () => {
-    const oldState: TestState = {
+    const oldState = {
       meta: { version: oldVersion },
       data: {
         PreferencesController: {
@@ -55,9 +46,10 @@ describe('migration #174', () => {
     };
 
     const newState = await migrate(oldState);
-    const result = newState as TestState;
-    expect(result.data.PreferencesController?.preferences?.avatarType).toBe(
-      'maskicon',
-    );
+    expect(newState.data.PreferencesController).toStrictEqual({
+      preferences: {
+        avatarType: 'maskicon',
+      },
+    });
   });
 });
