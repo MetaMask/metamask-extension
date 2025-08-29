@@ -40,7 +40,6 @@ import {
   getEnabledNetworksByNamespace,
   isGlobalNetworkSelectorRemoved,
   getIsMultichainAccountsState2Enabled,
-  getTokensMarketData,
 } from '../../../selectors';
 import { AggregatedBalanceState2 } from '../../ui/aggregated-balance/aggregated-balance-state2';
 import Spinner from '../../ui/spinner';
@@ -116,7 +115,6 @@ export const LegacyAggregatedBalance = ({
     allChainIDs,
   );
 
-  console.log(getTokensMarketData);
   const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
     account,
     formattedTokensWithBalancesPerChain,
