@@ -42,6 +42,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: fixes incorrect email value in onboarding and setting page UI (#35170)
 - fix: fixes incorrect balances displayed on swap page, due to race condition when balances are set before URL params are applied (#35008)
 - fix: fixes ui not loading in old browsers due to use `Promise.withResolvers` (#35175)
+- fix: ensure that changing the global network should doesn't affect the dapp connected active network (#35432)
+- fix: show error when background is unresponsive after update due to Chromium bug (#35332)
+- fix: remove automatic gas updates during swap and bridge transaction submission to preserve quoted gas parameters (#35455)
+- fix: add the ability to temporarily hide carrousel to ensure a smoother experience (#35447)
+- fix: fixes issue where the petnames system attempts to resolve EIP-155 names for Solana accounts (#35477)
+- fix: ensure the dapp-connected network switches to a permitted network when the current dapp-connected network permission is revoked via the dapp popover modal (#35487)
+- fix: ensure the dapp-connected network remains unchanged when the global network RPC endpoint is switched (#35487)
 
 ## [13.1.2]
 ### Fixed
