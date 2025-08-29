@@ -5391,7 +5391,7 @@
     "message": "Signature and transaction requests"
   },
   "shieldTx": {
-    "message": "Transaction Shield"
+    "message": "MetaMask Shield"
   },
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
