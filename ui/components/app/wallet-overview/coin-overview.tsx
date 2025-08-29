@@ -41,7 +41,7 @@ import {
   isGlobalNetworkSelectorRemoved,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
-import { AggregatedBalanceState2 } from '../../ui/aggregated-balance/aggregated-balance-state2';
+import { AccountGroupBalance } from '../assets/account-group-balance/account-group-balance';
 import Spinner from '../../ui/spinner';
 
 import { AccountGroupBalanceChange } from '../assets/account-group-balance-change/account-group-balance-change';
@@ -263,14 +263,11 @@ export const CoinOverview = ({
     };
 
     const renderAggregatedView = () => {
-      let content: React.ReactNode;
-      if (isMultichainAccountsState2Enabled) {
-        content = <AccountGroupBalanceChange period="1d" />;
-      } else if (isTokenNetworkFilterEqualCurrentNetwork) {
-        content = <AggregatedPercentageOverview />;
-      } else {
-        content = <AggregatedPercentageOverviewCrossChains />;
-      }
+      const content = isTokenNetworkFilterEqualCurrentNetwork ? (
+        <AggregatedPercentageOverview />
+      ) : (
+        <AggregatedPercentageOverviewCrossChains />
+      );
       return (
         <Box className="wallet-overview__currency-wrapper">
           {content}
@@ -286,25 +283,51 @@ export const CoinOverview = ({
       </Box>
     );
 
-    if (!isEvm) {
-      // Under state2 flag, show unified portfolio percent regardless of EVM
-      if (isMultichainAccountsState2Enabled) {
-        return (
-          <Box className="wallet-overview__currency-wrapper">
-            <AccountGroupBalanceChange period="1d" />
-            {renderPortfolioButton()}
-          </Box>
-        );
-      }
-      return renderNonEvmView();
+    // Early exit for state2 unified view
+    if (isMultichainAccountsState2Enabled) {
+      return (
+        <Box className="wallet-overview__currency-wrapper">
+          <AccountGroupBalanceChange period="1d" />
+          {renderPortfolioButton()}
+        </Box>
+      );
     }
 
-    if (isTokenNetworkFilterEqualCurrentNetwork) {
-      return renderAggregatedView();
+    if (!isEvm) {
+      return renderNonEvmView();
     }
 
     return renderAggregatedView();
   };
+
+  let balanceSection: React.ReactNode;
+  if (isMultichainAccountsState2Enabled) {
+    balanceSection = (
+      <AccountGroupBalance
+        classPrefix={classPrefix}
+        balanceIsCached={balanceIsCached}
+        handleSensitiveToggle={handleSensitiveToggle}
+      />
+    );
+  } else if (isEvm) {
+    balanceSection = (
+      <LegacyAggregatedBalance
+        classPrefix={classPrefix}
+        account={account}
+        balance={balance}
+        balanceIsCached={balanceIsCached}
+        handleSensitiveToggle={handleSensitiveToggle}
+      />
+    );
+  } else {
+    balanceSection = (
+      <AggregatedBalance
+        classPrefix={classPrefix}
+        balanceIsCached={balanceIsCached}
+        handleSensitiveToggle={handleSensitiveToggle}
+      />
+    );
+  }
 
   return (
     <WalletOverview
@@ -316,29 +339,7 @@ export const CoinOverview = ({
         >
           <div className={`${classPrefix}-overview__balance`}>
             <div className={`${classPrefix}-overview__primary-container`}>
-              {isMultichainAccountsState2Enabled && (
-                <AggregatedBalanceState2
-                  classPrefix={classPrefix}
-                  balanceIsCached={balanceIsCached}
-                  handleSensitiveToggle={handleSensitiveToggle}
-                />
-              )}
-              {!isMultichainAccountsState2Enabled && isEvm && (
-                <LegacyAggregatedBalance
-                  classPrefix={classPrefix}
-                  account={account}
-                  balance={balance}
-                  balanceIsCached={balanceIsCached}
-                  handleSensitiveToggle={handleSensitiveToggle}
-                />
-              )}
-              {!isMultichainAccountsState2Enabled && !isEvm && (
-                <AggregatedBalance
-                  classPrefix={classPrefix}
-                  balanceIsCached={balanceIsCached}
-                  handleSensitiveToggle={handleSensitiveToggle}
-                />
-              )}
+              {balanceSection}
               {balanceIsCached && (
                 <span className={`${classPrefix}-overview__cached-star`}>
                   *
