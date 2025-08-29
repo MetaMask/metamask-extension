@@ -827,10 +827,8 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
         'NetworkController:getState',
-        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
         'MultichainAccountService:setBasicFunctionality',
         'MultichainAccountService:alignWallets',
-        ///: END:ONLY_INCLUDE_IF
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
@@ -1861,7 +1859,6 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     // MultichainAccountService has subscription for preferences changes
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
@@ -1885,7 +1882,6 @@ export default class MetamaskController extends EventEmitter {
         }
       }, this.preferencesController.state),
     );
-    ///: END:ONLY_INCLUDE_IF
 
     // Initialize RemoteFeatureFlagController
     const remoteFeatureFlagControllerMessenger =
@@ -1964,8 +1960,8 @@ export default class MetamaskController extends EventEmitter {
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
-      MultichainAccountService: MultichainAccountServiceInit,
       ///: END:ONLY_INCLUDE_IF
+      MultichainAccountService: MultichainAccountServiceInit,
       MultichainNetworkController: MultichainNetworkControllerInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
@@ -2018,8 +2014,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainTransactionsController;
     this.multichainAssetsRatesController =
       controllersByName.MultichainAssetsRatesController;
-    this.multichainAccountService = controllersByName.MultichainAccountService;
     ///: END:ONLY_INCLUDE_IF
+    this.multichainAccountService = controllersByName.MultichainAccountService;
     this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
