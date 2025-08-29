@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import {
   MultichainAccountCell,
   MultichainAccountCellProps,
@@ -14,7 +15,7 @@ describe('MultichainAccountCell', () => {
   };
 
   it('renders with all required props and displays account information correctly', () => {
-    render(<MultichainAccountCell {...defaultProps} />);
+    renderWithProvider(<MultichainAccountCell {...defaultProps} />);
 
     const cellElement = screen.getByTestId(
       `multichain-account-cell-${defaultProps.accountId}`,
@@ -33,7 +34,9 @@ describe('MultichainAccountCell', () => {
   });
 
   it('shows selection state correctly and applies proper styling', () => {
-    render(<MultichainAccountCell {...defaultProps} selected={true} />);
+    renderWithProvider(
+      <MultichainAccountCell {...defaultProps} selected={true} />,
+    );
 
     expect(
       screen.getByTestId(
@@ -54,7 +57,9 @@ describe('MultichainAccountCell', () => {
 
   it('handles click events and applies pointer cursor when onClick is provided', () => {
     const handleClick = jest.fn();
-    render(<MultichainAccountCell {...defaultProps} onClick={handleClick} />);
+    renderWithProvider(
+      <MultichainAccountCell {...defaultProps} onClick={handleClick} />,
+    );
 
     const cellElement = screen.getByTestId(
       `multichain-account-cell-${defaultProps.accountId}`,
@@ -67,7 +72,7 @@ describe('MultichainAccountCell', () => {
   });
 
   it('renders correctly without optional props', () => {
-    render(
+    renderWithProvider(
       <MultichainAccountCell
         accountId={defaultProps.accountId}
         accountName="Minimal Account"
@@ -92,7 +97,7 @@ describe('MultichainAccountCell', () => {
 
   it('renders a complete cell with all features enabled', () => {
     const handleClick = jest.fn();
-    render(
+    renderWithProvider(
       <MultichainAccountCell
         accountId={defaultProps.accountId}
         accountName="Complete Account"
