@@ -7011,7 +7011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^22.1.0":
+"@metamask/providers@npm:22.1.0":
   version: 22.1.0
   resolution: "@metamask/providers@npm:22.1.0"
   dependencies:
@@ -7029,6 +7029,27 @@ __metadata:
   peerDependencies:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/d6dc969296e3d478a904228f27adae3b6dcbfdbf49eb6d571c9d73d7506df3c6e3bf3c3464f1e69e4c0acb6f6072d12d1c8182348e626ca1572f4f22f9c585e6
+  languageName: node
+  linkType: hard
+
+"@metamask/providers@patch:@metamask/providers@npm%3A22.1.0#~/.yarn/patches/@metamask-providers-npm-22.1.0-365b8a6e3d.patch":
+  version: 22.1.0
+  resolution: "@metamask/providers@patch:@metamask/providers@npm%3A22.1.0#~/.yarn/patches/@metamask-providers-npm-22.1.0-365b8a6e3d.patch::version=22.1.0&hash=2b6bf3"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
+    "@metamask/object-multiplex": "npm:^2.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/safe-event-emitter": "npm:^3.1.1"
+    "@metamask/utils": "npm:^11.0.1"
+    detect-browser: "npm:^5.2.0"
+    extension-port-stream: "npm:^4.1.0"
+    fast-deep-equal: "npm:^3.1.3"
+    is-stream: "npm:^2.0.0"
+    readable-stream: "npm:^3.6.2"
+  peerDependencies:
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/bb6218f1b1bef494ea40e46104fe5aca63ae9170b5c391e1376d151ce5f96b6f14042ae77a84df68bdb794d5ffa1c3276669d56d8caa54be48cddf6e423ffa12
   languageName: node
   linkType: hard
 
@@ -31779,7 +31800,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.1"
     "@metamask/profile-sync-controller": "npm:^23.0.0"
-    "@metamask/providers": "npm:^22.1.0"
+    "@metamask/providers": "patch:@metamask/providers@npm%3A22.1.0#~/.yarn/patches/@metamask-providers-npm-22.1.0-365b8a6e3d.patch"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
     "@metamask/rpc-errors": "npm:^7.0.0"

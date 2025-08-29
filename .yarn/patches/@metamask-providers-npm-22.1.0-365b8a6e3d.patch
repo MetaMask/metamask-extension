@@ -1,0 +1,30 @@
+diff --git a/dist/StreamProvider.cjs b/dist/StreamProvider.cjs
+index c38400887a7296d09188b785cc6eb131cf341204..1edf1838700dd03b98b337db1b91f02ab923df72 100644
+--- a/dist/StreamProvider.cjs
++++ b/dist/StreamProvider.cjs
+@@ -76,8 +76,10 @@ class AbstractStreamProvider extends BaseProvider_1.BaseProvider {
+     async _initializeStateAsync() {
+         let initialState;
+         try {
++            console.log('Awaiting metamask_getProviderState...');
+             initialState = (await this.request({
+                 method: 'metamask_getProviderState',
++                params: { isFirstTime: true },
+             }));
+         }
+         catch (error) {
+diff --git a/dist/StreamProvider.mjs b/dist/StreamProvider.mjs
+index 2e9b29d89f856838fec58b3ba41956809d162496..f1c8433022120cd3e45c345a1c6a3ab679264819 100644
+--- a/dist/StreamProvider.mjs
++++ b/dist/StreamProvider.mjs
+@@ -71,8 +71,10 @@ export class AbstractStreamProvider extends BaseProvider {
+     async _initializeStateAsync() {
+         let initialState;
+         try {
++            console.log('Awaiting metamask_getProviderState...');
+             initialState = (await this.request({
+                 method: 'metamask_getProviderState',
++                params: { isFirstTime: true },
+             }));
+         }
+         catch (error) {

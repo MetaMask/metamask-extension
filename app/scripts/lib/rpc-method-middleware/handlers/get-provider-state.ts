@@ -28,6 +28,7 @@ export type ProviderStateHandlerResult = {
 
 export type GetProviderState = (
   origin: string,
+  options?: { isFirstTime?: boolean },
 ) => Promise<ProviderStateHandlerResult>;
 
 type GetProviderStateConstraint<Params extends JsonRpcParams = JsonRpcParams> =
@@ -73,8 +74,10 @@ async function getProviderStateHandler<
   end: JsonRpcEngineEndCallback,
   { getProviderState: _getProviderState }: Record<string, GetProviderState>,
 ): Promise<void> {
+  const isFirstTime = req.params?.isFirstTime;
+  console.log('[metamask_getProviderState]', req.params, isFirstTime);
   res.result = {
-    ...(await _getProviderState(req.origin)),
+    ...(await _getProviderState(req.origin, { isFirstTime })),
   };
   return end();
 }

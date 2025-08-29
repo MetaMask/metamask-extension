@@ -767,13 +767,13 @@ export default function Routes() {
       }
       <Box className="main-container-wrapper">
         {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-        {!isLoading &&
+        {/*!isLoading &&
         isUnlocked &&
         isNetworkLoading &&
         completedOnboarding &&
         !isShowingDeepLinkRoute ? (
           <LoadingNetwork />
-        ) : null}
+        ) : null*/}
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}

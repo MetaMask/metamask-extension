@@ -3249,9 +3249,9 @@ export default class MetamaskController extends EventEmitter {
     // subset of state for metamask inpage provider
     const publicConfigStore = new ObservableStore();
 
-    const selectPublicState = async ({ isUnlocked }) => {
+    const selectPublicState = async ({ isUnlocked }, { isFirstTime }) => {
       const { chainId, networkVersion, isConnected } =
-        await this.getProviderNetworkState();
+        await this.getProviderNetworkState({ isFirstTime });
 
       return {
         isUnlocked,
@@ -3260,17 +3260,22 @@ export default class MetamaskController extends EventEmitter {
       };
     };
 
-    const updatePublicConfigStore = async (memState) => {
+    const updatePublicConfigStore = async (memState, { isFirstTime }) => {
       const networkStatus =
-        memState.networksMetadata[memState.selectedNetworkClientId]?.status;
+        memState.networksMetadata[memState.selectedNetworkClientId].status;
       if (networkStatus === NetworkStatus.Available) {
-        publicConfigStore.putState(await selectPublicState(memState));
+        publicConfigStore.putState(
+          await selectPublicState(memState, { isFirstTime }),
+        );
       }
     };
 
     // setup memStore subscription hooks
-    this.on('update', updatePublicConfigStore);
-    updatePublicConfigStore(this.getState());
+    this.on('update', (memState) => {
+      updatePublicConfigStore(memState, { isFirstTime: false });
+    });
+    // Update the store asynchronously, out-of-band
+    updatePublicConfigStore(this.getState(), { isFirstTime: true });
 
     return publicConfigStore;
   }
@@ -3279,10 +3284,17 @@ export default class MetamaskController extends EventEmitter {
    * Gets relevant state for the provider of an external origin.
    *
    * @param {string} origin - The origin to get the provider state for.
+   * @param {object} [options] - Options.
+   * @param {boolean} [options.isFirstTime] - Whether this method is being called to initialize the wallet (default: false).
    * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[], extensionId: string | undefined }>} An object with relevant state properties.
    */
-  async getProviderState(origin) {
-    const providerNetworkState = await this.getProviderNetworkState(origin);
+  async getProviderState(origin, { isFirstTime = false } = {}) {
+    console.log('[getProviderState]', origin, isFirstTime);
+
+    const providerNetworkState = await this.getProviderNetworkState({
+      origin,
+      isFirstTime,
+    });
     const metadata = {};
     if (isManifestV3) {
       const { chrome } = globalThis;
@@ -3303,10 +3315,15 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Retrieves network state information relevant for external providers.
    *
-   * @param {string} origin - The origin identifier for which network state is requested (default: 'metamask').
+   * @param {{ origin?: string; isFirstTime?: boolean }} [args] - The arguments to this function.
+   * @param {string} [args.origin] - The origin identifier for which network state is requested (default: 'metamask').
+   * @param {boolean} [args.isFirstTime] - Whether this method is being called to initialize the wallet (default: false).
    * @returns {object} An object containing important network state properties, including chainId and networkVersion.
    */
-  async getProviderNetworkState(origin = METAMASK_DOMAIN) {
+  async getProviderNetworkState({
+    origin = METAMASK_DOMAIN,
+    isFirstTime = false,
+  } = {}) {
     const networkClientId = this.controllerMessenger.call(
       'SelectedNetworkController:getNetworkClientIdForDomain',
       origin,
@@ -3322,7 +3339,11 @@ export default class MetamaskController extends EventEmitter {
     const { completedOnboarding } = this.onboardingController.state;
 
     let networkVersion = this.deprecatedNetworkVersions[networkClientId];
-    if (networkVersion === undefined && completedOnboarding) {
+    // Don't await a request to the selected network until we've completed
+    // onboarding and we've initialized the background<->UI connection (i.e.
+    // we've loaded the home screen). This allows users to begin using MetaMask
+    // right away even if the network is very slow to respond.
+    if (networkVersion === undefined && completedOnboarding && !isFirstTime) {
       try {
         const result = await networkClient.provider.request({
           method: 'net_version',
@@ -5833,6 +5854,8 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} params.encryptionKey - The user's encryption key.
    */
   async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
+    console.log('submitPasswordOrEncryptionKey');
+
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
@@ -5848,6 +5871,7 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
+    /*
     try {
       await this.blockTracker.checkForLatestBlock();
     } catch (error) {
@@ -5861,22 +5885,28 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
+    */
   }
 
   async _loginUser(password) {
+    console.log('Logging in user...');
+
     try {
       // Automatic login via config password
+      console.log('Submitting password...')
       await this.submitPassword(password);
 
       // Updating accounts in this.accountTrackerController before starting UI syncing ensure that
       // state has account balance before it is synced with UI
-      await this.accountTrackerController.updateAccountsAllActiveNetworks();
+      //await this.accountTrackerController.updateAccountsAllActiveNetworks();
     } finally {
       this._startUISync();
     }
   }
 
   _startUISync() {
+    console.log('_startUISync!');
+
     // Message startUISync is used to start syncing state with UI
     // Sending this message after login is completed helps to ensure that incomplete state without
     // account details are not flushed to UI.
@@ -8967,7 +8997,7 @@ export default class MetamaskController extends EventEmitter {
     this.notifyAllConnections(
       async (origin) => ({
         method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(origin),
+        params: await this.getProviderNetworkState({ origin }),
       }),
       API_TYPE.EIP1193,
     );
@@ -8976,7 +9006,7 @@ export default class MetamaskController extends EventEmitter {
   async _notifyChainChangeForConnection(connection, origin) {
     this.notifyConnection(connection, {
       method: NOTIFICATION_NAMES.chainChanged,
-      params: await this.getProviderNetworkState(origin),
+      params: await this.getProviderNetworkState({ origin, isFirstTime: true }),
     });
   }
 

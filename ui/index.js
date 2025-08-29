@@ -85,6 +85,8 @@ export const connectToBackground = (
 };
 
 export default async function launchMetamaskUi(opts) {
+  console.log('launchMetamaskUi');
+
   const { backgroundConnection, traceContext } = opts;
 
   const metamaskState = await trace(
@@ -227,6 +229,7 @@ async function startApp(metamaskState, opts) {
     () => runInitialActions(store),
   );
 
+  console.log('---- Starting React app -----');
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
     render(<Root store={store} />, opts.container),
   );
@@ -242,6 +245,7 @@ async function runInitialActions(store) {
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
   const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(initialState);
+  console.log('networkIdToSwitchTo', networkIdToSwitchTo);
 
   if (networkIdToSwitchTo) {
     await store.dispatch(

@@ -71,6 +71,8 @@ class PhishingWarningPageTimeoutError extends Error {
 start().catch(log.error);
 
 async function start() {
+  console.log('start!');
+
   const startTime = performance.now();
 
   const traceContext = trace({
@@ -109,9 +111,12 @@ async function start() {
   const connectionStream = new PortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
+  console.log('Connecting to background...');
   connectToBackground(backgroundConnection, handleStartUISync);
 
   async function handleStartUISync() {
+    console.log('handleStartUISync');
+
     endTrace({ name: TraceName.BackgroundConnect });
 
     // this means we've received a message from the background, and so
@@ -234,6 +239,8 @@ async function initializeUiWithTab(
   windowType,
   traceContext,
 ) {
+  console.log('initializeUiWithTab');
+
   try {
     const store = await initializeUi(tab, connectionStream, traceContext);
 
@@ -259,6 +266,8 @@ async function initializeUiWithTab(
 }
 
 async function queryCurrentActiveTab(windowType) {
+  console.log('queryCurrentActiveTab');
+
   // Shims the activeTab for E2E test runs only if the
   // "activeTabOrigin" querystring key=value is set
   if (process.env.IN_TEST) {
@@ -301,6 +310,7 @@ async function queryCurrentActiveTab(windowType) {
 }
 
 async function initializeUi(activeTab, backgroundConnection, traceContext) {
+  console.log('initializeUi');
   return await launchMetaMaskUi({
     activeTab,
     container,
@@ -335,12 +345,15 @@ function connectSubstreams(connectionStream) {
  * @param {Substream} connectionStream - PortStream instance establishing a background connection
  */
 async function setupProviderConnection(connectionStream) {
+  console.log('setupProviderConnection')
   const providerStream = new StreamProvider(connectionStream, {
     rpcMiddleware: [createIdRemapMiddleware()],
   });
   connectionStream.on('error', console.error.bind(console));
   providerStream.on('error', console.error.bind(console));
 
+  console.log("Initializing provider stream...");
   await providerStream.initialize();
+  console.log("Provider stream initialized");
   global.ethereumProvider = providerStream;
 }
