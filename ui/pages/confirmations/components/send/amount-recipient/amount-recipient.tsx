@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { Button } from '../../../../../components/component-library';
+import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useSendActions } from '../../../hooks/send/useSendActions';
 import { Amount } from '../amount/amount';
@@ -11,9 +12,11 @@ export const AmountRecipient = () => {
   const [to, setTo] = useState<string | undefined>();
   const { goToPreviousPage } = useNavigateSendPage();
   const { handleSubmit } = useSendActions();
+  const { captureAmountSelected } = useAmountSelectionMetrics();
 
   const onClick = useCallback(() => {
     handleSubmit(to);
+    captureAmountSelected();
   }, [handleSubmit, to]);
 
   return (

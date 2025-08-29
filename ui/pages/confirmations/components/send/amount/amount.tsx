@@ -7,6 +7,7 @@ import {
   TextField,
 } from '../../../../../components/component-library';
 import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
+import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import { useBalance } from '../../../hooks/send/useBalance';
 import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversions';
 import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
@@ -22,26 +23,54 @@ export const Amount = () => {
   const { getNativeValue } = useCurrencyConversions();
   const { getMaxAmount } = useMaxAmount();
   const { isNonEvmNativeSendType } = useSendType();
+  const {
+    setAmountInputMethodManual,
+    setAmountInputMethodPasted,
+    setAmountInputMethodPressedMax,
+    setAmountInputTypeFiat,
+    setAmountInputTypeToken,
+  } = useAmountSelectionMetrics();
 
   const onChange = useCallback(
     (event) => {
       const newValue = event.target.value;
       updateValue(fiatMode ? getNativeValue(newValue) : newValue);
       setAmount(newValue);
+      setAmountInputMethodManual();
     },
     [fiatMode, getNativeValue, setAmount, updateValue],
   );
 
   const toggleFiatMode = useCallback(() => {
+    const newFiatMode = !fiatMode;
     setAmount('');
-    setFiatMode(!fiatMode);
-  }, [fiatMode, setAmount, setFiatMode]);
+    setFiatMode(newFiatMode);
+    if (newFiatMode) {
+      setAmountInputTypeFiat();
+    } else {
+      setAmountInputTypeToken();
+    }
+  }, [
+    fiatMode,
+    setAmount,
+    setAmountInputTypeFiat,
+    setAmountInputTypeToken,
+    setFiatMode,
+  ]);
 
   const updateToMax = useCallback(() => {
     const maxValue = getMaxAmount() ?? '0';
     updateValue(fiatMode ? getNativeValue(maxValue) : maxValue);
     setAmount(maxValue);
-  }, [fiatMode, getMaxAmount, getNativeValue, setAmount, updateValue]);
+    setAmountInputMethodPressedMax();
+  }, [
+    fiatMode,
+    getMaxAmount,
+    getNativeValue,
+    setAmount,
+    setAmountInputMethodPressedMax,
+    updateValue,
+  ]);
 
   const isERC1155 = asset?.standard === ERC1155;
   const isERC721 = asset?.standard === ERC721;
@@ -53,7 +82,11 @@ export const Amount = () => {
   return (
     <div>
       <p>AMOUNT</p>
-      <TextField value={amount} onChange={onChange} />
+      <TextField
+        onChange={onChange}
+        onPaste={setAmountInputMethodPasted}
+        value={amount}
+      />
       <Text>Balance: {balance}</Text>
       <Text>Error: {amountError}</Text>
       {!isERC1155 && (
