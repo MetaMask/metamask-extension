@@ -3,6 +3,7 @@ import type {
   LedgerBridge,
   LedgerBridgeOptions,
 } from '@metamask/eth-ledger-bridge-keyring';
+import type { OneKeyBridge } from '@metamask/eth-onekey-keyring';
 import { KeyringClass, Json } from '@metamask/utils';
 import { FakeKeyringBridge } from '../../../test/stub/keyring-bridge';
 
@@ -12,7 +13,8 @@ import { FakeKeyringBridge } from '../../../test/stub/keyring-bridge';
 export type HardwareTransportBridgeClass =
   | (new () => TrezorBridge)
   | (new () => LedgerBridge<LedgerBridgeOptions>)
-  | (new () => FakeKeyringBridge);
+  | (new () => FakeKeyringBridge)
+  | (new () => OneKeyBridge);
 
 /**
  * Get builder function for Hardware keyrings which require an additional `opts`
