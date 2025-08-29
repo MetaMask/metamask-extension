@@ -16,7 +16,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
-import { MultichainEditAccountsPage } from '../../components/multichain-accounts/permissions/edit-accounts-page/multichain-edit-accounts-page';
+import { MultichainEditAccountsPage } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapper/state2-wrapper';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
