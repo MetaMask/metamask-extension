@@ -320,6 +320,16 @@ const NonEvmBalanceCheck = mmLazy(
 );
 // End Lazy Routes
 
+const MemoizedReviewPermissionsWrapper = React.memo(
+  (props: RouteComponentProps) => (
+    <State2Wrapper
+      {...props}
+      state1Component={ReviewPermissions}
+      state2Component={MultichainReviewPermissions}
+    />
+  ),
+);
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
   const dispatch = useDispatch();
@@ -595,13 +605,7 @@ export default function Routes() {
           <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
-            component={(props: RouteComponentProps) => (
-              <State2Wrapper
-                {...props}
-                state1Component={ReviewPermissions}
-                state2Component={MultichainReviewPermissions}
-              />
-            )}
+            component={MemoizedReviewPermissionsWrapper}
             exact
           />
           <Authenticated
