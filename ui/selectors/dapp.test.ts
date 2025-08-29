@@ -1,10 +1,10 @@
-import { getAllDomains, getOriginOfCurrentTab } from './selectors';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { getDappActiveNetwork } from './dapp';
+import { getAllDomains, getOriginOfCurrentTab } from './selectors';
 
 jest.mock('./selectors', () => ({
   getOriginOfCurrentTab: jest.fn(),
