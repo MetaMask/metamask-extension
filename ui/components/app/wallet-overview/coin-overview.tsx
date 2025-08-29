@@ -5,6 +5,7 @@ import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import {
   Box,
   ButtonIcon,
@@ -31,6 +32,7 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   getPreferences,
   getShouldHideZeroBalanceTokens,
+  getTokensMarketData,
   getIsTestnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
@@ -41,10 +43,12 @@ import {
   isGlobalNetworkSelectorRemoved,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
-import { AccountGroupBalance } from '../assets/account-group-balance/account-group-balance';
 import Spinner from '../../ui/spinner';
 
+import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
+import { AccountGroupBalance } from '../assets/account-group-balance/account-group-balance';
 import { AccountGroupBalanceChange } from '../assets/account-group-balance-change/account-group-balance-change';
+
 import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
@@ -52,11 +56,10 @@ import {
 import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-// removed state2 inline render experiment; use dedicated component
+import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -200,6 +203,8 @@ export const CoinOverview = ({
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -210,7 +215,8 @@ export const CoinOverview = ({
 
   const dispatch = useDispatch();
 
-  const { privacyMode } = useSelector(getPreferences);
+  const { privacyMode, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
 
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -218,11 +224,10 @@ export const CoinOverview = ({
 
   const isEvm = useSelector(getMultichainIsEvm);
 
+  const tokensMarketData = useSelector(getTokensMarketData);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
-
-  // State2 balance is rendered via dedicated component
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
@@ -260,21 +265,31 @@ export const CoinOverview = ({
           {t('discover')}
         </ButtonLink>
       );
+      return null;
     };
 
-    const renderAggregatedView = () => {
-      const content = isTokenNetworkFilterEqualCurrentNetwork ? (
-        <AggregatedPercentageOverview />
-      ) : (
-        <AggregatedPercentageOverviewCrossChains />
-      );
-      return (
-        <Box className="wallet-overview__currency-wrapper">
-          {content}
-          {renderPortfolioButton()}
-        </Box>
-      );
-    };
+    const renderNativeTokenView = () => (
+      <Box className="wallet-overview__currency-wrapper">
+        <PercentageAndAmountChange
+          value={
+            tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
+              ?.pricePercentChange1d
+          }
+        />
+        {renderPortfolioButton()}
+      </Box>
+    );
+
+    const renderAggregatedView = () => (
+      <Box className="wallet-overview__currency-wrapper">
+        {isTokenNetworkFilterEqualCurrentNetwork ? (
+          <AggregatedPercentageOverview />
+        ) : (
+          <AggregatedPercentageOverviewCrossChains />
+        )}
+        {renderPortfolioButton()}
+      </Box>
+    );
 
     const renderNonEvmView = () => (
       <Box className="wallet-overview__currency-wrapper">
@@ -297,7 +312,10 @@ export const CoinOverview = ({
       return renderNonEvmView();
     }
 
-    return renderAggregatedView();
+    return showNativeTokenAsMainBalance &&
+      Object.keys(enabledNetworks).length === 1
+      ? renderNativeTokenView()
+      : renderAggregatedView();
   };
 
   let balanceSection: React.ReactNode;
@@ -328,7 +346,6 @@ export const CoinOverview = ({
       />
     );
   }
-
   return (
     <WalletOverview
       balance={
