@@ -9,6 +9,7 @@ import {
   fromTokenMinimalUnits,
   toTokenMinimalUnit,
   formatToFixedDecimals,
+  navigateToSendRoute,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -135,6 +136,16 @@ describe('Send - utils', () => {
         value: '0x64',
       });
       expect(findNetworkClientIdByChainId).toHaveBeenCalledWith('0x1');
+    });
+  });
+
+  describe('navigateToSendRoute', () => {
+    it('call history.push with send route', () => {
+      const mockHistoryPush = jest.fn();
+      navigateToSendRoute({
+        push: mockHistoryPush,
+      });
+      expect(mockHistoryPush).toHaveBeenCalled();
     });
   });
 });
