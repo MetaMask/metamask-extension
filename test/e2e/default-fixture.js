@@ -220,6 +220,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
           shouldShowAggregatedBalancePopover: true,
           tokenNetworkFilter: {},
+          avatarType: 'maskicon',
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',

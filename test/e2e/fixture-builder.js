@@ -93,6 +93,7 @@ function onboardingFixture() {
           },
           tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
+          avatarType: 'maskicon',
         },
         useExternalServices: true,
         theme: 'light',

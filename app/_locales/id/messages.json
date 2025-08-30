@@ -2980,9 +2980,6 @@
   "isSigningOrSubmitting": {
     "message": "Transaksi sebelumnya sedang ditandatangani atau dikirim"
   },
-  "jazzAndBlockies": {
-    "message": "Jazzicons dan Blockies merupakan dua gaya ikon unik yang berbeda untuk membantu Anda mengidentifikasi akun dengan cepat."
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },

@@ -2980,9 +2980,6 @@
   "isSigningOrSubmitting": {
     "message": "이전 트랜잭션이 아직 서명 또는 제출 중입니다."
   },
-  "jazzAndBlockies": {
-    "message": "Jazzicons와 Blockies는 계정을 한눈에 식별할 수 있게 도와주는 두 가지 고유한 아이콘 스타일입니다."
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },

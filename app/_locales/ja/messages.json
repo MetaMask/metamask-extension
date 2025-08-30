@@ -2947,9 +2947,6 @@
   "isSigningOrSubmitting": {
     "message": "以前のトランザクションがまだ署名中または送信中です"
   },
-  "jazzAndBlockies": {
-    "message": "JazziconとBlockieは、アカウントを一目で見分けるためのユニークなアイコンであり、2つの異なるスタイルが特徴です。"
-  },
   "jazzicons": {
     "message": "Jazzicon"
   },

@@ -2980,9 +2980,6 @@
   "isSigningOrSubmitting": {
     "message": "Giao dịch trước đó vẫn đang được ký hoặc gửi"
   },
-  "jazzAndBlockies": {
-    "message": "Jazzicons và Blockies là hai kiểu biểu tượng độc nhất khác nhau giúp bạn nhận ra tài khoản trong nháy mắt."
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },
