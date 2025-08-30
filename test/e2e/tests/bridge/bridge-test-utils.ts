@@ -500,7 +500,7 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
 
 async function mockSwapAggregatorLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .forGet('bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata')
     .always()
     .thenCallback(() => {
       return {
@@ -544,7 +544,9 @@ export async function mockGasPricesMainnet(mockServer: Mockttp) {
 
 export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {
@@ -556,7 +558,7 @@ export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
 
 export async function mockSwapTokensLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/59144/tokens')
     .withQuery({ includeBlockedTokens: 'true' })
     .always()
     .thenCallback(() => {
@@ -569,7 +571,7 @@ export async function mockSwapTokensLinea(mockServer: Mockttp) {
 
 export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/42161/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/42161/tokens')
     .withQuery({ includeBlockedTokens: 'true' })
     .always()
     .thenCallback(() => {
@@ -582,7 +584,9 @@ export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
 
 export async function mockSwapAggregatorMetadataArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/42161/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/42161/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {

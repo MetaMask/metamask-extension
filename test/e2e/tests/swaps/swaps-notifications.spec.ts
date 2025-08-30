@@ -8,7 +8,7 @@ import { buildQuote, reviewQuote, checkNotification } from './shared';
 async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => ({
         statusCode: 200,
         json: SWAP_TEST_ETH_USDC_TRADES_MOCK,
@@ -20,7 +20,7 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
 describe.skip('Swaps - notifications', function () {
   async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => {
         return {
           statusCode: 200,
