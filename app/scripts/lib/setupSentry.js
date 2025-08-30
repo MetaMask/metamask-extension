@@ -45,18 +45,23 @@ export default function setupSentry() {
 
   log('Initializing');
 
-  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
-  // If it's not, we still get the extensionId, but the installType will default to "unknown"
-  browser.management
-    .getSelf()
-    .then((extensionInfo) => {
-      if (extensionInfo.installType) {
-        installType = extensionInfo.installType;
-      }
-    })
-    .catch((error) => {
-      log('Error getting extension installType', error);
-    });
+  // The browser management API may not be available in all contexts of the app
+  // For example, it is not available in the offscreen document.
+  if (browser.management && browser.management.getSelf) {
+    // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
+    // If it's not, we still get the extensionId, but the installType will default to "unknown"
+    browser.management
+      .getSelf()
+      .then((extensionInfo) => {
+        if (extensionInfo.installType) {
+          installType = extensionInfo.installType;
+        }
+      })
+      .catch((error) => {
+        log('Error getting extension installType', error);
+      });
+  }
+
   integrateLogging();
   setSentryClient();
 
