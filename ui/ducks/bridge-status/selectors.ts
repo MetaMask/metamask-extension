@@ -1,24 +1,23 @@
 import { createSelector } from 'reselect';
-import { Hex } from '@metamask/utils';
 import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import { getSelectedAddress } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { BridgeStatusAppState } from '../../../shared/types/bridge-status';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 
-export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
-  state.metamask;
+const selectBridgeHistory = (state: BridgeStatusAppState) =>
+  state.metamask.txHistory;
 
 /**
  * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address
+ * If no address is provided, return all bridge history items for all addresses
  */
 export const selectBridgeHistoryForAccount = createSelector(
-  [getSelectedAddress, selectBridgeStatusState],
-  (selectedAddress, bridgeStatusState) => {
-    // Handle the case when bridgeStatusState is undefined
-    const { txHistory = {} } = bridgeStatusState || {};
-
+  [(_, selectedAddress?: string) => selectedAddress, selectBridgeHistory],
+  (selectedAddress, txHistory) => {
+    if (!selectedAddress) {
+      return txHistory;
+    }
     return Object.keys(txHistory).reduce<Record<string, BridgeHistoryItem>>(
       (acc, txMetaId) => {
         const txHistoryItem = txHistory[txMetaId];
@@ -32,10 +31,13 @@ export const selectBridgeHistoryForAccount = createSelector(
   },
 );
 
-const selectBridgeHistoryItemForTxMetaId = createSelector(
-  [selectBridgeHistoryForAccount, (_, txMetaId?: string) => txMetaId],
+export const selectBridgeHistoryItemForTxMetaId = createSelector(
+  [selectBridgeHistory, (_, txMetaId?: string) => txMetaId],
   (bridgeHistory, txMetaId) => {
-    return txMetaId ? bridgeHistory[txMetaId] : undefined;
+    if (!txMetaId) {
+      return undefined;
+    }
+    return bridgeHistory[txMetaId];
   },
 );
 
