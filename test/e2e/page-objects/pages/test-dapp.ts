@@ -240,6 +240,21 @@ class TestDapp {
     this.driver = driver;
   }
 
+  private readonly networkSelector = (networkId: string) => ({
+    css: '[id="chainId"]',
+    text: networkId,
+  });
+
+  private readonly networkHost = (host: string) => ({
+    css: 'p',
+    text: host,
+  });
+
+  private readonly connectDappButton = {
+    text: 'Connect',
+    tag: 'button',
+  };
+
   /**
    * Sends a JSON-RPC request to the connected wallet using window.ethereum.
    *
@@ -727,6 +742,24 @@ class TestDapp {
 
   async clickConnectAccountButton() {
     await this.driver.clickElement(this.connectAccountButton);
+  }
+
+  async clickConnectAccountButtonAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.connectDappButton,
+    );
+  }
+
+  async clickRevokePermissionButton() {
+    await this.driver.clickElement(this.revokePermissionButton);
+  }
+
+  async checkDappIsNotConnectedToNetwork(networkId: string) {
+    await this.driver.assertElementNotPresent(this.networkSelector(networkId));
+  }
+
+  async checkDappHostNetwork(host: string) {
+    await this.driver.waitForSelector(this.networkHost(host));
   }
 
   async clickApproveTokens() {
