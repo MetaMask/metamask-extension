@@ -426,11 +426,6 @@ function hasChangelogEntry(body: string): boolean {
     return false;
   }
 
-  if (entry.toLowerCase() === "undefined") {
-    console.log("Changelog entry is explicitly undefined");
-    return false;
-  }
-
   console.log(`Changelog entry found: ${entry}`);
   return true; // allow any non-empty value, including "null"
 }
