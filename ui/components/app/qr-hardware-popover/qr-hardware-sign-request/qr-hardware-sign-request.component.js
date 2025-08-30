@@ -1,13 +1,22 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { submitQRHardwareSignature } from '../../../../store/actions';
+import { useDispatch } from 'react-redux';
+import { completeQrCodeScan } from '../../../../store/actions';
 import Player from './player';
 import Reader from './reader';
 
 const QRHardwareSignRequest = ({ request, handleCancel, setErrorTitle }) => {
+  const dispatch = useDispatch();
   const [status, setStatus] = useState('play');
 
   const toRead = useCallback(() => setStatus('read'), []);
+
+  const handleSuccess = useCallback(
+    (response) => {
+      return dispatch(completeQrCodeScan(response));
+    },
+    [dispatch],
+  );
 
   const renderPlayer = () => {
     const { payload } = request;
@@ -25,7 +34,7 @@ const QRHardwareSignRequest = ({ request, handleCancel, setErrorTitle }) => {
     return (
       <Reader
         cancelQRHardwareSignRequest={handleCancel}
-        submitQRHardwareSignature={submitQRHardwareSignature}
+        submitQRHardwareSignature={handleSuccess}
         requestId={request.requestId}
         setErrorTitle={setErrorTitle}
       />

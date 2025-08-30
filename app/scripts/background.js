@@ -634,6 +634,9 @@ async function initialize(backup) {
           // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
           ledgerBridge: require('../../test/stub/keyring-bridge')
             .FakeLedgerBridge,
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,
         },
       }
     : {};

@@ -3,7 +3,6 @@ import type {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import { Browser } from 'webextension-polyfill';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -696,9 +695,7 @@ type WithControllerCallback<ReturnValue> = ({
     | AddApprovalRequest
     | AcceptRequest
     | PreferencesControllerGetStateAction,
-    | AppStateControllerEvents
-    | PreferencesControllerStateChangeEvent
-    | KeyringControllerQRKeyringStateChangeEvent
+    AppStateControllerEvents | PreferencesControllerStateChangeEvent
   >;
 }) => ReturnValue;
 
@@ -717,9 +714,7 @@ async function withController<ReturnValue>(
     | AddApprovalRequest
     | AcceptRequest
     | PreferencesControllerGetStateAction,
-    | AppStateControllerEvents
-    | PreferencesControllerStateChangeEvent
-    | KeyringControllerQRKeyringStateChangeEvent
+    AppStateControllerEvents | PreferencesControllerStateChangeEvent
   >();
   const appStateMessenger = controllerMessenger.getRestricted({
     name: 'AppStateController',
@@ -728,10 +723,7 @@ async function withController<ReturnValue>(
       `ApprovalController:acceptRequest`,
       `PreferencesController:getState`,
     ],
-    allowedEvents: [
-      `PreferencesController:stateChange`,
-      `KeyringController:qrKeyringStateChange`,
-    ],
+    allowedEvents: [`PreferencesController:stateChange`],
   });
   controllerMessenger.registerActionHandler(
     'PreferencesController:getState',

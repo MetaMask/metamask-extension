@@ -113,7 +113,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
-        qrHardware: {},
         recoveryPhraseReminderHasBeenShown: true,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
