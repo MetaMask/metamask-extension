@@ -11,6 +11,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
 
 describe('MultichainBridgeQuoteCard', () => {
@@ -79,11 +80,12 @@ describe('MultichainBridgeQuoteCard', () => {
         ),
       },
     });
-    const { container } = renderWithProvider(
+    const { container, queryByText } = renderWithProvider(
       <MultichainBridgeQuoteCard />,
       configureStore(mockStore),
     );
 
+    expect(queryByText('Rate includes')).not.toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -160,11 +162,12 @@ describe('MultichainBridgeQuoteCard', () => {
         ),
       },
     });
-    const { container } = renderWithProvider(
+    const { container, getByText } = renderWithProvider(
       <MultichainBridgeQuoteCard />,
       configureStore(mockStore),
     );
 
+    expect(getByText('Rate includes 0.875% fee')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -182,8 +185,18 @@ describe('MultichainBridgeQuoteCard', () => {
       bridgeSliceOverrides: {
         fromTokenInputValue: 1,
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+        slippage: 1,
       },
       bridgeStateOverrides: {
+        assetExchangeRates: {
+          [toAssetId(
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            formatChainIdToCaip(CHAIN_IDS.POLYGON),
+          ) ?? '']: {
+            exchangeRate: '.99',
+            usdExchangeRate: '.99',
+          },
+        },
         quotes: mockBridgeQuotesNativeErc20,
         quoteRequest: {
           insufficientBal: false,

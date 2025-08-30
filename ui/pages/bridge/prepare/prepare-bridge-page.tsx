@@ -68,6 +68,7 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
@@ -496,7 +497,7 @@ const PrepareBridgePage = ({
 
   return (
     <>
-      <Column className="prepare-bridge-page" gap={isToOrFromSolana ? 2 : 8}>
+      <Column className="prepare-bridge-page" gap={4}>
         <BridgeInputGroup
           header={getFromInputHeader()}
           token={fromToken}
@@ -569,7 +570,9 @@ const PrepareBridgePage = ({
 
         <Column
           height={BlockSize.Full}
-          paddingTop={isToOrFromSolana ? 4 : 8}
+          paddingTop={4}
+          paddingBottom={4}
+          gap={4}
           backgroundColor={BackgroundColor.backgroundAlternativeSoft}
           style={{
             position: 'relative',
@@ -581,7 +584,7 @@ const PrepareBridgePage = ({
             backgroundColor={BackgroundColor.backgroundAlternativeSoft}
             style={{
               position: 'absolute',
-              top: 'calc(-20px + 1px)',
+              top: '-20px',
               right: 'calc(50% - 20px)',
               border: '2px solid var(--color-background-default)',
               borderRadius: '100%',
@@ -613,6 +616,7 @@ const PrepareBridgePage = ({
                 (toChain && !isNetworkAdded(toChain))
               }
               onClick={() => {
+                dispatch(setSelectedQuote(null));
                 // Track the flip event
                 toChain?.chainId &&
                   fromToken &&
@@ -736,41 +740,48 @@ const PrepareBridgePage = ({
           />
 
           {isToOrFromSolana && (
-            <Box padding={6} paddingBottom={3} paddingTop={3}>
-              <DestinationAccountPicker
-                onAccountSelect={setSelectedDestinationAccount}
-                selectedSwapToAccount={selectedDestinationAccount}
-              />
-            </Box>
+            <DestinationAccountPicker
+              onAccountSelect={setSelectedDestinationAccount}
+              selectedSwapToAccount={selectedDestinationAccount}
+            />
           )}
 
-          <Column
-            height={BlockSize.Full}
-            justifyContent={JustifyContent.center}
-          >
-            {isLoading && !activeQuote ? (
-              <>
-                <Text
-                  textAlign={TextAlign.Center}
-                  color={TextColor.textAlternativeSoft}
-                >
-                  {t('swapFetchingQuotes')}
-                </Text>
-                <MascotBackgroundAnimation height="64" width="64" />
-              </>
-            ) : null}
-          </Column>
-
-          <Row padding={6} paddingTop={activeQuote ? 0 : 6}>
+          {!activeQuote_ && (
             <Column
+              height={BlockSize.Full}
+              justifyContent={JustifyContent.center}
+            >
+              {isLoading && (
+                <>
+                  <Text
+                    textAlign={TextAlign.Center}
+                    color={TextColor.textAlternativeSoft}
+                  >
+                    {t('swapFetchingQuotes')}
+                  </Text>
+                  <MascotBackgroundAnimation height="64" width="64" />
+                </>
+              )}
+            </Column>
+          )}
+
+          {/** QuoteCard and CTA button */}
+          {(activeQuote || !isLoading) && (
+            <Column
+              marginInline={4}
+              paddingInline={4}
+              alignItems={AlignItems.flexEnd}
               gap={3}
+              justifyContent={JustifyContent.flexEnd}
               className={activeQuote ? 'highlight' : ''}
               style={{
-                paddingBottom: activeQuote?.approval ? 16 : 'revert-layer',
-                paddingTop: activeQuote?.approval ? 16 : undefined,
-                paddingInline: 16,
+                paddingBottom: 'revert-layer',
+                paddingTop: undefined,
+                width: 'auto',
+                minHeight: 'max-content',
                 position: 'relative',
                 overflow: 'hidden',
+                marginTop: 'auto',
                 ...(activeQuote && !wasTxDeclined
                   ? {
                       boxShadow:
@@ -874,14 +885,15 @@ const PrepareBridgePage = ({
                 ) : null}
               </Footer>
             </Column>
-          </Row>
+          )}
+
+          {/** Alert banners */}
           {isUsingHardwareWallet &&
             isTxSubmittable &&
             hardwareWalletName &&
             activeQuote && (
               <BannerAlert
                 marginInline={4}
-                marginBottom={3}
                 title={t('hardwareWalletSubmissionWarningTitle')}
                 textAlign={TextAlign.Left}
               >
@@ -906,7 +918,6 @@ const PrepareBridgePage = ({
           {txAlert && activeQuote && (
             <BannerAlert
               marginInline={4}
-              marginBottom={10}
               severity={BannerAlertSeverity.Danger}
               title={t(txAlert.titleId)}
               description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
@@ -916,7 +927,6 @@ const PrepareBridgePage = ({
           {isNoQuotesAvailable && !isQuoteExpired && (
             <BannerAlert
               marginInline={4}
-              marginBottom={10}
               severity={BannerAlertSeverity.Danger}
               description={t('noOptionsAvailableMessage')}
               textAlign={TextAlign.Left}
@@ -933,7 +943,6 @@ const PrepareBridgePage = ({
                 title={t('bridgeTokenCannotVerifyTitle')}
                 description={t('bridgeTokenCannotVerifyDescription')}
                 marginInline={4}
-                marginBottom={3}
                 textAlign={TextAlign.Left}
                 onClose={() => setIsCannotVerifyTokenBannerOpen(false)}
               />
@@ -942,7 +951,6 @@ const PrepareBridgePage = ({
             <BannerAlert
               ref={tokenAlertBannerRef}
               marginInline={4}
-              marginBottom={3}
               title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
               severity={
                 tokenAlert.type === TokenFeatureType.MALICIOUS
@@ -965,7 +973,6 @@ const PrepareBridgePage = ({
               <BannerAlert
                 ref={isEstimatedReturnLowRef}
                 marginInline={4}
-                marginBottom={3}
                 title={t('bridgeValidationInsufficientGasTitle', [ticker])}
                 severity={BannerAlertSeverity.Danger}
                 description={t('bridgeValidationInsufficientGasMessage', [
@@ -980,7 +987,6 @@ const PrepareBridgePage = ({
             <BannerAlert
               ref={insufficientBalanceBannerRef}
               marginInline={4}
-              marginBottom={3}
               title={t('lowEstimatedReturnTooltipTitle')}
               severity={BannerAlertSeverity.Warning}
               description={t('lowEstimatedReturnTooltipMessage', [
