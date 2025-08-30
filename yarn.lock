@@ -5670,6 +5670,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/chain-agnostic-permission@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@metamask/chain-agnostic-permission@npm:1.1.1"
+  dependencies:
+    "@metamask/api-specs": "npm:^0.14.0"
+    "@metamask/controller-utils": "npm:^11.12.0"
+    "@metamask/network-controller": "npm:^24.1.0"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.4.2"
+    lodash: "npm:^4.17.21"
+  checksum: 10/fc9bb730c97c100c23fa0f0ffb1e07c929196b4b3408d77699d38e5810d1103bda7f73c7787601e32bf32e126be66651637ed21e2c170b58d2805f052622e082
+  languageName: node
+  linkType: hard
+
 "@metamask/contract-metadata@npm:^2.4.0, @metamask/contract-metadata@npm:^2.5.0":
   version: 2.5.0
   resolution: "@metamask/contract-metadata@npm:2.5.0"
@@ -5792,6 +5807,24 @@ __metadata:
   version: 8.1.1
   resolution: "@metamask/design-tokens@npm:8.1.1"
   checksum: 10/2b392f6c3dd364fa7df02e629214d7d8c862059fcccfe761005777fbdf6069ea99dae10c7d9b85184f9d04b432fdf2d521906e8141990f21da58542624fc8d5e
+  languageName: node
+  linkType: hard
+
+"@metamask/eip-5792-middleware@npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-420c23ff":
+  version: 1.0.0-preview-420c23ff
+  resolution: "@metamask-previews/eip-5792-middleware@npm:1.0.0-preview-420c23ff"
+  dependencies:
+    "@metamask/accounts-controller": "npm:^32.0.2"
+    "@metamask/base-controller": "npm:^8.2.0"
+    "@metamask/chain-agnostic-permission": "npm:^1.1.1"
+    "@metamask/eth-json-rpc-middleware": "npm:^17.0.1"
+    "@metamask/keyring-controller": "npm:^22.1.1"
+    "@metamask/network-controller": "npm:^24.1.0"
+    "@metamask/preferences-controller": "npm:^17.0.0"
+    "@metamask/transaction-controller": "npm:^60.1.0"
+    "@metamask/utils": "npm:^11.4.2"
+    uuid: "npm:^8.3.2"
+  checksum: 10/799081727f03f1fd9c21133aa9fe8af07a924f8a1105a9b1cf198251ace1d17e2fb4b2286e305c443dc8ac037ca80403531dda9d68eb9e54d0075024a75ea5f7
   languageName: node
   linkType: hard
 
@@ -6705,7 +6738,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:24.1.0, @metamask/network-controller@npm:^24.0.0, @metamask/network-controller@npm:^24.0.1":
+"@metamask/network-controller@npm:24.1.0, @metamask/network-controller@npm:^24.0.0, @metamask/network-controller@npm:^24.0.1, @metamask/network-controller@npm:^24.1.0":
   version: 24.1.0
   resolution: "@metamask/network-controller@npm:24.1.0"
   dependencies:
@@ -31746,6 +31779,7 @@ __metadata:
     "@metamask/design-system-react": "npm:^0.3.1"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
+    "@metamask/eip-5792-middleware": "npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-420c23ff"
     "@metamask/ens-controller": "npm:^17.0.1"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/error-reporting-service": "npm:^2.0.0"
