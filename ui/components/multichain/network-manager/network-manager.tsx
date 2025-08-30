@@ -18,7 +18,7 @@ import {
   getEditedNetwork,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../selectors';
-import { hideModal } from '../../../store/actions';
+import { hideModal, setEditedNetwork } from '../../../store/actions';
 import {
   Modal,
   ModalContent,
@@ -122,6 +122,7 @@ const NetworkManagerRouter = () => {
 
   const handleClose = () => {
     dispatch(hideModal());
+    dispatch(setEditedNetwork());
     history.push('/');
   };
 
