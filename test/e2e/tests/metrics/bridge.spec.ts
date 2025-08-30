@@ -15,7 +15,6 @@ import {
   EXPECTED_EVENT_TYPES,
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
 
 const quote = {
   amount: '25',
@@ -38,9 +37,6 @@ describe('Bridge tests', function (this: Suite) {
       ),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        // disable smart transactions step by step for all bridge flows
-        // we cannot use fixtures because migration 135 overrides the opt in value to true
-        await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
 
