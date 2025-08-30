@@ -11,6 +11,10 @@ const selectBridgeHistory = (state: BridgeStatusAppState) =>
 /**
  * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address
  * If no address is provided, return all bridge history items for all addresses
+ *
+ * @param _ - the state object
+ * @param selectedAddress - The address to filter the bridge history items by
+ * @returns A mapping of srcTxMetaId to txHistoryItem for the selected address
  */
 export const selectBridgeHistoryForAccount = createSelector(
   [(_, selectedAddress?: string) => selectedAddress, selectBridgeHistory],
