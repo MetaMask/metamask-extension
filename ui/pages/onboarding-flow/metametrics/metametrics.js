@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
 
 import {
@@ -56,7 +56,7 @@ const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
@@ -104,7 +104,7 @@ export default function OnboardingMetametrics() {
     } catch (error) {
       log.error('onConfirm::error', error);
     } finally {
-      history.push(nextRouteByBrowser);
+      navigate(nextRouteByBrowser);
     }
   };
 
@@ -112,7 +112,7 @@ export default function OnboardingMetametrics() {
     e.preventDefault();
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
-    history.push(nextRouteByBrowser);
+    navigate(nextRouteByBrowser);
   };
 
   return (

@@ -1,5 +1,5 @@
 import React, { FormEvent, useCallback, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Text,
@@ -39,7 +39,7 @@ export default function RevealRecoveryPhrase({
 }: {
   setSecretRecoveryPhrase: (seedPhrase: string) => void;
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
@@ -63,25 +63,26 @@ export default function RevealRecoveryPhrase({
       try {
         const seedPhrase = await getSeedPhrase(_password);
         setSecretRecoveryPhrase(seedPhrase);
-        history.replace(
-          `${ONBOARDING_REVIEW_SRP_ROUTE}/${
+        navigate(
+          `${ONBOARDING_REVIEW_SRP_ROUTE}${
             nextRouteQueryString ? `?${nextRouteQueryString}` : ''
           }`,
+          { replace: true },
         );
       } catch (error) {
         setIsIncorrectPasswordError(true);
       }
     },
-    [setSecretRecoveryPhrase, history, nextRouteQueryString],
+    [setSecretRecoveryPhrase, navigate, nextRouteQueryString],
   );
 
   const returnToPreviousPage = useCallback(() => {
     if (isFromSettingsSecurity) {
-      history.replace(REVEAL_SRP_LIST_ROUTE);
+      navigate(REVEAL_SRP_LIST_ROUTE, { replace: true });
     } else {
-      history.replace(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
-  }, [history, isFromSettingsSecurity]);
+  }, [navigate, isFromSettingsSecurity]);
 
   return (
     <Box
