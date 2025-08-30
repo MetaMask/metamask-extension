@@ -23,6 +23,7 @@ import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 import { SelectedGasFeeToken } from '../selected-gas-fee-token';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 
 export const EditGasFeesRow = ({
   fiatFee,
@@ -52,6 +53,10 @@ export const EditGasFeesRow = ({
   const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
   const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
   const metamaskFeeFiat = gasFeeToken?.metamaskFeeFiat;
+  const isSponsored = transactionMeta.gasFeeTokens?.find(
+    (token) => token.isSponsored === true &&
+      token.tokenAddress === NATIVE_TOKEN_ADDRESS,
+  );
 
   const tooltip = gasFeeToken
     ? t('confirmGasFeeTokenTooltip', [metamaskFeeFiat])
@@ -75,7 +80,7 @@ export const EditGasFeesRow = ({
           textAlign={TextAlign.Center}
           gap={1}
         >
-          {!gasFeeToken && (
+          {!gasFeeToken && !isSponsored && (
             <EditGasIconButton
               supportsEIP1559={supportsEIP1559}
               setShowCustomizeGasPopover={setShowCustomizeGasPopover}
@@ -85,11 +90,14 @@ export const EditGasFeesRow = ({
             <FiatValue
               fullValue={fiatFeeWith18SignificantDigits}
               roundedValue={fiatValue}
+              isSponsored={isSponsored}
             />
           ) : (
             <TokenValue roundedValue={tokenValue} />
           )}
-          <SelectedGasFeeToken />
+          {!isSponsored && (
+            <SelectedGasFeeToken />
+          )}
         </Box>
       </ConfirmInfoAlertRow>
       <Box
@@ -136,11 +144,13 @@ function FiatValue({
   fullValue,
   roundedValue,
   variant,
+  isSponsored = false,
 }: {
   color?: TextColor;
   fullValue: string | null;
   roundedValue: string;
   variant?: TextVariant;
+  isSponsored?: boolean;
 }) {
   const styleProps = { color, variant };
   const value = (
@@ -149,10 +159,21 @@ function FiatValue({
     </Text>
   );
 
+  const FreeNotice = isSponsored && <Text color={TextColor.successDefault} style={{ marginRight: '4px' }}>Free</Text>;
+  const ConditionalValue = isSponsored ? (<Text color={color} style={{ textDecoration: 'line-through' }}>{value}</Text>) : value
+
   return fullValue ? (
-    <Tooltip title={fullValue}>{value}</Tooltip>
+    <>
+      {FreeNotice}
+      <Tooltip title={fullValue}>
+        {ConditionalValue}
+      </Tooltip>
+    </>
   ) : (
-    <>{value}</>
+    <>
+      {FreeNotice}
+      {ConditionalValue}
+    </>
   );
 }
 

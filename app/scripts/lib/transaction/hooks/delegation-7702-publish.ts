@@ -171,6 +171,7 @@ export class Delegation7702PublishHook {
   ): Execution[] {
     const { txParams } = transactionMeta;
     const { data, to, value } = txParams;
+    const { isSponsored } = gasFeeToken;
 
     const userExecution: Execution = {
       target: to as Hex,
@@ -187,7 +188,12 @@ export class Delegation7702PublishHook {
       ),
     };
 
-    return [userExecution, transferExecution];
+    const executions = [userExecution];
+    if (!isSponsored) {
+      executions.push(transferExecution);
+    }
+
+    return executions;
   }
 
   async #buildDelegation(
