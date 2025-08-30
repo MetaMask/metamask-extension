@@ -23985,13 +23985,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"extension-port-stream@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "extension-port-stream@npm:3.0.0"
+"extension-port-stream@https://github.com/MetaMask/extension-port-stream.git#9850ac75a4bbe1a245cdcb7b8c73290afa2663f0":
+  version: 4.2.0
+  resolution: "extension-port-stream@https://github.com/MetaMask/extension-port-stream.git#commit=9850ac75a4bbe1a245cdcb7b8c73290afa2663f0"
   dependencies:
     readable-stream: "npm:^3.6.2 || ^4.4.2"
-    webextension-polyfill: "npm:>=0.10.0 <1.0"
-  checksum: 10/4f51d2258a96154c2d916a8a5425636a2b0817763e9277f7dc378d08b6f050c90d185dbde4313d27cf66ad99d4b3116479f9f699c40358c64cccfa524d2b55bf
+  peerDependencies:
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/238cd2fdeb19cecb2376ba33788bde0f20cfd3fa22dc12968e1303795f151acbe4250014f6d8b098bf3a7bb2814acc6000e84caa8282c7e5c3919fb8a18b30ff
   languageName: node
   linkType: hard
 
@@ -31989,7 +31990,7 @@ __metadata:
     eth-method-registry: "npm:^4.0.0"
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:^5.7.0"
-    extension-port-stream: "npm:^3.0.0"
+    extension-port-stream: "https://github.com/MetaMask/extension-port-stream.git#9850ac75a4bbe1a245cdcb7b8c73290afa2663f0"
     fake-indexeddb: "npm:^6.1.0"
     fancy-log: "npm:^1.3.3"
     fast-glob: "npm:^3.2.2"
@@ -32092,7 +32093,7 @@ __metadata:
     react-toggle-button: "npm:^2.2.0"
     react-transition-group: "npm:^4.4.5"
     read-installed: "npm:^4.0.3"
-    readable-stream: "npm:^3.6.2"
+    readable-stream: "npm:^4.7.0"
     readable-stream-2: "npm:^2.3.3"
     readable-stream-3: "npm:^3.6.2"
     redux: "npm:^4.0.5"
@@ -37021,7 +37022,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^3.6.2 || ^4.4.2, readable-stream@npm:^4.0.0, readable-stream@npm:^4.5.2":
+"readable-stream@npm:^3.6.2 || ^4.4.2, readable-stream@npm:^4.0.0, readable-stream@npm:^4.5.2, readable-stream@npm:^4.7.0":
   version: 4.7.0
   resolution: "readable-stream@npm:4.7.0"
   dependencies:
@@ -43429,7 +43430,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webextension-polyfill@npm:>=0.10.0 <1.0, webextension-polyfill@npm:^0.12.0":
+"webextension-polyfill@npm:^0.12.0":
   version: 0.12.0
   resolution: "webextension-polyfill@npm:0.12.0"
   checksum: 10/77e648b958b573ef075e75a0c180e2bbd74dee17b3145e86d21fcbb168c4999e4a311654fe634b8178997bee9b35ea5808d8d3d3e5ff2ad138f197f4f0ea75d9
