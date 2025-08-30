@@ -14,6 +14,9 @@ import {
   AvatarAccountProps,
 } from './avatar-account.types';
 
+/**
+ * @deprecated Use PreferredAvatar or AvatarAccount from the design system
+ */
 export const AvatarAccount: AvatarAccountComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

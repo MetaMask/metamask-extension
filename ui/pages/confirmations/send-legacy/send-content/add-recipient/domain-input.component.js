@@ -16,14 +16,11 @@ import {
   ButtonIcon,
   IconName,
   IconSize,
-  AvatarAccount,
-  AvatarAccountVariant,
   Text,
 } from '../../../../../components/component-library';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import {
   IconColor,
-  Size,
-  BackgroundColor,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -36,7 +33,6 @@ export default class DomainInput extends Component {
 
   static propTypes = {
     className: PropTypes.string,
-    useBlockie: PropTypes.bool,
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
     scanQrCode: PropTypes.func,
@@ -108,8 +104,7 @@ export default class DomainInput extends Component {
 
   render() {
     const { t } = this.context;
-    const { className, selectedAddress, selectedName, userInput, useBlockie } =
-      this.props;
+    const { className, selectedAddress, selectedName, userInput } = this.props;
 
     const hasSelectedAddress = Boolean(selectedAddress);
 
@@ -133,16 +128,8 @@ export default class DomainInput extends Component {
                 className="ens-input__wrapper__input ens-input__wrapper__input--selected"
                 data-testid="ens-input-selected"
               >
-                <AvatarAccount
-                  variant={
-                    useBlockie
-                      ? AvatarAccountVariant.Blockies
-                      : AvatarAccountVariant.Jazzicon
-                  }
-                  address={selectedAddress}
-                  size={Size.MD}
-                  borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
-                />
+                <PreferredAvatar address={selectedAddress} />
+
                 <div className="ens-input__selected-input__title">
                   {selectedName || selectedAddress}
                   {shortenedAddress ? (

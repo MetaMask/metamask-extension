@@ -10,7 +10,7 @@ class MultichainAccountDetailsPage {
   private readonly accountNameHeader = '.multichain-page-header'; // The header title
 
   // Account information section
-  private readonly accountAvatar = '.mm-avatar-base';
+  private readonly accountAvatar = '[data-testid="avatar"]';
 
   private readonly accountNameRow = '.multichain-account-details__row'; // First row is account name
 
