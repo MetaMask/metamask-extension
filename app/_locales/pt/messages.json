@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Se o problema persistir, inicie o MetaMask novamente.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "O carregamento está demorando mais que o normal.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Erro"
   },
@@ -322,6 +330,10 @@
   "addressMismatchPunycode": {
     "message": "Versão Punycode: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "Endereços",
+    "description": "Multichain account menu item for linking to addresses page"
   },
   "advanced": {
     "message": "Avançado"
@@ -892,6 +904,21 @@
   },
   "bridgeNetCost": {
     "message": "Custo líquido"
+  },
+  "bridgePriceImpact": {
+    "message": "Impacto no preço"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "O impacto no preço reflete como sua ordem de troca afeta o preço de mercado do ativo. Se você não tiver fundos suficientes para gás, parte do seu token de origem será automaticamente alocada para cobrir as taxas, o que reduzirá o valor trocado. A MetaMask não influencia nem controla o impacto no preço."
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "O impacto no preço reflete como sua ordem de troca afeta o preço de mercado do ativo. Ele depende do porte da negociação e da liquidez disponível no pool. A MetaMask não influencia nem controla o impacto no preço."
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Impacto no preço"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "Aviso de impacto no preço"
   },
   "bridgeQuoteExpired": {
     "message": "O prazo da sua cotação esgotou."
@@ -1942,6 +1969,12 @@
   },
   "downArrow": {
     "message": "seta para baixo"
+  },
+  "downloadAppDescription": {
+    "message": "Leve a MetaMask com você para qualquer lugar com o aplicativo móvel. Além disso, ative o Face ID para ter acesso sempre, mesmo se esquecer a senha."
+  },
+  "downloadAppTitle": {
+    "message": "Leia o QR code e baixe o aplicativo"
   },
   "downloadGoogleChrome": {
     "message": "Baixar o Google Chrome"
@@ -4559,6 +4592,10 @@
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
   },
+  "pin": {
+    "message": "Fixar",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "Fixar ao topo"
   },
@@ -4851,6 +4888,10 @@
   },
   "removeSnapDescription": {
     "message": "Essa ação excluirá o snap, os dados dele e revogará as permissões concedidas."
+  },
+  "rename": {
+    "message": "Renomear",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "substituir"
@@ -5477,6 +5518,15 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Ativar esta opção fará com que a tela intersticial seja ignorada ao abrir links profundos (deep links) na MetaMask. Um link profundo é um link como https://link.metamask.io/home, que abre a MetaMask automaticamente. Esses links podem ser ocultados ou manipulados por terceiros. A tela intersticial existe para proteger você contra o acesso acidental a páginas dentro da MetaMask que possam exibir informações sensíveis, como suas contas, tokens, histórico, saldos ou configurações. Essa configuração se aplica apenas a links assinados pela própria MetaMask."
+  },
+  "slippage": {
+    "message": "Slippage"
+  },
+  "slippageAuto": {
+    "message": "Automático"
+  },
+  "slippageEditAriaLabel": {
+    "message": "Editar slippage"
   },
   "smartAccountAccept": {
     "message": "Usar conta inteligente"

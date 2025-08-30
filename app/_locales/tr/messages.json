@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Sorun devam ederse MetaMask'i yeniden başlatın.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "Yükleme her zamankinden daha uzun sürüyor.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Hata"
   },
@@ -322,6 +330,10 @@
   "addressMismatchPunycode": {
     "message": "Punycode sürümü: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "Adresler",
+    "description": "Multichain account menu item for linking to addresses page"
   },
   "advanced": {
     "message": "Gelişmiş"
@@ -892,6 +904,21 @@
   },
   "bridgeNetCost": {
     "message": "Net maliyet"
+  },
+  "bridgePriceImpact": {
+    "message": "Fiyat Etkisi"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "Fiyat etkisi, swap emrinizin varlığın piyasa fiyatını nasıl etkilediğini yansıtır. Gaz için yeterli para tutmazsanız kaynak token'inizin bir kısmı otomatik olarak ücretleri tahsis etmek için ayrılır, bu da swap yapılan tutarı düşürür. MetaMask fiyat etkisini etkilemez veya kontrol etmez."
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "Fiyat etkisi, swap emrinizin varlığın piyasa fiyatını nasıl etkilediğini yansıtır. İşlem boyutuna ve havuzda bulunan likiditeye bağlıdır. MetaMask fiyat etkisini etkilemez veya kontrol etmez."
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Fiyat Etkisi"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "Fiyat Etkisi Uyarısı"
   },
   "bridgeQuoteExpired": {
     "message": "Teklifiniz zaman aşımına uğradı."
@@ -1942,6 +1969,12 @@
   },
   "downArrow": {
     "message": "aşağı ok"
+  },
+  "downloadAppDescription": {
+    "message": "Mobil uygulama ile gittiğiniz her yere MetaMask'i yanınızda götürün. Ayrıca şifrenizi unutsanız bile her zaman erişiminizin olması için Face ID'yi açın."
+  },
+  "downloadAppTitle": {
+    "message": "QR kodunu tarayın ve uygulamayı indirin"
   },
   "downloadGoogleChrome": {
     "message": "Google Chrome'u indir"
@@ -4559,6 +4592,10 @@
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
   },
+  "pin": {
+    "message": "Pin",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "Yukarıya sabitle"
   },
@@ -4851,6 +4888,10 @@
   },
   "removeSnapDescription": {
     "message": "Bu eylem, snapi, verilerini siler ve verdiğin izinleri iptal eder."
+  },
+  "rename": {
+    "message": "Yeniden Adlandır",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "değiştir"
@@ -5477,6 +5518,15 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Bu seçenek etkinleştirildiğinde MetaMask'te derin bağlantıları açarken gösterilen geçiş ekranı atlanacaktır. \"Derin bağlantı\", MetaMask'in açılmasına sebep olan https://link.metamask.io/home gibi bir bağlantıdır; bu bağlantılar başkaları tarafından gizlenebilir. Geçiş ekranı, sizi MetaMask dahilinde hesaplarınızı, token'larınızı, geçmişinizi, bakiyelerinizi, ayarlarınızı ve hassas olma potansiyeli olan diğer bilgilerinizi gösterebilecek kazara açılan sayfalardan korumak amacıyla tasarlanmıştır. Bu ayar yalnızca MetaMask tarafından imzalanan bağlantılar için geçerlidir."
+  },
+  "slippage": {
+    "message": "Kayma"
+  },
+  "slippageAuto": {
+    "message": "Otomatik"
+  },
+  "slippageEditAriaLabel": {
+    "message": "Kaymayı düzenle"
   },
   "smartAccountAccept": {
     "message": "Akıllı hesap kullanın"
