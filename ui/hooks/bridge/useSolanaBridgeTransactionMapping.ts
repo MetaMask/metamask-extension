@@ -90,6 +90,7 @@ type MixedTransactionsData = {
 };
 
 /**
+ * @deprecated This hook is no longer used. Use txHistory from BridgeStatusController and MultichainTransactionsController data directly instead
  * Hook that takes a list of non-EVM transactions and enhances them with information
  * about related bridge operations. It identifies transactions that are part of a bridge,
  * adds details like destination chain and status, and includes transactions found
