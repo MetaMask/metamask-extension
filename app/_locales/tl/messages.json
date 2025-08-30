@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Muling ilunsad ang MetaMask kung magpatuloy ang problema.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "Masyadong matagal ang paglo-load kaysa sa karaniwan.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -322,6 +330,10 @@
   "addressMismatchPunycode": {
     "message": "Bersyon ng Punycode: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "Mga Address",
+    "description": "Multichain account menu item for linking to addresses page"
   },
   "advanced": {
     "message": "Makabago"
@@ -892,6 +904,21 @@
   },
   "bridgeNetCost": {
     "message": "Net na gastos"
+  },
+  "bridgePriceImpact": {
+    "message": "Impact ng Presyo"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "Makikita sa impact ng presyo kung paano naaapektuhan ng iyong order na pag-swap ang market price ng asset. Kung wala kang sapat na pondo para gas, ang bahagi ng iyong pinagmulan na token ay awtomatikong ilalaan para bayaran ang mga bayarin, na ibabawas sa halaga ng pag-swap. Walang impluwensiya o kontrol ang MetaMask sa impact ng presyo."
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "Makikita sa impact ng presyo kung paano naaapektuhan ng iyong order na pag-swap ang market price ng asset. Depende ito sa laki ng trade at available na liquidity na nasa pool. Walang impluwensiya o kontrol ang MetaMask sa impact ng presyo."
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Impact ng Presyo"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "Babala sa Impact ng Presyo"
   },
   "bridgeQuoteExpired": {
     "message": "Nag-time out ang quote mo."
@@ -1942,6 +1969,12 @@
   },
   "downArrow": {
     "message": "arrow pababa"
+  },
+  "downloadAppDescription": {
+    "message": "Dalhin ang MetaMask saan ka man magpunta gamit ang mobile app. At, i-on ang Face ID nang sa gayon lagi kang may access, kahit nakalimutan mo ang iyong password."
+  },
+  "downloadAppTitle": {
+    "message": "I-scan ang QR code at i-download ang app"
   },
   "downloadGoogleChrome": {
     "message": "I-download ang Google Chrome"
@@ -4559,6 +4592,10 @@
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
   },
+  "pin": {
+    "message": "I-pin",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "I-pin sa itaas"
   },
@@ -4851,6 +4888,10 @@
   },
   "removeSnapDescription": {
     "message": "Tatanggalin ng aksyon na ito ang snap, ang data nito at babawiin ang ibinigay mong mga pahintulot."
+  },
+  "rename": {
+    "message": "Palitan ang pangalan",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "palitan"
@@ -5477,6 +5518,15 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Lalaktawan ng pagpapagana sa opsyon na ito ang interstitial screen na ipinapakita kapag binubuksan ang mga deep link sa MetaMask. Ang \"deep link\" ay isang link gaya ng https://link.metamask.io/home na magbubukas sa MetaMask; ang mga link na ito ay maaaring guluhin ng iba. Ang interstitial screen ay idinisenyo para protektahan ka mula sa aksidenteng pagbubukas ng mga pahina sa loob ng MetaMask na maaaring magpakita ng iyong mga account, token, talaan, balanse, setting, o iba pang potensyal na sensitibong impormasyon. Ang setting na ito ay inilalapat lamang sa mga link na nilagdaan ng MetaMask."
+  },
+  "slippage": {
+    "message": "Slippage"
+  },
+  "slippageAuto": {
+    "message": "Auto"
+  },
+  "slippageEditAriaLabel": {
+    "message": "I-edit ang slippage"
   },
   "smartAccountAccept": {
     "message": "Gumamit ng smart account"
