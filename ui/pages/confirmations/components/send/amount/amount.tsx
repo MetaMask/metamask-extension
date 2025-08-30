@@ -1,56 +1,154 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import {
-  Button,
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonLink,
+  IconName,
   Text,
   TextField,
 } from '../../../../../components/component-library';
+import {
+  BlockSize,
+  Display,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useBalance } from '../../../hooks/send/useBalance';
 import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversions';
-import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
+import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
 import { useSendContext } from '../../../context/send';
-import { Header } from '../header';
+import { useSendType } from '../../../hooks/send/useSendType';
 
 export const Amount = () => {
-  const [amount, setAmount] = useState('');
-  const { amountError } = useAmountValidation();
+  const t = useI18nContext();
+  const { asset, updateValue, value } = useSendContext();
+  const [amount, setAmount] = useState(value ?? '');
   const { balance } = useBalance();
-  const [faitMode, setFiatMode] = useState(false);
-  const { getNativeValue } = useCurrencyConversions();
-  const { goToSendToPage, goToPreviousPage } = useNavigateSendPage();
-  const { updateValue } = useSendContext();
+  const [fiatMode, setFiatMode] = useState(false);
+  const { getFiatDisplayValue, getNativeValue, getNativeDisplayValue } =
+    useCurrencyConversions();
+  const { getMaxAmount } = useMaxAmount();
+  const { isNonEvmNativeSendType } = useSendType();
+  const {
+    setAmountInputMethodManual,
+    setAmountInputMethodPasted,
+    setAmountInputMethodPressedMax,
+    setAmountInputTypeFiat,
+    setAmountInputTypeToken,
+  } = useAmountSelectionMetrics();
+  const alternateDisplayValue = useMemo(
+    () =>
+      fiatMode ? getNativeDisplayValue(amount) : getFiatDisplayValue(amount),
+    [amount, fiatMode, getFiatDisplayValue, getNativeDisplayValue],
+  );
+  const { amountError } = useAmountValidation();
 
   const onChange = useCallback(
     (event) => {
       const newValue = event.target.value;
-      updateValue(faitMode ? getNativeValue(newValue) : newValue);
+      updateValue(fiatMode ? getNativeValue(newValue) : newValue);
       setAmount(newValue);
     },
-    [faitMode, getNativeValue, setAmount, updateValue],
+    [fiatMode, getNativeValue, setAmount, updateValue],
   );
 
   const toggleFiatMode = useCallback(() => {
+    const newFiatMode = !fiatMode;
     setAmount('');
-    setFiatMode(!faitMode);
-  }, [faitMode, setAmount, setFiatMode]);
+    setFiatMode(newFiatMode);
+    if (newFiatMode) {
+      setAmountInputTypeFiat();
+    } else {
+      setAmountInputTypeToken();
+    }
+  }, [
+    fiatMode,
+    setAmount,
+    setAmountInputTypeFiat,
+    setAmountInputTypeToken,
+    setFiatMode,
+  ]);
+
+  const updateToMax = useCallback(() => {
+    const maxValue = getMaxAmount() ?? '0';
+    updateValue(fiatMode ? getNativeValue(maxValue) : maxValue);
+    setAmount(maxValue);
+    setAmountInputMethodPressedMax();
+  }, [
+    fiatMode,
+    getMaxAmount,
+    getNativeValue,
+    setAmount,
+    setAmountInputMethodPressedMax,
+    updateValue,
+  ]);
+
+  const isERC1155 = asset?.standard === ERC1155;
+  const isERC721 = asset?.standard === ERC721;
+
+  if (isERC721) {
+    return null;
+  }
 
   return (
-    <div className="send__wrapper">
-      <div className="send__container">
-        <div className="send__content">
-          <Header />
-          <p>AMOUNT</p>
-          <TextField value={amount} onChange={onChange} />
-          <Text>Balance: {balance}</Text>
-          <Text>Error: {amountError}</Text>
-          <Button onClick={toggleFiatMode}>
-            {faitMode ? 'Native Mode' : 'Fiat Mode'}
-          </Button>
-          <Button onClick={goToPreviousPage}>Previous</Button>
-          <Button onClick={goToSendToPage}>Continue</Button>
-        </div>
-      </div>
-    </div>
+    <Box marginTop={4}>
+      <Text variant={TextVariant.bodyMd}>{t('amount')}</Text>
+      <TextField
+        error={Boolean(amountError)}
+        onChange={onChange}
+        onPaste={setAmountInputMethodPasted}
+        onInput={setAmountInputMethodManual}
+        value={amount}
+        endAccessory={
+          <div>
+            {!isERC1155 && (
+              <ButtonIcon
+                ariaLabel="toggle fiat mode"
+                iconName={IconName.SwapVertical}
+                onClick={toggleFiatMode}
+                size={ButtonIconSize.Sm}
+                data-testid="toggle-fiat-mode"
+              />
+            )}
+          </div>
+        }
+        width={BlockSize.Full}
+      />
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.spaceBetween}
+        marginTop={1}
+      >
+        <Text
+          color={
+            amountError ? TextColor.errorDefault : TextColor.textAlternative
+          }
+          variant={TextVariant.bodySm}
+        >
+          {amountError || `~${alternateDisplayValue}`}
+        </Text>
+        <Box display={Display.Flex}>
+          <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
+            {balance} {asset?.symbol} {t('available')}
+          </Text>
+          {!isERC1155 && !isNonEvmNativeSendType && (
+            <ButtonLink
+              marginLeft={1}
+              onClick={updateToMax}
+              variant={TextVariant.bodySm}
+            >
+              {t('max')}
+            </ButtonLink>
+          )}
+        </Box>
+      </Box>
+    </Box>
   );
 };

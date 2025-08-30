@@ -30,23 +30,13 @@ describe('SendInner', () => {
     expect(getByText('asset')).toBeInTheDocument();
   });
 
-  it('render amount page when current page in path is amount', () => {
+  it('render AmountRecipient page when current page in path is amount-recipient', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      currentPage: SendPages.AMOUNT,
+      currentPage: SendPages.AMOUNTRECIPIENT,
       updateCurrentPage: jest.fn(),
     } as unknown as SendContext.SendContextType);
 
     const { getByText } = render();
-    expect(getByText('AMOUNT')).toBeInTheDocument();
-  });
-
-  it('render recipient page when current page in path is recipient', () => {
-    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      currentPage: SendPages.RECIPIENT,
-      updateCurrentPage: jest.fn(),
-    } as unknown as SendContext.SendContextType);
-
-    const { getByText } = render();
-    expect(getByText('TO')).toBeInTheDocument();
+    expect(getByText('Amount')).toBeInTheDocument();
   });
 });

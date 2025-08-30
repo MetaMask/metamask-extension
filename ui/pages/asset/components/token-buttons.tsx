@@ -7,10 +7,7 @@ import { CaipAssetType } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
-import {
-  SEND_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
@@ -64,6 +61,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
 import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
+import { navigateToSendRoute } from '../../confirmations/utils/send';
 
 const TokenButtons = ({
   token,
@@ -195,14 +193,7 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      if (process.env.SEND_REDESIGN_ENABLED) {
-        const queryParams = new URLSearchParams();
-        queryParams.append('chainId', token.chainId);
-        queryParams.append('address', token.address);
-        history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
-      } else {
-        history.push(SEND_ROUTE);
-      }
+      navigateToSendRoute(history, { address: token.address });
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

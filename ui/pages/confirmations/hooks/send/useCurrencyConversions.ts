@@ -2,7 +2,6 @@ import { CaipAssetType, Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { isNativeAddress } from '@metamask/bridge-controller';
-import { toHex } from '@metamask/controller-utils';
 import { useCallback, useMemo } from 'react';
 
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
@@ -14,42 +13,69 @@ import {
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { getMultichainCurrentCurrency } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { Asset } from '../../types/send';
+import { convertedCurrency, formatToFixedDecimals } from '../../utils/send';
 import { useSendContext } from '../../context/send';
-import { convertedCurrency } from '../../utils/send';
 
 type ConversionArgs = {
+  asset?: Asset;
   amount?: string;
   conversionRate: number;
+  currentCurrency?: string;
 };
 
 const getFiatValueFn = ({ amount, conversionRate }: ConversionArgs) => {
   if (!amount) {
     return '0.00';
   }
-  return convertedCurrency(amount, conversionRate);
+  return convertedCurrency(amount, conversionRate) ?? '0.00';
+};
+
+const getFiatDisplayValueFn = ({
+  amount,
+  conversionRate,
+  currentCurrency,
+}: ConversionArgs) => {
+  const amt = amount
+    ? formatToFixedDecimals(getFiatValueFn({ amount, conversionRate }), 2)
+    : '0.00';
+  return `${getCurrencySymbol(currentCurrency)} ${amt}`;
 };
 
 const getNativeValueFn = ({ amount, conversionRate }: ConversionArgs) => {
   if (!amount) {
     return '0';
   }
-  return convertedCurrency(amount, 1 / conversionRate);
+  return convertedCurrency(amount, 1 / conversionRate) ?? '0';
+};
+
+const getNativeDisplayValueFn = ({
+  asset,
+  amount,
+  conversionRate,
+}: ConversionArgs) => {
+  return `${asset?.symbol} ${formatToFixedDecimals(
+    getNativeValueFn({
+      amount,
+      conversionRate,
+    }),
+    5,
+  )}`;
 };
 
 export const useCurrencyConversions = () => {
-  const { asset, fromAccount } = useSendContext();
+  const { asset, chainId, fromAccount } = useSendContext();
   const currentCurrency = useMultichainSelector(
     getMultichainCurrentCurrency,
     fromAccount,
   );
   const currencyRates = useSelector(getCurrencyRates);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-
   const conversionRateEvm = useMemo((): number => {
-    if (!asset?.address || !asset?.chainId || !isEvmAddress(asset?.address)) {
+    if (!asset?.address || !chainId || !isEvmAddress(asset?.address)) {
       return 0;
     }
-    const { nativeCurrency } = allNetworks[toHex(asset?.chainId)];
+    const { nativeCurrency } = allNetworks[chainId as Hex];
     return currencyRates[nativeCurrency]?.conversionRate;
   }, [allNetworks, asset, currencyRates]);
 
@@ -94,6 +120,16 @@ export const useCurrencyConversions = () => {
     [conversionRate],
   );
 
+  const getFiatDisplayValue = useCallback(
+    (amount: string) =>
+      getFiatDisplayValueFn({
+        amount,
+        conversionRate,
+        currentCurrency,
+      }),
+    [conversionRate, currentCurrency],
+  );
+
   const getNativeValue = useCallback(
     (amount: string) =>
       getNativeValueFn({
@@ -103,9 +139,21 @@ export const useCurrencyConversions = () => {
     [conversionRate],
   );
 
+  const getNativeDisplayValue = useCallback(
+    (amount: string) =>
+      getNativeDisplayValueFn({
+        asset,
+        amount,
+        conversionRate,
+      }),
+    [asset, conversionRate],
+  );
+
   return {
     fiatCurrencySymbol: getCurrencySymbol(currentCurrency),
     getFiatValue,
+    getFiatDisplayValue,
     getNativeValue,
+    getNativeDisplayValue,
   };
 };
