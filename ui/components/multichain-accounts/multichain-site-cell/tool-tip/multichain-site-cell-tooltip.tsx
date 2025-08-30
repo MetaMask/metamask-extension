@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { Tooltip } from 'react-tippy';
 import {
   AlignItems,
-  BorderColor,
   BorderStyle,
   Display,
   FlexDirection,
@@ -112,7 +111,10 @@ const TooltipContent = React.memo<TooltipContentProps>(
               </Text>
             </Box>
           ))}
-          {(hasMoreAccounts || hasMoreNetworks) && (
+          {((accountGroups &&
+            Array.isArray(accountGroups) &&
+            hasMoreAccounts) ||
+            (networks && Array.isArray(networks) && hasMoreNetworks)) && (
             <Box
               display={Display.Flex}
               alignItems={AlignItems.center}
@@ -124,9 +126,11 @@ const TooltipContent = React.memo<TooltipContentProps>(
                 variant={TextVariant.bodyMdMedium}
                 data-testid="accounts-list-item-plus-more-tooltip"
               >
-                {hasMoreAccounts
-                  ? t('moreAccounts', [accountGroups!.length - TOOLTIP_LIMIT])
-                  : t('moreNetworks', [networks!.length - TOOLTIP_LIMIT])}
+                {hasMoreAccounts && accountGroups
+                  ? t('moreAccounts', [accountGroups.length - TOOLTIP_LIMIT])
+                  : networks
+                    ? t('moreNetworks', [networks.length - TOOLTIP_LIMIT])
+                    : ''}
               </Text>
             </Box>
           )}
