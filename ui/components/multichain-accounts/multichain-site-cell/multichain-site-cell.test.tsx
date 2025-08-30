@@ -235,6 +235,7 @@ const renderComponent = (props = {}, stateOverrides = {}) => {
   return render(
     <Provider store={store}>
       <MultichainSiteCell
+        showEditAccounts={jest.fn()}
         {...defaultProps}
         {...props}
         supportedAccountGroups={mockAccountGroups}
