@@ -439,7 +439,6 @@ const CoinButtons = ({
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('buyButton', contents)
           }
-          round={!displayNewIconButtons}
         />
       }
       <IconButton
@@ -471,7 +470,6 @@ const CoinButtons = ({
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('swapButton', contents)
         }
-        round={!displayNewIconButtons}
       />
       {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
       {isUnifiedUIEnabled ||
@@ -507,7 +505,6 @@ const CoinButtons = ({
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('bridgeButton', contents)
           }
-          round={!displayNewIconButtons}
         />
       )}
       <IconButton
@@ -535,7 +532,6 @@ const CoinButtons = ({
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('sendButton', contents)
         }
-        round={!displayNewIconButtons}
       />
       {
         <>
@@ -566,7 +562,6 @@ const CoinButtons = ({
             label={t('receive')}
             width={BlockSize.Full}
             onClick={handleReceiveOnClick}
-            round={!displayNewIconButtons}
           />
         </>
       }
