@@ -125,7 +125,24 @@ describe('AccountGroupBalanceChange', () => {
     expect(valueEl).toBeInTheDocument();
     expect(pctEl).toBeInTheDocument();
 
-    expect(valueEl).toHaveTextContent(/\+\$?100\.00/u);
+    expect(valueEl).toHaveTextContent(/\+\$?100(?:\.00)?(?:\s|$)/u);
     expect(pctEl).toHaveTextContent(/\(\+100\.00%\)/u);
+  });
+
+  it('clamps tiny percent values to 0.01% with sign', () => {
+    mockPrivacyMode = false;
+    mockAggregatedChange = {
+      period: '1d',
+      currentTotalInUserCurrency: 100,
+      previousTotalInUserCurrency: 100,
+      amountChangeInUserCurrency: 0.01,
+      percentChange: 0.005,
+      userCurrency: 'usd',
+    };
+
+    renderWithProvider(<AccountGroupBalanceChange period="1d" />);
+
+    const pctEl = screen.getByTestId('account-group-balance-change-percentage');
+    expect(pctEl).toHaveTextContent(/\(\+0\.01%\)/u);
   });
 });

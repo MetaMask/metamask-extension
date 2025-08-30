@@ -12,7 +12,6 @@ import {
   getPreferences,
 } from '../../../../selectors';
 import { selectBalanceChangeBySelectedAccountGroup } from '../../../../selectors/assets';
-import { formatWithThreshold } from '../util/formatWithThreshold';
 import { Box, SensitiveText } from '../../../component-library';
 
 // Simple inline implementations to avoid restricted imports
@@ -86,18 +85,16 @@ export const AccountGroupBalanceChange: React.FC<
 
   const percentNumber =
     typeof portfolioPercent === 'number' ? portfolioPercent : 0;
-  const percentSign = percentNumber >= 0 ? '+' : '-';
-  const localizedPercent = formatWithThreshold(
-    Math.abs(percentNumber) / 100,
-    0.0001,
-    locale,
-    {
-      style: 'percent',
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-    },
-  );
-  const formattedPercentWithParens = `(${percentSign}${localizedPercent})`;
+  const signPrefix = percentNumber >= 0 ? '+' : '-';
+  const absPercent = Math.abs(percentNumber);
+  const displayAbsPercent =
+    absPercent !== 0 && absPercent < 0.01 ? 0.01 : absPercent;
+  const localizedPercent = Intl.NumberFormat(locale, {
+    style: 'percent',
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  }).format(displayAbsPercent / 100);
+  const formattedPercentWithParens = `(${signPrefix}${localizedPercent})`;
 
   let formattedAmount = '';
   if (
@@ -105,12 +102,21 @@ export const AccountGroupBalanceChange: React.FC<
     isValidAmount(portfolioChange.amountChangeInUserCurrency)
   ) {
     const amt = Number(portfolioChange.amountChangeInUserCurrency);
-    const sign = amt >= 0 ? '+' : '-';
-    const localizedAmount = formatWithThreshold(Math.abs(amt), 0.01, locale, {
-      style: 'currency',
-      currency: fiatCurrency,
-    });
-    formattedAmount = `${sign}${localizedAmount} `;
+    const signPrefixAmount = amt >= 0 ? '+' : '';
+    try {
+      formattedAmount = `${signPrefixAmount}${Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: fiatCurrency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(amt)} `;
+    } catch {
+      formattedAmount = `${signPrefixAmount}${Intl.NumberFormat(locale, {
+        style: 'decimal',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(amt)} `;
+    }
   }
 
   return (
