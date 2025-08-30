@@ -2,10 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import nock from 'nock';
-import { MemoryRouter } from 'react-router-dom';
 
 import { setBackgroundConnection } from '../../store/background-connection';
-import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
+import { MOCKS, CONSTANTS } from '../../../test/jest';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
@@ -92,12 +92,9 @@ describe('Bridge', () => {
     const store = configureMockStore(middleware)(bridgeMockStore);
 
     const { container, getByText } = renderWithProvider(
-      <MemoryRouter
-        initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
-      >
-        <CrossChainSwap />
-      </MemoryRouter>,
+      <CrossChainSwap />,
       store,
+      CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
     );
 
     expect(getByText('Bridge')).toBeInTheDocument();
