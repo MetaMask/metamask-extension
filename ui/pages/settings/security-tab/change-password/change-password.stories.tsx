@@ -2,7 +2,7 @@ import React from 'react';
 import ChangePassword from './change-password';
 
 export default {
-  title: 'Pages/SettingsPage/ChangePassword',
+  title: 'Pages/Settings/SecurityTab/ChangePassword',
 };
 
 export const DefaultStory = () => <ChangePassword />;

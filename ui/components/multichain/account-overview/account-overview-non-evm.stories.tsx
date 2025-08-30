@@ -4,7 +4,7 @@ import { AccountOverviewCommonProps } from './common';
 import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 
 export default {
-  title: 'Components/Multichain/AccountOverviewNonEvm',
+  title: 'Components/Multichain/AccountOverview/AccountOverviewNonEvm',
   component: AccountOverviewNonEvm,
   args: {
     accountType: BtcAccountType.P2wpkh,

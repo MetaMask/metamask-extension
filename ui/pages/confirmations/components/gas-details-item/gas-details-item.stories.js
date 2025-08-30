@@ -2,7 +2,7 @@ import React from 'react';
 import GasDetailsItem from '.';
 
 export default {
-  title: 'Confirmations/Components/GasDetailsItem',
+  title: 'Pages/Confirmations/Components/GasDetailsItem',
 };
 
 export const DefaultStory = () => <GasDetailsItem />;

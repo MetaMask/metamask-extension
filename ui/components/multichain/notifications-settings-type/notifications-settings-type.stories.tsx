@@ -6,8 +6,7 @@ import {
 } from './notifications-settings-type';
 
 export default {
-  title:
-    'Components/Multichain/Notification/NotificationsSettingsBox/NotificationsSettingsType',
+  title: 'Components/Multichain/NotificationsSettingsType',
   component: NotificationsSettingsType,
 } as Meta;
 

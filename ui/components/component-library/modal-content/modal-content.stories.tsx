@@ -169,7 +169,8 @@ export const Size: StoryFn<typeof ModalContent> = (args) => {
                 {currentSize === ModalContentSizeStoryOption.ClassName ? (
                   <>
                     This ModalContent has size set using modalDialogProps and
-                    adding a className setting a max width (max-width: 800px){' '}
+                    adding a className setting a max width (max-width:
+                    800px){' '}
                   </>
                 ) : (
                   <>This ModalContent is using size: {currentSize}</>

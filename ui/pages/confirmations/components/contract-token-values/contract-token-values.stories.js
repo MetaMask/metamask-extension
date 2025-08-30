@@ -2,7 +2,7 @@ import React from 'react';
 import ContractTokenValues from './contract-token-values';
 
 export default {
-  title: 'Components/UI/ContractTokenValues',
+  title: 'Pages/Confirmations/Components/ContractTokenValues',
 
   argTypes: {
     tokenName: {

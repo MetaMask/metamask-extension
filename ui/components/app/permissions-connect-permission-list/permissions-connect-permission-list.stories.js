@@ -3,7 +3,7 @@ import React from 'react';
 import PermissionsConnectList from '.';
 
 export default {
-  title: 'Components/App/PermissionsConnectList',
+  title: 'Components/App/PermissionsConnectPermissionList',
 
   component: PermissionsConnectList,
   argTypes: {

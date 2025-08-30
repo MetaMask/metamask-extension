@@ -87,7 +87,7 @@ function createTransactionMeta(
 }
 
 const meta: Meta<typeof SimulationDetails> = {
-  title: 'Components/App/SimulationDetails',
+  title: 'Pages/Confirmations/Components/SimulationDetails',
   component: SimulationDetails,
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 };

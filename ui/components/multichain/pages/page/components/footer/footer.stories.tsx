@@ -4,7 +4,7 @@ import { Display } from '../../../../../../helpers/constants/design-system';
 import { Footer } from '.';
 
 const story = {
-  title: 'Components/Multichain/Page/Footer',
+  title: 'Components/Multichain/Pages/Page/Components/Footer',
   component: Footer,
   argTypes: {},
   args: {},

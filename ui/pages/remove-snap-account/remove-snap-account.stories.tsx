@@ -8,7 +8,7 @@ const store = configureStore(testData);
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  title: 'Components/UI/RemoveSnapAccount', // title should follow the folder structure location of the component. Don't use spaces.
+  title: 'Pages/RemoveSnapAccount', // title should follow the folder structure location of the component. Don't use spaces.
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 

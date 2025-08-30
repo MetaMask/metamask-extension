@@ -9,7 +9,7 @@ import { Box } from '../../../components/component-library';
 import BridgeStepList from './bridge-step-list';
 
 export default {
-  title: 'pages/bridge/transaction-details/BridgeStepList',
+  title: 'Pages/Bridge/TransactionDetails/BridgeStepList',
   component: BridgeStepList,
 } as Meta<typeof BridgeStepList>;
 

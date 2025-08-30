@@ -4,7 +4,7 @@ import { ConfirmContextProvider } from '../../../context/confirm';
 import ScrollToBottom from './scroll-to-bottom';
 
 const Story = {
-  title: 'Components/App/Confirm/ScrollToBottom',
+  title: 'Pages/Confirmations/Components/Confirm/ScrollToBottom',
   component: ScrollToBottom,
   decorators: [
     (story: any) => (

@@ -5,7 +5,7 @@ import { BridgeTransactionSettingsModal } from './bridge-transaction-settings-mo
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 
 const storybook = {
-  title: 'Pages/Bridge/TransactionSettingsModal',
+  title: 'Pages/Bridge/Prepare/BridgeTransactionSettingsModal',
   component: BridgeTransactionSettingsModal,
 };
 

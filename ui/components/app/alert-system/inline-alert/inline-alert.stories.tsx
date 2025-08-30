@@ -4,13 +4,14 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import { Meta, StoryFn } from '@storybook/react';
 
 export default {
-  title: 'Confirmations/Components/Alerts/InlineAlert',
+  title: 'Components/App/AlertSystem/InlineAlert',
   component: InlineAlert,
   argTypes: {
     severity: {
       control: 'select',
       options: [Severity.Info, Severity.Warning, Severity.Danger],
-      description: 'The severity of the alert. Options: Severity.Warning, Severity.Info and Severity.Danger.',
+      description:
+        'The severity of the alert. Options: Severity.Warning, Severity.Info and Severity.Danger.',
       defaultValue: Severity.Info,
     },
     onClick: {

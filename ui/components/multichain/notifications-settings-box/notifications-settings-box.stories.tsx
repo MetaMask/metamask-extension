@@ -10,7 +10,7 @@ import { NotificationsSettingsType } from '../notifications-settings-type';
 import { NotificationsSettingsAccount } from '../notifications-settings-account';
 
 export default {
-  title: 'Components/Multichain/Notification/NotificationsSettingsBox',
+  title: 'Components/Multichain/NotificationsSettingsBox',
   component: NotificationsSettingsBox,
 } as Meta;
 

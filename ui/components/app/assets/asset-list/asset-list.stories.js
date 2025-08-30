@@ -2,7 +2,7 @@ import React from 'react';
 import AssetList from '.';
 
 export default {
-  title: 'Components/App/AssetList',
+  title: 'Components/App/Assets/AssetList',
   argTypes: {
     onClickAsset: {
       control: 'onClickAsset',

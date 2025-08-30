@@ -27,7 +27,7 @@ export default {
     ),
   ],
 
-  title: 'Pages/SettingsPage',
+  title: 'Pages/Settings',
 };
 
 const ROUTES_TO_I18N_KEYS = {

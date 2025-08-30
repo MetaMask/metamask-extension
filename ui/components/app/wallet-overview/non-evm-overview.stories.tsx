@@ -2,7 +2,7 @@ import React from 'react';
 import NonEvmOverview from './non-evm-overview';
 
 export default {
-  title: 'Components/App/WalletOverview/BtcOverview',
+  title: 'Components/App/WalletOverview/NonEvmOverview',
   component: NonEvmOverview,
   parameters: {
     docs: {

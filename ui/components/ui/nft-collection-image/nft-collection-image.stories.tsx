@@ -13,7 +13,10 @@ export default {
 
 const Template: Story = (args) => {
   // Ensure tokenAddress is a string before passing it to the component
-  const tokenAddress = typeof args.tokenAddress === 'string' ? args.tokenAddress : '0x0000000000000000000000000000000000000000';
+  const tokenAddress =
+    typeof args.tokenAddress === 'string'
+      ? args.tokenAddress
+      : '0x0000000000000000000000000000000000000000';
   return <NftCollectionImage {...args} tokenAddress={tokenAddress} />;
 };
 

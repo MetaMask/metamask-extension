@@ -5,7 +5,7 @@ import configureStore from '../../../../../store/store';
 import { PercentageAndAmountChange } from './percentage-and-amount-change';
 
 export default {
-  title: 'Components/App/PercentageAndAmountChange',
+  title: 'Components/Multichain/TokenListItem/Price/PercentageAndAmountChange',
   component: PercentageAndAmountChange,
   argTypes: {
     value: {

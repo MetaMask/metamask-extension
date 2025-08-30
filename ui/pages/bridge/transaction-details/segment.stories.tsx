@@ -10,7 +10,7 @@ import { Box } from '../../../components/component-library';
 import { StatusTypes } from '@metamask/bridge-controller';
 
 export default {
-  title: 'pages/bridge/transaction-details/Segment',
+  title: 'Pages/Bridge/TransactionDetails/Segment',
   component: Segment,
 } as Meta<typeof Segment>;
 

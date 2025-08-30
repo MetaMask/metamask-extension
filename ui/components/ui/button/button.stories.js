@@ -9,7 +9,7 @@ import README from './README.mdx';
 import Button from '.';
 
 export default {
-  title: 'Components/UI/Button',
+  title: 'Components/UI/Button (deprecated)',
   component: Button,
   parameters: {
     docs: {

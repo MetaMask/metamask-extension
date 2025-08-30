@@ -3,7 +3,7 @@ import { ConfirmInfoRow } from './row';
 import { ConfirmInfoRowTextTokenUnits } from './text-token-units';
 
 export default {
-  title: 'Components/App/Confirm/InfoRowTextToken',
+  title: 'Components/App/Confirm/Info/Row/ConfirmInfoRowTextTokenUnits',
   component: ConfirmInfoRowTextTokenUnits,
   decorators: [
     (story) => <ConfirmInfoRow label="Amount">{story()}</ConfirmInfoRow>,
@@ -22,6 +22,6 @@ export default {
   },
 };
 
-export const DefaultStory = (args: { value: string, decimals: number }) =>
-  <ConfirmInfoRowTextTokenUnits {...args} />;
-
+export const DefaultStory = (args: { value: string; decimals: number }) => (
+  <ConfirmInfoRowTextTokenUnits {...args} />
+);

@@ -11,7 +11,7 @@ import ConfirmTitle from './title';
 const store = configureStore(getMockPersonalSignConfirmState());
 
 const Story = {
-  title: 'Components/App/Confirm/Title',
+  title: 'Pages/Confirmations/Components/Confirm/Title',
   component: ConfirmTitle,
   decorators: [
     (story: () => any) => (

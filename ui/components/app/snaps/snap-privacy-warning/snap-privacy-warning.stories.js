@@ -3,7 +3,7 @@ import React from 'react';
 import SnapPrivacyWarning from '.';
 
 export default {
-  title: 'Components/App/snaps/SnapPrivacyWarning',
+  title: 'Components/App/Snaps/SnapPrivacyWarning',
   component: SnapPrivacyWarning,
   argTypes: {
     onAccepted: {
