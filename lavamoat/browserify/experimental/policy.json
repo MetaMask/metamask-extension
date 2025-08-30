@@ -929,6 +929,7 @@
         "lodash": true,
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "single-call-balance-checker-abi": true,
+        "reselect": true,
         "uuid": true
       }
     },
