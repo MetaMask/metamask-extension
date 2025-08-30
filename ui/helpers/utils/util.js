@@ -885,8 +885,7 @@ export const transformOriginToTitle = (rawOrigin) => {
       return url.hostname;
     }
 
-    const parts = url.hostname.split('.');
-    return parts.slice(-2).join('.');
+    return url.hostname;
   } catch (e) {
     return 'Unknown Origin';
   }
