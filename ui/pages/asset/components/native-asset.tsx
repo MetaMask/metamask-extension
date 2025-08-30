@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { Hex } from '@metamask/utils';
 import {
-  getRpcPrefsForCurrentProvider,
+  getBlockExplorerUrlByChainId,
   getSelectedInternalAccount,
   getNativeCurrencyForChain,
   getSelectedAccount,
@@ -30,7 +30,9 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const image = getNativeCurrencyForChain(chainId);
   const { type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const blockExplorerUrl = useSelector((state) =>
+    getBlockExplorerUrlByChainId(state, chainId),
+  );
 
   const selectedAccount = useSelector(getSelectedAccount);
   const multichainNetworkForSelectedAccount = useMultichainSelector(
@@ -44,7 +46,14 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   );
 
   const accountLink = isEvm
-    ? getAccountLink(address, chainId, rpcPrefs)
+    ? getAccountLink(
+        address,
+        chainId,
+        {
+          blockExplorerUrl: blockExplorerUrl ?? undefined,
+        },
+        undefined,
+      )
     : addressLink;
   const trackEvent = useContext(MetaMetricsContext);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
