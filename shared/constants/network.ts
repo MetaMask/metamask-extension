@@ -349,7 +349,12 @@ export const OMNI_DISPLAY_NAME = 'Omni';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
 export const FRAX_DISPLAY_NAME = 'Fraxtal';
 
-export const infuraProjectId = process.env.INFURA_PROJECT_ID;
+export const infuraProjectId =
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore: yarn test:api-specs-multichain complains "Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature"
+  globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS ??
+  process.env.INFURA_PROJECT_ID;
+
 export const getRpcUrl = ({
   network,
   excludeProjectId = false,
