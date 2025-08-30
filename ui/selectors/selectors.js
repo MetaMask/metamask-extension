@@ -128,6 +128,7 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../shared/lib/accounts';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -358,6 +359,23 @@ export function isHardwareWallet(state) {
 export function accountSupportsSmartTx(state) {
   const accountType = getAccountType(state);
   return Boolean(accountType !== 'snap');
+}
+
+/**
+ * Checks if the account supports cancel or speed up, which is not supported
+ * by the institutional wallet snap until proper support is added.
+ * TODO: support this properly: https://github.com/MetaMask/metamask-extension/issues/35202
+ *
+ * @param {object} state
+ * @returns {boolean}
+ */
+export function accountSupportsCancelSpeedup(state) {
+  const accountType = getAccountType(state);
+  if (accountType !== 'snap') {
+    return true;
+  }
+  const selectedAccount = getSelectedInternalAccount(state);
+  return selectedAccount.metadata?.snap?.id !== INSTITUTIONAL_WALLET_SNAP_ID;
 }
 
 /**
