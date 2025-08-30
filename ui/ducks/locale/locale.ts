@@ -72,7 +72,7 @@ type AppState = {
  * @returns The user's selected locale
  */
 export const getCurrentLocale = (state: AppState): string | undefined =>
-  state.localeMessages.currentLocale;
+  state.localeMessages?.currentLocale;
 
 /**
  * This selector returns a BCP 47 Language Tag for use with the Intl API.
@@ -106,3 +106,47 @@ export const getCurrentLocaleMessages = (
 export const getEnLocaleMessages = (
   state: AppState,
 ): Record<string, string> | undefined => state.localeMessages.en;
+
+function normalizeLocale(locale: string | undefined): string | undefined {
+  if (!locale) {
+    return undefined;
+  }
+
+  return locale.replace(/_/gu, '-').replace(/@posix$/u, '');
+}
+
+function getBrowserLocale(): string | undefined {
+  if (typeof navigator === 'undefined') {
+    return undefined;
+  }
+
+  return normalizeLocale(
+    Array.isArray(navigator.languages)
+      ? navigator.languages[0]
+      : navigator.language,
+  );
+}
+
+/**
+ * Reconciles the user's language setting with the browser's locale setting
+ */
+export const getResolvedLocale = createDeepEqualSelector(
+  getCurrentLocale,
+  (stored): string => {
+    if (!stored) {
+      return Intl.getCanonicalLocales(FALLBACK_LOCALE)[0];
+    }
+
+    const primary = getBrowserLocale();
+
+    if (primary?.toLowerCase().startsWith(`${stored.toLowerCase()}-`)) {
+      return (
+        normalizeLocale(primary) || Intl.getCanonicalLocales(FALLBACK_LOCALE)[0]
+      );
+    }
+
+    return (
+      normalizeLocale(stored) || Intl.getCanonicalLocales(FALLBACK_LOCALE)[0]
+    );
+  },
+);

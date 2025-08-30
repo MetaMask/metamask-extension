@@ -16,7 +16,9 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/se
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 jest.mock('react-redux', () => ({
-  useSelector: jest.fn((selector) => selector()),
+  useSelector: jest.fn((selector) =>
+    typeof selector === 'function' ? selector() : undefined,
+  ),
 }));
 
 const mockUseGetFormattedTokensPerChain = jest.fn().mockReturnValue({

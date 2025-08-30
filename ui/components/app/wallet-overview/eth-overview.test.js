@@ -35,6 +35,7 @@ jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
 
 jest.mock('../../../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(),
+  getResolvedLocale: () => 'en-US',
 }));
 
 jest.mock('../../../store/actions', () => ({

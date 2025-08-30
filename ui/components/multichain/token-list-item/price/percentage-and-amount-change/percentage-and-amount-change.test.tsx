@@ -17,7 +17,9 @@ import {
 import { PercentageAndAmountChange } from './percentage-and-amount-change';
 
 jest.mock('react-redux', () => ({
-  useSelector: jest.fn((selector) => selector()),
+  useSelector: jest.fn((selector) =>
+    typeof selector === 'function' ? selector() : undefined,
+  ),
 }));
 
 jest.mock('../../../../../ducks/locale/locale', () => ({

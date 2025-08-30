@@ -7,6 +7,8 @@ import { Provider } from 'react-redux';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import { I18nProvider } from '../../../../.storybook/i18n';
+import * as allLocales from '../../../../.storybook/locales';
 import TransactionListItem from '.';
 
 /**
@@ -232,7 +234,13 @@ BridgeSuccess.storyName = 'bridgeSuccess';
 BridgeSuccess.decorators = [
   (Story) => (
     <Provider store={configureBridgeStore('COMPLETE')}>
-      <Story />
+      <I18nProvider
+        currentLocale="en"
+        current={allLocales.en}
+        en={allLocales.en}
+      >
+        <Story />
+      </I18nProvider>
     </Provider>
   ),
 ];
@@ -277,7 +285,13 @@ BridgePending.decorators = [
         }),
       )}
     >
-      <Story />
+      <I18nProvider
+        currentLocale="en"
+        current={allLocales.en}
+        en={allLocales.en}
+      >
+        <Story />
+      </I18nProvider>
     </Provider>
   ),
 ];
@@ -291,7 +305,13 @@ BridgeFailed.storyName = 'bridgeFailed';
 BridgeFailed.decorators = [
   (Story) => (
     <Provider store={configureBridgeStore('FAILED')}>
-      <Story />
+      <I18nProvider
+        currentLocale="en"
+        current={allLocales.en}
+        en={allLocales.en}
+      >
+        <Story />
+      </I18nProvider>
     </Provider>
   ),
 ];

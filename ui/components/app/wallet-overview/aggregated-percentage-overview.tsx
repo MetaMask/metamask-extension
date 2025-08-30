@@ -25,6 +25,7 @@ import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';
+import { useFormatters } from '../../../helpers/formatters';
 
 // core already has this exported type but its not yet available in this version
 // todo remove this and use core type once available
@@ -36,7 +37,7 @@ type MarketDataDetails = {
 export const AggregatedPercentageOverview = () => {
   const tokensMarketData: Record<string, MarketDataDetails> =
     useSelector(getTokensMarketData);
-  const locale = useSelector(getIntlLocale);
+  const { formatCurrencyCompact } = useFormatters();
   const fiatCurrency = useSelector(getCurrentCurrency);
   const { privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -92,27 +93,7 @@ export const AggregatedPercentageOverview = () => {
   if (isValidAmount(amountChange)) {
     formattedAmountChange = (amountChange as number) >= 0 ? '+' : '';
 
-    const options = {
-      notation: 'compact',
-      compactDisplay: 'short',
-      maximumFractionDigits: 2,
-    } as const;
-
-    try {
-      // For currencies compliant with ISO 4217 Standard
-      formattedAmountChange += `${Intl.NumberFormat(locale, {
-        ...options,
-        style: 'currency',
-        currency: fiatCurrency,
-      }).format(amountChange as number)} `;
-    } catch {
-      // Non-standard Currency Codes
-      formattedAmountChange += `${Intl.NumberFormat(locale, {
-        ...options,
-        minimumFractionDigits: 2,
-        style: 'decimal',
-      }).format(amountChange as number)} `;
-    }
+    formattedAmountChange += formatCurrencyCompact(amountChange, fiatCurrency);
   }
 
   let color = TextColor.textAlternative;
@@ -130,7 +111,7 @@ export const AggregatedPercentageOverview = () => {
   }
 
   return (
-    <Box display={Display.Flex}>
+    <Box display={Display.Flex} className="gap-1">
       <SensitiveText
         variant={TextVariant.bodyMdMedium}
         color={color}
