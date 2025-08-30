@@ -1,10 +1,6 @@
 import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { DAPP_URL, DAPP_ONE_URL } from '../../constants';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
