@@ -7396,7 +7396,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       setActiveNetwork: async (networkClientId) => {
-        await this.networkController.setActiveNetwork(networkClientId);
         // if the origin has the CAIP-25 permission
         // we set per dapp network selection state
         if (
@@ -7409,6 +7408,8 @@ export default class MetamaskController extends EventEmitter {
             origin,
             networkClientId,
           );
+        } else {
+          await this.networkController.setActiveNetwork(networkClientId);
         }
       },
       getNetworkConfigurationByChainId:
