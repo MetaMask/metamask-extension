@@ -7,7 +7,7 @@ import {
 import { useHistory } from 'react-router-dom';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
-import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryItemForTxMetaId } from '../../ducks/bridge-status/selectors';
 
 export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.failed,
@@ -36,10 +36,9 @@ export function useBridgeTxHistoryData({
   const history = useHistory();
   const txMeta = transactionGroup.initialTransaction;
   const srcTxMetaId = txMeta.id;
-  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
-  const bridgeHistoryItem = srcTxMetaId
-    ? bridgeHistory[srcTxMetaId]
-    : undefined;
+  const bridgeHistoryItem = useSelector((state) =>
+    selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
+  );
 
   // By complete, this means BOTH source and dest tx are confirmed
   const isBridgeComplete = bridgeHistoryItem
