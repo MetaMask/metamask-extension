@@ -55,6 +55,10 @@ import {
 } from './accounts';
 import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
 import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
+import {
+  getShieldControllerInitMessenger,
+  getShieldControllerMessenger,
+} from './shield/shield-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -116,6 +120,10 @@ export const CONTROLLER_MESSENGERS = {
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
     getInitMessenger: noop,
+  },
+  ShieldController: {
+    getMessenger: getShieldControllerMessenger,
+    getInitMessenger: getShieldControllerInitMessenger,
   },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
