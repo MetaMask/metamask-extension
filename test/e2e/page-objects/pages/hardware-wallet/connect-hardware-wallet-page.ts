@@ -55,7 +55,8 @@ class ConnectHardwareWalletPage {
 
   async clickContinueButton(): Promise<void> {
     console.log(`Click continue button`);
-    await this.driver.clickElement(this.continueButton);
+    await this.driver.waitForSelector(this.continueButton);
+    await this.driver.clickElementAndWaitToDisappear(this.continueButton);
   }
 
   async clickCloseButton(): Promise<void> {
