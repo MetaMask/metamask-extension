@@ -1,14 +1,13 @@
-const FixtureBuilder = require('../../fixture-builder');
+import { Suite } from 'mocha';
+import { MockttpServer, CompletedRequest } from 'mockttp';
+import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 
-const {
-  WINDOW_TITLES,
-  openDapp,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
-const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
-
-async function mockInfura(mockServer) {
+async function mockInfura(mockServer: MockttpServer): Promise<void> {
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     ['eth_estimateGas'],
@@ -143,12 +142,12 @@ async function mockInfura(mockServer) {
         },
       ],
     })
-    .thenCallback(async (req) => {
+    .thenCallback(async (req: CompletedRequest) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: (await req.body.getJson()).id,
+          id: ((await req.body.getJson()) as { id?: string | number })?.id,
           error: {
             code: -32601,
             message:
@@ -161,6 +160,8 @@ async function mockInfura(mockServer) {
   await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .always()
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0xef5cfb8c' })
     .thenCallback(() => ({
       statusCode: 200,
@@ -171,9 +172,17 @@ async function mockInfura(mockServer) {
         results: [
           {
             id: 187294,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             created_at: '2021-05-12T10:20:16.502438Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             text_signature: 'claimRewards(address)',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hex_signature: '0xef5cfb8c',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             bytes_signature: 'ï\\û',
           },
         ],
@@ -181,7 +190,7 @@ async function mockInfura(mockServer) {
     }));
 }
 
-describe('PPOM Blockaid Alert - Malicious Contract interaction', function () {
+describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this: Suite) {
   it('should show banner alert', async function () {
     await withFixtures(
       {
@@ -196,34 +205,28 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function () {
           })
           .build(),
         testSpecificMock: mockInfura,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await openDapp(driver, null, 'http://localhost:8080');
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
+        await testDapp.checkPageIsLoaded();
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
           'If you approve this request, a third party known for scams will take all your assets.';
 
         // Click TestDapp button to send JSON-RPC request
-        await driver.clickElement('#maliciousContractInteractionButton');
+        await testDapp.clickMaliciousContractInteractionButton();
 
         // Wait for confirmation pop-up
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.assertElementNotPresent('.loading-indicator');
-
-        await driver.findElement({
-          css: '[data-testid="confirm-banner-alert"]',
-          text: expectedTitle,
-        });
-
-        await driver.findElement({
-          css: '[data-testid="confirm-banner-alert"]',
-          text: expectedDescription,
-        });
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+        await confirmation.checkAlertMessageIsDisplayed(expectedTitle);
+        await confirmation.checkAlertMessageIsDisplayed(expectedDescription);
       },
     );
   });

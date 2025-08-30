@@ -19,6 +19,8 @@ class TransactionConfirmation extends Confirmation {
 
   private advancedDetailsHexData: RawLocator;
 
+  private alertBanner: RawLocator;
+
   private gasFeeFiatText: RawLocator;
 
   private gasFeeText: RawLocator;
@@ -59,6 +61,7 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="advanced-details-data-param-0"]';
     this.advancedDetailsHexData =
       '[data-testid="advanced-details-transaction-hex"]';
+    this.alertBanner = '[data-testid="confirm-banner-alert"]';
     this.gasFeeCloseToastMessage =
       '.toasts-container__banner-base button[aria-label="Close"]';
     this.gasFeeFiatText = '[data-testid="native-currency"]';
@@ -104,6 +107,21 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.findElement({
       css: this.gasFeeTokenFeeText,
       text: amountFiat,
+    });
+  }
+
+  /**
+   * Checks if the alert message is displayed on the transaction confirmation page.
+   *
+   * @param message - The message to check.
+   */
+  async checkAlertMessageIsDisplayed(message: string) {
+    console.log(
+      `Checking alert message ${message} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.alertBanner,
+      text: message,
     });
   }
 
