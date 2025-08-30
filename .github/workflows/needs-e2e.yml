@@ -22,18 +22,36 @@ jobs:
       WORKFLOW_ID: main.yml
       DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
     steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          # By default, the checkout action checks out the last merge commit for pull requests.
-          # Source: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request
-          # However, we need the head commit (the latest commit pushed to the source branch)
-          # because in the workflow, we would like to parse the latest commit tag.
           # Specifying `ref` ensures that the head commit is checked out directly.
           ref: ${{ env.HEAD_COMMIT_HASH }}
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install minimal dependencies
+        run: |
+          # Create temporary package.json with only the dependencies we need
+          echo '{
+            "name": "needs-e2e-minimal",
+            "version": "1.0.0",
+            "dependencies": {
+              "@actions/core": "^1.10.0",
+              "@actions/github": "^5.1.1",
+              "tsx": "^4.7.0"
+            }
+          }' > temp-package.json
+
+          # Install only these dependencies in a temporary directory
+          mkdir -p .github/temp-deps
+          cd .github/temp-deps
+          mv ../../temp-package.json ./package.json
+          npm install --no-audit --no-fund
+          cd ../..
 
       - name: Determine Needs E2E
         id: needs-e2e
@@ -47,7 +65,8 @@ jobs:
 
           # For PRs, check changed files - philosophy: when in doubt, run the tests
           if [[ -n "${{ github.event.pull_request.number }}" ]]; then
-              yarn tsx .github/scripts/git-diff-default-branch.ts
+              # Run git diff script with minimal deps
+              NODE_PATH=.github/temp-deps/node_modules node .github/temp-deps/node_modules/.bin/tsx .github/scripts/git-diff-default-branch.ts
 
               # Read the changed files JSON from the file created by the git diff script
               if [[ -f "./changed-files/changed-files.json" ]]; then
@@ -126,7 +145,12 @@ jobs:
 
       - name: Run E2E Page Object Usage Validation
         if: ${{ steps.needs-e2e.outputs.NEEDS_E2E == 'true' && (github.head_ref || github.ref_name) != 'master' && (github.head_ref || github.ref_name) != 'stable' }}
-        run: yarn tsx .github/scripts/validate-e2e-page-object-usage.ts
+        run: |
+          # Copy the required util file
+          mkdir -p test/e2e
+          cp -r test/e2e/changedFilesUtil.* test/e2e/ 2>/dev/null || true
+          # Run with minimal deps
+          NODE_PATH=.github/temp-deps/node_modules node .github/temp-deps/node_modules/.bin/tsx .github/scripts/validate-e2e-page-object-usage.ts
 
       - name: Get last completed main workflow
         if: ${{ steps.needs-e2e.outputs.NEEDS_E2E == 'true' && (github.head_ref || github.ref_name) != 'master' && (github.head_ref || github.ref_name) != 'stable' }}
