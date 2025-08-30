@@ -200,14 +200,14 @@ export class NetworkOrderController extends BaseController<
     this.#switchToEnabledNetworkIfNeeded(evmChainIds);
   }
 
-  onNetworkRemoved(networkId: Hex) {
+  onNetworkRemoved(networkId: Hex | CaipChainId) {
     const caipId: CaipChainId = isCaipChainId(networkId)
       ? networkId
       : toEvmCaipChainId(networkId);
 
     const { namespace } = parseCaipChainId(caipId);
 
-    if (namespace === (KnownCaipNamespace.Eip155 as string)) {
+    if (namespace === KnownCaipNamespace.Eip155) {
       this.update((state) => {
         delete state.enabledNetworkMap[namespace][networkId];
         if (Object.keys(state.enabledNetworkMap[namespace]).length === 0) {
