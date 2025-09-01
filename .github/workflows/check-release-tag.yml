@@ -31,12 +31,23 @@ jobs:
         id: extract-version
         run: |
           BRANCH="${{ github.head_ref }}"
+          # Validate branch name format for security
+          if ! [[ "${BRANCH}" =~ ^[a-zA-Z0-9/_.-]+$ ]]; then
+            echo "::error::Invalid branch name format"
+            exit 1
+          fi
+
           if [[ "${BRANCH}" =~ ^Version-v([0-9]+\.[0-9]+\.[0-9]+)$ ]] || [[ "${BRANCH}" =~ ^release/([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
             VERSION="${BASH_REMATCH[1]}"
+            # Additional version validation
+            if ! [[ "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "::error::Invalid version format extracted"
+              exit 1
+            fi
             echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
             echo "Expected tag: v${VERSION}"
           else
-            echo "::error::Could not extract version from branch name: ${BRANCH}"
+            echo "::error::Could not extract version from branch name"
             exit 1
           fi
 

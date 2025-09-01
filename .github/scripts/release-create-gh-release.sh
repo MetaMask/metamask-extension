@@ -47,8 +47,14 @@ function publish_tag() {
 
 current_commit_msg=$(git show -s --format='%s' HEAD)
 
-if [[ "${current_commit_msg}" =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+) ]]; then
+# Validate commit message format to prevent injection
+if [[ "${current_commit_msg}" =~ Version[-[:space:]](v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+) ]]; then
     tag="${BASH_REMATCH[1]}"
+    # Additional validation of extracted tag
+    if ! [[ "${tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        printf '%s\n' "::error::Invalid tag format extracted from commit message"
+        exit 1
+    fi
     flask_version="$(print_build_version 'flask')"
 
         # Check if the tag already exists (it should have been created on the release branch)
