@@ -71,21 +71,12 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
           </Text>
         </Box>
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-          {shouldShowBackupReminder ? (
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.errorDefault}
-            >
-              {t('backup')}
-            </Text>
-          ) : (
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textAlternative}
-            >
-              {t('accountDetailsSrpBackUpMessage')}
-            </Text>
-          )}
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textAlternative}
+          >
+            {t('accountDetailsSrpBackUpMessage')}
+          </Text>
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}

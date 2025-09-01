@@ -50,16 +50,6 @@ describe('MultichainSrpBackup', () => {
     expect(buttonElement).toHaveClass('custom-class');
   });
 
-  it('displays "Backup" text with error color when shouldShowBackupReminder is true', () => {
-    renderComponent({ shouldShowBackupReminder: true });
-
-    const backupText = screen.getByText('Backup');
-
-    expect(backupText).toBeInTheDocument();
-    expect(backupText).toHaveClass('mm-box--color-error-default');
-    expect(screen.queryByText('Back up')).not.toBeInTheDocument();
-  });
-
   it('displays "Back up" text when shouldShowBackupReminder is false', () => {
     renderComponent({ shouldShowBackupReminder: false });
 
