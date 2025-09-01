@@ -421,6 +421,20 @@ describe('MetaMaskController', () => {
           createMockCronjobControllerStorageManager(),
       });
 
+      // Mock RemoteFeatureFlagController to prevent network requests in tests
+      jest
+        .spyOn(
+          metamaskController.remoteFeatureFlagController,
+          'updateRemoteFeatureFlags',
+        )
+        .mockResolvedValue();
+
+      // Mock MultichainAccountService actions to prevent unhandled calls
+      metamaskController.controllerMessenger.registerActionHandler(
+        'MultichainAccountService:setBasicFunctionality',
+        jest.fn().mockResolvedValue(undefined),
+      );
+
       jest.spyOn(
         metamaskController.keyringController,
         'createNewVaultAndKeychain',
@@ -3303,10 +3317,20 @@ describe('MetaMaskController', () => {
           'MultichainAccountService:setBasicFunctionality',
           jest.fn().mockResolvedValue(undefined),
         );
+
+        // Mock RemoteFeatureFlagController to prevent network requests in tests
+        jest
+          .spyOn(
+            localMetamaskController.remoteFeatureFlagController,
+            'updateRemoteFeatureFlags',
+          )
+          .mockResolvedValue();
       });
 
-      afterEach(() => {
+      afterEach(async () => {
         jest.clearAllMocks();
+        // Ensure all async operations complete before next test
+        await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       async function simulateLocalPreferencesChange(preferences) {
@@ -3315,6 +3339,8 @@ describe('MetaMaskController', () => {
           preferences,
           getMockPatches(),
         );
+        // Wait for all async operations to complete
+        await new Promise((resolve) => setTimeout(resolve, 0));
       }
 
       it('should initialize RemoteFeatureFlagController in disabled state when useExternalServices is false', async () => {
@@ -3351,6 +3377,7 @@ describe('MetaMaskController', () => {
         const { remoteFeatureFlagController } = localMetamaskController;
         const mockError = new Error('Failed to fetch');
 
+        // Replace the global mock with an error mock for this test
         jest
           .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
           .mockRejectedValue(mockError);
