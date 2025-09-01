@@ -10,11 +10,15 @@ type SetupMockReturn = {
  *
  * @param server - The mock server used for network mocks.
  * @param testSpecificMock - Function for setting up test-specific network mocks.
+ * @param _options - Not used in this version
+ * @param _withSolanaWebSocket - Not used in this version
  * @returns SetupMockReturn
  */
 export async function setupMockingPassThrough(
   server: Mockttp,
   testSpecificMock: (server: Mockttp) => Promise<MockedEndpoint[]>,
+  _options = undefined,
+  _withSolanaWebSocket = undefined,
 ): Promise<SetupMockReturn> {
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
