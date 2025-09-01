@@ -78,7 +78,6 @@ describe('Carousel component e2e tests', function () {
           assert.equal(stillThere, false, 'Carousel should not be visible');
           return;
         }
-
         await driver.waitForSelector('.mm-carousel');
         await driver.waitForSelector('.mm-carousel-slide');
 

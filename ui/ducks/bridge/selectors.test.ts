@@ -1771,7 +1771,6 @@ describe('Bridge selectors', () => {
           },
         },
       });
-
       const result = getFromTokenBalance(state as never);
       expect(result).toBe('2');
     });
