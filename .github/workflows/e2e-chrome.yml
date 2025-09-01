@@ -1,7 +1,7 @@
 # This workflow is meant to better structure the main.yaml one for redability reasons.
 # It is not meant to be a reusable workflow.
 
-name: E2E Chrome
+name: E2E Chrome 
 
 on:
   workflow_call:
