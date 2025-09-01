@@ -21,7 +21,6 @@ import {
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
 import {
-  type AccountsState,
   getInternalAccounts,
   getInternalAccountsObject,
   getSelectedInternalAccount,
@@ -754,7 +753,7 @@ export const getInternalAccountsFromGroupById = createSelector(
 export const getAccountGroupsByAddress = createDeepEqualSelector(
   [
     getAccountGroupWithInternalAccounts,
-    (_state: AccountsState, addresses: string[]) =>
+    (_state: MultichainAccountsState, addresses: string[]) =>
       new Set(addresses.map((address) => address.toLowerCase())),
   ],
   (
