@@ -80,6 +80,10 @@ export type ManifestFlags = {
      */
     deepLinkPublicKey?: string;
     /**
+     * Whether to disable the smart transactions override (migration 135)
+     */
+    disableSmartTransactionsOverride?: boolean;
+    /**
      * Whether to disable all of the syncing features that get automatically enabled in migrations 158 and 167
      */
     disableSync?: boolean;

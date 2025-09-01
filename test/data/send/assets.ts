@@ -3,6 +3,7 @@ export const EVM_ASSET = {
   address: '0xeDd1935e28b253C7905Cf5a944f0B5830FFA916a',
   chainId: 5,
   metadata: {},
+  symbol: 'NEU',
 };
 
 export const EVM_NATIVE_ASSET = {
