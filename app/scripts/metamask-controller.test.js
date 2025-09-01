@@ -3301,11 +3301,25 @@ describe('MetaMaskController', () => {
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
         });
+        
+        // Mock the MultichainAccountService action that gets called during preferences changes
+        localMetamaskController.controllerMessenger.registerActionHandler(
+          'MultichainAccountService:setBasicFunctionality',
+          jest.fn().mockResolvedValue(undefined),
+        );
       });
 
       afterEach(() => {
         jest.clearAllMocks();
       });
+
+      async function simulateLocalPreferencesChange(preferences) {
+        localMetamaskController.controllerMessenger.publish(
+          'PreferencesController:stateChange',
+          preferences,
+          getMockPatches(),
+        );
+      }
 
       it('should initialize RemoteFeatureFlagController in disabled state when useExternalServices is false', async () => {
         const { remoteFeatureFlagController, preferencesController } =
@@ -3322,12 +3336,12 @@ describe('MetaMaskController', () => {
         const { remoteFeatureFlagController } = localMetamaskController;
 
         // First enable external services
-        await simulatePreferencesChange({
+        await simulateLocalPreferencesChange({
           useExternalServices: true,
         });
 
         // Then disable them
-        await simulatePreferencesChange({
+        await simulateLocalPreferencesChange({
           useExternalServices: false,
         });
 
@@ -3345,7 +3359,7 @@ describe('MetaMaskController', () => {
           .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
           .mockRejectedValue(mockError);
 
-        await simulatePreferencesChange({
+        await simulateLocalPreferencesChange({
           useExternalServices: true,
         });
 
@@ -3364,12 +3378,12 @@ describe('MetaMaskController', () => {
           .mockResolvedValue(mockFlags);
 
         // Enable external services
-        await simulatePreferencesChange({
+        await simulateLocalPreferencesChange({
           useExternalServices: true,
         });
 
         // Disable external services
-        await simulatePreferencesChange({
+        await simulateLocalPreferencesChange({
           useExternalServices: false,
         });
 
