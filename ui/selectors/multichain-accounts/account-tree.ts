@@ -3,15 +3,11 @@ import {
   type AccountGroupId,
   type AccountWalletId,
 } from '@metamask/account-api';
-import { createSelector } from 'reselect';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { AccountGroupObject } from '@metamask/account-tree-controller';
-import {
-  type CaipAccountId,
-  type CaipChainId,
-  KnownCaipNamespace,
-} from '@metamask/utils';
 import { AccountId } from '@metamask/accounts-controller';
+import { createSelector } from 'reselect';
+import { AccountGroupObject } from '@metamask/account-tree-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { type CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
@@ -25,6 +21,7 @@ import {
   getInternalAccountsObject,
   getSelectedInternalAccount,
 } from '../accounts';
+
 import {
   AccountGroupWithInternalAccounts,
   AccountTreeState,
@@ -328,46 +325,6 @@ export const getSingleAccountGroups = createDeepEqualSelector(
     );
   },
 );
-
-/**
- * Create a map from CAIP-25 account IDs to multichain account group IDs.
- *
- * @param accountGroups - Array of all account groups.
- * @param internalAccounts - Array of internal accounts.
- * @returns Map from CAIP-25 account IDs to multichain account group IDs.
- */
-export const getCaip25AccountIdToMultichainAccountGroupMap =
-  createDeepEqualSelector(
-    getAllAccountGroups,
-    getInternalAccounts,
-    (
-      accountGroups: AccountGroupObject[],
-      internalAccounts: InternalAccount[],
-    ) => {
-      const caip25AccountIdToMultichainAccountGroupMap: Map<
-        CaipAccountId,
-        AccountGroupId
-      > = new Map();
-      accountGroups.forEach((accountGroup) => {
-        accountGroup.accounts.forEach((accountId) => {
-          const internalAccount = internalAccounts.find(
-            (account) => account.id === accountId,
-          );
-          if (!internalAccount) {
-            return;
-          }
-          const [caip25Id] = internalAccount.scopes;
-          if (caip25Id) {
-            caip25AccountIdToMultichainAccountGroupMap.set(
-              `${caip25Id}:${internalAccount.address}`,
-              accountGroup.id,
-            );
-          }
-        });
-      });
-      return caip25AccountIdToMultichainAccountGroupMap;
-    },
-  );
 
 /**
  * Retrieve account groups with their internal accounts populated.
