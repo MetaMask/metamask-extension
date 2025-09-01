@@ -9,7 +9,7 @@ on:
 
 jobs:
   synchronize-with-crowdin:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
