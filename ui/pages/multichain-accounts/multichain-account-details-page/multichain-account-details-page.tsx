@@ -17,7 +17,6 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import {
-  BackgroundColor,
   IconColor,
   TextColor,
   TextVariant,
@@ -58,6 +57,12 @@ export const MultichainAccountDetailsPage = () => {
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
   const shouldShowBackupReminder = isSRPBackedUp === false;
+
+  const handleAddressesClick = () => {
+    history.push(
+      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+    );
+  };
 
   return (
     <Page className="multichain-account-details-page">
@@ -105,6 +110,7 @@ export const MultichainAccountDetailsPage = () => {
           <AccountDetailsRow
             label={t('networks')}
             value={`${addressCount} ${addressCount > 1 ? t('addressesLabel') : t('addressLabel')}`}
+            onClick={handleAddressesClick}
             endAccessory={
               <ButtonIcon
                 iconName={IconName.ArrowRight}
@@ -113,11 +119,6 @@ export const MultichainAccountDetailsPage = () => {
                 ariaLabel={t('addresses')}
                 marginLeft={2}
                 data-testid="network-addresses-link"
-                onClick={() => {
-                  history.push(
-                    `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
-                  );
-                }}
               />
             }
           />
