@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { IconSize } from '@metamask/design-system-react';
@@ -33,18 +33,18 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
   const history = useHistory();
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
 
-  const handleSrpBackupClick = () => {
+  const handleSrpBackupClick = useCallback(() => {
     if (shouldShowBackupReminder) {
       const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
       history.push(backUpSRPRoute);
     } else {
       setSrpQuizModalVisible(true);
     }
-  };
+  }, [shouldShowBackupReminder, history, setSrpQuizModalVisible]);
 
-  const handleQuizModalClose = () => {
+  const handleQuizModalClose = useCallback(() => {
     setSrpQuizModalVisible(false);
-  };
+  }, [setSrpQuizModalVisible]);
 
   const finalClassName = classnames('multichain-srp-backup', className);
 
