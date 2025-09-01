@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { Tooltip } from 'react-tippy';
 import {
   AlignItems,
-  BorderColor,
   BorderStyle,
   Display,
   FlexDirection,
@@ -50,6 +49,16 @@ const TooltipContent = React.memo<TooltipContentProps>(
     const hasMoreAccounts =
       accountGroups && accountGroups.length > TOOLTIP_LIMIT;
     const hasMoreNetworks = networks && networks.length > TOOLTIP_LIMIT;
+
+    const getMoreText = useMemo(() => {
+      if (hasMoreAccounts && accountGroups) {
+        return t('moreAccounts', [accountGroups.length - TOOLTIP_LIMIT]);
+      }
+      if (networks) {
+        return t('moreNetworks', [networks.length - TOOLTIP_LIMIT]);
+      }
+      return '';
+    }, [hasMoreAccounts, hasMoreNetworks, accountGroups, networks, t]);
 
     return (
       <Box
@@ -112,7 +121,10 @@ const TooltipContent = React.memo<TooltipContentProps>(
               </Text>
             </Box>
           ))}
-          {(hasMoreAccounts || hasMoreNetworks) && (
+          {((accountGroups &&
+            Array.isArray(accountGroups) &&
+            hasMoreAccounts) ||
+            (networks && Array.isArray(networks) && hasMoreNetworks)) && (
             <Box
               display={Display.Flex}
               alignItems={AlignItems.center}
@@ -124,9 +136,7 @@ const TooltipContent = React.memo<TooltipContentProps>(
                 variant={TextVariant.bodyMdMedium}
                 data-testid="accounts-list-item-plus-more-tooltip"
               >
-                {hasMoreAccounts
-                  ? t('moreAccounts', [accountGroups!.length - TOOLTIP_LIMIT])
-                  : t('moreNetworks', [networks!.length - TOOLTIP_LIMIT])}
+                {getMoreText()}
               </Text>
             </Box>
           )}

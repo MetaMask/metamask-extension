@@ -37,6 +37,6 @@ describe('SendInner', () => {
     } as unknown as SendContext.SendContextType);
 
     const { getByText } = render();
-    expect(getByText('AMOUNT')).toBeInTheDocument();
+    expect(getByText('Amount')).toBeInTheDocument();
   });
 });

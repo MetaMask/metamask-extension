@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Asset } from '../../../types/send';
-import { isDecimal } from '../../../utils/send';
 import { useSendContext } from '../../../context/send';
 import { validateAmountMultichain } from '../../../utils/multichain-snaps';
 
@@ -26,11 +25,8 @@ const validateAmountFn = async ({
   asset,
   t,
 }: ValidateAmountFnArgs): Promise<string | undefined> => {
-  if (!asset || amount === undefined || amount === null || amount === '') {
+  if (!asset || !amount) {
     return undefined;
-  }
-  if (!isDecimal(amount) || Number(amount) < 0) {
-    return t('invalidValue');
   }
   const result = (await validateAmountMultichain(
     fromAccount as InternalAccount,
