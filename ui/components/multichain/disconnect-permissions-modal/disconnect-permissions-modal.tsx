@@ -34,6 +34,11 @@ import {
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getUseExternalServices } from '../../../selectors';
 import {
+  getMemoizedAccountName,
+  AccountsMetaMaskState,
+} from '../../../selectors/snaps/accounts';
+import { shortenAddress } from '../../../helpers/utils/util';
+import {
   TextColor,
   TextVariant,
   Display,
@@ -121,6 +126,16 @@ const PermissionItem = ({
     [t],
   );
 
+  // Get account address from permission response
+  const signerAddress = React.useMemo(() => {
+    // The address field in permissionResponse represents the account that granted the permission
+    return permission.permission.permissionResponse.address;
+  }, [permission]);
+
+  const accountName = useSelector((state: AccountsMetaMaskState) =>
+    signerAddress ? getMemoizedAccountName(state, signerAddress) : '',
+  );
+
   const computedValues = React.useMemo(() => {
     const networkConfig =
       networkConfigurationsByCaipChainId?.[permission.chainId];
@@ -133,12 +148,18 @@ const PermissionItem = ({
       permissionData,
     );
 
-    const formattedDescription = formatAmountDescription(
+    let formattedDescription = formatAmountDescription(
       amount,
       resolvedTokenInfo.symbol,
       frequency,
       resolvedTokenInfo.decimals,
     );
+
+    // Append account information to the formatted description
+    if (signerAddress) {
+      const accountInfo = accountName || shortenAddress(signerAddress);
+      formattedDescription = `${formattedDescription} • ${accountInfo}`;
+    }
 
     return {
       displayName,
@@ -153,6 +174,8 @@ const PermissionItem = ({
     resolvedTokenInfo,
     formatAmountDescription,
     getPermissionMetadata,
+    signerAddress,
+    accountName,
   ]);
 
   return (
