@@ -224,7 +224,11 @@ export const ReviewPermissions = () => {
       )) {
         try {
           const revokeFunction = revokeFunctionsByChainId[chainId];
-          if (revokeFunction && revokeFunction instanceof Function && permissions.length > 0) {
+          if (
+            revokeFunction &&
+            revokeFunction instanceof Function &&
+            permissions.length > 0
+          ) {
             await revokeFunction(permissions);
           }
         } catch (error) {

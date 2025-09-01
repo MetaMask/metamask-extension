@@ -30,6 +30,8 @@ import {
   formatGatorAmountLabel,
   getGatorPermissionDisplayMetadata,
   getGatorPermissionTokenInfo,
+  GatorPermissionData,
+  TranslationFunction,
 } from '../../../../shared/lib/gator-permissions-utils';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getUseExternalServices } from '../../../selectors';
@@ -65,8 +67,8 @@ const PermissionItem = ({
   const locale = useSelector(getIntlLocale);
   const t = useI18nContext();
 
-  const permissionData =
-    permission.permission.permissionResponse.permission.data;
+  const permissionData = permission.permission.permissionResponse.permission
+    .data as GatorPermissionData;
 
   const allowExternalServices = useSelector(getUseExternalServices);
 
@@ -123,8 +125,12 @@ const PermissionItem = ({
 
   // Get permission metadata for this permission
   const getPermissionMetadata = React.useCallback(
-    (permissionType: string, permissionDataParam: unknown) =>
-      getGatorPermissionDisplayMetadata(permissionType, permissionDataParam, t),
+    (permissionType: string, permissionDataParam: GatorPermissionData) =>
+      getGatorPermissionDisplayMetadata(
+        permissionType,
+        permissionDataParam,
+        t as TranslationFunction,
+      ),
     [t],
   );
 
