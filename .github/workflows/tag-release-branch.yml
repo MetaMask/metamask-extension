@@ -222,9 +222,9 @@ jobs:
             gh pr edit "${EXISTING_PR}" --add-label "release-tagged" || true
 
             # Escape variables for markdown safety
-            ESCAPED_TAG_NAME=$(printf '%s' "${TAG_NAME}" | sed 's/[[\*_`~#]/\\&/g')
-            ESCAPED_BRANCH=$(printf '%s' "${RELEASE_BRANCH}" | sed 's/[[\*_`~#]/\\&/g')
-            ESCAPED_TARGET=$(printf '%s' "${TARGET_BRANCH}" | sed 's/[[\*_`~#]/\\&/g')
+            ESCAPED_TAG_NAME=$(printf '%s' "${TAG_NAME}" | sed 's/[\[\*_`~#]/\\&/g')
+            ESCAPED_BRANCH=$(printf '%s' "${RELEASE_BRANCH}" | sed 's/[\[\*_`~#]/\\&/g')
+            ESCAPED_TARGET=$(printf '%s' "${TARGET_BRANCH}" | sed 's/[\[\*_`~#]/\\&/g')
 
             # Update the PR description to note that it's been tagged
             gh pr edit "${EXISTING_PR}" \
@@ -265,9 +265,9 @@ jobs:
             echo "Updated PR #${EXISTING_PR} with tag information"
           else
             # Escape variables for markdown safety
-            ESCAPED_TAG_NAME=$(printf '%s' "${TAG_NAME}" | sed 's/[[\*_`~#]/\\&/g')
-            ESCAPED_BRANCH=$(printf '%s' "${RELEASE_BRANCH}" | sed 's/[[\*_`~#]/\\&/g')
-            ESCAPED_TARGET=$(printf '%s' "${TARGET_BRANCH}" | sed 's/[[\*_`~#]/\\&/g')
+            ESCAPED_TAG_NAME=$(printf '%s' "${TAG_NAME}" | sed 's/[\[\*_`~#]/\\&/g')
+            ESCAPED_BRANCH=$(printf '%s' "${RELEASE_BRANCH}" | sed 's/[\[\*_`~#]/\\&/g')
+            ESCAPED_TARGET=$(printf '%s' "${TARGET_BRANCH}" | sed 's/[\[\*_`~#]/\\&/g')
 
             # Create new PR with label indicating it's been tagged
             PR_URL=$(gh pr create \
