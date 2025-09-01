@@ -256,16 +256,18 @@ export async function switchChain(
 
     await setActiveNetwork(networkClientId);
 
-    // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
-    // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
-    setTokenNetworkFilter(chainId);
+    if (!isSnapId(origin)) {
+      // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
+      // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
+      setTokenNetworkFilter(chainId);
 
-    const existingEnabledNetworks = getEnabledNetworks(
-      KnownCaipNamespace.Eip155,
-    );
-    const existingChainIds = Object.keys(existingEnabledNetworks);
-    if (!existingChainIds.includes(chainId)) {
-      setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
+      const existingEnabledNetworks = getEnabledNetworks(
+        KnownCaipNamespace.Eip155,
+      );
+      const existingChainIds = Object.keys(existingEnabledNetworks);
+      if (!existingChainIds.includes(chainId)) {
+        setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
+      }
     }
 
     response.result = null;

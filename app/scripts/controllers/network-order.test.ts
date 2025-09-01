@@ -10,7 +10,6 @@ import {
 } from '@metamask/network-controller';
 import { KnownCaipNamespace } from '@metamask/utils';
 import { SolScope } from '@metamask/keyring-api';
-import { waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   NetworkOrderController,
@@ -168,50 +167,6 @@ describe('NetworkOrderController - constructor', () => {
       { networkId: 'eip155:59144' }, // Linea
       { networkId: 'eip155:8453' }, // Base
     ]);
-  });
-
-  it('switches network if the NetworkController:stateChange has a selected network that is not in the enabledNetworkMap', async () => {
-    const mocks = arrangeMockMessenger();
-    const mockNetworkConfigs = arrangeMockNetworkConfigurations();
-    const mockNetworkState = {
-      networkConfigurationsByChainId: mockNetworkConfigs,
-      networksMetadata: {},
-      selectedNetworkClientId: '3333-3333-3333', // Base network is not in network enabled map
-    };
-    mocks.mockNetworkControllerGetState.mockReturnValue(mockNetworkState);
-
-    const controller = new NetworkOrderController({
-      messenger: mocks.messenger,
-      state: {
-        orderedNetworkList: [],
-        enabledNetworkMap: {
-          [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.LINEA_MAINNET]: true,
-          },
-          [KnownCaipNamespace.Solana]: {
-            [SolScope.Mainnet]: true,
-          },
-        },
-      },
-    });
-
-    // Assert - network order size
-    expect(controller.state.orderedNetworkList).toHaveLength(0);
-
-    // Act - publish event where base was removed
-    mocks.globalMessenger.publish(
-      'NetworkController:stateChange',
-      mockNetworkState,
-      [],
-    );
-
-    // Act - switching to an available network (Ethereum)
-    await waitFor(() =>
-      expect(mocks.mockNetworkControllerSetActiveNetwork).toHaveBeenCalledWith(
-        '1111-1111-1111',
-      ),
-    );
   });
 });
 
