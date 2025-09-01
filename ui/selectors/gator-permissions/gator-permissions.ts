@@ -213,7 +213,7 @@ export function getGatorAssetListDetail(
       break;
     }
     default:
-      console.warn(`Unknown list type: ${listType}`);
+      console.warn(`Unknown list type: ${String(listType)}`);
       break;
   }
 

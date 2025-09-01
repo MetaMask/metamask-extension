@@ -33,6 +33,61 @@ import {
 } from '../../../../../shared/constants/network';
 import { getURLHostName } from '../../../../helpers/utils/util';
 
+// Helper function to extract unique site origins from gator permissions
+const extractGatorSiteOrigins = (gatorPermissions) => {
+  if (!gatorPermissions) {
+    return new Set();
+  }
+
+  const gatorSiteOrigins = new Set();
+  Object.values(gatorPermissions).forEach((permissionTypeMap) => {
+    if (permissionTypeMap && typeof permissionTypeMap === 'object') {
+      Object.values(permissionTypeMap).forEach((permissions) => {
+        if (Array.isArray(permissions)) {
+          permissions.forEach((permission) => {
+            if (permission && permission.siteOrigin) {
+              gatorSiteOrigins.add(permission.siteOrigin);
+            }
+          });
+        }
+      });
+    }
+  });
+  return gatorSiteOrigins;
+};
+
+// Helper function to find the first chainId for a site
+const findFirstChainIdForSite = (gatorPermissions, siteOrigin) => {
+  // Use for...of loops for early termination capability
+  for (const permissionTypeMap of Object.values(gatorPermissions)) {
+    if (permissionTypeMap && typeof permissionTypeMap === 'object') {
+      for (const [chainId, permissions] of Object.entries(permissionTypeMap)) {
+        if (
+          Array.isArray(permissions) &&
+          permissions.some((p) => p && p.siteOrigin === siteOrigin)
+        ) {
+          return chainId; // Early return when found
+        }
+      }
+    }
+  }
+
+  return null;
+};
+
+// Helper function to create a site entry from gator permissions
+const createSiteEntryFromGatorPermissions = (siteOrigin, firstChainId) => ({
+  origin: siteOrigin,
+  name: getURLHostName(siteOrigin),
+  addresses: [],
+  addressToNameMap: {},
+  subjectType: SubjectType.Website,
+  networkName: firstChainId ? NETWORK_TO_NAME_MAP[firstChainId] || '' : '',
+  networkIconUrl: firstChainId
+    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[firstChainId] || ''
+    : '',
+});
+
 export const SitesPage = () => {
   const t = useI18nContext();
   const history = useHistory();
@@ -57,57 +112,19 @@ export const SitesPage = () => {
       // If we have gator permissions, merge them in
       if (gatorPermissions) {
         // Extract all unique site origins from gator permissions
-        const gatorSiteOrigins = new Set();
-        Object.values(gatorPermissions).forEach((permissionTypeMap) => {
-          if (permissionTypeMap && typeof permissionTypeMap === 'object') {
-            Object.values(permissionTypeMap).forEach((permissions) => {
-              if (Array.isArray(permissions)) {
-                permissions.forEach((permission) => {
-                  if (permission && permission.siteOrigin) {
-                    gatorSiteOrigins.add(permission.siteOrigin);
-                  }
-                });
-              }
-            });
-          }
-        });
+        const gatorSiteOrigins = extractGatorSiteOrigins(gatorPermissions);
 
         // Add missing site origins with required properties
         gatorSiteOrigins.forEach((siteOrigin) => {
           if (!result[siteOrigin]) {
-            // Find the first chainId for this site to derive network info
-            let firstChainId = null;
-            Object.values(gatorPermissions).forEach((permissionTypeMap) => {
-              if (permissionTypeMap && typeof permissionTypeMap === 'object') {
-                Object.entries(permissionTypeMap).forEach(
-                  ([chainId, permissions]) => {
-                    if (
-                      Array.isArray(permissions) &&
-                      permissions.some((p) => p && p.siteOrigin === siteOrigin)
-                    ) {
-                      firstChainId = chainId;
-                    }
-                  },
-                );
-                if (firstChainId) {
-                  return; // Exit early once we find the first chainId
-                }
-              }
-            });
-
-            result[siteOrigin] = {
-              origin: siteOrigin,
-              name: getURLHostName(siteOrigin),
-              addresses: [],
-              addressToNameMap: {},
-              subjectType: SubjectType.Website,
-              networkName: firstChainId
-                ? NETWORK_TO_NAME_MAP[firstChainId] || ''
-                : '',
-              networkIconUrl: firstChainId
-                ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[firstChainId] || ''
-                : '',
-            };
+            const firstChainId = findFirstChainIdForSite(
+              gatorPermissions,
+              siteOrigin,
+            );
+            result[siteOrigin] = createSiteEntryFromGatorPermissions(
+              siteOrigin,
+              firstChainId,
+            );
           }
         });
       }

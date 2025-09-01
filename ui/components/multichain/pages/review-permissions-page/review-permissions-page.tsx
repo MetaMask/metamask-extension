@@ -7,6 +7,7 @@ import {
   NonEmptyArray,
   parseCaipAccountId,
   KnownCaipNamespace,
+  Hex,
 } from '@metamask/utils';
 import { uniq } from 'lodash';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
@@ -70,11 +71,11 @@ import { PermissionsCell } from './permissions-cell/permissions-cell';
 
 // Custom hook to handle revoking gator permissions across multiple chain IDs so we don't violate calling hooks in a function.
 const useMultiChainGatorRevoke = (chainIds: string[]) => {
-  const revokeFunctions: Record<string, any> = {};
+  const revokeFunctions: Record<string, unknown> = {};
 
   chainIds.forEach((chainId) => {
     const { revokeGatorPermissionBatch } = useRevokeGatorPermissions({
-      chainId: chainId as any,
+      chainId: chainId as Hex,
     });
     revokeFunctions[chainId] = revokeGatorPermissionBatch;
   });
@@ -105,7 +106,7 @@ export const ReviewPermissions = () => {
       setShowNetworkToast(showPermittedNetworkToastOpen);
       dispatch(hidePermittedNetworkToast());
     }
-  }, [showPermittedNetworkToastOpen]);
+  }, [showPermittedNetworkToastOpen, dispatch]);
 
   const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
@@ -141,43 +142,6 @@ export const ReviewPermissions = () => {
       }
     }
     dispatch(hidePermittedNetworkToast());
-  };
-
-  const removeAllPermissionsIncludingGator = async () => {
-    // First, remove all regular permissions
-    disconnectAllPermissions();
-
-    // Then, revoke all gator permissions grouped by chain ID
-    if (allSiteGatorPermissions.length > 0) {
-      // Group gator permissions by chain ID
-      const gatorPermissionsByChainId = allSiteGatorPermissions.reduce(
-        (acc, { permission, chainId }) => {
-          if (!acc[chainId]) {
-            acc[chainId] = [];
-          }
-          acc[chainId].push(permission);
-          return acc;
-        },
-        {} as Record<string, any[]>,
-      );
-
-      // Revoke gator permissions for each chain ID
-      for (const [chainId, permissions] of Object.entries(
-        gatorPermissionsByChainId,
-      )) {
-        try {
-          const revokeFunction = revokeFunctionsByChainId[chainId];
-          if (revokeFunction && permissions.length > 0) {
-            await revokeFunction(permissions);
-          }
-        } catch (error) {
-          console.error(
-            `Failed to revoke gator permissions for chain ${chainId}:`,
-            error,
-          );
-        }
-      }
-    }
   };
 
   const networkConfigurationsByCaipChainId = useSelector(
@@ -235,6 +199,43 @@ export const ReviewPermissions = () => {
   // Get revoke functions for each unique chain ID
   const revokeFunctionsByChainId =
     useMultiChainGatorRevoke(uniqueGatorChainIds);
+
+  const removeAllPermissionsIncludingGator = async () => {
+    // First, remove all regular permissions
+    disconnectAllPermissions();
+
+    // Then, revoke all gator permissions grouped by chain ID
+    if (allSiteGatorPermissions.length > 0) {
+      // Group gator permissions by chain ID
+      const gatorPermissionsByChainId = allSiteGatorPermissions.reduce(
+        (acc, { permission, chainId }) => {
+          if (!acc[chainId]) {
+            acc[chainId] = [];
+          }
+          acc[chainId].push(permission);
+          return acc;
+        },
+        {} as Record<string, unknown[]>,
+      );
+
+      // Revoke gator permissions for each chain ID
+      for (const [chainId, permissions] of Object.entries(
+        gatorPermissionsByChainId,
+      )) {
+        try {
+          const revokeFunction = revokeFunctionsByChainId[chainId];
+          if (revokeFunction && revokeFunction instanceof Function && permissions.length > 0) {
+            await revokeFunction(permissions);
+          }
+        } catch (error) {
+          console.error(
+            `Failed to revoke gator permissions for chain ${chainId}:`,
+            error,
+          );
+        }
+      }
+    }
+  };
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
