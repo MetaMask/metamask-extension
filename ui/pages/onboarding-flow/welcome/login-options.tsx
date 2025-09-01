@@ -183,6 +183,8 @@ export default function LoginOptions({
             <Text
               as="a"
               href="/terms-of-use"
+              target="_blank"
+              rel="noopener noreferrer"
               variant={TextVariant.bodySm}
               fontWeight={FontWeight.Medium}
               color={TextColor.primaryDefault}
@@ -195,6 +197,8 @@ export default function LoginOptions({
               variant={TextVariant.bodySm}
               fontWeight={FontWeight.Medium}
               href="/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
               color={TextColor.primaryDefault}
             >
               {t('onboardingLoginFooterPrivacyNotice')}
