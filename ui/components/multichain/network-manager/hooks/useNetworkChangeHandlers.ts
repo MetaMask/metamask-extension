@@ -1,36 +1,26 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { parseCaipChainId, type CaipChainId } from '@metamask/utils';
+import { type CaipChainId } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { convertCaipToHexChainId } from '../../../../../shared/modules/network.utils';
 import {
-  convertCaipToHexChainId,
-  getRpcDataByChainId,
-} from '../../../../../shared/modules/network.utils';
-import {
-  addPermittedChain,
   detectNfts,
   setActiveNetwork,
-  setEnabledNetworks,
-  setNetworkClientIdForDomain,
   setNextNonce,
-  showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../../store/actions';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 import {
   getAllChainsToPoll,
-  getAllDomains,
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
-  getOriginOfCurrentTab,
-  getPermittedEVMAccountsForSelectedTab,
-  getPermittedEVMChainsForSelectedTab,
   getSelectedMultichainNetworkChainId,
 } from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -63,18 +53,10 @@ export const useNetworkChangeHandlers = () => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const domains = useSelector(getAllDomains);
-  const [multichainNetworks, evmNetworks] = useSelector(
+  const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
-  const permittedChainIds = useSelector((state) =>
-    getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
-  );
-  const permittedAccountAddresses = useSelector((state) =>
-    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
-  );
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -102,79 +84,31 @@ export const useNetworkChangeHandlers = () => {
 
   const handleEvmNetworkChange = useCallback(
     (chainId: CaipChainId) => {
-      const { namespace } = parseCaipChainId(chainId);
       const hexChainId = convertCaipToHexChainId(chainId);
-      const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
-      const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
       const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
       if (!isPopularNetwork) {
-        // if custom network is enabled, select the new network and disable the custom network
-        dispatch(setEnabledNetworks([hexChainId], namespace));
+        // custom network - select single
+        dispatch(enableSingleNetwork(hexChainId));
       } else if (enabledNetworkKeys.includes(hexChainId)) {
-        const filteredPopularNetworks = enabledNetworkKeys.filter((key) =>
-          FEATURED_NETWORK_CHAIN_IDS.includes(key as `0x${string}`),
-        );
-        // deselect if selected
-        const filteredEnabledNetworks = filteredPopularNetworks.filter(
-          (key) => key !== hexChainId,
-        );
-        dispatch(
-          setEnabledNetworks(
-            filteredEnabledNetworks as CaipChainId[],
-            namespace,
-          ),
-        );
+        // selecting network if already selected, does nothing (no deselect)
+        // just to be safe, we will select single
+        dispatch(enableSingleNetwork(hexChainId));
       } else {
-        const filteredPopularNetworks = enabledNetworkKeys.filter((key) =>
-          FEATURED_NETWORK_CHAIN_IDS.includes(key as `0x${string}`),
-        );
-        // multiselect default networks
-        dispatch(
-          setEnabledNetworks(
-            [...filteredPopularNetworks, hexChainId] as CaipChainId[],
-            namespace,
-          ),
-        );
-      }
-
-      // If presently on a dapp, communicate a change to
-      // the dapp via silent switchEthereumChain that the
-      // network has changed due to user action
-      if (selectedTabOrigin && domains[selectedTabOrigin]) {
-        // setActiveNetwork should be called before setNetworkClientIdForDomain
-        // to ensure that the isConnected value can be accurately inferred from
-        // NetworkController.state.networksMetadata in return value of
-        // `metamask_getProviderState` requests and `metamask_chainChanged` events.
-        setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId);
-      }
-
-      if (permittedAccountAddresses.length > 0) {
-        dispatch(addPermittedChain(selectedTabOrigin, chainId));
-        if (!permittedChainIds.includes(hexChainId)) {
-          dispatch(showPermittedNetworkToast());
-        }
+        // selecting a popular network - select single
+        dispatch(enableSingleNetwork(hexChainId));
       }
     },
-    [
-      evmNetworks,
-      dispatch,
-      enabledNetworksByNamespace,
-      selectedTabOrigin,
-      domains,
-      permittedAccountAddresses.length,
-      permittedChainIds,
-    ],
+    [dispatch, enabledNetworksByNamespace],
   );
 
   const handleNonEvmNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
-      const { namespace } = parseCaipChainId(chainId);
       dispatch(setActiveNetwork(chainId));
-      dispatch(setEnabledNetworks([chainId], namespace));
+      dispatch(enableSingleNetwork(chainId));
     },
     [dispatch],
   );
