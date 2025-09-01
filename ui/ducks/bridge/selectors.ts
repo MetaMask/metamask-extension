@@ -629,8 +629,6 @@ export const getValidationErrors = createDeepEqualSelector(
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
-    console.log('bridge selector: bridge selector')
-    console.log('bridge selector: bridge selector: isTxAlertPresent', Boolean(txAlert))
     const isNoQuotesAvailable = Boolean(
       !activeQuote &&
       isValidQuoteRequest(quoteRequest) &&
@@ -638,23 +636,6 @@ export const getValidationErrors = createDeepEqualSelector(
       !isLoading &&
       quotesRefreshCount > 0,
     );
-
-    if (!activeQuote) {
-      console.log('bridge selector: No active quote');
-    }
-    if (!isValidQuoteRequest(quoteRequest)) {
-      console.log('bridge selector: Quote request is not valid', quoteRequest);
-    }
-    if (!quotesLastFetchedMs) {
-      console.log('bridge selector: Quotes last fetched ms is falsy', quotesLastFetchedMs);
-    }
-    if (isLoading) {
-      console.log('bridge selector: Quotes are loading');
-    }
-    if (!(quotesRefreshCount > 0)) {
-      console.log('bridge selector: Quotes refresh count is not greater than 0', quotesRefreshCount);
-    }
-    console.log('bridge selector: isNoQuotesAvailable:', isNoQuotesAvailable);
 
     return {
       isTxAlertPresent: Boolean(txAlert),

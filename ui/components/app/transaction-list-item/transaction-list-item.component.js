@@ -90,8 +90,12 @@ function TransactionListItemInner({
   const dispatch = useDispatch();
 
   // Bridge transactions
-  const isBridgeTx =
-    transactionGroup.initialTransaction.type === TransactionType.bridge;
+  const initialTx = transactionGroup.initialTransaction;
+  const isBridgeTx = initialTx.type === TransactionType.bridge;
+  const isSwapTx = initialTx.type === TransactionType.swap;
+  const isIntentTx = initialTx.swapMetaData?.isIntentTx || initialTx.isIntentTx;
+  const orderUid = initialTx.swapMetaData?.orderUid || initialTx.orderUid;
+
   const {
     bridgeTxHistoryItem,
     isBridgeComplete,
@@ -101,6 +105,7 @@ function TransactionListItemInner({
     transactionGroup,
     isEarliestNonce,
   });
+
   const isUnifiedSwapTx =
     (isBridgeTx ||
       transactionGroup.initialTransaction.type === TransactionType.swap) &&

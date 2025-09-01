@@ -37,9 +37,17 @@ export function useBridgeTxHistoryData({
   const txMeta = transactionGroup.initialTransaction;
   const srcTxMetaId = txMeta.id;
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
-  const bridgeHistoryItem = srcTxMetaId
-    ? bridgeHistory[srcTxMetaId]
-    : undefined;
+
+  // First try direct lookup by transaction ID
+  let bridgeHistoryItem = srcTxMetaId ? bridgeHistory[srcTxMetaId] : undefined;
+
+  // If not found, try to find by originalTransactionId for intent transactions
+  if (!bridgeHistoryItem && srcTxMetaId) {
+    const matchingEntry = Object.entries(bridgeHistory).find(
+      ([_, historyItem]) => (historyItem as any).originalTransactionId === srcTxMetaId
+    );
+    bridgeHistoryItem = matchingEntry ? matchingEntry[1] : undefined;
+  }
 
   // By complete, this means BOTH source and dest tx are confirmed
   const isBridgeComplete = bridgeHistoryItem

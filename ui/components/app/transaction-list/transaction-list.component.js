@@ -160,14 +160,17 @@ const getTransactionGroupRecipientAddressFilterAllChain = (
 };
 
 const tokenTransactionFilter = ({
-  initialTransaction: { type, destinationTokenSymbol, sourceTokenSymbol },
+  initialTransaction: { type, destinationTokenSymbol, sourceTokenSymbol, swapMetaData },
 }) => {
+  const isIntentTx = swapMetaData?.isIntentTx;
   if (TOKEN_CATEGORY_HASH[type]) {
     return false;
   } else if (
     [TransactionType.swap, TransactionType.swapAndSend].includes(type)
   ) {
-    return destinationTokenSymbol === 'ETH' || sourceTokenSymbol === 'ETH';
+    const hasEth = destinationTokenSymbol === 'ETH' || sourceTokenSymbol === 'ETH';
+    // Allow intent transactions through even if they don't involve ETH
+    return hasEth || isIntentTx;
   }
   return true;
 };
@@ -216,6 +219,11 @@ const groupTransactionsByDate = (
 
   transactionGroups.forEach((transactionGroup) => {
     const timestamp = getTransactionTimestamp(transactionGroup);
+
+    if (!timestamp || isNaN(timestamp)) {
+      return; // Skip transactions with invalid timestamps
+    }
+
     const date = formatDateWithYearContext(timestamp, 'MMM d, y', 'MMM d');
 
     const existingGroup = groupedTransactions.find(
@@ -296,11 +304,18 @@ export const filterTransactionsByToken = (
 
 // Remove transaction groups with no transactions
 const removeTxGroupsWithNoTx = (dateGroup) => {
+  const originalCount = dateGroup.transactionGroups?.length || 0;
   dateGroup.transactionGroups = dateGroup.transactionGroups.filter(
     (transactionGroup) => {
-      return transactionGroup.transactions.length > 0;
+      const hasTransactions = transactionGroup.transactions.length > 0;
+      const isIntentTx = transactionGroup.initialTransaction?.swapMetaData?.isIntentTx;
+
+      // Allow intent transactions through even if they have no transactions array
+      return hasTransactions || isIntentTx;
     },
   );
+
+  const filteredCount = dateGroup.transactionGroups?.length || 0;
 
   return dateGroup;
 };
@@ -473,15 +488,16 @@ export default function TransactionList({
   };
 
   const pendingTransactions = useMemo(
-    () =>
-      groupEvmTransactionsByDate(
-        getFilteredTransactionGroups(
-          unfilteredPendingTransactions,
-          hideTokenTransactions,
-          tokenAddress,
-          chainId,
-        ),
-      ),
+    () => {
+      const filtered = getFilteredTransactionGroups(
+        unfilteredPendingTransactions,
+        hideTokenTransactions,
+        tokenAddress,
+        chainId,
+      );
+
+      return groupEvmTransactionsByDate(filtered);
+    },
     [
       unfilteredPendingTransactions,
       hideTokenTransactions,
@@ -491,16 +507,25 @@ export default function TransactionList({
   );
 
   const completedTransactions = useMemo(
-    () =>
-      groupEvmTransactionsByDate(
-        getFilteredTransactionGroupsAllChains(
-          isGlobalNetworkSelectorRemoved
-            ? enabledNetworksFilteredCompletedTransactions
-            : unfilteredCompletedTransactions,
-          hideTokenTransactions,
-          tokenAddress,
-        ),
-      ),
+    () => {
+      const baseTransactions = isGlobalNetworkSelectorRemoved
+        ? enabledNetworksFilteredCompletedTransactions
+        : unfilteredCompletedTransactions;
+
+      const intentGroups = baseTransactions?.filter(group =>
+        group.transactions.some(tx => tx.swapMetaData?.isIntentTx)
+      ) || [];
+
+      const filtered = getFilteredTransactionGroupsAllChains(
+        baseTransactions,
+        hideTokenTransactions,
+        tokenAddress,
+      );
+
+      const grouped = groupEvmTransactionsByDate(filtered);
+
+      return grouped;
+    },
     [
       hideTokenTransactions,
       tokenAddress,
@@ -773,8 +798,11 @@ export default function TransactionList({
             )}
             <Box className="transaction-list__completed-transactions">
               {completedTransactions.length > 0
-                ? completedTransactions
-                    .map(removeIncomingTxsButToAnotherAddress)
+                ? (() => {
+                    const afterRemoveIncoming = completedTransactions.map(removeIncomingTxsButToAnotherAddress);
+
+                    return afterRemoveIncoming;
+                  })()
                     .map(removeTxGroupsWithNoTx)
                     .filter(dateGroupsWithTransactionGroups)
                     .slice(0, limit)

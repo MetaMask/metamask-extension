@@ -50,7 +50,8 @@ export const submitIntent = (params: {
 }) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     const { quote, signature, accountAddress } = params;
-    return dispatch(
+
+    const result = await dispatch(
       // Keep parity with submitTx helper wiring
       callBridgeStatusControllerMethod<[
         {
@@ -62,5 +63,7 @@ export const submitIntent = (params: {
         { quoteResponse: quote, signature, accountAddress },
       ]),
     );
+
+    return result;
   };
 };
