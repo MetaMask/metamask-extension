@@ -27,7 +27,7 @@ const renderUseIsMultichainSwap = (
 };
 
 describe('useIsMultichainSwap', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
