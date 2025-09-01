@@ -403,7 +403,12 @@ describe('MetaMaskController', () => {
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
-        initState: cloneDeep(firstTimeState),
+        initState: {
+          ...cloneDeep(firstTimeState),
+          PreferencesController: {
+            useExternalServices: false,
+          },
+        },
         initLangCode: 'en_US',
         platform: {
           showTransactionNotification: () => undefined,
