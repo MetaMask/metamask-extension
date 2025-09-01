@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import LavamoatPlugin from '@lavamoat/webpack';
+import LavamoatPlugin from '../../../../../../LavaMoat/packages/webpack/src/plugin.js';
 
 export const lavamoatPlugin = new LavamoatPlugin({
   rootDir: join(__dirname, '../../../../../'), // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up. This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
@@ -19,9 +19,14 @@ export const lavamoatPlugin = new LavamoatPlugin({
     errorTrapping: 'none',
     reporting: 'none',
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  staticShims_experimental: [
+    join(__dirname, '../../../../../node_modules/@lavamoat/snow/snow.prod.js'),
+    join(__dirname, '../../../../../app/scripts/use-snow.js'),
+  ],
   scuttleGlobalThis: {
     enabled: true,
-    // scuttlerName: 'SCUTTLER',
+    scuttlerName: 'SCUTTLER',
     exceptions: [
       // globals used by different mm deps outside of lm compartment
       'Proxy',
@@ -48,7 +53,6 @@ export const lavamoatPlugin = new LavamoatPlugin({
       'AbortController',
       'OffscreenCanvas', // Used by browser to generate notifications
       // globals chromedriver needs to function
-      // @ts-expect-error - regex is not included in the types for some reason
       /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
       'name',
       'performance',
