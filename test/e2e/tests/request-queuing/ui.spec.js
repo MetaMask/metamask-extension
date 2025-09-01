@@ -1,6 +1,10 @@
 const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
 const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
+const {
+  default: NetworkManager,
+  NetworkId,
+} = require('../../page-objects/pages/network-manager');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -32,6 +36,7 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 
   // Connect to the dapp
   await driver.clickElement({ text: 'Connect', tag: 'button' });
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.clickElementAndWaitForWindowToClose({
@@ -199,13 +204,10 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement('[data-testid="sort-by-networks"]');
-        await driver.clickElement({
-          text: 'Custom',
-          tag: 'button',
-        });
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Custom');
         await driver.clickElement('[data-testid="Localhost 8546"]');
-        await driver.clickElement('[data-testid="modal-header-close-button"]');
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -339,37 +341,25 @@ describe('Request-queue UI changes', function () {
         // Wait for transaction to be completed on final confirmation
         await driver.delay(veryLargeDelayMs);
 
+        const networkManager = new NetworkManager(driver);
+
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
-          await driver.clickElement('[data-testid="sort-by-networks"]');
-          await driver.clickElement({
-            text: 'Custom',
-            tag: 'button',
-          });
+          await networkManager.openNetworkManager();
+          await networkManager.selectTab('Custom');
           await driver.clickElement('[data-testid="Localhost 7777"]');
-          await driver.clickElement(
-            '[data-testid="modal-header-close-button"]',
-          );
           await validateBalanceAndActivity(driver, '24.9998');
         }
 
-        await driver.clickElement('[data-testid="sort-by-networks"]');
-        await driver.clickElement({
-          text: 'Custom',
-          tag: 'button',
-        });
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Custom');
         await driver.clickElement('[data-testid="Localhost 8546"]');
-        await driver.clickElement('[data-testid="modal-header-close-button"]');
 
         await validateBalanceAndActivity(driver, '25', 0);
 
-        await driver.clickElement('[data-testid="sort-by-networks"]');
-        await driver.clickElement({
-          text: 'Custom',
-          tag: 'button',
-        });
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Custom');
         await driver.clickElement('[data-testid="Localhost 8545"]');
-        await driver.clickElement('[data-testid="modal-header-close-button"]');
 
         await validateBalanceAndActivity(driver, '24.9998');
       },
@@ -418,12 +408,12 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement('[data-testid="sort-by-networks"]');
-        await driver.clickElement({
-          text: 'Custom',
-          tag: 'button',
-        });
+        // Open Network Manager and delete custom network
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Custom');
 
+        // Delete network
         const networkRow = await driver.findElement({
           css: '.multichain-network-list-item',
           text: 'Localhost 8545',
@@ -480,15 +470,12 @@ describe('Request-queue UI changes', function () {
         // Open the popup with shimmed activeTabOrigin
         await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
-        // Switch to mainnet
-        await driver.clickElement('[data-testid="sort-by-networks"]');
-        await driver.clickElement({
-          text: 'Default',
-        });
-        await driver.clickElement({
-          text: 'Ethereum Mainnet',
-          tag: 'p',
-        });
+        // Switch to mainnet using per-dapp connected network flow
+        await driver.clickElement('[data-testid="connection-menu"]');
+        await driver.clickElement(
+          '[data-testid="connected-site-popover-network-button"]',
+        );
+        await driver.clickElement('[data-testid="Ethereum Mainnet"]');
 
         // Switch back to the Dapp tab
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -512,7 +499,6 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleNode()
           .withEnabledNetworks({
             eip155: {
-              '0x1': true,
               '0x539': true,
             },
           })
@@ -549,26 +535,12 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement('[data-testid="sort-by-networks"]');
-        await driver.clickElement({
-          text: 'Default',
-        });
-        // Check if Ethereum Mainnet is selected (checkbox is checked)
-        const networkRow = await driver.findElement({
-          css: '.multichain-network-list-item',
-          text: 'Ethereum Mainnet',
-        });
-
-        const checkedCheckbox = await driver.findNestedElement(
-          networkRow,
-          'input.mm-checkbox__input--checked[type="checkbox"][checked]',
-        );
-
-        // Verify the checkbox is found (network is enabled)
-        assert.ok(
-          checkedCheckbox,
-          'Ethereum Mainnet checkbox should be checked',
-        );
+        // Check if Ethereum Mainnet is selected
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await networkManager.closeNetworkManager();
 
         // Kill local node servers
         await localNodes[0].quit();
@@ -639,31 +611,12 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement('[data-testid="sort-by-networks"]');
-        await driver.clickElement({
-          text: 'Default',
-        });
-        await driver.waitForSelector({
-          text: 'Ethereum Mainnet',
-          tag: 'p',
-        });
-
-        // Check if Ethereum Mainnet is selected (checkbox is checked)
-        const networkRow = await driver.findElement({
-          css: '.multichain-network-list-item',
-          text: 'Ethereum Mainnet',
-        });
-
-        const checkedCheckbox = await driver.findNestedElement(
-          networkRow,
-          'input.mm-checkbox__input--checked[type="checkbox"][checked]',
-        );
-
-        // Verify the checkbox is found (network is enabled)
-        assert.ok(
-          checkedCheckbox,
-          'Ethereum Mainnet checkbox should be checked',
-        );
+        // Check if Ethereum Mainnet is selected
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await networkManager.closeNetworkManager();
 
         // Kill local node servers
         await localNodes[0].quit();
