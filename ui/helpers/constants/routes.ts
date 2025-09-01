@@ -42,6 +42,12 @@ export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
+export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
+  '/multichain-account-address-list';
+export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
+  '/multichain-account-details';
+export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
+  '/multichain-wallet-details-page';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 export const ACCOUNT_DETAILS_ROUTE = '/account-details';
 export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
@@ -113,6 +119,7 @@ export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
+export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
@@ -131,6 +138,16 @@ export const ROUTES = [
   {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`,
+    label: 'Account Details Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`,
+    label: 'Wallet Details Page',
     trackInAnalytics: true,
   },
   {
