@@ -48,8 +48,8 @@ function publish_tag() {
 current_commit_msg=$(git show -s --format='%s' HEAD)
 
 # Validate commit message format to prevent injection
-# Matches "Version v12.0.0" or "Version-v12.0.0"
-if [[ "${current_commit_msg}" =~ Version( |-)(v[0-9]+\.[0-9]+\.[0-9]+) ]]; then
+# Matches "Version v12.0.0" or "Version-v12.0.0" at the start of the message
+if [[ "${current_commit_msg}" =~ ^Version( |-)(v[0-9]+\.[0-9]+\.[0-9]+) ]]; then
     tag="${BASH_REMATCH[2]}"
     # Additional validation of extracted tag
     if ! [[ "${tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
