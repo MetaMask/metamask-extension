@@ -35,6 +35,7 @@ import {
   getFromTokenConversionRate,
   getToTokenConversionRate,
   getFromTokenBalance,
+  getFromAccount,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -71,6 +72,40 @@ describe('Bridge selectors', () => {
           },
         ],
       });
+    });
+
+    it('returns solana network', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+          },
+          balances: {
+            'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
+              [getNativeAssetForChainId(MultichainNetworks.SOLANA).assetId]: {
+                amount: '2',
+              },
+            },
+          },
+        },
+      });
+
+      const result = getFromChain(state as never);
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        }),
+      );
     });
   });
 
@@ -1725,18 +1760,10 @@ describe('Bridge selectors', () => {
         },
         metamaskStateOverrides: {
           internalAccounts: {
-            selectedAccount: 'test-account-id',
-            accounts: {
-              'test-account-id': {
-                id: 'test-account-id',
-                type: SolAccountType.DataAccount,
-                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
-                scopes: [SolScope.Mainnet],
-              },
-            },
+            selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
           },
           balances: {
-            'test-account-id': {
+            'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
               [getNativeAssetForChainId(MultichainNetworks.SOLANA).assetId]: {
                 amount: '2',
               },
@@ -1744,6 +1771,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
+
       const result = getFromTokenBalance(state as never);
       expect(result).toBe('2');
     });
@@ -1761,6 +1789,53 @@ describe('Bridge selectors', () => {
       });
       const result = getFromTokenBalance(state as never);
       expect(result).toBe('2');
+    });
+  });
+
+  describe('getFromAccount', () => {
+    it('should return the selected Solana account', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+          },
+          balances: {
+            'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
+              [getNativeAssetForChainId(MultichainNetworks.SOLANA).assetId]: {
+                amount: '2',
+              },
+            },
+          },
+        },
+      });
+
+      const result = getFromAccount(state as never);
+      expect(result).toMatchObject({
+        id: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+        type: SolAccountType.DataAccount,
+        address: 'ABCDEu4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
+      });
+    });
+
+    it('should return the selected EVM account', () => {
+      const state = createBridgeMockStore({});
+      const result = getFromAccount(state as never);
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        }),
+      );
     });
   });
 
