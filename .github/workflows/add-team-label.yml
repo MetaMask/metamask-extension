@@ -1,5 +1,5 @@
 name: Add team label
-
+run-on: self-hosted
 on:
   pull_request:
     types:
