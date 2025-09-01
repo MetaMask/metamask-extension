@@ -4896,7 +4896,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:1.2.0":
+"@lavamoat/webpack@npm:^1.2.0":
   version: 1.2.0
   resolution: "@lavamoat/webpack@npm:1.2.0"
   dependencies:
@@ -4908,21 +4908,6 @@ __metadata:
   peerDependencies:
     webpack: ^5.80.2
   checksum: 10/bef023b5e044f5f458b2cf4324286ffa538cebebdca39bf63ebb4b8011dbd5fee22febf964a28a037758e30ecc1f21fc74ea5fcd3d4aff1869a5211a498f0477
-  languageName: node
-  linkType: hard
-
-"@lavamoat/webpack@patch:@lavamoat/webpack@npm%3A1.2.0#~/.yarn/patches/@lavamoat-webpack-npm-1.2.0-e7e178500d.patch":
-  version: 1.2.0
-  resolution: "@lavamoat/webpack@patch:@lavamoat/webpack@npm%3A1.2.0#~/.yarn/patches/@lavamoat-webpack-npm-1.2.0-e7e178500d.patch::version=1.2.0&hash=d23237"
-  dependencies:
-    "@lavamoat/aa": "npm:^4.3.4"
-    browser-resolve: "npm:2.0.0"
-    json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^16.5.1"
-    ses: "npm:1.14.0"
-  peerDependencies:
-    webpack: ^5.80.2
-  checksum: 10/2f98fce674261cc5791347a1d18a3f25c8e0ef8dc5a1480695a07936c2c4993475f445640398d7db067754feeb5591a1fb0c836897efabc23f40be10fdbc9e07
   languageName: node
   linkType: hard
 
@@ -31757,7 +31742,7 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.5"
     "@lavamoat/snow": "npm:^2.0.3"
-    "@lavamoat/webpack": "patch:@lavamoat/webpack@npm%3A1.2.0#~/.yarn/patches/@lavamoat-webpack-npm-1.2.0-e7e178500d.patch"
+    "@lavamoat/webpack": "npm:^1.2.0"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"

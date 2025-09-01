@@ -174,22 +174,6 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
-      // snow scripts that cannot be bundled/transpiled
-      {
-        from: join(
-          context,
-          '../',
-          'node_modules',
-          '@lavamoat',
-          'snow',
-          'snow.js',
-        ),
-        to: 'snow.prod.js',
-      },
-      {
-        from: join(context, 'scripts', 'use-snow.js'),
-        to: 'use-snow.js',
-      },
     ],
   }),
 ];

@@ -21,7 +21,7 @@ export const lavamoatPlugin = new LavamoatPlugin({
   },
   scuttleGlobalThis: {
     enabled: true,
-    scuttlerName: 'SCUTTLER',
+    // scuttlerName: 'SCUTTLER',
     exceptions: [
       // globals used by different mm deps outside of lm compartment
       'Proxy',
