@@ -28,7 +28,10 @@ import {
   getWallet,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
-import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
 
 export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
@@ -102,6 +105,11 @@ export const MultichainAccountDetailsPage = () => {
                 ariaLabel={t('addresses')}
                 marginLeft={2}
                 data-testid="network-addresses-link"
+                onClick={() => {
+                  history.push(
+                    `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+                  );
+                }}
               />
             }
           />

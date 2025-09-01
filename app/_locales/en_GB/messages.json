@@ -141,6 +141,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountSmallCase": {
+    "message": "account"
+  },
   "accountTypeNotSupported": {
     "message": "Account type not supported"
   },
@@ -170,6 +173,9 @@
   },
   "addACustomNetwork": {
     "message": "Add a custom network"
+  },
+  "addAHardwareWallet": {
+    "message": "Add a hardware wallet"
   },
   "addANetwork": {
     "message": "Add a network"
@@ -308,6 +314,9 @@
   },
   "addUrl": {
     "message": "Add URL"
+  },
+  "addWallet": {
+    "message": "Add wallet"
   },
   "addingAccount": {
     "message": "Adding account"
@@ -650,6 +659,9 @@
   },
   "autoLockTimeLimitDescription": {
     "message": "Set the idle time in minutes before MetaMask will become locked."
+  },
+  "available": {
+    "message": "available"
   },
   "average": {
     "message": "Average"
@@ -2793,6 +2805,9 @@
     "message": "$1 about how imported keys work",
     "description": "$1 is a link to learn more about imported keys"
   },
+  "importAnAccount": {
+    "message": "Import an account"
+  },
   "importNFT": {
     "message": "Import NFT"
   },
@@ -3137,6 +3152,9 @@
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum transaction's input data isn't sufficiently padded."
   },
+  "ledgerEthAppNftNotSupportedNotification": {
+    "message": "Ledger Nano S can't send or manage Ethereum NFTs. See upgrade options at https://shop.ledger.com/pages/ledger-nano-s-upgrade-program"
+  },
   "ledgerFirefoxNotSupportedDescription1": {
     "message": "We're having trouble connecting to Ledger. Check out our "
   },
@@ -3221,6 +3239,9 @@
   },
   "lockMetaMask": {
     "message": "Lock MetaMask"
+  },
+  "lockMetaMaskLoadingMessage": {
+    "message": "Locking MetaMask..."
   },
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
@@ -4837,6 +4858,10 @@
   },
   "received": {
     "message": "Received"
+  },
+  "receivingAddress": {
+    "message": "Receiving address",
+    "description": "Page title when viewing addresses for receiving funds"
   },
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"

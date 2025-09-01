@@ -60,6 +60,7 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
@@ -142,6 +143,7 @@ import { type Confirmation } from '../confirmations/types/confirm';
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
+import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { AccountList } from '../multichain-accounts/account-list';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import {
@@ -593,6 +595,11 @@ export default function Routes() {
           <Authenticated
             path={ACCOUNT_LIST_PAGE_ROUTE}
             component={AccountList}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
+            component={MultichainAccountAddressListPage}
             exact
           />
           <Authenticated
