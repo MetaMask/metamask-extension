@@ -378,15 +378,6 @@ describe('MetaMaskController', () => {
   describe('MetaMaskController Behaviour', () => {
     let metamaskController;
 
-    async function simulatePreferencesChange(preferences) {
-      metamaskController.controllerMessenger.publish(
-        'PreferencesController:stateChange',
-        preferences,
-        getMockPatches(),
-      );
-      await flushPromises();
-    }
-
     beforeEach(() => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
 
