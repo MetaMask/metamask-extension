@@ -80,6 +80,13 @@ export const findAssetByAddress = <TItem extends { address: string }>(
 
   const tokens = data[chainId];
 
+  console.log('OOOOOOO 1', {
+    data,
+    address,
+    chainId,
+    tokens,
+  });
+
   if (!tokens) {
     console.warn(`No tokens found for chainId: ${chainId}`);
     return null;

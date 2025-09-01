@@ -10,6 +10,7 @@ import {
   CaipAssetType,
   CaipChainId,
   Hex,
+  isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
@@ -35,6 +36,7 @@ import {
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
 import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -220,15 +222,9 @@ export const getMultiChainAssets = createDeepEqualSelector(
     assetRates,
     preferences,
   ) => {
-    console.log('AAAAA');
     const { hideZeroBalanceTokens } = preferences;
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
-
-    console.log('XXXXX', {
-      assetIds,
-      balances,
-    });
 
     const allAssets: TokenWithFiatAmount[] = [];
     assetIds.forEach((assetId: CaipAssetId) => {
@@ -301,35 +297,41 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
     tokenAddress?: Hex | CaipAssetType | string,
     chainId?: Hex | CaipChainId,
   ) => {
-    const accountToUse = account ?? getSelectedInternalAccount(state);
+    const accountToUse =
+      account ??
+      (isCaipChainId(chainId)
+        ? getInternalAccountBySelectedAccountGroupAndCaip(state, chainId)
+        : getSelectedInternalAccount(state));
 
-    console.log('getTokenByAccountAndAddressAndChainId', {
-      chainId,
-      accountToUse,
-      account,
-      xxxxx: getSelectedInternalAccount(state),
-      xxx: chainId?.startsWith('0x')
-        ? 'xxxxx'
-        : getMultiChainAssets(state, accountToUse),
-    });
-
-    const assetsToSearch = chainId?.startsWith('0x')
-      ? (getSelectedAccountTokensAcrossChains(state) as Record<
-          Hex,
+    const assetsToSearch = isCaipChainId(chainId)
+      ? (groupBy(getMultiChainAssets(state, accountToUse), 'chainId') as Record<
+          CaipChainId,
           TokenWithFiatAmount[]
         >)
-      : (groupBy(getMultiChainAssets(state, accountToUse), 'chainId') as Record<
-          CaipChainId,
+      : (getSelectedAccountTokensAcrossChains(state) as Record<
+          Hex,
           TokenWithFiatAmount[]
         >);
 
-    console.log('getTokenByAccountAndAddressAndChainId 2', {
+    const realTokenAddress = isCaipChainId(chainId)
+      ? `${chainId}/${tokenAddress}`
+      : tokenAddress;
+
+    console.log('getTokenByAccountAndAddressAndChainId', {
       assetsToSearch,
+      tokenAddress,
+      chainId,
+      accountToUse,
+      realTokenAddress,
     });
 
-    const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
+    const result = findAssetByAddress(
+      assetsToSearch,
+      realTokenAddress,
+      chainId,
+    );
 
-    console.log('getTokenByAccountAndAddressAndChainId 3', {
+    console.log('getTokenByAccountAndAddressAndChainId RESULT', {
       result,
     });
 
