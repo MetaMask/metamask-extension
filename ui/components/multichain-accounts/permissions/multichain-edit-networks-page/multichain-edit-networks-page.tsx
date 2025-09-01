@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -60,32 +60,36 @@ export const MultichainEditNetworksPage: React.FC<
     defaultSelectedChainIds,
   );
 
-  const selectAll = () => {
-    const allNetworksChainIds = allNetworks.map(
-      ({ caipChainId }) => caipChainId,
-    );
+  const allNetworksChainIds = useMemo(() => {
+    return allNetworks.map(({ caipChainId }) => caipChainId);
+  }, [allNetworks]);
+
+  const selectAll = useCallback(() => {
     setSelectedChainIds(allNetworksChainIds);
-  };
+  }, [allNetworksChainIds]);
 
   const deselectAll = () => {
     setSelectedChainIds([]);
   };
 
-  const handleNetworkClick = (chainId: CaipChainId) => {
-    if (selectedChainIds.includes(chainId)) {
-      setSelectedChainIds(
-        selectedChainIds.filter((_chainId) => _chainId !== chainId),
-      );
-    } else {
-      setSelectedChainIds([...selectedChainIds, chainId]);
-    }
-  };
+  const handleNetworkClick = useCallback(
+    (chainId: CaipChainId) => {
+      if (selectedChainIds.includes(chainId)) {
+        setSelectedChainIds(
+          selectedChainIds.filter((_chainId) => _chainId !== chainId),
+        );
+      } else {
+        setSelectedChainIds([...selectedChainIds, chainId]);
+      }
+    },
+    [selectedChainIds],
+  );
 
-  const allAreSelected = () => {
+  const allAreSelected = useMemo(() => {
     return allNetworks.length === selectedChainIds.length;
-  };
+  }, [allNetworks, selectedChainIds]);
 
-  const checked = allAreSelected();
+  const checked = allAreSelected;
   const isIndeterminate = !checked && selectedChainIds.length > 0;
 
   const defaultChainIdsSet = new Set(defaultSelectedChainIds);
