@@ -5515,19 +5515,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^2.1.0":
-  version: 2.6.1
-  resolution: "@metamask/auto-changelog@npm:2.6.1"
-  dependencies:
-    diff: "npm:^5.0.0"
-    execa: "npm:^5.1.1"
-    semver: "npm:^7.3.5"
-    yargs: "npm:^17.0.1"
-  bin:
-    auto-changelog: dist/cli.js
-  checksum: 10/a6705126d7c555e69ce9002e10fec3b878e73037a98bb632d7c0f6e3637031b39ffa8cb6ed67ae01089a3fc56ca35b84c76574fb2dcfc275585bbe5a6e3cd933
+"@metamask/auto-changelog@link:../auto-changelog::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/auto-changelog@link:../auto-changelog::locator=metamask-crx%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@metamask/base-controller@npm:^7.0.1":
   version: 7.1.1
@@ -21576,13 +21568,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff@npm:^5.0.0":
-  version: 5.2.0
-  resolution: "diff@npm:5.2.0"
-  checksum: 10/01b7b440f83a997350a988e9d2f558366c0f90f15be19f4aa7f1bb3109a4e153dfc3b9fbf78e14ea725717017407eeaa2271e3896374a0181e8f52445740846d
-  languageName: node
-  linkType: hard
-
 "diffable-html@npm:^4.1.0":
   version: 4.1.0
   resolution: "diffable-html@npm:4.1.0"
@@ -31788,7 +31773,7 @@ __metadata:
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A75.2.0#~/.yarn/patches/@metamask-assets-controllers-npm-75.2.0-900afb3754.patch"
-    "@metamask/auto-changelog": "npm:^2.1.0"
+    "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.0.0"
     "@metamask/bridge-controller": "npm:^43.0.0"
@@ -44382,7 +44367,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:17.7.2, yargs@npm:^17.0.1, yargs@npm:^17.3.1, yargs@npm:^17.7.2":
+"yargs@npm:17.7.2, yargs@npm:^17.3.1, yargs@npm:^17.7.2":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:
