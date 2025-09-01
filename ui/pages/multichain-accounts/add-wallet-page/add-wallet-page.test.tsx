@@ -57,6 +57,7 @@ describe('AddWalletPage', () => {
     renderComponent();
 
     expect(screen.getByText('Add wallet')).toBeInTheDocument();
+    expect(screen.getByText('Private key')).toBeInTheDocument();
     expect(screen.getByTestId(backButtonTestId)).toBeInTheDocument();
   });
 

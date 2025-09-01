@@ -5,13 +5,15 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Text,
+  TextVariant,
 } from '@metamask/design-system-react';
 import {
   Content,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import { TextVariant as LegacyTextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ImportAccount } from '../../../components/multichain/import-account/import-account';
 
@@ -37,7 +39,7 @@ export const AddWalletPage = () => {
     <Page className="max-w-[600px]">
       <Header
         textProps={{
-          variant: TextVariant.headingSm,
+          variant: LegacyTextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -52,6 +54,7 @@ export const AddWalletPage = () => {
         {t('addWallet')}
       </Header>
       <Content>
+        <Text variant={TextVariant.HeadingSm}>{t('privateKey')}</Text>
         <ImportAccount onActionComplete={onActionComplete} />
       </Content>
     </Page>
