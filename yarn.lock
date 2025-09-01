@@ -6598,13 +6598,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/messenger@npm:0.1.0"
-  checksum: 10/5d6105865255e72571df143c648ebfb42b04ead24cd6bade758f0340eafba3790d9ff0818bd06fbda17799e3253ac05df51d9e13ebfd0c710e68fd1c0d1007a9
-  languageName: node
-  linkType: hard
-
 "@metamask/metamask-eth-abis@npm:^3.1.1":
   version: 3.1.1
   resolution: "@metamask/metamask-eth-abis@npm:3.1.1"
