@@ -27,6 +27,7 @@ export const AmountInputType = {
 
 export const AmountInputMethod = {
   Manual: 'manual',
+  Pasted: 'pasted',
   PressedMax: 'pressed_max',
 };
 
@@ -85,6 +86,7 @@ export const SendMetricsContextProvider: React.FC<{
     if (!internalAccounts?.length || !from || !isEvmAddress(from as string)) {
       return undefined;
     }
+    // todo: account can be used from send context if we add it
     const fromAccount = Object.values(internalAccounts).find((account) =>
       isEqualCaseInsensitive(account.address, from),
     );

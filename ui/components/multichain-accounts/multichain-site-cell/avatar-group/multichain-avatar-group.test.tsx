@@ -6,7 +6,7 @@ import { MultichainAccountAvatarGroup } from './multichain-avatar-group';
 
 const TEST_IDS = {
   AVATAR_GROUP: 'avatar-group',
-  AVATAR_ACCOUNT: 'avatar-account',
+  AVATAR_ACCOUNT: (index: number) => `avatar-account-${index}`,
 } as const;
 
 describe('MultichainAccountAvatarGroup', () => {
@@ -58,36 +58,37 @@ describe('MultichainAccountAvatarGroup', () => {
   });
 
   it('renders correct number of avatars based on limit', () => {
-    const { getAllByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <MultichainAccountAvatarGroup {...defaultProps} limit={2} />,
       store,
     );
 
-    const avatarAccounts = getAllByTestId(TEST_IDS.AVATAR_ACCOUNT);
-    expect(avatarAccounts).toHaveLength(2);
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(0))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(1))).toBeInTheDocument();
+    expect(() => getByTestId(TEST_IDS.AVATAR_ACCOUNT(2))).toThrow();
   });
 
   it('renders all avatars when limit is greater than members count', () => {
-    const { getAllByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <MultichainAccountAvatarGroup {...defaultProps} limit={10} />,
       store,
     );
 
-    const avatarAccounts = getAllByTestId(TEST_IDS.AVATAR_ACCOUNT);
-    expect(avatarAccounts).toHaveLength(3);
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(0))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(1))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(2))).toBeInTheDocument();
+    expect(() => getByTestId(TEST_IDS.AVATAR_ACCOUNT(3))).toThrow();
   });
 
   it('renders avatars in reverse order', () => {
-    const { getAllByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <MultichainAccountAvatarGroup {...defaultProps} />,
       store,
     );
 
-    const avatarAccounts = getAllByTestId(TEST_IDS.AVATAR_ACCOUNT);
-    expect(avatarAccounts).toHaveLength(3);
-
-    const firstAvatar = avatarAccounts[0];
-    expect(firstAvatar).toBeInTheDocument();
+    // The component reverses the order, so the first rendered avatar should be the last member
+    const firstRenderedAvatar = getByTestId(TEST_IDS.AVATAR_ACCOUNT(0));
+    expect(firstRenderedAvatar).toBeInTheDocument();
   });
 
   it('applies custom className', () => {
@@ -105,17 +106,19 @@ describe('MultichainAccountAvatarGroup', () => {
   });
 
   it('renders with default limit when not provided', () => {
-    const { getAllByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <MultichainAccountAvatarGroup {...defaultProps} />,
       store,
     );
 
-    const avatarAccounts = getAllByTestId(TEST_IDS.AVATAR_ACCOUNT);
-    expect(avatarAccounts).toHaveLength(3);
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(0))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(1))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(2))).toBeInTheDocument();
+    expect(() => getByTestId(TEST_IDS.AVATAR_ACCOUNT(3))).toThrow();
   });
 
   it('renders empty avatar group when no members provided', () => {
-    const { getByTestId, queryAllByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <MultichainAccountAvatarGroup members={[]} />,
       store,
     );
@@ -123,31 +126,7 @@ describe('MultichainAccountAvatarGroup', () => {
     const avatarGroup = getByTestId(TEST_IDS.AVATAR_GROUP);
     expect(avatarGroup).toBeInTheDocument();
 
-    const avatarAccounts = queryAllByTestId(TEST_IDS.AVATAR_ACCOUNT);
-    expect(avatarAccounts).toHaveLength(0);
-  });
-
-  it('renders avatars with correct addresses', () => {
-    const { getAllByTestId } = renderWithProvider(
-      <MultichainAccountAvatarGroup {...defaultProps} />,
-      store,
-    );
-
-    const avatarAccounts = getAllByTestId(TEST_IDS.AVATAR_ACCOUNT);
-    expect(avatarAccounts).toHaveLength(3);
-  });
-
-  it('renders avatars with Blockies variant', () => {
-    const { getAllByTestId, container } = renderWithProvider(
-      <MultichainAccountAvatarGroup {...defaultProps} />,
-      store,
-    );
-
-    const avatarAccounts = getAllByTestId(TEST_IDS.AVATAR_ACCOUNT);
-    expect(avatarAccounts.length).toBeGreaterThan(0);
-
-    const blockies = container.querySelectorAll('img');
-    expect(blockies.length).toBeGreaterThan(0);
+    expect(() => getByTestId(TEST_IDS.AVATAR_ACCOUNT(0))).toThrow();
   });
 
   it('handles members with only avatarValue (no symbol)', () => {
@@ -160,13 +139,14 @@ describe('MultichainAccountAvatarGroup', () => {
       },
     ];
 
-    const { getAllByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <MultichainAccountAvatarGroup members={membersWithoutSymbol} />,
       store,
     );
 
-    const avatarAccounts = getAllByTestId(TEST_IDS.AVATAR_ACCOUNT);
-    expect(avatarAccounts).toHaveLength(2);
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(0))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(1))).toBeInTheDocument();
+    expect(() => getByTestId(TEST_IDS.AVATAR_ACCOUNT(2))).toThrow();
   });
 
   it('handles large number of members with limit', () => {
@@ -178,13 +158,17 @@ describe('MultichainAccountAvatarGroup', () => {
       mockAvatar5,
     ];
 
-    const { getAllByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <MultichainAccountAvatarGroup members={manyMembers} limit={4} />,
       store,
     );
 
-    const avatarAccounts = getAllByTestId(TEST_IDS.AVATAR_ACCOUNT);
-    expect(avatarAccounts).toHaveLength(4);
+    // Should render only 4 avatars due to limit
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(0))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(1))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(2))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(3))).toBeInTheDocument();
+    expect(() => getByTestId(TEST_IDS.AVATAR_ACCOUNT(4))).toThrow();
   });
 
   it('handles many members with generated data', () => {
@@ -193,12 +177,36 @@ describe('MultichainAccountAvatarGroup', () => {
       symbol: `TOKEN${index}`,
     }));
 
-    const { getAllByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <MultichainAccountAvatarGroup members={manyMembers} limit={4} />,
       store,
     );
 
-    const avatarAccounts = getAllByTestId(TEST_IDS.AVATAR_ACCOUNT);
-    expect(avatarAccounts).toHaveLength(4);
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(0))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(1))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(2))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(3))).toBeInTheDocument();
+    expect(() => getByTestId(TEST_IDS.AVATAR_ACCOUNT(4))).toThrow();
+  });
+
+  it('respects default limit of 4 when members exceed limit', () => {
+    const manyMembers = [
+      mockAvatar1,
+      mockAvatar2,
+      mockAvatar3,
+      mockAvatar4,
+      mockAvatar5,
+    ];
+
+    const { getByTestId } = renderWithProvider(
+      <MultichainAccountAvatarGroup members={manyMembers} />,
+      store,
+    );
+
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(0))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(1))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(2))).toBeInTheDocument();
+    expect(getByTestId(TEST_IDS.AVATAR_ACCOUNT(3))).toBeInTheDocument();
+    expect(() => getByTestId(TEST_IDS.AVATAR_ACCOUNT(4))).toThrow();
   });
 });

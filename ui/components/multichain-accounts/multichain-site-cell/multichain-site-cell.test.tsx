@@ -15,7 +15,7 @@ import { MultichainSiteCell } from './multichain-site-cell';
 jest.mock('../../../contexts/metametrics', () => {
   const { createContext } = jest.requireActual('react');
   return {
-    MetaMetricsContext: createContext(() => {}),
+    MetaMetricsContext: createContext(jest.fn()),
   };
 });
 
@@ -235,6 +235,7 @@ const renderComponent = (props = {}, stateOverrides = {}) => {
   return render(
     <Provider store={store}>
       <MultichainSiteCell
+        showEditAccounts={jest.fn()}
         {...defaultProps}
         {...props}
         supportedAccountGroups={mockAccountGroups}

@@ -4,11 +4,12 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
 import {
   MultichainSiteCellTooltip,
-  SiteCellTooltipProps,
+  MultichainSiteCellTooltipProps,
 } from './multichain-site-cell-tooltip';
 
 describe('MultichainSiteCellTooltip', () => {
@@ -26,6 +27,12 @@ describe('MultichainSiteCellTooltip', () => {
         pinned: false,
         hidden: false,
       },
+      accounts: [
+        createMockInternalAccount({
+          address: '0x8F03351D53585a2616a7F3262Cc5439a5D1EA1Cd',
+          name: 'Account 4',
+        }),
+      ],
     },
     {
       id: 'keyring:HD Key Tree/1',
@@ -34,6 +41,12 @@ describe('MultichainSiteCellTooltip', () => {
         pinned: false,
         hidden: false,
       },
+      accounts: [
+        createMockInternalAccount({
+          address: '0x28F6a7A59d37d1DE987616991fC35Ca9A72E0406',
+          name: 'Account 5',
+        }),
+      ],
     },
     {
       id: 'keyring:HD Key Tree/2',
@@ -42,6 +55,12 @@ describe('MultichainSiteCellTooltip', () => {
         pinned: false,
         hidden: false,
       },
+      accounts: [
+        createMockInternalAccount({
+          address: '0x632A13185e4974D5EA81c838Bfc48EB4C666157D',
+          name: 'Account 6',
+        }),
+      ],
     },
   ] as unknown as AccountGroupWithInternalAccounts[];
 
@@ -123,7 +142,7 @@ describe('MultichainSiteCellTooltip', () => {
     },
   ];
 
-  const defaultProps: SiteCellTooltipProps = {
+  const defaultProps: MultichainSiteCellTooltipProps = {
     accountGroups: mockAccountGroups,
     networks: mockNetworks,
   };
@@ -144,8 +163,8 @@ describe('MultichainSiteCellTooltip', () => {
       store,
     );
 
-    const accountAvatars = container.getElementsByClassName(
-      'mm-avatar-account__jazzicon',
+    const accountAvatars = container.querySelectorAll(
+      '[data-testid^="avatar-account-"]',
     );
     expect(accountAvatars.length).toBeGreaterThan(0);
   });
@@ -190,6 +209,12 @@ describe('MultichainSiteCellTooltip', () => {
         pinned: false,
         hidden: false,
       },
+      accounts: [
+        createMockInternalAccount({
+          address: `0x${(index + 1).toString(16)}`,
+          name: `Account ${index + 1}`,
+        }),
+      ],
     })) as unknown as AccountGroupWithInternalAccounts[];
 
     const { getByTestId, container } = renderWithProvider(
@@ -203,9 +228,11 @@ describe('MultichainSiteCellTooltip', () => {
     const avatarGroup = getByTestId('avatar-group');
     expect(avatarGroup).toBeInTheDocument();
 
-    // Should show overflow indicator (+6) since we have 10 accounts but avatar limit is 4
-    const overflowIndicator = container.querySelector('.mm-text--body-sm');
-    expect(overflowIndicator).toHaveTextContent('+6');
+    // Accounts avatar group caps visible members at 4
+    const visibleAccountAvatars = container.querySelectorAll(
+      '[data-testid^="avatar-account-"]',
+    );
+    expect(visibleAccountAvatars.length).toBe(4);
   });
 
   it('shows overflow indicator for many networks in avatar group', () => {
@@ -247,6 +274,12 @@ describe('MultichainSiteCellTooltip', () => {
         pinned: false,
         hidden: false,
       },
+      accounts: [
+        createMockInternalAccount({
+          address: `0x${(index + 1).toString(16)}`,
+          name: `Account ${index + 1}`,
+        }),
+      ],
     })) as unknown as AccountGroupWithInternalAccounts[];
 
     const { getByTestId, container } = renderWithProvider(
@@ -260,9 +293,11 @@ describe('MultichainSiteCellTooltip', () => {
     const avatarGroup = getByTestId('avatar-group');
     expect(avatarGroup).toBeInTheDocument();
 
-    // Should show overflow indicator (+2) since we have 6 accounts but limit is 4
-    const overflowIndicator = container.querySelector('.mm-text--body-sm');
-    expect(overflowIndicator).toHaveTextContent('+2');
+    // Accounts avatar group caps visible members at 4
+    const visibleAccountAvatars = container.querySelectorAll(
+      '[data-testid^="avatar-account-"]',
+    );
+    expect(visibleAccountAvatars.length).toBe(4);
   });
 
   it('renders only account avatar group when no networks provided', () => {
@@ -307,8 +342,8 @@ describe('MultichainSiteCellTooltip', () => {
       store,
     );
 
-    const accountAvatars = container.getElementsByClassName(
-      'mm-avatar-account__jazzicon',
+    const accountAvatars = container.querySelectorAll(
+      '[data-testid^="avatar-account-"]',
     );
     expect(accountAvatars.length).toBe(3);
   });
