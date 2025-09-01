@@ -197,7 +197,7 @@ jobs:
           gh api \
             --method POST \
             -H "Accept: application/vnd.github.v3+json" \
-            /repos/${{ github.repository }}/statuses/${TAG_SHA} \
+            "/repos/${{ github.repository }}/statuses/${TAG_SHA}" \
             -f state='success' \
             -f target_url="${{ github.server_url }}/${{ github.repository }}/releases/tag/${TAG_NAME}" \
             -f description='Release has been tagged' \
@@ -328,27 +328,29 @@ jobs:
           TAG_SHA: ${{ steps.tag-release.outputs.sha || steps.existing-tag-output.outputs.sha }}
           FORCE_RETAG: ${{ inputs.force-retag }}
         run: |
-          echo "## 📋 Release Summary" >> "${GITHUB_STEP_SUMMARY}"
-          echo "" >> "${GITHUB_STEP_SUMMARY}"
-          echo "### Release Details" >> "${GITHUB_STEP_SUMMARY}"
-          echo "- **Version**: ${TAG_NAME}" >> "${GITHUB_STEP_SUMMARY}"
-          echo "- **Release Branch**: ${RELEASE_BRANCH}" >> "${GITHUB_STEP_SUMMARY}"
-          echo "- **Target Branch**: ${TARGET_BRANCH}" >> "${GITHUB_STEP_SUMMARY}"
-          echo "- **Tag SHA**: \`${TAG_SHA}\`" >> "${GITHUB_STEP_SUMMARY}"
+          {
+            echo "## 📋 Release Summary"
+            echo ""
+            echo "### Release Details"
+            echo "- **Version**: ${TAG_NAME}"
+            echo "- **Release Branch**: ${RELEASE_BRANCH}"
+            echo "- **Target Branch**: ${TARGET_BRANCH}"
+            echo "- **Tag SHA**: \`${TAG_SHA}\`"
 
-          if [[ "${FORCE_RETAG}" == "true" ]]; then
-            echo "- **Action**: Tag was moved to new HEAD" >> "${GITHUB_STEP_SUMMARY}"
-          fi
+            if [[ "${FORCE_RETAG}" == "true" ]]; then
+              echo "- **Action**: Tag was moved to new HEAD"
+            fi
 
-          echo "" >> "${GITHUB_STEP_SUMMARY}"
-          echo "### ✅ Completed Actions" >> "${GITHUB_STEP_SUMMARY}"
-          echo "1. Tagged release branch HEAD with ${TAG_NAME}" >> "${GITHUB_STEP_SUMMARY}"
-          echo "2. Created/updated PR to merge ${RELEASE_BRANCH} → ${TARGET_BRANCH}" >> "${GITHUB_STEP_SUMMARY}"
-          echo "" >> "${GITHUB_STEP_SUMMARY}"
-          echo "### 📝 Next Steps" >> "${GITHUB_STEP_SUMMARY}"
-          echo "1. Review and approve the merge PR" >> "${GITHUB_STEP_SUMMARY}"
-          echo "2. **Merge using a merge commit** (NOT squash and merge)" >> "${GITHUB_STEP_SUMMARY}"
-          echo "3. The publish-release workflow will automatically:" >> "${GITHUB_STEP_SUMMARY}"
-          echo "   - Create GitHub release from the tagged commit" >> "${GITHUB_STEP_SUMMARY}"
-          echo "   - Upload artifacts to Sentry" >> "${GITHUB_STEP_SUMMARY}"
-          echo "   - Complete post-release tasks" >> "${GITHUB_STEP_SUMMARY}"
+            echo ""
+            echo "### ✅ Completed Actions"
+            echo "1. Tagged release branch HEAD with ${TAG_NAME}"
+            echo "2. Created/updated PR to merge ${RELEASE_BRANCH} → ${TARGET_BRANCH}"
+            echo ""
+            echo "### 📝 Next Steps"
+            echo "1. Review and approve the merge PR"
+            echo "2. **Merge using a merge commit** (NOT squash and merge)"
+            echo "3. The publish-release workflow will automatically:"
+            echo "   - Create GitHub release from the tagged commit"
+            echo "   - Upload artifacts to Sentry"
+            echo "   - Complete post-release tasks"
+          } >> "${GITHUB_STEP_SUMMARY}"

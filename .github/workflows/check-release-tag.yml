@@ -29,8 +29,10 @@ jobs:
 
       - name: Extract version from branch name
         id: extract-version
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          BRANCH="${{ github.head_ref }}"
+          BRANCH="${BRANCH_NAME}"
           # Define semantic version pattern for consistency
           SEMVER_PATTERN='[0-9]+\.[0-9]+\.[0-9]+'
 
@@ -180,12 +182,16 @@ jobs:
       - name: Summary
         run: |
           if [[ "${{ steps.check-tag.outputs.tagged }}" == "true" ]]; then
-            echo "### ✅ Release Tag Check Passed" >> $GITHUB_STEP_SUMMARY
-            echo "Release is properly tagged and ready for merge." >> $GITHUB_STEP_SUMMARY
+            {
+              echo "### ✅ Release Tag Check Passed"
+              echo "Release is properly tagged and ready for merge."
+            } >> "${GITHUB_STEP_SUMMARY}"
           else
-            echo "### ⚠️ Release Tag Check - Action Required" >> $GITHUB_STEP_SUMMARY
-            echo "Please run the 'Tag Release Branch' workflow before merging this PR." >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Version: v${{ steps.extract-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-            echo "Target: ${{ github.base_ref }}" >> $GITHUB_STEP_SUMMARY
+            {
+              echo "### ⚠️ Release Tag Check - Action Required"
+              echo "Please run the 'Tag Release Branch' workflow before merging this PR."
+              echo ""
+              echo "Version: v${{ steps.extract-version.outputs.version }}"
+              echo "Target: ${{ github.base_ref }}"
+            } >> "${GITHUB_STEP_SUMMARY}"
           fi
