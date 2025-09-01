@@ -63,6 +63,15 @@ export const KNOWN_PRIVATE_KEYS = [
   '7df6c85f059939631c05e72b6fc3c54423754a5162ae4a69b14b38219c430665',
 ];
 
+const KNOWN_QR_CBOR =
+  'a503582103abc7af7fd5cd4fd1ec4c0f67f4bca461efb9dfc2578f8ed347d31201050377a0045820672f2b2bfda55552f56f5421d2bd106e55f2e94e73337d5f3f219906b39bfa4a06d90130a20186182cf5183cf500f5021a65174ca1081a65633532096d416972476170202d2074657374';
+
+export const KNOWN_QR_ACCOUNTS = [
+  '0x8DC309e828CE024b1ae7a9AA7882D37AD18181d5',
+  '0x98396D8bF756F419eF6CDba819e9DF00E6F2B51B',
+  '0xC64D05CD3582531f19dcB16e5FA9652B281fA018',
+];
+
 export class FakeKeyringBridge {
   async init() {
     return Promise.resolve();
@@ -343,6 +352,15 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
       r: remove0x(r),
       s: remove0x(s),
       v,
+    };
+  }
+}
+
+export class FakeQrBridge {
+  async requestScan() {
+    return {
+      type: 'crypto-hdkey',
+      cbor: KNOWN_QR_CBOR,
     };
   }
 }
