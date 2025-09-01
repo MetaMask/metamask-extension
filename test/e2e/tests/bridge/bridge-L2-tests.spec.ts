@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
 import { searchAndSwitchToNetworkFromGlobalMenuFlow } from '../../page-objects/flows/network.flow';
-import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
 
@@ -12,10 +11,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeL2Fixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // disable smart transactions step by step for all bridge flows
-        // we cannot use fixtures because migration 135 overrides the opt in value to true
-        await disableStxSetting(driver);
 
         // Add Arbitrum One
         await searchAndSwitchToNetworkFromGlobalMenuFlow(
