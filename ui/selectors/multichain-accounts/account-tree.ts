@@ -774,6 +774,6 @@ export const getAccountGroupsByAddress = createDeepEqualSelector(
     });
 
     // Convert the Set of AccountGroupWithInternalAccounts to an Array
-    return Array.from(matchingGroups);
+    return [...matchingGroups];
   },
 );
