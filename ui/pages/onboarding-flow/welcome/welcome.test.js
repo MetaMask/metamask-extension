@@ -3,8 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import { waitFor } from '@testing-library/dom';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import * as Actions from '../../../store/actions';
+import * as Environment from '../../../../shared/modules/environment';
 import Welcome from './welcome';
-import { WelcomePageState } from './types';
 
 const mockHistoryPush = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -22,6 +22,10 @@ mockIntersectionObserver.mockReturnValue({
 });
 window.IntersectionObserver = mockIntersectionObserver;
 
+jest.mock('../../../../shared/modules/environment', () => ({
+  getIsSeedlessOnboardingFeatureEnabled: jest.fn().mockReturnValue(true),
+}));
+
 describe('Welcome Page', () => {
   const mockState = {
     metamask: {
@@ -35,30 +39,37 @@ describe('Welcome Page', () => {
   const mockStore = configureMockStore()(mockState);
 
   it('should render', () => {
-    const { getByText } = renderWithProvider(
-      <Welcome pageState={WelcomePageState.Banner} setPageState={jest.fn()} />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<Welcome />, mockStore);
 
-    expect(getByText('Welcome to MetaMask')).toBeInTheDocument();
+    expect(getByText(`Let's get started!`)).toBeInTheDocument();
 
-    expect(getByText('Get started')).toBeInTheDocument();
+    const createButton = getByText('Create a new wallet');
+    expect(createButton).toBeInTheDocument();
+
+    const importButton = getByText('I have an existing wallet');
+    expect(importButton).toBeInTheDocument();
+
+    expect(Environment.getIsSeedlessOnboardingFeatureEnabled()).toBe(true);
   });
 
-  it('should show the terms of use popup when the user clicks the "Get started" button', () => {
-    const { getByText, getByTestId } = renderWithProvider(
-      <Welcome pageState={WelcomePageState.Banner} setPageState={jest.fn()} />,
-      mockStore,
-    );
+  it('should render with seedless onboarding feature disabled', () => {
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(false);
 
-    const getStartedButton = getByText('Get started');
-    fireEvent.click(getStartedButton);
+    const { getByText } = renderWithProvider(<Welcome />, mockStore);
 
-    expect(getByText('Review our Terms of Use')).toBeInTheDocument();
+    expect(getByText(`Let's get started!`)).toBeInTheDocument();
 
-    const agreeButton = getByTestId('terms-of-use-agree-button');
-    expect(agreeButton).toBeInTheDocument();
-    expect(agreeButton).toBeDisabled();
+    expect(Environment.getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
+
+    expect(
+      getByText('Import using Secret Recovery Phrase'),
+    ).toBeInTheDocument();
+
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(true);
   });
 
   it('should show the error modal when the error thrown in login', async () => {
@@ -67,7 +78,7 @@ describe('Welcome Page', () => {
       .mockRejectedValue(new Error('login error'));
 
     const { getByText, getByTestId } = renderWithProvider(
-      <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
+      <Welcome />,
       mockStore,
     );
 
