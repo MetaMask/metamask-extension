@@ -30,6 +30,7 @@ import {
   getWalletsWithAccounts,
   getNetworkAddressCount,
   getWallet,
+  getAccountGroupsByAddress,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 import {
@@ -1187,6 +1188,49 @@ describe('Multichain Accounts Selectors', () => {
       expect(result[0].id).toBe('account-3');
       expect(result[1].id).toBe('account-1');
       expect(result[2].id).toBe('account-2');
+    });
+  });
+
+  describe('getAccountGroupsByAddress', () => {
+    it('returns the correct account groups without duplicated values', () => {
+      const result = getAccountGroupsByAddress(typedMockState, [
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+      ]);
+
+      expect(result.length).toBe(3);
+      expect(result[0].id).toBe(ENTROPY_GROUP_1_ID);
+      expect(result[1].id).toBe(ENTROPY_GROUP_2_ID);
+      expect(result[2].id).toBe(LEDGER_GROUP_ID);
+    });
+
+    it('returns an empty array when no addresses match', () => {
+      const result = getAccountGroupsByAddress(typedMockState, [
+        'nonExistentAddress',
+      ]);
+
+      expect(result).toEqual([]);
+    });
+
+    it('returns an empty array when given an empty address list', () => {
+      const result = getAccountGroupsByAddress(typedMockState, []);
+
+      expect(result).toEqual([]);
+    });
+
+    it('handles duplicated addresses in the input list', () => {
+      const result = getAccountGroupsByAddress(typedMockState, [
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', // duplicate
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813', // duplicate
+      ]);
+
+      expect(result.length).toBe(2);
+      expect(result[0].id).toBe(ENTROPY_GROUP_1_ID);
+      expect(result[1].id).toBe(LEDGER_GROUP_ID);
     });
   });
 });
