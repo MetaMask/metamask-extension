@@ -19,6 +19,11 @@ on:
           - master
           - stable
         default: master
+      force-retag:
+        description: 'Force re-tag if tag already exists (only if no GitHub release)'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -78,19 +83,62 @@ jobs:
             echo "::warning::No recent successful builds found on ${BRANCH_NAME}. Please verify build status before proceeding."
           fi
 
-      - name: Create release tag
-        id: tag-release
+      - name: Handle existing tag
+        id: check-existing-tag
         env:
           VERSION: ${{ inputs.release-version }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_RETAG: ${{ inputs.force-retag }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME="v${VERSION}"
 
           # Check if tag already exists
           if git rev-parse "${TAG_NAME}" >/dev/null 2>&1; then
-            echo "::error::Tag ${TAG_NAME} already exists"
-            exit 1
+            echo "Tag ${TAG_NAME} already exists"
+
+            # Check if there's a GitHub release for this tag
+            if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
+              echo "::error::Tag ${TAG_NAME} has an associated GitHub release and cannot be moved."
+              echo "::error::This release appears to be finalized. Create a new patch version instead."
+              exit 1
+            fi
+
+            # Get existing tag SHA and current HEAD SHA
+            TAG_SHA=$(git rev-parse "${TAG_NAME}")
+            HEAD_SHA=$(git rev-parse HEAD)
+
+            if [[ "${TAG_SHA}" == "${HEAD_SHA}" ]]; then
+              echo "✅ Tag already points to current HEAD. No action needed."
+              echo "needs_retag=false" >> "${GITHUB_OUTPUT}"
+            elif [[ "${FORCE_RETAG}" == "true" ]]; then
+              echo "⚠️ Tag exists at different commit. Force re-tag is enabled."
+              echo "Will move tag from ${TAG_SHA:0:7} to ${HEAD_SHA:0:7}"
+
+              # Delete the old tag (local and remote)
+              git tag -d "${TAG_NAME}"
+              git push origin ":refs/tags/${TAG_NAME}"
+
+              echo "needs_retag=true" >> "${GITHUB_OUTPUT}"
+              echo "✅ Old tag deleted. Will create new tag at HEAD."
+            else
+              echo "::error::Tag ${TAG_NAME} exists but not at HEAD."
+              echo "::error::Current tag: ${TAG_SHA:0:7}, HEAD: ${HEAD_SHA:0:7}"
+              echo "::error::To move the tag, run this workflow again with 'Force re-tag' enabled."
+              exit 1
+            fi
+          else
+            echo "Tag does not exist yet. Will create it."
+            echo "needs_retag=true" >> "${GITHUB_OUTPUT}"
           fi
+
+      - name: Create or update release tag
+        id: tag-release
+        if: steps.check-existing-tag.outputs.needs_retag != 'false'
+        env:
+          VERSION: ${{ inputs.release-version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="v${VERSION}"
 
           # Configure git
           git config user.email "metamaskbot@users.noreply.github.com"
@@ -109,11 +157,22 @@ jobs:
           echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
           echo "✅ Created and pushed tag: ${TAG_NAME} at ${SHA}"
 
+      - name: Set output for existing tag
+        id: existing-tag-output
+        if: steps.check-existing-tag.outputs.needs_retag == 'false'
+        env:
+          VERSION: ${{ inputs.release-version }}
+        run: |
+          TAG_NAME="v${VERSION}"
+          SHA=$(git rev-parse HEAD)
+          echo "tag=${TAG_NAME}" >> "${GITHUB_OUTPUT}"
+          echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
+
       - name: Set status check on release branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG_SHA: ${{ steps.tag-release.outputs.sha }}
-          TAG_NAME: ${{ steps.tag-release.outputs.tag }}
+          TAG_SHA: ${{ steps.tag-release.outputs.sha || steps.existing-tag-output.outputs.sha }}
+          TAG_NAME: ${{ steps.tag-release.outputs.tag || steps.existing-tag-output.outputs.tag }}
         run: |
           # Set a successful status check to indicate the release has been tagged
           gh api \
@@ -131,8 +190,8 @@ jobs:
           RELEASE_BRANCH: ${{ steps.determine-branch.outputs.branch }}
           VERSION: ${{ inputs.release-version }}
           TARGET_BRANCH: ${{ inputs.target-branch }}
-          TAG_NAME: ${{ steps.tag-release.outputs.tag }}
-          TAG_SHA: ${{ steps.tag-release.outputs.sha }}
+          TAG_NAME: ${{ steps.tag-release.outputs.tag || steps.existing-tag-output.outputs.tag }}
+          TAG_SHA: ${{ steps.tag-release.outputs.sha || steps.existing-tag-output.outputs.sha }}
         run: |
           # Check if PR already exists
           EXISTING_PR=$(gh pr list --base "${TARGET_BRANCH}" --head "${RELEASE_BRANCH}" --json number --jq '.[0].number' || echo "")
@@ -231,8 +290,9 @@ jobs:
           VERSION: ${{ inputs.release-version }}
           RELEASE_BRANCH: ${{ steps.determine-branch.outputs.branch }}
           TARGET_BRANCH: ${{ inputs.target-branch }}
-          TAG_NAME: ${{ steps.tag-release.outputs.tag }}
-          TAG_SHA: ${{ steps.tag-release.outputs.sha }}
+          TAG_NAME: ${{ steps.tag-release.outputs.tag || steps.existing-tag-output.outputs.tag }}
+          TAG_SHA: ${{ steps.tag-release.outputs.sha || steps.existing-tag-output.outputs.sha }}
+          FORCE_RETAG: ${{ inputs.force-retag }}
         run: |
           echo "## 📋 Release Summary" >> "${GITHUB_STEP_SUMMARY}"
           echo "" >> "${GITHUB_STEP_SUMMARY}"
@@ -241,6 +301,11 @@ jobs:
           echo "- **Release Branch**: ${RELEASE_BRANCH}" >> "${GITHUB_STEP_SUMMARY}"
           echo "- **Target Branch**: ${TARGET_BRANCH}" >> "${GITHUB_STEP_SUMMARY}"
           echo "- **Tag SHA**: \`${TAG_SHA}\`" >> "${GITHUB_STEP_SUMMARY}"
+
+          if [[ "${FORCE_RETAG}" == "true" ]]; then
+            echo "- **Action**: Tag was moved to new HEAD" >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
           echo "" >> "${GITHUB_STEP_SUMMARY}"
           echo "### ✅ Completed Actions" >> "${GITHUB_STEP_SUMMARY}"
           echo "1. Tagged release branch HEAD with ${TAG_NAME}" >> "${GITHUB_STEP_SUMMARY}"
