@@ -9,7 +9,7 @@ on:
 jobs:
   auto-update:
     name: Auto-update
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       YARN_ENABLE_IMMUTABLE_INSTALLS: false
       YARN_ENABLE_HARDENED_MODE: false
