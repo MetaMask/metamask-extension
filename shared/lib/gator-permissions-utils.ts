@@ -1,11 +1,35 @@
 import { Hex } from '@metamask/utils';
-import { fetchAssetMetadata } from './asset-utils';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../constants/network';
-import { getTokenStandardAndDetailsByChain } from '../../ui/store/actions';
+import { fetchAssetMetadata } from './asset-utils';
 import { calcTokenAmount } from './transactions-controller-utils';
 
 // Token info type used across helpers
 export type GatorTokenInfo = { symbol: string; decimals: number };
+
+// Type for the token details function that can be injected from UI
+export type GetTokenStandardAndDetailsByChain = (
+  address: string,
+  userAddress?: string,
+  tokenId?: string,
+  chainId?: string,
+) => Promise<{
+  decimals?: string | number;
+  symbol?: string;
+  standard?: string;
+  [key: string]: unknown;
+}>;
+
+// Type for translation function
+export type TranslationFunction = (key: string, ...args: unknown[]) => string;
+
+// Types for permission data
+export type GatorPermissionData = {
+  tokenAddress?: string;
+  amountPerSecond?: string;
+  periodDuration?: string;
+  periodAmount?: string;
+  [key: string]: unknown;
+};
 
 // Shared promise cache to dedupe and reuse token info fetches per chainId:address
 const gatorTokenInfoPromiseCache = new Map<string, Promise<GatorTokenInfo>>();
@@ -39,7 +63,7 @@ export const TIME_PERIOD_TO_SECONDS: Record<TimePeriod, bigint> = {
  */
 export function formatPeriodFrequency(
   periodDuration: string | number,
-  t: Function,
+  t: TranslationFunction,
 ): string {
   const duration = BigInt(periodDuration);
 
@@ -64,11 +88,17 @@ export function formatPeriodFrequency(
  * - If external services are enabled, attempts the MetaMask token metadata API first.
  * - If missing data or disabled, falls back to background on-chain details by chain.
  * - Returns a best-effort `{ name, decimals }` (defaults: name='Unknown Token', decimals=18).
+ *
+ * @param address
+ * @param chainId
+ * @param allowExternalServices
+ * @param getTokenStandardAndDetailsByChain
  */
 export async function fetchGatorErc20TokenInfo(
   address: string,
   chainId: Hex,
   allowExternalServices: boolean,
+  getTokenStandardAndDetailsByChain?: GetTokenStandardAndDetailsByChain,
 ): Promise<GatorTokenInfo> {
   let symbol: string | undefined;
   let decimals: number | undefined;
@@ -80,34 +110,39 @@ export async function fetchGatorErc20TokenInfo(
   }
 
   if (!symbol || decimals === null || decimals === undefined) {
-    try {
-      const details = (await getTokenStandardAndDetailsByChain(
-        address,
-        undefined,
-        undefined,
-        chainId,
-      )) as any;
-      const decRaw = details?.decimals as string | number | undefined;
-      if (typeof decRaw === 'number') {
-        decimals = decRaw;
-      } else if (typeof decRaw === 'string') {
-        const parsed10 = parseInt(decRaw, 10);
-        if (Number.isFinite(parsed10)) {
-          decimals = parsed10;
-        } else {
-          const parsed16 = parseInt(decRaw, 16);
-          if (Number.isFinite(parsed16)) {
-            decimals = parsed16;
+    if (getTokenStandardAndDetailsByChain) {
+      try {
+        const details = await getTokenStandardAndDetailsByChain(
+          address,
+          undefined,
+          undefined,
+          chainId,
+        );
+        const decRaw = details?.decimals as string | number | undefined;
+        if (typeof decRaw === 'number') {
+          decimals = decRaw;
+        } else if (typeof decRaw === 'string') {
+          const parsed10 = parseInt(decRaw, 10);
+          if (Number.isFinite(parsed10)) {
+            decimals = parsed10;
+          } else {
+            const parsed16 = parseInt(decRaw, 16);
+            if (Number.isFinite(parsed16)) {
+              decimals = parsed16;
+            }
           }
         }
+        symbol = details?.symbol ?? symbol;
+      } catch (_e) {
+        // ignore and keep fallbacks
       }
-      symbol = details?.symbol ?? symbol;
-    } catch (_e) {
-      // ignore and keep fallbacks
     }
   }
 
-  return { symbol: symbol || 'Unknown Token', decimals: decimals ?? 18 } as const;
+  return {
+    symbol: symbol || 'Unknown Token',
+    decimals: decimals ?? 18,
+  } as const;
 }
 
 /**
@@ -117,12 +152,18 @@ export async function fetchGatorErc20TokenInfo(
  * Behavior:
  * - Returns cached value when available.
  * - If a request for the same key is in-flight, returns the same promise.
- * - Otherwise, calls `getOrFetchGatorErc20TokenInfo` and caches the result.
+ * - Otherwise, calls `fetchGatorErc20TokenInfo` and caches the result.
+ *
+ * @param address
+ * @param chainId
+ * @param allowExternalServices
+ * @param getTokenStandardAndDetailsByChain
  */
 export async function getGatorErc20TokenInfo(
   address: string,
   chainId: Hex,
   allowExternalServices: boolean,
+  getTokenStandardAndDetailsByChain?: GetTokenStandardAndDetailsByChain,
 ): Promise<GatorTokenInfo> {
   const key = `${chainId}:${address.toLowerCase()}`;
   const existing = gatorTokenInfoPromiseCache.get(key);
@@ -133,6 +174,7 @@ export async function getGatorErc20TokenInfo(
     address,
     chainId,
     allowExternalServices,
+    getTokenStandardAndDetailsByChain,
   );
   gatorTokenInfoPromiseCache.set(key, promise);
   return promise;
@@ -143,27 +185,43 @@ export async function getGatorErc20TokenInfo(
  *
  * - If `permissionType` includes 'native-token', returns network native symbol and 18 decimals.
  * - Otherwise, fetches ERC-20 info (cached) using `tokenAddress` from `permissionData`.
+ *
+ * @param params
+ * @param params.permissionType
+ * @param params.chainId
+ * @param params.networkConfig
+ * @param params.permissionData
+ * @param params.allowExternalServices
+ * @param params.getTokenStandardAndDetailsByChain
  */
-export async function getGatorPermissionTokenInfo(
-  params: {
-    permissionType: string;
-    chainId: string;
-    networkConfig?: { nativeCurrency?: string; name?: string } | null;
-    permissionData?: unknown;
-    allowExternalServices: boolean;
-  },
-): Promise<GatorTokenInfo> {
-  const { permissionType, chainId, networkConfig, permissionData, allowExternalServices } = params;
+export async function getGatorPermissionTokenInfo(params: {
+  permissionType: string;
+  chainId: string;
+  networkConfig?: { nativeCurrency?: string; name?: string } | null;
+  permissionData?: GatorPermissionData;
+  allowExternalServices: boolean;
+  getTokenStandardAndDetailsByChain?: GetTokenStandardAndDetailsByChain;
+}): Promise<GatorTokenInfo> {
+  const {
+    permissionType,
+    chainId,
+    networkConfig,
+    permissionData,
+    allowExternalServices,
+    getTokenStandardAndDetailsByChain,
+  } = params;
   const isNative = permissionType.includes('native-token');
   if (isNative) {
     const nativeSymbol =
       networkConfig?.nativeCurrency ||
-      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP] ||
+      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+        chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+      ] ||
       'ETH';
     return { symbol: nativeSymbol, decimals: 18 };
   }
 
-  const tokenAddress = (permissionData as any)?.tokenAddress as string | undefined;
+  const tokenAddress = permissionData?.tokenAddress;
   if (!tokenAddress) {
     return { symbol: 'Unknown Token', decimals: 18 };
   }
@@ -171,6 +229,7 @@ export async function getGatorPermissionTokenInfo(
     tokenAddress,
     chainId as Hex,
     allowExternalServices,
+    getTokenStandardAndDetailsByChain,
   );
 }
 
@@ -183,7 +242,7 @@ export async function getGatorPermissionTokenInfo(
  */
 function formatCustomPeriodFrequency(
   duration: bigint,
-  t: Function,
+  t: TranslationFunction,
 ): string {
   const seconds = Number(duration);
 
@@ -210,18 +269,25 @@ function formatCustomPeriodFrequency(
  * Format a human-readable amount description for gator permissions.
  * - Supports hex-encoded and decimal string amounts
  * - Applies a display threshold (e.g. "<0.00001")
+ *
+ * @param params
+ * @param params.amount
+ * @param params.tokenSymbol
+ * @param params.frequency
+ * @param params.tokenDecimals
+ * @param params.locale
+ * @param params.threshold
+ * @param params.numberFormatOptions
  */
-export function formatGatorAmountLabel(
-  params: {
-    amount: string;
-    tokenSymbol: string;
-    frequency: string;
-    tokenDecimals: number;
-    locale: string;
-    threshold?: number;
-    numberFormatOptions?: Intl.NumberFormatOptions;
-  },
-): string {
+export function formatGatorAmountLabel(params: {
+  amount: string;
+  tokenSymbol: string;
+  frequency: string;
+  tokenDecimals: number;
+  locale: string;
+  threshold?: number;
+  numberFormatOptions?: Intl.NumberFormatOptions;
+}): string {
   const {
     amount,
     tokenSymbol,
@@ -229,7 +295,10 @@ export function formatGatorAmountLabel(
     tokenDecimals,
     locale,
     threshold = 0.00001,
-    numberFormatOptions = { minimumFractionDigits: 0, maximumFractionDigits: 5 },
+    numberFormatOptions = {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 5,
+    },
   } = params;
 
   if (!amount || amount === '0') {
@@ -263,11 +332,16 @@ export function formatGatorAmountLabel(
 
 /**
  * Derive display metadata from a gator permission type and data.
+ *
+ * @param permissionType - The type of permission
+ * @param permissionDataParam - The permission data containing amount and frequency information
+ * @param t - Translation function for internationalization
+ * @returns Object containing display name, amount, and frequency
  */
 export function getGatorPermissionDisplayMetadata(
   permissionType: string,
-  permissionDataParam: unknown,
-  t: Function,
+  permissionDataParam: GatorPermissionData,
+  t: TranslationFunction,
 ): { displayName: string; amount: string; frequency: string } {
   if (
     permissionType === 'native-token-stream' ||
@@ -275,7 +349,7 @@ export function getGatorPermissionDisplayMetadata(
   ) {
     return {
       displayName: t('tokenStream'),
-      amount: (permissionDataParam as any).amountPerSecond as string,
+      amount: permissionDataParam.amountPerSecond as string,
       frequency: t('perSecond'),
     };
   }
@@ -284,10 +358,10 @@ export function getGatorPermissionDisplayMetadata(
     permissionType === 'native-token-periodic' ||
     permissionType === 'erc20-token-periodic'
   ) {
-    const periodDuration = (permissionDataParam as any).periodDuration as string;
+    const periodDuration = permissionDataParam.periodDuration as string;
     return {
       displayName: t('tokenSubscription'),
-      amount: (permissionDataParam as any).periodAmount as string,
+      amount: permissionDataParam.periodAmount as string,
       frequency: formatPeriodFrequency(periodDuration, t),
     };
   }

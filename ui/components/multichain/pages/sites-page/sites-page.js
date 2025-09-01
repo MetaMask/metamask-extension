@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
+import { SubjectType } from '@metamask/permission-controller';
 import { Content, Header, Page } from '../page';
 import {
   Box,
@@ -26,8 +27,10 @@ import { REVIEW_PERMISSIONS } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
 import { ConnectionListItem } from '../permissions-page/connection-list-item';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP, NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
-import { SubjectType } from '@metamask/permission-controller';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../../shared/constants/network';
 import { getURLHostName } from '../../../../helpers/utils/util';
 
 export const SitesPage = () => {
@@ -76,13 +79,18 @@ export const SitesPage = () => {
             let firstChainId = null;
             Object.values(gatorPermissions).forEach((permissionTypeMap) => {
               if (permissionTypeMap && typeof permissionTypeMap === 'object') {
-                Object.entries(permissionTypeMap).forEach(([chainId, permissions]) => {
-                  if (Array.isArray(permissions) && permissions.some(p => p && p.siteOrigin === siteOrigin)) {
-                    firstChainId = chainId;
-                    return;
-                  }
-                });
-                if (firstChainId) return;
+                Object.entries(permissionTypeMap).forEach(
+                  ([chainId, permissions]) => {
+                    if (
+                      Array.isArray(permissions) &&
+                      permissions.some((p) => p && p.siteOrigin === siteOrigin)
+                    ) {
+                      firstChainId = chainId;
+                    }
+                  },
+                );
+                if (firstChainId) {
+                }
               }
             });
 
@@ -92,8 +100,12 @@ export const SitesPage = () => {
               addresses: [],
               addressToNameMap: {},
               subjectType: SubjectType.Website,
-              networkName: firstChainId ? (NETWORK_TO_NAME_MAP[firstChainId] || '') : '',
-              networkIconUrl: firstChainId ? (CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[firstChainId] || '') : '',
+              networkName: firstChainId
+                ? NETWORK_TO_NAME_MAP[firstChainId] || ''
+                : '',
+              networkIconUrl: firstChainId
+                ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[firstChainId] || ''
+                : '',
             };
           }
         });
@@ -107,7 +119,7 @@ export const SitesPage = () => {
   }, [sitesConnectionsList, gatorPermissions]);
 
   useEffect(() => {
-    if (!mergedSitesConnectionsList) {w
+    if (!mergedSitesConnectionsList) {
       setTotalConnections(0);
       return;
     }

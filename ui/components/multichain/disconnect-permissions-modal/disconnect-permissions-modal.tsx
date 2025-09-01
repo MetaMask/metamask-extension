@@ -48,6 +48,7 @@ import {
   BlockSize,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
+import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 
 const PermissionItem = ({
   permission,
@@ -85,6 +86,7 @@ const PermissionItem = ({
         networkConfig: networkConfigurationsByCaipChainId?.[permission.chainId],
         permissionData,
         allowExternalServices,
+        getTokenStandardAndDetailsByChain,
       });
       if (!cancelled) {
         setResolvedTokenInfo(info);

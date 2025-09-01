@@ -247,7 +247,9 @@ export function getFilteredGatorPermissionsByType(
   siteOrigin: string,
 ): FilteredGatorPermissionsByType {
   // Cast the state to the expected type for the internal function
-  const gatorPermissions = getGatorPermissionsMap(state as GatorPermissionState);
+  const gatorPermissions = getGatorPermissionsMap(
+    state as GatorPermissionState,
+  );
 
   const result = {
     streams: {

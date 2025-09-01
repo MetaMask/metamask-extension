@@ -19,20 +19,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRevokeGatorPermissions } from '../../../../hooks/gator-permissions/useRevokeGatorPermissions';
-
-// Custom hook to handle revoking gator permissions across multiple chain IDs so we don't violate calling hooks in a function.
-const useMultiChainGatorRevoke = (chainIds: string[]) => {
-  const revokeFunctions: Record<string, any> = {};
-
-  chainIds.forEach((chainId) => {
-    const { revokeGatorPermissionBatch } = useRevokeGatorPermissions({
-      chainId: chainId as any,
-    });
-    revokeFunctions[chainId] = revokeGatorPermissionBatch;
-  });
-
-  return revokeFunctions;
-};
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllPermittedAccountsForSelectedTab,
@@ -75,9 +61,26 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
-import { GatorPermissionState, getFilteredGatorPermissionsByType } from '../../../../selectors/gator-permissions/gator-permissions';
+import {
+  GatorPermissionState,
+  getFilteredGatorPermissionsByType,
+} from '../../../../selectors/gator-permissions/gator-permissions';
 import { SiteCell } from './site-cell/site-cell';
 import { PermissionsCell } from './permissions-cell/permissions-cell';
+
+// Custom hook to handle revoking gator permissions across multiple chain IDs so we don't violate calling hooks in a function.
+const useMultiChainGatorRevoke = (chainIds: string[]) => {
+  const revokeFunctions: Record<string, any> = {};
+
+  chainIds.forEach((chainId) => {
+    const { revokeGatorPermissionBatch } = useRevokeGatorPermissions({
+      chainId: chainId as any,
+    });
+    revokeFunctions[chainId] = revokeGatorPermissionBatch;
+  });
+
+  return revokeFunctions;
+};
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -141,30 +144,37 @@ export const ReviewPermissions = () => {
   };
 
   const removeAllPermissionsIncludingGator = async () => {
-
     // First, remove all regular permissions
     disconnectAllPermissions();
 
     // Then, revoke all gator permissions grouped by chain ID
     if (allSiteGatorPermissions.length > 0) {
       // Group gator permissions by chain ID
-      const gatorPermissionsByChainId = allSiteGatorPermissions.reduce((acc, { permission, chainId }) => {
-        if (!acc[chainId]) {
-          acc[chainId] = [];
-        }
-        acc[chainId].push(permission);
-        return acc;
-      }, {} as Record<string, any[]>);
+      const gatorPermissionsByChainId = allSiteGatorPermissions.reduce(
+        (acc, { permission, chainId }) => {
+          if (!acc[chainId]) {
+            acc[chainId] = [];
+          }
+          acc[chainId].push(permission);
+          return acc;
+        },
+        {} as Record<string, any[]>,
+      );
 
       // Revoke gator permissions for each chain ID
-      for (const [chainId, permissions] of Object.entries(gatorPermissionsByChainId)) {
+      for (const [chainId, permissions] of Object.entries(
+        gatorPermissionsByChainId,
+      )) {
         try {
           const revokeFunction = revokeFunctionsByChainId[chainId];
           if (revokeFunction && permissions.length > 0) {
             await revokeFunction(permissions);
           }
         } catch (error) {
-          console.error(`Failed to revoke gator permissions for chain ${chainId}:`, error);
+          console.error(
+            `Failed to revoke gator permissions for chain ${chainId}:`,
+            error,
+          );
         }
       }
     }
@@ -201,7 +211,7 @@ export const ReviewPermissions = () => {
 
   // Get filtered gator permissions grouped by type
   const filteredGatorPermissions = useSelector((state: GatorPermissionState) =>
-    getFilteredGatorPermissionsByType(state, activeTabOrigin)
+    getFilteredGatorPermissionsByType(state, activeTabOrigin),
   );
 
   // Get all gator permissions for the site (for the modal)
@@ -223,7 +233,8 @@ export const ReviewPermissions = () => {
   }, [allSiteGatorPermissions]);
 
   // Get revoke functions for each unique chain ID
-  const revokeFunctionsByChainId = useMultiChainGatorRevoke(uniqueGatorChainIds);
+  const revokeFunctionsByChainId =
+    useMultiChainGatorRevoke(uniqueGatorChainIds);
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
