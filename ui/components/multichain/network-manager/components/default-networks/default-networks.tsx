@@ -1,6 +1,7 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { BtcScope, EthScope, SolScope } from '@metamask/keyring-api';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
@@ -46,8 +47,12 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
+  getIsMultichainAccountsState2Enabled,
+  getSelectedInternalAccount,
 } from '../../../../../selectors';
 import { enableAllPopularNetworks } from '../../../../../store/controller-actions/network-order-controller';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
+import { isFlask } from '../../../../../helpers/utils/build-types';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -67,6 +72,40 @@ const DefaultNetworks = memo(() => {
   const { handleAdditionalNetworkClick } = useAdditionalNetworkHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
+
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  // extract the evm account of the selected account group
+  const evmAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
+  );
+
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+
+  console.log('selectedAccount +++++++++++', selectedAccount);
+
+  // extract the solana account of the selected account group
+  const solAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    ),
+  );
+
+  let btcAccountGroup = null;
+
+  if (isFlask()) {
+    btcAccountGroup = useSelector((state) =>
+      getInternalAccountBySelectedAccountGroupAndCaip(
+        state,
+        'bip122:000000000019d6689c085ae165831e93',
+      ),
+    );
+  }
+
+  console.log('btcAccountGroup +++++++++++', btcAccountGroup);
 
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
@@ -139,6 +178,7 @@ const DefaultNetworks = memo(() => {
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
     async (chainId: CaipChainId, isLastRemainingNetwork: boolean) => {
+      console.log('chainId ..........', chainId);
       if (isLastRemainingNetwork) {
         return;
       }
@@ -152,63 +192,101 @@ const DefaultNetworks = memo(() => {
   const networkListItems = useMemo(() => {
     const enabledChainIds = Object.keys(enabledNetworksByNamespace);
 
-    return orderedNetworks
-      .filter((network) => {
-        // If EVM network is selected, only show EVM networks
+    // Helper function to filter networks based on account type and selection
+    const getFilteredNetworks = () => {
+      if (isMultichainAccountsState2Enabled) {
+        return orderedNetworks.filter((network) => {
+          // Show EVM networks if user has EVM accounts
+          if (evmAccountGroup && network.isEvm) {
+            return true;
+          }
+          if (solAccountGroup && network.chainId === SolScope.Mainnet) {
+            return true;
+          }
+          if (
+            btcAccountGroup &&
+            isFlask() &&
+            network.chainId === BtcScope.Mainnet
+          ) {
+            return true;
+          }
+          return false;
+        });
+      }
+      return orderedNetworks.filter((network) => {
         if (isEvmNetworkSelected) {
           return network.isEvm;
         }
-        // If non-EVM network is selected, only show non-EVM networks
-        return !network.isEvm;
-      })
-      .map((network) => {
-        const networkChainId = network.chainId; // eip155:59144
-        // Convert CAIP format to hex format for comparison
-        const hexChainId = network.isEvm
-          ? convertCaipToHexChainId(networkChainId)
-          : networkChainId;
-
-        if (!isNetworkInDefaultNetworkTab(network)) {
-          return null;
+        if (
+          selectedAccount.scopes.includes(
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          )
+        ) {
+          return network.chainId === 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
         }
-
-        const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
-          getItemCallbacks(network);
-        const iconSrc = getNetworkIcon(network);
-        const isSelected = isSingleNetworkSelected(hexChainId as Hex);
-
-        const singleRemainingNetwork = enabledChainIds.length === 1;
-        const isLastRemainingNetwork =
-          singleRemainingNetwork && enabledChainIds[0] === hexChainId;
-
-        return (
-          <NetworkListItem
-            key={network.chainId}
-            chainId={network.chainId}
-            name={network.name}
-            iconSrc={iconSrc}
-            iconSize={AvatarNetworkSize.Md}
-            rpcEndpoint={
-              hasMultiRpcOptions(network)
-                ? getRpcDataByChainId(network.chainId, evmNetworks)
-                    .defaultRpcEndpoint
-                : undefined
-            }
-            onClick={async () => {
-              await handleNetworkChangeCallback(
-                network.chainId,
-                isLastRemainingNetwork,
-              );
-              await dispatch(hideModal());
-            }}
-            onDeleteClick={onDelete}
-            onEditClick={onEdit}
-            onDiscoverClick={onDiscoverClick}
-            onRpcEndpointClick={onRpcSelect}
-            selected={isSelected}
-          />
-        );
+        if (
+          selectedAccount.scopes.includes(
+            'bip122:000000000019d6689c085ae165831e93',
+          )
+        ) {
+          return network.chainId === 'bip122:000000000019d6689c085ae165831e93';
+        }
+        return false;
       });
+    };
+
+    const filteredNetworks = getFilteredNetworks();
+
+    console.log('filteredNetworks +++++++++++', filteredNetworks);
+
+    return filteredNetworks.map((network) => {
+      const networkChainId = network.chainId; // eip155:59144
+      // Convert CAIP format to hex format for comparison
+      const hexChainId = network.isEvm
+        ? convertCaipToHexChainId(networkChainId)
+        : networkChainId;
+
+      if (!isNetworkInDefaultNetworkTab(network)) {
+        return null;
+      }
+
+      const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
+        getItemCallbacks(network);
+      const iconSrc = getNetworkIcon(network);
+      const isSelected = isSingleNetworkSelected(hexChainId as Hex);
+
+      const singleRemainingNetwork = enabledChainIds.length === 1;
+      const isLastRemainingNetwork =
+        singleRemainingNetwork && enabledChainIds[0] === hexChainId;
+
+      return (
+        <NetworkListItem
+          key={network.chainId}
+          chainId={network.chainId}
+          name={network.name}
+          iconSrc={iconSrc}
+          iconSize={AvatarNetworkSize.Md}
+          rpcEndpoint={
+            hasMultiRpcOptions(network)
+              ? getRpcDataByChainId(network.chainId, evmNetworks)
+                  .defaultRpcEndpoint
+              : undefined
+          }
+          onClick={async () => {
+            await handleNetworkChangeCallback(
+              network.chainId,
+              isLastRemainingNetwork,
+            );
+            await dispatch(hideModal());
+          }}
+          onDeleteClick={onDelete}
+          onEditClick={onEdit}
+          onDiscoverClick={onDiscoverClick}
+          onRpcEndpointClick={onRpcSelect}
+          selected={isSelected}
+        />
+      );
+    });
   }, [
     enabledNetworksByNamespace,
     orderedNetworks,
@@ -219,6 +297,11 @@ const DefaultNetworks = memo(() => {
     hasMultiRpcOptions,
     evmNetworks,
     handleNetworkChangeCallback,
+    btcAccountGroup,
+    solAccountGroup,
+    isMultichainAccountsState2Enabled,
+    evmAccountGroup,
+    dispatch,
   ]);
 
   // Memoize the additional network list items
@@ -273,7 +356,7 @@ const DefaultNetworks = memo(() => {
   return (
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        {isEvmNetworkSelected ? (
+        {isEvmNetworkSelected || isMultichainAccountsState2Enabled ? (
           <Box
             className="network-manager__all-popular-networks"
             data-testid="network-manager-select-all"
@@ -288,7 +371,7 @@ const DefaultNetworks = memo(() => {
           </Box>
         ) : null}
         {networkListItems}
-        {isEvmNetworkSelected && (
+        {(isEvmNetworkSelected || isMultichainAccountsState2Enabled) && (
           <>
             <AdditionalNetworksInfo />
             {additionalNetworkListItems}

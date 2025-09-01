@@ -5,16 +5,19 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { convertCaipToHexChainId } from '../../../../../shared/modules/network.utils';
+import {
+  convertCaipToHexChainId,
+  getRpcDataByChainId,
+} from '../../../../../shared/modules/network.utils';
 import {
   detectNfts,
   setActiveNetwork,
   setNextNonce,
   updateCustomNonce,
 } from '../../../../store/actions';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 import {
   getAllChainsToPoll,
+  getAllEnabledNetworks2,
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
@@ -59,7 +62,11 @@ export const useNetworkChangeHandlers = () => {
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const allEnabledNetworks2 = useSelector(getAllEnabledNetworks2);
   const allChainIds = useSelector(getAllChainsToPoll);
+  const [, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
 
   // This value needs to be tracked in case the user changes to a Non EVM
   // network and there is no account created for that network. This will
@@ -86,23 +93,22 @@ export const useNetworkChangeHandlers = () => {
     (chainId: CaipChainId) => {
       const hexChainId = convertCaipToHexChainId(chainId);
 
-      const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
+      const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
+      const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
+      console.log('enabledNetworkKeys +++++++++++++++', allEnabledNetworks2);
 
-      if (!isPopularNetwork) {
-        // custom network - select single
-        dispatch(enableSingleNetwork(hexChainId));
-      } else if (enabledNetworkKeys.includes(hexChainId)) {
-        // selecting network if already selected, does nothing (no deselect)
-        // just to be safe, we will select single
+      if (allEnabledNetworks2.includes(hexChainId)) {
         dispatch(enableSingleNetwork(hexChainId));
       } else {
-        // selecting a popular network - select single
         dispatch(enableSingleNetwork(hexChainId));
+        // deferring execution to keep select all unblocked
+        setTimeout(() => {
+          dispatch(setActiveNetwork(finalNetworkClientId));
+        }, 0);
       }
     },
-    [dispatch, enabledNetworksByNamespace],
+    [dispatch, allEnabledNetworks2, evmNetworks],
   );
 
   const handleNonEvmNetworkChange = useCallback(
@@ -128,16 +134,20 @@ export const useNetworkChangeHandlers = () => {
 
   const handleNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
+      console.log('TODO HERE ..........', chainId);
       const currentChain =
         getMultichainNetworkConfigurationOrThrow(currentChainId);
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
+      console.log('chain ..........', chain);
+
       if (chain.isEvm) {
-        handleEvmNetworkChange(chainId);
+        await handleEvmNetworkChange(chainId);
       } else {
         await handleNonEvmNetworkChange(chainId);
       }
 
+      console.log('TODO HERE 3 ..........', chainId);
       const chainIdToTrack = chain.isEvm
         ? convertCaipToHexChainId(chainId)
         : chainId;

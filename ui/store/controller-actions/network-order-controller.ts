@@ -5,12 +5,18 @@ import {
   CaipChainId,
   Hex,
   isCaipChainId,
+  isHexString,
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../shared/constants/network';
+import { SolScope } from '@metamask/keyring-api';
+import {
+  FEATURED_NETWORK_CHAIN_IDS,
+  FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN,
+} from '../../../shared/constants/network';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors';
+import { getIsMultichainAccountsState2Enabled } from '../../selectors/multichain-accounts/feature-flags';
 import { setEnabledNetworks } from '../actions';
 import { MetaMaskReduxState } from '../store';
 
@@ -22,15 +28,29 @@ export function enableAllPopularNetworks(): ThunkAction<
 > {
   return async (dispatch, getState) => {
     const state = getState();
-    const [caipNetworkConfigMap] =
+    const [multichainNetworkConfigMap] =
       getMultichainNetworkConfigurationsByChainId(state);
+    const isMultichainState2Enabled =
+      getIsMultichainAccountsState2Enabled(state);
 
-    const evmPopularNetworkChainIds = FEATURED_NETWORK_CHAIN_IDS.filter(
-      (chainId) => toEvmCaipChainId(chainId) in caipNetworkConfigMap,
-    );
-    await dispatch(
-      setEnabledNetworks(evmPopularNetworkChainIds, KnownCaipNamespace.Eip155),
-    );
+    // Choose the appropriate featured networks constant based on feature flag
+    const featuredNetworkChainIds = isMultichainState2Enabled
+      ? FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN
+      : FEATURED_NETWORK_CHAIN_IDS;
+
+    // Filter to get only available EVM networks
+    const availableEvmNetworks = featuredNetworkChainIds
+      .filter((chainId): chainId is Hex => isHexString(chainId as Hex))
+      .filter(
+        (chainId) => toEvmCaipChainId(chainId) in multichainNetworkConfigMap,
+      );
+
+    // Enable all available EVM networks in a single call
+    if (availableEvmNetworks.length > 0) {
+      await dispatch(
+        setEnabledNetworks(availableEvmNetworks, KnownCaipNamespace.Eip155),
+      );
+    }
   };
 }
 

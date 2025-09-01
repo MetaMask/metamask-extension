@@ -85,6 +85,7 @@ const defaultState: NetworkOrderControllerState = {
     [KnownCaipNamespace.Solana]: {
       [SolScope.Mainnet]: true,
     },
+    [KnownCaipNamespace.Bip122]: {},
   },
 };
 
@@ -191,13 +192,6 @@ export class NetworkOrderController extends BaseController<
         // Append new networks to the end
         .concat(newNetworks);
     });
-
-    // The network controller can potentially update to a chain that is not selected in our enabled network map.
-    // This ensures that we fallback to a network that has been added to our network map.
-    const evmChainIds = Object.keys(
-      this.state.enabledNetworkMap[KnownCaipNamespace.Eip155],
-    );
-    this.#switchToEnabledNetworkIfNeeded(evmChainIds);
   }
 
   onNetworkRemoved(networkId: Hex) {
@@ -256,57 +250,18 @@ export class NetworkOrderController extends BaseController<
     this.update((state) => {
       const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
 
-      // Add the enabled networks to the mapping for the specified network type
-      state.enabledNetworkMap[namespace] = enabledNetworks;
+      // Disable all networks on all namespaces, then enable the specified ones for the given namespace
+      const enabledNetworkMap2 = Object.keys(state.enabledNetworkMap).reduce(
+        (acc, namespaceToUse) => {
+          if (namespaceToUse !== namespace) {
+            return { ...acc, [namespaceToUse]: {} };
+          }
+          return { ...acc, [namespaceToUse]: enabledNetworks };
+        },
+        {},
+      );
+
+      state.enabledNetworkMap = enabledNetworkMap2;
     });
-
-    this.#switchToEnabledNetworkIfNeeded(ids);
-  }
-
-  /**
-   * Switches to an enabled network if the currently selected network is not in the enabled list.
-   * This is a private helper method that handles the network switching logic.
-   *
-   * @param chainIds - Array of enabled chain IDs
-   */
-  #switchToEnabledNetworkIfNeeded(chainIds: string[]) {
-    // Early return if no enabled networks
-    if (chainIds.length === 0) {
-      return;
-    }
-
-    const { selectedNetworkClientId, networkConfigurationsByChainId } =
-      this.messagingSystem.call('NetworkController:getState');
-
-    const selectedNetworkChainId = Object.values(
-      networkConfigurationsByChainId,
-    ).find(
-      (network) =>
-        network.rpcEndpoints?.[network.defaultRpcEndpointIndex]
-          ?.networkClientId === selectedNetworkClientId,
-    )?.chainId;
-
-    const networkConf = Object.values(networkConfigurationsByChainId).find(
-      (network) => network.chainId === chainIds[0],
-    );
-
-    const clientId =
-      networkConf?.rpcEndpoints?.[networkConf.defaultRpcEndpointIndex]
-        ?.networkClientId;
-
-    if (
-      selectedNetworkChainId &&
-      !chainIds.includes(selectedNetworkChainId) &&
-      clientId
-    ) {
-      // Settimout delay to run this in a seperate 'tick'.
-      // There were some issues related to background state being updated, but persisted state not being updated.
-      setTimeout(() => {
-        this.messagingSystem.call(
-          'NetworkController:setActiveNetwork',
-          clientId,
-        );
-      }, 0);
-    }
   }
 }

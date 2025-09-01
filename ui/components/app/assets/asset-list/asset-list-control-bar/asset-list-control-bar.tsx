@@ -13,11 +13,15 @@ import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
+  getIsMultichainAccountsState2Enabled,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
-import { getEnabledNetworksByNamespace } from '../../../../../selectors/multichain/networks';
+import {
+  getAllEnabledNetworks2,
+  getEnabledNetworksByNamespace,
+} from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   AvatarNetwork,
@@ -106,7 +110,17 @@ const AssetListControlBar = ({
 
   const { collections } = useNftsCollections();
 
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  console.log(
+    'isMultichainAccountsState2Enabled +++++++++++',
+    isMultichainAccountsState2Enabled,
+  );
+
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const allEnabledNetworks2 = useSelector(getAllEnabledNetworks2);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
@@ -319,6 +333,53 @@ const AssetListControlBar = ({
     allNetworks,
   ]);
 
+  const networkButtonTextEnabledAccountState2 = useMemo(() => {
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(allEnabledNetworks2).length === 1
+    ) {
+      const chainId = allEnabledNetworks2[0];
+      console.log('chainId ..........', chainId);
+      console.log('allNetworks ..........', allNetworks);
+      return isStrictHexString(chainId)
+        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
+        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
+    }
+
+    console.log('allEnabledNetworks2 ..........', allEnabledNetworks2);
+    // > 1 network selected, show "all networks"
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(allEnabledNetworks2).length > 1
+    ) {
+      return t('allPopularNetworks');
+    }
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(allEnabledNetworks2).length === 0
+    ) {
+      return t('noNetworksSelected');
+    }
+    if (
+      (!isGlobalNetworkSelectorRemoved &&
+        isTokenNetworkFilterEqualCurrentNetwork) ||
+      (!isGlobalNetworkSelectorRemoved &&
+        !currentMultichainNetwork.isEvmNetwork)
+    ) {
+      return currentMultichainNetwork?.nickname ?? t('currentNetwork');
+    }
+
+    return t('popularNetworks');
+  }, [
+    isTokenNetworkFilterEqualCurrentNetwork,
+    currentMultichainNetwork.isEvmNetwork,
+    currentMultichainNetwork.network.nickname,
+    currentMultichainNetwork?.nickname,
+    t,
+    allNetworks,
+    allEnabledNetworks2,
+  ]);
+
   const singleNetworkIconUrl = useMemo(() => {
     if (!isGlobalNetworkSelectorRemoved) {
       return undefined;
@@ -375,7 +436,11 @@ const AssetListControlBar = ({
                 borderWidth={0}
               />
             )}
-            <Text ellipsis>{networkButtonText}</Text>
+            <Text ellipsis>
+              {isMultichainAccountsState2Enabled
+                ? networkButtonTextEnabledAccountState2
+                : networkButtonText}
+            </Text>
           </Box>
         </ButtonBase>
 
