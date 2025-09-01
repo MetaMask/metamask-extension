@@ -2,9 +2,10 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
-import { AddWalletPage } from './add-wallet-page';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+
+import { AddWalletPage } from './add-wallet-page';
 
 const mockHistoryGoBack = jest.fn();
 

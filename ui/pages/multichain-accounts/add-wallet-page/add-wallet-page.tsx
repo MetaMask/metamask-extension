@@ -2,8 +2,6 @@ import React, { useCallback } from 'react';
 
 import { useHistory } from 'react-router-dom';
 import {
-  Box,
-  BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
   IconName,
