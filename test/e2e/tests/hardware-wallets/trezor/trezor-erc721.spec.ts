@@ -19,7 +19,6 @@ describe('Trezor Hardware', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.NFTS;
 
   describe('can perform actions on an ERC-721 token', function () {
-
     async function deployContract(testDappPage: TestDappPage, driver: Driver) {
       await testDappPage.clickERC721DeployButton();
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
