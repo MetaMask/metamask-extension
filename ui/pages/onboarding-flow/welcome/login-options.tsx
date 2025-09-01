@@ -26,6 +26,7 @@ import {
   FontWeight,
   IconColor,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextTransform,
   TextVariant,
@@ -172,6 +173,33 @@ export default function LoginOptions({
               ? t('onboardingSrpImport')
               : t('onboardingSrpCreate')}
           </Button>
+          <Text
+            variant={TextVariant.bodySm}
+            fontWeight={FontWeight.Medium}
+            textAlign={TextAlign.Center}
+            paddingTop={8}
+          >
+            {t('onboardingLoginFooter')}{' '}
+            <Text
+              as="a"
+              href="/terms-of-use"
+              variant={TextVariant.bodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.primaryDefault}
+            >
+              {t('onboardingLoginFooterTermsOfUse')}
+            </Text>{' '}
+            {t('onboardingLoginFooterAnd')}{' '}
+            <Text
+              as="a"
+              variant={TextVariant.bodySm}
+              fontWeight={FontWeight.Medium}
+              href="/privacy-policy"
+              color={TextColor.primaryDefault}
+            >
+              {t('onboardingLoginFooterPrivacyNotice')}
+            </Text>
+          </Text>
         </Box>
       </ModalContent>
     </Modal>
