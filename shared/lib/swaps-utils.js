@@ -289,6 +289,12 @@ export async function fetchTradesInfo(
     urlParams.enableDirectWrapping = true;
   }
 
+  const onlyIntent = true;
+  const intent = true;
+
+  urlParams.intent = intent;
+  urlParams.onlyIntent = onlyIntent;
+
   const queryString = new URLSearchParams(urlParams).toString();
   const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
   const tradesResponse = await fetchWithCache({

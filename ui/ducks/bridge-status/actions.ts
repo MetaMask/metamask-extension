@@ -35,3 +35,32 @@ export const submitBridgeTx = (
     );
   };
 };
+
+/**
+ * Submit an intent-based order (e.g., CoW) using UI-signed EIP-712 signature.
+ *
+ * @param params.quote - QuoteResponse including intent
+ * @param params.signature - Signature from eth_signTypedData_v4
+ * @param params.accountAddress - EOA submitting the order
+ */
+export const submitIntent = (params: {
+  quote: QuoteResponse & QuoteMetadata;
+  signature: string;
+  accountAddress: string;
+}) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const { quote, signature, accountAddress } = params;
+    return dispatch(
+      // Keep parity with submitTx helper wiring
+      callBridgeStatusControllerMethod<[
+        {
+          quoteResponse: QuoteResponse & QuoteMetadata;
+          signature: string;
+          accountAddress: string;
+        },
+      ]>(BridgeStatusAction.SUBMIT_INTENT, [
+        { quoteResponse: quote, signature, accountAddress },
+      ]),
+    );
+  };
+};

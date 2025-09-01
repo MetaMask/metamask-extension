@@ -238,6 +238,8 @@ const PrepareBridgePage = ({
     insufficientBal: quoteRequest.insufficientBal,
   });
 
+  console.log('bridge selector: isQuoteExpiredOrInvalid', isQuoteExpiredOrInvalid);
+  console.log('bridge selector: activeQuote_', activeQuote_);
   const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);

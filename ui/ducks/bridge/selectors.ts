@@ -629,62 +629,82 @@ export const getValidationErrors = createDeepEqualSelector(
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
+    console.log('bridge selector: bridge selector')
+    console.log('bridge selector: bridge selector: isTxAlertPresent', Boolean(txAlert))
+    const isNoQuotesAvailable = Boolean(
+      !activeQuote &&
+      isValidQuoteRequest(quoteRequest) &&
+      quotesLastFetchedMs &&
+      !isLoading &&
+      quotesRefreshCount > 0,
+    );
+
+    if (!activeQuote) {
+      console.log('bridge selector: No active quote');
+    }
+    if (!isValidQuoteRequest(quoteRequest)) {
+      console.log('bridge selector: Quote request is not valid', quoteRequest);
+    }
+    if (!quotesLastFetchedMs) {
+      console.log('bridge selector: Quotes last fetched ms is falsy', quotesLastFetchedMs);
+    }
+    if (isLoading) {
+      console.log('bridge selector: Quotes are loading');
+    }
+    if (!(quotesRefreshCount > 0)) {
+      console.log('bridge selector: Quotes refresh count is not greater than 0', quotesRefreshCount);
+    }
+    console.log('bridge selector: isNoQuotesAvailable:', isNoQuotesAvailable);
 
     return {
       isTxAlertPresent: Boolean(txAlert),
-      isNoQuotesAvailable: Boolean(
-        !activeQuote &&
-          isValidQuoteRequest(quoteRequest) &&
-          quotesLastFetchedMs &&
-          !isLoading &&
-          quotesRefreshCount > 0,
-      ),
+      isNoQuotesAvailable,
       // Shown prior to fetching quotes
       isInsufficientGasBalance: Boolean(
-        nativeBalance &&
-          !activeQuote &&
-          validatedSrcAmount &&
-          fromToken &&
-          !gasIncluded &&
-          (isNativeAddress(fromToken.address)
-            ? new BigNumber(nativeBalance)
-                .sub(minimumBalanceToUse)
-                .lte(validatedSrcAmount)
-            : new BigNumber(nativeBalance).lte(0)),
+      nativeBalance &&
+        !activeQuote &&
+        validatedSrcAmount &&
+        fromToken &&
+        !gasIncluded &&
+        (isNativeAddress(fromToken.address)
+        ? new BigNumber(nativeBalance)
+          .sub(minimumBalanceToUse)
+          .lte(validatedSrcAmount)
+        : new BigNumber(nativeBalance).lte(0)),
       ),
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
-        nativeBalance &&
-          activeQuote &&
-          fromToken &&
-          fromTokenInputValue &&
-          !gasIncluded &&
-          (isNativeAddress(fromToken.address)
-            ? new BigNumber(nativeBalance)
-                .sub(activeQuote.totalMaxNetworkFee.amount)
-                .sub(activeQuote.sentAmount.amount)
-                .sub(minimumBalanceToUse)
-                .lte(0)
-            : new BigNumber(nativeBalance).lte(
-                activeQuote.totalMaxNetworkFee.amount,
-              )),
+      nativeBalance &&
+        activeQuote &&
+        fromToken &&
+        fromTokenInputValue &&
+        !gasIncluded &&
+        (isNativeAddress(fromToken.address)
+        ? new BigNumber(nativeBalance)
+          .sub(activeQuote.totalMaxNetworkFee.amount)
+          .sub(activeQuote.sentAmount.amount)
+          .sub(minimumBalanceToUse)
+          .lte(0)
+        : new BigNumber(nativeBalance).lte(
+          activeQuote.totalMaxNetworkFee.amount,
+          )),
       ),
       isInsufficientBalance:
-        validatedSrcAmount &&
-        fromTokenBalance &&
-        !isNaN(Number(fromTokenBalance))
-          ? new BigNumber(fromTokenBalance).lt(validatedSrcAmount)
-          : false,
+      validatedSrcAmount &&
+      fromTokenBalance &&
+      !isNaN(Number(fromTokenBalance))
+        ? new BigNumber(fromTokenBalance).lt(validatedSrcAmount)
+        : false,
       isEstimatedReturnLow:
-        activeQuote?.sentAmount?.valueInCurrency &&
-        activeQuote?.adjustedReturn?.valueInCurrency &&
-        fromTokenInputValue
-          ? new BigNumber(activeQuote.adjustedReturn.valueInCurrency).lt(
-              new BigNumber(
-                1 - BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-              ).times(activeQuote.sentAmount.valueInCurrency),
-            )
-          : false,
+      activeQuote?.sentAmount?.valueInCurrency &&
+      activeQuote?.adjustedReturn?.valueInCurrency &&
+      fromTokenInputValue
+        ? new BigNumber(activeQuote.adjustedReturn.valueInCurrency).lt(
+          new BigNumber(
+          1 - BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+          ).times(activeQuote.sentAmount.valueInCurrency),
+        )
+        : false,
     };
   },
 );

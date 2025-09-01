@@ -32,6 +32,9 @@ import {
   ControllerInitResult,
 } from '../types';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
+import { SignTypedDataVersion } from '@metamask/keyring-controller';
+import { MessageParamsTypedData } from '@metamask/signature-controller';
+import { signIntent, type CowOrderInput } from '../../lib/transaction/intent';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
@@ -162,13 +165,14 @@ export const TransactionControllerInit: ControllerInitFunction<
     updateAccountBalanceForTransactionNetwork,
   );
 
-  const api = getApi(controller);
+  const api = getApi(controller, initMessenger);
 
   return { controller, api, memStateKey: 'TxController' };
 };
 
 function getApi(
   controller: TransactionController,
+  initMessenger: TransactionControllerInitMessenger,
 ): ControllerInitResult<TransactionController>['api'] {
   return {
     abortTransactionSigning:
@@ -192,6 +196,27 @@ function getApi(
       controller.updateTransactionGasFees.bind(controller),
     updateTransactionSendFlowHistory:
       controller.updateTransactionSendFlowHistory.bind(controller),
+    // Expose a safe EIP-712 v4 signing method to the UI (pattern mirrors delegation.ts)
+  signTypedDataV4: (params: { from: string; data: MessageParamsTypedData }) =>
+      initMessenger.call(
+        'KeyringController:signTypedMessage',
+        params,
+        SignTypedDataVersion.V4,
+      ),
+    // Intent-specific helper: constructs and signs a CoW order using the background messenger
+    signIntent: (params: {
+      chainId: number;
+      from: string;
+      order: CowOrderInput;
+      verifyingContract: string;
+    }) =>
+      signIntent({
+        chainId: params.chainId,
+        from: params.from as `0x${string}`,
+        order: params.order,
+        verifyingContract: params.verifyingContract as `0x${string}`,
+        messenger: initMessenger,
+      }),
   };
 }
 

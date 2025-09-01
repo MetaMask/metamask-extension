@@ -4089,6 +4089,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         `${BRIDGE_STATUS_CONTROLLER_NAME}:${BridgeStatusAction.SUBMIT_TX}`,
       ),
+      [BridgeStatusAction.SUBMIT_INTENT]: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_STATUS_CONTROLLER_NAME}:${BridgeStatusAction.SUBMIT_INTENT}`,
+      ),
 
       // Smart Transactions
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
