@@ -24,7 +24,7 @@ jobs:
     # This will skip scanning the code for forks, but will run for the main repository on PRs from forks
     if: ${{ github.event.workflow_run.conclusion == 'success' && contains(fromJSON('["push", "pull_request"]'), github.event.workflow_run.event) && !github.event.workflow_run.repository.fork }}
     name: SonarCloud
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
