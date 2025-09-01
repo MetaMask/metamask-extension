@@ -1,7 +1,8 @@
 import assert from 'assert/strict';
-import { withFixtures, logInWithBalanceValidation } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
@@ -23,8 +24,8 @@ describe('Change assets', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         const accountListPage = new AccountListPage(driver);
@@ -75,8 +76,8 @@ describe('Change assets', function () {
         smartContract: [smartContract, tokenContract],
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         const accountListPage = new AccountListPage(driver);
@@ -124,8 +125,8 @@ describe('Change assets', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         const nftDetailsPage = new NFTDetailsPage(driver);
@@ -183,8 +184,8 @@ describe('Change assets', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         const headerNavbar = new HeaderNavbar(driver);
