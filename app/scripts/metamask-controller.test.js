@@ -3312,9 +3312,12 @@ describe('MetaMaskController', () => {
             createMockCronjobControllerStorageManager(),
         });
 
-        // MultichainAccountService is not available in this test (non-multichain build simulation)
-        // The conditional check in metamask-controller.js will skip the service call
-        
+        // Mock MultichainAccountService action handler for this test environment
+        localMetamaskController.controllerMessenger.registerActionHandler(
+          'MultichainAccountService:setBasicFunctionality',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
         // Mock RemoteFeatureFlagController to prevent network requests in tests
         jest
           .spyOn(
