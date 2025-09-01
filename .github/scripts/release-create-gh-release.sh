@@ -48,8 +48,9 @@ function publish_tag() {
 current_commit_msg=$(git show -s --format='%s' HEAD)
 
 # Validate commit message format to prevent injection
-if [[ "${current_commit_msg}" =~ Version[-[:space:]](v[0-9]+\.[0-9]+\.[0-9]+) ]]; then
-    tag="${BASH_REMATCH[1]}"
+# Matches "Version v12.0.0" or "Version-v12.0.0"
+if [[ "${current_commit_msg}" =~ Version( |-)(v[0-9]+\.[0-9]+\.[0-9]+) ]]; then
+    tag="${BASH_REMATCH[2]}"
     # Additional validation of extracted tag
     if ! [[ "${tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         printf '%s\n' "::error::Invalid tag format extracted from commit message"

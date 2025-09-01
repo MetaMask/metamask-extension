@@ -117,8 +117,10 @@ jobs:
 
       - name: Check for release-tagged label
         id: check-label
+        env:
+          LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
         run: |
-          if ${{ contains(github.event.pull_request.labels.*.name, 'release-tagged') }}; then
+          if echo "${LABELS}" | grep -q '"release-tagged"'; then
             echo "✅ PR has 'release-tagged' label"
             echo "has_label=true" >> "${GITHUB_OUTPUT}"
           else
