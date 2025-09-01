@@ -827,8 +827,10 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
         'NetworkController:getState',
+        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
         'MultichainAccountService:setBasicFunctionality',
         'MultichainAccountService:alignWallets',
+        ///: END:ONLY_INCLUDE_IF
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
@@ -1868,17 +1870,20 @@ export default class MetamaskController extends EventEmitter {
         if (prevUseExternalServices !== currUseExternalServices) {
           // Set basic functionality and trigger alignment when enabled
           // This single call handles both provider disable/enable and alignment
-          this.controllerMessenger
-            .call(
-              'MultichainAccountService:setBasicFunctionality',
-              currUseExternalServices,
-            )
-            .catch((error) => {
-              console.error(
-                'Failed to set basic functionality on MultichainAccountService:',
-                error,
-              );
-            });
+          // Only call if MultichainAccountService is available (multichain builds)
+          if (this.multichainAccountService) {
+            this.controllerMessenger
+              .call(
+                'MultichainAccountService:setBasicFunctionality',
+                currUseExternalServices,
+              )
+              .catch((error) => {
+                console.error(
+                  'Failed to set basic functionality on MultichainAccountService:',
+                  error,
+                );
+              });
+          }
         }
       }, this.preferencesController.state),
     );
@@ -1960,8 +1965,8 @@ export default class MetamaskController extends EventEmitter {
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
-      ///: END:ONLY_INCLUDE_IF
       MultichainAccountService: MultichainAccountServiceInit,
+      ///: END:ONLY_INCLUDE_IF
       MultichainNetworkController: MultichainNetworkControllerInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
@@ -2014,8 +2019,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainTransactionsController;
     this.multichainAssetsRatesController =
       controllersByName.MultichainAssetsRatesController;
-    ///: END:ONLY_INCLUDE_IF
     this.multichainAccountService = controllersByName.MultichainAccountService;
+    ///: END:ONLY_INCLUDE_IF
     this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
