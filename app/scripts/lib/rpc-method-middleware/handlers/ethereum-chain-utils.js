@@ -268,7 +268,6 @@ export async function switchChain(
       setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
     }
 
-
     response.result = null;
     return end();
   } catch (error) {
