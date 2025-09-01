@@ -25,7 +25,6 @@ import {
   getInternalAccounts,
   getInternalAccountsObject,
   getSelectedInternalAccount,
-  getInternalAccountByAddresses,
 } from '../accounts';
 import {
   AccountGroupWithInternalAccounts,
@@ -755,7 +754,8 @@ export const getInternalAccountsFromGroupById = createSelector(
 export const getAccountGroupsByAddress = createDeepEqualSelector(
   [
     getAccountGroupWithInternalAccounts,
-    (_state: AccountsState, addresses: string[]) => new Set(addresses),
+    (_state: AccountsState, addresses: string[]) =>
+      new Set(addresses.map((address) => address.toLowerCase())),
   ],
   (
     accountGroupWithInternalAccounts,
@@ -765,13 +765,15 @@ export const getAccountGroupsByAddress = createDeepEqualSelector(
 
     accountGroupWithInternalAccounts.forEach((group) => {
       const containsMatchingAccount = group.accounts.some((account) =>
-        addressesSet.has(account.address),
+        addressesSet.has(account.address.toLowerCase()),
       );
+
       if (containsMatchingAccount) {
         matchingGroups.add(group);
       }
     });
 
+    // Convert the Set of AccountGroupWithInternalAccounts to an Array
     return Array.from(matchingGroups);
   },
 );
