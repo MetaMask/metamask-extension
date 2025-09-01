@@ -9,19 +9,7 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { useBridgeQueryParams } from './useBridgeQueryParams';
 
 const renderUseBridgeQueryParams = (mockStoreState: object, path?: string) =>
-  renderHookWithProvider(
-    () =>
-      useBridgeQueryParams(undefined, {
-        id: 'test-account-id',
-        type: EthAccountType.Eoa,
-        address: '0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293',
-        scopes: [EthScope.Mainnet],
-      } as never),
-    mockStoreState,
-    path,
-  );
-
-let calcLatestSrcBalanceSpy: jest.SpyInstance;
+  renderHookWithProvider(() => useBridgeQueryParams(), mockStoreState, path);
 
 let calcLatestSrcBalanceSpy: jest.SpyInstance;
 
