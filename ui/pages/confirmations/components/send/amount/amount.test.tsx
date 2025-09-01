@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/dom';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import {
+  EVM_ASSET,
   MOCK_NFT1155,
   MOCK_NFT721,
   SOLANA_ASSET,
@@ -37,7 +38,7 @@ describe('Amount', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('AMOUNT')).toBeInTheDocument();
+    expect(getByText('Amount')).toBeInTheDocument();
   });
 
   it('call update value method when value is changed', () => {
@@ -53,13 +54,21 @@ describe('Amount', () => {
   });
 
   it('amount input is reset when fiatmode is toggled', () => {
-    const { getByRole, getByText } = render();
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      fiatCurrencySymbol: 'USD',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
+    });
+    const { getByRole, getByTestId, getByText } = render();
 
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
-    expect(getByText('Fiat Mode')).toBeInTheDocument();
-    fireEvent.click(getByText('Fiat Mode'));
-    expect(getByText('Native Mode')).toBeInTheDocument();
+    expect(getByText('~$ 20.00')).toBeInTheDocument();
+    fireEvent.click(getByTestId('toggle-fiat-mode'));
     expect(getByRole('textbox')).toHaveValue('');
+    fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
+    expect(getByText('~ETH 1.20001')).toBeInTheDocument();
   });
 
   it('capture metrics when when fiatmode is toggled', () => {
@@ -74,11 +83,11 @@ describe('Amount', () => {
         typeof AmountSelectionMetrics.useAmountSelectionMetrics
       >);
 
-    const { getByText } = render();
+    const { getByTestId } = render();
 
-    fireEvent.click(getByText('Fiat Mode'));
+    fireEvent.click(getByTestId('toggle-fiat-mode'));
     expect(mockSetAmountInputTypeFiat).toHaveBeenCalled();
-    fireEvent.click(getByText('Native Mode'));
+    fireEvent.click(getByTestId('toggle-fiat-mode'));
     expect(mockSetAmountInputTypeToken).toHaveBeenCalled();
   });
 
@@ -90,23 +99,35 @@ describe('Amount', () => {
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
-    const { getByRole, getByText } = render();
+    const { getByRole, getByTestId } = render();
 
-    fireEvent.click(getByText('Fiat Mode'));
+    fireEvent.click(getByTestId('toggle-fiat-mode'));
     fireEvent.change(getByRole('textbox'), { target: { value: 1 } });
     expect(mockUpdateValue).toHaveBeenCalledWith('20');
   });
 
   it('display balance returned by useBalance hook', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: EVM_ASSET,
+    } as unknown as SendContext.SendContextType);
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      fiatCurrencySymbol: 'USD',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
+    });
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '10.023',
     });
     const { getByText } = render();
 
-    expect(getByText('Balance: 10.023')).toBeInTheDocument();
+    expect(getByText('10.023 NEU available')).toBeInTheDocument();
   });
 
   it('update value with maxValue when max button is clicked', () => {
@@ -146,22 +167,6 @@ describe('Amount', () => {
     expect(mockSetAmountInputMethodPressedMax).toHaveBeenCalled();
   });
 
-  it('capture metrics when amount is changed', () => {
-    const mockSetAmountInputMethodManual = jest.fn();
-    jest
-      .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
-      .mockReturnValue({
-        setAmountInputMethodManual: mockSetAmountInputMethodManual,
-      } as unknown as ReturnType<
-        typeof AmountSelectionMetrics.useAmountSelectionMetrics
-      >);
-
-    const { getByRole } = render();
-
-    fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
-    expect(mockSetAmountInputMethodManual).toHaveBeenCalled();
-  });
-
   it('return null for ERC721 asset', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: MOCK_NFT721,
@@ -172,7 +177,9 @@ describe('Amount', () => {
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { container } = render();
@@ -189,7 +196,9 @@ describe('Amount', () => {
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { queryByText } = render();
@@ -210,7 +219,9 @@ describe('Amount', () => {
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { queryByText } = render();
