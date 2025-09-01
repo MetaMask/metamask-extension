@@ -21,6 +21,10 @@ const Asset = () => {
 
   const { chainId, asset, id } = params;
   const decodedAsset = asset ? decodeURIComponent(asset) : undefined;
+  console.log('ASSET PAGE', {
+    params,
+    decodedAsset,
+  });
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 

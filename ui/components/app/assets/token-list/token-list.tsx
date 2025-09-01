@@ -93,7 +93,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
     const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
-        if (
+        const singleNetworkAndNonEvm =
+          Object.entries(networksToShow).length === 1 &&
+          !chainId.startsWith('0x');
+
+        if (singleNetworkAndNonEvm) {
+          return [];
+        } else if (
           chainId.startsWith('0x') &&
           !Object.entries(networksToShow)
             .filter(([_, shouldShow]) => shouldShow)
@@ -110,7 +116,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             tokenFiatAmount: asset.fiat?.balance,
             primary: '',
             secondary: null,
-            title: '',
+            title: asset.name,
             address:
               'address' in asset ? asset.address : (asset.assetId as Hex),
             chainId: asset.chainId as Hex,
@@ -142,8 +148,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     newTokensImported,
   ]);
 
-  console.log('SORTED TOKEN LIST', sortedFilteredTokens);
-
   useEffect(() => {
     if (sortedFilteredTokens) {
       endTrace({ name: TraceName.AccountOverviewAssetListTab });
@@ -156,7 +160,23 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       return;
     }
 
-    onTokenClick(token.chainId, token.address);
+    const xxx = token.chainId.startsWith('0x')
+      ? token.address
+      : token.address.split('/')[1];
+
+    console.log('TOKEN CLICK', {
+      isNative: token.isNative,
+      chainId: token.chainId,
+      address: token.address,
+      token,
+      usedAddress:
+        isMultichainAccountsState2Enabled && token.isNative ? '' : xxx,
+    });
+
+    onTokenClick(
+      token.chainId,
+      isMultichainAccountsState2Enabled && token.isNative ? '' : xxx,
+    );
 
     // Track event: token details
     trackEvent({

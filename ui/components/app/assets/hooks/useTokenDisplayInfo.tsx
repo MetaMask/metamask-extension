@@ -69,7 +69,7 @@ export const useTokenDisplayInfo = ({
             currency: fixCurrencyToUSD ? 'USD' : currentCurrency.toUpperCase(),
           },
         )
-      : undefined;
+      : null;
 
   const formattedPrimary = formatWithThreshold(
     Number((isEvm ? token.string : token.primary) ?? token.balance),
@@ -126,12 +126,20 @@ export const useTokenDisplayInfo = ({
       tokenChainImage: tokenChainImage as string,
     };
   }
+
+  // TODO: type for secondary is wrongly set as number | null, when it is a string | null
+  // Just changing it causes a number of errors all over the codebase
+  // When BIP44 flag is enabled and stable, this can be refactored to use the type from the new selector
+  const nonEvmSecondary = isMultichainAccountsState2Enabled
+    ? (secondary as unknown as number)
+    : token.secondary;
+
   // TODO non-evm assets. this is only the native token
   return {
     title: token.title,
     tokenImage: token.image,
     primary: formattedPrimary,
-    secondary: showFiat ? token.secondary : null,
+    secondary: showFiat ? nonEvmSecondary : null,
     isStakeable: false,
     tokenChainImage: token.image as string,
   };

@@ -23,7 +23,7 @@ import { calculateTokenFiatAmount } from '../components/app/assets/util/calculat
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { getSelectedInternalAccount } from './accounts';
-import { getMultichainBalances, getMultichainIsEvm } from './multichain';
+import { getMultichainBalances } from './multichain';
 import {
   getCurrencyRates,
   getCurrentNetwork,
@@ -220,9 +220,15 @@ export const getMultiChainAssets = createDeepEqualSelector(
     assetRates,
     preferences,
   ) => {
+    console.log('AAAAA');
     const { hideZeroBalanceTokens } = preferences;
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
+
+    console.log('XXXXX', {
+      assetIds,
+      balances,
+    });
 
     const allAssets: TokenWithFiatAmount[] = [];
     assetIds.forEach((assetId: CaipAssetId) => {
@@ -296,9 +302,18 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
     chainId?: Hex | CaipChainId,
   ) => {
     const accountToUse = account ?? getSelectedInternalAccount(state);
-    const isEvm = getMultichainIsEvm(state, accountToUse);
 
-    const assetsToSearch = isEvm
+    console.log('getTokenByAccountAndAddressAndChainId', {
+      chainId,
+      accountToUse,
+      account,
+      xxxxx: getSelectedInternalAccount(state),
+      xxx: chainId?.startsWith('0x')
+        ? 'xxxxx'
+        : getMultiChainAssets(state, accountToUse),
+    });
+
+    const assetsToSearch = chainId?.startsWith('0x')
       ? (getSelectedAccountTokensAcrossChains(state) as Record<
           Hex,
           TokenWithFiatAmount[]
@@ -308,7 +323,15 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
           TokenWithFiatAmount[]
         >);
 
+    console.log('getTokenByAccountAndAddressAndChainId 2', {
+      assetsToSearch,
+    });
+
     const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
+
+    console.log('getTokenByAccountAndAddressAndChainId 3', {
+      result,
+    });
 
     return result;
   },
@@ -514,22 +537,41 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
 
 // TODO: Find a better way to narrow the state needed to make better use of memoization
 export const getAllAssetsForSelectedAccountGroup = createDeepEqualSelector(
-  ({ metamask }: { metamask: AssetListState }) => ({
-    accountTree: metamask.accountTree,
-    internalAccounts: metamask.internalAccounts,
-    allTokens: metamask.allTokens,
-    allIgnoredTokens: metamask.allIgnoredTokens,
-    tokenBalances: metamask.tokenBalances,
-    marketData: metamask.marketData,
-    currencyRates: metamask.currencyRates,
-    accountsAssets: metamask.accountsAssets,
-    assetsMetadata: metamask.assetsMetadata,
-    balances: metamask.balances,
-    conversionRates: metamask.conversionRates,
-    currentCurrency: metamask.currentCurrency,
-    networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
-    accountsByChainId: metamask.accountsByChainId,
-  }),
+  ({ metamask }: { metamask: AssetListState }) => {
+    const initialState = {
+      accountTree: metamask.accountTree,
+      internalAccounts: metamask.internalAccounts,
+      allTokens: metamask.allTokens,
+      allIgnoredTokens: metamask.allIgnoredTokens,
+      tokenBalances: metamask.tokenBalances,
+      marketData: metamask.marketData,
+      currencyRates: metamask.currencyRates,
+      currentCurrency: metamask.currentCurrency,
+      networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
+      accountsByChainId: metamask.accountsByChainId,
+    };
+
+    let multichainState = {
+      accountsAssets: {},
+      assetsMetadata: {},
+      balances: {},
+      conversionRates: {},
+    };
+
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    multichainState = {
+      accountsAssets: metamask.accountsAssets,
+      assetsMetadata: metamask.assetsMetadata,
+      balances: metamask.balances,
+      conversionRates: metamask.conversionRates,
+    };
+    ///: END:ONLY_INCLUDE_IF
+
+    return {
+      ...initialState,
+      ...multichainState,
+    };
+  },
   (assetListState: AssetListState) =>
     selectAssetsBySelectedAccountGroup(assetListState),
 );

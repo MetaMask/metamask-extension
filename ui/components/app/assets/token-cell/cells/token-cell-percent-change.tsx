@@ -50,18 +50,6 @@ export const TokenCellPercentChange = React.memo(
       : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData
           ?.pricePercentChange?.P1D;
 
-    if (
-      token.isNative &&
-      (token.chainId === '0x1' || !token.type?.startsWith('eip155'))
-    ) {
-      console.log('TOKEN INFO', {
-        token,
-        tokenAddress,
-        tokenPercentageChange,
-        isEvm,
-      });
-    }
-
     return (
       <PercentageChange value={tokenPercentageChange} address={tokenAddress} />
     );
