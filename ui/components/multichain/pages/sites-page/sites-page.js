@@ -90,6 +90,7 @@ export const SitesPage = () => {
                   },
                 );
                 if (firstChainId) {
+                  return; // Exit early once we find the first chainId
                 }
               }
             });
