@@ -92,7 +92,7 @@ jobs:
   test-e2e-chrome-api-specs-alert-on-failure:
     needs:
       - test-e2e-chrome-api-specs
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
     env:
       GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -133,7 +133,7 @@ jobs:
   test-e2e-chrome-api-specs-multichain-alert-on-failure:
     needs:
       - test-e2e-chrome-api-specs-multichain
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
     env:
       GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -172,7 +172,7 @@ jobs:
       - test-e2e-chrome-vault-decryption
       - test-e2e-chrome-api-specs
       - test-e2e-chrome-api-specs-multichain
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: ${{ !cancelled() }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
