@@ -96,7 +96,7 @@ jobs:
 
           # Check if there's at least one successful build
           if echo "${LATEST_RUNS}" | jq -e 'select(.conclusion == "success")' > /dev/null 2>&1; then
-            echo "✅ Found successful builds on ${BRANCH_NAME}"
+            echo "Found successful builds on ${BRANCH_NAME}"
           else
             echo "::warning::No recent successful builds found on ${BRANCH_NAME}. Please verify build status before proceeding."
           fi
@@ -126,10 +126,10 @@ jobs:
             HEAD_SHA=$(git rev-parse HEAD)
 
             if [[ "${TAG_SHA}" == "${HEAD_SHA}" ]]; then
-              echo "✅ Tag already points to current HEAD. No action needed."
+              echo "Tag already points to current HEAD. No action needed."
               echo "needs_retag=false" >> "${GITHUB_OUTPUT}"
             elif [[ "${FORCE_RETAG}" == "true" ]]; then
-              echo "⚠️ Tag exists at different commit. Force re-tag is enabled."
+              echo "Tag exists at different commit. Force re-tag is enabled."
               echo "Will move tag from ${TAG_SHA:0:7} to ${HEAD_SHA:0:7}"
 
               # Delete the old tag (local and remote)
@@ -137,7 +137,7 @@ jobs:
               git push origin ":refs/tags/${TAG_NAME}"
 
               echo "needs_retag=true" >> "${GITHUB_OUTPUT}"
-              echo "✅ Old tag deleted. Will create new tag at HEAD."
+              echo "Old tag deleted. Will create new tag at HEAD."
             else
               echo "::error::Tag ${TAG_NAME} exists but not at HEAD."
               echo "::error::To move the tag, run this workflow again with 'Force re-tag' enabled."
@@ -174,7 +174,7 @@ jobs:
 
           echo "tag=${TAG_NAME}" >> "${GITHUB_OUTPUT}"
           echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
-          echo "✅ Created and pushed tag: ${TAG_NAME} at ${SHA}"
+          echo "Created and pushed tag: ${TAG_NAME} at ${SHA}"
 
       - name: Set output for existing tag
         id: existing-tag-output
@@ -240,13 +240,13 @@ jobs:
               - **Tag SHA**: \`${TAG_SHA}\`
               - **Target Branch**: \`${ESCAPED_TARGET}\`
 
-              ## ✅ Release Status
+              ## Release Status
 
               This release has been **tagged** at commit ${TAG_SHA:0:7}.
 
               The tag \`${TAG_NAME}\` has been created on the release branch HEAD.
 
-              ## ⚠️ Merge Instructions
+              ## Merge Instructions
 
               **REQUIRED**: This PR must be merged using a **merge commit** (NOT squash and merge).
 
@@ -264,7 +264,7 @@ jobs:
               - [x] Version bumped
               - [x] Changelog updated
               - [x] QA testing completed
-              - [x] **Release tagged at branch HEAD** ✅
+              - [x] **Release tagged at branch HEAD**
               - [ ] Ready to merge to ${TARGET_BRANCH}"
 
             echo "Updated PR #${EXISTING_PR} with tag information"
@@ -284,13 +284,13 @@ jobs:
               - **Tag SHA**: \`${TAG_SHA}\`
               - **Target Branch**: \`${ESCAPED_TARGET}\`
 
-              ## ✅ Release Status
+              ## Release Status
 
               This release has been **tagged** at commit ${TAG_SHA:0:7}.
 
               The tag \`${TAG_NAME}\` has been created on the release branch HEAD.
 
-              ## ⚠️ Merge Instructions
+              ## Merge Instructions
 
               **REQUIRED**: This PR must be merged using a **merge commit** (NOT squash and merge).
 
@@ -308,7 +308,7 @@ jobs:
               - [x] Version bumped
               - [x] Changelog updated
               - [x] QA testing completed
-              - [x] **Release tagged at branch HEAD** ✅
+              - [x] **Release tagged at branch HEAD**
               - [ ] Ready to merge to ${TARGET_BRANCH}" \
               --base "${TARGET_BRANCH}" \
               --head "${RELEASE_BRANCH}" \
@@ -329,7 +329,7 @@ jobs:
           FORCE_RETAG: ${{ inputs.force-retag }}
         run: |
           {
-            echo "## 📋 Release Summary"
+            echo "## Release Summary"
             echo ""
             echo "### Release Details"
             echo "- **Version**: ${TAG_NAME}"
@@ -342,11 +342,11 @@ jobs:
             fi
 
             echo ""
-            echo "### ✅ Completed Actions"
+            echo "### Completed Actions"
             echo "1. Tagged release branch HEAD with ${TAG_NAME}"
             echo "2. Created/updated PR to merge ${RELEASE_BRANCH} → ${TARGET_BRANCH}"
             echo ""
-            echo "### 📝 Next Steps"
+            echo "### Next Steps"
             echo "1. Review and approve the merge PR"
             echo "2. **Merge using a merge commit** (NOT squash and merge)"
             echo "3. The publish-release workflow will automatically:"

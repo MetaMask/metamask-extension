@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Extract version from branch name
         id: extract-version
@@ -73,7 +73,7 @@ jobs:
             echo "Branch HEAD is at ${HEAD_SHA}"
 
             if [[ "${TAG_SHA}" == "${HEAD_SHA}" ]]; then
-              echo "✅ Release is properly tagged at branch HEAD"
+              echo "Release is properly tagged at branch HEAD"
               echo "tagged=true" >> "${GITHUB_OUTPUT}"
               echo "tag_sha=${TAG_SHA}" >> "${GITHUB_OUTPUT}"
 
@@ -123,7 +123,7 @@ jobs:
           LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
         run: |
           if echo "${LABELS}" | grep -q '"release-tagged"'; then
-            echo "✅ PR has 'release-tagged' label"
+            echo "PR has 'release-tagged' label"
             echo "has_label=true" >> "${GITHUB_OUTPUT}"
           else
             echo "::warning::PR missing 'release-tagged' label"
@@ -137,7 +137,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const version = '${{ steps.extract-version.outputs.version }}';
-            const comment = `## ⚠️ Release Tag Required
+            const comment = `## Release Tag Required
 
             This release PR for version **v${version}** has not been tagged yet.
 
@@ -156,7 +156,7 @@ jobs:
             - Aligns with MetaMask Mobile's release process
             - Prevents confusion between merge commits and release commits
 
-            Once tagged, this check will automatically pass ✅`;
+            Once tagged, this check will automatically pass`;
 
             // Check if we already commented
             const { data: comments } = await github.rest.issues.listComments({
@@ -183,12 +183,12 @@ jobs:
         run: |
           if [[ "${{ steps.check-tag.outputs.tagged }}" == "true" ]]; then
             {
-              echo "### ✅ Release Tag Check Passed"
+              echo "### Release Tag Check Passed"
               echo "Release is properly tagged and ready for merge."
             } >> "${GITHUB_STEP_SUMMARY}"
           else
             {
-              echo "### ⚠️ Release Tag Check - Action Required"
+              echo "### Release Tag Check - Action Required"
               echo "Please run the 'Tag Release Branch' workflow before merging this PR."
               echo ""
               echo "Version: v${{ steps.extract-version.outputs.version }}"
