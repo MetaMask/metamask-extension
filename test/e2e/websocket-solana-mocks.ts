@@ -5,7 +5,8 @@ import { WebSocketMessageMock } from './tests/solana/mocks/websocketDefaultMocks
 
 /**
  * Sets up Solana WebSocket mocks with configurable message handlers
- * @param mocks Array of message mock configurations
+ *
+ * @param mocks - Array of message mock configurations
  */
 export async function setupSolanaWebsocketMocks(
   mocks: WebSocketMessageMock[] = [],
@@ -29,7 +30,9 @@ export async function setupSolanaWebsocketMocks(
           : [mock.messageIncludes];
 
         // Check if all required strings are included in the message
-        const matches = includes.every((includeStr) => message.includes(includeStr));
+        const matches = includes.every((includeStr) =>
+          message.includes(includeStr),
+        );
 
         if (matches) {
           if (mock.logMessage) {
@@ -39,7 +42,9 @@ export async function setupSolanaWebsocketMocks(
           const delay = mock.delay || 500;
           setTimeout(() => {
             socket.send(JSON.stringify(mock.response));
-            console.log(`Simulated message sent to the client for: ${includes.join(' + ')}`);
+            console.log(
+              `Simulated message sent to the client for: ${includes.join(' + ')}`,
+            );
           }, delay);
 
           // Break after first match to avoid multiple responses
