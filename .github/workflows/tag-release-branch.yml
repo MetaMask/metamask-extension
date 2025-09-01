@@ -221,6 +221,50 @@ jobs:
             printf '%s' "$1" | sed 's/\\/\\\\/g; s/[\[\](){}*_`~#<>|]/\\&/g'
           }
 
+          # Function to generate PR body content
+          generate_pr_body() {
+            local escaped_tag="$1"
+            local escaped_branch="$2"
+            local tag_sha="$3"
+            local escaped_target="$4"
+
+            cat <<EOF
+            ## Release Information
+
+            - **Version**: \`${escaped_tag}\`
+            - **Release Branch**: \`${escaped_branch}\`
+            - **Tag SHA**: \`${tag_sha}\`
+            - **Target Branch**: \`${escaped_target}\`
+
+            ## Release Status
+
+            This release has been **tagged** at commit ${tag_sha:0:7}.
+
+            The tag \`${escaped_tag}\` has been created on the release branch HEAD.
+
+            ## Merge Instructions
+
+            **REQUIRED**: This PR must be merged using a **merge commit** (NOT squash and merge).
+
+            **IMPORTANT**: The release has already been tagged. DO NOT create another tag after merge.
+
+            After merging:
+            1. The tagged commit will be part of ${escaped_target} history
+            2. The publish-release workflow will trigger
+            3. GitHub release will be created from the existing tagged commit
+            4. Sentry artifacts will be uploaded
+
+            ## Checklist
+
+            - [x] Release branch created
+            - [x] Version bumped
+            - [x] Changelog updated
+            - [x] QA testing completed
+            - [x] **Release tagged at branch HEAD**
+            - [ ] Ready to merge to ${escaped_target}
+            EOF
+          }
+
           # Check if PR already exists
           EXISTING_PR=$(gh pr list --base "${TARGET_BRANCH}" --head "${RELEASE_BRANCH}" --json number --jq '.[0].number' || echo "")
 
@@ -236,40 +280,8 @@ jobs:
             ESCAPED_TARGET=$(escape_markdown "${TARGET_BRANCH}")
 
             # Update the PR description to note that it's been tagged
-            gh pr edit "${EXISTING_PR}" \
-              --body "## Release Information
-
-              - **Version**: \`${ESCAPED_TAG_NAME}\`
-              - **Release Branch**: \`${ESCAPED_BRANCH}\`
-              - **Tag SHA**: \`${TAG_SHA}\`
-              - **Target Branch**: \`${ESCAPED_TARGET}\`
-
-              ## Release Status
-
-              This release has been **tagged** at commit ${TAG_SHA:0:7}.
-
-              The tag \`${TAG_NAME}\` has been created on the release branch HEAD.
-
-              ## Merge Instructions
-
-              **REQUIRED**: This PR must be merged using a **merge commit** (NOT squash and merge).
-
-              **IMPORTANT**: The release has already been tagged. DO NOT create another tag after merge.
-
-              After merging:
-              1. The tagged commit will be part of ${TARGET_BRANCH} history
-              2. The publish-release workflow will trigger
-              3. GitHub release will be created from the existing tagged commit
-              4. Sentry artifacts will be uploaded
-
-              ## Checklist
-
-              - [x] Release branch created
-              - [x] Version bumped
-              - [x] Changelog updated
-              - [x] QA testing completed
-              - [x] **Release tagged at branch HEAD**
-              - [ ] Ready to merge to ${TARGET_BRANCH}"
+            PR_BODY=$(generate_pr_body "${ESCAPED_TAG_NAME}" "${ESCAPED_BRANCH}" "${TAG_SHA}" "${ESCAPED_TARGET}")
+            gh pr edit "${EXISTING_PR}" --body "${PR_BODY}"
 
             echo "Updated PR #${EXISTING_PR} with tag information"
           else
@@ -279,41 +291,10 @@ jobs:
             ESCAPED_TARGET=$(escape_markdown "${TARGET_BRANCH}")
 
             # Create new PR with label indicating it's been tagged
+            PR_BODY=$(generate_pr_body "${ESCAPED_TAG_NAME}" "${ESCAPED_BRANCH}" "${TAG_SHA}" "${ESCAPED_TARGET}")
             PR_URL=$(gh pr create \
               --title "Release: v${VERSION} to ${TARGET_BRANCH}" \
-              --body "## Release Information
-
-              - **Version**: \`${ESCAPED_TAG_NAME}\`
-              - **Release Branch**: \`${ESCAPED_BRANCH}\`
-              - **Tag SHA**: \`${TAG_SHA}\`
-              - **Target Branch**: \`${ESCAPED_TARGET}\`
-
-              ## Release Status
-
-              This release has been **tagged** at commit ${TAG_SHA:0:7}.
-
-              The tag \`${TAG_NAME}\` has been created on the release branch HEAD.
-
-              ## Merge Instructions
-
-              **REQUIRED**: This PR must be merged using a **merge commit** (NOT squash and merge).
-
-              **IMPORTANT**: The release has already been tagged. DO NOT create another tag after merge.
-
-              After merging:
-              1. The tagged commit will be part of ${TARGET_BRANCH} history
-              2. The publish-release workflow will trigger
-              3. GitHub release will be created from the existing tagged commit
-              4. Sentry artifacts will be uploaded
-
-              ## Checklist
-
-              - [x] Release branch created
-              - [x] Version bumped
-              - [x] Changelog updated
-              - [x] QA testing completed
-              - [x] **Release tagged at branch HEAD**
-              - [ ] Ready to merge to ${TARGET_BRANCH}" \
+              --body "${PR_BODY}" \
               --base "${TARGET_BRANCH}" \
               --head "${RELEASE_BRANCH}" \
               --label "release-${VERSION}" \

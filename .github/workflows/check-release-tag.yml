@@ -122,7 +122,8 @@ jobs:
         env:
           LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
         run: |
-          if echo "${LABELS}" | grep -q '"release-tagged"'; then
+          # Use jq for proper JSON parsing
+          if echo "${LABELS}" | jq -e '.[] | select(. == "release-tagged")' > /dev/null 2>&1; then
             echo "PR has 'release-tagged' label"
             echo "has_label=true" >> "${GITHUB_OUTPUT}"
           else
