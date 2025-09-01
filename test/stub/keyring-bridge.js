@@ -119,7 +119,7 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
         break;
       case 1:
         throw new Error(
-          'Unsupported transaction type: EIP-2930 (type 1) not yet implemented in FakeLedgerBridge.',
+          'Unsupported transaction type: EIP-2930 (type 1) not yet implemented in FakeTrezorBridge.',
         );
       case 2:
         hardfork = 'london';
