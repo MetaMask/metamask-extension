@@ -12,6 +12,7 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerStateChangeEvent,
 } from '@metamask/keyring-controller';
+
 type Actions =
   | AccountsControllerListMultichainAccountsAction
   | AccountsControllerGetAccountAction

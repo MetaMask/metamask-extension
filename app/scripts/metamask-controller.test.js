@@ -3301,7 +3301,7 @@ describe('MetaMaskController', () => {
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
         });
-        
+
         // Mock the MultichainAccountService action that gets called during preferences changes
         localMetamaskController.controllerMessenger.registerActionHandler(
           'MultichainAccountService:setBasicFunctionality',
