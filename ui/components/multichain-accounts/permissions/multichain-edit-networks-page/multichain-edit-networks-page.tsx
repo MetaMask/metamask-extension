@@ -129,7 +129,7 @@ export const MultichainEditNetworksPage: React.FC<
             label={t('selectAll')}
             isChecked={checked}
             gap={4}
-            onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
+            onClick={() => (allAreSelected ? deselectAll() : selectAll())}
             isIndeterminate={isIndeterminate}
           />
         </Box>
