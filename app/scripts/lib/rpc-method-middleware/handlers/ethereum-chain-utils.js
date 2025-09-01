@@ -5,7 +5,7 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { KnownCaipNamespace } from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   isPrefixedFormattedHexString,

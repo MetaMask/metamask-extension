@@ -191,12 +191,6 @@ export class NetworkOrderController extends BaseController<
         // Append new networks to the end
         .concat(newNetworks);
     });
-
-    // The network controller can potentially update to a chain that is not selected in our enabled network map.
-    // This ensures that we fallback to a network that has been added to our network map.
-    const evmChainIds = Object.keys(
-      this.state.enabledNetworkMap[KnownCaipNamespace.Eip155],
-    );
   }
 
   onNetworkRemoved(networkId: Hex) {
@@ -259,4 +253,4 @@ export class NetworkOrderController extends BaseController<
       state.enabledNetworkMap[namespace] = enabledNetworks;
     });
   }
-};
+}
