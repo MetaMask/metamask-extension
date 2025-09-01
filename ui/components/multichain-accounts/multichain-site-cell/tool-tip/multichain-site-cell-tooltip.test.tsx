@@ -213,7 +213,7 @@ describe('MultichainSiteCellTooltip', () => {
         createMockInternalAccount({
           address: `0x${(index + 1).toString(16)}`,
           name: `Account ${index + 1}`,
-        }) as any,
+        }),
       ],
     })) as unknown as AccountGroupWithInternalAccounts[];
 
@@ -278,7 +278,7 @@ describe('MultichainSiteCellTooltip', () => {
         createMockInternalAccount({
           address: `0x${(index + 1).toString(16)}`,
           name: `Account ${index + 1}`,
-        }) as any,
+        }),
       ],
     })) as unknown as AccountGroupWithInternalAccounts[];
 

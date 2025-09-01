@@ -50,6 +50,16 @@ const TooltipContent = React.memo<TooltipContentProps>(
       accountGroups && accountGroups.length > TOOLTIP_LIMIT;
     const hasMoreNetworks = networks && networks.length > TOOLTIP_LIMIT;
 
+    const getMoreText = useMemo(() => {
+      if (hasMoreAccounts && accountGroups) {
+        return t('moreAccounts', [accountGroups.length - TOOLTIP_LIMIT]);
+      }
+      if (networks) {
+        return t('moreNetworks', [networks.length - TOOLTIP_LIMIT]);
+      }
+      return '';
+    }, [hasMoreAccounts, hasMoreNetworks, accountGroups, networks, t]);
+
     return (
       <Box
         display={Display.Flex}
@@ -126,11 +136,7 @@ const TooltipContent = React.memo<TooltipContentProps>(
                 variant={TextVariant.bodyMdMedium}
                 data-testid="accounts-list-item-plus-more-tooltip"
               >
-                {hasMoreAccounts && accountGroups
-                  ? t('moreAccounts', [accountGroups.length - TOOLTIP_LIMIT])
-                  : networks
-                    ? t('moreNetworks', [networks.length - TOOLTIP_LIMIT])
-                    : ''}
+                {getMoreText()}
               </Text>
             </Box>
           )}
