@@ -15,7 +15,10 @@ import {
   JustifyContent,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
 import { MultichainAccountMenuItems } from '../multichain-account-menu-items/multichain-account-menu-items';
 import { MenuItemConfig } from '../multichain-account-menu-items/multichain-account-menu-items.types';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
@@ -23,6 +26,7 @@ import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 export const MultichainAccountMenu = ({
   accountGroupId,
   isRemovable,
+  buttonBackgroundColor,
 }: MultichainAccountMenuProps) => {
   const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -47,9 +51,10 @@ export const MultichainAccountMenu = ({
     };
 
     const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
-      // TODO: Implement account addresses click handling
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+      const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
+      history.push(multichainAccountAddressesPageRoute);
     };
 
     const handleAccountPinClick = (mouseEvent: React.MouseEvent) => {
@@ -86,7 +91,6 @@ export const MultichainAccountMenu = ({
         textKey: 'addresses',
         iconName: IconName.QrCode,
         onClick: handleAccountAddressesClick,
-        disabled: true,
       },
       {
         textKey: 'pin',
@@ -122,7 +126,9 @@ export const MultichainAccountMenu = ({
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={
+          buttonBackgroundColor || BackgroundColor.backgroundMuted
+        }
         borderRadius={BorderRadius.LG}
         padding={1}
         onClick={togglePopover}

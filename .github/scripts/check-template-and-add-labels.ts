@@ -185,6 +185,22 @@ async function main(): Promise<void> {
         labelable,
         invalidPullRequestTemplateLabel,
       );
+
+      // Skip changelog check if PR has "no-changelog" label
+      const hasNoChangelogLabel = labelable.labels?.some(
+        (label) => label.name === "no-changelog"
+      );
+
+      // Require changelog entry
+      if (hasNoChangelogLabel) {
+        console.log(`PR ${labelable.number} has "no-changelog" label. Skipping changelog entry check.`);
+      } else if (!hasChangelogEntry(labelable.body)) {
+        const errorMessage = `PR is missing a valid "CHANGELOG entry:" line.`;
+        console.log(errorMessage);
+
+        core.setFailed(errorMessage);
+        process.exit(1);
+      }
     } else {
       const errorMessage = `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L40-L47`;
       console.log(errorMessage);
@@ -274,9 +290,14 @@ function extractReleaseVersionFromBugReportIssueBody(
   const cleanedBody = body.replace(/\r?\n/g, ' ');
 
   // Extract version from the cleaned body
-  const regex = /### Version\s+((.*?)(?=  |$))/;
+  const regex = /### Version\s+(.*?)(?=\s+###|$)/;
   const versionMatch = cleanedBody.match(regex);
-  const version = versionMatch?.[1];
+  const fullVersionString = versionMatch?.[1]?.trim();
+
+  // Extract just the x.x.x part from the full version string
+  const versionRegex = /(\d+\.\d+\.\d+)/;
+  const semanticVersionMatch = fullVersionString?.match(versionRegex);
+  const version = semanticVersionMatch?.[1];
 
   // Check if version is in the format x.y.z
   if (version && !/^(\d+\.)?(\d+\.)?(\*|\d+)$/.test(version)) {
@@ -378,4 +399,38 @@ async function userBelongsToMetaMaskOrg(
   } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
 
   return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
+}
+
+// This function checks if the PR description has a changelog entry
+function hasChangelogEntry(body: string): boolean {
+  // Remove HTML comments (including multiline)
+  const uncommentedBody = body.replace(/<!--[\s\S]*?-->/g, "");
+
+  // Split body into lines
+  const lines = uncommentedBody.split(/\r?\n/);
+
+  // Find the line starting with "CHANGELOG entry:"
+  const changelogLine = lines.find(line => line.trim().startsWith("CHANGELOG entry:"));
+
+  if (!changelogLine) {
+    console.log("Changelog entry line missing");
+    return false;
+  }
+
+  // Extract everything after the prefix, tolerating extra spaces after the colon
+  const match = changelogLine.match(/^\s*CHANGELOG entry:\s*(.*)$/);
+  const entry = match?.[1]?.trim() ?? "";
+
+  if (entry === "") {
+    console.log("Changelog entry is empty");
+    return false;
+  }
+
+  if (entry.toLowerCase() === "undefined") {
+    console.log("Changelog entry is explicitly undefined");
+    return false;
+  }
+
+  console.log(`Changelog entry found: ${entry}`);
+  return true; // allow any non-empty value, including "null"
 }

@@ -60,7 +60,10 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+  MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  NONEVM_BALANCE_CHECK_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -140,7 +143,9 @@ import { type Confirmation } from '../confirmations/types/confirm';
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
+import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { AccountList } from '../multichain-accounts/account-list';
+import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -299,6 +304,12 @@ const MultichainAccountDetailsPage = mmLazy(
   (() =>
     import(
       '../multichain-accounts/multichain-account-details-page/index.ts'
+    )) as unknown as DynamicImportType,
+);
+const NonEvmBalanceCheck = mmLazy(
+  (() =>
+    import(
+      '../nonevm-balance-check/index.tsx'
     )) as unknown as DynamicImportType,
 );
 // End Lazy Routes
@@ -521,7 +532,7 @@ export default function Routes() {
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
           />
-          <Authenticated path={SEND_ROUTE} component={SendPage} exact />
+          <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
@@ -587,8 +598,18 @@ export default function Routes() {
             exact
           />
           <Authenticated
+            path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
+            component={MultichainAccountAddressListPage}
+            exact
+          />
+          <Authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
             component={MultichainAccountDetailsPage}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
+            component={WalletDetailsPage}
             exact
           />
           <Authenticated
@@ -605,6 +626,10 @@ export default function Routes() {
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
             component={AddressQRCode}
             exact
+          />
+          <Authenticated
+            path={NONEVM_BALANCE_CHECK_ROUTE}
+            component={NonEvmBalanceCheck}
           />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
