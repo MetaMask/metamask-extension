@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -137,7 +137,7 @@ export const filterNotifications = (
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Notifications() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -168,7 +168,7 @@ export default function Notifications() {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             onClick={() => {
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
             data-testid="back-button"
           />
@@ -179,7 +179,7 @@ export default function Notifications() {
             iconName={IconName.Setting}
             size={ButtonIconSize.Sm}
             onClick={() => {
-              history.push(NOTIFICATIONS_SETTINGS_ROUTE);
+              navigate(NOTIFICATIONS_SETTINGS_ROUTE);
             }}
             data-testid="notifications-settings-button"
           />

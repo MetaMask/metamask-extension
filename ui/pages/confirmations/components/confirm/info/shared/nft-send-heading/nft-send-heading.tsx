@@ -23,7 +23,7 @@ import {
 } from '../../../../../../../helpers/utils/nfts';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
-import { ellipsify } from '../../../../../send/send.utils';
+import { ellipsify } from '../../../../../send-legacy/send.utils';
 import useFetchNftDetailsFromTokenURI from '../../../../../../../hooks/useFetchNftDetailsFromTokenURI';
 
 export const generateTokenIdDisplay = (tokenId: string) => {

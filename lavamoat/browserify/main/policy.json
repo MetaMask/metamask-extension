@@ -900,6 +900,7 @@
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
+        "console.warn": true,
         "fetch": true,
         "setInterval": true,
         "setTimeout": true
@@ -914,7 +915,7 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/assets-controllers>@metamask/keyring-api": true,
+        "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller": true,
@@ -924,6 +925,7 @@
         "@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
         "bn.js": true,
+        "immer": true,
         "lodash": true,
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "single-call-balance-checker-abi": true,
@@ -1063,6 +1065,21 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/design-system-react": {
+      "globals": {
+        "__import__": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/jazzicon": true,
+        "@metamask/utils": true,
+        "@metamask/design-system-react>@radix-ui/react-slot": true,
+        "@solana/addresses": true,
+        "@metamask/design-system-react>blo": true,
+        "react": true,
+        "@metamask/design-system-react>tailwind-merge": true
       }
     },
     "@metamask/ens-controller": {
@@ -1327,7 +1344,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/gas-fee-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
       }
@@ -1373,14 +1390,6 @@
       }
     },
     "@metamask/keyring-api": {
-      "packages": {
-        "@metamask/account-api>@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/keyring-api": {
       "packages": {
         "@metamask/account-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
@@ -1661,18 +1670,6 @@
       }
     },
     "@metamask/bridge-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
-    "@metamask/gas-fee-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -1976,7 +1973,8 @@
         "crypto": true,
         "document.body.appendChild": true,
         "document.createElement": true,
-        "fetch": true
+        "fetch": true,
+        "navigator": true
       },
       "packages": {
         "@metamask/snaps-sdk>@metamask/key-tree": true,
@@ -2243,6 +2241,17 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
+      }
+    },
+    "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": {
+      "packages": {
+        "react": true
+      }
+    },
+    "@metamask/design-system-react>@radix-ui/react-slot": {
+      "packages": {
+        "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": true,
+        "react": true
       }
     },
     "@reduxjs/toolkit": {
@@ -2843,6 +2852,11 @@
       }
     },
     "blo": {
+      "globals": {
+        "btoa": true
+      }
+    },
+    "@metamask/design-system-react>blo": {
       "globals": {
         "btoa": true
       }
@@ -4057,7 +4071,7 @@
         "react-markdown>remark-parse>mdast-util-from-markdown>mdast-util-to-string": true,
         "react-markdown>remark-parse>mdast-util-from-markdown>micromark": true,
         "react-syntax-highlighter>refractor>parse-entities": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>unist-util-stringify-position": true
+        "react-markdown>vfile>unist-util-stringify-position": true
       }
     },
     "react-markdown>remark-rehype>mdast-util-to-hast": {

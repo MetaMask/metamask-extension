@@ -1028,9 +1028,9 @@ function setupBundlerDefaults(
     debug: true,
   });
 
-  // Ensure react-devtools is only included in dev builds
+  // Ensure react-devtools-core is only included in dev builds
   if (buildTarget !== BUILD_TARGETS.DEV) {
-    bundlerOpts.manualIgnore.push('react-devtools');
+    bundlerOpts.manualIgnore.push('react-devtools-core');
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
