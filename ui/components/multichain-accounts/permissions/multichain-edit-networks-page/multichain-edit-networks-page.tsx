@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
@@ -31,7 +32,6 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { Content, Footer, Header, Page } from '../../../multichain/pages/page';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
-import { CaipChainId } from '@metamask/utils';
 import { NetworkListItem } from '../../../multichain/network-list-item';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 
