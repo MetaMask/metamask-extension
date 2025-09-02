@@ -1179,7 +1179,7 @@ export default class MetamaskController extends EventEmitter {
         keyringBuilderFactory(LatticeKeyringOffscreen),
         hardwareOneKeyKeyringBuilderFactory(
           OneKeyKeyring,
-          keyringOverrides?.oneKey || OneKeyOffscreenBridge,
+          keyringOverrides?.oneKeyBridge || OneKeyOffscreenBridge,
           this.platform,
         ),
       );
