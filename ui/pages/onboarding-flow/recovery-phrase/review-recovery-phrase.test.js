@@ -98,7 +98,10 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(nextButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_CONFIRM_SRP_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
+      search: '',
+    });
   });
 
   it('should route to url with reminder parameter', () => {
@@ -117,8 +120,9 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(nextButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${ONBOARDING_CONFIRM_SRP_ROUTE}${isReminderParam}`,
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
+      search: isReminderParam,
+    });
   });
 });
