@@ -199,7 +199,10 @@ describe('Onboarding Flow', () => {
     renderWithProvider(<OnboardingFlow />, store, ONBOARDING_REVIEW_SRP_ROUTE);
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${ONBOARDING_REVEAL_SRP_ROUTE}`,
+      {
+        pathname: ONBOARDING_REVEAL_SRP_ROUTE,
+        search: '',
+      },
       { replace: true },
     );
   });
