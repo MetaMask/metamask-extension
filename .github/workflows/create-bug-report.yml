@@ -4,7 +4,7 @@ on: create
 
 jobs:
   create-bug-report:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Extract version from branch name if release branch
         id: extract_version
