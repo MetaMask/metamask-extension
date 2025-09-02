@@ -23,6 +23,7 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 import Spinner from '../../../ui/spinner';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type AccountGroupBalanceProps = {
   classPrefix: string;
@@ -37,6 +38,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
 }) => {
   const { privacyMode } = useSelector(getPreferences);
   const locale = useSelector(getIntlLocale);
+  const t = useI18nContext();
 
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const fallbackCurrency = useSelector(getCurrentCurrency);
@@ -91,7 +93,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           onClick={handleSensitiveToggle}
           iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
           justifyContent={JustifyContent.center}
-          ariaLabel="Sensitive toggle"
+          ariaLabel={t('hideSentitiveInfo')}
           data-testid="sensitive-toggle"
         />
       </Box>
