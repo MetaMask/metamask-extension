@@ -96,7 +96,7 @@ function transformState(
   }
 
   // Add the bip122 namespace as an empty object
-  (enabledNetworkMap as Record<string, Record<string, boolean>>)['bip122'] = {};
+  (enabledNetworkMap as Record<string, Record<string, boolean>>).bip122 = {};
 
   return state;
 }
