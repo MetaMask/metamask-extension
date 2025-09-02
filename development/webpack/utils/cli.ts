@@ -186,6 +186,8 @@ function getOptions(
 ) {
   const isProduction = env === 'production';
   const prodDefaultDesc = "If `env` is 'production', `true`, otherwise `false`";
+  const isLavaMoat =
+    process.argv.includes('--lavamoat') || process.argv.includes('-l');
   return {
     watch: {
       alias: 'w',
@@ -324,11 +326,19 @@ function getOptions(
     lavamoat: {
       alias: 'l',
       array: false,
-      default: isProduction,
+      // if the user specifies --lavamoat, we default to undefined, to make sure coercion works
+      default: (isLavaMoat ? undefined : isProduction) as boolean,
       defaultDescription: prodDefaultDesc,
       description: 'Apply LavaMoat to the build assets',
       group: toOrange('Security:'),
-      type: 'boolean',
+      type: 'string',
+      // false is not included in the type definitions for some reason, but it's a valid choice, so we need this type hack
+      choices: [true, false as true, 'debug'],
+      coerce: (arg: 'true' | 'false' | 'debug' | boolean | undefined) => {
+        if (arg === true || arg === 'true' || arg === undefined) return true;
+        if (arg === false || arg === 'false') return false;
+        return arg;
+      },
     },
     snow: {
       alias: 's',
@@ -339,27 +349,11 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
-    debugRuntime: {
-      alias: 'u',
-      array: false,
-      default: false,
-      description: 'Debug the LavaMoat runtime',
-      group: toOrange('Security:'),
-      type: 'boolean',
-    },
     generatePolicy: {
       alias: 'g',
       array: false,
       default: false,
       description: 'Generate the LavaMoat policy',
-      group: toOrange('Security:'),
-      type: 'boolean',
-    },
-    generatePolicyOnly: {
-      alias: 'y',
-      array: false,
-      default: false,
-      description: 'Generate the LavaMoat policy only, skipping the build',
       group: toOrange('Security:'),
       type: 'boolean',
     },
@@ -398,9 +392,7 @@ Progress: ${args.progress}
 Zip: ${args.zip}
 Snow: ${args.snow}
 LavaMoat: ${args.lavamoat}
-Debug runtime: ${args.debugRuntime}
 Generate policy: ${args.generatePolicy}
-Generate policy only: ${args.generatePolicyOnly}
 Sentry: ${args.sentry}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
