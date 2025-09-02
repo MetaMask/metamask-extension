@@ -59,7 +59,7 @@ class ChromeDriver {
 
     if (process.env.CI || process.env.CODESPACES) {
       args.push('--disable-gpu');
-      args.push('--use-gl=swiftshader')
+      args.push('--use-gl=swiftshader');
     }
 
     if (isHeadless('SELENIUM')) {
