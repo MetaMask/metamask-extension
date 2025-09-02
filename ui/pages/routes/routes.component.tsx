@@ -301,7 +301,7 @@ const TokenTransferPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
-      '../../components/multichain/pages/gator-permissions-page/token-transfer/token-transfer-page.js'
+      '../../components/multichain/pages/gator-permissions-page/token-transfer/token-transfer-page.tsx'
     )) as unknown as DynamicImportType,
 );
 
@@ -309,7 +309,7 @@ const ReviewTokenTransferPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
-      '../../components/multichain/pages/gator-permissions-page/token-transfer/review-token-transfer-page.js'
+      '../../components/multichain/pages/gator-permissions-page/token-transfer/review-token-transfer-page.tsx'
     )) as unknown as DynamicImportType,
 );
 

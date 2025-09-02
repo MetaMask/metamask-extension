@@ -166,7 +166,7 @@ export function hideAppHeader(props) {
     ) ||
     Boolean(
       matchPath(location.pathname, {
-        path: REVIEW_TOKEN_TRANSFER_ROUTE,
+        path: `${REVIEW_TOKEN_TRANSFER_ROUTE}/:chainId`,
         exact: false,
       }),
     );

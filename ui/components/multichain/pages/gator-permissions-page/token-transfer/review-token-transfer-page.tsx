@@ -13,9 +13,9 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   BackgroundColor,
   BlockSize,
-  Color,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -25,36 +25,56 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modu
 import { getAggregatedGatorPermissionByChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
+import type { Hex } from '@metamask/utils';
+import type { GatorPermissionState } from '../../../../../selectors/gator-permissions/gator-permissions';
 
-export const ReviewTokenTransferPage = () => {
+interface RouteParams {
+  chainId: string;
+  [key: string]: string | undefined;
+}
+
+interface PermissionWithSiteOrigin {
+  permissionResponse: {
+    chainId: Hex;
+    context: string;
+    permission: {
+      type: string;
+    };
+  };
+  siteOrigin: string;
+}
+
+export const ReviewTokenTransferPage = (): React.ReactElement => {
   const t = useI18nContext();
   const history = useHistory();
-  const headerRef = useRef();
-  const { chainId } = useParams();
-  const [networkName, setNetworkName] = useState('');
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { chainId } = useParams<RouteParams>();
+  const [networkName, setNetworkName] = useState<string>('');
   const [totalTokenTransferPermissions, setTotalTokenTransferPermissions] =
-    useState(0);
+    useState<number>(0);
 
   const networks = useSelector(getNetworkConfigurationsByChainId);
 
   // Get aggregated token transfer permissions for the specific chain
-  const aggregatedTokenTransferPermissions = useSelector((state) =>
-    getAggregatedGatorPermissionByChainId(state, 'token-transfer', chainId),
+  const aggregatedTokenTransferPermissions = useSelector((state: GatorPermissionState) =>
+    getAggregatedGatorPermissionByChainId(state, 'token-transfer', chainId as Hex),
   );
 
   useEffect(() => {
-    setNetworkName(extractNetworkName(networks, chainId));
-    setTotalTokenTransferPermissions(aggregatedTokenTransferPermissions.length);
+    if (chainId) {
+      setNetworkName(extractNetworkName(networks, chainId));
+      setTotalTokenTransferPermissions(aggregatedTokenTransferPermissions.length);
+    }
   }, [chainId, aggregatedTokenTransferPermissions, networks]);
 
-  const handlePermissionRevokeClick = (permission) => {
+  const handlePermissionRevokeClick = (permission: PermissionWithSiteOrigin): void => {
     // TODO: Implement revoke logic
     console.log('Permission to revoke:', permission);
   };
 
-  const renderTokenTransferPermissions = () =>
+  const renderTokenTransferPermissions = (): React.ReactElement[] =>
     aggregatedTokenTransferPermissions.map((permission) => {
-      const { permissionResponse, siteOrigin } = permission;
+      const { permissionResponse, siteOrigin } = permission as PermissionWithSiteOrigin;
       const fullNetworkName = extractNetworkName(
         networks,
         permissionResponse.chainId,
@@ -68,7 +88,7 @@ export const ReviewTokenTransferPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() => handlePermissionRevokeClick(permission)}
+          onRevokeClick={() => handlePermissionRevokeClick(permission as PermissionWithSiteOrigin)}
         />
       );
     });
@@ -82,7 +102,7 @@ export const ReviewTokenTransferPage = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
-            color={Color.iconDefault}
+            color={IconColor.iconDefault}
             onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />

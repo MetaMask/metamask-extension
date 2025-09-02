@@ -13,9 +13,9 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   BackgroundColor,
   BlockSize,
-  Color,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -26,17 +26,18 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modu
 import { getAggregatedTokenTransferPermissionsByChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { GatorAssetItemList } from '../components';
 import { extractNetworkName } from '../gator-permissions-page-helper';
+import type { GatorPermissionState } from '../../../../../selectors/gator-permissions/gator-permissions';
 
-export const TokenTransferPage = () => {
+export const TokenTransferPage = (): React.ReactElement => {
   const t = useI18nContext();
   const history = useHistory();
-  const headerRef = useRef();
+  const headerRef = useRef<HTMLDivElement>(null);
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const [totalTokenTransferPermissions, setTotalTokenTransferPermissions] =
-    useState(0);
+    useState<number>(0);
 
   // Get aggregated token transfer permissions for all chains
-  const aggregatedTokenTransferPermissions = useSelector((state) =>
+  const aggregatedTokenTransferPermissions = useSelector((state: GatorPermissionState) =>
     getAggregatedTokenTransferPermissionsByChainId(state),
   );
 
@@ -50,11 +51,11 @@ export const TokenTransferPage = () => {
     setTotalTokenTransferPermissions(total);
   }, [aggregatedTokenTransferPermissions]);
 
-  const handleTokenTransferPermissionClick = (chainId) => {
+  const handleTokenTransferPermissionClick = (chainId: string): void => {
     history.push(`${REVIEW_TOKEN_TRANSFER_ROUTE}/${chainId}`);
   };
 
-  const renderTokenTransferPermissionsList = () => {
+  const renderTokenTransferPermissionsList = (): React.ReactElement[] => {
     return Object.entries(aggregatedTokenTransferPermissions).map(
       ([chainId, permissions]) => {
         const total = permissions.length;
@@ -71,7 +72,11 @@ export const TokenTransferPage = () => {
 
         // If the translation key doesn't exist (returns the same key) or it's the unknown network case,
         // fall back to the full network name
-        if (!networkName || networkName === networkNameKey || networkNameKey === 'unknownNetworkForKeyEntropy') {
+        if (
+          !networkName ||
+          networkName === networkNameKey ||
+          networkNameKey === 'unknownNetworkForKeyEntropy'
+        ) {
           networkName = extractNetworkName(networks, chainId, true);
         }
 
@@ -98,7 +103,7 @@ export const TokenTransferPage = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
-            color={Color.iconDefault}
+            color={IconColor.iconDefault}
             onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />

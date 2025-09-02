@@ -345,12 +345,7 @@ describe('Gator Permissions Selectors', () => {
     });
 
     it('should return an empty object if no gator permissions are found for a given list type', () => {
-      expect(
-        getGatorAssetListDetail(
-          mockState,
-          'not-a-list-type',
-        ),
-      ).toEqual({});
+      expect(getGatorAssetListDetail(mockState, 'not-a-list-type')).toEqual({});
     });
 
     it('should handle missing description in custom descriptionLookup', () => {
