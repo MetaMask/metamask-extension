@@ -65,8 +65,13 @@ export const TokenTransferPage = () => {
             ? t('tokenPermissionCount', [total])
             : t('tokenPermissionsCount', [total]);
 
-        let networkName = t(extractNetworkName(networks, chainId));
-        if (!networkName) {
+        // Get the translation key from extractNetworkName
+        const networkNameKey = extractNetworkName(networks, chainId);
+        let networkName = t(networkNameKey);
+
+        // If the translation key doesn't exist (returns the same key) or it's the unknown network case,
+        // fall back to the full network name
+        if (!networkName || networkName === networkNameKey || networkNameKey === 'unknownNetworkForKeyEntropy') {
           networkName = extractNetworkName(networks, chainId, true);
         }
 
