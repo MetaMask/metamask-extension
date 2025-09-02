@@ -1,0 +1,67 @@
+name: Auto Create Release PR
+
+on:
+  create:
+
+jobs:
+  extract:
+    if: ${{ github.ref_type == 'branch' && startsWith(github.ref, 'refs/heads/Version-v') }}
+    runs-on: ubuntu-latest
+    outputs:
+      semver: ${{ steps.out.outputs.semver }}
+      previous_ref: ${{ steps.out.outputs.previous_ref }}
+    steps:
+      - id: out
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          semver="${GITHUB_REF#refs/heads/Version-v}"
+          echo "semver=${semver}" >> "$GITHUB_OUTPUT"
+
+          # Fetch branches from GitHub API
+          curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${GITHUB_REPOSITORY}/branches | jq '[ .[] | .name | select(startswith("Version-v")) | ltrimstr("Version-v") ] | sort_by( split(".") | map(tonumber) ) | reverse' > versions.json
+
+          # Print found versions (sorted desc)
+          echo "Found versions (sorted desc): $(cat versions.json)"
+
+          # Print found Version branches
+          echo "Found Version branches:"
+          jq -r 'map("Version-v" + .)[]' versions.json || echo "No Version branches found."
+
+          # Get the second highest
+          second_highest=$(jq '.[1]' versions.json)
+          if [ -z "$second_highest" ] || [ "$second_highest" = "null" ]; then
+            previous_ref="main"
+            echo "No second highest version found, falling back to: ${previous_ref}"
+          else
+            previous_ref="Version-v$(jq -r '.[1]' versions.json)"
+            echo "Selected 2nd highest version: $(jq -r '.[1]' versions.json)"
+            echo "Passing to previous-version-ref: ${previous_ref}"
+          fi
+          echo "previous_ref=${previous_ref}" >> "$GITHUB_OUTPUT"
+
+          # Print values passed to call-create-release-pr
+          echo "Inputs to call-create-release-pr:"
+          echo "  checkout-base-branch: main"
+          echo "  release-pr-base-branch: master"
+          echo "  semver-version: ${semver}"
+          echo "  previous-version-ref: ${previous_ref}"
+
+  call-create-release-pr:
+    if: ${{ github.ref_type == 'branch' && startsWith(github.ref, 'refs/heads/Version-v') }}
+    needs: extract
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/create-release-pr.yml
+    secrets:
+      github-token: ${{ secrets.PR_TOKEN }}
+      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
+    with:
+      checkout-base-branch: main
+      release-pr-base-branch: master
+      semver-version: ${{ needs.extract.outputs.semver }}
+      previous-version-ref: ${{ needs.extract.outputs.previous_ref }}
