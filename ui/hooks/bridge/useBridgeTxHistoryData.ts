@@ -4,7 +4,7 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
@@ -33,7 +33,7 @@ export function useBridgeTxHistoryData({
   transactionGroup,
   isEarliestNonce,
 }: UseBridgeTxHistoryDataProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const txMeta = transactionGroup.initialTransaction;
   const srcTxMetaId = txMeta.id;
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
@@ -56,7 +56,7 @@ export function useBridgeTxHistoryData({
   )
     ? undefined
     : () => {
-        history.push({
+        navigate({
           pathname: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`,
           state: { transactionGroup, isEarliestNonce },
         });
