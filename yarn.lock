@@ -6602,11 +6602,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/multichain-account-service@npm:0.5.0"
+"@metamask/multichain-account-service@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/multichain-account-service@npm:0.6.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.1.0"
+    "@metamask/base-controller": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^16.1.0"
     "@metamask/keyring-api": "npm:^20.1.0"
     "@metamask/keyring-internal-api": "npm:^8.1.0"
@@ -6622,7 +6622,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/cb617a19e572f9364b246c63fa160ecd491630a3f5c555982302b6f4456a26714035e1595ac169078ce13882d697d01eaf8a957ebf39e29f538f98909997c222
+  checksum: 10/7abed5e72b712a8cb5edb960d1a2016307b7f5efe015f63dfb3efa5291ebaf2ccea42a740080603d4d0698544495a951b496ff9e1cb5bcac6ddc403e9bb16549
   languageName: node
   linkType: hard
 
@@ -31786,7 +31786,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:1.1.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:^0.5.0"
+    "@metamask/multichain-account-service": "npm:^0.6.0"
     "@metamask/multichain-api-client": "npm:^0.6.5"
     "@metamask/multichain-api-middleware": "npm:1.0.0"
     "@metamask/multichain-network-controller": "npm:^0.11.1"
