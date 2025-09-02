@@ -57,15 +57,20 @@ export function useTrustSignals(
         value,
       );
 
-      // If response is null, it means we checked but found nothing
-      if (!securityAlertResponse) {
+      if (securityAlertResponse === undefined) {
         return {
           state: TrustSignalDisplayState.Unknown,
           label: null,
         };
       }
 
-      // Check if the scan is still loading
+      if (securityAlertResponse === null) {
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
+      }
+
       if (securityAlertResponse.isLoading) {
         return {
           state: TrustSignalDisplayState.Loading,

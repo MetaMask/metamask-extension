@@ -263,8 +263,33 @@ describe('useTrustSignals', () => {
         });
       });
 
-      it('returns loading state when security alert response is undefined (not yet checked)', () => {
+      it('returns unknown state when security alert response is undefined (no check initiated)', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
+
+        const requests: UseTrustSignalRequest[] = [
+          {
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+          },
+        ];
+
+        const results = useTrustSignals(requests);
+
+        expect(results).toHaveLength(1);
+        expect(results[0]).toStrictEqual({
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        });
+      });
+
+      it('returns loading state when security alert response has isLoading true', () => {
+        getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Benign,
+          label: '',
+          isLoading: true,
+        });
 
         const requests: UseTrustSignalRequest[] = [
           {
