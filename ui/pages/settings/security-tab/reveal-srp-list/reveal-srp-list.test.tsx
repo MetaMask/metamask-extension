@@ -7,10 +7,10 @@ import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/route
 import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
 import { RevealSrpList } from './reveal-srp-list';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockUseNavigate,
 }));
 
 const mockKeyringId = mockState.metamask.keyrings[0].metadata.id;
@@ -62,7 +62,7 @@ describe('RevealSrpList', () => {
 
     fireEvent.click(srpListItem);
 
-    expect(mockNavigate).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true&isFromSettingsSecurity=true`,
     );
   });

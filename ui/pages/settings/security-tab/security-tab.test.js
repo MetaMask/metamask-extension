@@ -49,10 +49,10 @@ jest.mock('../../../ducks/app/app.ts', () => {
   };
 });
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockUseNavigate,
   useLocation: () => ({ pathname: '/settings/security' }),
   useParams: () => ({}),
 }));
@@ -196,7 +196,7 @@ describe('Security Tab', () => {
 
     fireEvent.click(screen.getByTestId('reveal-seed-words'));
 
-    expect(mockNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE);
   });
 
   it('sets IPFS gateway', async () => {

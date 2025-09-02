@@ -4,15 +4,15 @@ import { MemoryRouter } from 'react-router-dom-v5-compat';
 import withRouterHooks, { RouterHooksProps } from './with-router-hooks';
 
 // Mock the react-router-dom-v5-compat hooks
-const mockNavigate = jest.fn();
-const mockLocation = { pathname: '/test', search: '', hash: '', state: null };
-const mockParams = { id: 'test-id' };
+const mockUseNavigate = jest.fn();
+const mockUseLocation = { pathname: '/test', search: '', hash: '', state: null };
+const mockUseParams = { id: 'test-id' };
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
-  useLocation: () => mockLocation,
-  useParams: () => mockParams,
+  useNavigate: () => mockUseNavigate,
+  useLocation: () => mockUseLocation,
+  useParams: () => mockUseParams,
 }));
 
 type BaseTestComponentProps = {
@@ -65,7 +65,7 @@ describe('withRouterHooks HOC', () => {
       </MemoryRouter>,
     );
     getByTestId('navigate-button').click();
-    expect(mockNavigate).toHaveBeenCalledWith('/new-route');
+    expect(mockUseNavigate).toHaveBeenCalledWith('/new-route');
   });
 
   it('sets correct displayName for debugging', () => {
