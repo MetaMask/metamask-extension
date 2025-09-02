@@ -10,7 +10,6 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { SolScope } from '@metamask/keyring-api';
 import {
   FEATURED_NETWORK_CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN,
