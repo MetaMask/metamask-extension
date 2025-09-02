@@ -118,7 +118,7 @@ export const PermissionsPageV2 = () => {
         {totalConnections > 0 && (
           <PermissionListItem
             total={totalConnections}
-            name="Sites"
+            name={t('sites')}
             onClick={() => handleAssetClick('sites')}
           />
         )}
@@ -126,12 +126,12 @@ export const PermissionsPageV2 = () => {
         {/* Assets */}
         <PermissionListItem
           total={totalTokenStreamsPermissions}
-          name="Token Streams"
+          name={t('tokenStreams')}
           onClick={() => handleAssetClick('token-streams')}
         />
         <PermissionListItem
           total={totalTokenSubscriptionsPermissions}
-          name="Token Subscriptions"
+          name={t('tokenSubscriptions')}
           onClick={() => handleAssetClick('token-subscriptions')}
         />
       </Box>
