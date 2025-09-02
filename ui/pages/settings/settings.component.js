@@ -53,7 +53,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
-import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -80,6 +79,7 @@ class SettingsPage extends PureComponent {
     initialBreadCrumbKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
+    isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
     isPopup: PropTypes.bool,
     isRevealSrpListPage: PropTypes.bool,
@@ -352,10 +352,14 @@ class SettingsPage extends PureComponent {
   }
 
   renderTabs() {
-    const { history, currentPath, useExternalServices, settingsPageSnaps } =
-      this.props;
+    const {
+      history,
+      currentPath,
+      useExternalServices,
+      settingsPageSnaps,
+      isMetaMaskShieldFeatureEnabled,
+    } = this.props;
     const { t } = this.context;
-    const isMetamaskShieldFeatureEnabled = getIsMetaMaskShieldFeatureEnabled();
 
     const snapsSettings = settingsPageSnaps.map(({ id, name }) => {
       return {
@@ -418,7 +422,7 @@ class SettingsPage extends PureComponent {
       });
     }
 
-    if (isMetamaskShieldFeatureEnabled) {
+    if (isMetaMaskShieldFeatureEnabled) {
       tabs.splice(-4, 0, {
         content: t('shieldTx'),
         icon: <Icon name={IconName.ShieldLock} />,

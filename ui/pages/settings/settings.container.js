@@ -44,6 +44,7 @@ import { toggleNetworkMenu } from '../../store/actions';
 import { getSnapName } from '../../helpers/utils/util';
 import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
+import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -152,6 +153,7 @@ const mapStateToProps = (state, ownProps) => {
     initialBreadCrumbKey,
     initialBreadCrumbRoute,
     isAddressEntryPage,
+    isMetaMaskShieldFeatureEnabled: getIsMetaMaskShieldFeatureEnabled(),
     isPasswordChangePage,
     isPopup,
     isRevealSrpListPage,
