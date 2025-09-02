@@ -129,9 +129,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SolScope,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
   hasProperty,
@@ -263,9 +261,7 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
-///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
@@ -5542,28 +5538,17 @@ export default class MetamaskController extends EventEmitter {
         ? { id: keyringId }
         : { type: KeyringTypes.hd };
 
-      const {
-        accounts,
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
-        entropySource,
-        ///: END:ONLY_INCLUDE_IF
-      } = await this.keyringController.withKeyring(
-        keyringSelector,
-        async ({
-          keyring,
-          ///: BEGIN:ONLY_INCLUDE_IF(solana)
-          metadata,
-          ///: END:ONLY_INCLUDE_IF
-        }) => {
-          const keyringAccounts = await keyring.getAccounts();
-          return {
-            accounts: keyringAccounts,
-            ///: BEGIN:ONLY_INCLUDE_IF(solana)
-            entropySource: metadata.id,
-            ///: END:ONLY_INCLUDE_IF
-          };
-        },
-      );
+      const { accounts, entropySource } =
+        await this.keyringController.withKeyring(
+          keyringSelector,
+          async ({ keyring, metadata }) => {
+            const keyringAccounts = await keyring.getAccounts();
+            return {
+              accounts: keyringAccounts,
+              entropySource: metadata.id,
+            };
+          },
+        );
       let address = accounts[accounts.length - 1];
 
       for (let count = accounts.length; ; count++) {
@@ -5629,7 +5614,6 @@ export default class MetamaskController extends EventEmitter {
       }
       ///: END:ONLY_INCLUDE_IF
 
-      ///: BEGIN:ONLY_INCLUDE_IF(solana)
       if (shouldImportSolanaAccount) {
         const solanaClient = await this._getMultichainWalletSnapClient(
           SOLANA_WALLET_SNAP_ID,
@@ -5649,7 +5633,7 @@ export default class MetamaskController extends EventEmitter {
           });
         }
       }
-      ///: END:ONLY_INCLUDE_IF
+
       return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
@@ -6384,7 +6368,7 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
-   * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
+   * @returns {string[]} The origin's permitted accounts, or an empty
    * array.
    */
   getPermittedAccounts(origin) {
@@ -7383,7 +7367,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       setActiveNetwork: async (networkClientId) => {
-        await this.networkController.setActiveNetwork(networkClientId);
         // if the origin has the CAIP-25 permission
         // we set per dapp network selection state
         if (
@@ -7396,6 +7379,8 @@ export default class MetamaskController extends EventEmitter {
             origin,
             networkClientId,
           );
+        } else {
+          await this.networkController.setActiveNetwork(networkClientId);
         }
       },
       getNetworkConfigurationByChainId:
