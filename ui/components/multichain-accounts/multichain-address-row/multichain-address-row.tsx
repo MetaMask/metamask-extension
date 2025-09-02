@@ -26,7 +26,6 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 
-
 type MultichainAddressRowProps = {
   /**
    * Chain ID to identify the network
