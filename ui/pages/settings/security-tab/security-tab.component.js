@@ -174,8 +174,13 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
-    const { isSeedPhraseBackedUp, socialLoginEnabled, socialLoginType } =
-      this.props;
+    const {
+      isSeedPhraseBackedUp,
+      socialLoginEnabled,
+      socialLoginType,
+      navigate,
+      hdEntropyIndex,
+    } = this.props;
 
     const getBannerDescription = () => {
       if (socialLoginEnabled) {
@@ -240,7 +245,7 @@ export default class SecurityTab extends PureComponent {
                     properties: {
                       key_type: MetaMetricsEventKeyType.Srp,
                       location: 'Settings',
-                      hd_entropy_index: this.props.hdEntropyIndex,
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   this.context.trackEvent({
@@ -251,7 +256,7 @@ export default class SecurityTab extends PureComponent {
                       location: 'Settings',
                     },
                   });
-                  this.props.navigate(REVEAL_SRP_LIST_ROUTE);
+                  navigate(REVEAL_SRP_LIST_ROUTE);
                 }}
               >
                 {getButtonText()}
@@ -271,6 +276,7 @@ export default class SecurityTab extends PureComponent {
 
   renderChangePassword() {
     const { t } = this.context;
+    const { navigate } = this.props;
 
     return (
       <>
@@ -297,7 +303,7 @@ export default class SecurityTab extends PureComponent {
                 data-testid="change-password-button"
                 size={ButtonSize.Lg}
                 onClick={() => {
-                  this.props.navigate(SECURITY_PASSWORD_CHANGE_ROUTE);
+                  navigate(SECURITY_PASSWORD_CHANGE_ROUTE);
                 }}
               >
                 {t('securityChangePassword')}
@@ -489,6 +495,7 @@ export default class SecurityTab extends PureComponent {
 
   renderChooseYourNetworkButton() {
     const { t } = this.context;
+    const { navigate } = this.props;
 
     return (
       <Box
@@ -531,7 +538,7 @@ export default class SecurityTab extends PureComponent {
                 ? global.platform.openExtensionInBrowser(
                     ADD_POPULAR_CUSTOM_NETWORK,
                   )
-                : this.props.navigate(ADD_POPULAR_CUSTOM_NETWORK);
+                : navigate(ADD_POPULAR_CUSTOM_NETWORK);
             }}
           >
             {t('addCustomNetwork')}
@@ -595,6 +602,12 @@ export default class SecurityTab extends PureComponent {
 
   renderIpfsGatewayControl() {
     const { t } = this.context;
+    const {
+      setIpfsGateway,
+      setIsIpfsGatewayEnabled,
+      useAddressBarEnsResolution,
+      setUseAddressBarEnsResolution,
+    } = this.props;
     let ipfsError = '';
 
     const handleIpfsGatewayChange = (url) => {
@@ -614,7 +627,7 @@ export default class SecurityTab extends PureComponent {
           }
 
           if (ipfsError.length === 0) {
-            this.props.setIpfsGateway(urlObj.host);
+            setIpfsGateway(urlObj.host);
           }
         } catch (error) {
           ipfsError = t('invalidIpfsGateway');
@@ -660,11 +673,11 @@ export default class SecurityTab extends PureComponent {
               onToggle={(value) => {
                 if (value) {
                   // turning from true to false
-                  this.props.setIsIpfsGatewayEnabled(false);
-                  this.props.setIpfsGateway('');
+                  setIsIpfsGatewayEnabled(false);
+                  setIpfsGateway('');
                 } else {
                   // turning from false to true
-                  this.props.setIsIpfsGatewayEnabled(true);
+                  setIsIpfsGatewayEnabled(true);
                   handleIpfsGatewayChange(this.state.ipfsGateway);
                 }
 
@@ -739,9 +752,9 @@ export default class SecurityTab extends PureComponent {
             data-testid="ipfs-gateway-resolution-container"
           >
             <ToggleButton
-              value={this.props.useAddressBarEnsResolution}
+              value={useAddressBarEnsResolution}
               onToggle={(value) =>
-                this.props.setUseAddressBarEnsResolution(!value)
+                setUseAddressBarEnsResolution(!value)
               }
               offLabel={t('off')}
               onLabel={t('on')}
