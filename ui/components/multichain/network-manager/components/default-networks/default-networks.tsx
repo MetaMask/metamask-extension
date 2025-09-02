@@ -84,8 +84,6 @@ const DefaultNetworks = memo(() => {
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
-  console.log('selectedAccount +++++++++++', selectedAccount);
-
   // extract the solana account of the selected account group
   const solAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(
@@ -104,8 +102,6 @@ const DefaultNetworks = memo(() => {
       ),
     );
   }
-
-  console.log('btcAccountGroup +++++++++++', btcAccountGroup);
 
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
@@ -178,7 +174,6 @@ const DefaultNetworks = memo(() => {
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
     async (chainId: CaipChainId, isLastRemainingNetwork: boolean) => {
-      console.log('chainId ..........', chainId);
       if (isLastRemainingNetwork) {
         return;
       }
@@ -236,8 +231,6 @@ const DefaultNetworks = memo(() => {
     };
 
     const filteredNetworks = getFilteredNetworks();
-
-    console.log('filteredNetworks +++++++++++', filteredNetworks);
 
     return filteredNetworks.map((network) => {
       const networkChainId = network.chainId; // eip155:59144
