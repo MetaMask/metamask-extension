@@ -26,12 +26,12 @@ export const useAccountGroupBalanceDisplay = (period: BalanceChangePeriod) => {
   // Get the data
   const portfolioChange = useSelector(changeSelector);
 
-  const valueChange = [
+  const valueChange: number | undefined = [
     isValidAmount(portfolioChange?.amountChangeInUserCurrency) &&
       portfolioChange.amountChangeInUserCurrency,
     isValidAmount(portfolioChange?.percentChange) &&
       portfolioChange.percentChange,
-  ].find((v) => v !== false);
+  ].find((v): v is number => v !== false);
 
   const color = useMemo(
     () => determineBalanceColor(valueChange, privacyMode),

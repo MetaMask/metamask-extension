@@ -54,11 +54,11 @@ export function useAccountBalanceCallback() {
   return getDisplayBalance;
 }
 
-type WalletBalances = Partial<{
-  [walletId: string]: Partial<{
-    [groupId: string]: string; // balance
-  }>;
-}>;
+type WalletBalances = {
+  [walletId: string]: {
+    [groupId: string]: string | undefined; // balance
+  };
+};
 
 export function useAllWalletAccountsBalances(): WalletBalances {
   const accountTree = useSelector(getAccountTree);
