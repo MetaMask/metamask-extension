@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   identify-codeowners:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
