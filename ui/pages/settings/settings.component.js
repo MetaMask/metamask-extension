@@ -524,6 +524,11 @@ class SettingsPage extends PureComponent {
           }
         />
         <Route path={SECURITY_ROUTE} element={<SecurityTab />} />
+        <Route
+          exact
+          path={TRANSACTION_SHIELD_ROUTE}
+          element={<TransactionShield />}
+        />
         <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
