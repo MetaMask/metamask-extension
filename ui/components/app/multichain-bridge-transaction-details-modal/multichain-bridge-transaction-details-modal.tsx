@@ -94,7 +94,7 @@ const MultichainBridgeTransactionDetailsModal = ({
   let displayStatus = t('bridgeStatusInProgress');
   let statusColor = TextColor.primaryDefault;
 
-  if (isBridgeComplete(transaction, bridgeHistoryItem)) {
+  if (isBridgeComplete(bridgeHistoryItem)) {
     displayStatus = t('bridgeStatusComplete');
     statusColor = TextColor.successDefault;
   } else if (isBridgeFailed(transaction, bridgeHistoryItem)) {
@@ -456,7 +456,7 @@ const MultichainBridgeTransactionDetailsModal = ({
               </Box>
 
               {/* Destination Amount - Show only when truly complete */}
-              {isBridgeComplete(transaction, bridgeHistoryItem) &&
+              {isBridgeComplete(bridgeHistoryItem) &&
                 (status.destChain?.amount ?? quote.destTokenAmount) &&
                 quote.destAsset.symbol && (
                   <Box

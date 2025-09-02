@@ -79,10 +79,7 @@ const MultichainBridgeTransactionListItem: React.FC<
   const { type, from } = transaction;
   const sourceAsset = from?.[0]?.asset;
 
-  const isBridgeFullyComplete = isBridgeComplete(
-    transaction,
-    bridgeHistoryItem,
-  );
+  const isBridgeFullyComplete = isBridgeComplete(bridgeHistoryItem);
   const isBridgeFailedOrSourceFailed = isBridgeFailed(
     transaction,
     bridgeHistoryItem,

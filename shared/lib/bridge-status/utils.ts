@@ -3,15 +3,14 @@ import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { Transaction } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 
-export function isBridgeComplete(
-  transaction: Transaction,
-  { status, quote }: BridgeHistoryItem,
-): boolean {
+export function isBridgeComplete({
+  status,
+  quote,
+}: BridgeHistoryItem): boolean {
   return Boolean(
     isCrossChain(quote.srcChainId, quote.destChainId) &&
-      (status.status === StatusTypes.COMPLETE ||
-        transaction.status === TransactionStatus.confirmed) &&
-      status.destChain?.txHash,
+      status.srcChain.txHash &&
+      status.status === StatusTypes.COMPLETE,
   );
 }
 

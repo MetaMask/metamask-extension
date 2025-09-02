@@ -6,6 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
 import { StatusTypes } from '@metamask/bridge-controller';
+import { isBridgeComplete } from '../../../shared/lib/bridge-status/utils';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 import { selectBridgeHistoryItemForTxMetaId } from '../../ducks/bridge-status/selectors';
 
@@ -40,12 +41,6 @@ export function useBridgeTxHistoryData({
     selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
   );
 
-  // By complete, this means BOTH source and dest tx are confirmed
-  const isBridgeComplete = bridgeHistoryItem
-    ? Boolean(bridgeHistoryItem?.status.srcChain.txHash) &&
-      bridgeHistoryItem.status.status === StatusTypes.COMPLETE
-    : null;
-
   const isBridgeFailed = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status === StatusTypes.FAILED
     : null;
@@ -63,7 +58,10 @@ export function useBridgeTxHistoryData({
 
   return {
     bridgeTxHistoryItem: bridgeHistoryItem,
-    isBridgeComplete,
+    // By complete, this means BOTH source and dest tx are confirmed
+    isBridgeComplete: bridgeHistoryItem
+      ? isBridgeComplete(bridgeHistoryItem)
+      : null,
     isBridgeFailed,
     showBridgeTxDetails,
   };
