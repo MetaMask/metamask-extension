@@ -45,7 +45,6 @@ export function useFirstTimeInteractionAlert(): Alert[] {
 
   const isFirstPartyContract = Boolean(getExperience(recipient, chainId));
 
-  // Don't show alert if trust signal is still loading
   const isTrustSignalLoading =
     trustSignalDisplayState === TrustSignalDisplayState.Loading;
 
