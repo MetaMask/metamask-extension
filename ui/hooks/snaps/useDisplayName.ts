@@ -12,6 +12,8 @@ import {
 } from '../../selectors/snaps';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 
 export type UseDisplayNameParams = {
   chain: {
@@ -41,6 +43,12 @@ export const useDisplayName = (
 
   const parsedAddress = isEip155 ? toChecksumHexAddress(address) : address;
 
+  const accountGroups = useSelector((state: MultichainAccountsState) =>
+    getAccountGroupsByAddress(state, [parsedAddress]),
+  );
+  const accountGroupName = accountGroups[0]?.metadata.name;
+
+  // TODO: Consider removing this?
   const accountName = useSelector((state: AccountsMetaMaskState) =>
     getMemoizedAccountName(state, parsedAddress),
   );
@@ -55,5 +63,10 @@ export const useDisplayName = (
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  return accountName || (isEip155 && addressBookEntry?.name) || undefined;
+  return (
+    accountGroupName ||
+    accountName ||
+    (isEip155 && addressBookEntry?.name) ||
+    undefined
+  );
 };
