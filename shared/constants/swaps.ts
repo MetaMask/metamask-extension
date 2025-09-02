@@ -209,9 +209,7 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
   CHAIN_IDS.SEI,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MultichainNetworks.SOLANA,
-  ///: END:ONLY_INCLUDE_IF
 ] as const;
 
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
@@ -438,7 +436,6 @@ const ZKSYNC_USDT_TOKEN_OBJECT = {
     'https://static.cx.metamask.io/api/v1/tokenIcons/324/0x493257fd37edb34451f62edf8d2a0c418852ba4c.png',
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 const SOLANA_USDC_TOKEN_OBJECT = {
   address:
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -448,7 +445,6 @@ const SOLANA_USDC_TOKEN_OBJECT = {
   iconUrl:
     'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
 };
-///: END:ONLY_INCLUDE_IF
 
 /**
  * The most common token pair for each chain
@@ -464,9 +460,7 @@ export const SWAPS_CHAINID_COMMON_TOKEN_PAIR = {
   [CHAIN_IDS.BASE]: BASE_USDC_TOKEN_OBJECT,
   [CHAIN_IDS.LINEA_MAINNET]: LINEA_USDC_TOKEN_OBJECT,
   [CHAIN_IDS.ZKSYNC_ERA]: ZKSYNC_USDT_TOKEN_OBJECT,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   [MultichainNetworks.SOLANA]: SOLANA_USDC_TOKEN_OBJECT,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export const STABLE_PAIRS: Record<string, boolean> = {

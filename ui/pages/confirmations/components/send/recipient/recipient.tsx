@@ -22,7 +22,7 @@ export const Recipient = ({ setTo }: { setTo: (to?: string) => void }) => {
       return;
     }
     captureRecipientSelected();
-  }, [captureRecipientSelected]);
+  }, [captureRecipientSelected, to]);
 
   return (
     <div>

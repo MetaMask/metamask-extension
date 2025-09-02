@@ -15,7 +15,7 @@ import { useSendType } from '../useSendType';
 
 export const useAmountSelectionMetrics = () => {
   const trackEvent = useContext(MetaMetricsContext);
-  const { asset: { chainId } = {} } = useSendContext();
+  const { chainId } = useSendContext();
   const { isEvmSendType } = useSendType();
   const {
     accountType,
@@ -27,6 +27,10 @@ export const useAmountSelectionMetrics = () => {
 
   const setAmountInputMethodManual = useCallback(() => {
     setAmountInputMethod(AmountInputMethod.Manual);
+  }, [setAmountInputMethod]);
+
+  const setAmountInputMethodPasted = useCallback(() => {
+    setAmountInputMethod(AmountInputMethod.Pasted);
   }, [setAmountInputMethod]);
 
   const setAmountInputMethodPressedMax = useCallback(() => {
@@ -70,6 +74,7 @@ export const useAmountSelectionMetrics = () => {
   return {
     captureAmountSelected,
     setAmountInputMethodManual,
+    setAmountInputMethodPasted,
     setAmountInputMethodPressedMax,
     setAmountInputTypeFiat,
     setAmountInputTypeToken,
