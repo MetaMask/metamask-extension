@@ -19,7 +19,7 @@ import {
   isValidQuoteRequest,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { SolAccountType } from '@metamask/keyring-api';
+import { SolAccountType, BtcAccountType } from '@metamask/keyring-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
@@ -44,7 +44,7 @@ import {
 } from '@metamask/account-tree-controller';
 import {
   MultichainNetworks,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps,bitcoin-swaps)
   MULTICHAIN_PROVIDER_CONFIGS,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/multichain/networks';
@@ -122,6 +122,27 @@ const hasSolanaAccounts = (state: BridgeAppState) => {
   });
 };
 
+// checks if the user has any bitcoin accounts created
+const hasBitcoinAccounts = (state: BridgeAppState) => {
+  // Access accounts from the state
+  const accounts = state.metamask.internalAccounts?.accounts || {};
+
+  // Check if any account is a Bitcoin account
+  return Object.values(accounts).some((account) => {
+    const { P2wpkh } = BtcAccountType;
+    return Boolean(account && account.type === P2wpkh);
+  });
+};
+
+// Helper function to check if a chain is Bitcoin
+const isBitcoinChainId = (chainId: string | CaipChainId): boolean => {
+  return [
+    MultichainNetworks.BITCOIN,
+    MultichainNetworks.BITCOIN_TESTNET,
+    MultichainNetworks.BITCOIN_SIGNET,
+  ].includes(chainId as MultichainNetworks);
+};
+
 // only includes networks user has added
 export const getAllBridgeableNetworks = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
@@ -140,6 +161,20 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
           rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
           defaultRpcEndpointIndex: 0,
           chainId: MultichainNetworks.SOLANA,
+        } as unknown as NetworkConfiguration,
+        ///: END:ONLY_INCLUDE_IF
+        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
+        // TODO: get this from network controller, use placeholder values for now
+        {
+          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
+          blockExplorerUrls: [],
+          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN]
+            .nickname,
+          nativeCurrency:
+            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].ticker,
+          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+          defaultRpcEndpointIndex: 0,
+          chainId: MultichainNetworks.BITCOIN,
         } as unknown as NetworkConfiguration,
         ///: END:ONLY_INCLUDE_IF
       ],
@@ -171,13 +206,24 @@ export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   getBridgeFeatureFlags,
   (state: BridgeAppState) => hasSolanaAccounts(state),
-  (allBridgeableNetworks, bridgeFeatureFlags, hasSolanaAccount) => {
+  (state: BridgeAppState) => hasBitcoinAccounts(state),
+  (
+    allBridgeableNetworks,
+    bridgeFeatureFlags,
+    hasSolanaAccount,
+    hasBitcoinAccount,
+  ) => {
     // First filter out Solana from source chains if no Solana account exists
-    const filteredNetworks = hasSolanaAccount
+    let filteredNetworks = hasSolanaAccount
       ? allBridgeableNetworks
       : allBridgeableNetworks.filter(
           ({ chainId }) => !isSolanaChainId(chainId),
         );
+
+    // Then filter out Bitcoin from source chains if no Bitcoin account exists
+    filteredNetworks = hasBitcoinAccount
+      ? filteredNetworks
+      : filteredNetworks.filter(({ chainId }) => !isBitcoinChainId(chainId));
 
     // Then apply the standard filter for active source chains
     return filteredNetworks.filter(
