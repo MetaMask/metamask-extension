@@ -5,7 +5,12 @@ import withRouterHooks, { RouterHooksProps } from './with-router-hooks';
 
 // Mock the react-router-dom-v5-compat hooks
 const mockUseNavigate = jest.fn();
-const mockUseLocation = { pathname: '/test', search: '', hash: '', state: null };
+const mockUseLocation = {
+  pathname: '/test',
+  search: '',
+  hash: '',
+  state: null,
+};
 const mockUseParams = { id: 'test-id' };
 
 jest.mock('react-router-dom-v5-compat', () => ({
