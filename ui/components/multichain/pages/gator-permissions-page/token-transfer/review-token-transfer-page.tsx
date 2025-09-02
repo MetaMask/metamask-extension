@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { Hex } from '@metamask/utils';
 import { Content, Header, Page } from '../../page';
 import {
   Box,
@@ -13,54 +14,83 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   BackgroundColor,
   BlockSize,
-  Color,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
-import { getGatorPermissionByPermissionTypeAndChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
+import { getAggregatedGatorPermissionByChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
+import type { GatorPermissionState } from '../../../../../selectors/gator-permissions/gator-permissions';
 
-export const ReviewTokenSubscriptionsPage = () => {
+type RouteParams = {
+  chainId: string;
+  [key: string]: string | undefined;
+};
+
+type PermissionWithSiteOrigin = {
+  permissionResponse: {
+    chainId: Hex;
+    context: string;
+    permission: {
+      type: string;
+    };
+  };
+  siteOrigin: string;
+};
+
+export const ReviewTokenTransferPage = (): React.ReactElement => {
   const t = useI18nContext();
   const history = useHistory();
-  const headerRef = useRef();
-  const { chainId } = useParams();
-  const [networkName, setNetworkName] = useState('');
-  const [totalTokenSubscriptions, setTotalTokenSubscriptions] = useState(0);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { chainId } = useParams<RouteParams>();
+  const [networkName, setNetworkName] = useState<string>('');
+  const [totalTokenTransferPermissions, setTotalTokenTransferPermissions] =
+    useState<number>(0);
 
   const networks = useSelector(getNetworkConfigurationsByChainId);
-  const nativeTokenPeriodicPermissions = useSelector((state) =>
-    getGatorPermissionByPermissionTypeAndChainId(
-      state,
-      'native-token-periodic',
-      chainId,
-    ),
+
+  // Get aggregated token transfer permissions for the specific chain
+  const aggregatedTokenTransferPermissions = useSelector(
+    (state: GatorPermissionState) =>
+      getAggregatedGatorPermissionByChainId(
+        state,
+        'token-transfer',
+        chainId as Hex,
+      ),
   );
 
   useEffect(() => {
-    setNetworkName(extractNetworkName(networks, chainId));
-    setTotalTokenSubscriptions(nativeTokenPeriodicPermissions.length);
-  }, [chainId, nativeTokenPeriodicPermissions, networks]);
+    if (chainId) {
+      setNetworkName(extractNetworkName(networks, chainId));
+      setTotalTokenTransferPermissions(
+        aggregatedTokenTransferPermissions.length,
+      );
+    }
+  }, [chainId, aggregatedTokenTransferPermissions, networks]);
 
-  const handleRevokeClick = (subscription) => {
+  const handlePermissionRevokeClick = (
+    permission: PermissionWithSiteOrigin,
+  ): void => {
     // TODO: Implement revoke logic
-    console.log('subscription to revoke:', subscription);
+    console.log('Permission to revoke:', permission);
   };
 
-  const renderTokenSubscriptions = (subscriptions) =>
-    subscriptions.map((subscription) => {
-      const { permissionResponse, siteOrigin } = subscription;
+  const renderTokenTransferPermissions = (): React.ReactElement[] =>
+    aggregatedTokenTransferPermissions.map((permission) => {
+      const { permissionResponse, siteOrigin } =
+        permission as PermissionWithSiteOrigin;
       const fullNetworkName = extractNetworkName(
         networks,
         permissionResponse.chainId,
         true,
       );
+
       return (
         <ReviewGatorAssetItem
           key={`${siteOrigin}-${permissionResponse.context}`}
@@ -68,16 +98,15 @@ export const ReviewTokenSubscriptionsPage = () => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() => handleRevokeClick(subscription)}
+          onRevokeClick={() =>
+            handlePermissionRevokeClick(permission as PermissionWithSiteOrigin)
+          }
         />
       );
     });
 
   return (
-    <Page
-      className="main-container"
-      data-testid="review-token-subscriptions-page"
-    >
+    <Page className="main-container" data-testid="review-token-transfer-page">
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
@@ -85,7 +114,7 @@ export const ReviewTokenSubscriptionsPage = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
-            color={Color.iconDefault}
+            color={IconColor.iconDefault}
             onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />
@@ -101,8 +130,8 @@ export const ReviewTokenSubscriptionsPage = () => {
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
-        {totalTokenSubscriptions > 0 ? (
-          renderTokenSubscriptions(nativeTokenPeriodicPermissions)
+        {totalTokenTransferPermissions > 0 ? (
+          renderTokenTransferPermissions()
         ) : (
           <Box
             data-testid="no-connections"

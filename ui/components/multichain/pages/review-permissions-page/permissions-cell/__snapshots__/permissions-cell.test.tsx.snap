@@ -162,3 +162,96 @@ exports[`PermissionsCell renders correctly with both streams and subscriptions 1
   </div>
 </div>
 `;
+
+exports[`PermissionsCell renders correctly with token transfer permissions 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--padding-4 mm-box--padding-top-0 mm-box--gap-4 mm-box--background-color-background-default mm-box--rounded-lg"
+  >
+    <div
+      class="mm-box multichain-permissions-list-item mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
+      data-testid="permissions-cell-connection-list-item"
+      style="cursor: pointer;"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-top-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/coin.svg');"
+        />
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-5/12"
+        style="align-self: center; flex-grow: 1;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
+        >
+          Token Transfer
+        </p>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--align-items-center"
+        >
+          <span
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--width-max mm-box--color-text-alternative"
+          >
+            8
+             
+            Permissions
+          </span>
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="undefined"
+            data-tooltipped=""
+            style="display: inline;"
+          >
+            <div
+              class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+              data-testid="avatar-group"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--rounded-full"
+                  style="margin-left: 0px;"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                  >
+                    <img
+                      alt="Polygon logo"
+                      class="mm-avatar-token__token-image"
+                      src="./images/pol-token.svg"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="mm-box mm-box--rounded-full"
+                  style="margin-left: -8px;"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                  >
+                    <img
+                      alt="Ethereum Mainnet logo"
+                      class="mm-avatar-token__token-image"
+                      src="./images/eth_logo.svg"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+        style="mask-image: url('./images/icons/arrow-right.svg');"
+      />
+    </div>
+  </div>
+</div>
+`;
