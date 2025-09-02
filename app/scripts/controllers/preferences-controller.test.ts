@@ -74,8 +74,6 @@ const setupController = ({
     }),
   );
 
-
-
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
     state,

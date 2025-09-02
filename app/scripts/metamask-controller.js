@@ -828,7 +828,6 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
         'NetworkController:getState',
-
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
@@ -1845,9 +1844,11 @@ export default class MetamaskController extends EventEmitter {
         const { useExternalServices: currUseExternalServices } = currState;
         if (currUseExternalServices && !prevUseExternalServices) {
           this.remoteFeatureFlagController.enable();
-          this.remoteFeatureFlagController.updateRemoteFeatureFlags().catch((error) => {
-            console.error('Failed to update remote feature flags:', error);
-          });
+          this.remoteFeatureFlagController
+            .updateRemoteFeatureFlags()
+            .catch((error) => {
+              console.error('Failed to update remote feature flags:', error);
+            });
         } else if (!currUseExternalServices && prevUseExternalServices) {
           this.remoteFeatureFlagController.disable();
         }

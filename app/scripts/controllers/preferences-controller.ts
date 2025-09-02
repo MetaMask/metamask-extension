@@ -22,8 +22,6 @@ import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 
-
-
 type AccountIdentityEntry = {
   address: string;
   name: string;
