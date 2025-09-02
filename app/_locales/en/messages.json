@@ -5197,6 +5197,10 @@
   "searchTokensByNameOrAddress": {
     "message": "Search tokens by name or address"
   },
+  "searchYourAccounts": {
+    "message": "Search your accounts",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },

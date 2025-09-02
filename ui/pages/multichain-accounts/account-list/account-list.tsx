@@ -23,6 +23,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
+import { filterWalletsByGroupName } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
@@ -30,6 +31,17 @@ export const AccountList = () => {
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
+  const [searchPattern, setSearchPattern] = useState<string>('');
+
+  const onSearchBarChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setSearchPattern(e.target.value),
+    [],
+  );
+
+  const filteredWallets = useMemo(() => {
+    return filterWalletsByGroupName(wallets, searchPattern);
+  }, [wallets, searchPattern]);
 
   const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
 
@@ -59,11 +71,47 @@ export const AccountList = () => {
         {t('accounts')}
       </Header>
       <Content className="account-list-page__content">
-        <Box flexDirection={BoxFlexDirection.Column}>
-          <MultichainAccountList
-            wallets={wallets}
-            selectedAccountGroups={[selectedAccountGroup]}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingBottom={2}
+        >
+          <TextFieldSearch
+            size={TextFieldSearchSize.Lg}
+            placeholder={t('searchYourAccounts')}
+            value={searchPattern}
+            onChange={onSearchBarChange}
+            clearButtonOnClick={() => setSearchPattern('')}
+            width={BlockSize.Full}
+            borderWidth={0}
+            backgroundColor={BackgroundColor.backgroundMuted}
+            borderRadius={BorderRadius.LG}
+            data-testid="multichain-account-list-search"
           />
+        </Box>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          height={BlockSize.Full}
+        >
+          {Object.keys(filteredWallets).length > 0 ? (
+            <MultichainAccountList
+              wallets={filteredWallets}
+              selectedAccountGroups={[selectedAccountGroup]}
+            />
+          ) : (
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+              width={BlockSize.Full}
+              height={BlockSize.Full}
+            >
+              <Text>{t('noAccountsFound')}</Text>
+            </Box>
+          )}
         </Box>
       </Content>
       <Footer className="shadow-sm">
