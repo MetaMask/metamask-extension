@@ -12,7 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -27,11 +27,9 @@ import { getImageForChainId } from '../../../../../selectors/multichain';
 export const GatorAssetItemList = ({
   chainId,
   networkName,
-  total,
   description,
   onClick,
 }) => {
-  const t = useI18nContext();
   const networkImageUrl = getImageForChainId(chainId);
 
   return (
@@ -58,6 +56,7 @@ export const GatorAssetItemList = ({
           src={networkImageUrl}
           name={chainId}
           size={AvatarNetworkSize.Md}
+          style={{ borderRadius: '50%' }}
         />
       </Box>
 
@@ -68,7 +67,7 @@ export const GatorAssetItemList = ({
         style={{ alignSelf: 'center', flexGrow: '1' }}
       >
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
-          {t(networkName)}
+          {networkName}
         </Text>
 
         <Box
@@ -83,7 +82,7 @@ export const GatorAssetItemList = ({
             color={TextColor.textAlternative}
             variant={TextVariant.bodyMd}
           >
-            {total} {description}
+            {description}
           </Text>
         </Box>
       </Box>
@@ -117,11 +116,6 @@ GatorAssetItemList.propTypes = {
    * The network name to display
    */
   networkName: PropTypes.string.isRequired,
-
-  /**
-   * The count of permissions for the chain
-   */
-  total: PropTypes.number.isRequired,
 
   /**
    * The description of the permission

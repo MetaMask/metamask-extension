@@ -21,48 +21,70 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { REVIEW_TOKEN_STREAMS_ROUTE } from '../../../../../helpers/constants/routes';
+import { REVIEW_TOKEN_TRANSFER_ROUTE } from '../../../../../helpers/constants/routes';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
-import { getGatorAssetListDetail } from '../../../../../selectors/gator-permissions/gator-permissions';
+import { getAggregatedTokenTransferPermissionsByChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { GatorAssetItemList } from '../components';
 import { extractNetworkName } from '../gator-permissions-page-helper';
 
-export const TokenStreamsPage = () => {
+export const TokenTransferPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const headerRef = useRef();
   const networks = useSelector(getNetworkConfigurationsByChainId);
-  const [totalTokenStreamsPermissions, setTotalTokenStreamsPermissions] =
+  const [totalTokenTransferPermissions, setTotalTokenTransferPermissions] =
     useState(0);
-  const gatorAssetList = useSelector((state) =>
-    getGatorAssetListDetail(state, 'token-streams'),
+
+  // Get aggregated token transfer permissions for all chains
+  const aggregatedTokenTransferPermissions = useSelector((state) =>
+    getAggregatedTokenTransferPermissionsByChainId(state),
   );
 
   useEffect(() => {
-    setTotalTokenStreamsPermissions(Object.keys(gatorAssetList).length);
-  }, [gatorAssetList]);
-
-  const handleTokenStreamsPermissionClick = (chainId) => {
-    history.push(`${REVIEW_TOKEN_STREAMS_ROUTE}/${chainId}`);
-  };
-
-  const renderTokenStreamsPermissionsList = (gatorAssetItemList) =>
-    Object.entries(gatorAssetItemList).map(([chainId, assetDetails]) => {
-      return (
-        <GatorAssetItemList
-          data-testid="gator-asset-item-list"
-          key={chainId}
-          chainId={chainId}
-          networkName={extractNetworkName(networks, chainId)}
-          total={assetDetails.total}
-          description={assetDetails.description}
-          onClick={() => handleTokenStreamsPermissionClick(chainId)}
-        />
-      );
+    // Calculate total permissions across all chains
+    let total = 0;
+    Object.values(aggregatedTokenTransferPermissions).forEach((permissions) => {
+      total += permissions.length;
     });
 
+    setTotalTokenTransferPermissions(total);
+  }, [aggregatedTokenTransferPermissions]);
+
+  const handleTokenTransferPermissionClick = (chainId) => {
+    history.push(`${REVIEW_TOKEN_TRANSFER_ROUTE}/${chainId}`);
+  };
+
+  const renderTokenTransferPermissionsList = () => {
+    return Object.entries(aggregatedTokenTransferPermissions).map(
+      ([chainId, permissions]) => {
+        const total = permissions.length;
+
+        // Create a combined description with proper translation and count parameter
+        const description = total === 1
+          ? t('tokenPermissionCount', [total])
+          : t('tokenPermissionsCount', [total]);
+
+        let networkName = t(extractNetworkName(networks, chainId));
+        if (!networkName) {
+          networkName = extractNetworkName(networks, chainId, true);
+        }
+
+        return (
+          <GatorAssetItemList
+            data-testid="gator-asset-item-list"
+            key={chainId}
+            chainId={chainId}
+            networkName={networkName}
+            description={description}
+            onClick={() => handleTokenTransferPermissionClick(chainId)}
+          />
+        );
+      },
+    );
+  };
+
   return (
-    <Page className="main-container" data-testid="token-streams-page">
+    <Page className="main-container" data-testid="token-transfer-page">
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
@@ -81,13 +103,13 @@ export const TokenStreamsPage = () => {
           variant={TextVariant.headingMd}
           textAlign={TextAlign.Center}
         >
-          {t('tokenStreams')}
+          {t('tokenTransfer')}
         </Text>
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
-        {totalTokenStreamsPermissions > 0 ? (
-          renderTokenStreamsPermissionsList(gatorAssetList)
+        {totalTokenTransferPermissions > 0 ? (
+          renderTokenTransferPermissionsList()
         ) : (
           <Box
             data-testid="no-connections"

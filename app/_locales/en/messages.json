@@ -4350,6 +4350,17 @@
   "perSecond": {
     "message": "per second"
   },
+  "permission": {
+    "message": "Permission"
+  },
+  "tokenPermissionCount": {
+    "message": "$1 token permission",
+    "description": "$1 is the count of token permissions (singular form)"
+  },
+  "tokenPermissionsCount": {
+    "message": "$1 token permissions",
+    "description": "$1 is the count of token permissions (plural form)"
+  },
   "permissionDetails": {
     "message": "Permission details"
   },
@@ -6841,17 +6852,14 @@
   "tokenStream": {
     "message": "Token Stream"
   },
-  "tokenStreams": {
-    "message": "Token Streams"
-  },
   "tokenSubscription": {
     "message": "Token Subscription"
   },
-  "tokenSubscriptions": {
-    "message": "Token Subscriptions"
-  },
   "tokenSymbol": {
     "message": "Token symbol"
+  },
+  "tokenTransfer": {
+    "message": "Token Transfer"
   },
   "tokens": {
     "message": "Tokens"

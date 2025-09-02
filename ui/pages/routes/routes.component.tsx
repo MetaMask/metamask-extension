@@ -47,10 +47,8 @@ import {
   PERMISSIONS,
   REVIEW_PERMISSIONS,
   SITES,
-  TOKEN_STREAMS_ROUTE,
-  REVIEW_TOKEN_STREAMS_ROUTE,
-  TOKEN_SUBSCRIPTIONS_ROUTE,
-  REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
+  TOKEN_TRANSFER_ROUTE,
+  REVIEW_TOKEN_TRANSFER_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
   NOTIFICATIONS_ROUTE,
@@ -298,32 +296,20 @@ const SitesPage = mmLazy(
       '../../components/multichain/pages/sites-page/sites-page.js'
     )) as unknown as DynamicImportType,
 );
-const TokenStreamsPage = mmLazy(
+
+const TokenTransferPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
-      '../../components/multichain/pages/gator-permissions-page/token-streams/token-streams-page.js'
+      '../../components/multichain/pages/gator-permissions-page/token-transfer/token-transfer-page.js'
     )) as unknown as DynamicImportType,
 );
-const ReviewTokenStreamsPage = mmLazy(
+
+const ReviewTokenTransferPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
-      '../../components/multichain/pages/gator-permissions-page/token-streams/review-token-streams-page.js'
-    )) as unknown as DynamicImportType,
-);
-const TokenSubscriptionsPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/gator-permissions-page/token-subscriptions/token-subscriptions-page.js'
-    )) as unknown as DynamicImportType,
-);
-const ReviewTokenSubscriptionsPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/gator-permissions-page/token-subscriptions/review-token-subscriptions-page.js'
+      '../../components/multichain/pages/gator-permissions-page/token-transfer/review-token-transfer-page.js'
     )) as unknown as DynamicImportType,
 );
 
@@ -632,24 +618,15 @@ export default function Routes() {
             exact
           />
           <Authenticated path={SITES} component={SitesPage} exact />
+
           <Authenticated
-            path={TOKEN_STREAMS_ROUTE}
-            component={TokenStreamsPage}
+            path={TOKEN_TRANSFER_ROUTE}
+            component={TokenTransferPage}
             exact
           />
           <Authenticated
-            path={`${REVIEW_TOKEN_STREAMS_ROUTE}/:chainId`}
-            component={ReviewTokenStreamsPage}
-            exact
-          />
-          <Authenticated
-            path={TOKEN_SUBSCRIPTIONS_ROUTE}
-            component={TokenSubscriptionsPage}
-            exact
-          />
-          <Authenticated
-            path={`${REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE}/:chainId`}
-            component={ReviewTokenSubscriptionsPage}
+            path={`${REVIEW_TOKEN_TRANSFER_ROUTE}/:chainId`}
+            component={ReviewTokenTransferPage}
             exact
           />
           <Authenticated

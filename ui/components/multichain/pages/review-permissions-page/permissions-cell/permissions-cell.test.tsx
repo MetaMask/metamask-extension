@@ -40,13 +40,11 @@ describe('PermissionsCell', () => {
   const defaultProps = {
     nonTestNetworks: mockNetworks,
     testNetworks: [],
-    streamsCount: 5,
-    subscriptionsCount: 3,
-    streamsChainIds: ['0x1', '0x89'],
-    subscriptionsChainIds: ['0x1'],
+    totalCount: 8,
+    chainIds: ['0x1', '0x89'],
   };
 
-  it('renders correctly with both streams and subscriptions', () => {
+  it('renders correctly with token transfer permissions', () => {
     const { container } = renderWithProvider(
       <PermissionsCell {...defaultProps} />,
       store,
@@ -55,16 +53,14 @@ describe('PermissionsCell', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('handles streams and subscriptions correctly', () => {
+  it('handles token transfer permissions correctly', () => {
     const { getByText } = renderWithProvider(
       <PermissionsCell {...defaultProps} />,
       store,
     );
 
-    expect(getByText('Token Streams')).toBeInTheDocument();
-    expect(getByText('Token Subscriptions')).toBeInTheDocument();
-    expect(getByText('5 streams')).toBeInTheDocument();
-    expect(getByText('3 subscriptions')).toBeInTheDocument();
+    expect(getByText('Token Transfer')).toBeInTheDocument();
+    expect(getByText('8 Permissions')).toBeInTheDocument();
   });
 
   it('routes correctly on click', () => {
@@ -74,20 +70,16 @@ describe('PermissionsCell', () => {
     );
 
     const items = getAllByTestId('permissions-cell-connection-list-item');
-    expect(items).toHaveLength(2);
+    expect(items).toHaveLength(1);
 
-    // Test streams routing
+    // Test token transfer routing
     fireEvent.click(items[0]);
-
-    // Test subscriptions routing
-    fireEvent.click(items[1]);
   });
 
   it('does not render when no data', () => {
     const props = {
       ...defaultProps,
-      streamsCount: 0,
-      subscriptionsCount: 0,
+      totalCount: 0,
     };
 
     const { container } = renderWithProvider(
@@ -98,33 +90,18 @@ describe('PermissionsCell', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders only streams when subscriptions count is 0', () => {
+  it('renders with single permission', () => {
     const props = {
       ...defaultProps,
-      subscriptionsCount: 0,
+      totalCount: 1,
     };
 
-    const { getByText, queryByText } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <PermissionsCell {...props} />,
       store,
     );
 
-    expect(getByText('Token Streams')).toBeInTheDocument();
-    expect(queryByText('Token Subscriptions')).not.toBeInTheDocument();
-  });
-
-  it('renders only subscriptions when streams count is 0', () => {
-    const props = {
-      ...defaultProps,
-      streamsCount: 0,
-    };
-
-    const { getByText, queryByText } = renderWithProvider(
-      <PermissionsCell {...props} />,
-      store,
-    );
-
-    expect(getByText('Token Subscriptions')).toBeInTheDocument();
-    expect(queryByText('Token Streams')).not.toBeInTheDocument();
+    expect(getByText('Token Transfer')).toBeInTheDocument();
+    expect(getByText('1 Permission')).toBeInTheDocument();
   });
 });

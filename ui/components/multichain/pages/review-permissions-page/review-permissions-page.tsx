@@ -180,11 +180,7 @@ export const ReviewPermissions = () => {
 
   // Get all gator permissions for the site (for the modal)
   const allSiteGatorPermissions = useMemo(() => {
-    const allPermissions = [
-      ...filteredGatorPermissions.streams.permissions,
-      ...filteredGatorPermissions.subscriptions.permissions,
-    ];
-    return allPermissions;
+    return filteredGatorPermissions.permissions;
   }, [filteredGatorPermissions]);
 
   // Get all unique chain IDs from gator permissions
@@ -319,23 +315,17 @@ export const ReviewPermissions = () => {
               hideAllToasts={hideAllToasts}
             />
           ) : null}
-          {filteredGatorPermissions.streams.count > 0 ||
-          filteredGatorPermissions.subscriptions.count > 0 ? (
+          {filteredGatorPermissions.count > 0 ? (
             <PermissionsCell
               nonTestNetworks={nonTestNetworks}
               testNetworks={testNetworks}
-              streamsCount={filteredGatorPermissions.streams.count}
-              subscriptionsCount={filteredGatorPermissions.subscriptions.count}
-              streamsChainIds={filteredGatorPermissions.streams.chains}
-              subscriptionsChainIds={
-                filteredGatorPermissions.subscriptions.chains
-              }
+              totalCount={filteredGatorPermissions.count}
+              chainIds={filteredGatorPermissions.chains}
               paddingTop={connectedAccountAddresses.length === 0 ? 4 : 0}
             />
           ) : null}
           {connectedAccountAddresses.length === 0 &&
-          filteredGatorPermissions.streams.count === 0 &&
-          filteredGatorPermissions.subscriptions.count === 0 ? (
+          filteredGatorPermissions.count === 0 ? (
             <NoConnectionContent />
           ) : null}
           {showDisconnectAllModal ? (
@@ -346,10 +336,7 @@ export const ReviewPermissions = () => {
               onClick={() => {
                 trace({ name: TraceName.DisconnectAllModal });
                 // Check if there are active gator permissions
-                if (
-                  filteredGatorPermissions.streams.count > 0 ||
-                  filteredGatorPermissions.subscriptions.count > 0
-                ) {
+                if (filteredGatorPermissions.count > 0) {
                   // Close disconnect modal and show other permissions modal
                   setShowDisconnectAllModal(false);
                   setShowDisconnectPermissionsModal(true);

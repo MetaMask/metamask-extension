@@ -27,8 +27,7 @@ import {
 import {
   DEFAULT_ROUTE,
   SITES,
-  TOKEN_STREAMS_ROUTE,
-  TOKEN_SUBSCRIPTIONS_ROUTE,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
@@ -39,12 +38,8 @@ export const PermissionsPageV2 = () => {
   const history = useHistory();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
-  const [totalTokenStreamsPermissions, setTotalTokenStreamsPermissions] =
+  const [totalTokenTransferPermissions, setTotalTokenTransferPermissions] =
     useState(0);
-  const [
-    totalTokenSubscriptionsPermissions,
-    setTotalTokenSubscriptionsPermissions,
-  ] = useState(0);
   const [totalPermissions, setTotalPermissions] = useState(0);
 
   const sitesConnectionsList = useSelector(
@@ -66,23 +61,24 @@ export const PermissionsPageV2 = () => {
     const erc20TokenStream =
       Object.values(gatorPermissionsMap['erc20-token-stream']).flat().length ||
       0;
-    const totalTokenSubscriptions =
+    const nativeTokenSubscriptions =
       Object.values(gatorPermissionsMap['native-token-periodic']).flat()
         .length || 0;
+    const erc20TokenSubscriptions =
+      Object.values(gatorPermissionsMap['erc20-token-periodic']).flat()
+        .length || 0;
     const totalTokenStreams = nativeTokenStream + erc20TokenStream;
+    const totalTokenSubscriptions = nativeTokenSubscriptions + erc20TokenSubscriptions;
+    const totalTokenTransfer = totalTokenStreams + totalTokenSubscriptions;
 
     setTotalConnections(totalSites);
-    setTotalTokenStreamsPermissions(totalTokenStreams);
-    setTotalTokenSubscriptionsPermissions(totalTokenSubscriptions);
-    setTotalPermissions(
-      totalConnections + totalTokenStreams + totalTokenSubscriptions,
-    );
+    setTotalTokenTransferPermissions(totalTokenTransfer);
+    setTotalPermissions(totalConnections + totalTokenTransfer);
   }, [
     sitesConnectionsList,
     gatorPermissionsMap,
     totalConnections,
-    totalTokenStreamsPermissions,
-    totalTokenSubscriptionsPermissions,
+    totalTokenTransferPermissions,
   ]);
 
   const handleAssetClick = async (assetType) => {
@@ -90,16 +86,35 @@ export const PermissionsPageV2 = () => {
       case 'sites':
         history.push(SITES);
         break;
-      case 'token-streams':
-        history.push(TOKEN_STREAMS_ROUTE);
-        break;
-      case 'token-subscriptions':
-        history.push(TOKEN_SUBSCRIPTIONS_ROUTE);
+      case 'token-transfer':
+        history.push(TOKEN_TRANSFER_ROUTE);
         break;
       default:
         console.error('Invalid asset type:', assetType);
         break;
     }
+  };
+
+  const renderCategoryHeader = (title) => {
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+        width={BlockSize.Full}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        padding={[2, 4]}
+        marginTop={4}
+      >
+        <Text
+          variant={TextVariant.bodyMdMedium}
+          color={TextColor.textAlternative}
+          textAlign={TextAlign.Left}
+        >
+          {title.toUpperCase()}
+        </Text>
+      </Box>
+    );
   };
 
   const renderPermissionList = () => {
@@ -112,28 +127,47 @@ export const PermissionsPageV2 = () => {
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
-        gap={4}
+        gap={0}
       >
-        {/* Sites */}
+        {/* SITES Category */}
         {totalConnections > 0 && (
-          <PermissionListItem
-            total={totalConnections}
-            name={t('sites')}
-            onClick={() => handleAssetClick('sites')}
-          />
+          <>
+            {renderCategoryHeader(t('sites'))}
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              gap={0}
+            >
+              <PermissionListItem
+                total={totalConnections}
+                name={t('sites')}
+                onClick={() => handleAssetClick('sites')}
+              />
+            </Box>
+          </>
         )}
 
-        {/* Assets */}
-        <PermissionListItem
-          total={totalTokenStreamsPermissions}
-          name={t('tokenStreams')}
-          onClick={() => handleAssetClick('token-streams')}
-        />
-        <PermissionListItem
-          total={totalTokenSubscriptionsPermissions}
-          name={t('tokenSubscriptions')}
-          onClick={() => handleAssetClick('token-subscriptions')}
-        />
+        {/* ASSETS Category */}
+        {totalTokenTransferPermissions > 0 && (
+          <>
+            {renderCategoryHeader(t('assets'))}
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              gap={0}
+            >
+              <PermissionListItem
+                total={totalTokenTransferPermissions}
+                name={t('tokenTransfer')}
+                onClick={() => handleAssetClick('token-transfer')}
+              />
+            </Box>
+          </>
+        )}
       </Box>
     );
   };

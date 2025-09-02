@@ -28,10 +28,8 @@ import {
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   SITES,
-  TOKEN_STREAMS_ROUTE,
-  TOKEN_SUBSCRIPTIONS_ROUTE,
-  REVIEW_TOKEN_STREAMS_ROUTE,
-  REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
+  TOKEN_TRANSFER_ROUTE,
+  REVIEW_TOKEN_TRANSFER_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -162,25 +160,13 @@ export function hideAppHeader(props) {
   const isGatorPermissionsPage =
     Boolean(
       matchPath(location.pathname, {
-        path: TOKEN_STREAMS_ROUTE,
+        path: TOKEN_TRANSFER_ROUTE,
         exact: false,
       }),
     ) ||
     Boolean(
       matchPath(location.pathname, {
-        path: TOKEN_SUBSCRIPTIONS_ROUTE,
-        exact: false,
-      }),
-    ) ||
-    Boolean(
-      matchPath(location.pathname, {
-        path: REVIEW_TOKEN_STREAMS_ROUTE,
-        exact: false,
-      }),
-    ) ||
-    Boolean(
-      matchPath(location.pathname, {
-        path: REVIEW_TOKEN_SUBSCRIPTIONS_ROUTE,
+        path: REVIEW_TOKEN_TRANSFER_ROUTE,
         exact: false,
       }),
     );
