@@ -5,15 +5,15 @@ import { useMemo } from 'react';
 import { useSendContext } from '../../context/send';
 
 export const useSendType = () => {
-  const { asset } = useSendContext();
+  const { asset, chainId } = useSendContext();
 
   const isEvmSendType = useMemo(
     () => (asset?.address ? isEvmAddress(asset.address) : undefined),
     [asset?.address],
   );
   const isSolanaSendType = useMemo(
-    () => (asset?.chainId ? isSolanaChainId(asset.chainId) : undefined),
-    [asset?.chainId],
+    () => (chainId ? isSolanaChainId(chainId) : undefined),
+    [chainId],
   );
   const assetIsNative = asset ? isNativeAddress(asset.address) : undefined;
 

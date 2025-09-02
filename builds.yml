@@ -20,8 +20,6 @@ buildTypes:
       - keyring-snaps
       - multi-srp
       - multichain
-      - solana
-      - solana-swaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -51,8 +49,7 @@ buildTypes:
       - keyring-snaps
       - multichain
       - bitcoin
-      - solana
-      - solana-swaps
+      - bitcoin-swaps
       - multi-srp
     env:
       - INFURA_BETA_PROJECT_ID
@@ -90,9 +87,7 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - bitcoin
-      - solana
       - multi-srp
-      - solana-swaps
       - multichain
     env:
       - INFURA_FLASK_PROJECT_ID
@@ -153,20 +148,18 @@ features:
         dest: snaps/ens-resolver-snap.json
       - src: ./node_modules/@metamask/institutional-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/institutional-wallet-snap.json
+      - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/solana-wallet-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
     assets:
       - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/bitcoin-wallet-snap.json
-  solana:
-    assets:
-      - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
-        dest: snaps/solana-wallet-snap.json
   multi-srp:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
-  solana-swaps:
+  bitcoin-swaps:
   multichain:
   ocap-kernel:
     assets:
@@ -189,6 +182,7 @@ env:
   - WITH_STATE: null
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
+  - METAMASK_REACT_REDUX_DEVTOOLS: null
   - SUPPORT_LINK: https://support.metamask.io
   - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
@@ -401,6 +395,8 @@ env:
 
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'false'
+  # URL of Shield gateway
+  - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
 
   # Snaps
   # This should only be used for local testing, and should not be enabled in any
