@@ -1667,6 +1667,10 @@
   "customizeYourNotificationsText": {
     "message": "Turn on the types of notifications you want to receive:"
   },
+  "daily": {
+    "message": "Daily",
+    "description": "Time period for daily recurring events"
+  },
   "dappSuggested": {
     "message": "Site suggested"
   },
@@ -3384,6 +3388,10 @@
   },
   "missingSettingRequest": {
     "message": "Request here"
+  },
+  "monthly": {
+    "message": "Monthly",
+    "description": "Time period for monthly recurring events"
   },
   "more": {
     "message": "more"
@@ -7312,6 +7320,10 @@
   "websites": {
     "message": "websites",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "weekly": {
+    "message": "Weekly",
+    "description": "Time period for weekly recurring events"
   },
   "welcomeBack": {
     "message": "Welcome back"
