@@ -5655,7 +5655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:^1.0.0, @metamask/chain-agnostic-permission@npm:^1.1.0, @metamask/chain-agnostic-permission@npm:^1.1.1":
+"@metamask/chain-agnostic-permission@npm:^1.0.0, @metamask/chain-agnostic-permission@npm:^1.1.0":
   version: 1.1.1
   resolution: "@metamask/chain-agnostic-permission@npm:1.1.1"
   dependencies:
@@ -5795,21 +5795,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eip-5792-middleware@npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-420c23ff":
-  version: 1.0.0-preview-420c23ff
-  resolution: "@metamask-previews/eip-5792-middleware@npm:1.0.0-preview-420c23ff"
+"@metamask/eip-5792-middleware@npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-cc039d53":
+  version: 1.0.0-preview-cc039d53
+  resolution: "@metamask-previews/eip-5792-middleware@npm:1.0.0-preview-cc039d53"
   dependencies:
-    "@metamask/accounts-controller": "npm:^32.0.2"
-    "@metamask/base-controller": "npm:^8.2.0"
-    "@metamask/chain-agnostic-permission": "npm:^1.1.1"
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.1"
-    "@metamask/keyring-controller": "npm:^22.1.1"
-    "@metamask/network-controller": "npm:^24.1.0"
-    "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/transaction-controller": "npm:^60.1.0"
     "@metamask/utils": "npm:^11.4.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/799081727f03f1fd9c21133aa9fe8af07a924f8a1105a9b1cf198251ace1d17e2fb4b2286e305c443dc8ac037ca80403531dda9d68eb9e54d0075024a75ea5f7
+  checksum: 10/a01692933c6a5acbaaed6908aa8d345be11512afa4866dda2498e7247c002cb5ae6b4ad0dff943a75af7a34a1ea3feb7d9620b0767897fdaf41cebeaf1e42517
   languageName: node
   linkType: hard
 
@@ -31764,7 +31758,7 @@ __metadata:
     "@metamask/design-system-react": "npm:^0.3.1"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
-    "@metamask/eip-5792-middleware": "npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-420c23ff"
+    "@metamask/eip-5792-middleware": "npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-cc039d53"
     "@metamask/ens-controller": "npm:^17.0.1"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/error-reporting-service": "npm:^2.0.0"
