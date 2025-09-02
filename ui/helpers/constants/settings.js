@@ -13,6 +13,7 @@ import {
   DEVELOPER_OPTIONS_ROUTE,
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from './routes';
 
 /**
@@ -483,6 +484,14 @@ const SETTINGS_CONSTANTS = [
     route: `${ABOUT_US_ROUTE}#beta-terms`,
     iconName: IconName.Info,
   },
+  {
+    featureFlag: 'METAMASK_SHIELD_ENABLED',
+    tabMessage: (t) => t('shieldTx'),
+    sectionMessage: (t) => t('shieldTx'),
+    descriptionMessage: (t) => t('shieldTx'),
+    route: `${TRANSACTION_SHIELD_ROUTE}`,
+    iconName: IconName.ShieldLock,
+  },
   // experimental settingsRefs[0]
   {
     tabMessage: (t) => t('experimental'),
@@ -506,40 +515,40 @@ const SETTINGS_CONSTANTS = [
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: 'Reset States',
-    descriptionMessage: 'Reset States',
+    sectionMessage: () => 'Reset States',
+    descriptionMessage: () => 'Reset States',
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
-    icon: IconName.CodeCircle,
+    iconName: IconName.CodeCircle,
   },
   // developerOptions settingsRefs[1]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: 'Announcements',
-    descriptionMessage:
+    sectionMessage: () => 'Announcements',
+    descriptionMessage: () =>
       "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal.",
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,
-    icon: IconName.CodeCircle,
+    iconName: IconName.CodeCircle,
   },
   // developerOptions settingsRefs[2]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: 'Service Worker Keep Alive',
-    descriptionMessage:
+    sectionMessage: () => 'Service Worker Keep Alive',
+    descriptionMessage: () =>
       'Resets various states related to onboarding and redirects to the "Secure Your Wallet" onboarding page.',
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-onboarding`,
-    icon: IconName.CodeCircle,
+    iconName: IconName.CodeCircle,
   },
   // developerOptions settingsRefs[3]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: 'Service Worker Keep Alive',
-    descriptionMessage:
+    sectionMessage: () => 'Service Worker Keep Alive',
+    descriptionMessage: () =>
       'Results in a timestamp being continuously saved to session.storage',
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
-    icon: IconName.CodeCircle,
+    iconName: IconName.CodeCircle,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   {

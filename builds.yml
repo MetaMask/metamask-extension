@@ -20,8 +20,6 @@ buildTypes:
       - keyring-snaps
       - multi-srp
       - multichain
-      - solana
-      - solana-swaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -51,8 +49,6 @@ buildTypes:
       - keyring-snaps
       - multichain
       - bitcoin
-      - solana
-      - solana-swaps
       - bitcoin-swaps
       - multi-srp
     env:
@@ -91,9 +87,7 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - bitcoin
-      - solana
       - multi-srp
-      - solana-swaps
       - multichain
     env:
       - INFURA_FLASK_PROJECT_ID
@@ -151,20 +145,17 @@ features:
         dest: snaps/ens-resolver-snap.json
       - src: ./node_modules/@metamask/institutional-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/institutional-wallet-snap.json
+      - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/solana-wallet-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
     assets:
       - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/bitcoin-wallet-snap.json
-  solana:
-    assets:
-      - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
-        dest: snaps/solana-wallet-snap.json
   multi-srp:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
-  solana-swaps:
   bitcoin-swaps:
   multichain:
   ocap-kernel:

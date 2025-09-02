@@ -5425,6 +5425,67 @@
   "shieldEntryModalSupport": {
     "message": "Priority customer support"
   },
+  "shieldTx": {
+    "message": "MetaMask Shield"
+  },
+  "shieldTxCancelDetails": {
+    "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
+    "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxDetails1Description": {
+    "message": "Secures your assets from risky transactions"
+  },
+  "shieldTxDetails1Title": {
+    "message": "Covers $10,000 in transaction protection"
+  },
+  "shieldTxDetails2Description": {
+    "message": "Get faster, dedicated support anytime"
+  },
+  "shieldTxDetails2Title": {
+    "message": "Priority support"
+  },
+  "shieldTxMembershipActive": {
+    "message": "Active membership"
+  },
+  "shieldTxMembershipBillingDetails": {
+    "message": "Billing details"
+  },
+  "shieldTxMembershipBillingDetailsBillingAccount": {
+    "message": "Billing account"
+  },
+  "shieldTxMembershipBillingDetailsCharges": {
+    "message": "Charges"
+  },
+  "shieldTxMembershipBillingDetailsNextBilling": {
+    "message": "Next billing"
+  },
+  "shieldTxMembershipBillingDetailsPaymentMethod": {
+    "message": "Payment method"
+  },
+  "shieldTxMembershipBillingDetailsViewBillingHistory": {
+    "message": "View billing history"
+  },
+  "shieldTxMembershipCancel": {
+    "message": "Cancel membership"
+  },
+  "shieldTxMembershipFreeTrial": {
+    "message": "Free trial"
+  },
+  "shieldTxMembershipId": {
+    "message": "Member ID"
+  },
+  "shieldTxMembershipInactive": {
+    "message": "Inactive membership"
+  },
+  "shieldTxMembershipResubscribe": {
+    "message": "Resubscribe"
+  },
+  "shieldTxMembershipSubmitCase": {
+    "message": "Submit a claim"
+  },
+  "shieldTxMembershipViewFullBenefits": {
+    "message": "View full benefits"
+  },
   "show": {
     "message": "Show"
   },
