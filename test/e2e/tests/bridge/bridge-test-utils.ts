@@ -654,6 +654,7 @@ export const getBridgeFixtures = (
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -765,6 +766,7 @@ export const getBridgeFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
@@ -793,6 +795,7 @@ export const getQuoteNegativeCasesFixtures = (
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -813,6 +816,7 @@ export const getQuoteNegativeCasesFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -838,6 +842,7 @@ export const getBridgeNegativeCasesFixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
@@ -859,6 +864,7 @@ export const getBridgeNegativeCasesFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -925,6 +931,7 @@ export const getBridgeL2Fixtures = (
     inputChainId: CHAIN_IDS.MAINNET,
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withBridgeControllerDefaultState()
     .withNetworkControllerOnLineaLocahost()
     .withEnabledNetworks({
@@ -969,6 +976,7 @@ export const getBridgeL2Fixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
