@@ -226,15 +226,12 @@ export const getEnabledNetworksByNamespace = createDeepEqualSelector(
   },
 );
 
-export const getAllEnabledNetworks2 = createDeepEqualSelector(
+export const getAllEnabledNetworksForAllNamespaces = createDeepEqualSelector(
   getEnabledNetworks,
   (enabledNetworkMap) => {
-    console.log('enabledNetworkMap +++++++++++', enabledNetworkMap);
-    const res = Object.values(enabledNetworkMap)
+    return Object.values(enabledNetworkMap)
       .flatMap((namespaceNetworks) => Object.keys(namespaceNetworks))
       .filter((chainId) => chainId); // Filter out any empty strings
-    console.log('res +++++++++++', res);
-    return res;
   },
 );
 

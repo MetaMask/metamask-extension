@@ -19,7 +19,7 @@ import {
   getUseNftDetection,
 } from '../../../../../selectors';
 import {
-  getAllEnabledNetworks2,
+  getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
@@ -114,13 +114,10 @@ const AssetListControlBar = ({
     getIsMultichainAccountsState2Enabled,
   );
 
-  console.log(
-    'isMultichainAccountsState2Enabled +++++++++++',
-    isMultichainAccountsState2Enabled,
-  );
-
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-  const allEnabledNetworks2 = useSelector(getAllEnabledNetworks2);
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
@@ -336,27 +333,24 @@ const AssetListControlBar = ({
   const networkButtonTextEnabledAccountState2 = useMemo(() => {
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworks2).length === 1
+      Object.keys(allEnabledNetworksForAllNamespaces).length === 1
     ) {
-      const chainId = allEnabledNetworks2[0];
-      console.log('chainId ..........', chainId);
-      console.log('allNetworks ..........', allNetworks);
+      const chainId = allEnabledNetworksForAllNamespaces[0];
       return isStrictHexString(chainId)
         ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
         : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
-    console.log('allEnabledNetworks2 ..........', allEnabledNetworks2);
     // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworks2).length > 1
+      Object.keys(allEnabledNetworksForAllNamespaces).length > 1
     ) {
       return t('allPopularNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworks2).length === 0
+      Object.keys(allEnabledNetworksForAllNamespaces).length === 0
     ) {
       return t('noNetworksSelected');
     }
@@ -377,7 +371,7 @@ const AssetListControlBar = ({
     currentMultichainNetwork?.nickname,
     t,
     allNetworks,
-    allEnabledNetworks2,
+    allEnabledNetworksForAllNamespaces,
   ]);
 
   const singleNetworkIconUrl = useMemo(() => {

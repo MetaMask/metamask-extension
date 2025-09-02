@@ -17,7 +17,7 @@ import {
 } from '../../../../store/actions';
 import {
   getAllChainsToPoll,
-  getAllEnabledNetworks2,
+  getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
@@ -62,7 +62,9 @@ export const useNetworkChangeHandlers = () => {
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-  const allEnabledNetworks2 = useSelector(getAllEnabledNetworks2);
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
   const allChainIds = useSelector(getAllChainsToPoll);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -96,9 +98,7 @@ export const useNetworkChangeHandlers = () => {
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-      console.log('enabledNetworkKeys +++++++++++++++', allEnabledNetworks2);
-
-      if (allEnabledNetworks2.includes(hexChainId)) {
+      if (allEnabledNetworksForAllNamespaces.includes(hexChainId)) {
         dispatch(enableSingleNetwork(hexChainId));
       } else {
         dispatch(enableSingleNetwork(hexChainId));
@@ -108,7 +108,7 @@ export const useNetworkChangeHandlers = () => {
         }, 0);
       }
     },
-    [dispatch, allEnabledNetworks2, evmNetworks],
+    [dispatch, allEnabledNetworksForAllNamespaces, evmNetworks],
   );
 
   const handleNonEvmNetworkChange = useCallback(
@@ -134,12 +134,9 @@ export const useNetworkChangeHandlers = () => {
 
   const handleNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
-      console.log('TODO HERE ..........', chainId);
       const currentChain =
         getMultichainNetworkConfigurationOrThrow(currentChainId);
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
-
-      console.log('chain ..........', chain);
 
       if (chain.isEvm) {
         await handleEvmNetworkChange(chainId);
@@ -147,7 +144,6 @@ export const useNetworkChangeHandlers = () => {
         await handleNonEvmNetworkChange(chainId);
       }
 
-      console.log('TODO HERE 3 ..........', chainId);
       const chainIdToTrack = chain.isEvm
         ? convertCaipToHexChainId(chainId)
         : chainId;
