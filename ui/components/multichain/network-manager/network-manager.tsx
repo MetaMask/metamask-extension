@@ -38,11 +38,6 @@ export const NetworkManager = () => {
   const location = useLocation();
 
   const { initialTab } = useNetworkManagerState();
-
-  const onClose = useCallback(() => {
-    dispatch(hideModal());
-  }, [dispatch]);
-
   const handleNewNetwork = () => {
     navigate('/add');
   };
@@ -140,7 +135,12 @@ export const NetworkManager = () => {
   }, [navigate]);
 
   return (
-    <Modal isOpen onClose={onClose} isClosedOnEscapeKey isClosedOnOutsideClick>
+    <Modal
+      isOpen
+      onClose={handleClose}
+      isClosedOnEscapeKey
+      isClosedOnOutsideClick
+    >
       <ModalContent size={ModalContentSize.Md}>
         <Routes>
           <Route
