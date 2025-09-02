@@ -4143,6 +4143,18 @@
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
   },
+  "onboardingLoginFooter": {
+    "message": "By continuing, I agree to MetaMask’s"
+  },
+  "onboardingLoginFooterAnd": {
+    "message": "and"
+  },
+  "onboardingLoginFooterPrivacyNotice": {
+    "message": "Privacy notice"
+  },
+  "onboardingLoginFooterTermsOfUse": {
+    "message": "Terms of Use"
+  },
   "onboardingMetametricsAgree": {
     "message": "I agree"
   },
