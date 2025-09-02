@@ -31,6 +31,8 @@ import {
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 export type AddWalletModalProps = Omit<
   ModalProps,
@@ -81,8 +83,8 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
 
     // Hardware wallet connections require expanded view
     if (option.id === 'hardware-wallet') {
-      if (global.platform.openExtensionInBrowser) {
-        global.platform.openExtensionInBrowser(option.route);
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+        global.platform.openExtensionInBrowser?.(option.route);
       } else {
         history.push(option.route);
       }
