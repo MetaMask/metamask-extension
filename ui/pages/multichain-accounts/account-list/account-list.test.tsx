@@ -20,8 +20,6 @@ jest.mock('react-router-dom', () => ({
 describe('AccountList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // Disable reselect dev mode checks for testing
-    process.env.NODE_ENV = 'production';
   });
 
   const renderComponent = () => {
