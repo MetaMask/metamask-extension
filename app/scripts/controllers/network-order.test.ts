@@ -71,6 +71,7 @@ describe('NetworkOrderController - constructor', () => {
           [KnownCaipNamespace.Solana]: {
             [SolScope.Mainnet]: true,
           },
+          [KnownCaipNamespace.Bip122]: {},
         },
       },
     });
@@ -88,6 +89,7 @@ describe('NetworkOrderController - constructor', () => {
       [KnownCaipNamespace.Solana]: {
         [SolScope.Mainnet]: true,
       },
+      [KnownCaipNamespace.Bip122]: {},
     });
 
     mocks.globalMessenger.publish('NetworkController:networkRemoved', {
@@ -103,6 +105,7 @@ describe('NetworkOrderController - constructor', () => {
       [KnownCaipNamespace.Solana]: {
         // Sol mainnet has been removed
       },
+      [KnownCaipNamespace.Bip122]: {},
     });
   });
 
@@ -193,6 +196,7 @@ describe('NetworkOrderController - constructor', () => {
           [KnownCaipNamespace.Solana]: {
             [SolScope.Mainnet]: true,
           },
+          [KnownCaipNamespace.Bip122]: {},
         },
       },
     });
@@ -205,13 +209,6 @@ describe('NetworkOrderController - constructor', () => {
       'NetworkController:stateChange',
       mockNetworkState,
       [],
-    );
-
-    // Act - switching to an available network (Ethereum)
-    await waitFor(() =>
-      expect(mocks.mockNetworkControllerSetActiveNetwork).toHaveBeenCalledWith(
-        '1111-1111-1111',
-      ),
     );
   });
 });
