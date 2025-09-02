@@ -668,7 +668,6 @@ export const getInternalAccountsFromGroupById = createSelector(
     internalAccounts: Record<AccountId, InternalAccount>,
     groupId: AccountGroupId | null,
   ): InternalAccount[] => {
-    console.log(groupId);
     if (!groupId) {
       return [];
     }

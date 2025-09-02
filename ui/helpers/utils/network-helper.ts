@@ -1,7 +1,7 @@
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { CaipChainId, type Hex, isCaipChainId } from '@metamask/utils';
 import { TEST_CHAINS } from '../../../shared/constants/network';
-import { convertCaipToHexChainId } from '../../../shared/modules/network.utils'
+import { convertCaipToHexChainId } from '../../../shared/modules/network.utils';
 
 export const getMatchedChain = (
   decimalChainId: string,

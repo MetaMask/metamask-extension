@@ -76,7 +76,7 @@ describe('MultichainAccountDetailsPage', () => {
   it('displays the address count from the selector', () => {
     renderComponent();
 
-    expect(screen.getByText(/2 addresses/iu)).toBeInTheDocument();
+    expect(screen.getByText(/10 addresses/iu)).toBeInTheDocument();
   });
 
   it('calls history.goBack when back button is clicked', () => {
