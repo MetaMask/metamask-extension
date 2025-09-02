@@ -13,7 +13,6 @@ import {
 } from './get-display-balance';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
-// Mock all dependencies
 jest.mock('react-redux');
 jest.mock('../../../../ducks/locale/locale');
 jest.mock('../../../../ducks/metamask/metamask');

@@ -8,7 +8,6 @@ import {
   useSingleWalletDisplayBalance,
 } from './useWalletBalance';
 
-// Mock dependencies - not mocking useAccountBalance to allow real formatting
 jest.mock('react-redux');
 jest.mock('../../selectors/assets');
 jest.mock('../../ducks/metamask/metamask');

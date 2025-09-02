@@ -10,7 +10,6 @@ import {
   useDisplayBalanceCalc,
 } from './useAccountBalance';
 
-// Mock only the Redux dependencies, not the formatting
 jest.mock('react-redux');
 jest.mock('../../selectors/assets');
 jest.mock('../../ducks/metamask/metamask');
