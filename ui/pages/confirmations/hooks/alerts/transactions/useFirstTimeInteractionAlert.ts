@@ -22,10 +22,9 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const internalAccounts = useSelector(getInternalAccounts);
   const to = useTransferRecipient();
-  const { chainId, txParams } = currentConfirmation ?? {};
+  const { isFirstTimeInteraction, chainId, txParams } =
+    currentConfirmation ?? {};
   const recipient = (txParams?.to ?? '0x') as Hex;
-
-  const isFirstTimeInteraction = true;
 
   const isInternalAccount = internalAccounts.some(
     (account) =>
