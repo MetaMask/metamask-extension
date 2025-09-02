@@ -60,9 +60,10 @@ export const TokenTransferPage = () => {
         const total = permissions.length;
 
         // Create a combined description with proper translation and count parameter
-        const description = total === 1
-          ? t('tokenPermissionCount', [total])
-          : t('tokenPermissionsCount', [total]);
+        const description =
+          total === 1
+            ? t('tokenPermissionCount', [total])
+            : t('tokenPermissionsCount', [total]);
 
         let networkName = t(extractNetworkName(networks, chainId));
         if (!networkName) {

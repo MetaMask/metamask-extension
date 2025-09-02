@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
-import { SubjectType } from '@metamask/permission-controller';
 import { Content, Header, Page } from '../page';
 import {
   Box,

@@ -31,8 +31,8 @@ import {
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
-import { PermissionListItem } from './permission-list-item';
 import { countSitesWithPermissionsButNoConnection } from '../../../../../shared/lib/gator-permissions-utils';
+import { PermissionListItem } from './permission-list-item';
 
 export const PermissionsPageV2 = () => {
   const t = useI18nContext();
@@ -59,13 +59,15 @@ export const PermissionsPageV2 = () => {
     ).length;
 
     // Count sites that have gator permissions but no connection
-    const sitesWithPermissionsButNoConnection = countSitesWithPermissionsButNoConnection(
-      sitesConnectionsList,
-      gatorPermissionsMap,
-    );
+    const sitesWithPermissionsButNoConnection =
+      countSitesWithPermissionsButNoConnection(
+        sitesConnectionsList,
+        gatorPermissionsMap,
+      );
 
     // Total sites = connected sites + sites with permissions but no connection
-    const totalSites = connectedSitesCount + sitesWithPermissionsButNoConnection;
+    const totalSites =
+      connectedSitesCount + sitesWithPermissionsButNoConnection;
     const nativeTokenStream =
       Object.values(gatorPermissionsMap['native-token-stream']).flat().length ||
       0;
@@ -79,16 +81,14 @@ export const PermissionsPageV2 = () => {
       Object.values(gatorPermissionsMap['erc20-token-periodic']).flat()
         .length || 0;
     const totalTokenStreams = nativeTokenStream + erc20TokenStream;
-    const totalTokenSubscriptions = nativeTokenSubscriptions + erc20TokenSubscriptions;
+    const totalTokenSubscriptions =
+      nativeTokenSubscriptions + erc20TokenSubscriptions;
     const totalTokenTransfer = totalTokenStreams + totalTokenSubscriptions;
 
     setTotalConnections(totalSites);
     setTotalTokenTransferPermissions(totalTokenTransfer);
     setTotalPermissions(totalSites + totalTokenTransfer);
-  }, [
-    sitesConnectionsList,
-    gatorPermissionsMap,
-  ]);
+  }, [sitesConnectionsList, gatorPermissionsMap]);
 
   const handleAssetClick = async (assetType) => {
     switch (assetType) {

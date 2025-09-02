@@ -378,22 +378,32 @@ export function getGatorPermissionDisplayMetadata(
 }
 
 // Types for site data
-export type SitesConnectionsList = Record<string, {
-  origin: string;
-  name: string;
-  addresses: string[];
-  addressToNameMap: Record<string, string>;
-  subjectType: string;
-  networkName: string;
-  networkIconUrl: string;
-}>;
+export type SitesConnectionsList = Record<
+  string,
+  {
+    origin: string;
+    name: string;
+    addresses: string[];
+    addressToNameMap: Record<string, string>;
+    subjectType: string;
+    networkName: string;
+    networkIconUrl: string;
+  }
+>;
 
-export type GatorPermissionsMap = Record<string, Record<string, Array<{ siteOrigin?: string; [key: string]: unknown }>>>;
+export type GatorPermissionsMap = Record<
+  string,
+  Record<string, { siteOrigin?: string; [key: string]: unknown }[]>
+>;
 
 /**
  * Helper function to extract unique site origins from gator permissions
+ *
+ * @param gatorPermissions
  */
-export const extractGatorSiteOrigins = (gatorPermissions: GatorPermissionsMap): Set<string> => {
+export const extractGatorSiteOrigins = (
+  gatorPermissions: GatorPermissionsMap,
+): Set<string> => {
   if (!gatorPermissions) {
     return new Set();
   }
@@ -404,7 +414,7 @@ export const extractGatorSiteOrigins = (gatorPermissions: GatorPermissionsMap): 
       Object.values(permissionTypeMap).forEach((permissions) => {
         if (Array.isArray(permissions)) {
           permissions.forEach((permission) => {
-            if (permission && permission.siteOrigin) {
+            if (permission?.siteOrigin) {
               gatorSiteOrigins.add(permission.siteOrigin);
             }
           });
@@ -417,6 +427,9 @@ export const extractGatorSiteOrigins = (gatorPermissions: GatorPermissionsMap): 
 
 /**
  * Helper function to find the first chainId for a site
+ *
+ * @param gatorPermissions
+ * @param siteOrigin
  */
 export const findFirstChainIdForSite = (
   gatorPermissions: GatorPermissionsMap,
@@ -441,6 +454,10 @@ export const findFirstChainIdForSite = (
 
 /**
  * Helper function to create a site entry from gator permissions
+ *
+ * @param siteOrigin
+ * @param firstChainId
+ * @param getURLHostName
  */
 export const createSiteEntryFromGatorPermissions = (
   siteOrigin: string,
@@ -452,9 +469,13 @@ export const createSiteEntryFromGatorPermissions = (
   addresses: [],
   addressToNameMap: {},
   subjectType: 'Website',
-  networkName: firstChainId ? (NETWORK_TO_NAME_MAP as Record<string, string>)[firstChainId] || '' : '',
+  networkName: firstChainId
+    ? (NETWORK_TO_NAME_MAP as Record<string, string>)[firstChainId] || ''
+    : '',
   networkIconUrl: firstChainId
-    ? (CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP as Record<string, string>)[firstChainId] || ''
+    ? (CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP as Record<string, string>)[
+        firstChainId
+      ] || ''
     : '',
 });
 
@@ -530,14 +551,17 @@ export const countSitesWithPermissionsButNoConnection = (
     // Count sites that have gator permissions but are not in the connections list
     let count = 0;
     gatorSiteOrigins.forEach((siteOrigin) => {
-      if (!sitesConnectionsList || !sitesConnectionsList[siteOrigin]) {
-        count++;
+      if (!sitesConnectionsList?.[siteOrigin]) {
+        count += 1;
       }
     });
 
     return count;
   } catch (error) {
-    console.error('Error counting sites with permissions but no connection:', error);
+    console.error(
+      'Error counting sites with permissions but no connection:',
+      error,
+    );
     return 0;
   }
 };
