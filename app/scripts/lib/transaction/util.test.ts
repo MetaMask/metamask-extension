@@ -126,7 +126,6 @@ describe('Transaction Utils', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: ResultType.Benign,
       label: 'Safe address',
-      isLoading: false,
     });
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973

@@ -282,13 +282,12 @@ describe('useTrustSignals', () => {
         });
       });
 
-      it('returns loading state when security alert response has isLoading true', () => {
+      it('returns loading state when security alert response has Loading result type', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          result_type: ResultType.Benign,
+          result_type: ResultType.Loading,
           label: '',
-          isLoading: true,
         });
 
         const requests: UseTrustSignalRequest[] = [

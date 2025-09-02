@@ -71,13 +71,6 @@ export function useTrustSignals(
         };
       }
 
-      if (securityAlertResponse.isLoading) {
-        return {
-          state: TrustSignalDisplayState.Loading,
-          label: null,
-        };
-      }
-
       const label = securityAlertResponse.label || null;
       const trustState = getTrustState(securityAlertResponse);
 
@@ -97,6 +90,8 @@ function getTrustState(
   }
 
   switch (securityAlertResponse.result_type) {
+    case ResultType.Loading:
+      return TrustSignalDisplayState.Loading;
     case ResultType.Malicious:
       return TrustSignalDisplayState.Malicious;
     case ResultType.Warning:

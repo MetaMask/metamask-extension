@@ -54,22 +54,21 @@ export async function scanAddressAndAddToCache(
   chainId: SupportedEVMChain,
 ): Promise<ScanAddressResponse> {
   const cachedResponse = getAddressSecurityAlertResponse(address);
-  if (cachedResponse && !cachedResponse.isLoading) {
+  if (cachedResponse && cachedResponse.result_type !== ResultType.Loading) {
     return cachedResponse;
   }
 
   const loadingResponse: ScanAddressResponse = {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    result_type: ResultType.Benign,
+    result_type: ResultType.Loading,
     label: '',
-    isLoading: true,
   };
   addAddressSecurityAlertResponse(address, loadingResponse);
 
   try {
     const result = await scanAddress(chainId, address);
-    addAddressSecurityAlertResponse(address, { ...result, isLoading: false });
+    addAddressSecurityAlertResponse(address, result);
     return result;
   } catch (error) {
     const errorResponse: ScanAddressResponse = {
@@ -77,7 +76,6 @@ export async function scanAddressAndAddToCache(
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: ResultType.Benign,
       label: '',
-      isLoading: false,
     };
     addAddressSecurityAlertResponse(address, errorResponse);
     throw error;
