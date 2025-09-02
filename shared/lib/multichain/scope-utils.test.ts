@@ -68,6 +68,21 @@ const createMockFactory = () => {
       metadata: createAccountMetadata('Account 2'),
       scopes: [`${KnownCaipNamespace.Eip155}:1`],
     }),
+    eip155Specific137: createMockAccount({
+      id: 'account2b',
+      address: '0x2345678901234567890123456789012345678902',
+      metadata: createAccountMetadata('Account 2b'),
+      scopes: [`${KnownCaipNamespace.Eip155}:137`],
+    }),
+    eip155MultipleSpecific: createMockAccount({
+      id: 'account2c',
+      address: '0x2345678901234567890123456789012345678903',
+      metadata: createAccountMetadata('Account 2c'),
+      scopes: [
+        `${KnownCaipNamespace.Eip155}:1`,
+        `${KnownCaipNamespace.Eip155}:137`,
+      ],
+    }),
     solana: createMockAccount({
       id: 'account3',
       address: '0x3456789012345678901234567890123456789012',
@@ -114,6 +129,8 @@ const createMockFactory = () => {
       accounts: [
         accounts.eip155Wildcard,
         accounts.eip155Specific,
+        accounts.eip155Specific137,
+        accounts.eip155MultipleSpecific,
         accounts.solana,
       ],
     },
@@ -159,6 +176,7 @@ const createMockFactory = () => {
   const createMockScopes = {
     eip155Wildcard: [`${KnownCaipNamespace.Eip155}:0`] as CaipChainId[],
     eip155Specific: [`${KnownCaipNamespace.Eip155}:1`] as CaipChainId[],
+    eip155Specific137: [`${KnownCaipNamespace.Eip155}:137`] as CaipChainId[],
     solanaMainnet: ['solana:mainnet'] as CaipChainId[],
     multiple: [
       `${KnownCaipNamespace.Eip155}:0`,
@@ -349,10 +367,12 @@ describe('scope-utils', () => {
         scopes,
       );
 
-      // For EIP-155 chains, only accounts with eip155:0 wildcard scope are included
+      // For EIP-155 chains, accounts with eip155:0 wildcard scope AND direct matches are included
       expect(result).toStrictEqual([
-        `${KnownCaipNamespace.Eip155}:1:0x1234567890123456789012345678901234567890`,
-        `${KnownCaipNamespace.Eip155}:1:0x4567890123456789012345678901234567890123`,
+        `${KnownCaipNamespace.Eip155}:1:0x1234567890123456789012345678901234567890`, // eip155Wildcard
+        `${KnownCaipNamespace.Eip155}:1:0x2345678901234567890123456789012345678901`, // eip155Specific
+        `${KnownCaipNamespace.Eip155}:1:0x2345678901234567890123456789012345678903`, // eip155MultipleSpecific
+        `${KnownCaipNamespace.Eip155}:1:0x4567890123456789012345678901234567890123`, // multiScope
       ]);
     });
 
@@ -466,6 +486,131 @@ describe('scope-utils', () => {
         'solana:mainnet:0x1234567890123456789012345678901234567890',
         'solana:devnet:0x1234567890123456789012345678901234567890',
       ]);
+    });
+
+    describe('EIP-155 direct scope matching (bug fix tests)', () => {
+      it('should include accounts with direct EIP-155 chain ID scope when requesting that specific chain', () => {
+        const scopes = mockFactory.createMockScopes.eip155Specific; // eip155:1
+        const result = getCaip25AccountFromAccountGroupAndScope(
+          mockAccountGroups,
+          scopes,
+        );
+
+        // Should include:
+        // - eip155Wildcard (has eip155:0 wildcard)
+        // - eip155Specific (has eip155:1 direct match) - THIS WAS THE BUG
+        // - eip155MultipleSpecific (has eip155:1 direct match) - THIS WAS THE BUG
+        // - multiScope (has eip155:0 wildcard)
+        expect(result).toStrictEqual([
+          `${KnownCaipNamespace.Eip155}:1:0x1234567890123456789012345678901234567890`, // eip155Wildcard
+          `${KnownCaipNamespace.Eip155}:1:0x2345678901234567890123456789012345678901`, // eip155Specific
+          `${KnownCaipNamespace.Eip155}:1:0x2345678901234567890123456789012345678903`, // eip155MultipleSpecific
+          `${KnownCaipNamespace.Eip155}:1:0x4567890123456789012345678901234567890123`, // multiScope
+        ]);
+      });
+
+      it('should include accounts with direct EIP-155 chain ID scope for Polygon (eip155:137)', () => {
+        const scopes = mockFactory.createMockScopes.eip155Specific137; // eip155:137
+        const result = getCaip25AccountFromAccountGroupAndScope(
+          mockAccountGroups,
+          scopes,
+        );
+
+        // Should include:
+        // - eip155Wildcard (has eip155:0 wildcard)
+        // - eip155Specific137 (has eip155:137 direct match) - THIS WAS THE BUG
+        // - eip155MultipleSpecific (has eip155:137 direct match) - THIS WAS THE BUG
+        // - multiScope (has eip155:0 wildcard)
+        expect(result).toStrictEqual([
+          `${KnownCaipNamespace.Eip155}:137:0x1234567890123456789012345678901234567890`, // eip155Wildcard
+          `${KnownCaipNamespace.Eip155}:137:0x2345678901234567890123456789012345678902`, // eip155Specific137
+          `${KnownCaipNamespace.Eip155}:137:0x2345678901234567890123456789012345678903`, // eip155MultipleSpecific
+          `${KnownCaipNamespace.Eip155}:137:0x4567890123456789012345678901234567890123`, // multiScope
+        ]);
+      });
+
+      it('should prioritize direct scope matches over wildcard matches', () => {
+        // Create a test group with accounts that have both direct and wildcard scopes
+        const testAccountGroups: AccountGroupWithInternalAccounts[] = [
+          {
+            id: 'entropy:test-group/0',
+            type: AccountGroupType.MultichainAccount,
+            metadata: mockFactory.createMockAccountGroup().metadata,
+            accounts: [
+              mockFactory.createMockAccount({
+                id: 'account-direct',
+                address: '0x1111111111111111111111111111111111111111',
+                scopes: [`${KnownCaipNamespace.Eip155}:1`],
+              }),
+              mockFactory.createMockAccount({
+                id: 'account-wildcard',
+                address: '0x2222222222222222222222222222222222222222',
+                scopes: [`${KnownCaipNamespace.Eip155}:0`],
+              }),
+              mockFactory.createMockAccount({
+                id: 'account-both',
+                address: '0x3333333333333333333333333333333333333333',
+                scopes: [
+                  `${KnownCaipNamespace.Eip155}:1`,
+                  `${KnownCaipNamespace.Eip155}:0`,
+                ],
+              }),
+            ],
+          },
+        ];
+
+        const scopes = mockFactory.createMockScopes.eip155Specific; // eip155:1
+        const result = getCaip25AccountFromAccountGroupAndScope(
+          testAccountGroups,
+          scopes,
+        );
+
+        // All accounts should be included since they all support eip155:1
+        expect(result).toStrictEqual([
+          `${KnownCaipNamespace.Eip155}:1:0x1111111111111111111111111111111111111111`, // account-direct
+          `${KnownCaipNamespace.Eip155}:1:0x2222222222222222222222222222222222222222`, // account-wildcard
+          `${KnownCaipNamespace.Eip155}:1:0x3333333333333333333333333333333333333333`, // account-both
+        ]);
+      });
+
+      it('should handle mixed EIP-155 and non-EIP-155 scopes correctly', () => {
+        const mixedScopes = [
+          `${KnownCaipNamespace.Eip155}:1`,
+          'solana:mainnet',
+        ] as CaipChainId[];
+
+        const result = getCaip25AccountFromAccountGroupAndScope(
+          mockAccountGroups,
+          mixedScopes,
+        );
+
+        // For eip155:1, should include all accounts that support it
+        // For solana:mainnet, should include accounts with that scope
+        // Note: The order may vary, so we'll check that all expected results are present
+        const expectedEip155Results = [
+          `${KnownCaipNamespace.Eip155}:1:0x1234567890123456789012345678901234567890`, // eip155Wildcard
+          `${KnownCaipNamespace.Eip155}:1:0x2345678901234567890123456789012345678901`, // eip155Specific
+          `${KnownCaipNamespace.Eip155}:1:0x2345678901234567890123456789012345678903`, // eip155MultipleSpecific
+          `${KnownCaipNamespace.Eip155}:1:0x4567890123456789012345678901234567890123`, // multiScope
+        ];
+        const expectedSolanaResults = [
+          'solana:mainnet:0x3456789012345678901234567890123456789012', // solana
+          'solana:mainnet:0x4567890123456789012345678901234567890123', // multiScope
+        ];
+
+        // Check that all expected results are present
+        expectedEip155Results.forEach((expected) => {
+          expect(result).toContain(expected);
+        });
+        expectedSolanaResults.forEach((expected) => {
+          expect(result).toContain(expected);
+        });
+
+        // Check total count
+        expect(result).toHaveLength(
+          expectedEip155Results.length + expectedSolanaResults.length,
+        );
+      });
     });
   });
 });
