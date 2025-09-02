@@ -18,6 +18,7 @@ import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 import { MultichainEditAccountsPage } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapper/state2-wrapper';
+import { MultichainAccountsConnectPage } from '../multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -26,7 +27,6 @@ import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 import { ConnectPage } from './connect-page/connect-page';
 import { getCaip25CaveatValueFromPermissions } from './connect-page/utils';
-import { MultichainAccountsConnectPage } from './multichain-accounts-connect-page/multichain-accounts-connect-page';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 

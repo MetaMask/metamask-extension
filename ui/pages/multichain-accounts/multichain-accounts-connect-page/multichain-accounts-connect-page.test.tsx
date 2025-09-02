@@ -13,7 +13,6 @@ import {
   MultichainConnectPageProps,
 } from './multichain-accounts-connect-page';
 
-// Mock the useAccountGroupsForPermissions hook
 jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
   useAccountGroupsForPermissions: () => ({
     connectedAccountGroups: [
@@ -54,7 +53,6 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
   }),
 }));
 
-// Mock the network selectors
 jest.mock('../../../../shared/modules/selectors/networks', () => ({
   getAllNetworkConfigurationsByCaipChainId: () => ({
     'eip155:1': {
@@ -67,7 +65,6 @@ jest.mock('../../../../shared/modules/selectors/networks', () => ({
   }),
 }));
 
-// Mock the multichain selectors
 jest.mock('../../../selectors/multichain', () => ({
   getMultichainNetwork: () => ({
     chainId: 'eip155:1',
