@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import classnames from 'classnames';
@@ -18,9 +19,10 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { WelcomePageState } from '../welcome/types';
 import { ThemeType } from '../../../../shared/constants/preferences';
 
-export default function OnboardingAppHeader() {
+export default function OnboardingAppHeader({ pageState }) {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const currentLocale = useSelector(getCurrentLocale);
@@ -57,9 +59,12 @@ export default function OnboardingAppHeader() {
         />
         <Dropdown
           data-testid="select-locale"
-          className={classnames(
-            'onboarding-app-header__dropdown onboarding-app-header__dropdown--welcome--login',
-          )}
+          className={classnames('onboarding-app-header__dropdown', {
+            'onboarding-app-header__dropdown--welcome--banner':
+              pageState === WelcomePageState.Banner,
+            'onboarding-app-header__dropdown--welcome--login':
+              pageState === WelcomePageState.Login,
+          })}
           options={localeOptions}
           selectedOption={currentLocale}
           onChange={async (newLocale) =>
@@ -70,3 +75,7 @@ export default function OnboardingAppHeader() {
     </Box>
   );
 }
+
+OnboardingAppHeader.propTypes = {
+  pageState: PropTypes.oneOf(Object.values(WelcomePageState)),
+};
