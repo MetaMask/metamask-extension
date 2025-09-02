@@ -184,12 +184,10 @@ describe('MultichainReviewPermissions', () => {
     it('shows edit accounts button when account groups are connected', () => {
       const { getByText, getAllByTestId } = render();
 
-      // Should show the accounts permissions title
       expect(
         getByText('See your accounts and suggest transactions'),
       ).toBeInTheDocument();
 
-      // Should show edit button
       const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
       expect(editButtons[0]).toBeInTheDocument();
     });
@@ -201,7 +199,6 @@ describe('MultichainReviewPermissions', () => {
       const accountsEditButton = editButtons[0];
       fireEvent.click(accountsEditButton);
 
-      // Should transition to edit accounts page
       await waitFor(() => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
@@ -218,7 +215,6 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      // Click on the second account group cell to select it
       const secondAccountCell = getByTestId(
         TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id),
       );
@@ -243,7 +239,6 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      // Click on the first account group cell to deselect it (should be pre-selected)
       const firstAccountCell = getByTestId(
         TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[0].id),
       );
@@ -282,7 +277,6 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      // Deselect the first account group (should be pre-selected)
       const firstAccountCell = getByTestId(
         TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[0].id),
       );
@@ -291,7 +285,6 @@ describe('MultichainReviewPermissions', () => {
       const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
       fireEvent.click(submitButton);
 
-      // Should return to connections page (or show some response)
       await waitFor(() => {
         expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
       });
@@ -312,7 +305,6 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      // Select the second account group
       const secondAccountCell = getByTestId(
         TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id),
       );
@@ -321,7 +313,6 @@ describe('MultichainReviewPermissions', () => {
       const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
       fireEvent.click(submitButton);
 
-      // Should dispatch setPermittedAccounts with selected account IDs
       await waitFor(() => {
         expect(setPermittedAccountsSpy).toHaveBeenCalled();
       });
@@ -338,7 +329,6 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      // Select the second account group (first should already be selected)
       const secondAccountCell = getByTestId(
         TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id),
       );
@@ -351,7 +341,6 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
       });
 
-      // Should show the accounts permissions title (indicates accounts are connected)
       expect(
         getByText('See your accounts and suggest transactions'),
       ).toBeInTheDocument();
