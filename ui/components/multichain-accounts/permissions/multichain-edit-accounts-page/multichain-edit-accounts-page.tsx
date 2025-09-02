@@ -29,6 +29,7 @@ import { Content, Footer, Header, Page } from '../../../multichain/pages/page';
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 
 type MultichainEditAccountsPageProps = {
+  displayChooseAccountPage: boolean;
   defaultSelectedAccountGroups: AccountGroupId[];
   supportedAccountGroups: AccountGroupWithInternalAccounts[];
   onSubmit: (accountGroups: AccountGroupId[]) => void;
@@ -38,6 +39,7 @@ type MultichainEditAccountsPageProps = {
 export const MultichainEditAccountsPage: React.FC<
   MultichainEditAccountsPageProps
 > = ({
+  displayChooseAccountPage,
   defaultSelectedAccountGroups,
   supportedAccountGroups,
   onSubmit,
@@ -143,7 +145,7 @@ export const MultichainEditAccountsPage: React.FC<
           variant: TextVariant.headingSm,
         }}
       >
-        {t('editAccounts')}
+        {displayChooseAccountPage ? t('chooseAccounts') : t('editAccounts')}
       </Header>
       <Content
         paddingLeft={4}

@@ -58,7 +58,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../shared/constants/network';
-import { getMultichainNetwork } from '../../../selectors/multichain';
 import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
   getAvatarFallbackLetter,
