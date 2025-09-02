@@ -73,7 +73,6 @@ const setupController = ({
       networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
     }),
   );
-
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
     state,

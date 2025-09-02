@@ -57,6 +57,7 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import { SECOND } from '../../shared/constants/time';
 import * as NetworkConstantsModule from '../../shared/constants/network';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
+import { flushPromises } from '../../test/lib/timer-helpers';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController from './metamask-controller';
 
@@ -3318,7 +3319,7 @@ describe('MetaMaskController', () => {
       afterEach(async () => {
         jest.clearAllMocks();
         // Ensure all async operations complete before next test
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await flushPromises();
       });
 
       async function simulateLocalPreferencesChange(preferences) {
@@ -3328,7 +3329,7 @@ describe('MetaMaskController', () => {
           getMockPatches(),
         );
         // Wait for all async operations to complete
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await flushPromises();
       }
 
       it('should initialize RemoteFeatureFlagController in disabled state when useExternalServices is false', async () => {
@@ -3373,13 +3374,10 @@ describe('MetaMaskController', () => {
             ),
           );
 
-        // Trigger the error scenario and wait for it to be handled
+        // Trigger the error scenario and wait for async operations
         await simulateLocalPreferencesChange({
           useExternalServices: true,
         });
-
-        // Allow time for error handling to complete
-        await new Promise((resolve) => setTimeout(resolve, 10));
 
         // Verify the controller state remains unchanged after error
         expect(remoteFeatureFlagController.state).toStrictEqual({
