@@ -65,17 +65,6 @@ describe('AccountList', () => {
           },
         },
       },
-      localeMessages: {
-        currentLocale: 'en',
-        current: {
-          back: 'Back',
-          accounts: 'Accounts',
-          addWallet: 'Add wallet',
-          importAWallet: 'Import a wallet',
-          importAnAccount: 'Import an account',
-          addAHardwareWallet: 'Add a hardware wallet',
-        },
-      },
     });
 
     return renderWithProvider(<AccountList />, store);
