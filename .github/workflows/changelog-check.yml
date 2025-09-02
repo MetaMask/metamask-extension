@@ -1,7 +1,7 @@
 name: Check Changelog
 
 on:
-  pull_request:
+  pull_request: 
     types: [opened, synchronize, labeled, unlabeled]
 
 jobs:
