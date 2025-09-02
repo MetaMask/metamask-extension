@@ -179,7 +179,7 @@ const plugins: WebpackPluginInstance[] = [
 ];
 if (args.lavamoat) {
   const { lavamoatPlugin } = require('./utils/plugins/LavamoatPlugin');
-  plugins.push(lavamoatPlugin);
+  plugins.push(lavamoatPlugin(args));
 }
 // enable React Refresh in 'development' mode when `watch` is enabled
 if (__HMR_READY__ && isDevelopment && args.watch) {
