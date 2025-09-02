@@ -1,5 +1,5 @@
 import React, { useContext, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { hasProperty } from '@metamask/utils';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -29,7 +29,7 @@ export function NotificationsListItem({
 }: {
   notification: Notification;
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);
   const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
@@ -73,8 +73,8 @@ export function NotificationsListItem({
       return;
     }
 
-    history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
-  }, [notification, markNotificationAsRead, history]);
+    navigate(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
+  }, [notification, markNotificationAsRead, navigate]);
 
   if (!hasNotificationComponents(notification.type)) {
     return null;

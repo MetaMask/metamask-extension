@@ -1,0 +1,13 @@
+@use "design-system";
+
+.send-header {
+  &__wrapper {
+    height: 64px;
+    position: relative;
+  }
+
+  &__previous-btn {
+    left: 0;
+    position: absolute;
+  }
+}
