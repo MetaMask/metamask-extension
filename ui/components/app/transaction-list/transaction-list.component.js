@@ -663,7 +663,7 @@ export default function TransactionList({
                         {dateGroup.date}
                       </Text>
                       {dateGroup.transactionGroups.map((transaction) => {
-                        // Show the Bridge transaction list item for non evm evm transactions in txHistory if it's a cross chain transaction
+                        // Show the Bridge transaction list item component when a multichain cross chain transaction matches a txHistory item.
                         const matchedBridgeHistoryItem =
                           bridgeHistoryItems[transaction.id];
 
