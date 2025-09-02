@@ -178,11 +178,13 @@ export default function LoginOptions({
             fontWeight={FontWeight.Medium}
             textAlign={TextAlign.Center}
             paddingTop={8}
+            width={BlockSize.OneSixth}
+            margin={'auto'}
           >
             {t('onboardingLoginFooter')}{' '}
             <Text
               as="a"
-              href="/terms-of-use"
+              href="https://consensys.io/terms-of-use"
               target="_blank"
               rel="noopener noreferrer"
               variant={TextVariant.bodySm}
@@ -196,7 +198,7 @@ export default function LoginOptions({
               as="a"
               variant={TextVariant.bodySm}
               fontWeight={FontWeight.Medium}
-              href="/privacy-policy"
+              href="https://consensys.io/privacy-notice"
               target="_blank"
               rel="noopener noreferrer"
               color={TextColor.primaryDefault}
