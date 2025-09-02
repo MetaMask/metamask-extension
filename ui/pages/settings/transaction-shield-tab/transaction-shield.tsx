@@ -24,7 +24,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CancelMembershipModal from './cancel-membership-modal';
@@ -128,9 +127,6 @@ const TransactionShield = () => {
             },
           )}
           {...rowsStyleProps}
-          data-theme={
-            isLoading || !isActiveMembership ? undefined : ThemeType.dark
-          }
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
         >

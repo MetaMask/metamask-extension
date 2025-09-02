@@ -115,8 +115,7 @@ ui/components/multichain/account-list-menu/      @MetaMask/accounts-engineers @M
 ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/wallet-ux
 
 # Web3Auth / Onboarding
-ui/pages/onboarding-flow                          @MetaMask/web3auth
-ui/pages/settings/transaction-shield-tab          @MetaMask/web3auth
+ui/pages/onboarding-flow              @MetaMask/web3auth
 
 # Confirmations team to own code for confirmations on UI.
 app/scripts/controller-init/confirmations                         @MetaMask/confirmations
