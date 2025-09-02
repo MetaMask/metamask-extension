@@ -45,14 +45,14 @@ export type NetworkOrderStateChange = {
 };
 
 // Describes the action for updating the networks list
-export type NetworkOrderControllerupdateNetworksListAction = {
+export type NetworkOrderControllerUpdateNetworksListAction = {
   type: `${typeof controllerName}:updateNetworksList`;
   handler: NetworkOrderController['updateNetworksList'];
 };
 
 // Union of all possible actions for the messenger
 export type NetworkOrderControllerMessengerActions =
-  NetworkOrderControllerupdateNetworksListAction;
+  NetworkOrderControllerUpdateNetworksListAction;
 
 export type NetworkOrderControllerMessengerEvents = NetworkOrderStateChange;
 
@@ -111,20 +111,22 @@ export class NetworkOrderController extends BaseController<
   NetworkOrderControllerState,
   NetworkOrderControllerMessenger
 > {
+  #isMultichainAccountsFeatureEnabled: () => boolean;
+
   /**
    * Creates a NetworkOrderController instance.
    *
    * @param args - The arguments to this function.
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
-   * @param args.isMultichainAccountsFeatureEnabled - Whether the multichain accounts feature is enabled.
+   * @param args.isMultichainAccountsFeatureEnabled - Function that returns whether the multichain accounts feature is enabled.
    */
   constructor({
-    isMultichainAccountsFeatureEnabled = false,
+    isMultichainAccountsFeatureEnabled = () => false,
     messenger,
     state,
   }: {
-    isMultichainAccountsFeatureEnabled: boolean;
+    isMultichainAccountsFeatureEnabled?: () => boolean;
     messenger: NetworkOrderControllerMessenger;
     state?: NetworkOrderControllerState;
   }) {
@@ -135,6 +137,9 @@ export class NetworkOrderController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
+
+    this.#isMultichainAccountsFeatureEnabled =
+      isMultichainAccountsFeatureEnabled;
 
     // Subscribe to network state changes
     this.messagingSystem.subscribe(
@@ -233,6 +238,15 @@ export class NetworkOrderController extends BaseController<
   }
 
   /**
+   * Getter for the multichain accounts feature flag.
+   *
+   * @returns Whether the multichain accounts feature is enabled.
+   */
+  get isMultichainAccountsFeatureEnabled(): boolean {
+    return this.#isMultichainAccountsFeatureEnabled();
+  }
+
+  /**
    * Sets the enabled networks in the controller state.
    * This method updates the enabledNetworkMap to mark specified networks as enabled.
    * It can handle both a single chain ID or an array of chain IDs.
@@ -242,6 +256,24 @@ export class NetworkOrderController extends BaseController<
    * @param namespace - The caip-2 namespace of the currently selected network *(e.g. 'eip155' or 'solana')
    */
   setEnabledNetworks(chainIds: string | string[], namespace: CaipNamespace) {
+    if (!this.isMultichainAccountsFeatureEnabled) {
+      if (!namespace) {
+        throw new Error('namespace is required to set enabled networks');
+      }
+      if (!chainIds) {
+        throw new Error('chainIds is required to set enabled networks');
+      }
+      const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
+
+      this.update((state) => {
+        const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
+
+        // Add the enabled networks to the mapping for the specified network type
+        state.enabledNetworkMap[namespace] = enabledNetworks;
+      });
+      return;
+    }
+
     if (!namespace) {
       throw new Error('namespace is required to set enabled networks');
     }
@@ -254,17 +286,16 @@ export class NetworkOrderController extends BaseController<
       const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
 
       // Disable all networks on all namespaces, then enable the specified ones for the given namespace
-      const enabledNetworkMap2 = Object.keys(state.enabledNetworkMap).reduce(
-        (acc, namespaceToUse) => {
-          if (namespaceToUse !== namespace) {
-            return { ...acc, [namespaceToUse]: {} };
-          }
-          return { ...acc, [namespaceToUse]: enabledNetworks };
-        },
-        {},
-      );
+      const updatedEnabledNetworkMap = Object.keys(
+        state.enabledNetworkMap,
+      ).reduce((acc, namespaceToUse) => {
+        if (namespaceToUse !== namespace) {
+          return { ...acc, [namespaceToUse]: {} };
+        }
+        return { ...acc, [namespaceToUse]: enabledNetworks };
+      }, {});
 
-      state.enabledNetworkMap = enabledNetworkMap2;
+      state.enabledNetworkMap = updatedEnabledNetworkMap;
     });
   }
 }

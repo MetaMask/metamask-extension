@@ -10,7 +10,6 @@ import {
 } from '@metamask/network-controller';
 import { KnownCaipNamespace } from '@metamask/utils';
 import { SolScope } from '@metamask/keyring-api';
-import { waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   NetworkOrderController,
