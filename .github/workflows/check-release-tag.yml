@@ -15,184 +15,72 @@ on:
 jobs:
   check-release-tag:
     name: Verify Release Tag
-    # Only run on release PRs from Version-v* or release/* branches
-    if: |
-      (startsWith(github.head_ref, 'Version-v') || startsWith(github.head_ref, 'release/')) &&
-      (github.base_ref == 'master' || github.base_ref == 'stable')
+    # Only run on PRs targeting master or stable
+    if: github.base_ref == 'master' || github.base_ref == 'stable'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Extract version from branch name
-        id: extract-version
-        env:
-          BRANCH_NAME: ${{ github.head_ref }}
-        run: |
-          BRANCH="${BRANCH_NAME}"
-          # Define semantic version pattern for consistency
-          SEMVER_PATTERN='[0-9]+\.[0-9]+\.[0-9]+'
-
-          # Validate branch name format for security
-          if ! [[ "${BRANCH}" =~ ^[a-zA-Z0-9/_.-]+$ ]]; then
-            echo "::error::Invalid branch name format"
-            exit 1
-          fi
-
-          if [[ "${BRANCH}" =~ ^Version-v(${SEMVER_PATTERN})$ ]] || [[ "${BRANCH}" =~ ^release/(${SEMVER_PATTERN})$ ]]; then
-            VERSION="${BASH_REMATCH[1]}"
-            # Additional version validation
-            if ! [[ "${VERSION}" =~ ^${SEMVER_PATTERN}$ ]]; then
-              echo "::error::Invalid version format extracted"
-              exit 1
-            fi
-            echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
-            echo "Expected tag: v${VERSION}"
-          else
-            echo "::error::Could not extract version from branch name"
-            exit 1
-          fi
-
-      - name: Check if release is tagged
+      - name: Check 'release/tagged' status on PR HEAD
         id: check-tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ steps.extract-version.outputs.version }}"
-          TAG_NAME="v${VERSION}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          STATUSES=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/commits/${HEAD_SHA}/statuses")
 
-          # Check if tag exists
-          if git rev-parse "${TAG_NAME}" >/dev/null 2>&1; then
-            TAG_SHA=$(git rev-parse "${TAG_NAME}")
-            HEAD_SHA=$(git rev-parse HEAD)
+          if echo "${STATUSES}" | jq -e '.[] | select(.context == "release/tagged" and .state == "success")' > /dev/null 2>&1; then
+            echo "Release is properly tagged at PR HEAD"
+            echo "tagged=true" >> "${GITHUB_OUTPUT}"
+            echo "tag_sha=${HEAD_SHA}" >> "${GITHUB_OUTPUT}"
 
-            echo "Tag ${TAG_NAME} exists at ${TAG_SHA}"
-            echo "Branch HEAD is at ${HEAD_SHA}"
-
-            if [[ "${TAG_SHA}" == "${HEAD_SHA}" ]]; then
-              echo "Release is properly tagged at branch HEAD"
-              echo "tagged=true" >> "${GITHUB_OUTPUT}"
-              echo "tag_sha=${TAG_SHA}" >> "${GITHUB_OUTPUT}"
-
-              # Set success status
-              gh api \
-                --method POST \
-                -H "Accept: application/vnd.github.v3+json" \
-                /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
-                -f state='success' \
-                -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-                -f description='Release is properly tagged' \
-                -f context='release/tag-check'
-            else
-              echo "::warning::Tag ${TAG_NAME} exists but not at branch HEAD"
-              echo "::warning::Tag is at ${TAG_SHA}, HEAD is at ${HEAD_SHA}"
-              echo "tagged=false" >> "${GITHUB_OUTPUT}"
-
-              # Set warning status
-              gh api \
-                --method POST \
-                -H "Accept: application/vnd.github.v3+json" \
-                /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
-                -f state='pending' \
-                -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-                -f description='Tag exists but not at HEAD - please re-tag' \
-                -f context='release/tag-check'
-            fi
-          else
-            echo "::warning::Release tag ${TAG_NAME} does not exist"
-            echo "::warning::Please run the 'Tag Release Branch' workflow before merging"
-            echo "tagged=false" >> "${GITHUB_OUTPUT}"
-
-            # Set pending status
+            # Set success status on PR HEAD
             gh api \
               --method POST \
               -H "Accept: application/vnd.github.v3+json" \
-              /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
-              -f state='pending' \
-              -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-              -f description='Release not tagged - run Tag Release Branch workflow' \
-              -f context='release/tag-check'
-          fi
-
-      - name: Check for release-tagged label
-        id: check-label
-        env:
-          LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
-        run: |
-          # Use jq for proper JSON parsing
-          if echo "${LABELS}" | jq -e '.[] | select(. == "release-tagged")' > /dev/null 2>&1; then
-            echo "PR has 'release-tagged' label"
-            echo "has_label=true" >> "${GITHUB_OUTPUT}"
+              /repos/${{ github.repository }}/statuses/${HEAD_SHA} \
+              -f state='success' \
+              -f target_url='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+              -f description='Release is properly tagged' \
+              -f context='release/tag-check' \
+              || echo "::notice::Skipping status update (insufficient permissions)"
           else
-            echo "::warning::PR missing 'release-tagged' label"
-            echo "has_label=false" >> "${GITHUB_OUTPUT}"
+            echo "::warning::No successful 'release/tagged' status found on PR HEAD"
+            echo "tagged=false" >> "${GITHUB_OUTPUT}"
+
+            # Set pending status on PR HEAD
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github.v3+json" \
+              /repos/${{ github.repository }}/statuses/${HEAD_SHA} \
+              -f state='pending' \
+              -f target_url='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+              -f description='Tag missing on PR HEAD - run Tag Release Branch workflow' \
+              -f context='release/tag-check' \
+              || echo "::notice::Skipping status update (insufficient permissions)"
           fi
-
-      - name: Comment on PR if not tagged
-        if: steps.check-tag.outputs.tagged != 'true'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const version = '${{ steps.extract-version.outputs.version }}';
-            const comment = `## Release Tag Required
-
-            This release PR for version **v${version}** has not been tagged yet.
-
-            **Before merging this PR:**
-            1. Run the **[Tag Release Branch](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/tag-release-branch.yml)** workflow
-            2. Input version: \`${version}\`
-            3. Select target branch: \`${{ github.base_ref }}\`
-
-            This will:
-            - Create the release tag at the current HEAD of the release branch
-            - Update this PR with tag information
-            - Add the \`release-tagged\` label
-
-            **Why this is important:**
-            - Ensures the release tag points to the exact code that was tested
-            - Aligns with MetaMask Mobile's release process
-            - Prevents confusion between merge commits and release commits
-
-            Once tagged, this check will automatically pass`;
-
-            // Check if we already commented
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const botComment = comments.find(comment =>
-              comment.user.type === 'Bot' &&
-              comment.body.includes('Release Tag Required')
-            );
-
-            if (!botComment) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: comment
-              });
-            }
 
       - name: Summary
         run: |
           if [[ "${{ steps.check-tag.outputs.tagged }}" == "true" ]]; then
             {
               echo "### Release Tag Check Passed"
-              echo "Release is properly tagged and ready for merge."
+              echo "'release/tagged' status found on PR HEAD. Ready for merge."
             } >> "${GITHUB_STEP_SUMMARY}"
           else
             {
               echo "### Release Tag Check - Action Required"
-              echo "Please run the 'Tag Release Branch' workflow before merging this PR."
-              echo ""
-              echo "Version: v${{ steps.extract-version.outputs.version }}"
-              echo "Target: ${{ github.base_ref }}"
+              echo "Run the 'Tag Release Branch' workflow with inputs:"
+              echo "- release-branch: ${{ github.head_ref }}"
             } >> "${GITHUB_STEP_SUMMARY}"
           fi
+
+      - name: Fail if not tagged
+        if: steps.check-tag.outputs.tagged != 'true'
+        run: |
+          echo "::error::Release tag missing at PR HEAD. Run Tag Release Branch and re-run checks."
+          exit 1

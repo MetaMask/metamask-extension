@@ -3,22 +3,10 @@ name: Tag Release Branch
 on:
   workflow_dispatch:
     inputs:
-      release-version:
-        description: 'Release version (e.g., 12.0.0)'
-        required: true
-        type: string
       release-branch:
-        description: 'Release branch name (e.g., Version-v12.0.0)'
-        required: false
-        type: string
-      target-branch:
-        description: 'Target branch for the merge PR (master or stable)'
+        description: 'Release branch including version (e.g., Version-v12.0.0)'
         required: true
-        type: choice
-        options:
-          - master
-          - stable
-        default: master
+        type: string
       force-retag:
         description: 'Force re-tag if tag already exists (only if no GitHub release)'
         required: false
@@ -27,7 +15,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
   statuses: write
 
 jobs:
@@ -44,34 +31,34 @@ jobs:
       - name: Determine release branch
         id: determine-branch
         env:
-          VERSION: ${{ inputs.release-version }}
           PROVIDED_BRANCH: ${{ inputs.release-branch }}
         run: |
-          # Validate version format to prevent injection (suffix limited to 20 chars for DoS prevention)
-          if ! [[ "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]{1,20})?$ ]]; then
-            echo "::error::Invalid version format. Expected: X.Y.Z or X.Y.Z-suffix (max 20 chars)"
+          # Sanitize branch name to prevent command injection
+          if ! [[ "${PROVIDED_BRANCH}" =~ ^[a-zA-Z0-9/_.-]+$ ]]; then
+            echo "::error::Invalid branch name. Only alphanumeric, /, _, ., and - characters allowed"
+            exit 1
+          fi
+          # Prevent directory traversal
+          if [[ "${PROVIDED_BRANCH}" == *".."* ]]; then
+            echo "::error::Branch name cannot contain directory traversal patterns"
+            exit 1
+          fi
+          BRANCH="${PROVIDED_BRANCH}"
+
+          # Extract version from branch name (supports Version-vX.Y.Z or release/X.Y.Z)
+          SEMVER_PATTERN='[0-9]+\.[0-9]+\.[0-9]+'
+          if [[ "${BRANCH}" =~ ^Version-v(${SEMVER_PATTERN})$ ]] || [[ "${BRANCH}" =~ ^release/(${SEMVER_PATTERN})$ ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+          else
+            echo "::error::Could not extract version from branch name: ${BRANCH}"
+            echo "::error::Expected 'Version-vX.Y.Z' or 'release/X.Y.Z'"
             exit 1
           fi
 
-          # If branch not provided, construct it from version
-          if [[ -z "${PROVIDED_BRANCH}" ]]; then
-            BRANCH="Version-v${VERSION}"
-          else
-            # Sanitize branch name to prevent command injection
-            if ! [[ "${PROVIDED_BRANCH}" =~ ^[a-zA-Z0-9/_.-]+$ ]]; then
-              echo "::error::Invalid branch name. Only alphanumeric, /, _, ., and - characters allowed"
-              exit 1
-            fi
-            # Prevent directory traversal
-            if [[ "${PROVIDED_BRANCH}" == *".."* ]]; then
-              echo "::error::Branch name cannot contain directory traversal patterns"
-              exit 1
-            fi
-            BRANCH="${PROVIDED_BRANCH}"
-          fi
-
           echo "branch=${BRANCH}" >> "${GITHUB_OUTPUT}"
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
           echo "Using release branch: ${BRANCH}"
+          echo "Using version: ${VERSION}"
 
       - name: Checkout release branch
         uses: actions/checkout@v4
@@ -107,7 +94,7 @@ jobs:
       - name: Handle existing tag
         id: check-existing-tag
         env:
-          VERSION: ${{ inputs.release-version }}
+          VERSION: ${{ steps.determine-branch.outputs.version }}
           FORCE_RETAG: ${{ inputs.force-retag }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -157,7 +144,7 @@ jobs:
         id: tag-release
         if: steps.check-existing-tag.outputs.needs_retag != 'false'
         env:
-          VERSION: ${{ inputs.release-version }}
+          VERSION: ${{ steps.determine-branch.outputs.version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME="v${VERSION}"
@@ -183,7 +170,7 @@ jobs:
         id: existing-tag-output
         if: steps.check-existing-tag.outputs.needs_retag == 'false'
         env:
-          VERSION: ${{ inputs.release-version }}
+          VERSION: ${{ steps.determine-branch.outputs.version }}
         run: |
           TAG_NAME="v${VERSION}"
           SHA=$(git rev-parse HEAD)
@@ -206,136 +193,3 @@ jobs:
             -f description='Release has been tagged' \
             -f context='release/tagged'
 
-      - name: Create or update merge PR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCH: ${{ steps.determine-branch.outputs.branch }}
-          VERSION: ${{ inputs.release-version }}
-          TARGET_BRANCH: ${{ inputs.target-branch }}
-          TAG_NAME: ${{ steps.tag-release.outputs.tag || steps.existing-tag-output.outputs.tag }}
-          TAG_SHA: ${{ steps.tag-release.outputs.sha || steps.existing-tag-output.outputs.sha }}
-        run: |
-          # Function to escape markdown special characters
-          # Note: Backslash must be escaped first to avoid interfering with other escapes
-          escape_markdown() {
-            printf '%s' "$1" | sed 's/\\/\\\\/g; s/[\[\](){}*_`~#<>|]/\\&/g'
-          }
-
-          # Function to generate PR body content
-          generate_pr_body() {
-            local escaped_tag="$1"
-            local escaped_branch="$2"
-            local tag_sha="$3"
-            local escaped_target="$4"
-
-            cat <<EOF
-            ## Release Information
-
-            - **Version**: \`${escaped_tag}\`
-            - **Release Branch**: \`${escaped_branch}\`
-            - **Tag SHA**: \`${tag_sha}\`
-            - **Target Branch**: \`${escaped_target}\`
-
-            ## Release Status
-
-            This release has been **tagged** at commit ${tag_sha:0:7}.
-
-            The tag \`${escaped_tag}\` has been created on the release branch HEAD.
-
-            ## Merge Instructions
-
-            **REQUIRED**: This PR must be merged using a **merge commit** (NOT squash and merge).
-
-            **IMPORTANT**: The release has already been tagged. DO NOT create another tag after merge.
-
-            After merging:
-            1. The tagged commit will be part of ${escaped_target} history
-            2. The publish-release workflow will trigger
-            3. GitHub release will be created from the existing tagged commit
-            4. Sentry artifacts will be uploaded
-
-            ## Checklist
-
-            - [x] Release branch created
-            - [x] Version bumped
-            - [x] Changelog updated
-            - [x] QA testing completed
-            - [x] **Release tagged at branch HEAD**
-            - [ ] Ready to merge to ${escaped_target}
-            EOF
-          }
-
-          # Check if PR already exists
-          EXISTING_PR=$(gh pr list --base "${TARGET_BRANCH}" --head "${RELEASE_BRANCH}" --json number --jq '.[0].number' || echo "")
-
-          if [[ -n "${EXISTING_PR}" ]]; then
-            echo "PR already exists: #${EXISTING_PR}"
-
-            # Add label to indicate it's been tagged
-            gh pr edit "${EXISTING_PR}" --add-label "release-tagged" || true
-
-            # Escape variables for markdown safety using the function
-            ESCAPED_TAG_NAME=$(escape_markdown "${TAG_NAME}")
-            ESCAPED_BRANCH=$(escape_markdown "${RELEASE_BRANCH}")
-            ESCAPED_TARGET=$(escape_markdown "${TARGET_BRANCH}")
-
-            # Update the PR description to note that it's been tagged
-            PR_BODY=$(generate_pr_body "${ESCAPED_TAG_NAME}" "${ESCAPED_BRANCH}" "${TAG_SHA}" "${ESCAPED_TARGET}")
-            gh pr edit "${EXISTING_PR}" --body "${PR_BODY}"
-
-            echo "Updated PR #${EXISTING_PR} with tag information"
-          else
-            # Escape variables for markdown safety using the function
-            ESCAPED_TAG_NAME=$(escape_markdown "${TAG_NAME}")
-            ESCAPED_BRANCH=$(escape_markdown "${RELEASE_BRANCH}")
-            ESCAPED_TARGET=$(escape_markdown "${TARGET_BRANCH}")
-
-            # Create new PR with label indicating it's been tagged
-            PR_BODY=$(generate_pr_body "${ESCAPED_TAG_NAME}" "${ESCAPED_BRANCH}" "${TAG_SHA}" "${ESCAPED_TARGET}")
-            PR_URL=$(gh pr create \
-              --title "Release: v${VERSION} to ${TARGET_BRANCH}" \
-              --body "${PR_BODY}" \
-              --base "${TARGET_BRANCH}" \
-              --head "${RELEASE_BRANCH}" \
-              --label "release-${VERSION}" \
-              --label "release-tagged")
-
-            PR_NUMBER=$(echo "${PR_URL}" | grep -oE '[0-9]+$')
-            echo "Created PR #${PR_NUMBER} with release-tagged label"
-          fi
-
-      - name: Output summary
-        env:
-          VERSION: ${{ inputs.release-version }}
-          RELEASE_BRANCH: ${{ steps.determine-branch.outputs.branch }}
-          TARGET_BRANCH: ${{ inputs.target-branch }}
-          TAG_NAME: ${{ steps.tag-release.outputs.tag || steps.existing-tag-output.outputs.tag }}
-          TAG_SHA: ${{ steps.tag-release.outputs.sha || steps.existing-tag-output.outputs.sha }}
-          FORCE_RETAG: ${{ inputs.force-retag }}
-        run: |
-          {
-            echo "## Release Summary"
-            echo ""
-            echo "### Release Details"
-            echo "- **Version**: ${TAG_NAME}"
-            echo "- **Release Branch**: ${RELEASE_BRANCH}"
-            echo "- **Target Branch**: ${TARGET_BRANCH}"
-            echo "- **Tag SHA**: \`${TAG_SHA}\`"
-
-            if [[ "${FORCE_RETAG}" == "true" ]]; then
-              echo "- **Action**: Tag was moved to new HEAD"
-            fi
-
-            echo ""
-            echo "### Completed Actions"
-            echo "1. Tagged release branch HEAD with ${TAG_NAME}"
-            echo "2. Created/updated PR to merge ${RELEASE_BRANCH} → ${TARGET_BRANCH}"
-            echo ""
-            echo "### Next Steps"
-            echo "1. Review and approve the merge PR"
-            echo "2. **Merge using a merge commit** (NOT squash and merge)"
-            echo "3. The publish-release workflow will automatically:"
-            echo "   - Create GitHub release from the tagged commit"
-            echo "   - Upload artifacts to Sentry"
-            echo "   - Complete post-release tasks"
-          } >> "${GITHUB_STEP_SUMMARY}"
