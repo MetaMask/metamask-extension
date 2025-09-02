@@ -6,6 +6,7 @@ import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { AddWalletModal } from './add-wallet-modal';
 
 const mockHistoryPush = jest.fn();
@@ -16,6 +17,11 @@ jest.mock('react-router-dom', () => ({
   useHistory: () => ({
     push: mockHistoryPush,
   }),
+}));
+
+jest.mock('../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../app/scripts/lib/util'),
+  getEnvironmentType: () => 'popup',
 }));
 
 describe('AddWalletModal', () => {
