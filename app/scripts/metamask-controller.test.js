@@ -429,11 +429,18 @@ describe('MetaMaskController', () => {
         )
         .mockResolvedValue();
 
-      // Mock MultichainAccountService actions to prevent unhandled calls
-      metamaskController.controllerMessenger.registerActionHandler(
-        'MultichainAccountService:setBasicFunctionality',
-        jest.fn().mockResolvedValue(undefined),
-      );
+      // Mock MultichainAccountService actions to prevent unhandled calls (only if not already registered)
+      try {
+        metamaskController.controllerMessenger.registerActionHandler(
+          'MultichainAccountService:setBasicFunctionality',
+          jest.fn().mockResolvedValue(undefined),
+        );
+      } catch (error) {
+        // Handler already registered by the service itself in v0.6.0+, which is fine
+        if (!error.message.includes('has already been registered')) {
+          throw error;
+        }
+      }
 
       jest.spyOn(
         metamaskController.keyringController,
@@ -3311,12 +3318,6 @@ describe('MetaMaskController', () => {
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
         });
-
-        // Mock MultichainAccountService action handler for this test environment
-        localMetamaskController.controllerMessenger.registerActionHandler(
-          'MultichainAccountService:setBasicFunctionality',
-          jest.fn().mockResolvedValue(undefined),
-        );
 
         // Mock RemoteFeatureFlagController to prevent network requests in tests
         jest
