@@ -1349,11 +1349,11 @@ MetaMask/metamask-extension/pull/29341))
 
 ## [12.2.2]
 ### Fixed
-- This build was needed to fix release publishing on our master branch. It also includes the addition of the missing v12.2.0 changelog. Functionality and code is equivalent to v12.2.0.
+- This build was needed to fix release publishing on our stable branch. It also includes the addition of the missing v12.2.0 changelog. Functionality and code is equivalent to v12.2.0.
 
 ## [12.2.1]
 ### Fixed
-- This build was needed to fix release publishing on our master branch. It also includes the addition of the missing v12.2.0 changelog. Functionality and code is equivalent to v12.2.0.
+- This build was needed to fix release publishing on our stable branch. It also includes the addition of the missing v12.2.0 changelog. Functionality and code is equivalent to v12.2.0.
 
 ## [12.2.0]
 ### Added
