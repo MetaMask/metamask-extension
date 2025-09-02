@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -33,13 +33,13 @@ export const AccountList = () => {
 
   const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
 
-  const handleOpenAddWalletModal = () => {
+  const handleOpenAddWalletModal = useCallback(() => {
     setIsAddWalletModalOpen(true);
-  };
+  }, [setIsAddWalletModalOpen]);
 
-  const handleCloseAddWalletModal = () => {
+  const handleCloseAddWalletModal = useCallback(() => {
     setIsAddWalletModalOpen(false);
-  };
+  }, [setIsAddWalletModalOpen]);
 
   return (
     <Page className="account-list-page">

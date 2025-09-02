@@ -6,7 +6,6 @@ import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { AddWalletModal } from './add-wallet-modal';
 
 const mockHistoryPush = jest.fn();
