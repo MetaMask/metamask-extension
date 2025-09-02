@@ -363,7 +363,7 @@ const AssetListControlBar = ({
           }
           color={TextColor.textDefault}
           marginRight={isFullScreen ? 2 : null}
-          borderColor={BorderColor.borderDefault}
+          borderColor={BorderColor.borderMuted}
           ellipsis
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
