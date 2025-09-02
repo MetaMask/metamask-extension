@@ -6368,7 +6368,7 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
-   * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
+   * @returns {string[]} The origin's permitted accounts, or an empty
    * array.
    */
   getPermittedAccounts(origin) {
@@ -7367,7 +7367,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       setActiveNetwork: async (networkClientId) => {
-        await this.networkController.setActiveNetwork(networkClientId);
         // if the origin has the CAIP-25 permission
         // we set per dapp network selection state
         if (
@@ -7380,6 +7379,8 @@ export default class MetamaskController extends EventEmitter {
             origin,
             networkClientId,
           );
+        } else {
+          await this.networkController.setActiveNetwork(networkClientId);
         }
       },
       getNetworkConfigurationByChainId:
