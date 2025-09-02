@@ -41,7 +41,7 @@ describe('Welcome Page', () => {
 
   it('should render', () => {
     const { getByText } = renderWithProvider(
-      <Welcome pageState={WelcomePageState.Login} />,
+      <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
       mockStore,
     );
 
@@ -62,7 +62,7 @@ describe('Welcome Page', () => {
       .mockReturnValue(false);
 
     const { getByText } = renderWithProvider(
-      <Welcome pageState={WelcomePageState.Login} />,
+      <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
       mockStore,
     );
 
@@ -85,7 +85,7 @@ describe('Welcome Page', () => {
       .mockRejectedValue(new Error('login error'));
 
     const { getByText, getByTestId } = renderWithProvider(
-      <Welcome pageState={WelcomePageState.Login} />,
+      <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
       mockStore,
     );
 
