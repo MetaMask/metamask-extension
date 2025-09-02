@@ -1,13 +1,13 @@
-import React from 'react';
-import { AccountGroupBalance } from './account-group-balance';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
-import { getPreferences } from '../../../../selectors';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import type { AccountGroupBalance as AccountGroupBalanceType } from '@metamask/assets-controllers';
+import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getPreferences } from '../../../../selectors';
+import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
+import { AccountGroupBalance } from './account-group-balance';
 
 const mockStore = configureMockStore()(mockState);
 

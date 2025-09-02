@@ -1,17 +1,17 @@
+import { BalanceChangeResult } from '@metamask/assets-controllers';
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
-import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { TextColor } from '../../../../helpers/constants/design-system';
+import { getPrivacyMode } from '../../../../selectors';
 import { selectBalanceChangeBySelectedAccountGroup } from '../../../../selectors/assets';
 import {
   determineBalanceColor,
   formatAmountChange,
   formatPercentageChange,
 } from './get-display-balance';
-import { TextColor } from '../../../../helpers/constants/design-system';
-import { BalanceChangeResult } from '@metamask/assets-controllers';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { getPrivacyMode } from '../../../../selectors';
+import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 // Mock all dependencies
 jest.mock('react-redux');
@@ -30,7 +30,8 @@ const mockFormatAmountChange = jest.mocked(formatAmountChange);
 const mockFormatPercentageChange = jest.mocked(formatPercentageChange);
 
 // type utility for testing purposes only
-type MockVal = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockVar = any;
 
 describe('useAccountGroupBalanceDisplay', () => {
   beforeEach(() => {
@@ -48,7 +49,7 @@ describe('useAccountGroupBalanceDisplay', () => {
     const mockBalanceSelector = jest.fn().mockReturnValue(mockBalanceChange);
 
     mockSelectBalanceChangeBySelectedAccountGroup.mockReturnValue(
-      mockBalanceSelector as MockVal,
+      mockBalanceSelector as MockVar,
     );
     mockDetermineBalanceColor.mockReturnValue(TextColor.successDefault);
     mockFormatAmountChange.mockReturnValue('+$100.50');

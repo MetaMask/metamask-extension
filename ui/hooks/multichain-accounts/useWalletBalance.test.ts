@@ -1,12 +1,12 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
-import {
-  useSingleWalletDisplayBalance,
-  useSingleWalletAccountsBalanceCallback,
-} from './useWalletBalance';
-import { selectBalanceByWallet } from '../../selectors/assets';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../ducks/metamask/metamask';
+import { selectBalanceByWallet } from '../../selectors/assets';
+import {
+  useSingleWalletAccountsBalanceCallback,
+  useSingleWalletDisplayBalance,
+} from './useWalletBalance';
 
 // Mock dependencies - not mocking useAccountBalance to allow real formatting
 jest.mock('react-redux');
@@ -20,7 +20,8 @@ const mockGetCurrentCurrency = jest.mocked(getCurrentCurrency);
 const mockGetIntlLocale = jest.mocked(getIntlLocale);
 
 // type utility for testing purposes only
-type MockVal = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockVar = any;
 
 describe('useSingleWalletDisplayBalance', () => {
   const createMockWalletBalance = () => ({
@@ -30,12 +31,12 @@ describe('useSingleWalletDisplayBalance', () => {
   });
 
   const arrange = (walletBalance = createMockWalletBalance()) => {
-    mockSelectBalanceByWallet.mockReturnValue(walletBalance as MockVal);
+    mockSelectBalanceByWallet.mockReturnValue(walletBalance as MockVar);
     mockGetCurrentCurrency.mockReturnValue('USD');
     mockGetIntlLocale.mockReturnValue('en-US');
 
     mockUseSelector.mockImplementation((selector) => {
-      const mockStore = {} as MockVal;
+      const mockStore = {} as MockVar;
       if (selector === mockSelectBalanceByWallet.mock.results[0]?.value) {
         return mockSelectBalanceByWallet(mockStore);
       }
@@ -128,12 +129,12 @@ describe('useSingleWalletAccountsBalanceCallback', () => {
   });
 
   const arrange = (walletBalance = createMockWalletBalance()) => {
-    mockSelectBalanceByWallet.mockReturnValue(walletBalance as MockVal);
+    mockSelectBalanceByWallet.mockReturnValue(walletBalance as MockVar);
     mockGetCurrentCurrency.mockReturnValue('USD');
     mockGetIntlLocale.mockReturnValue('en-US');
 
     mockUseSelector.mockImplementation((selector) => {
-      const mockStore = {} as MockVal;
+      const mockStore = {} as MockVar;
       if (selector === mockSelectBalanceByWallet.mock.results[0]?.value) {
         return mockSelectBalanceByWallet(mockStore);
       }
@@ -206,7 +207,7 @@ describe('useSingleWalletAccountsBalanceCallback', () => {
       userCurrency: 'USD',
       groups: {},
     };
-    arrange(walletBalance as MockVal);
+    arrange(walletBalance as MockVar);
     const { result } = renderHook(() =>
       useSingleWalletAccountsBalanceCallback('wallet1'),
     );
@@ -221,7 +222,7 @@ describe('useSingleWalletAccountsBalanceCallback', () => {
       totalBalanceInUserCurrency: 500.25,
       userCurrency: 'USD',
       groups: null,
-    } as MockVal;
+    } as MockVar;
     arrange(walletBalance);
     const { result } = renderHook(() =>
       useSingleWalletAccountsBalanceCallback('wallet1'),

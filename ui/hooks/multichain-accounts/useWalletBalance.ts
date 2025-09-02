@@ -1,7 +1,7 @@
-import { useSelector } from 'react-redux';
-import { useDisplayBalanceCalc } from './useAccountBalance';
-import { selectBalanceByWallet } from '../../selectors/assets';
 import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { selectBalanceByWallet } from '../../selectors/assets';
+import { useDisplayBalanceCalc } from './useAccountBalance';
 
 export function useSingleWalletDisplayBalance(walletId: string) {
   const selector = useMemo(() => selectBalanceByWallet(walletId), [walletId]);

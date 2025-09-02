@@ -1,14 +1,14 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
+import { getIntlLocale } from '../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../ducks/metamask/metamask';
+import { selectBalanceForAllWallets } from '../../selectors/assets';
+import { getAccountTree } from '../../selectors/multichain-accounts/account-tree';
 import {
-  useDisplayBalanceCalc,
   useAccountBalanceCallback,
   useAllWalletAccountsBalances,
+  useDisplayBalanceCalc,
 } from './useAccountBalance';
-import { selectBalanceForAllWallets } from '../../selectors/assets';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
-import { getIntlLocale } from '../../ducks/locale/locale';
-import { getAccountTree } from '../../selectors/multichain-accounts/account-tree';
 
 // Mock only the Redux dependencies, not the formatting
 jest.mock('react-redux');
@@ -24,7 +24,8 @@ const mockGetIntlLocale = jest.mocked(getIntlLocale);
 const mockGetAccountTree = jest.mocked(getAccountTree);
 
 // type utility for testing purposes only
-type MockVal = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockVar = any;
 
 describe('useDisplayBalanceCalc', () => {
   const arrange = () => {
@@ -32,7 +33,7 @@ describe('useDisplayBalanceCalc', () => {
     mockGetIntlLocale.mockReturnValue('en-US');
 
     mockUseSelector.mockImplementation((selector) => {
-      const mockStore = {} as MockVal;
+      const mockStore = {} as MockVar;
       if (selector === getCurrentCurrency) {
         return mockGetCurrentCurrency(mockStore);
       }
@@ -94,12 +95,12 @@ describe('useAccountBalanceCallback', () => {
   });
 
   const arrange = (allBalances = createMockAllBalances()) => {
-    mockSelectBalanceForAllWallets.mockReturnValue(allBalances as MockVal);
+    mockSelectBalanceForAllWallets.mockReturnValue(allBalances as MockVar);
     mockGetCurrentCurrency.mockReturnValue('USD');
     mockGetIntlLocale.mockReturnValue('en-US');
 
     mockUseSelector.mockImplementation((selector) => {
-      const mockStore = {} as MockVal;
+      const mockStore = {} as MockVar;
       if (selector === selectBalanceForAllWallets) {
         return mockSelectBalanceForAllWallets(mockStore);
       }
@@ -214,13 +215,13 @@ describe('useAllWalletAccountsBalances', () => {
     accountTree = createMockAccountTree(),
     allBalances = createMockAllBalances(),
   ) => {
-    mockGetAccountTree.mockReturnValue(accountTree as MockVal);
-    mockSelectBalanceForAllWallets.mockReturnValue(allBalances as MockVal);
+    mockGetAccountTree.mockReturnValue(accountTree as MockVar);
+    mockSelectBalanceForAllWallets.mockReturnValue(allBalances as MockVar);
     mockGetCurrentCurrency.mockReturnValue('USD');
     mockGetIntlLocale.mockReturnValue('en-US');
 
     mockUseSelector.mockImplementation((selector) => {
-      const mockStore = {} as MockVal;
+      const mockStore = {} as MockVar;
       if (selector === getAccountTree) {
         return mockGetAccountTree(mockStore);
       }
@@ -265,8 +266,8 @@ describe('useAllWalletAccountsBalances', () => {
   });
 
   it('handles empty wallets gracefully', () => {
-    const mocks = arrange({ wallets: {} as MockVal });
-    mocks.mockGetAccountTree.mockReturnValue({ wallets: {} } as MockVal);
+    const mocks = arrange({ wallets: {} as MockVar });
+    mocks.mockGetAccountTree.mockReturnValue({ wallets: {} } as MockVar);
 
     const { result } = renderHook(() => useAllWalletAccountsBalances());
 
@@ -278,12 +279,12 @@ describe('useAllWalletAccountsBalances', () => {
       wallets: {
         wallet1: { groups: {} },
       },
-    } as MockVal);
+    } as MockVar);
     mocks.mockGetAccountTree.mockReturnValue({
       wallets: {
         wallet1: { groups: null },
       },
-    } as MockVal);
+    } as MockVar);
 
     const { result } = renderHook(() => useAllWalletAccountsBalances());
 

@@ -1,3 +1,4 @@
+import { type BalanceChangePeriod } from '@metamask/assets-controllers';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -6,7 +7,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 import { Box, SensitiveText } from '../../../component-library';
-import { type BalanceChangePeriod } from '@metamask/assets-controllers';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 export type AccountGroupBalanceChangeProps = {

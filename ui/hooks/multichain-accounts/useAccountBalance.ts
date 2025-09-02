@@ -14,21 +14,17 @@ export function useDisplayBalanceCalc() {
     (balance: number = 0, currency: string = fallbackCurrency) => {
       const displayBalance = formatWithThreshold(balance, 0.01, locale, {
         style: 'currency',
-        currency: currency,
+        currency,
       });
 
       return displayBalance;
     },
-    [],
+    [fallbackCurrency, locale],
   );
 
   return displayBalanceCalc;
 }
 
-/**
- * Returns a callback that can be used to get the display balance.
- * @returns callback that will get the display balance
- */
 export function useAccountBalanceCallback() {
   const allBalances = useSelector(selectBalanceForAllWallets);
   const displayBalanceCalc = useDisplayBalanceCalc();
@@ -78,7 +74,7 @@ export function useAllWalletAccountsBalances(): WalletBalances {
       });
     });
     return result;
-  }, [getDisplayBalance]);
+  }, [wallets, getDisplayBalance]);
 
   return walletBalances;
 }

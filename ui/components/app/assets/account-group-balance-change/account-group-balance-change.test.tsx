@@ -1,11 +1,11 @@
 import React from 'react';
-import { AccountGroupBalanceChange } from './account-group-balance-change';
-import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
-import { TextColor } from '../../../../helpers/constants/design-system';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { TextColor } from '../../../../helpers/constants/design-system';
+import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
+import { AccountGroupBalanceChange } from './account-group-balance-change';
+import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 const mockStore = configureMockStore()(mockState);
 
