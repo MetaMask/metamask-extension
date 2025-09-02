@@ -19,6 +19,7 @@ import {
   getAllChainsToPoll,
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
 } from '../../../../selectors';
@@ -69,7 +70,9 @@ export const useNetworkChangeHandlers = () => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-
+  const isMultichainAccountsFeatureEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
   // This value needs to be tracked in case the user changes to a Non EVM
   // network and there is no account created for that network. This will
   // allow the user to add an account for that network.
@@ -99,24 +102,44 @@ export const useNetworkChangeHandlers = () => {
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
       if (allEnabledNetworksForAllNamespaces.includes(hexChainId)) {
-        dispatch(enableSingleNetwork(hexChainId));
+        dispatch(
+          enableSingleNetwork(
+            hexChainId,
+            Boolean(isMultichainAccountsFeatureEnabled),
+          ),
+        );
       } else {
-        dispatch(enableSingleNetwork(hexChainId));
+        dispatch(
+          enableSingleNetwork(
+            hexChainId,
+            Boolean(isMultichainAccountsFeatureEnabled),
+          ),
+        );
         // deferring execution to keep select all unblocked
         setTimeout(() => {
           dispatch(setActiveNetwork(finalNetworkClientId));
         }, 0);
       }
     },
-    [dispatch, allEnabledNetworksForAllNamespaces, evmNetworks],
+    [
+      dispatch,
+      allEnabledNetworksForAllNamespaces,
+      evmNetworks,
+      isMultichainAccountsFeatureEnabled,
+    ],
   );
 
   const handleNonEvmNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
       dispatch(setActiveNetwork(chainId));
-      dispatch(enableSingleNetwork(chainId));
+      dispatch(
+        enableSingleNetwork(
+          chainId,
+          Boolean(isMultichainAccountsFeatureEnabled),
+        ),
+      );
     },
-    [dispatch],
+    [dispatch, isMultichainAccountsFeatureEnabled],
   );
 
   const getMultichainNetworkConfigurationOrThrow = useCallback(

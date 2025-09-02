@@ -9,6 +9,7 @@ import {
   getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
@@ -70,6 +71,9 @@ const NetworkFilter = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+  const isMultichainAccountsFeatureEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
   const allChainIDs = useSelector(getAllChainsToPoll);
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     selectedAccount,
@@ -101,7 +105,12 @@ const NetworkFilter = ({
       handleFilterNetwork(chainFilters);
     } else {
       isGlobalNetworkSelectorRemoved
-        ? dispatch(enableSingleNetwork(chainId))
+        ? dispatch(
+            enableSingleNetwork(
+              chainId,
+              Boolean(isMultichainAccountsFeatureEnabled),
+            ),
+          )
         : dispatch(setTokenNetworkFilter(chainFilters));
     }
 

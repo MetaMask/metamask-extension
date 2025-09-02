@@ -111,22 +111,17 @@ export class NetworkOrderController extends BaseController<
   NetworkOrderControllerState,
   NetworkOrderControllerMessenger
 > {
-  #isMultichainAccountsFeatureEnabled: () => boolean;
-
   /**
    * Creates a NetworkOrderController instance.
    *
    * @param args - The arguments to this function.
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
-   * @param args.isMultichainAccountsFeatureEnabled - Function that returns whether the multichain accounts feature is enabled.
    */
   constructor({
-    isMultichainAccountsFeatureEnabled = () => false,
     messenger,
     state,
   }: {
-    isMultichainAccountsFeatureEnabled?: () => boolean;
     messenger: NetworkOrderControllerMessenger;
     state?: NetworkOrderControllerState;
   }) {
@@ -137,9 +132,6 @@ export class NetworkOrderController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
-
-    this.#isMultichainAccountsFeatureEnabled =
-      isMultichainAccountsFeatureEnabled;
 
     // Subscribe to network state changes
     this.messagingSystem.subscribe(
@@ -238,42 +230,46 @@ export class NetworkOrderController extends BaseController<
   }
 
   /**
-   * Getter for the multichain accounts feature flag.
+   * Sets the enabled networks in the controller state for a specific namespace.
+   * This method updates the enabledNetworkMap to mark specified networks as enabled
+   * within the given namespace only, leaving other namespaces unchanged.
+   * It can handle both a single chain ID or an array of chain IDs.
    *
-   * @returns Whether the multichain accounts feature is enabled.
+   * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
+   * to be enabled. All other networks in the namespace will be implicitly disabled.
+   * @param namespace - The caip-2 namespace of the currently selected network (e.g. 'eip155' or 'solana')
    */
-  get isMultichainAccountsFeatureEnabled(): boolean {
-    return this.#isMultichainAccountsFeatureEnabled();
+  setEnabledNetworks(chainIds: string | string[], namespace: CaipNamespace) {
+    if (!namespace) {
+      throw new Error('namespace is required to set enabled networks');
+    }
+    if (!chainIds) {
+      throw new Error('chainIds is required to set enabled networks');
+    }
+    const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
+
+    this.update((state) => {
+      const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
+
+      // Add the enabled networks to the mapping for the specified network type
+      state.enabledNetworkMap[namespace] = enabledNetworks;
+    });
   }
 
   /**
-   * Sets the enabled networks in the controller state.
-   * This method updates the enabledNetworkMap to mark specified networks as enabled.
+   * Sets the enabled networks in the controller state with multichain account behavior.
+   * This method updates the enabledNetworkMap to mark specified networks as enabled
+   * and disables all networks in other namespaces (multichain account exclusive behavior).
    * It can handle both a single chain ID or an array of chain IDs.
    *
    * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
    * to be enabled. All other networks will be implicitly disabled.
-   * @param namespace - The caip-2 namespace of the currently selected network *(e.g. 'eip155' or 'solana')
+   * @param namespace - The caip-2 namespace of the currently selected network (e.g. 'eip155' or 'solana')
    */
-  setEnabledNetworks(chainIds: string | string[], namespace: CaipNamespace) {
-    if (!this.isMultichainAccountsFeatureEnabled) {
-      if (!namespace) {
-        throw new Error('namespace is required to set enabled networks');
-      }
-      if (!chainIds) {
-        throw new Error('chainIds is required to set enabled networks');
-      }
-      const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
-
-      this.update((state) => {
-        const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
-
-        // Add the enabled networks to the mapping for the specified network type
-        state.enabledNetworkMap[namespace] = enabledNetworks;
-      });
-      return;
-    }
-
+  setEnabledNetworksMultichain(
+    chainIds: string | string[],
+    namespace: CaipNamespace,
+  ) {
     if (!namespace) {
       throw new Error('namespace is required to set enabled networks');
     }

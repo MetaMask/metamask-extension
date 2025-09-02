@@ -16,7 +16,7 @@ import {
 } from '../../../shared/constants/network';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors';
 import { getIsMultichainAccountsState2Enabled } from '../../selectors/multichain-accounts/feature-flags';
-import { setEnabledNetworks } from '../actions';
+import { setEnabledNetworks, setEnabledNetworksMultichain } from '../actions';
 import { MetaMaskReduxState } from '../store';
 
 export function enableAllPopularNetworks(): ThunkAction<
@@ -55,6 +55,7 @@ export function enableAllPopularNetworks(): ThunkAction<
 
 export function enableSingleNetwork(
   chainId: Hex | CaipChainId,
+  isMultichainAccountsFeatureEnabled: boolean = false,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     const caipChainId = isCaipChainId(chainId)
@@ -64,6 +65,10 @@ export function enableSingleNetwork(
 
     // EVM
     if (namespace === KnownCaipNamespace.Eip155) {
+      if (isMultichainAccountsFeatureEnabled) {
+        await dispatch(setEnabledNetworksMultichain([caipChainId], namespace));
+        return;
+      }
       await dispatch(
         setEnabledNetworks([toHex(reference)], KnownCaipNamespace.Eip155),
       );
@@ -71,6 +76,10 @@ export function enableSingleNetwork(
     }
 
     // Non-EVM
+    if (isMultichainAccountsFeatureEnabled) {
+      await dispatch(setEnabledNetworksMultichain([caipChainId], namespace));
+      return;
+    }
     await dispatch(setEnabledNetworks([caipChainId], namespace));
   };
 }

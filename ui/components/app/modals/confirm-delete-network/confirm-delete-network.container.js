@@ -7,10 +7,13 @@ import {
   getProviderConfig,
 } from '../../../../../shared/modules/selectors/networks';
 import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
+import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 import ConfirmDeleteNetwork from './confirm-delete-network.component';
 
 const mapStateToProps = (state, ownProps) => {
   const networks = getNetworkConfigurationsByChainId(state);
+  const isMultichainAccountsFeatureEnabled =
+    getIsMultichainAccountsState2Enabled(state);
 
   let selectedEvmChainId;
   try {
@@ -20,13 +23,20 @@ const mapStateToProps = (state, ownProps) => {
   }
   const { chainId, name: networkNickname } = networks[ownProps.target];
   const isChainToDeleteSelected = chainId === selectedEvmChainId;
-  return { chainId, networkNickname, isChainToDeleteSelected };
+  return {
+    chainId,
+    networkNickname,
+    isChainToDeleteSelected,
+    isMultichainAccountsFeatureEnabled,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    switchToEthereumNetwork: async () => {
-      await dispatch(enableSingleNetwork('0x1'));
+    switchToEthereumNetwork: async (isMultichainAccountsFeatureEnabled) => {
+      await dispatch(
+        enableSingleNetwork('0x1', Boolean(isMultichainAccountsFeatureEnabled)),
+      );
     },
     removeNetwork: (chainId) => {
       dispatch(removeNetwork(chainId));
