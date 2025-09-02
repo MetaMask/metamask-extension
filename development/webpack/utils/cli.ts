@@ -339,6 +339,30 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
+    debugRuntime: {
+      alias: 'u',
+      array: false,
+      default: false,
+      description: 'Debug the LavaMoat runtime',
+      group: toOrange('Security:'),
+      type: 'boolean',
+    },
+    generatePolicy: {
+      alias: 'g',
+      array: false,
+      default: false,
+      description: 'Generate the LavaMoat policy',
+      group: toOrange('Security:'),
+      type: 'boolean',
+    },
+    generatePolicyOnly: {
+      alias: 'y',
+      array: false,
+      default: false,
+      description: 'Generate the LavaMoat policy only, skipping the build',
+      group: toOrange('Security:'),
+      type: 'boolean',
+    },
 
     dryRun: {
       array: false,
@@ -374,6 +398,9 @@ Progress: ${args.progress}
 Zip: ${args.zip}
 Snow: ${args.snow}
 LavaMoat: ${args.lavamoat}
+Debug runtime: ${args.debugRuntime}
+Generate policy: ${args.generatePolicy}
+Generate policy only: ${args.generatePolicyOnly}
 Sentry: ${args.sentry}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
