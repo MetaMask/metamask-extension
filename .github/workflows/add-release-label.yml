@@ -24,12 +24,14 @@ jobs:
         id: get-next-semver-version
         env:
           FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
-        run: ./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
+        run: |
+          NEXT_SEMVER_VERSION=$(./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION")
+          echo "NEXT_SEMVER_VERSION=$NEXT_SEMVER_VERSION" >> $GITHUB_OUTPUT
         working-directory: '.github/scripts'
 
       - name: Add release label to PR and linked issues
         id: add-release-label-to-pr-and-linked-issues
         env:
-          RELEASE_LABEL_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN }}
-          NEXT_SEMVER_VERSION: ${{ env.NEXT_SEMVER_VERSION }}
+          RELEASE_LABEL_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN || '' }}
+          NEXT_SEMVER_VERSION: ${{ steps.get-next-semver-version.outputs.NEXT_SEMVER_VERSION }}
         run: yarn run add-release-label-to-pr-and-linked-issues
