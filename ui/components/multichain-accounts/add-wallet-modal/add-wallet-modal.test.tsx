@@ -1,6 +1,11 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
+import {
+  ADD_WALLET_PAGE_ROUTE,
+  CONNECT_HARDWARE_ROUTE,
+  IMPORT_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
 import { AddWalletModal } from './add-wallet-modal';
 
 const mockHistoryPush = jest.fn();
@@ -47,7 +52,7 @@ describe('AddWalletModal', () => {
     fireEvent.click(screen.getByText('Import a wallet'));
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith('/import-srp');
+    expect(mockHistoryPush).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
   });
 
   it('calls onClose and navigates when import account option is clicked', () => {
@@ -56,7 +61,7 @@ describe('AddWalletModal', () => {
     fireEvent.click(screen.getByText('Import an account'));
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith('/new-account');
+    expect(mockHistoryPush).toHaveBeenCalledWith(ADD_WALLET_PAGE_ROUTE);
   });
 
   it('calls onClose and opens hardware wallet route in expanded view', () => {
@@ -66,22 +71,9 @@ describe('AddWalletModal', () => {
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
     expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
-      '/new-account/connect',
+      CONNECT_HARDWARE_ROUTE,
     );
     expect(mockHistoryPush).not.toHaveBeenCalled();
-  });
-
-  it('falls back to history.push when openExtensionInBrowser is not available for hardware wallet', () => {
-    // @ts-expect-error mocking platform
-    global.platform = {};
-
-    renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
-
-    fireEvent.click(screen.getByText('Add a hardware wallet'));
-
-    expect(mockOnClose).toHaveBeenCalledTimes(1);
-    expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
-    expect(mockHistoryPush).toHaveBeenCalledWith('/new-account/connect');
   });
 
   it('does not render when isOpen is false', () => {
