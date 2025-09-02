@@ -178,7 +178,7 @@ export default function LoginOptions({
             fontWeight={FontWeight.Medium}
             textAlign={TextAlign.Center}
             paddingTop={8}
-            width={BlockSize.Full}
+            width={BlockSize.FiveSixths}
             margin={'auto'}
           >
             {t('onboardingLoginFooter')}{' '}
