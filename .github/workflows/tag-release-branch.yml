@@ -130,7 +130,7 @@ jobs:
               echo "Old tag deleted. Will create new tag at HEAD."
             else
               echo "::error::Tag ${TAG_NAME} exists but not at HEAD."
-              echo "::error::To move the tag, run this workflow again with 'Force re-tag' enabled."
+              echo "::error::To move the tag, run this workflow again with 'force-retag' enabled."
               # Log full details only to GitHub logs, not to error output
               echo "Debug: Tag is at ${TAG_SHA:0:7}, HEAD is at ${HEAD_SHA:0:7}" >&2
               exit 1

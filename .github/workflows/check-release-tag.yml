@@ -27,8 +27,8 @@ jobs:
         id: check-tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
           STATUSES=$(gh api \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/commits/${HEAD_SHA}/statuses")
@@ -47,7 +47,7 @@ jobs:
               -f target_url='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
               -f description='Release is properly tagged' \
               -f context='release/tag-check' \
-              || echo "::notice::Skipping status update (insufficient permissions)"
+              || echo "::notice::Failed to update status (non-fatal)"
           else
             echo "::warning::No successful 'release/tagged' status found on PR HEAD"
             echo "tagged=false" >> "${GITHUB_OUTPUT}"
@@ -61,10 +61,12 @@ jobs:
               -f target_url='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
               -f description='Tag missing on PR HEAD - run Tag Release Branch workflow' \
               -f context='release/tag-check' \
-              || echo "::notice::Skipping status update (insufficient permissions)"
+              || echo "::notice::Failed to update status (non-fatal)"
           fi
 
       - name: Summary
+        env:
+          PR_HEAD_BRANCH: ${{ github.head_ref }}
         run: |
           if [[ "${{ steps.check-tag.outputs.tagged }}" == "true" ]]; then
             {
@@ -75,7 +77,7 @@ jobs:
             {
               echo "### Release Tag Check - Action Required"
               echo "Run the 'Tag Release Branch' workflow with inputs:"
-              echo "- release-branch: ${{ github.head_ref }}"
+              echo "- release-branch: ${PR_HEAD_BRANCH}"
             } >> "${GITHUB_STEP_SUMMARY}"
           fi
 
