@@ -42,7 +42,7 @@ jobs:
             gh api \
               --method POST \
               -H "Accept: application/vnd.github.v3+json" \
-              /repos/${{ github.repository }}/statuses/${HEAD_SHA} \
+              "/repos/${{ github.repository }}/statuses/${HEAD_SHA}" \
               -f state='success' \
               -f target_url='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
               -f description='Release is properly tagged' \
@@ -56,7 +56,7 @@ jobs:
             gh api \
               --method POST \
               -H "Accept: application/vnd.github.v3+json" \
-              /repos/${{ github.repository }}/statuses/${HEAD_SHA} \
+              "/repos/${{ github.repository }}/statuses/${HEAD_SHA}" \
               -f state='pending' \
               -f target_url='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
               -f description='Tag missing on PR HEAD - run Tag Release Branch workflow' \
