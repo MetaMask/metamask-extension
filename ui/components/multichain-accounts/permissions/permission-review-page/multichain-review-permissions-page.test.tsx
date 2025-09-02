@@ -1,9 +1,14 @@
 import React from 'react';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { AccountGroupType } from '@metamask/account-api';
+import { CaipAccountId } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
+import * as actions from '../../../../store/actions';
+import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
-import { fireEvent, waitFor } from '@testing-library/react';
 
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({
@@ -12,7 +17,7 @@ jest.mock('react-router-dom', () => ({
   useParams: () => ({ origin: 'https%3A//test.dapp' }),
   useLocation: () => ({ pathname: '/test', search: '', hash: '', state: null }),
   matchPath: jest.fn(() => null),
-  withRouter: (Component: React.ComponentType<any>) => Component,
+  withRouter: (Component: React.ComponentType<unknown>) => Component,
   MemoryRouter: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
   ),
@@ -40,42 +45,42 @@ jest.mock('../../../../store/actions', () => ({
 
 const mockAccountGroups = [
   {
-    id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-    type: 'multichain-account',
+    id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as const,
+    type: AccountGroupType.MultichainAccount as const,
     accounts: [
-      {
+      createMockInternalAccount({
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        metadata: {
-          name: 'Test Account',
-        },
-      },
-      {
+        name: 'Test Account',
+      }),
+      createMockInternalAccount({
         id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
         address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-        metadata: {
-          name: 'Test Account 2',
-        },
-      },
+        name: 'Test Account 2',
+      }),
     ],
     metadata: {
       name: 'Account 1',
+      entropy: { groupIndex: 0 },
+      pinned: false,
+      hidden: false,
     },
   },
   {
-    id: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0',
-    type: 'multichain-account',
+    id: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0' as const,
+    type: AccountGroupType.MultichainAccount as const,
     accounts: [
-      {
+      createMockInternalAccount({
         id: '784225f4-d30b-4e77-a900-c8bbce735b88',
         address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
-        metadata: {
-          name: 'Test Account 3',
-        },
-      },
+        name: 'Test Account 3',
+      }),
     ],
     metadata: {
       name: 'Account 2',
+      entropy: { groupIndex: 1 },
+      pinned: false,
+      hidden: false,
     },
   },
 ];
@@ -83,9 +88,11 @@ const mockAccountGroups = [
 const generateCaipAccountIds = (
   accountGroups: typeof mockAccountGroups,
   chainId = '1',
-) => {
+): CaipAccountId[] => {
   return accountGroups.flatMap((group) =>
-    group.accounts.map((account) => `eip155:${chainId}:${account.address}`),
+    group.accounts.map(
+      (account) => `eip155:${chainId}:${account.address}` as CaipAccountId,
+    ),
   );
 };
 
@@ -107,6 +114,7 @@ const render = (state = {}) => {
       ...state,
       permissionHistory: {
         'https://test.dapp': {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1709225290848,
@@ -151,14 +159,15 @@ describe('MultichainReviewPermissions', () => {
     const expectedCaipAccountIds = generateCaipAccountIds(mockAccountGroups);
 
     beforeEach(() => {
-      const {
-        useAccountGroupsForPermissions,
-      } = require('../../../../hooks/useAccountGroupsForPermissions');
-      useAccountGroupsForPermissions.mockReturnValue({
+      const useAccountGroupsForPermissionsSpy = jest.spyOn(
+        hooks,
+        'useAccountGroupsForPermissions',
+      );
+      useAccountGroupsForPermissionsSpy.mockReturnValue({
         supportedAccountGroups: mockAccountGroups,
         connectedAccountGroups: [mockAccountGroups[0]], // Initially only first account group is connected
         existingConnectedCaipAccountIds: [
-          expectedCaipAccountIds[0], // First account from first group
+          expectedCaipAccountIds[0] as CaipAccountId, // First account from first group
         ],
       });
     });
@@ -290,7 +299,10 @@ describe('MultichainReviewPermissions', () => {
 
     it('dispatches setPermittedAccounts action when accounts are selected', async () => {
       const { getAllByTestId, getByTestId } = render();
-      const { setPermittedAccounts } = require('../../../../store/actions');
+      const setPermittedAccountsSpy = jest.spyOn(
+        actions,
+        'setPermittedAccounts',
+      );
 
       const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
       const accountsEditButton = editButtons[0];
@@ -311,7 +323,7 @@ describe('MultichainReviewPermissions', () => {
 
       // Should dispatch setPermittedAccounts with selected account IDs
       await waitFor(() => {
-        expect(setPermittedAccounts).toHaveBeenCalled();
+        expect(setPermittedAccountsSpy).toHaveBeenCalled();
       });
     });
 
