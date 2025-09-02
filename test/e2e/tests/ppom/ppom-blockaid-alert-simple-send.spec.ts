@@ -1,21 +1,16 @@
-const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-const {
-  withFixtures,
-  sendScreenToConfirmScreen,
-  WINDOW_TITLES,
-} = require('../../helpers');
-const {
-  loginWithoutBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
+import { Suite } from 'mocha';
+import { MockttpServer } from 'mockttp';
+import FixtureBuilder from '../../fixture-builder';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
+import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 
-const {
-  mockMultiNetworkBalancePolling,
-} = require('../../mock-balance-polling/mock-balance-polling');
-const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
-const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
-
-const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
 const mockBenignAddress = '0x50587E46C5B96a3F6f9792922EC647F13E6EFAE4';
 
@@ -35,7 +30,7 @@ const SEND_REQUEST_BASE_MOCK = {
   ],
 };
 
-async function mockInfura(mockServer) {
+async function mockInfura(mockServer: MockttpServer): Promise<void> {
   await mockMultiNetworkBalancePolling(mockServer);
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
@@ -49,18 +44,26 @@ async function mockInfura(mockServer) {
   ]);
 }
 
-async function mockRequest(server, request, response) {
+async function mockRequest(
+  server: MockttpServer,
+  request: Record<string, unknown>,
+  response: Record<string, unknown>,
+): Promise<void> {
   await server
     .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
     .withJsonBodyIncluding(request)
-    .thenJson(response.statusCode ?? 201, response);
+    .thenJson((response.statusCode as number) ?? 201, response);
 }
 
-async function mockInfuraWithBenignResponses(mockServer) {
+async function mockInfuraWithBenignResponses(
+  mockServer: MockttpServer,
+): Promise<void> {
   await mockInfura(mockServer);
 
   await mockRequest(mockServer, SEND_REQUEST_BASE_MOCK, {
     block: 20733513,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'Benign',
     reason: '',
     description: '',
@@ -68,7 +71,9 @@ async function mockInfuraWithBenignResponses(mockServer) {
   });
 }
 
-async function mockInfuraWithMaliciousResponses(mockServer) {
+async function mockInfuraWithMaliciousResponses(
+  mockServer: MockttpServer,
+): Promise<void> {
   await mockInfura(mockServer);
   const requestMock = {
     method: 'eth_sendTransaction',
@@ -83,6 +88,8 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
 
   await mockRequest(mockServer, requestMock, {
     block: 20733277,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'Malicious',
     reason: 'transfer_farming',
     description: '',
@@ -90,7 +97,9 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
   });
 }
 
-async function mockInfuraWithFailedResponses(mockServer) {
+async function mockInfuraWithFailedResponses(
+  mockServer: MockttpServer,
+): Promise<void> {
   await mockInfura(mockServer);
 
   await mockRequest(
@@ -129,7 +138,7 @@ async function mockInfuraWithFailedResponses(mockServer) {
  *
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
-describe('Simple Send Security Alert - Blockaid', function () {
+describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
   it('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
@@ -146,21 +155,26 @@ describe('Simple Send Security Alert - Blockaid', function () {
           })
           .build(),
         testSpecificMock: mockInfuraWithBenignResponses,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+
         // We validate custom balance as it doesn't come from the local node but it's mocked
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: '20 ETH',
-        });
+        await homePage.checkExpectedBalanceIsDisplayed('20 ETH');
+        await homePage.startSendFlow();
 
-        await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
+        const sendToPage = new SendTokenPage(driver);
+        await sendToPage.checkPageIsLoaded();
+        await sendToPage.fillRecipient(mockBenignAddress);
+        await sendToPage.fillAmount('1');
+        await sendToPage.goToNextScreen();
 
-        const isPresent = await driver.isElementPresent(bannerAlertSelector);
-        assert.equal(isPresent, false, `Banner alert unexpectedly found.`);
+        const transactionConfirmationPage = new TransactionConfirmation(driver);
+        await transactionConfirmationPage.checkPageIsLoaded();
+        await transactionConfirmationPage.checkNoAlertMessageIsDisplayed();
       },
     );
   });
@@ -191,31 +205,28 @@ describe('Simple Send Security Alert - Blockaid', function () {
           })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
+
         // We validate custom balance as it doesn't come from the local node but it's mocked
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: '20 ETH',
-        });
+        await new HomePage(driver).checkExpectedBalanceIsDisplayed('20 ETH');
 
-        await driver.openNewPage('http://localhost:8080');
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
+        await testDapp.checkPageIsLoaded();
 
-        await driver.clickElement('#maliciousRawEthButton');
+        await testDapp.clickMaliciousEthTransferButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForSelector({
-          css: '.mm-text--body-lg-medium',
-          text: expectedMaliciousTitle,
-        });
-
-        await driver.waitForSelector({
-          css: '.mm-text--body-md',
-          text: expectedMaliciousDescription,
-        });
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+        await confirmation.checkAlertMessageIsDisplayed(expectedMaliciousTitle);
+        await confirmation.checkAlertMessageIsDisplayed(
+          expectedMaliciousDescription,
+        );
       },
     );
   });
@@ -236,32 +247,31 @@ describe('Simple Send Security Alert - Blockaid', function () {
           })
           .build(),
         testSpecificMock: mockInfuraWithFailedResponses,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
 
         // We validate custom balance as it doesn't come from the local node but it's mocked
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: '20 ETH',
-        });
-        await sendScreenToConfirmScreen(
-          driver,
+        await homePage.checkExpectedBalanceIsDisplayed('20 ETH');
+        await homePage.startSendFlow();
+
+        const sendToPage = new SendTokenPage(driver);
+        await sendToPage.checkPageIsLoaded();
+        await sendToPage.fillRecipient(
           '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
-          '1.1',
         );
+        await sendToPage.fillAmount('1.1');
+        await sendToPage.goToNextScreen();
+
+        const transactionConfirmationPage = new TransactionConfirmation(driver);
+        await transactionConfirmationPage.checkPageIsLoaded();
+
         const expectedTitle = 'Be careful';
-
-        const bannerAlert = await driver.findElement({
-          css: '[data-testid="confirm-banner-alert"]',
-          text: expectedTitle,
-        });
-
-        assert(
-          bannerAlert,
-          `Banner alert not found. Expected Title: ${expectedTitle}`,
+        await transactionConfirmationPage.checkAlertMessageIsDisplayed(
+          expectedTitle,
         );
       },
     );
