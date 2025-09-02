@@ -117,11 +117,14 @@ export class NetworkOrderController extends BaseController<
    * @param args - The arguments to this function.
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
+   * @param args.isMultichainAccountsFeatureEnabled - Whether the multichain accounts feature is enabled.
    */
   constructor({
+    isMultichainAccountsFeatureEnabled = false,
     messenger,
     state,
   }: {
+    isMultichainAccountsFeatureEnabled: boolean;
     messenger: NetworkOrderControllerMessenger;
     state?: NetworkOrderControllerState;
   }) {
