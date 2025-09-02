@@ -1,136 +1,38 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   Display,
-  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import {
-  getIsMultichainAccountsState2Enabled,
-  getPreferences,
-} from '../../../../selectors';
-import { selectBalanceChangeBySelectedAccountGroup } from '../../../../selectors/assets';
+import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 import { Box, SensitiveText } from '../../../component-library';
-
-// Simple inline implementations to avoid restricted imports
-const isValidAmount = (value: unknown): value is number =>
-  typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value);
-
-// removed: replaced by formatWithThreshold-based formatting
+import { type BalanceChangePeriod } from '@metamask/assets-controllers';
+import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 export type AccountGroupBalanceChangeProps = {
-  period: '1d' | '7d' | '30d';
+  period: BalanceChangePeriod;
 };
 
-// Self-contained component that fetches and formats portfolio change data
-type AggregatedChange = {
-  period: '1d' | '7d' | '30d';
-  currentTotalInUserCurrency: number;
-  previousTotalInUserCurrency: number;
-  amountChangeInUserCurrency: number;
-  percentChange: number;
-  userCurrency: string;
-};
+const balanceAmountSpanStyle = { whiteSpace: 'pre' } as const;
 
-export const AccountGroupBalanceChange: React.FC<
+const AccountGroupBalanceChangeComponent: React.FC<
   AccountGroupBalanceChangeProps
 > = ({ period }) => {
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  ) as boolean;
-  const fiatCurrency = useSelector(getCurrentCurrency) as string;
-  const locale = useSelector(getIntlLocale) as string;
-  const { privacyMode } = useSelector(getPreferences);
-
-  // Memoized selector for the specified period
-  const changeSelector = useMemo(
-    () => selectBalanceChangeBySelectedAccountGroup(period),
-    [period],
-  );
-
-  // Get the data
-  const portfolioChange = useSelector(
-    isMultichainAccountsState2Enabled ? changeSelector : () => null,
-  ) as AggregatedChange | null;
-  const portfolioPercent = portfolioChange?.percentChange ?? 0;
-
-  // Early return if feature flag is off
-  if (!isMultichainAccountsState2Enabled) {
-    return null;
-  }
-
-  let color = TextColor.textDefault;
-  if (privacyMode) {
-    color = TextColor.textAlternative;
-  } else if (
-    portfolioChange &&
-    isValidAmount(portfolioChange.amountChangeInUserCurrency)
-  ) {
-    const amt = Number(portfolioChange.amountChangeInUserCurrency);
-    if (amt > 0) {
-      color = TextColor.successDefault;
-    } else if (amt < 0) {
-      color = TextColor.errorDefault;
-    }
-  } else if (isValidAmount(portfolioPercent)) {
-    const pct = Number(portfolioPercent);
-    if (pct > 0) {
-      color = TextColor.successDefault;
-    } else if (pct < 0) {
-      color = TextColor.errorDefault;
-    }
-  }
-
-  const percentNumber =
-    typeof portfolioPercent === 'number' ? portfolioPercent : 0;
-  const signPrefix = percentNumber >= 0 ? '+' : '-';
-  const absPercent = Math.abs(percentNumber);
-  const displayAbsPercent =
-    absPercent !== 0 && absPercent < 0.01 ? 0.01 : absPercent;
-  const localizedPercent = Intl.NumberFormat(locale, {
-    style: 'percent',
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-  }).format(displayAbsPercent / 100);
-  const formattedPercentWithParens = `(${signPrefix}${localizedPercent})`;
-
-  let formattedAmount = '';
-  if (
-    portfolioChange &&
-    isValidAmount(portfolioChange.amountChangeInUserCurrency)
-  ) {
-    const amt = Number(portfolioChange.amountChangeInUserCurrency);
-    const signPrefixAmount = amt >= 0 ? '+' : '';
-    try {
-      formattedAmount = `${signPrefixAmount}${Intl.NumberFormat(locale, {
-        style: 'currency',
-        currency: fiatCurrency,
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(amt)} `;
-    } catch {
-      formattedAmount = `${signPrefixAmount}${Intl.NumberFormat(locale, {
-        style: 'decimal',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(amt)} `;
-    }
-  }
+  const { privacyMode, color, displayAmountChange, displayPercentChange } =
+    useAccountGroupBalanceDisplay(period);
 
   return (
     <Box display={Display.Flex}>
       <SensitiveText
         variant={TextVariant.bodyMdMedium}
         color={color}
-        style={{ whiteSpace: 'pre' }}
+        style={balanceAmountSpanStyle}
         data-testid="account-group-balance-change-value"
         isHidden={privacyMode}
         ellipsis
         length="10"
       >
-        {formattedAmount}
+        {displayAmountChange}
       </SensitiveText>
       <SensitiveText
         variant={TextVariant.bodyMdMedium}
@@ -140,8 +42,23 @@ export const AccountGroupBalanceChange: React.FC<
         ellipsis
         length="10"
       >
-        {formattedPercentWithParens}
+        {' '}
+        {displayPercentChange}
       </SensitiveText>
     </Box>
   );
+};
+
+export const AccountGroupBalanceChange: React.FC<
+  AccountGroupBalanceChangeProps
+> = (props) => {
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  if (!isMultichainAccountsState2Enabled) {
+    return null;
+  }
+
+  return <AccountGroupBalanceChangeComponent {...props} />;
 };
