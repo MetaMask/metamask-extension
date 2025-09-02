@@ -39,7 +39,9 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   );
 
   const isVerifiedAddress =
-    trustSignalDisplayState === TrustSignalDisplayState.Verified;
+    trustSignalDisplayState === TrustSignalDisplayState.Verified ||
+    trustSignalDisplayState === TrustSignalDisplayState.Petname ||
+    trustSignalDisplayState === TrustSignalDisplayState.Recognized;
 
   const isFirstPartyContract = Boolean(getExperience(recipient, chainId));
 

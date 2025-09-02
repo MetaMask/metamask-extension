@@ -54,6 +54,7 @@ export type ScanAddressResponse = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: ResultType;
   label: string;
+  isLoading: boolean;
 };
 
 export type GetAddressSecurityAlertResponse = (

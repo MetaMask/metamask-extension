@@ -112,12 +112,13 @@ describe('Security Alerts API', () => {
       addAddressSecurityAlertResponseMock = jest.fn();
     });
 
-    it('should return cached response when available', async () => {
+    it('should return cached response when available and not loading', async () => {
       const cachedResponse = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: ResultType.Benign,
         label: 'Cached safe address',
+        isLoading: false,
       };
       getAddressSecurityAlertResponseMock.mockReturnValue(cachedResponse);
 
@@ -133,6 +134,41 @@ describe('Security Alerts API', () => {
         TEST_ADDRESS,
       );
       expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
+    });
+
+    it('should re-scan when cached response is in loading state', async () => {
+      const cachedLoadingResponse = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_type: ResultType.Benign,
+        label: '',
+        isLoading: true,
+      };
+      getAddressSecurityAlertResponseMock.mockReturnValue(
+        cachedLoadingResponse,
+      );
+
+      const scope = nock(BASE_URL)
+        .post('/address/evm/scan', {
+          chain: SupportedEVMChain.Ethereum,
+          address: TEST_ADDRESS,
+        })
+        .reply(200, RESPONSE_MOCK);
+
+      const result = await scanAddressAndAddToCache(
+        TEST_ADDRESS,
+        getAddressSecurityAlertResponseMock,
+        addAddressSecurityAlertResponseMock,
+        SupportedEVMChain.Ethereum,
+      );
+
+      expect(result).toEqual(RESPONSE_MOCK);
+      expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+        TEST_ADDRESS,
+      );
+      // Should be called twice: once for loading state, once for result
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
+      expect(scope.isDone()).toBe(true);
     });
 
     it('should scan address and cache result when not cached', async () => {
@@ -156,9 +192,22 @@ describe('Security Alerts API', () => {
       expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
         TEST_ADDRESS,
       );
-      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+      // Should be called twice: once for loading state, once for result
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        1,
         TEST_ADDRESS,
-        RESPONSE_MOCK,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Benign,
+          label: '',
+          isLoading: true,
+        },
+      );
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        2,
+        TEST_ADDRESS,
+        { ...RESPONSE_MOCK, isLoading: false },
       );
       expect(scope.isDone()).toBe(true);
     });
@@ -180,7 +229,28 @@ describe('Security Alerts API', () => {
       expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
         TEST_ADDRESS,
       );
-      expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
+      // Should be called twice: once for loading state, once for clearing on error
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        1,
+        TEST_ADDRESS,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Benign,
+          label: '',
+          isLoading: true,
+        },
+      );
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        2,
+        TEST_ADDRESS,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Benign,
+          label: '',
+          isLoading: false,
+        },
+      );
     });
   });
 });
