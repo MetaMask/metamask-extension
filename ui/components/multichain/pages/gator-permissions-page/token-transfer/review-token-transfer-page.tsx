@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { Hex } from '@metamask/utils';
 import { Content, Header, Page } from '../../page';
 import {
   Box,
@@ -25,15 +26,14 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modu
 import { getAggregatedGatorPermissionByChainId } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { extractNetworkName } from '../gator-permissions-page-helper';
 import { ReviewGatorAssetItem } from '../components';
-import type { Hex } from '@metamask/utils';
 import type { GatorPermissionState } from '../../../../../selectors/gator-permissions/gator-permissions';
 
-interface RouteParams {
+type RouteParams = {
   chainId: string;
   [key: string]: string | undefined;
-}
+};
 
-interface PermissionWithSiteOrigin {
+type PermissionWithSiteOrigin = {
   permissionResponse: {
     chainId: Hex;
     context: string;
@@ -42,7 +42,7 @@ interface PermissionWithSiteOrigin {
     };
   };
   siteOrigin: string;
-}
+};
 
 export const ReviewTokenTransferPage = (): React.ReactElement => {
   const t = useI18nContext();
@@ -56,25 +56,35 @@ export const ReviewTokenTransferPage = (): React.ReactElement => {
   const networks = useSelector(getNetworkConfigurationsByChainId);
 
   // Get aggregated token transfer permissions for the specific chain
-  const aggregatedTokenTransferPermissions = useSelector((state: GatorPermissionState) =>
-    getAggregatedGatorPermissionByChainId(state, 'token-transfer', chainId as Hex),
+  const aggregatedTokenTransferPermissions = useSelector(
+    (state: GatorPermissionState) =>
+      getAggregatedGatorPermissionByChainId(
+        state,
+        'token-transfer',
+        chainId as Hex,
+      ),
   );
 
   useEffect(() => {
     if (chainId) {
       setNetworkName(extractNetworkName(networks, chainId));
-      setTotalTokenTransferPermissions(aggregatedTokenTransferPermissions.length);
+      setTotalTokenTransferPermissions(
+        aggregatedTokenTransferPermissions.length,
+      );
     }
   }, [chainId, aggregatedTokenTransferPermissions, networks]);
 
-  const handlePermissionRevokeClick = (permission: PermissionWithSiteOrigin): void => {
+  const handlePermissionRevokeClick = (
+    permission: PermissionWithSiteOrigin,
+  ): void => {
     // TODO: Implement revoke logic
     console.log('Permission to revoke:', permission);
   };
 
   const renderTokenTransferPermissions = (): React.ReactElement[] =>
     aggregatedTokenTransferPermissions.map((permission) => {
-      const { permissionResponse, siteOrigin } = permission as PermissionWithSiteOrigin;
+      const { permissionResponse, siteOrigin } =
+        permission as PermissionWithSiteOrigin;
       const fullNetworkName = extractNetworkName(
         networks,
         permissionResponse.chainId,
@@ -88,7 +98,9 @@ export const ReviewTokenTransferPage = (): React.ReactElement => {
           networkName={fullNetworkName}
           permissionType={permissionResponse.permission.type}
           siteOrigin={siteOrigin}
-          onRevokeClick={() => handlePermissionRevokeClick(permission as PermissionWithSiteOrigin)}
+          onRevokeClick={() =>
+            handlePermissionRevokeClick(permission as PermissionWithSiteOrigin)
+          }
         />
       );
     });

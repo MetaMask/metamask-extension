@@ -37,8 +37,9 @@ export const TokenTransferPage = (): React.ReactElement => {
     useState<number>(0);
 
   // Get aggregated token transfer permissions for all chains
-  const aggregatedTokenTransferPermissions = useSelector((state: GatorPermissionState) =>
-    getAggregatedTokenTransferPermissionsByChainId(state),
+  const aggregatedTokenTransferPermissions = useSelector(
+    (state: GatorPermissionState) =>
+      getAggregatedTokenTransferPermissionsByChainId(state),
   );
 
   useEffect(() => {
