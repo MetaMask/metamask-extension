@@ -256,6 +256,10 @@ export async function switchChain(
 
     await setActiveNetwork(networkClientId);
 
+    // FIXME: `setTokenNetworkFilter` and `getEnabledNetworks` is currently breaking Snaps flow when ENS Snap
+    // calls `wallet_switchEthereumChain` to auto-adjusts its network if necessary. For now we add this guard
+    // but we want to come back and add remove the bandaid in favour of a more future proof solution for
+    // this edge case.
     if (!isSnapId(origin)) {
       // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
       // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
