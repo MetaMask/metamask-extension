@@ -37,8 +37,31 @@ jobs:
             exit 1
           fi
 
-          # Fetch branches and create list of {name, semver} for matching patterns, sort desc by semver
-          curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${GITHUB_REPOSITORY}/branches | jq '[ .[] | .name | select(test("^Version-v[0-9]+\\.[0-9]+\\.[0-9]+$") or test("^release/[0-9]+\\.[0-9]+\\.[0-9]+$")) | {name: ., semver: (if test("^Version-v") then ltrimstr("Version-v") else ltrimstr("release/") end) } ] | sort_by( .semver | split(".") | map(tonumber) ) | reverse' > all_versions.json
+          # Paginate to fetch all branches
+          all_branches="$(mktemp)"
+          page=1
+          total_pages=1  # Placeholder
+          echo "Fetching all branches (paginated)..."
+          while :; do
+            echo "Fetching page $page..."
+            resp="$(mktemp)"
+            url="https://api.github.com/repos/${GITHUB_REPOSITORY}/branches?per_page=100&page=${page}"
+            curl -sS -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "$url" -o "$resp"
+
+            # Append this page's branches to all_branches
+            cat "$resp" >> "$all_branches"
+
+            count=$(jq length "$resp")
+            if [ "$count" -lt 100 ]; then
+              total_pages=$page
+              break
+            fi
+            page=$((page + 1))
+          done
+          echo "Fetched $total_pages pages, total branches: $(jq -s 'map(length) | add' "$all_branches")"
+
+          # Process all branches: extract {name, semver} for matches, sort desc by semver
+          jq -s 'add | [ .[] | .name | select(test("^Version-v[0-9]+\\.[0-9]+\\.[0-9]+$") or test("^release/[0-9]+\\.[0-9]+\\.[0-9]+$")) | {name: ., semver: (if test("^Version-v") then ltrimstr("Version-v") else ltrimstr("release/") end) } ] | sort_by( .semver | split(".") | map(tonumber) ) | reverse' "$all_branches" > all_versions.json
 
           # Print all found versions (sorted desc)
           echo "All found versions (sorted desc): $(jq '[ .[].semver ]' all_versions.json)"
