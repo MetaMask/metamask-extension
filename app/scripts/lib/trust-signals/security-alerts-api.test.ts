@@ -118,7 +118,6 @@ describe('Security Alerts API', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: ResultType.Benign,
         label: 'Cached safe address',
-        isLoading: false,
       };
       getAddressSecurityAlertResponseMock.mockReturnValue(cachedResponse);
 
