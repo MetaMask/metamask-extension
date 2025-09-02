@@ -29,7 +29,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
-  NEW_ACCOUNT_ROUTE,
+  ADD_WALLET_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 
 export type AddWalletModalProps = Omit<
@@ -66,7 +66,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       id: 'import-account',
       titleKey: 'importAnAccount',
       iconName: IconName.Download,
-      route: NEW_ACCOUNT_ROUTE,
+      route: ADD_WALLET_PAGE_ROUTE,
     },
     {
       id: 'hardware-wallet',
@@ -78,7 +78,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
 
   const handleOptionClick = (option: WalletOption) => {
     onClose?.();
-    
+
     // Hardware wallet connections require expanded view
     if (option.id === 'hardware-wallet') {
       if (global.platform.openExtensionInBrowser) {
