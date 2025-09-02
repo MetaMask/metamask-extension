@@ -141,6 +141,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountSmallCase": {
+    "message": "account"
+  },
   "accountTypeNotSupported": {
     "message": "Account type not supported"
   },
@@ -656,6 +659,9 @@
   },
   "autoLockTimeLimitDescription": {
     "message": "Set the idle time in minutes before MetaMask will become locked."
+  },
+  "available": {
+    "message": "available"
   },
   "average": {
     "message": "Average"
@@ -3146,6 +3152,9 @@
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum transaction's input data isn't sufficiently padded."
   },
+  "ledgerEthAppNftNotSupportedNotification": {
+    "message": "Ledger Nano S can't send or manage Ethereum NFTs. See upgrade options at https://shop.ledger.com/pages/ledger-nano-s-upgrade-program"
+  },
   "ledgerFirefoxNotSupportedDescription1": {
     "message": "We're having trouble connecting to Ledger. Check out our "
   },
@@ -4850,6 +4859,10 @@
   "received": {
     "message": "Received"
   },
+  "receivingAddress": {
+    "message": "Receiving address",
+    "description": "Page title when viewing addresses for receiving funds"
+  },
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
@@ -5450,6 +5463,28 @@
   },
   "shieldTxMembershipViewFullBenefits": {
     "message": "View full benefits"
+  },
+  "shieldEntryModalAssetCoverage": {
+    "message": "$10,000 asset coverage per transaction"
+  },
+  "shieldEntryModalDescription": {
+    "message": "Renews at $1/month, cancel anytime. $2",
+    "description": "The $1 is the price of the shield and $2 is a link to the learn more page"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "Get started"
+  },
+  "shieldEntryModalProtection": {
+    "message": "Protection across all your accounts"
+  },
+  "shieldEntryModalSkip": {
+    "message": "Skip"
+  },
+  "shieldEntryModalSubtitle": {
+    "message": "Transaction Shield, free for 14 days."
+  },
+  "shieldEntryModalSupport": {
+    "message": "Priority customer support"
   },
   "show": {
     "message": "Show"

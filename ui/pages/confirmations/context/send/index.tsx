@@ -5,6 +5,8 @@ import React, {
   useState,
 } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { isAddress as isEvmAddress } from 'ethers/lib/utils';
+import { toHex } from '@metamask/controller-utils';
 import { useSelector } from 'react-redux';
 
 import { getSelectedAccount } from '../../../../selectors';
@@ -13,6 +15,7 @@ import { SendPages } from '../../constants/send';
 
 export type SendContextType = {
   asset?: Asset;
+  chainId?: string;
   currentPage?: SendPages;
   fromAccount: InternalAccount;
   from: string;
@@ -26,6 +29,7 @@ export type SendContextType = {
 
 export const SendContext = createContext<SendContextType>({
   asset: undefined,
+  chainId: undefined,
   currentPage: undefined,
   fromAccount: {} as InternalAccount,
   from: '',
@@ -46,10 +50,16 @@ export const SendContextProvider: React.FC<{
   const [value, updateValue] = useState<string>();
   const [currentPage, updateCurrentPage] = useState<SendPages>();
 
+  const chainId =
+    asset?.address && isEvmAddress(asset?.address) && asset.chainId
+      ? toHex(asset.chainId)
+      : asset?.chainId?.toString();
+
   return (
     <SendContext.Provider
       value={{
         asset,
+        chainId,
         currentPage,
         fromAccount: from as InternalAccount,
         from: from?.address as string,

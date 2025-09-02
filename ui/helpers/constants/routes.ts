@@ -43,6 +43,9 @@ export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
+export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
+  '/multichain-account-address-list';
+export const ADD_WALLET_PAGE_ROUTE = '/add-wallet-page';
 export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
   '/multichain-account-details';
 export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =

@@ -106,6 +106,10 @@ describe('AssetPage', () => {
       enabledNetworkMap: {
         eip155: {},
       },
+      accountTree: {
+        wallets: {},
+        selectedAccountGroup: 'mock-account-group-id',
+      },
       internalAccounts: {
         accounts: {
           [selectedAccountAddress]: {
