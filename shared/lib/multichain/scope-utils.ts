@@ -151,7 +151,14 @@ export const getCaip25AccountFromAccountGroupAndScope = (
         let shouldAdd = false;
 
         if (namespace === KnownCaipNamespace.Eip155) {
-          shouldAdd = accountScopesSet.has(eip155Scope);
+          // Use the same logic as anyScopesMatch for EIP-155 scopes
+          // Check for direct match first
+          shouldAdd = accountScopesSet.has(chainId);
+
+          // If no direct match, check for wildcard scope
+          if (!shouldAdd) {
+            shouldAdd = accountScopesSet.has(eip155Scope);
+          }
         } else {
           shouldAdd = accountScopesSet.has(chainId);
         }

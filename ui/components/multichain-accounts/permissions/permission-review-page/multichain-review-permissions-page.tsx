@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { CaipChainId, NonEmptyArray } from '@metamask/utils';
 import {
+  getAllScopesFromCaip25CaveatValue,
+  getCaipAccountIdsFromCaip25CaveatValue,
+} from '@metamask/chain-agnostic-permission';
+import {
   AlignItems,
   BlockSize,
   Display,
@@ -51,10 +55,6 @@ import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { MultichainSiteCell } from '../../multichain-site-cell/multichain-site-cell';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import { getCaip25CaveatValueFromPermissions } from '../../../../pages/permissions-connect/connect-page/utils';
-import {
-  getAllScopesFromCaip25CaveatValue,
-  getCaipAccountIdsFromCaip25CaveatValue,
-} from '@metamask/chain-agnostic-permission';
 import { getCaip25AccountFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
 
