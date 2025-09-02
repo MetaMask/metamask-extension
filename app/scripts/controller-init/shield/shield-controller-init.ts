@@ -26,7 +26,11 @@ export const ShieldControllerInit: ControllerInitFunction<
     state: persistedState.ShieldController,
     backend: new ShieldRemoteBackend({
       getAccessToken,
-      fetch,
+      fetch: (input, init) => {
+        // Without wrapping fetch, the requests are not sent as expected. More
+        // investigation is needed.
+        return fetch(input, init);
+      },
       baseUrl,
     }),
   });
