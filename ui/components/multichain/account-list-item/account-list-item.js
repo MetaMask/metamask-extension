@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useDispatch, useSelector } from 'react-redux';
-import { BtcScope, EthScope, SolScope } from '@metamask/keyring-api';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
@@ -69,7 +68,6 @@ import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 
 import { AccountNetworkIndicator } from '../account-network-indicator';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../../../shared/constants/multichain/assets';
-import { enableSingleNetwork } from '../../../store/controller-actions/network-order-controller';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -98,7 +96,6 @@ const AccountListItem = ({
   const t = useI18nContext();
 
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const dispatch = useDispatch();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
@@ -219,16 +216,6 @@ const AccountListItem = ({
         // the account options menu closes
         if (!accountOptionsMenuOpen) {
           onClick?.(account);
-
-          if (account.scopes.includes(SolScope.Mainnet)) {
-            dispatch(enableSingleNetwork(SolScope.Mainnet));
-          }
-          if (account.scopes.includes(BtcScope.Mainnet)) {
-            dispatch(enableSingleNetwork(BtcScope.Mainnet));
-          }
-          if (account.scopes.includes(EthScope.Eoa)) {
-            dispatch(enableSingleNetwork(EthScope.Mainnet));
-          }
         }
       }}
     >
