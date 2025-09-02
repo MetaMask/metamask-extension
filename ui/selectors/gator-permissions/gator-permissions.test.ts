@@ -641,9 +641,15 @@ describe('Gator Permissions Selectors', () => {
       expect(result.count).toBe(3); // 1 native-token-stream + 1 native-token-periodic + 1 erc20-token-stream
       expect(result.chains).toEqual([MOCK_CHAIN_ID_MAINNET]);
       expect(result.permissions).toHaveLength(3);
-      expect(result.permissions[0].permission.siteOrigin).toBe('http://localhost:8000');
-      expect(result.permissions[1].permission.siteOrigin).toBe('http://localhost:8000');
-      expect(result.permissions[2].permission.siteOrigin).toBe('http://localhost:8000');
+      expect(result.permissions[0].permission.siteOrigin).toBe(
+        'http://localhost:8000',
+      );
+      expect(result.permissions[1].permission.siteOrigin).toBe(
+        'http://localhost:8000',
+      );
+      expect(result.permissions[2].permission.siteOrigin).toBe(
+        'http://localhost:8000',
+      );
     });
 
     it('should return empty result for site origin with no permissions', () => {
