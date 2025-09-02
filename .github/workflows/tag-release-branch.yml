@@ -33,9 +33,12 @@ jobs:
         env:
           PROVIDED_BRANCH: ${{ inputs.release-branch }}
         run: |
+          # Set working branch variable
+          BRANCH="${PROVIDED_BRANCH}"
+
           # Extract version from branch name (supports Version-vX.Y.Z or release/X.Y.Z)
           SEMVER_PATTERN='[0-9]+\.[0-9]+\.[0-9]+'
-          if [[ "${PROVIDED_BRANCH}" =~ ^Version-v(${SEMVER_PATTERN})$ ]] || [[ "${PROVIDED_BRANCH}" =~ ^release/(${SEMVER_PATTERN})$ ]]; then
+          if [[ "${BRANCH}" =~ ^Version-v(${SEMVER_PATTERN})$ ]] || [[ "${BRANCH}" =~ ^release/(${SEMVER_PATTERN})$ ]]; then
             VERSION="${BASH_REMATCH[1]}"
           else
             echo "::error::Could not extract version from branch name: ${BRANCH}"
