@@ -196,6 +196,7 @@ export const CHAIN_IDS = {
   OMNI: '0xa6',
   XRPLEVM: '0x15f900',
   FRAX: '0xfc',
+  HYPER_EVM: '0x3e7',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -348,6 +349,7 @@ export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
 export const FRAX_DISPLAY_NAME = 'Fraxtal';
+export const HYPER_EVM_DISPLAY_NAME = 'HyperEVM';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -418,6 +420,7 @@ export const CURRENCY_SYMBOLS = {
   OMNI: 'OMNI',
   XRPLEVM: 'XRP',
   FRAX: 'FRAX',
+  HYPE: 'HYPE',
 } as const;
 
 // Non-EVM currency symbols
@@ -502,6 +505,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
   WETHIO: 'ZYN',
   CHZ: 'CHZ',
+  HYPE: 'HYPE',
 };
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
@@ -772,6 +776,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.OMNI]: OMNI_DISPLAY_NAME,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_DISPLAY_NAME,
   [CHAIN_IDS.FRAX]: FRAX_DISPLAY_NAME,
+  [CHAIN_IDS.HYPER_EVM]: HYPER_EVM_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -921,6 +926,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.OMNI]: CURRENCY_SYMBOLS.OMNI,
   [CHAIN_IDS.XRPLEVM]: CURRENCY_SYMBOLS.XRPLEVM,
   [CHAIN_IDS.FRAX]: CURRENCY_SYMBOLS.FRAX,
+  [CHAIN_IDS.HYPER_EVM]: CURRENCY_SYMBOLS.HYPE,
 } as const;
 
 /**
@@ -936,6 +942,11 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION = {
   [CHAINLIST_CHAIN_IDS_MAP.WETHIO]: [
     {
       currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
+    },
+  ],
+  [CHAINLIST_CHAIN_IDS_MAP.HYPER_EVM]: [
+    {
+      currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.HYPE,
     },
   ],
 };
