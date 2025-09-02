@@ -54,6 +54,8 @@ export const MultichainAddressRow = ({
 }: MultichainAddressRowProps) => {
   const [copied, handleCopy] = useCopyToClipboard();
 
+  // We're mixing hex with caip chain ids so its necessary
+  // to use the hex format for EVMs and caip for non EVMs.
   const networkImageSrc = getImageForChainId(
     chainId.startsWith('eip155')
       ? convertCaipToHexChainId(chainId as CaipChainId)
