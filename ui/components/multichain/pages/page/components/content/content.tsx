@@ -32,16 +32,14 @@ interface ContentProps extends StyleUtilityProps {
 export const Content = ({
   children,
   className = '',
-  scrollable = false,
+  scrollable = true,
   scrollbarColor = 'var(--color-icon-muted) transparent',
   ...props
 }: ContentProps) => {
-  const style = scrollable
-    ? {
-        overflow: 'auto',
-        scrollbarColor,
-      }
-    : undefined;
+  const style = {
+    overflow: scrollable ? 'auto' : undefined,
+    scrollbarColor: scrollable ? scrollbarColor : undefined,
+  };
 
   return (
     <Box
