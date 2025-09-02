@@ -57,10 +57,6 @@ class ChromeDriver {
     args.push('--log-level=3');
     args.push('--enable-logging');
 
-    if (process.env.CI || process.env.CODESPACES) {
-      args.push('--disable-gpu');
-      args.push('--disable-software-rasterizer');
-    }
 
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
@@ -93,6 +89,16 @@ class ChromeDriver {
       .forBrowser('chrome')
       .setChromeOptions(options);
     const service = new chrome.ServiceBuilder();
+
+    if (process.env.CI || process.env.CODESPACES) {
+      args.push('--disable-gpu');
+      args.push('--use-gl=swiftshader');
+      args.push('--disable-software-rasterizer');
+      service.setEnvironment({
+        ...process.env,
+        LD_LIBRARY_PATH: '/nonexistent', // Hide Vulkan libraries from Chrome
+      });
+    }
 
     // Enables Chrome logging. Default: enabled
     // Especially useful for discovering why Chrome has crashed, but can also
