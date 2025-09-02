@@ -291,7 +291,7 @@ const AssetListControlBar = ({
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworksByNamespace).length > 1
     ) {
-      return t('allPopularNetworks');
+      return t('allNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&
@@ -346,7 +346,7 @@ const AssetListControlBar = ({
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <ButtonBase
           data-testid="sort-by-networks"
-          variant={TextVariant.bodyMdMedium}
+          variant={TextVariant.bodySmMedium}
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={
             isGlobalNetworkSelectorRemoved
@@ -354,7 +354,7 @@ const AssetListControlBar = ({
               : toggleNetworkFilterPopover
           }
           disabled={isGlobalNetworkSelectorRemoved ? false : isDisabled}
-          size={ButtonBaseSize.Md}
+          size={ButtonBaseSize.Sm}
           endIconName={IconName.ArrowDown}
           backgroundColor={
             isNetworkFilterPopoverOpen
@@ -375,7 +375,7 @@ const AssetListControlBar = ({
                 borderWidth={0}
               />
             )}
-            <Text ellipsis>{networkButtonText}</Text>
+            <Text variant={TextVariant.bodySmMedium} ellipsis>{networkButtonText}</Text>
           </Box>
         </ButtonBase>
 
@@ -390,7 +390,7 @@ const AssetListControlBar = ({
                 data-testid="sort-by-popover-toggle"
                 className="asset-list-control-bar__button"
                 onClick={toggleTokenSortPopover}
-                size={ButtonBaseSize.Md}
+                size={ButtonBaseSize.Sm}
                 startIconName={IconName.Filter}
                 startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
                 backgroundColor={
