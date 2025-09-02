@@ -145,6 +145,8 @@ features:
         dest: snaps/ens-resolver-snap.json
       - src: ./node_modules/@metamask/institutional-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/institutional-wallet-snap.json
+      - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/solana-wallet-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
     assets:
