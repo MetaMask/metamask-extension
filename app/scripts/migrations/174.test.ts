@@ -452,7 +452,10 @@ describe(`migration #${newVersion}`, () => {
       } = oldState;
       const {
         // eslint-disable-next-line no-unused-vars
-        data: { BridgeStatusController: __, ...otherStates },
+        data: {
+          BridgeStatusController: bridgeStatusControllerState,
+          ...otherStates
+        },
         meta,
       } = newState;
       expect(otherStates).toStrictEqual(otherOldStates);
