@@ -745,6 +745,13 @@ export const getAccountGroupsByAddress = createDeepEqualSelector(
   },
 );
 
+/**
+ * Selector to get a list of internal accounts spread across different network scopes for a specific account group.
+ *
+ * @param _state - Redux state.
+ * @param groupId - The ID of the account group.
+ * @returns An array of internal accounts spread across different network scopes.
+ */
 export const getInternalAccountListSpreadByScopesByGroupId =
   createDeepEqualSelector(
     [
@@ -752,34 +759,53 @@ export const getInternalAccountListSpreadByScopesByGroupId =
       getMultichainNetworkConfigurationsByChainId,
     ],
     (
-      internalAccounts: InternalAccount[], // Output of selector 1
+      internalAccounts: InternalAccount[],
       networks: [
         Record<CaipChainId, MultichainNetworkConfiguration>,
         Record<Hex, NetworkConfiguration>,
-      ], // Output of selector 2
-    ) => {
+      ],
+    ): {
+      account: InternalAccount;
+      scope: CaipChainId;
+      networkName: string;
+    }[] => {
       const caipNetworks = networks[0];
-      const evmNetworkIds = Object.keys(caipNetworks).filter((chainId) => {
-        return (
-          chainId.startsWith('eip155:') &&
-          !isTestNetwork(chainId as CaipChainId)
-        );
-      }) as CaipChainId[];
 
-      return internalAccounts.flatMap((account) => {
-        // Determine scopes based on account type
-        const scopes: CaipChainId[] =
+      // Precompute EVM network IDs (filtered by non-test networks)
+      const evmNetworkIds = new Set(
+        Object.keys(caipNetworks).filter(
+          (chainId) =>
+            chainId.startsWith('eip155:') &&
+            !isTestNetwork(chainId as CaipChainId),
+        ) as CaipChainId[],
+      );
+
+      // Prepare the result array by iterating through internalAccounts
+      const result: {
+        account: InternalAccount;
+        scope: CaipChainId;
+        networkName: string;
+      }[] = [];
+
+      internalAccounts.forEach((account) => {
+        // Use the precomputed EVM network IDs or account-specific scopes
+        const scopes =
           account.type === EthAccountType.Eoa
-            ? evmNetworkIds
+            ? Array.from(evmNetworkIds)
             : account.scopes || [];
 
-        // Filter out testnets from scopes and map each scope to an account-scope object
-        const filteredScopes = scopes.filter((scope) => !isTestNetwork(scope));
-        return filteredScopes.map((scope) => ({
-          account,
-          scope,
-          networkName: caipNetworks[scope]?.name || 'Unknown Network',
-        }));
+        // Iterate over scopes and filter out test networks
+        scopes.forEach((scope) => {
+          if (!isTestNetwork(scope)) {
+            result.push({
+              account,
+              scope,
+              networkName: caipNetworks[scope]?.name || 'Unknown Network',
+            });
+          }
+        });
       });
+
+      return result;
     },
   );

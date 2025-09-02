@@ -1236,12 +1236,42 @@ describe('Multichain Accounts Selectors', () => {
   });
 
   describe.only('getInternalAccountListSpreadByScopesByGroupId', () => {
-    it('executes', () => {
+    it('returns internal accounts spread by scopes for a specific multichain group ID', () => {
       const result = getInternalAccountListSpreadByScopesByGroupId(
         typedMockState,
-        ENTROPY_GROUP_1_ID,
+        ENTROPY_GROUP_2_ID,
       );
+
       console.log(result);
+      expect(result).toHaveLength(5);
+      expect(result[0]).toHaveProperty('scope', 'eip155:1');
+      expect(result[1]).toHaveProperty('scope', 'eip155:5');
+      expect(result[2]).toHaveProperty('scope', 'eip155:56');
+      expect(result[3]).toHaveProperty('scope', 'eip155:137');
+      expect(result[4]).toHaveProperty('scope', 'eip155:42161');
+    });
+
+    it('returns internal accounts spread by scopes for a specific single group ID', () => {
+      const result = getInternalAccountListSpreadByScopesByGroupId(
+        typedMockState,
+        LEDGER_GROUP_ID,
+      );
+
+      expect(result).toHaveLength(5);
+      expect(result[0]).toHaveProperty('scope', 'eip155:1');
+      expect(result[1]).toHaveProperty('scope', 'eip155:5');
+      expect(result[2]).toHaveProperty('scope', 'eip155:56');
+      expect(result[3]).toHaveProperty('scope', 'eip155:137');
+      expect(result[4]).toHaveProperty('scope', 'eip155:42161');
+    });
+
+    it('returns empty array when group ID does not exist', () => {
+      const result = getInternalAccountListSpreadByScopesByGroupId(
+        typedMockState,
+        'nonExistentGroupId' as AccountGroupId,
+      );
+
+      expect(result).toEqual([]);
     });
   });
 });
