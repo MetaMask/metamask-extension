@@ -22,18 +22,21 @@ const MOCK_SCAN_RESPONSES = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: ResultType.Benign,
     label: 'Good guy',
+    isLoading: false,
   },
   WARNING: {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: ResultType.Warning,
     label: 'Suspicious guy',
+    isLoading: false,
   },
   CACHED: {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: ResultType.Benign,
     label: 'Bad guy',
+    isLoading: false,
   },
 };
 
