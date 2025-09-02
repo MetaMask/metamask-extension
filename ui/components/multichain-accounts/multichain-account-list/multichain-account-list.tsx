@@ -41,10 +41,11 @@ export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
   selectedAccountGroups: AccountGroupId[];
   handleAccountClick?: (accountGroupId: AccountGroupId) => void;
-  formattedAccountGroupBalancesByWallet?: Record<
-    string,
-    Record<string, string>
-  >;
+  formattedAccountGroupBalancesByWallet?: Partial<{
+    [walletId: string]: Partial<{
+      [groupId: string]: string; // display balance
+    }>;
+  }>;
 };
 
 export const MultichainAccountList = ({
@@ -125,9 +126,12 @@ export const MultichainAccountList = ({
 
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
-            const balanceText =
-              formattedAccountGroupBalancesByWallet?.[walletId]?.[groupId] ??
-              '$ n/a';
+            // If prop is provided, attempt render balance. Otherwise do not render balance.
+            const balanceText = formattedAccountGroupBalancesByWallet
+              ? (formattedAccountGroupBalancesByWallet?.[walletId]?.[groupId] ??
+                '$ n/a')
+              : '';
+
             // TODO: Implement logic for removable accounts
             const isRemovable = false;
 
@@ -173,8 +177,8 @@ export const MultichainAccountList = ({
     defaultHomeActiveTabName,
     dispatch,
     history,
-    selectedAccountGroupsSet,
     formattedAccountGroupBalancesByWallet,
+    selectedAccountGroupsSet,
   ]);
 
   return <>{walletTree}</>;
