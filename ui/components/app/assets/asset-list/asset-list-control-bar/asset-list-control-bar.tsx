@@ -375,7 +375,9 @@ const AssetListControlBar = ({
                 borderWidth={0}
               />
             )}
-            <Text variant={TextVariant.bodySmMedium} ellipsis>{networkButtonText}</Text>
+            <Text variant={TextVariant.bodySmMedium} ellipsis>
+              {networkButtonText}
+            </Text>
           </Box>
         </ButtonBase>
 
