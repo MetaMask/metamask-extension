@@ -3361,7 +3361,7 @@ describe('MetaMaskController', () => {
         });
       });
 
-      it.skip('should handle errors during feature flag updates', async () => {
+      it('should handle errors during feature flag updates', async () => {
         const { remoteFeatureFlagController } = localMetamaskController;
         const mockError = new Error('Failed to fetch');
 
