@@ -456,13 +456,17 @@ export default function Routes() {
 
   useEffect(() => {
     const windowType = getEnvironmentType();
-    const { openExtensionInBrowser } = global.platform ?? {};
     if (
+      'platform' in global &&
+      typeof global.platform === 'object' &&
+      global.platform &&
+      'openExtensionInBrowser' in global.platform &&
+      global.platform.openExtensionInBrowser &&
+      typeof global.platform.openExtensionInBrowser === 'function' &&
       showExtensionInFullSizeView &&
-      windowType === ENVIRONMENT_TYPE_POPUP &&
-      openExtensionInBrowser
+      windowType === ENVIRONMENT_TYPE_POPUP
     ) {
-      openExtensionInBrowser();
+      global.platform.openExtensionInBrowser();
     }
   }, [showExtensionInFullSizeView]);
 
