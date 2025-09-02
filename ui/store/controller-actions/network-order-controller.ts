@@ -66,7 +66,12 @@ export function enableSingleNetwork(
     // EVM
     if (namespace === KnownCaipNamespace.Eip155) {
       if (isMultichainAccountsFeatureEnabled) {
-        await dispatch(setEnabledNetworksMultichain([caipChainId], namespace));
+        await dispatch(
+          setEnabledNetworksMultichain(
+            [toHex(reference)],
+            KnownCaipNamespace.Eip155,
+          ),
+        );
         return;
       }
       await dispatch(

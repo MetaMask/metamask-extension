@@ -115,6 +115,9 @@ export const useNetworkChangeHandlers = () => {
             Boolean(isMultichainAccountsFeatureEnabled),
           ),
         );
+      }
+
+      if (isMultichainAccountsFeatureEnabled) {
         // deferring execution to keep select all unblocked
         setTimeout(() => {
           dispatch(setActiveNetwork(finalNetworkClientId));
