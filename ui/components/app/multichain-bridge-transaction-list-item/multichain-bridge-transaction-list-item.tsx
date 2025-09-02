@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
+import { BigNumber } from 'bignumber.js';
 import { type Transaction, TransactionStatus } from '@metamask/keyring-api';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
@@ -44,8 +45,10 @@ import {
   TransactionGroupCategory,
   TransactionGroupStatus,
 } from '../../../../shared/constants/transaction';
-import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
+import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
+import { formatAmount } from '../../../pages/confirmations/components/simulation-details/formatAmount';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 
 type MultichainBridgeTransactionListItemProps = {
   transaction: Transaction;
@@ -66,6 +69,8 @@ const MultichainBridgeTransactionListItem: React.FC<
   MultichainBridgeTransactionListItemProps
 > = ({ transaction, bridgeHistoryItem, toggleShowDetails }) => {
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
+
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
 
   const isSourceTxConfirmed =
@@ -166,7 +171,10 @@ const MultichainBridgeTransactionListItem: React.FC<
           >
             {(() => {
               if (sourceAsset?.fungible) {
-                const displayAmount = sourceAsset.amount;
+                const displayAmount = formatAmount(
+                  locale,
+                  new BigNumber(sourceAsset.amount),
+                );
                 return `${displayAmount} ${sourceAsset.unit}`;
               }
               return '';
