@@ -6368,7 +6368,7 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
-   * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
+   * @returns {string[]} The origin's permitted accounts, or an empty
    * array.
    */
   getPermittedAccounts(origin) {
