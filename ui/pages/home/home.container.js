@@ -26,6 +26,7 @@ import {
   selectPendingApprovalsForNavigation,
   getShowUpdateModal,
   getShowConnectionsRemovedModal,
+  getIsSocialLoginFlow,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -79,7 +80,6 @@ import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
-
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -184,6 +184,7 @@ const mapStateToProps = (state) => {
     showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
     // TODO: integrate condition to show shield entry modal
     showShieldEntryModal: false,
+    isSocialLoginFlow: getIsSocialLoginFlow(state),
   };
 };
 

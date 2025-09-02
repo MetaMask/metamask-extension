@@ -171,6 +171,7 @@ export default class Home extends PureComponent {
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
     showConnectionsRemovedModal: PropTypes.bool,
     showShieldEntryModal: PropTypes.bool,
+    isSocialLoginFlow: PropTypes.bool,
   };
 
   state = {
@@ -828,6 +829,7 @@ export default class Home extends PureComponent {
       isPrimarySeedPhraseBackedUp,
       showConnectionsRemovedModal,
       showShieldEntryModal,
+      isSocialLoginFlow,
     } = this.props;
 
     if (forgottenPassword) {
@@ -887,7 +889,7 @@ export default class Home extends PureComponent {
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
           ) : null}
-          {showTermsOfUse ? (
+          {showTermsOfUse && !isSocialLoginFlow ? (
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
