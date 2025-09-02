@@ -1,8 +1,12 @@
-const FixtureBuilder = require('../../fixture-builder');
-
-const { WINDOW_TITLES, unlockWallet, withFixtures } = require('../../helpers');
-const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
-const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
+import { Suite } from 'mocha';
+import { MockttpServer } from 'mockttp';
+import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
+import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 
 const CONTRACT_ADDRESS = {
   WrappedEther: 'c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -10,7 +14,7 @@ const CONTRACT_ADDRESS = {
   TetherToken: 'dac17f958d2ee523a2206206994597c13d831ec7',
 };
 
-async function mockInfura(mockServer) {
+async function mockInfura(mockServer: MockttpServer): Promise<void> {
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     [
@@ -82,7 +86,7 @@ async function mockInfura(mockServer) {
   mockSecurityAlertsRequest(mockServer);
 }
 
-async function mockSecurityAlertsRequest(server) {
+async function mockSecurityAlertsRequest(server: MockttpServer): Promise<void> {
   const request = {
     method: 'eth_signTypedData_v4',
     params: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
@@ -92,6 +96,8 @@ async function mockSecurityAlertsRequest(server) {
     statusCode: 201,
     body: {
       block: 20733277,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: 'Malicious',
       reason: 'transfer_farming',
       description: '',
@@ -105,7 +111,7 @@ async function mockSecurityAlertsRequest(server) {
     .thenJson(response.statusCode ?? 201, response);
 }
 
-describe('PPOM Blockaid Alert - Set Trade farming order', function () {
+describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite) {
   it('should show banner alert', async function () {
     // we need to use localhost instead of the ip
     // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
@@ -122,34 +128,28 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function () {
           })
           .build(),
         testSpecificMock: mockInfura,
-        title: this.test.title,
+        title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await driver.openNewPage('http://localhost:8080');
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
+        await testDapp.checkPageIsLoaded();
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
           'If you approve this request, you might lose your assets.';
 
         // Click TestDapp button to send JSON-RPC request
-        await driver.clickElement('#maliciousTradeOrder');
+        await testDapp.clickMaliciousTradeOrderButton();
+
+        // Wait for confirmation pop-up
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.assertElementNotPresent('.loading-indicator', {
-          timeout: 20000,
-        });
-
-        await driver.waitForSelector({
-          css: '.mm-text--body-lg-medium',
-          text: expectedTitle,
-        });
-
-        await driver.waitForSelector({
-          css: '.mm-text--body-md',
-          text: expectedDescription,
-        });
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+        await confirmation.checkAlertMessageIsDisplayed(expectedTitle);
+        await confirmation.checkAlertMessageIsDisplayed(expectedDescription);
       },
     );
   });
