@@ -1,5 +1,9 @@
 import { Hex } from '@metamask/utils';
-import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../constants/network';
+import {
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../constants/network';
 import { fetchAssetMetadata } from './asset-utils';
 import { calcTokenAmount } from './transactions-controller-utils';
 
@@ -372,3 +376,168 @@ export function getGatorPermissionDisplayMetadata(
     frequency: '',
   };
 }
+
+// Types for site data
+export type SitesConnectionsList = Record<string, {
+  origin: string;
+  name: string;
+  addresses: string[];
+  addressToNameMap: Record<string, string>;
+  subjectType: string;
+  networkName: string;
+  networkIconUrl: string;
+}>;
+
+export type GatorPermissionsMap = Record<string, Record<string, Array<{ siteOrigin?: string; [key: string]: unknown }>>>;
+
+/**
+ * Helper function to extract unique site origins from gator permissions
+ */
+export const extractGatorSiteOrigins = (gatorPermissions: GatorPermissionsMap): Set<string> => {
+  if (!gatorPermissions) {
+    return new Set();
+  }
+
+  const gatorSiteOrigins = new Set<string>();
+  Object.values(gatorPermissions).forEach((permissionTypeMap) => {
+    if (permissionTypeMap && typeof permissionTypeMap === 'object') {
+      Object.values(permissionTypeMap).forEach((permissions) => {
+        if (Array.isArray(permissions)) {
+          permissions.forEach((permission) => {
+            if (permission && permission.siteOrigin) {
+              gatorSiteOrigins.add(permission.siteOrigin);
+            }
+          });
+        }
+      });
+    }
+  });
+  return gatorSiteOrigins;
+};
+
+/**
+ * Helper function to find the first chainId for a site
+ */
+export const findFirstChainIdForSite = (
+  gatorPermissions: GatorPermissionsMap,
+  siteOrigin: string,
+): string | null => {
+  // Use for...of loops for early termination capability
+  for (const permissionTypeMap of Object.values(gatorPermissions)) {
+    if (permissionTypeMap && typeof permissionTypeMap === 'object') {
+      for (const [chainId, permissions] of Object.entries(permissionTypeMap)) {
+        if (
+          Array.isArray(permissions) &&
+          permissions.some((p) => p && p.siteOrigin === siteOrigin)
+        ) {
+          return chainId; // Early return when found
+        }
+      }
+    }
+  }
+
+  return null;
+};
+
+/**
+ * Helper function to create a site entry from gator permissions
+ */
+export const createSiteEntryFromGatorPermissions = (
+  siteOrigin: string,
+  firstChainId: string | null,
+  getURLHostName: (url: string) => string,
+): SitesConnectionsList[string] => ({
+  origin: siteOrigin,
+  name: getURLHostName(siteOrigin),
+  addresses: [],
+  addressToNameMap: {},
+  subjectType: 'Website',
+  networkName: firstChainId ? (NETWORK_TO_NAME_MAP as Record<string, string>)[firstChainId] || '' : '',
+  networkIconUrl: firstChainId
+    ? (CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP as Record<string, string>)[firstChainId] || ''
+    : '',
+});
+
+/**
+ * Merges sites from sitesConnectionsList with sites that have gator permissions but no connection
+ *
+ * @param sitesConnectionsList - The existing sites connections list
+ * @param gatorPermissions - The gator permissions map
+ * @param getURLHostName - Function to extract hostname from URL
+ * @returns Merged sites connections list
+ */
+export const mergeSitesWithGatorPermissions = (
+  sitesConnectionsList: SitesConnectionsList | null,
+  gatorPermissions: GatorPermissionsMap | null,
+  getURLHostName: (url: string) => string,
+): SitesConnectionsList => {
+  // If we have neither data source, return empty object
+  if (!gatorPermissions && !sitesConnectionsList) {
+    return {};
+  }
+
+  try {
+    // Start with existing sites list (or empty object if none)
+    const result = { ...(sitesConnectionsList || {}) };
+
+    // If we have gator permissions, merge them in
+    if (gatorPermissions) {
+      // Extract all unique site origins from gator permissions
+      const gatorSiteOrigins = extractGatorSiteOrigins(gatorPermissions);
+
+      // Add missing site origins with required properties
+      gatorSiteOrigins.forEach((siteOrigin) => {
+        if (!result[siteOrigin]) {
+          const firstChainId = findFirstChainIdForSite(
+            gatorPermissions,
+            siteOrigin,
+          );
+          result[siteOrigin] = createSiteEntryFromGatorPermissions(
+            siteOrigin,
+            firstChainId,
+            getURLHostName,
+          );
+        }
+      });
+    }
+
+    return result;
+  } catch (error) {
+    console.error('Error merging gator permissions:', error);
+    return sitesConnectionsList || {};
+  }
+};
+
+/**
+ * Counts sites that have gator permissions but no connection
+ *
+ * @param sitesConnectionsList - The existing sites connections list
+ * @param gatorPermissions - The gator permissions map
+ * @returns Count of sites that have permissions but no connection
+ */
+export const countSitesWithPermissionsButNoConnection = (
+  sitesConnectionsList: SitesConnectionsList | null,
+  gatorPermissions: GatorPermissionsMap | null,
+): number => {
+  if (!gatorPermissions) {
+    return 0;
+  }
+
+  try {
+    // Extract all unique site origins from gator permissions
+    const gatorSiteOrigins = extractGatorSiteOrigins(gatorPermissions);
+
+    // Count sites that have gator permissions but are not in the connections list
+    let count = 0;
+    gatorSiteOrigins.forEach((siteOrigin) => {
+      if (!sitesConnectionsList || !sitesConnectionsList[siteOrigin]) {
+        count++;
+      }
+    });
+
+    return count;
+  } catch (error) {
+    console.error('Error counting sites with permissions but no connection:', error);
+    return 0;
+  }
+};

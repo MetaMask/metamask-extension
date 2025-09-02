@@ -32,6 +32,7 @@ import {
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionListItem } from './permission-list-item';
+import { countSitesWithPermissionsButNoConnection } from '../../../../../shared/lib/gator-permissions-utils';
 
 export const PermissionsPageV2 = () => {
   const t = useI18nContext();
@@ -52,9 +53,19 @@ export const PermissionsPageV2 = () => {
     useGatorPermissions();
 
   useEffect(() => {
-    const totalSites = Object.keys(sitesConnectionsList).filter(
+    // Count sites that have connections (excluding snaps)
+    const connectedSitesCount = Object.keys(sitesConnectionsList || {}).filter(
       (site) => !isSnapId(site),
     ).length;
+
+    // Count sites that have gator permissions but no connection
+    const sitesWithPermissionsButNoConnection = countSitesWithPermissionsButNoConnection(
+      sitesConnectionsList,
+      gatorPermissionsMap,
+    );
+
+    // Total sites = connected sites + sites with permissions but no connection
+    const totalSites = connectedSitesCount + sitesWithPermissionsButNoConnection;
     const nativeTokenStream =
       Object.values(gatorPermissionsMap['native-token-stream']).flat().length ||
       0;
@@ -73,12 +84,10 @@ export const PermissionsPageV2 = () => {
 
     setTotalConnections(totalSites);
     setTotalTokenTransferPermissions(totalTokenTransfer);
-    setTotalPermissions(totalConnections + totalTokenTransfer);
+    setTotalPermissions(totalSites + totalTokenTransfer);
   }, [
     sitesConnectionsList,
     gatorPermissionsMap,
-    totalConnections,
-    totalTokenTransferPermissions,
   ]);
 
   const handleAssetClick = async (assetType) => {

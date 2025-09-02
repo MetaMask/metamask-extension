@@ -27,66 +27,8 @@ import { REVIEW_PERMISSIONS } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
 import { ConnectionListItem } from '../permissions-page/connection-list-item';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
 import { getURLHostName } from '../../../../helpers/utils/util';
-
-// Helper function to extract unique site origins from gator permissions
-const extractGatorSiteOrigins = (gatorPermissions) => {
-  if (!gatorPermissions) {
-    return new Set();
-  }
-
-  const gatorSiteOrigins = new Set();
-  Object.values(gatorPermissions).forEach((permissionTypeMap) => {
-    if (permissionTypeMap && typeof permissionTypeMap === 'object') {
-      Object.values(permissionTypeMap).forEach((permissions) => {
-        if (Array.isArray(permissions)) {
-          permissions.forEach((permission) => {
-            if (permission && permission.siteOrigin) {
-              gatorSiteOrigins.add(permission.siteOrigin);
-            }
-          });
-        }
-      });
-    }
-  });
-  return gatorSiteOrigins;
-};
-
-// Helper function to find the first chainId for a site
-const findFirstChainIdForSite = (gatorPermissions, siteOrigin) => {
-  // Use for...of loops for early termination capability
-  for (const permissionTypeMap of Object.values(gatorPermissions)) {
-    if (permissionTypeMap && typeof permissionTypeMap === 'object') {
-      for (const [chainId, permissions] of Object.entries(permissionTypeMap)) {
-        if (
-          Array.isArray(permissions) &&
-          permissions.some((p) => p && p.siteOrigin === siteOrigin)
-        ) {
-          return chainId; // Early return when found
-        }
-      }
-    }
-  }
-
-  return null;
-};
-
-// Helper function to create a site entry from gator permissions
-const createSiteEntryFromGatorPermissions = (siteOrigin, firstChainId) => ({
-  origin: siteOrigin,
-  name: getURLHostName(siteOrigin),
-  addresses: [],
-  addressToNameMap: {},
-  subjectType: SubjectType.Website,
-  networkName: firstChainId ? NETWORK_TO_NAME_MAP[firstChainId] || '' : '',
-  networkIconUrl: firstChainId
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[firstChainId] || ''
-    : '',
-});
+import { mergeSitesWithGatorPermissions } from '../../../../../shared/lib/gator-permissions-utils';
 
 export const SitesPage = () => {
   const t = useI18nContext();
@@ -100,40 +42,11 @@ export const SitesPage = () => {
 
   // Merge missing site origins from gator permissions into sitesConnectionsList
   const mergedSitesConnectionsList = React.useMemo(() => {
-    // If we have neither data source, return empty object
-    if (!gatorPermissions && !sitesConnectionsList) {
-      return {};
-    }
-
-    try {
-      // Start with existing sites list (or empty object if none)
-      const result = { ...(sitesConnectionsList || {}) };
-
-      // If we have gator permissions, merge them in
-      if (gatorPermissions) {
-        // Extract all unique site origins from gator permissions
-        const gatorSiteOrigins = extractGatorSiteOrigins(gatorPermissions);
-
-        // Add missing site origins with required properties
-        gatorSiteOrigins.forEach((siteOrigin) => {
-          if (!result[siteOrigin]) {
-            const firstChainId = findFirstChainIdForSite(
-              gatorPermissions,
-              siteOrigin,
-            );
-            result[siteOrigin] = createSiteEntryFromGatorPermissions(
-              siteOrigin,
-              firstChainId,
-            );
-          }
-        });
-      }
-
-      return result;
-    } catch (error) {
-      console.error('Error merging gator permissions:', error);
-      return sitesConnectionsList || {};
-    }
+    return mergeSitesWithGatorPermissions(
+      sitesConnectionsList,
+      gatorPermissions,
+      getURLHostName,
+    );
   }, [sitesConnectionsList, gatorPermissions]);
 
   useEffect(() => {
