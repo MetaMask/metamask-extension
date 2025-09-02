@@ -57,7 +57,6 @@ class ChromeDriver {
     args.push('--log-level=3');
     args.push('--enable-logging');
 
-
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
