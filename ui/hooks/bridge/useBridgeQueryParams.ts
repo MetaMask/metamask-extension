@@ -102,7 +102,7 @@ export const useBridgeQueryParams = () => {
           updatedSearchParams.delete(param);
         }
       });
-      navigate({ search: updatedSearchParams.toString() });
+      navigate({ search: updatedSearchParams.toString(), replace: true });
     },
     [search, navigate],
   );
