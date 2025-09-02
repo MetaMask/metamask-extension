@@ -21,8 +21,14 @@ jobs:
           semver="${GITHUB_REF#refs/heads/Version-v}"
           echo "semver=${semver}" >> "$GITHUB_OUTPUT"
 
+          # Validate semver format X.Y.Z where X, Y, Z are numbers
+          if ! [[ "$semver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Branch name must be Version-vX.Y.Z where X, Y, Z are numbers. Got: ${GITHUB_REF}" >&2
+            exit 1
+          fi
+
           # Fetch branches from GitHub API
-          curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${GITHUB_REPOSITORY}/branches | jq '[ .[] | .name | select(startswith("Version-v")) | ltrimstr("Version-v") ] | sort_by( split(".") | map(tonumber) ) | reverse' > versions.json
+          curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${GITHUB_REPOSITORY}/branches | jq '[ .[] | .name | select(test("^Version-v[0-9]+\\.[0-9]+\\.[0-9]+$")) | ltrimstr("Version-v") ] | sort_by( split(".") | map(tonumber) ) | reverse' > versions.json
 
           # Print found versions (sorted desc)
           echo "Found versions (sorted desc): $(cat versions.json)"
