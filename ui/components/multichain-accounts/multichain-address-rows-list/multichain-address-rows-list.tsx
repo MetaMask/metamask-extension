@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { AccountGroupId } from '@metamask/account-api';
+import { type AccountGroupId } from '@metamask/account-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -44,12 +44,14 @@ export const MultichainAddressRowsList = ({
     }
 
     const pattern = searchPattern.toLowerCase();
-    const filtered = getAccountSpreadByNetworkByGroupId.filter((item) => {
-      return (
-        item.networkName.toLowerCase().includes(pattern) ||
-        item.account.address.toLowerCase().includes(pattern)
-      );
-    });
+    const filtered = getAccountSpreadByNetworkByGroupId.filter(
+      ({ networkName, account }) => {
+        return (
+          networkName.toLowerCase().includes(pattern) ||
+          account.address.toLowerCase().includes(pattern)
+        );
+      },
+    );
 
     return filtered;
   }, [getAccountSpreadByNetworkByGroupId, searchPattern]);
