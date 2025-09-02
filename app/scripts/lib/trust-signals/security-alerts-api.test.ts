@@ -140,9 +140,8 @@ describe('Security Alerts API', () => {
       const cachedLoadingResponse = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        result_type: ResultType.Benign,
+        result_type: ResultType.Loading,
         label: '',
-        isLoading: true,
       };
       getAddressSecurityAlertResponseMock.mockReturnValue(
         cachedLoadingResponse,
@@ -199,15 +198,14 @@ describe('Security Alerts API', () => {
         TEST_ADDRESS,
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          result_type: ResultType.Benign,
+          result_type: ResultType.Loading,
           label: '',
-          isLoading: true,
         },
       );
       expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
         2,
         TEST_ADDRESS,
-        { ...RESPONSE_MOCK, isLoading: false },
+        { ...RESPONSE_MOCK },
       );
       expect(scope.isDone()).toBe(true);
     });
@@ -236,9 +234,8 @@ describe('Security Alerts API', () => {
         TEST_ADDRESS,
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          result_type: ResultType.Benign,
+          result_type: ResultType.Loading,
           label: '',
-          isLoading: true,
         },
       );
       expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
@@ -246,9 +243,8 @@ describe('Security Alerts API', () => {
         TEST_ADDRESS,
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          result_type: ResultType.Benign,
+          result_type: ResultType.ErrorResult,
           label: '',
-          isLoading: false,
         },
       );
     });
