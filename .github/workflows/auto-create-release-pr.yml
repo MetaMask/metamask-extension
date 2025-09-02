@@ -5,7 +5,7 @@ on:
 
 jobs:
   extract:
-    if: ${{ github.ref_type == 'branch' && startsWith(github.ref, 'refs/heads/Version-v') }}
+    if: ${{ github.ref_type == 'branch' && (startsWith(github.ref, 'refs/heads/Version-v') || startsWith(github.ref, 'refs/heads/release/')) }}
     runs-on: ubuntu-latest
     outputs:
       semver: ${{ steps.out.outputs.semver }}
@@ -18,33 +18,50 @@ jobs:
         run: |
           set -euo pipefail
 
-          semver="${GITHUB_REF#refs/heads/Version-v}"
+          ref_name="${GITHUB_REF#refs/heads/}"
+
+          # Extract semver based on prefix
+          if [[ "$ref_name" == Version-v* ]]; then
+            semver="${ref_name#Version-v}"
+          elif [[ "$ref_name" == release/* ]]; then
+            semver="${ref_name#release/}"
+          else
+            echo "Error: Branch name must be Version-vX.Y.Z or release/X.Y.Z where X, Y, Z are numbers. Got: $ref_name" >&2
+            exit 1
+          fi
           echo "semver=${semver}" >> "$GITHUB_OUTPUT"
 
           # Validate semver format X.Y.Z where X, Y, Z are numbers
           if ! [[ "$semver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Error: Branch name must be Version-vX.Y.Z where X, Y, Z are numbers. Got: ${GITHUB_REF}" >&2
+            echo "Error: Invalid semver in branch name: $ref_name (extracted: $semver)" >&2
             exit 1
           fi
 
-          # Fetch branches from GitHub API
-          curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${GITHUB_REPOSITORY}/branches | jq '[ .[] | .name | select(test("^Version-v[0-9]+\\.[0-9]+\\.[0-9]+$")) | ltrimstr("Version-v") ] | sort_by( split(".") | map(tonumber) ) | reverse' > versions.json
+          # Fetch branches and create list of {name, semver} for matching patterns, sort desc by semver
+          curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${GITHUB_REPOSITORY}/branches | jq '[ .[] | .name | select(test("^Version-v[0-9]+\\.[0-9]+\\.[0-9]+$") or test("^release/[0-9]+\\.[0-9]+\\.[0-9]+$")) | {name: ., semver: (if test("^Version-v") then ltrimstr("Version-v") else ltrimstr("release/") end) } ] | sort_by( .semver | split(".") | map(tonumber) ) | reverse' > all_versions.json
 
-          # Print found versions (sorted desc)
-          echo "Found versions (sorted desc): $(cat versions.json)"
+          # Print all found versions (sorted desc)
+          echo "All found versions (sorted desc): $(jq '[ .[].semver ]' all_versions.json)"
 
-          # Print found Version branches
-          echo "Found Version branches:"
-          jq -r 'map("Version-v" + .)[]' versions.json || echo "No Version branches found."
+          # Print all found matching branches (sorted by semver desc)
+          echo "All found matching branches:"
+          jq -r '.[].name' all_versions.json || echo "No matching branches found."
 
-          # Get the second highest
-          second_highest=$(jq '.[1]' versions.json)
-          if [ -z "$second_highest" ] || [ "$second_highest" = "null" ]; then
+          # Filter to those with semver strictly lower than current
+          jq --arg semver "$semver" '[ .[] | select( .semver as $v | $semver | split(".") as $c | $v | split(".") as $p | ($p[0] | tonumber) < ($c[0] | tonumber) or (($p[0] | tonumber) == ($c[0] | tonumber) and (($p[1] | tonumber) < ($c[1] | tonumber) or (($p[1] | tonumber) == ($c[1] | tonumber) and ($p[2] | tonumber) < ($c[2] | tonumber)))) ) ]' all_versions.json > filtered_versions.json
+
+          # Print filtered versions (still sorted desc, so [0] is highest lower)
+          echo "Filtered versions (< $semver, sorted desc): $(jq '[ .[].semver ]' filtered_versions.json)"
+
+          # Select the highest lower: first in filtered list
+          if [ "$(jq length filtered_versions.json)" -eq 0 ]; then
             previous_ref="main"
-            echo "No second highest version found, falling back to: ${previous_ref}"
+            echo "No versions lower than $semver found, falling back to: ${previous_ref}"
           else
-            previous_ref="Version-v$(jq -r '.[1]' versions.json)"
-            echo "Selected 2nd highest version: $(jq -r '.[1]' versions.json)"
+            highest_lower="$(jq -r '.[0].semver' filtered_versions.json)"
+            previous_ref="$(jq -r '.[0].name' filtered_versions.json)"
+            echo "Selected highest version lower than $semver: ${highest_lower}"
+            echo "Selected branch: ${previous_ref}"
             echo "Passing to previous-version-ref: ${previous_ref}"
           fi
           echo "previous_ref=${previous_ref}" >> "$GITHUB_OUTPUT"
@@ -57,7 +74,7 @@ jobs:
           echo "  previous-version-ref: ${previous_ref}"
 
   call-create-release-pr:
-    if: ${{ github.ref_type == 'branch' && startsWith(github.ref, 'refs/heads/Version-v') }}
+    if: ${{ github.ref_type == 'branch' && (startsWith(github.ref, 'refs/heads/Version-v') || startsWith(github.ref, 'refs/heads/release/')) }}
     needs: extract
     permissions:
       contents: write

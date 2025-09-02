@@ -49,6 +49,8 @@ jobs:
       github-tools-version: 914cbff8a8d58cfe0053e8690a3c0d4b281e27d6
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
+      # If called from auto-create-release-pr use the PR_TOKEN passed in as an input, if called manually use github secret token values
+      # (this is due to github limitations on fetching secrets from called workflows).
       github-token: ${{ github.event_name == 'workflow_dispatch' && secrets.PR_TOKEN || secrets.github-token }}
       google-application-creds-base64: ${{ github.event_name == 'workflow_dispatch' && secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 || secrets.google-application-creds-base64 }}
     permissions:
