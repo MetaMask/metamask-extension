@@ -12,6 +12,10 @@ import {
 } from '@metamask/json-rpc-engine';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
+import {
+  RejectApprovalRequestsForOrigin,
+  RevokePermissionsForOrigin,
+} from './types';
 
 export const revokePermissionsHandler = {
   methodNames: [MethodNames.RevokePermissions],
@@ -44,8 +48,8 @@ function revokePermissionsImplementation(
     revokePermissionsForOrigin,
     rejectApprovalRequestsForOrigin,
   }: {
-    revokePermissionsForOrigin: (permissionKeys: string[]) => void;
-    rejectApprovalRequestsForOrigin: () => void;
+    revokePermissionsForOrigin: RevokePermissionsForOrigin;
+    rejectApprovalRequestsForOrigin: RejectApprovalRequestsForOrigin;
   },
 ) {
   const { params } = req;
