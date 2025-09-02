@@ -3361,22 +3361,23 @@ describe('MetaMaskController', () => {
         });
       });
 
-      // TODO: Fix test infrastructure issue - Error objects cause test failures during Jest setup
-      // This appears to be a Jest/test environment issue unrelated to the PR changes
-      // The test logic is correct but Jest is throwing errors during mock setup
-      it.skip('should handle errors during feature flag updates', async () => {
+      it('should handle errors during feature flag updates', async () => {
         const { remoteFeatureFlagController } = localMetamaskController;
 
         // Replace the global mock with an error mock for this test
         jest
           .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
-          .mockRejectedValue(new Error('Network error during feature flag update'));
+          .mockImplementation(() =>
+            Promise.reject(
+              new Error('Network error during feature flag update'),
+            ),
+          );
 
         // Trigger the error scenario and wait for it to be handled
         await simulateLocalPreferencesChange({
           useExternalServices: true,
         });
-        
+
         // Allow time for error handling to complete
         await new Promise((resolve) => setTimeout(resolve, 10));
 
