@@ -13,12 +13,12 @@ import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-ut
 import ViewContact from './view-contact.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { location, match } = ownProps;
+  const { location, params } = ownProps;
   const pathNameTail = location.pathname.match(/[^/]+$/u)[0];
   const pathNameTailIsAddress = pathNameTail.includes('0x');
   const address = pathNameTailIsAddress
     ? pathNameTail.toLowerCase()
-    : match.params.id;
+    : params.id;
 
   const internalAccount = getInternalAccountByAddress(state, address);
 

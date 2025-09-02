@@ -24,8 +24,7 @@ import EditContact from './edit-contact.component';
 
 const mapStateToProps = (state, ownProps) => {
   const { location, params } = ownProps;
-  const { pathname } = location;
-  const pathNameTail = pathname.match(/[^/]+$/u)[0];
+  const pathNameTail = location.pathname.match(/[^/]+$/u)[0];
   const pathNameTailIsAddress = pathNameTail.includes('0x');
   const address = pathNameTailIsAddress
     ? pathNameTail.toLowerCase()
