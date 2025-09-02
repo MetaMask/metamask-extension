@@ -31,6 +31,7 @@ import {
   getNetworkAddressCount,
   getWallet,
   getAccountGroupsByAddress,
+  getInternalAccountListSpreadByScopesByGroupId,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 import {
@@ -1231,6 +1232,16 @@ describe('Multichain Accounts Selectors', () => {
       expect(result.length).toBe(2);
       expect(result[0].id).toBe(ENTROPY_GROUP_1_ID);
       expect(result[1].id).toBe(LEDGER_GROUP_ID);
+    });
+  });
+
+  describe.only('getInternalAccountListSpreadByScopesByGroupId', () => {
+    it('executes', () => {
+      const result = getInternalAccountListSpreadByScopesByGroupId(
+        typedMockState,
+        ENTROPY_GROUP_1_ID,
+      );
+      console.log(result);
     });
   });
 });

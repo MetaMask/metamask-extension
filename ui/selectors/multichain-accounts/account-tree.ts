@@ -3,11 +3,19 @@ import {
   type AccountGroupId,
   type AccountWalletId,
 } from '@metamask/account-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { type CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+import {
+  type Hex,
+  type CaipChainId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { type NetworkConfiguration } from '@metamask/network-controller';
+
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
@@ -22,6 +30,8 @@ import {
   getSelectedInternalAccount,
 } from '../accounts';
 
+import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
+import { isTestNetwork } from '../../helpers/utils/network-helper';
 import {
   AccountGroupWithInternalAccounts,
   AccountTreeState,
@@ -682,6 +692,7 @@ export const getInternalAccountsFromGroupById = createSelector(
     internalAccounts: Record<AccountId, InternalAccount>,
     groupId: AccountGroupId | null,
   ): InternalAccount[] => {
+    console.log(groupId);
     if (!groupId) {
       return [];
     }
@@ -733,3 +744,42 @@ export const getAccountGroupsByAddress = createDeepEqualSelector(
     return [...matchingGroups];
   },
 );
+
+export const getInternalAccountListSpreadByScopesByGroupId =
+  createDeepEqualSelector(
+    [
+      getInternalAccountsFromGroupById,
+      getMultichainNetworkConfigurationsByChainId,
+    ],
+    (
+      internalAccounts: InternalAccount[], // Output of selector 1
+      networks: [
+        Record<CaipChainId, MultichainNetworkConfiguration>,
+        Record<Hex, NetworkConfiguration>,
+      ], // Output of selector 2
+    ) => {
+      const caipNetworks = networks[0];
+      const evmNetworkIds = Object.keys(caipNetworks).filter((chainId) => {
+        return (
+          chainId.startsWith('eip155:') &&
+          !isTestNetwork(chainId as CaipChainId)
+        );
+      }) as CaipChainId[];
+
+      return internalAccounts.flatMap((account) => {
+        // Determine scopes based on account type
+        const scopes: CaipChainId[] =
+          account.type === EthAccountType.Eoa
+            ? evmNetworkIds
+            : account.scopes || [];
+
+        // Filter out testnets from scopes and map each scope to an account-scope object
+        const filteredScopes = scopes.filter((scope) => !isTestNetwork(scope));
+        return filteredScopes.map((scope) => ({
+          account,
+          scope,
+          networkName: caipNetworks[scope]?.name || 'Unknown Network',
+        }));
+      });
+    },
+  );
