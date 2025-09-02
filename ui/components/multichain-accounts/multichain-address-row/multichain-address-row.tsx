@@ -1,4 +1,6 @@
 import React from 'react';
+import { CaipChainId } from '@metamask/utils';
+
 import {
   AlignItems,
   BlockSize,
@@ -22,6 +24,8 @@ import {
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils'
+
 
 type MultichainAddressRowProps = {
   /**
@@ -50,7 +54,11 @@ export const MultichainAddressRow = ({
 }: MultichainAddressRowProps) => {
   const [copied, handleCopy] = useCopyToClipboard();
 
-  const networkImageSrc = getImageForChainId(chainId);
+  const networkImageSrc = getImageForChainId(
+    chainId.startsWith('eip155')
+      ? convertCaipToHexChainId(chainId as CaipChainId)
+      : chainId,
+  );
   const truncatedAddress = shortenAddress(address);
 
   const handleCopyClick = () => {

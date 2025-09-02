@@ -633,30 +633,6 @@ export const getWallet = createSelector(
 );
 
 /**
- * Get the number of internal accounts in a specific group.
- *
- * @param accountTree - Account tree state.
- * @param groupId - The account group ID.
- * @returns The number of accounts in the group, or 0 if the group is not found.
- */
-export const getNetworkAddressCount = createSelector(
-  getAccountTree,
-  (_, accountGroupId: AccountGroupId) => accountGroupId,
-  (accountTree: AccountTreeState, accountGroupId: AccountGroupId): number => {
-    const { wallets } = accountTree;
-
-    const walletId = extractWalletIdFromGroupId(accountGroupId);
-    const wallet = wallets[walletId as AccountWalletId];
-
-    if (!wallet?.groups[accountGroupId]) {
-      return 0;
-    }
-
-    return wallet.groups[accountGroupId].accounts.length;
-  },
-);
-
-/**
  * Returns all account groups that belong to a specific wallet ID.
  *
  * @param state - Redux state.
@@ -809,3 +785,27 @@ export const getInternalAccountListSpreadByScopesByGroupId =
       return result;
     },
   );
+
+/**
+ * Get the number of internal accounts in a specific group.
+ *
+ * @param _state - Redux state.
+ * @param groupId - The account group ID.
+ * @returns The number of accounts in the group, or 0 if the group is not found.
+ */
+export const getNetworkAddressCount = createDeepEqualSelector(
+  [getInternalAccountListSpreadByScopesByGroupId],
+  (
+    accounts: {
+      account: InternalAccount;
+      scope: CaipChainId;
+      networkName: string;
+    }[],
+  ): number => {
+    if (!accounts) {
+      return 0;
+    }
+
+    return accounts.length;
+  },
+);
