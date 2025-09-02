@@ -63,7 +63,10 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
+import {
+  getIsSeedlessOnboardingFeatureEnabled,
+  getIsSocialLoginUiChangesEnabled,
+} from '../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import LoadingScreen from '../../components/ui/loading-screen';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
@@ -106,6 +109,7 @@ export default function OnboardingFlow() {
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
+  const isSocialLoginUiChangesEnabled = getIsSocialLoginUiChangesEnabled();
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -113,7 +117,9 @@ export default function OnboardingFlow() {
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
   const [welcomePageState, setWelcomePageState] = useState(
-    WelcomePageState.Banner,
+    isSocialLoginUiChangesEnabled
+      ? WelcomePageState.Login
+      : WelcomePageState.Banner,
   );
 
   useEffect(() => {
@@ -148,6 +154,10 @@ export default function OnboardingFlow() {
     }
 
     if (pathname === ONBOARDING_WELCOME_ROUTE) {
+      if (isSocialLoginUiChangesEnabled) {
+        setWelcomePageState(WelcomePageState.Login);
+        return;
+      }
       setWelcomePageState(
         showTermsOfUse ? WelcomePageState.Banner : WelcomePageState.Login,
       );
@@ -163,6 +173,7 @@ export default function OnboardingFlow() {
     showTermsOfUse,
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
+    isSocialLoginUiChangesEnabled,
   ]);
 
   useEffect(() => {

@@ -69,3 +69,6 @@ BLOCKAID_PUBLIC_KEY=
 
 ; Set this to `true` to enable Metamask Shield
 ; METAMASK_SHIELD_ENABLED='false'
+
+; Set this to `true` to enable new social login ui update i.e. Phase 1.5
+SOCIAL_LOGIN_UI_CHANGES_ENABLED='true'

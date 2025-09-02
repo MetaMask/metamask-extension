@@ -14,3 +14,7 @@ export const getIsSeedlessOnboardingFeatureEnabled = (): boolean => {
 export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {
   return process.env.METAMASK_SHIELD_ENABLED?.toString() === 'true';
 };
+
+export const getIsSocialLoginUiChangesEnabled = (): boolean => {
+  return process.env.SOCIAL_LOGIN_UI_CHANGES_ENABLED?.toString() === 'true';
+};

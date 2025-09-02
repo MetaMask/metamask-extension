@@ -91,6 +91,9 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
     METAMASK_SHIELD_ENABLED: isTestBuild
       ? 'false'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
+    SOCIAL_LOGIN_UI_CHANGES_ENABLED: isTestBuild
+      ? 'true'
+      : variables.getMaybe('SOCIAL_LOGIN_UI_CHANGES_ENABLED'),
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
   });
