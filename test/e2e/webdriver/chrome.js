@@ -59,7 +59,7 @@ class ChromeDriver {
 
     if (process.env.CI || process.env.CODESPACES) {
       args.push('--disable-gpu');
-      args.push('--disable-webgpu');
+      args.push('--disable-software-rasterizer');
     }
 
     if (isHeadless('SELENIUM')) {
