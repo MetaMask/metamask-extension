@@ -3,8 +3,8 @@ import { parseMetaMaskUrl } from '@metamask/snaps-utils';
 import { getSnapRoute } from '../../helpers/utils/util';
 
 const useSnapNavigation = () => {
-  const useNavigateHook = useNavigate();
-  const navigate = (url: string) => {
+  const navigate = useNavigate();
+  const useSnapNavigate = (url: string) => {
     let path;
     const linkData = parseMetaMaskUrl(url);
     if (linkData.snapId) {
@@ -12,10 +12,10 @@ const useSnapNavigation = () => {
     } else {
       path = linkData.path;
     }
-    useNavigateHook(path);
+    navigate(path);
   };
   return {
-    navigate,
+    useSnapNavigate,
   };
 };
 
