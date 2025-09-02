@@ -47,8 +47,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
 
   // Don't show alert if trust signal is still loading
   const isTrustSignalLoading =
-    trustSignalDisplayState === TrustSignalDisplayState.Loading ||
-    trustSignalDisplayState === undefined;
+    trustSignalDisplayState === TrustSignalDisplayState.Loading;
 
   const showAlert =
     !isInternalAccount &&
