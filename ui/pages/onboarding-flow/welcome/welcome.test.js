@@ -5,6 +5,7 @@ import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import * as Actions from '../../../store/actions';
 import * as Environment from '../../../../shared/modules/environment';
 import Welcome from './welcome';
+import { WelcomePageState } from './types';
 
 const mockHistoryPush = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -39,7 +40,10 @@ describe('Welcome Page', () => {
   const mockStore = configureMockStore()(mockState);
 
   it('should render', () => {
-    const { getByText } = renderWithProvider(<Welcome />, mockStore);
+    const { getByText } = renderWithProvider(
+      <Welcome pageState={WelcomePageState.Login} />,
+      mockStore,
+    );
 
     expect(getByText(`Let's get started!`)).toBeInTheDocument();
 
@@ -57,7 +61,10 @@ describe('Welcome Page', () => {
       .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
       .mockReturnValue(false);
 
-    const { getByText } = renderWithProvider(<Welcome />, mockStore);
+    const { getByText } = renderWithProvider(
+      <Welcome pageState={WelcomePageState.Login} />,
+      mockStore,
+    );
 
     expect(getByText(`Let's get started!`)).toBeInTheDocument();
 
@@ -78,7 +85,7 @@ describe('Welcome Page', () => {
       .mockRejectedValue(new Error('login error'));
 
     const { getByText, getByTestId } = renderWithProvider(
-      <Welcome />,
+      <Welcome pageState={WelcomePageState.Login} />,
       mockStore,
     );
 

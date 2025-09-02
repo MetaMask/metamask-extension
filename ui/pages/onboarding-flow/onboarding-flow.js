@@ -78,6 +78,7 @@ import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
+import { WelcomePageState } from './welcome/types';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
@@ -109,6 +110,12 @@ export default function OnboardingFlow() {
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
 
+  // If the user has not agreed to the terms of use, we show the banner
+  // Otherwise, we show the login page
+  const [welcomePageState, setWelcomePageState] = useState(
+    WelcomePageState.Banner,
+  );
+
   useEffect(() => {
     setOnboardingDate();
   }, []);
@@ -138,6 +145,14 @@ export default function OnboardingFlow() {
       completedOnboarding
     ) {
       history.replace(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
+    }
+
+    if (pathname === ONBOARDING_WELCOME_ROUTE) {
+      setWelcomePageState(
+        showTermsOfUse ? WelcomePageState.Banner : WelcomePageState.Login,
+      );
+    } else {
+      setWelcomePageState(null);
     }
   }, [
     isUnlocked,
@@ -233,9 +248,14 @@ export default function OnboardingFlow() {
           : AlignItems.center
       }
       justifyContent={JustifyContent.flexStart}
-      className={classnames('onboarding-flow onboarding-flow--welcome-login')}
+      className={classnames('onboarding-flow', {
+        'onboarding-flow--welcome-banner':
+          welcomePageState === WelcomePageState.Banner,
+        'onboarding-flow--welcome-login':
+          welcomePageState === WelcomePageState.Login,
+      })}
     >
-      {!isPopup && <OnboardingAppHeader />}
+      {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
       <Box
         className={classnames('onboarding-flow__container', {
           'onboarding-flow__container--full': isFullPage,
@@ -323,7 +343,13 @@ export default function OnboardingFlow() {
           />
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
-            render={(routeProps) => <OnboardingWelcome {...routeProps} />}
+            render={(routeProps) => (
+              <OnboardingWelcome
+                {...routeProps}
+                pageState={welcomePageState}
+                setPageState={setWelcomePageState}
+              />
+            )}
           />
           <Route
             path={ONBOARDING_PIN_EXTENSION_ROUTE}
