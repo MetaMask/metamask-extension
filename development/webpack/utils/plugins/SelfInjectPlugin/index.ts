@@ -144,9 +144,15 @@ export class SelfInjectPlugin {
 
     // generate the new self-injecting source code:
     const newSource = new ConcatSource();
-    newSource.add(`document.INJECT_ONCE(`);
+    // wrapped in a new lexical scope so we don't pollute the global namespace
+    newSource.add(`{`);
+    newSource.add(`let d=document,s=d.createElement('script');`);
+    newSource.add(`s.textContent=`);
     newSource.add(this.escapeJs(source + sourceMappingURLComment));
-    newSource.add(`);`);
+    newSource.add(`;`);
+    // add and immediately remove the script to avoid modifying the DOM.
+    newSource.add(`d.documentElement.appendChild(s).remove()`);
+    newSource.add(`}`);
 
     return newSource;
   }

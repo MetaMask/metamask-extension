@@ -102,7 +102,6 @@ const cache = args.cache
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 const plugins: WebpackPluginInstance[] = [
-  new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }),
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
     preprocessorOptions: { useWith: false },
@@ -177,6 +176,10 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
+// MV2 requires self-injection
+if (MANIFEST_VERSION === 2) {
+  plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
+}
 if (args.lavamoat) {
   const { lavamoatPlugin } = require('./utils/plugins/LavamoatPlugin');
   plugins.push(lavamoatPlugin(args));
