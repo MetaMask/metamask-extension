@@ -52,7 +52,7 @@ try {
 }
 `;
 
-// TODO(https://github.com/MetaMask/metamask-extension/issues/35218)
+// TODO: https://github.com/MetaMask/metamask-extension/issues/35218
 // These tests are skipped for webpack builds, as lockdown-more doesn't work under webpack
 // The security team is working on adding an improved version of lockdown-more to the lavamoat webpack plugin.
 // update and enable this test when the improved version is available.

@@ -964,7 +964,7 @@ async function openMenuSafe(driver) {
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
-// TODO(https://github.com/MetaMask/metamask-extension/issues/35218)
+// TODO: https://github.com/MetaMask/metamask-extension/issues/35218
 // remove this function when browserify builds are removed
 // the file should be deleted, and the script should be removed from the manifest
 const isWebpack = () => {
