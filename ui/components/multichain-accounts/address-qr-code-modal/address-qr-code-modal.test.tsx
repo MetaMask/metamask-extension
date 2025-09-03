@@ -253,7 +253,7 @@ describe('AddressQRCodeModal', () => {
     expect(screen.getByText('Unknown Network Address')).toBeInTheDocument();
     // Explorer link should not be rendered for unknown networks
     expect(
-      screen.queryByRole('link', { name: /view.*explorer/i }),
+      screen.queryByRole('link', { name: /view.*explorer/iu }),
     ).not.toBeInTheDocument();
   });
 });
