@@ -1235,7 +1235,7 @@ describe('Multichain Accounts Selectors', () => {
     });
   });
 
-  describe.only('getInternalAccountListSpreadByScopesByGroupId', () => {
+  describe('getInternalAccountListSpreadByScopesByGroupId', () => {
     it('returns internal accounts spread by scopes for a specific multichain group ID', () => {
       const result = getInternalAccountListSpreadByScopesByGroupId(
         typedMockState,
