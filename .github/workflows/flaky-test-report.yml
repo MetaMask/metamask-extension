@@ -1,9 +1,12 @@
 name: Flaky test report
 
 on:
-  schedule:
-    # Once every day from Monday-Friday at 10:00 UTC
-    - cron: 0 10 * * 1-5
+  push:
+    branches:
+      - chore-update-flaky-bot
+  # schedule:
+  #   # Once every day from Monday-Friday at 08:00 UTC
+  #   - cron: 0 8 * * 1-5
 
 permissions:
   contents: read
@@ -11,21 +14,10 @@ permissions:
 
 jobs:
   flaky-test-report:
-    runs-on: ubuntu-latest
-    env:
-      OWNER: ${{ github.repository_owner }}
-      REPOSITORY: ${{ github.event.repository.name }}
-      WORKFLOW_ID: main.yml
-      BRANCH: ${{ github.ref_name }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
-
-      - name: Create flaky test report
-        run: yarn tsx .github/scripts/create-flaky-test-report.ts
+    uses: MetaMask/github-tools/.github/workflows/flaky-test-report.yml@ci-flaky-tests-bot
+    with:
+      repository: ${{ github.repository.name }}
+      workflow_id: main.yml
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      slack-webhook-flaky-tests: ${{ secrets.SLACK_WEBHOOK_FLAKY_TESTS2 }}
