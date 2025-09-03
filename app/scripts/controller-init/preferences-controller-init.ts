@@ -20,7 +20,7 @@ export const PreferencesControllerInit: ControllerInitFunction<
   const controller = new PreferencesController({
     state: {
       currentLocale: initLangCode ?? '',
-      ...persistedState,
+      ...persistedState.PreferencesController,
     },
     messenger: controllerMessenger,
   });
