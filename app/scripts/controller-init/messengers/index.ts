@@ -33,6 +33,7 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
+  getNetworkOrderControllerMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getTokenRatesControllerMessenger,
@@ -54,6 +55,10 @@ import {
 } from './accounts';
 import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
 import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
+import {
+  getShieldControllerInitMessenger,
+  getShieldControllerMessenger,
+} from './shield/shield-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -116,6 +121,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSeedlessOnboardingControllerMessenger,
     getInitMessenger: noop,
   },
+  ShieldController: {
+    getMessenger: getShieldControllerMessenger,
+    getInitMessenger: getShieldControllerInitMessenger,
+  },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
     getInitMessenger: noop,
@@ -174,6 +183,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   MultichainAccountService: {
     getMessenger: getMultichainAccountServiceMessenger,
+    getInitMessenger: noop,
+  },
+  NetworkOrderController: {
+    getMessenger: getNetworkOrderControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;

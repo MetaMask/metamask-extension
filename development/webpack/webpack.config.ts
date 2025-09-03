@@ -263,11 +263,12 @@ const config = {
     // it fails it will load the fallback.
     fallback: {
       // #region conditionally remove developer tooling
-      'react-devtools': isDevelopment
-        ? require.resolve('react-devtools')
+      // remove react-devtools-core unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
+      'react-devtools-core': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
+        ? require.resolve('react-devtools-core')
         : false,
-      // remove remote-redux-devtools unless METAMASK_DEBUG is enabled
-      'remote-redux-devtools': variables.get('METAMASK_DEBUG')
+      // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
+      'remote-redux-devtools': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
         ? require.resolve('remote-redux-devtools')
         : false,
       // #endregion conditionally remove developer tooling

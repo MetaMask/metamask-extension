@@ -1,3 +1,31 @@
-.multichain-account-details-page-wrapper {
+.multichain-account-details-page {
   max-width: 600px;
+
+  &__section {
+    .multichain-account-details__row {
+      margin-bottom: 1px;
+
+      &:first-of-type {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+
+      &:last-of-type {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__srp-button {
+    cursor: pointer;
+    border: none;
+    padding-left: 12px;
+    padding-right: 20px;
+  }
+
+  &__remove-button {
+    font-weight: 600;
+  }
 }
