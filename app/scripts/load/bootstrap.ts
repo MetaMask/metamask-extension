@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-// This code runs before LavaMoat
+// This code runs outside of LavaMoat
 
 // The root compartment will populate this with hooks
 global.stateHooks = {} as typeof stateHooks;
