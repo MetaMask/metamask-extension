@@ -1137,9 +1137,11 @@ class FixtureBuilder {
   withAccountTreeController(data = {}) {
     const buildDefaultAccountTree = () => {
       const accountsById =
-        this.fixture?.data?.AccountsController?.internalAccounts?.accounts || {};
+        this.fixture?.data?.AccountsController?.internalAccounts?.accounts ||
+        {};
       const selectedAccountId =
-        this.fixture?.data?.AccountsController?.internalAccounts?.selectedAccount || null;
+        this.fixture?.data?.AccountsController?.internalAccounts
+          ?.selectedAccount || null;
       const accountsList = Object.values(accountsById);
 
       const wallets = {};
@@ -1149,7 +1151,8 @@ class FixtureBuilder {
       for (const account of accountsList) {
         const keyringType = account?.metadata?.keyring?.type;
         if (keyringType === 'HD Key Tree') {
-          const entropyId = account?.options?.entropySource || 'UNKNOWN_ENTROPY_SOURCE';
+          const entropyId =
+            account?.options?.entropySource || 'UNKNOWN_ENTROPY_SOURCE';
           if (!entropyToAccountIds[entropyId]) {
             entropyToAccountIds[entropyId] = [];
           }
@@ -1157,31 +1160,33 @@ class FixtureBuilder {
         }
       }
 
-      Object.entries(entropyToAccountIds).forEach(([entropyId, accountIds], index) => {
-        const walletId = `entropy:${entropyId}`;
-        const groupId = `${walletId}/0`;
-        wallets[walletId] = {
-          id: walletId,
-          type: 'entropy',
-          groups: {
-            [groupId]: {
-              id: groupId,
-              type: 'multichain-account',
-              accounts: accountIds,
-              metadata: {
-                name: 'Default',
-                pinned: false,
-                hidden: false,
-                entropy: { groupIndex: 0 },
+      Object.entries(entropyToAccountIds).forEach(
+        ([entropyId, accountIds], index) => {
+          const walletId = `entropy:${entropyId}`;
+          const groupId = `${walletId}/0`;
+          wallets[walletId] = {
+            id: walletId,
+            type: 'entropy',
+            groups: {
+              [groupId]: {
+                id: groupId,
+                type: 'multichain-account',
+                accounts: accountIds,
+                metadata: {
+                  name: 'Default',
+                  pinned: false,
+                  hidden: false,
+                  entropy: { groupIndex: 0 },
+                },
               },
             },
-          },
-          metadata: {
-            name: `Wallet ${index + 1}`,
-            entropy: { id: entropyId },
-          },
-        };
-      });
+            metadata: {
+              name: `Wallet ${index + 1}`,
+              entropy: { id: entropyId },
+            },
+          };
+        },
+      );
 
       // 2) Keyring wallets (Ledger, Trezor, Simple Key Pair, Custody, etc.)
       for (const account of accountsList) {
@@ -1202,7 +1207,11 @@ class FixtureBuilder {
             id: groupId,
             type: 'single-account',
             accounts: [account.id],
-            metadata: { name: `${keyringType} Account 1`, pinned: false, hidden: false },
+            metadata: {
+              name: `${keyringType} Account 1`,
+              pinned: false,
+              hidden: false,
+            },
           };
         }
       }
@@ -1218,13 +1227,20 @@ class FixtureBuilder {
             id: walletId,
             type: 'snap',
             groups: {},
-            metadata: { name: account?.metadata?.snap?.name || snapId, snap: { id: snapId } },
+            metadata: {
+              name: account?.metadata?.snap?.name || snapId,
+              snap: { id: snapId },
+            },
           };
           wallets[walletId].groups[groupId] = {
             id: groupId,
             type: 'single-account',
             accounts: [account.id],
-            metadata: { name: `${account?.metadata?.snap?.name || 'Snap Account'} 1`, pinned: false, hidden: false },
+            metadata: {
+              name: `${account?.metadata?.snap?.name || 'Snap Account'} 1`,
+              pinned: false,
+              hidden: false,
+            },
           };
         }
       }
@@ -1245,7 +1261,9 @@ class FixtureBuilder {
       // Fallback: select the first available group
       if (!selectedAccountGroup) {
         const firstWallet = Object.values(wallets)[0];
-        const firstGroup = firstWallet ? Object.values(firstWallet.groups)[0] : null;
+        const firstGroup = firstWallet
+          ? Object.values(firstWallet.groups)[0]
+          : null;
         selectedAccountGroup = firstGroup ? firstGroup.id : null;
       }
 
