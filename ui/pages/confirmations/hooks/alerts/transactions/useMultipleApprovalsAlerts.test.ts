@@ -106,6 +106,7 @@ function runHook({
   approveBalanceChanges = [],
   useTransactionSimulations = true,
   simulationError = undefined,
+  remoteFeatureFlags = {},
 }: {
   currentConfirmation?: Partial<TransactionMeta>;
   nestedTransactions?: NestedTransactionMetadata[];
@@ -115,6 +116,7 @@ function runHook({
   approveBalanceChanges?: ApprovalBalanceChange[];
   useTransactionSimulations?: boolean;
   simulationError?: SimulationErrorCode | null | undefined;
+  remoteFeatureFlags?: Record<string, unknown>;
 } = {}) {
   const confirmation = currentConfirmation
     ? {
@@ -145,6 +147,7 @@ function runHook({
       pendingApprovals,
       transactions: confirmation ? [confirmation] : [],
       useTransactionSimulations,
+      remoteFeatureFlags,
     },
   });
 
@@ -955,6 +958,40 @@ describe('useMultipleApprovalsAlerts', () => {
       });
 
       expect(alerts).toEqual([]); // should match despite case difference
+    });
+  });
+
+  describe('when origin is in allow list', () => {
+    it('returns no alerts', () => {
+      const originAllowedMock = 'https://example.com';
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+          origin: originAllowedMock,
+        },
+        nestedTransactions,
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
+        remoteFeatureFlags: {
+          multipleApprovalAlertAllowList: [originAllowedMock],
+        },
+      });
+
+      expect(alerts).toHaveLength(0);
     });
   });
 });
