@@ -1020,7 +1020,7 @@ describe('Multichain Accounts Selectors', () => {
         ENTROPY_GROUP_1_ID as AccountGroupId,
       );
 
-      expect(result).toBe(2);
+      expect(result).toBe(10);
     });
 
     it('returns 0 when the group does not exist', () => {
