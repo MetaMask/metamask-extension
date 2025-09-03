@@ -10,7 +10,6 @@ export const lavamoatPlugin = (args: Args) =>
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
     inlineLockdown: /^runtime|contentscript\.js/u,
-    unlockedChunksUnsafe: /inpage\.js/u,
     debugRuntime: args.lavamoat === 'debug',
     lockdown: {
       consoleTaming: 'unsafe',
@@ -29,9 +28,11 @@ export const lavamoatPlugin = (args: Args) =>
         case 'scripts/contentscript.js':
           return {
             mode: 'safe',
-            staticShims: args.snow
-              ? [join(__dirname, './no-snow-scuttler.js')]
-              : [],
+            embeddedOptions: {
+              scuttleGlobalThis: {
+                enabled: true,
+              },
+            },
           };
         case 'scripts/inpage.js':
           return { mode: 'unlocked_unsafe' };
