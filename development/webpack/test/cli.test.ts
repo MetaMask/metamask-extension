@@ -21,9 +21,9 @@ describe('./utils/cli.ts', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: 2,
     type: 'main',
-    generatePolicy: false,
     lavamoat: false,
     snow: false,
+    generatePolicy: false,
     dryRun: false,
     stats: false,
   };
