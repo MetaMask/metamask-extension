@@ -97,6 +97,16 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
   switchDirectionForPreferredLocale(localeContext.preferredLocale);
   const { t } = localeContext;
 
+  const legalText = `
+    <span>
+      We will receive a single error report, containing:<br />
+      - Technical diagnostic information.<br />
+      - Your browser, operating system and MetaMask versions.<br />
+      <br />
+      No personal information or other device information will be collected.
+    </span>
+  `;
+
   const footer = supportLink
     ? `
       <p class="critical-error__footer">
@@ -132,7 +142,23 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
         ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
       </p>
       ${detailsRawHtml}
-      <button id="critical-error-button" class="critical-error__button-restore button btn-primary">
+      <input type="checkbox" checked>
+        ${lodashEscape(t('sendBugReport'))}
+        <button
+          id="critical-error__tip-anchor"
+          popovertarget="critical-error__legal-text"
+        >
+          ℹ️
+        </button>
+      </input>
+      <div
+        popover
+        anchor="critical-error__tip-anchor"
+        id="critical-error__legal-text"
+        class="critical-error__legal-text"
+      >
+        ${legalText}
+      </div>
         ${lodashEscape(t('restartMetamask'))}
       </button>
       ${footer}

@@ -60,4 +60,13 @@
     max-height: 10em;
     overflow: auto;
   }
+
+  &__legal-text {
+    max-width: 90%;
+    margin-left: 1em;
+    padding: 0.5em;
+    text-align: left;
+    background-color: black;
+    color: white;
+  }
 }
