@@ -17,7 +17,6 @@ import {
 } from '../../../../store/actions';
 import {
   getAllChainsToPoll,
-  getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
   getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,
@@ -63,9 +62,6 @@ export const useNetworkChangeHandlers = () => {
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-  const allEnabledNetworksForAllNamespaces = useSelector(
-    getAllEnabledNetworksForAllNamespaces,
-  );
   const allChainIds = useSelector(getAllChainsToPoll);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -101,35 +97,19 @@ export const useNetworkChangeHandlers = () => {
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-      if (allEnabledNetworksForAllNamespaces.includes(hexChainId)) {
-        dispatch(
-          enableSingleNetwork(
-            hexChainId,
-            Boolean(isMultichainAccountsFeatureEnabled),
-          ),
-        );
-      } else {
-        dispatch(
-          enableSingleNetwork(
-            hexChainId,
-            Boolean(isMultichainAccountsFeatureEnabled),
-          ),
-        );
-      }
+      dispatch(
+        enableSingleNetwork(
+          hexChainId,
+          Boolean(isMultichainAccountsFeatureEnabled),
+        ),
+      );
 
-      if (isMultichainAccountsFeatureEnabled) {
-        // deferring execution to keep select all unblocked
-        setTimeout(() => {
-          dispatch(setActiveNetwork(finalNetworkClientId));
-        }, 0);
-      }
+      // deferring execution to keep select all unblocked
+      setTimeout(() => {
+        dispatch(setActiveNetwork(finalNetworkClientId));
+      }, 0);
     },
-    [
-      dispatch,
-      allEnabledNetworksForAllNamespaces,
-      evmNetworks,
-      isMultichainAccountsFeatureEnabled,
-    ],
+    [dispatch, evmNetworks, isMultichainAccountsFeatureEnabled],
   );
 
   const handleNonEvmNetworkChange = useCallback(
