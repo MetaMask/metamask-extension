@@ -32,13 +32,11 @@ interface ContentProps extends StyleUtilityProps {
 export const Content = ({
   children,
   className = '',
-  scrollable = true,
-  scrollbarColor = 'var(--color-icon-muted) transparent',
   ...props
 }: ContentProps) => {
-  const style = {
-    overflow: scrollable ? 'auto' : undefined,
-    scrollbarColor: scrollable ? scrollbarColor : undefined,
+  const styles = {
+    overflow: 'auto',
+    scrollbarColor: 'var(--color-icon-muted) transparent',
   };
 
   return (
@@ -49,7 +47,7 @@ export const Content = ({
       padding={4}
       height={BlockSize.Full}
       className={classnames('multichain-page-content', className)}
-      style={style}
+      style={styles}
       {...props}
     >
       {children}
