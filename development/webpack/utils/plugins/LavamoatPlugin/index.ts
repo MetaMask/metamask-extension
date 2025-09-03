@@ -27,7 +27,12 @@ export const lavamoatPlugin = (args: Args) =>
       console.log(chunk.name);
       switch (chunk.name) {
         case 'scripts/contentscript.js':
-          return { mode: 'safe' };
+          return {
+            mode: 'safe',
+            staticShims: args.snow
+              ? [join(__dirname, './no-snow-scuttler.js')]
+              : [],
+          };
         case 'scripts/inpage.js':
           return { mode: 'unlocked_unsafe' };
         case 'runtime':
