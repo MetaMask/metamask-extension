@@ -3,7 +3,6 @@ name: Check Release Tag
 on:
   pull_request:
     branches:
-      - master
       - stable
     types:
       - opened
@@ -15,8 +14,8 @@ on:
 jobs:
   check-release-tag:
     name: Verify Release Tag
-    # Only run on PRs targeting master or stable
-    if: github.base_ref == 'master' || github.base_ref == 'stable'
+    # Only run on PRs targeting stable
+    if: github.base_ref == 'stable'
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -15,19 +15,21 @@ const NETWORK_NAME_MAINNET = 'Ethereum';
 async function mockSetup(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/137/tokens')
+      .forGet('https://bridge.api.cx.metamask.io/networks/137/tokens')
       .thenCallback(() => ({
         statusCode: 200,
         json: [],
       })),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/137/topAssets')
+      .forGet('https://bridge.api.cx.metamask.io/networks/137/topAssets')
       .thenCallback(() => ({
         statusCode: 200,
         json: [],
       })),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/137/aggregatorMetadata')
+      .forGet(
+        'https://bridge.api.cx.metamask.io/networks/137/aggregatorMetadata',
+      )
       .thenCallback(() => ({
         statusCode: 200,
         json: {},

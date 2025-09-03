@@ -2,6 +2,7 @@
   {
     "quote": {
       "requestId": "90ae8e69-f03a-4cf6-bab7-ed4e3431eb37",
+      "minDestTokenAmount": "13984280",
       "srcChainId": 10,
       "srcAsset": {
         "chainId": 10,
@@ -126,6 +127,7 @@
   },
   {
     "quote": {
+      "minDestTokenAmount": "13800000",
       "requestId": "0b6caac9-456d-47e6-8982-1945ae81ae82",
       "srcChainId": 10,
       "srcAsset": {
