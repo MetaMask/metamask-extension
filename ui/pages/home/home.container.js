@@ -182,6 +182,8 @@ const mapStateToProps = (state) => {
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
     showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
+    // TODO: integrate condition to show shield entry modal
+    showShieldEntryModal: false,
   };
 };
 
