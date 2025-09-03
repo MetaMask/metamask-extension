@@ -1840,9 +1840,40 @@ export default class MetamaskController extends EventEmitter {
         const { useExternalServices: currUseExternalServices } = currState;
         if (currUseExternalServices && !prevUseExternalServices) {
           this.remoteFeatureFlagController.enable();
-          this.remoteFeatureFlagController.updateRemoteFeatureFlags();
+          this.remoteFeatureFlagController
+            .updateRemoteFeatureFlags()
+            .catch((error) => {
+              console.error('Failed to update remote feature flags:', error);
+            });
         } else if (!currUseExternalServices && prevUseExternalServices) {
           this.remoteFeatureFlagController.disable();
+        }
+      }, this.preferencesController.state),
+    );
+
+    // MultichainAccountService has subscription for preferences changes
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        const { useExternalServices: prevUseExternalServices } = prevState;
+        const { useExternalServices: currUseExternalServices } = currState;
+        if (prevUseExternalServices !== currUseExternalServices) {
+          // Set basic functionality and trigger alignment when enabled
+          // This single call handles both provider disable/enable and alignment
+          // Only call if MultichainAccountService is available (multichain builds)
+          if (this.multichainAccountService) {
+            this.controllerMessenger
+              .call(
+                'MultichainAccountService:setBasicFunctionality',
+                currUseExternalServices,
+              )
+              .catch((error) => {
+                console.error(
+                  'Failed to set basic functionality on MultichainAccountService:',
+                  error,
+                );
+              });
+          }
         }
       }, this.preferencesController.state),
     );

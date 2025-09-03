@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη δικτύου."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Οι τιμές των τελών συναλλαγών είναι υψηλές και οι εκτιμήσεις είναι λιγότερο ακριβείς."
-  },
   "alertMessageNoGasPrice": {
     "message": "Δεν μπορούμε να συνεχίσουμε με αυτή τη συναλλαγή μέχρι να ενημερώσετε τα τέλη μη αυτόματα."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Μη αναγκαία άδεια"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Το δίκτυο είναι απασχολημένο"
   },
   "alertReasonNoGasPrice": {
     "message": "Δεν είναι διαθέσιμη η εκτίμηση των τελών"
