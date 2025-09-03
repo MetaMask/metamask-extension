@@ -186,22 +186,19 @@ const MultichainBridgeTransactionListItem: React.FC<
           flexDirection={FlexDirection.Column}
           gap={1}
         >
-          <TransactionStatusLabel
-            date={formatTimestamp(transaction.timestamp)}
-            error={{}}
-            status={
-              isTerminalState
-                ? KEYRING_TRANSACTION_STATUS_KEY[transaction.status]
-                : TransactionGroupStatus.pending
-            }
-            statusOnly
-            className={
-              isBridgeFullyComplete
-                ? 'transaction-status-label--confirmed'
-                : undefined
-            }
-          />
-          {!isTerminalState && (
+          {isTerminalState ? (
+            <TransactionStatusLabel
+              date={formatTimestamp(transaction.timestamp)}
+              error={{}}
+              status={KEYRING_TRANSACTION_STATUS_KEY[transaction.status]}
+              statusOnly
+              className={
+                isBridgeFullyComplete
+                  ? 'transaction-status-label--confirmed'
+                  : undefined
+              }
+            />
+          ) : (
             <Box
               marginTop={0}
               display={Display.Flex}
