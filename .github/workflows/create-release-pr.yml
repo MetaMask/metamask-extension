@@ -7,7 +7,7 @@ on:
         description: 'The base branch, tag, or SHA for git operations. Usually `main`'
         required: true
       release-pr-base-branch:
-        description: 'The base branch, tag, or SHA for the release pull request. Usually `master`'
+        description: 'The base branch, tag, or SHA for the release pull request. Usually `stable`'
         required: true
       semver-version:
         description: 'A semantic version, eg: x.x.x'
