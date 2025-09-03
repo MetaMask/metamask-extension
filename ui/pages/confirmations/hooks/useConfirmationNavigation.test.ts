@@ -2,7 +2,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 import { ApprovalFlowState } from '@metamask/approval-controller';
-import { useSearchParams } from 'react-router-dom-v5-compat';
 
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
