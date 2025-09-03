@@ -622,15 +622,7 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
-          <Authenticated
-            path={PERMISSIONS}
-            component={
-              process.env.PERMISSIONS_PAGE_V2
-                ? PermissionsPageV2
-                : PermissionsPage
-            }
-            exact
-          />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated path={SITES} component={SitesPage} exact />
           <Authenticated
             path={TOKEN_STREAMS_ROUTE}

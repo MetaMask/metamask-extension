@@ -2035,8 +2035,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountTreeController = controllersByName.AccountTreeController;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
-    this.gatorPermissionsController =
-      controllersByName.GatorPermissionsController;
 
     this.notificationServicesController.init();
     this.snapController.init();
