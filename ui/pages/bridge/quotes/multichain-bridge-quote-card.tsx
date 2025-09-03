@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   BRIDGE_MM_FEE_RATE,
-  formatEtaInMinutes,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
@@ -11,7 +10,6 @@ import {
   Text,
   PopoverPosition,
   IconName,
-  ButtonLink,
   ButtonIcon,
   ButtonIconSize,
 } from '../../../components/component-library';
@@ -24,12 +22,12 @@ import {
   getIsSolanaSwap,
   getPriceImpactThresholds,
   getQuoteRequest,
+  getIsToOrFromSolana,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  BlockSize,
   IconColor,
   JustifyContent,
   TextColor,
@@ -41,6 +39,7 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { formatPriceImpact } from '../utils/price-impact';
+import { type DestinationAccount } from '../prepare/types';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 const getTimeLabelColor = (timeInSeconds: number) => {
@@ -79,6 +78,8 @@ export const MultichainBridgeQuoteCard = ({
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
+
+  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -123,12 +124,12 @@ export const MultichainBridgeQuoteCard = ({
         onClose={() => setShowAllQuotes(false)}
       />
       {activeQuote ? (
-        <Column gap={2}>
-          {/* Rate */}
+        <Column gap={2} style={{ marginTop: 'auto' }}>
+          {/* Rate and timer */}
           <Row justifyContent={JustifyContent.spaceBetween}>
-            <Row gap={1}>
+            <Row gap={2}>
               <Text
-                variant={TextVariant.bodyMd}
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
                 {t('multichainQuoteCardRateLabel')}
@@ -157,19 +158,64 @@ export const MultichainBridgeQuoteCard = ({
                 ])}
               </Tooltip>
             </Row>
-            <Text>
-              {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
-                locale,
-                activeQuote.swapRate,
-              )} ${activeQuote.quote.destAsset.symbol}`}
-            </Text>
+            <Row gap={1}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
+                  locale,
+                  activeQuote.swapRate,
+                )} ${activeQuote.quote.destAsset.symbol}`}
+              </Text>
+              <ButtonIcon
+                iconName={IconName.ArrowRight}
+                size={ButtonIconSize.Sm}
+                color={IconColor.iconAlternative}
+                onClick={() => {
+                  fromChain?.chainId &&
+                    activeQuote &&
+                    dispatch(
+                      trackUnifiedSwapBridgeEvent(
+                        UnifiedSwapBridgeEventName.AllQuotesOpened,
+                        {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          can_submit: !insufficientBal,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          stx_enabled: isStxEnabled,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          token_symbol_source:
+                            fromToken?.symbol ??
+                            getNativeAssetForChainId(fromChain.chainId).symbol,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          token_symbol_destination: toToken?.symbol ?? null,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          price_impact: Number(
+                            activeQuote.quote?.priceData?.priceImpact ?? '0',
+                          ),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          gas_included: Boolean(activeQuote.quote?.gasIncluded),
+                        },
+                      ),
+                    );
+                  setShowAllQuotes(true);
+                }}
+                ariaLabel={t('moreQuotes')}
+              />
+            </Row>
           </Row>
 
           {/* Network Fee */}
           <Row justifyContent={JustifyContent.spaceBetween}>
-            <Row gap={1}>
+            <Row gap={2}>
               <Text
-                variant={TextVariant.bodyMd}
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
                 {t('networkFee')}
@@ -184,7 +230,11 @@ export const MultichainBridgeQuoteCard = ({
             </Row>
             {activeQuote.quote.gasIncluded && (
               <Row gap={1} data-testid="network-fees-included">
-                <Text style={{ textDecoration: 'line-through' }}>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  style={{ textDecoration: 'line-through' }}
+                >
                   {activeQuote.includedTxFees?.valueInCurrency
                     ? formatCurrencyAmount(
                         activeQuote.includedTxFees.valueInCurrency,
@@ -197,13 +247,20 @@ export const MultichainBridgeQuoteCard = ({
                         2,
                       )}
                 </Text>
-                <Text variant={TextVariant.bodyMd}>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
                   {t('swapGasFeesIncluded')}
                 </Text>
               </Row>
             )}
             {!activeQuote.quote.gasIncluded && (
-              <Text data-testid="network-fees">
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                data-testid="network-fees"
+              >
                 {formatCurrencyAmount(
                   activeQuote.totalNetworkFee?.valueInCurrency,
                   currency,
@@ -213,50 +270,11 @@ export const MultichainBridgeQuoteCard = ({
             )}
           </Row>
 
-          {/* Price Impact */}
-          {shouldRenderPriceImpactRow && (
-            <Row justifyContent={JustifyContent.spaceBetween}>
-              <Row gap={1}>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                >
-                  {t('bridgePriceImpact')}
-                </Text>
-                <Tooltip
-                  title={
-                    shouldShowPriceImpactWarning
-                      ? t('bridgePriceImpactWarningTitle')
-                      : t('bridgePriceImpactTooltipTitle')
-                  }
-                  position={PopoverPosition.TopStart}
-                  offset={[-16, 16]}
-                >
-                  {t(
-                    gasIncluded
-                      ? 'bridgePriceImpactGaslessWarning'
-                      : 'bridgePriceImpactNormalWarning',
-                  )}
-                </Tooltip>
-              </Row>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={
-                  shouldShowPriceImpactWarning
-                    ? TextColor.errorDefault
-                    : TextColor.textDefault
-                }
-              >
-                {formatPriceImpact(priceImpact)}
-              </Text>
-            </Row>
-          )}
-
           {/* Slippage */}
           <Row justifyContent={JustifyContent.spaceBetween}>
-            <Row gap={1}>
+            <Row gap={2}>
               <Text
-                variant={TextVariant.bodyMd}
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
                 {t('slippage')}
@@ -270,7 +288,10 @@ export const MultichainBridgeQuoteCard = ({
               </Tooltip>
             </Row>
             <Row gap={1}>
-              <Text variant={TextVariant.bodyMd}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
                 {slippage === undefined && isSolanaSwap
                   ? t('slippageAuto')
                   : `${slippage}%`}
@@ -286,100 +307,101 @@ export const MultichainBridgeQuoteCard = ({
             </Row>
           </Row>
 
-          {/* Time */}
-          <Row justifyContent={JustifyContent.spaceBetween}>
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-            >
-              {t('multichainQuoteCardTimeLabel')}
-            </Text>
-            <Text>
-              {t('bridgeTimingMinutes', [
-                formatEtaInMinutes(
-                  activeQuote.estimatedProcessingTimeInSeconds,
-                ),
-              ])}
-            </Text>
-          </Row>
-
           {/* Minimum Received */}
-          <Row justifyContent={JustifyContent.spaceBetween}>
-            <Row gap={1}>
+          {
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Row gap={2}>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {t('minimumReceivedLabel')}
+                </Text>
+                <Tooltip
+                  style={{ width: 350 }}
+                  title={t('minimumReceivedExplanationTitle')}
+                  position={PopoverPosition.TopStart}
+                  offset={[-48, 16]}
+                >
+                  {t('minimumReceivedExplanation')}
+                </Tooltip>
+              </Row>
               <Text
-                variant={TextVariant.bodyMd}
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                data-testid="minimum-received"
+              >
+                {formatCurrencyAmount(
+                  activeQuote.minToTokenAmount.valueInCurrency,
+                  currency,
+                  2,
+                )}
+              </Text>
+            </Row>
+          }
+
+          {/* Price Impact */}
+          {shouldRenderPriceImpactRow && shouldShowPriceImpactWarning && (
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Row gap={2}>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {t('bridgePriceImpact')}
+                </Text>
+                <Tooltip
+                  title={
+                    shouldShowPriceImpactWarning
+                      ? t('bridgePriceImpactWarningTitle')
+                      : t('bridgePriceImpactTooltipTitle')
+                  }
+                  position={PopoverPosition.TopStart}
+                  offset={[-16, 16]}
+                >
+                  {t('bridgePriceImpactNormalWarning')}
+                </Tooltip>
+              </Row>
+              <Text
+                variant={TextVariant.bodySm}
+                color={
+                  shouldShowPriceImpactWarning
+                    ? TextColor.errorDefault
+                    : TextColor.textAlternative
+                }
+              >
+                {formatPriceImpact(priceImpact)}
+              </Text>
+            </Row>
+          )}
+
+          {/* Recipient */}
+          {isToOrFromSolana && selectedDestinationAccount && (
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Text
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {t('minimumReceivedLabel')}
+                {t('recipient')}
               </Text>
-              <Tooltip
-                width={BlockSize.Max}
-                title={t('minimumReceivedExplanationTitle')}
-                position={PopoverPosition.TopStart}
-                offset={[-48, 16]}
-              >
-                {t('minimumReceivedExplanation')}
-              </Tooltip>
+              <Row gap={1}>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {selectedDestinationAccount.displayName}
+                </Text>
+                <ButtonIcon
+                  iconName={IconName.Edit}
+                  size={ButtonIconSize.Sm}
+                  color={IconColor.iconAlternative}
+                  onClick={onOpenRecipientModal}
+                  ariaLabel={t('recipientEditAriaLabel')}
+                  data-testid="recipient-edit-button"
+                />
+              </Row>
             </Row>
-            <Text data-testid="minimum-received">
-              {formatCurrencyAmount(
-                activeQuote.minToTokenAmount.valueInCurrency,
-                currency,
-                2,
-              )}
-            </Text>
-          </Row>
-
-          {/* Footer */}
-          <Row
-            justifyContent={JustifyContent.spaceBetween}
-            color={TextColor.textAlternative}
-          >
-            <Text variant={TextVariant.bodyMd}>
-              {new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(0)
-                ? t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])
-                : ''}
-            </Text>
-            <ButtonLink
-              variant={TextVariant.bodyMd}
-              onClick={() => {
-                fromChain?.chainId &&
-                  activeQuote &&
-                  dispatch(
-                    trackUnifiedSwapBridgeEvent(
-                      UnifiedSwapBridgeEventName.AllQuotesOpened,
-                      {
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        can_submit: !insufficientBal,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        stx_enabled: isStxEnabled,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_symbol_source:
-                          fromToken?.symbol ??
-                          getNativeAssetForChainId(fromChain.chainId).symbol,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_symbol_destination: toToken?.symbol ?? null,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        price_impact: Number(
-                          activeQuote.quote?.priceData?.priceImpact ?? '0',
-                        ),
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        gas_included: Boolean(activeQuote.quote?.gasIncluded),
-                      },
-                    ),
-                  );
-                setShowAllQuotes(true);
-              }}
-            >
-              {t('moreQuotes')}
-            </ButtonLink>
-          </Row>
+          )}
         </Column>
       ) : null}
     </>
