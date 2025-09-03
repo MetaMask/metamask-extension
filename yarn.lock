@@ -7206,24 +7206,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@file:./deps/signature-controller.tgz::locator=metamask-crx%40workspace%3A.":
-  version: 30.0.0
-  resolution: "@metamask/signature-controller@file:./deps/signature-controller.tgz#./deps/signature-controller.tgz::hash=4cfc64&locator=metamask-crx%40workspace%3A."
+"@metamask/signature-controller@npm:^32.0.0":
+  version: 32.0.0
+  resolution: "@metamask/signature-controller@npm:32.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.9.0"
+    "@metamask/controller-utils": "npm:^11.11.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/utils": "npm:^11.2.0"
+    "@metamask/utils": "npm:^11.4.2"
     jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^30.0.0
+    "@metamask/accounts-controller": ^32.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/keyring-controller": ^22.0.0
     "@metamask/logging-controller": ^6.0.0
-    "@metamask/network-controller": ^23.0.0
-  checksum: 10/28687d3ac443e06ed5de3e423bf8e07f4c151701bef3503530728b949fb64000b287259824a1150158ea289eec1eb1f973c78b2ba446c4861f46d3a82c65ccf6
+    "@metamask/network-controller": ^24.0.0
+  checksum: 10/d101c4e2563bd16ebd32f632493359369764e3b6160c6b13920d0acdb560468fa9b276028f402e26f081d86256a166370de256b067143c67cbaab013569f82e4
   languageName: node
   linkType: hard
 
@@ -32109,7 +32109,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^2.6.0"
     "@metamask/selected-network-controller": "npm:^22.1.0"
-    "@metamask/signature-controller": "file:./deps/signature-controller.tgz"
+    "@metamask/signature-controller": "npm:^32.0.0"
     "@metamask/smart-transactions-controller": "npm:^18.1.0"
     "@metamask/snaps-controllers": "npm:^14.2.1"
     "@metamask/snaps-execution-environments": "npm:^10.2.1"
