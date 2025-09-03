@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   flaky-test-report:
-    uses: MetaMask/github-tools/.github/workflows/flaky-test-report.yml@ci-flaky-tests-bot
+    uses: MetaMask/github-tools/.github/workflows/flaky-test-report.yml@main
     with:
       repository: ${{ github.event.repository.name }}
       workflow_id: main.yml
