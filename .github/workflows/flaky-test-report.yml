@@ -5,7 +5,7 @@ on:
     branches:
       - chore-update-flaky-bot
   # schedule:
-  #   # Once every day from Monday-Friday at 08:00 UTC
+  #   # Once every day from Monday-Friday at 08:00 UTCC
   #   - cron: 0 8 * * 1-5
 
 permissions:
