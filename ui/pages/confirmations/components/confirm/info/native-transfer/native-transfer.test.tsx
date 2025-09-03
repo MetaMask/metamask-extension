@@ -1,6 +1,5 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { useLocation } from 'react-router-dom';
 
 import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
