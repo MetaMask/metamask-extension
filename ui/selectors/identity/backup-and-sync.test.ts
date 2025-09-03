@@ -11,8 +11,6 @@ describe('Backup And Sync Selectors', () => {
       isBackupAndSyncEnabled: true,
       isBackupAndSyncUpdateLoading: false,
       isAccountSyncingEnabled: true,
-      hasAccountSyncingSyncedAtLeastOnce: false,
-      isAccountSyncingInProgress: false,
       isContactSyncingEnabled: true,
       isContactSyncingInProgress: false,
     },

@@ -38,7 +38,6 @@ export const getMockedNotificationsState = () => {
     ...mockMetaMaskState,
     isBackupAndSyncEnabled: true,
     isBackupAndSyncUpdateLoading: false,
-    isAccountSyncingInProgress: false,
     isContactSyncingEnabled: true,
     isContactSyncingInProgress: false,
     isMetamaskNotificationsFeatureSeen: true,

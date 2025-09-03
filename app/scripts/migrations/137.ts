@@ -4,7 +4,7 @@ export type VersionedData = {
   meta: {
     version: number;
   };
-  data: {};
+  data: Record<string, unknown>;
 };
 
 export const version = 137;

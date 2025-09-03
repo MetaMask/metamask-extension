@@ -6653,11 +6653,19 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      const response = await submitRequestToBackground(
-        'deleteAccountSyncingDataFromUserStorage',
-        [USER_STORAGE_FEATURE_NAMES.accounts],
-      );
-      return response;
+      await Promise.all([
+        submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
+          'multichain_accounts_groups',
+        ]),
+        submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
+          'multichain_accounts_wallets',
+        ]),
+      ]);
+      // const response = await submitRequestToBackground(
+      //   'deleteAccountSyncingDataFromUserStorage',
+      //   [USER_STORAGE_FEATURE_NAMES.accounts],
+      // );
+      // return response;
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
