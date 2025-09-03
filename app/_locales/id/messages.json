@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Anda tidak memiliki cukup $1 di akun untuk membayar biaya jaringan."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Harga gas tinggi dan estimasinya kurang akurat."
-  },
   "alertMessageNoGasPrice": {
     "message": "Kami tidak dapat melanjutkan transaksi ini hingga Anda memperbarui biayanya secara manual."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Izin yang tidak diperlukan"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Jaringan sibuk"
   },
   "alertReasonNoGasPrice": {
     "message": "Estimasi biaya tidak tersedia"

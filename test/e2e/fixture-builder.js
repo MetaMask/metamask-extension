@@ -33,7 +33,6 @@ function onboardingFixture() {
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
-        qrHardware: {},
         recoveryPhraseReminderHasBeenShown: false,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
@@ -142,6 +141,7 @@ function onboardingFixture() {
         },
       },
       UserStorageController: {},
+      MultichainAccountService: {},
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},
@@ -946,8 +946,13 @@ class FixtureBuilder {
   }
 
   /**
-   * @deprecated this method should not be used, as the `smartTransactionsOptInStatus` value is overridden by the migration 135
-   * Use the `toggleStxSetting` flow to disable this setting effectively.
+   * Note: When using this method, you also need to disable the smart transactions
+   * migration in your test by adding the following manifest flag:
+   * ```
+   * manifestFlags: {
+   *   testing: { disableSmartTransactionsOverride: true },
+   * }
+   * ```
    */
   withPreferencesControllerSmartTransactionsOptedOut() {
     return this.withPreferencesController({
