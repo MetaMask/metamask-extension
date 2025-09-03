@@ -35,27 +35,6 @@ describe('migration #174', () => {
     });
   });
 
-  it('sets avatarType to blockies when useBlockie is true', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
-      data: {
-        PreferencesController: {
-          useBlockie: true,
-          preferences: {},
-        },
-      },
-    };
-
-    const newState = await migrate(oldState);
-
-    expect(newState.data.PreferencesController).toStrictEqual({
-      useBlockie: true,
-      preferences: {
-        avatarType: 'blockies',
-      },
-    });
-  });
-
   it('does not overwrite existing avatarType', async () => {
     const oldState = {
       meta: { version: oldVersion },

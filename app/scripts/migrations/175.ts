@@ -10,7 +10,6 @@ export const version = 174;
 
 /**
  * This migration adds `avatarType` to PreferencesController preferences
- * If useBlockie was set to true, sets avatarType to 'blockies', otherwise sets it to 'maskicon'
  *
  * @param originalVersionedData - The original state data to migrate
  */
@@ -32,8 +31,6 @@ function transformState(state: Record<string, unknown>) {
       string,
       unknown
     >;
-    const useBlockie = preferencesController.useBlockie as boolean;
-
     // Check if preferences object exists
     if (
       hasProperty(preferencesController, 'preferences') &&
@@ -49,8 +46,8 @@ function transformState(state: Record<string, unknown>) {
         !hasProperty(preferences, 'avatarType') ||
         preferences.avatarType === undefined
       ) {
-        // Respect existing useBlockie setting, otherwise default to 'maskicon'
-        preferences.avatarType = useBlockie === true ? 'blockies' : 'maskicon';
+        // Default to 'maskicon'
+        preferences.avatarType = 'maskicon';
       }
     }
   }
