@@ -18,10 +18,7 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list';
-import {
-  getInternalAccountsFromGroupById,
-  getMultichainAccountGroupById,
-} from '../../../selectors/multichain-accounts/account-tree';
+import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import {
   AddressListQueryParams,
   AddressListSource,
@@ -36,12 +33,6 @@ export const MultichainAccountAddressListPage = () => {
   const decodedAccountGroupId = accountGroupId
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)
     : null;
-
-  const accounts = useSelector((state) =>
-    decodedAccountGroupId
-      ? getInternalAccountsFromGroupById(state, decodedAccountGroupId)
-      : [],
-  );
 
   const accountGroup = useSelector((state) =>
     decodedAccountGroupId
@@ -78,7 +69,9 @@ export const MultichainAccountAddressListPage = () => {
       </Header>
       <Content>
         <Box flexDirection={BoxFlexDirection.Column}>
-          <MultichainAddressRowsList accounts={accounts} />
+          {decodedAccountGroupId ? (
+            <MultichainAddressRowsList groupId={decodedAccountGroupId} />
+          ) : null}
         </Box>
       </Content>
     </Page>
