@@ -59,7 +59,7 @@ export const SendContextProvider: React.FC<{
       updateMaxValueMode(maxMode ?? false);
       setValue(val);
     },
-    [updateMaxValueMode, setValue, value],
+    [updateMaxValueMode, setValue],
   );
 
   const chainId =
