@@ -63,7 +63,11 @@ describe('GatorPermissionsControllerInit', () => {
 
     expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      state: requestMock.persistedState.GatorPermissionsController,
+      state: {
+        isGatorPermissionsEnabled: false,
+        isFetchingGatorPermissions: false,
+        ...requestMock.persistedState.GatorPermissionsController,
+      },
     });
   });
 
@@ -75,9 +79,11 @@ describe('GatorPermissionsControllerInit', () => {
     expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: {
-        ...requestMock.persistedState.GatorPermissionsController,
+        isGatorPermissionsEnabled: false,
+        isFetchingGatorPermissions: false,
         gatorPermissionsProviderSnapId:
           LOCAL_GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
+        ...requestMock.persistedState.GatorPermissionsController,
       },
     });
   });
@@ -90,6 +96,40 @@ describe('GatorPermissionsControllerInit', () => {
       enableGatorPermissions: expect.any(Function),
       disableGatorPermissions: expect.any(Function),
       fetchAndUpdateGatorPermissions: expect.any(Function),
+    });
+  });
+
+  it('handles undefined persistedState.GatorPermissionsController in production', () => {
+    const requestMock = buildInitRequestMock();
+    requestMock.persistedState.GatorPermissionsController = undefined;
+    jest.mocked(isProduction).mockReturnValue(true);
+
+    GatorPermissionsControllerInit(requestMock);
+
+    expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
+      messenger: requestMock.controllerMessenger,
+      state: {
+        isGatorPermissionsEnabled: false,
+        isFetchingGatorPermissions: false,
+      },
+    });
+  });
+
+  it('handles undefined persistedState.GatorPermissionsController in development', () => {
+    const requestMock = buildInitRequestMock();
+    requestMock.persistedState.GatorPermissionsController = undefined;
+    jest.mocked(isProduction).mockReturnValue(false);
+
+    GatorPermissionsControllerInit(requestMock);
+
+    expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
+      messenger: requestMock.controllerMessenger,
+      state: {
+        isGatorPermissionsEnabled: false,
+        isFetchingGatorPermissions: false,
+        gatorPermissionsProviderSnapId:
+          LOCAL_GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
+      },
     });
   });
 });
