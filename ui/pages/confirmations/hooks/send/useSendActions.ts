@@ -38,9 +38,10 @@ export const useSendActions = () => {
             value: value as string,
           }),
         );
-        history.push(
-          `${CONFIRM_TRANSACTION_ROUTE}?maxValueMode=${maxValueMode}`,
-        );
+        const route = maxValueMode
+          ? `${CONFIRM_TRANSACTION_ROUTE}?maxValueMode=${maxValueMode}`
+          : CONFIRM_TRANSACTION_ROUTE;
+        history.push(route);
       } else {
         history.push(`${SEND_ROUTE}/${SendPages.LOADER}`);
         await sendMultichainTransactionForReview(
