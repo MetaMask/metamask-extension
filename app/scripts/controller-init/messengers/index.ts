@@ -55,6 +55,7 @@ import {
 } from './accounts';
 import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
 import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
+import { getPreferencesControllerMessenger } from './core';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -136,6 +137,10 @@ export const CONTROLLER_MESSENGERS = {
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
     getInitMessenger: getPPOMControllerInitMessenger,
+  },
+  PreferencesController: {
+    getMessenger: getPreferencesControllerMessenger,
+    getInitMessenger: noop,
   },
   TransactionController: {
     getMessenger: getTransactionControllerMessenger,
