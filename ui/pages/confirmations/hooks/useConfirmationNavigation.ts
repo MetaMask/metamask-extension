@@ -1,11 +1,10 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
-import { useSearchParams } from 'react-router-dom-v5-compat';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
 import {
@@ -35,8 +34,7 @@ export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const history = useHistory();
-  const [searchParams] = useSearchParams();
-  const queryParams = new URLSearchParams(searchParams).toString();
+  const { search: queryString } = useLocation();
 
   const getIndex = useCallback(
     (confirmationId?: string) => {
@@ -56,10 +54,10 @@ export function useConfirmationNavigation() {
         confirmations,
         Boolean(approvalFlows?.length),
         history,
-        queryParams,
+        queryString,
       );
     },
-    [confirmations, history, queryParams],
+    [confirmations, history, queryString],
   );
 
   const navigateToIndex = useCallback(
@@ -80,7 +78,7 @@ export function navigateToConfirmation(
   confirmations: ApprovalRequest<Record<string, Json>>[],
   hasApprovalFlows: boolean,
   history: ReturnType<typeof useHistory>,
-  queryParams: string = '',
+  queryString: string = '',
 ) {
   const hasNoConfirmations = confirmations?.length <= 0 || !confirmationId;
 
@@ -117,8 +115,8 @@ export function navigateToConfirmation(
 
   if (type === ApprovalType.Transaction) {
     let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
-    if (queryParams.length) {
-      url = `${url}?${queryParams}`;
+    if (queryString.length) {
+      url = `${url}${queryString}`;
     }
     history.replace(url);
     return;
