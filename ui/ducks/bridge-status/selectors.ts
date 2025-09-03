@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
-import { BridgeStatusAppState } from '../../../shared/types/bridge-status';
+import { type BridgeStatusAppState } from '../../../shared/types/bridge-status';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 
 const selectBridgeHistory = (state: BridgeStatusAppState) =>

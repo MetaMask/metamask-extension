@@ -1,6 +1,6 @@
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import { Transaction } from '@metamask/keyring-api';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { type Transaction } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 
 export function isBridgeComplete({
