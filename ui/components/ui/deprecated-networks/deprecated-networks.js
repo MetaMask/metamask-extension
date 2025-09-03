@@ -7,7 +7,7 @@ import {
   Severity,
 } from '../../../helpers/constants/design-system';
 
-import { getCurrentNetwork } from '../../../selectors';
+import { getCurrentNetwork, getEnabledNetworks } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { BannerAlert, Box } from '../../component-library';
@@ -20,10 +20,15 @@ import { updateNetwork } from '../../../store/actions';
 export default function DeprecatedNetworks() {
   const { chainId, rpcUrl } = useSelector(getCurrentNetwork) ?? {};
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const enabledNetworks = useSelector(getEnabledNetworks);
   const [isClosed, setIsClosed] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();
   const dispatch = useDispatch();
+
+  const isDeprecatedNetwork = Object.keys(enabledNetworks?.eip155 || {}).some(
+    (network) => DEPRECATED_NETWORKS.includes(network),
+  );
 
   if (!completedOnboarding || isClosed) {
     return null;
@@ -35,7 +40,8 @@ export default function DeprecatedNetworks() {
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.LINEA_GOERLI ||
     chainId === CHAIN_IDS.ARBITRUM_GOERLI ||
-    chainId === CHAIN_IDS.OPTIMISM_GOERLI
+    chainId === CHAIN_IDS.OPTIMISM_GOERLI ||
+    isDeprecatedNetwork
   ) {
     props = {
       description: t('deprecatedGoerliNtwrkMsg'),

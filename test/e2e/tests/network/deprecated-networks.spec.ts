@@ -81,10 +81,10 @@ describe('Deprecated networks', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
-          .withNetworkControllerOnArbitrumGoerli()
+          .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
             eip155: {
-              [TEST_CHAIN_ID]: true,
+              '0x1': true,
             },
           })
           .build(),
@@ -93,6 +93,7 @@ describe('Deprecated networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+        await driver.delay(5000);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
