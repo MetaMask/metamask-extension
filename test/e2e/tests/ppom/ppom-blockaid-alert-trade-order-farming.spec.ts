@@ -119,7 +119,6 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
           })
