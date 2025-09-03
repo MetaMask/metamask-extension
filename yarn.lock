@@ -7657,13 +7657,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^0.5.2":
-  version: 0.5.3
-  resolution: "@noble/ciphers@npm:0.5.3"
-  checksum: 10/af0ad96b5807feace93e63549e05de6f5e305b36e2e95f02d90532893fbc3af3f19b9621b6de4caa98303659e5df2e7aa082064e5d4a82e6f38c728d48dfae5d
-  languageName: node
-  linkType: hard
-
 "@noble/curves@npm:1.4.2, @noble/curves@npm:~1.4.0":
   version: 1.4.2
   resolution: "@noble/curves@npm:1.4.2"
