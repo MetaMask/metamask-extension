@@ -933,18 +933,9 @@ export const getBridgeL2Fixtures = (
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withPreferencesControllerSmartTransactionsOptedOut()
     .withBridgeControllerDefaultState()
-    .withNetworkControllerOnLineaLocahost()
     .withEnabledNetworks({
       eip155: {
-        '0x1': true, // Ethereum Mainnet
         '0xa4b1': true, // Arbitrum One
-        '0xe708': true, // Linea Mainnet
-        '0xa': true, // Optimism
-        '0x89': true, // Polygon
-        '0x38': true, // BSC
-        '0xa86a': true, // Avalanche
-        '0x2105': true, // Base
-        '0x144': true, // zkSync Era
       },
     });
 

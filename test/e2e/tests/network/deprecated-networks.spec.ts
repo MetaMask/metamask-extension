@@ -81,6 +81,12 @@ describe('Deprecated networks', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
+          .withNetworkControllerOnArbitrumGoerli()
+          .withEnabledNetworks({
+            eip155: {
+              [TEST_CHAIN_ID]: true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
