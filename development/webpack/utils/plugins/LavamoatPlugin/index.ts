@@ -23,7 +23,6 @@ export const lavamoatPlugin = (args: Args) =>
     // Snow needs to run outside of LavaMoat
     // eslint-disable-next-line @typescript-eslint/naming-convention
     runtimeConfigurationPerChunk_experimental: (chunk) => {
-      console.log(chunk.name);
       switch (chunk.name) {
         case 'scripts/contentscript.js':
           return {
