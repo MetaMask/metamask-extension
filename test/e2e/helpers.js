@@ -969,7 +969,7 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 // the file should be deleted, and the script should be removed from the manifest
 const isWebpack = () => {
   const manifest = readManifest();
-  return !manifest.content_scripts[0].js.includes('scripts/disable-console.js');
+  return manifest.description.includes('webpack');
 };
 
 module.exports = {
