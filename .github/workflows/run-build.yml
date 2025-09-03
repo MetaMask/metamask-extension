@@ -27,7 +27,7 @@ on:
 jobs:
   run-build:
     name: ${{ inputs.build-name }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       # Build parameter
       ENABLE_MV3: ${{ inputs.enable-mv3 }}

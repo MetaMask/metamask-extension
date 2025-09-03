@@ -8,7 +8,7 @@ on:
 
 jobs:
   check-template-and-add-labels:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1

@@ -41,7 +41,7 @@ on:
 jobs:
   run-e2e:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     container:
       image: ghcr.io/metamask/metamask-extension-e2e-image:v1.0.0
       credentials:

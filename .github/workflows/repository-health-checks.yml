@@ -6,7 +6,7 @@ on:
 jobs:
   repository-health-checks:
     name: Repository health checks
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.

@@ -22,7 +22,7 @@ on:
 jobs:
   benchmark-pr:
     name: Run Page Load Benchmarks
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}

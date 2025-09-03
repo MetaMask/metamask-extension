@@ -6,7 +6,7 @@ on:
 jobs:
   publish-release:
     name: Publish release
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       # Publishing tokens
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

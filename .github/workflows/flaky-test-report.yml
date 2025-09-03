@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   flaky-test-report:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}

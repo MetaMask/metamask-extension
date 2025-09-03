@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   check-pr-labels:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       pull-requests: read
 

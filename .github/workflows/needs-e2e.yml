@@ -9,7 +9,7 @@ on:
 
 jobs:
   needs-e2e:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       needs-e2e: ${{ steps.needs-e2e.outputs.NEEDS_E2E }}
     env:
@@ -43,7 +43,7 @@ jobs:
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' && (github.head_ref || github.ref_name) != 'stable' }}
     needs:
       - needs-e2e
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OWNER: ${{ github.repository_owner }}

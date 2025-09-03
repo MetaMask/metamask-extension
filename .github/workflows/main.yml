@@ -40,7 +40,7 @@ permissions:
 
 jobs:
   prep-deps:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -70,7 +70,7 @@ jobs:
     name: Test circular deps
     needs:
       - prep-deps
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -207,7 +207,7 @@ jobs:
   bundle-size:
     needs:
       - build-dist-browserify
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
@@ -293,7 +293,7 @@ jobs:
     needs:
       - prep-deps
       - build-dist-browserify
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -322,7 +322,7 @@ jobs:
     needs:
       - prep-deps
       - build-dist-browserify
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       GOOGLE_PROD_CLIENT_ID: 00000000000
@@ -397,7 +397,7 @@ jobs:
   # https://github.com/MetaMask/metamask-module-template/pull/151
   all-jobs-completed:
     name: All jobs completed
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs:
       - lint-workflows
       - test-lint
@@ -434,7 +434,7 @@ jobs:
   all-jobs-pass:
     name: All jobs pass
     if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs:
       - all-jobs-completed
     steps:

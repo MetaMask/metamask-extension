@@ -8,7 +8,7 @@ on:
 jobs:
   get-next-version:
     name: Get next version vX.Y.Z
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       next-version: ${{ env.NEXT_SEMVER_VERSION }}
     steps:
