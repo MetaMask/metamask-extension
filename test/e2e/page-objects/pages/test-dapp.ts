@@ -104,6 +104,13 @@ class TestDapp {
 
   private readonly erc721TransferFromButton = '#transferFromButton';
 
+  private readonly ethSignButton = '#ethSign';
+
+  private readonly ethSignErrorMessage = {
+    css: '#ethSign',
+    text: 'Error: The method "eth_sign" does not exist / is not available.',
+  };
+
   private readonly ethSubscribeResponse =
     '[data-testid="eth-subscribe-response"]';
 
@@ -123,14 +130,17 @@ class TestDapp {
 
   private readonly mmlogo = '#mm-logo';
 
-  private maliciousERC20TransferButton = '#maliciousERC20TransferButton';
+  private readonly maliciousApprovalButton = '#maliciousApprovalButton';
 
-  private readonly ethSignButton = '#ethSign';
+  private readonly maliciousContractInteractionButton =
+    '#maliciousContractInteractionButton';
 
-  private readonly ethSignErrorMessage = {
-    css: '#ethSign',
-    text: 'Error: The method "eth_sign" does not exist / is not available.',
-  };
+  private readonly maliciousERC20TransferButton =
+    '#maliciousERC20TransferButton';
+
+  private readonly maliciousEthTransferButton = '#maliciousRawEthButton';
+
+  private readonly maliciousTradeOrderButton = '#maliciousTradeOrder';
 
   private readonly personalSignButton = '#personalSign';
 
@@ -879,6 +889,22 @@ class TestDapp {
     );
     await this.driver.scrollToElement(sendTransactionButton);
     await this.driver.clickElement(this.maliciousERC20TransferButton);
+  }
+
+  async clickMaliciousApprovalButton() {
+    await this.driver.clickElement(this.maliciousApprovalButton);
+  }
+
+  async clickMaliciousContractInteractionButton() {
+    await this.driver.clickElement(this.maliciousContractInteractionButton);
+  }
+
+  async clickMaliciousEthTransferButton() {
+    await this.driver.clickElement(this.maliciousEthTransferButton);
+  }
+
+  async clickMaliciousTradeOrderButton() {
+    await this.driver.clickElement(this.maliciousTradeOrderButton);
   }
 
   /**
