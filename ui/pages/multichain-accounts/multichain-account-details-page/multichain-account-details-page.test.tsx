@@ -12,8 +12,7 @@ const accountDetailsRowNetworksTestId = 'account-details-row-networks';
 const accountDetailsRowPrivateKeysTestId = 'account-details-row-private-keys';
 const accountDetailsRowSmartAccountTestId = 'account-details-row-smart-account';
 const accountDetailsRowWalletTestId = 'account-details-row-wallet';
-const accountDetailsRowSecretRecoveryPhraseTestId =
-  'account-details-row-secret-recovery-phrase';
+const accountDetailsRowSecretRecoveryPhraseTestId = 'multichain-srp-backup';
 
 const mockHistoryPush = jest.fn();
 const mockHistoryGoBack = jest.fn();

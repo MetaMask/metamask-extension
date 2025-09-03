@@ -138,6 +138,10 @@ class TestDapp {
   private readonly maliciousERC20TransferButton =
     '#maliciousERC20TransferButton';
 
+  private readonly maliciousEthTransferButton = '#maliciousRawEthButton';
+
+  private readonly maliciousTradeOrderButton = '#maliciousTradeOrder';
+
   private readonly personalSignButton = '#personalSign';
 
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
@@ -893,6 +897,14 @@ class TestDapp {
 
   async clickMaliciousContractInteractionButton() {
     await this.driver.clickElement(this.maliciousContractInteractionButton);
+  }
+
+  async clickMaliciousEthTransferButton() {
+    await this.driver.clickElement(this.maliciousEthTransferButton);
+  }
+
+  async clickMaliciousTradeOrderButton() {
+    await this.driver.clickElement(this.maliciousTradeOrderButton);
   }
 
   /**
