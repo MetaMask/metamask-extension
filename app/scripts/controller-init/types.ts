@@ -208,6 +208,11 @@ export type ControllerInitRequest<
   initMessenger: InitMessengerType;
 
   getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
+
+  /**
+   * The user's preferred language code, if any.
+   */
+  initLangCode: string | null;
 };
 
 /**
