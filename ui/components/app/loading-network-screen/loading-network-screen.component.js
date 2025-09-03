@@ -111,13 +111,16 @@ export default class LoadingNetworkScreen extends PureComponent {
           />
         }
       >
-        <Text
-          variant={TextVariant.bodyLgMedium}
-          textAlign={TextAlign.Center}
-          margin={[0, 4, 4, 4]}
-        >
-          {message}
-        </Text>
+        <Box paddingInline={4}>
+          <Text
+            variant={TextVariant.bodyLgMedium}
+            textAlign={TextAlign.Center}
+            margin={[0, 4, 4, 4]}
+            className="text-balance"
+          >
+            {message}
+          </Text>
+        </Box>
         <Box display={DISPLAY.FLEX} padding={4} gap={2}>
           <ButtonSecondary
             onClick={() => {

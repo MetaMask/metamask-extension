@@ -91,7 +91,7 @@ const Popover = ({
         display={DISPLAY.FLEX}
         alignItems={AlignItems.center}
         justifyContent={centerTitle ? null : JustifyContent.spaceBetween}
-        className={classnames('popover-header__title', {
+        className={classnames('popover-header__title relative', {
           'popover-header__title--center': centerTitle,
         })}
         marginBottom={2}
@@ -122,6 +122,7 @@ const Popover = ({
             data-testid="popover-close"
             onClick={onClose}
             size={Size.SM}
+            className="absolute top-0 right-0"
           />
         ) : null}
       </Box>
