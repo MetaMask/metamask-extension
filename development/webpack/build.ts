@@ -14,6 +14,7 @@ require('browserslist/node').getStat = noop;
  */
 export function build(onComplete: () => void = noop) {
   const isDevelopment = config.mode === 'development';
+
   const { watch, ...options } = config;
   const compiler = webpack(options);
   if (__HMR_READY__ && watch) {
