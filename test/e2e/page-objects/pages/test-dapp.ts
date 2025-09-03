@@ -251,7 +251,7 @@ class TestDapp {
   }
 
   private readonly networkSelector = (networkId: string) => ({
-    css: '[id="chainId"]',
+    testId: 'chainId',
     text: networkId,
   });
 
