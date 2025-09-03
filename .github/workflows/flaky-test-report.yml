@@ -1,12 +1,9 @@
 name: Flaky test report
 
 on:
-  push:
-    branches:
-      - chore-update-flaky-bot
-  # schedule:
-  #   # Once every day from Monday-Friday at 08:00 UTC
-  #   - cron: 0 8 * * 1-5
+  schedule:
+    # Once every day from Monday-Friday at 08:00 UTC
+    - cron: 0 8 * * 1-5
 
 permissions:
   contents: read
@@ -20,4 +17,4 @@ jobs:
       workflow_id: main.yml
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
-      slack-webhook-flaky-tests: ${{ secrets.SLACK_WEBHOOK_FLAKY_TESTS2 }}
+      slack-webhook-flaky-tests: ${{ secrets.SLACK_WEBHOOK_FLAKY_TESTS }}
