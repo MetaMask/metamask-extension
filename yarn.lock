@@ -5795,15 +5795,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eip-5792-middleware@npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-cc039d53":
-  version: 1.0.0-preview-cc039d53
-  resolution: "@metamask-previews/eip-5792-middleware@npm:1.0.0-preview-cc039d53"
+"@metamask/eip-5792-middleware@npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-e94ec490":
+  version: 1.0.0-preview-e94ec490
+  resolution: "@metamask-previews/eip-5792-middleware@npm:1.0.0-preview-e94ec490"
   dependencies:
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.1"
     "@metamask/transaction-controller": "npm:^60.1.0"
     "@metamask/utils": "npm:^11.4.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/a01692933c6a5acbaaed6908aa8d345be11512afa4866dda2498e7247c002cb5ae6b4ad0dff943a75af7a34a1ea3feb7d9620b0767897fdaf41cebeaf1e42517
+  checksum: 10/d09485041a5960c23bbd7c169dc6b7a1e1bf4809d27a199e218fd6789e8f3a2cf31e7bd7e5ffa602b4adeb1d2a9c9a270929b41a8d4d511b032b5b5b98be55a1
   languageName: node
   linkType: hard
 
@@ -31758,7 +31758,7 @@ __metadata:
     "@metamask/design-system-react": "npm:^0.3.1"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
-    "@metamask/eip-5792-middleware": "npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-cc039d53"
+    "@metamask/eip-5792-middleware": "npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-e94ec490"
     "@metamask/ens-controller": "npm:^17.0.1"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/error-reporting-service": "npm:^2.0.0"
