@@ -136,12 +136,7 @@ export const useMaxAmount = () => {
   }, [accountsByChainId, asset?.address, chainId]);
 
   const { value: layer1GasFees } = useAsyncResult(async () => {
-    if (
-      !isEvmNativeSendType ||
-      asset?.chainId === CHAIN_IDS.MAINNET ||
-      !from ||
-      value === undefined
-    ) {
+    if (!isEvmNativeSendType || asset?.chainId === CHAIN_IDS.MAINNET || !from) {
       return '0x0';
     }
 
@@ -149,7 +144,7 @@ export const useMaxAmount = () => {
       asset: asset as Asset,
       chainId: chainId as Hex,
       from: from as Hex,
-      value: value as string,
+      value: (value ?? '0') as string,
     });
   }, [asset, chainId, from, value]);
 
