@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 import { ApprovalFlowState } from '@metamask/approval-controller';
@@ -17,30 +17,10 @@ import {
 } from '../../../helpers/constants/routes';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 
-function mockSearchParams(obj = {}) {
-  return {
-    get: (key: string) => (obj as Record<string, string>)[key] ?? null,
-    // eslint-disable-next-line object-shorthand
-    entries: function* () {
-      for (const key of Object.keys(obj)) {
-        yield [key, (obj as Record<string, string>)[key]];
-      }
-    },
-    [Symbol.iterator]() {
-      return this.entries();
-    },
-  };
-}
-
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
-  useLocation: () => ({ pathname: '/send/asset' }),
-  useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
-}));
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: jest.fn(),
+  useLocation: jest.fn(),
 }));
 
 jest.mock('../confirmation/templates', () => ({
@@ -87,14 +67,14 @@ function renderHook(
 describe('useConfirmationNavigation', () => {
   const useHistoryMock = jest.mocked(useHistory);
   const history = { replace: jest.fn() };
-  const mockUseSearchParams = jest.mocked(useSearchParams);
+  const useLocationMock = jest.mocked(useLocation);
 
   beforeEach(() => {
     jest.resetAllMocks();
     useHistoryMock.mockReturnValue(history);
-    mockUseSearchParams.mockReturnValue([
-      mockSearchParams({}),
-    ] as unknown as ReturnType<typeof useSearchParams>);
+    useLocationMock.mockReturnValue({
+      search: '',
+    } as unknown as ReturnType<typeof useLocationMock>);
   });
 
   describe('navigateToId', () => {
@@ -233,9 +213,9 @@ describe('useConfirmationNavigation', () => {
 
   describe('queryParams', () => {
     it('retain any queryParams present', () => {
-      mockUseSearchParams.mockReturnValue([
-        mockSearchParams({ test: 'dummy' }),
-      ] as unknown as ReturnType<typeof useSearchParams>);
+      useLocationMock.mockReturnValue({
+        search: '?test=dummy',
+      } as unknown as ReturnType<typeof useLocationMock>);
       const result = renderHook(ApprovalType.Transaction);
 
       result.navigateToIndex(1);

@@ -109,7 +109,7 @@ const getNonEvmMaxAmount = (asset?: Asset) => {
 };
 
 export const useMaxAmount = () => {
-  const { asset, chainId, from, to, value } = useSendContext();
+  const { asset, chainId, from, value } = useSendContext();
   const tokenBalances = useSelector(getTokenBalances);
   const { isEvmSendType, isEvmNativeSendType } = useSendType();
 
