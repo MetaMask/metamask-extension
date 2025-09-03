@@ -120,12 +120,15 @@ export class Delegation7702PublishHook {
       throw new Error('Selected gas fee token not found');
     }
 
+    const includeTransfer = !transactionMeta.isGasFeeSponsored;
+
     const delegation = await this.#buildDelegation(
       transactionMeta,
       gasFeeToken,
+      includeTransfer
     );
 
-    const executions = this.#buildExecutions(transactionMeta, gasFeeToken);
+    const executions = this.#buildExecutions(transactionMeta, gasFeeToken, includeTransfer);
 
     const transactionData = encodeRedeemDelegations(
       [[delegation]],
@@ -168,10 +171,10 @@ export class Delegation7702PublishHook {
   #buildExecutions(
     transactionMeta: TransactionMeta,
     gasFeeToken: GasFeeToken,
+    includeTransfer: boolean
   ): Execution[] {
     const { txParams } = transactionMeta;
     const { data, to, value } = txParams;
-    const { isSponsored } = gasFeeToken;
 
     const userExecution: Execution = {
       target: to as Hex,
@@ -189,7 +192,7 @@ export class Delegation7702PublishHook {
     };
 
     const executions = [userExecution];
-    if (!isSponsored) {
+    if (includeTransfer) {
       executions.push(transferExecution);
     }
 
@@ -199,11 +202,12 @@ export class Delegation7702PublishHook {
   async #buildDelegation(
     transactionMeta: TransactionMeta,
     gasFeeToken: GasFeeToken,
+    includeTransfer: boolean
   ): Promise<Delegation> {
     const { chainId, txParams } = transactionMeta;
     const { from } = txParams;
 
-    const caveats = this.#buildCaveats(txParams, gasFeeToken);
+    const caveats = this.#buildCaveats(txParams, gasFeeToken, includeTransfer);
 
     log('Caveats', caveats);
 
@@ -235,7 +239,9 @@ export class Delegation7702PublishHook {
   #buildCaveats(
     txParams: TransactionParams,
     gasFeeToken: GasFeeToken,
+    includeTransfer: boolean,
   ): Caveat[] {
+    // changes in https://github.com/MetaMask/metamask-extension/pull/35296 are needed
     const { amount, recipient, tokenAddress } = gasFeeToken;
     const { data, to } = txParams;
     const tokenAmountPadded = add0x(remove0x(amount).padStart(64, '0'));
