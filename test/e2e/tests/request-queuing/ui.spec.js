@@ -377,6 +377,12 @@ describe('Request-queue UI changes', function () {
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .withNetworkControllerOnMainnet()
 
           .build(),
         localNodeOptions: [
