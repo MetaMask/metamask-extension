@@ -101,12 +101,13 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
     ? `
       <p class="critical-error__footer">
         <span>${lodashEscape(t('stillGettingMessage'))}</span>
+        <br />
         <a
           href="${lodashEscape(supportLink)}"
           class="critical-error__link"
           target="_blank"
           rel="noopener noreferrer">
-            ${lodashEscape(t('sendBugReport'))}
+            ${lodashEscape(t('errorPageContactSupport'))}
         </a>
       </p>
     `
