@@ -193,6 +193,12 @@ export default function OnboardingWelcome({
         name: TraceName.OnboardingSocialLoginAttempt,
         data: { success: false },
       });
+
+      if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+        setLoginError(null);
+      } else {
+        setLoginError(errorMessage);
+      }
     },
     [onboardingParentContext, bufferedTrace, bufferedEndTrace],
   );

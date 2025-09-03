@@ -70,8 +70,10 @@ export default function WelcomeLogin({
         return;
       }
       setShowLoginOptions(false);
-      isSocialLoginUiChangesEnabled &&
-        dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
+      if (isSocialLoginUiChangesEnabled) {
+        await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
+      }
+
       await onLogin(loginType, loginOption);
     },
     [dispatch, isSocialLoginUiChangesEnabled, loginOption, onLogin],
