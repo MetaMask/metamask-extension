@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -6,8 +6,6 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  Box,
-  BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -18,11 +16,26 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
+import {
+  TextFieldSearch,
+  TextFieldSearchSize,
+  Text,
+  Box,
+} from '../../../components/component-library';
 import { filterWalletsByGroupName } from './utils';
 
 export const AccountList = () => {
@@ -72,7 +85,6 @@ export const AccountList = () => {
       </Header>
       <Content className="account-list-page__content">
         <Box
-          display={Display.Flex}
           flexDirection={FlexDirection.Column}
           paddingLeft={4}
           paddingRight={4}
@@ -93,8 +105,8 @@ export const AccountList = () => {
         </Box>
         <Box
           display={Display.Flex}
-          flexDirection={FlexDirection.Column}
           height={BlockSize.Full}
+          flexDirection={FlexDirection.Column}
         >
           {Object.keys(filteredWallets).length > 0 ? (
             <MultichainAccountList
