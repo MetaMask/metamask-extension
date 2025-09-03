@@ -6,7 +6,11 @@ import { Messenger } from '@metamask/base-controller';
 import { PreferencesController } from '@metamask/preferences-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
-import { getTokenRatesControllerMessenger } from '../messengers/assets';
+import {
+  getTokenRatesControllerInitMessenger,
+  getTokenRatesControllerMessenger,
+  TokenRatesControllerInitMessenger,
+} from '../messengers/assets';
 import { TokenRatesControllerInit } from './token-rates-controller-init';
 
 jest.mock('@metamask/assets-controllers');
@@ -40,7 +44,10 @@ function buildControllerMock(
  * stubbed PreferencesController.
  */
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<TokenRatesControllerMessenger>
+  ControllerInitRequest<
+    TokenRatesControllerMessenger,
+    TokenRatesControllerInitMessenger
+  >
 > {
   const baseControllerMessenger = new Messenger();
 
@@ -49,7 +56,9 @@ function buildInitRequestMock(): jest.Mocked<
     controllerMessenger: getTokenRatesControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getTokenRatesControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 
   // @ts-expect-error Incomplete mock, just includes properties used by code-under-test.
