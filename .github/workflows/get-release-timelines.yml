@@ -10,7 +10,7 @@ on:
 
 jobs:
   get-release-timelines:
-    uses: metamask/github-tools/.github/workflows/get-release-timelines.yml@13b73c8c7dd15f38bacc1bb95401fe11914c6629
+    uses: metamask/github-tools/.github/workflows/get-release-timelines.yml@b39d2cf87af5e31c4a85a83221e3a40b79edf06c
     with:
       version: ${{ inputs.version }}
     secrets:
