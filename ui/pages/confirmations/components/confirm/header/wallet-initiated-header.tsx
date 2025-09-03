@@ -25,10 +25,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { SEND_ROUTE } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { showSendTokenPage } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
+import { navigateToSendRoute } from '../../../utils/send';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 export const WalletInitiatedHeader = () => {
@@ -63,8 +63,7 @@ export const WalletInitiatedHeader = () => {
     await dispatch(editExistingTransaction(assetType, id.toString()));
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
-
-    history.push(SEND_ROUTE);
+    navigateToSendRoute(history);
   }, [currentConfirmation, dispatch, history]);
 
   return (

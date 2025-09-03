@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - stable
-      - master
 
 jobs:
   get-next-version:
@@ -40,4 +39,4 @@ jobs:
       semver-version: ${{ needs.get-next-version.outputs.next-version }}
       repo-type: 'extension' # Accepts 'mobile' or 'extension'
       github-tools-version: '486f5d113c5524eaab9a058abe76097f83a4c33e'
-      stable-branch-name: 'master' # Defaults to `stable`
+      stable-branch-name: 'stable' # Defaults to `stable`

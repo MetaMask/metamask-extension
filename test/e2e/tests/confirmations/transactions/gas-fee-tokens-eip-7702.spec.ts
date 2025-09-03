@@ -5,7 +5,6 @@ import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Driver } from '../../../webdriver/driver';
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, unlockWallet, withFixtures } from '../../../helpers';
-import { toggleStxSetting } from '../../../page-objects/flows/toggle-stx-setting.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
@@ -26,7 +25,11 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
+        manifestFlags: {
+          testing: { disableSmartTransactionsOverride: true },
+        },
         localNodeOptions: {
           hardfork: 'prague',
           loadState:
@@ -44,10 +47,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await unlockWallet(driver);
-
-        // disable smart transactions step by step
-        // we cannot use fixtures because migration 135 overrides the opt in value to true
-        await toggleStxSetting(driver);
 
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -268,7 +267,7 @@ async function mockTransactionRelayStatus(
 
 async function mockSmartTransactionFeatureFlags(mockServer: MockttpServer) {
   await mockServer
-    .forGet('https://swap.api.cx.metamask.io/featureFlags')
+    .forGet('https://bridge.api.cx.metamask.io/featureFlags')
     .thenCallback(() => {
       return {
         ok: true,

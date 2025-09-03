@@ -27,7 +27,6 @@ import {
 import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftGrid from '../../../app/assets/nfts/nft-grid/nft-grid';
 import { useNfts } from '../../../../hooks/useNfts';
-import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -39,6 +38,7 @@ import {
   updateSendAsset,
 } from '../../../../ducks/send';
 import { getNftImage } from '../../../../helpers/utils/nfts';
+import { navigateToSendRoute } from '../../../../pages/confirmations/utils/send';
 import { NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
@@ -128,13 +128,7 @@ export function AssetPickerModalNftTab({
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    if (process.env.SEND_REDESIGN_ENABLED) {
-      const queryParams = new URLSearchParams();
-      queryParams.append('asset', nft.address);
-      history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
-    } else {
-      history.push(SEND_ROUTE);
-    }
+    navigateToSendRoute(history, { address: nft.address });
     onClose && onClose();
   };
 

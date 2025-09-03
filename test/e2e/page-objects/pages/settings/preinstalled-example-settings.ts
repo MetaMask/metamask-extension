@@ -12,6 +12,8 @@ class PreinstalledExampleSettings {
 
   private readonly toggleButton = '.toggle-button';
 
+  private readonly toggleButtonOn = '.toggle-button--on';
+
   private readonly settingsDropdown = '[data-testid="snaps-dropdown"]';
 
   constructor(driver: Driver) {
@@ -37,6 +39,7 @@ class PreinstalledExampleSettings {
   async clickToggleButtonOn(): Promise<void> {
     console.log('Toggling Setting on');
     await this.driver.clickElement(this.toggleButton);
+    await this.driver.waitForSelector(this.toggleButtonOn);
   }
 
   async selectRadioOption(option: string): Promise<void> {

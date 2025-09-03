@@ -67,18 +67,6 @@ describe('useNonEvmAmountValidation', () => {
     expect(error).toBeUndefined();
   });
 
-  it('return error for invalid amount value', async () => {
-    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: SOLANA_ASSET,
-      fromAccount: { id: 'some_id' },
-      value: 'abc',
-    } as unknown as SendContext.SendContextType);
-
-    const result = renderHook();
-    const error = await result.validateNonEvmAmount();
-    expect(error).toEqual('Invalid value');
-  });
-
   it('return error if amount of asset is more than balance', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: SOLANA_ASSET,

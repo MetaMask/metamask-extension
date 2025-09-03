@@ -1,4 +1,4 @@
-import {
+import type {
   JsonRpcParams,
   JsonRpcRequest,
   PendingJsonRpcResponse,
@@ -29,10 +29,37 @@ const createMockedHandler = () => {
   const metamaskState = {
     permissionHistory: {},
     metaMetricsId: 'metaMetricsId',
+    accountsByChainId: {
+      '0x1': {
+        '0x01': {
+          address: '0x01',
+          balance: 'null',
+        },
+      },
+      '0x2': {
+        '0x02': {
+          address: '0x02',
+          balance: 'null',
+        },
+        '0x03': {
+          address: '0x03',
+          balance: 'null',
+        },
+      },
+    },
     accounts: {
-      '0x1': {},
-      '0x2': {},
-      '0x3': {},
+      '0x01': {
+        address: '0x01',
+        balance: 'null',
+      },
+      '0x02': {
+        address: '0x02',
+        balance: 'null',
+      },
+      '0x03': {
+        address: '0x03',
+        balance: 'null',
+      },
     },
   };
   const getCaip25PermissionFromLegacyPermissionsForOrigin = jest
@@ -151,13 +178,10 @@ describe('requestEthereumAccountsHandler', () => {
           category: 'inpage_provider',
           event: 'Dapp Viewed',
           properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_first_visit: true,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_accounts: 3,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             number_of_accounts_connected: 2,
           },

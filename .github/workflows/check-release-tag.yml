@@ -1,0 +1,87 @@
+name: Check Release Tag
+
+on:
+  pull_request:
+    branches:
+      - stable
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+
+jobs:
+  check-release-tag:
+    name: Verify Release Tag
+    # Only run on PRs targeting stable
+    if: github.base_ref == 'stable'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
+    steps:
+      - name: Check 'release/tagged' status on PR HEAD
+        id: check-tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          STATUSES=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/commits/${HEAD_SHA}/statuses")
+
+          if echo "${STATUSES}" | jq -e '.[] | select(.context == "release/tagged" and .state == "success")' > /dev/null 2>&1; then
+            echo "Release is properly tagged at PR HEAD"
+            echo "tagged=true" >> "${GITHUB_OUTPUT}"
+            echo "tag_sha=${HEAD_SHA}" >> "${GITHUB_OUTPUT}"
+
+            # Set success status on PR HEAD
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github.v3+json" \
+              "/repos/${{ github.repository }}/statuses/${HEAD_SHA}" \
+              -f state='success' \
+              -f target_url='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+              -f description='Release is properly tagged' \
+              -f context='release/tag-check' \
+              || echo "::notice::Failed to update status (non-fatal)"
+          else
+            echo "::warning::No successful 'release/tagged' status found on PR HEAD"
+            echo "tagged=false" >> "${GITHUB_OUTPUT}"
+
+            # Set pending status on PR HEAD
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github.v3+json" \
+              "/repos/${{ github.repository }}/statuses/${HEAD_SHA}" \
+              -f state='pending' \
+              -f target_url='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+              -f description='Tag missing on PR HEAD - run Tag Release Branch workflow' \
+              -f context='release/tag-check' \
+              || echo "::notice::Failed to update status (non-fatal)"
+          fi
+
+      - name: Summary
+        env:
+          PR_HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          if [[ "${{ steps.check-tag.outputs.tagged }}" == "true" ]]; then
+            {
+              echo "### Release Tag Check Passed"
+              echo "'release/tagged' status found on PR HEAD. Ready for merge."
+            } >> "${GITHUB_STEP_SUMMARY}"
+          else
+            {
+              echo "### Release Tag Check - Action Required"
+              echo "Run the 'Tag Release Branch' workflow with inputs:"
+              echo "- release-branch: ${PR_HEAD_BRANCH}"
+            } >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Fail if not tagged
+        if: steps.check-tag.outputs.tagged != 'true'
+        run: |
+          echo "::error::Release tag missing at PR HEAD. Run Tag Release Branch and re-run checks."
+          exit 1

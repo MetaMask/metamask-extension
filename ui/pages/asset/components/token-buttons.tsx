@@ -7,10 +7,7 @@ import { CaipAssetType } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
-import {
-  SEND_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
@@ -57,13 +54,12 @@ import {
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
 import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
+import { navigateToSendRoute } from '../../confirmations/utils/send';
 
 const TokenButtons = ({
   token,
@@ -195,15 +191,7 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      if (process.env.SEND_REDESIGN_ENABLED) {
-        const queryParams = new URLSearchParams();
-        queryParams.append('asset', token.address);
-        history.push(
-          `${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`,
-        );
-      } else {
-        history.push(SEND_ROUTE);
-      }
+      navigateToSendRoute(history, { address: token.address });
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -240,12 +228,10 @@ const TokenButtons = ({
   );
 
   const handleSwapOnClick = useCallback(async () => {
-    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
       handleBridgeOnClick(true);
       return;
     }
-    ///: END:ONLY_INCLUDE_IF
 
     // Check if unified UI is enabled and route to bridge page for swaps
     if (isUnifiedUIEnabled) {

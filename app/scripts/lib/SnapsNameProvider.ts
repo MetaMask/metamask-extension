@@ -10,6 +10,8 @@ import { GetPermissionControllerState } from '@metamask/permission-controller';
 import {
   AddressLookupArgs,
   AddressLookupResult,
+  CaipChainId,
+  SnapId,
   Snap as TruncatedSnap,
 } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
@@ -20,6 +22,7 @@ import {
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
 import { RestrictedMessenger } from '@metamask/base-controller';
+import { getChainIdsCaveat } from '@metamask/snaps-rpc-methods';
 
 type AllowedActions =
   | GetAllSnaps
@@ -73,10 +76,15 @@ export class SnapsNameProvider implements NameProvider {
   async getProposedNames(
     request: NameProviderRequest,
   ): Promise<NameProviderResult> {
-    const nameSnaps = this.#getNameLookupSnaps();
+    const { variation: chainIdHex, value } = request;
+    const caipChainId = `eip155:${parseInt(chainIdHex, 16)}` as CaipChainId;
+
+    const nameSnaps = this.#getNameLookupSnaps(caipChainId);
 
     const snapResults = await Promise.all(
-      nameSnaps.map((snap) => this.#getSnapProposedName(snap, request)),
+      nameSnaps.map((snap) =>
+        this.#getSnapProposedName(snap.id, caipChainId, value),
+      ),
     );
 
     const results = snapResults.reduce(
@@ -93,29 +101,41 @@ export class SnapsNameProvider implements NameProvider {
     return { results };
   }
 
-  #getNameLookupSnaps(): TruncatedSnap[] {
+  #getNameLookupSnaps(chainId?: string): TruncatedSnap[] {
     const permissionSubjects = this.#messenger.call(
       'PermissionController:getState',
     ).subjects;
 
     const snaps = this.#messenger.call('SnapController:getAll');
 
-    return snaps.filter(
-      ({ id }) => permissionSubjects[id]?.permissions['endowment:name-lookup'],
-    );
+    return snaps.filter(({ id }) => {
+      const permission =
+        permissionSubjects[id]?.permissions['endowment:name-lookup'];
+
+      if (!permission) {
+        return false;
+      }
+
+      const chainIdCaveat = getChainIdsCaveat(permission);
+
+      if (chainId && chainIdCaveat && !chainIdCaveat.includes(chainId)) {
+        return false;
+      }
+
+      return true;
+    });
   }
 
   async #getSnapProposedName(
-    snap: TruncatedSnap,
-    request: NameProviderRequest,
+    snapId: SnapId,
+    caipChainId: CaipChainId,
+    address: string,
   ): Promise<{ sourceId: string; result: NameProviderSourceResult }> {
-    const { variation: chainIdHex, value } = request;
-    const sourceId = snap.id;
-    const chainIdDecimal = parseInt(chainIdHex, 16);
+    const sourceId = snapId;
 
     const nameLookupRequest: AddressLookupArgs = {
-      chainId: `eip155:${chainIdDecimal}`,
-      address: value,
+      chainId: caipChainId,
+      address,
     };
 
     let proposedNames;
@@ -125,7 +145,7 @@ export class SnapsNameProvider implements NameProvider {
       const result = (await this.#messenger.call(
         'SnapController:handleRequest',
         {
-          snapId: snap.id,
+          snapId,
           origin: 'metamask',
           handler: HandlerType.OnNameLookup,
           request: {
@@ -144,7 +164,7 @@ export class SnapsNameProvider implements NameProvider {
         : [];
     } catch (error) {
       log.error('Snap name provider request failed', {
-        snapId: snap.id,
+        snapId,
         request: nameLookupRequest,
         error,
       });

@@ -104,6 +104,13 @@ class TestDapp {
 
   private readonly erc721TransferFromButton = '#transferFromButton';
 
+  private readonly ethSignButton = '#ethSign';
+
+  private readonly ethSignErrorMessage = {
+    css: '#ethSign',
+    text: 'Error: The method "eth_sign" does not exist / is not available.',
+  };
+
   private readonly ethSubscribeResponse =
     '[data-testid="eth-subscribe-response"]';
 
@@ -123,14 +130,17 @@ class TestDapp {
 
   private readonly mmlogo = '#mm-logo';
 
-  private maliciousERC20TransferButton = '#maliciousERC20TransferButton';
+  private readonly maliciousApprovalButton = '#maliciousApprovalButton';
 
-  private readonly ethSignButton = '#ethSign';
+  private readonly maliciousContractInteractionButton =
+    '#maliciousContractInteractionButton';
 
-  private readonly ethSignErrorMessage = {
-    css: '#ethSign',
-    text: 'Error: The method "eth_sign" does not exist / is not available.',
-  };
+  private readonly maliciousERC20TransferButton =
+    '#maliciousERC20TransferButton';
+
+  private readonly maliciousEthTransferButton = '#maliciousRawEthButton';
+
+  private readonly maliciousTradeOrderButton = '#maliciousTradeOrder';
 
   private readonly personalSignButton = '#personalSign';
 
@@ -239,6 +249,21 @@ class TestDapp {
   constructor(driver: Driver) {
     this.driver = driver;
   }
+
+  private readonly networkSelector = (networkId: string) => ({
+    testId: 'chainId',
+    text: networkId,
+  });
+
+  private readonly networkHost = (host: string) => ({
+    css: 'p',
+    text: host,
+  });
+
+  private readonly connectDappButton = {
+    text: 'Connect',
+    tag: 'button',
+  };
 
   /**
    * Sends a JSON-RPC request to the connected wallet using window.ethereum.
@@ -729,6 +754,24 @@ class TestDapp {
     await this.driver.clickElement(this.connectAccountButton);
   }
 
+  async clickConnectAccountButtonAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.connectDappButton,
+    );
+  }
+
+  async clickRevokePermissionButton() {
+    await this.driver.clickElement(this.revokePermissionButton);
+  }
+
+  async checkDappIsNotConnectedToNetwork(networkId: string) {
+    await this.driver.assertElementNotPresent(this.networkSelector(networkId));
+  }
+
+  async checkDappHostNetwork(host: string) {
+    await this.driver.waitForSelector(this.networkHost(host));
+  }
+
   async clickApproveTokens() {
     await this.driver.clickElement(this.approveTokensButton);
   }
@@ -879,6 +922,22 @@ class TestDapp {
     );
     await this.driver.scrollToElement(sendTransactionButton);
     await this.driver.clickElement(this.maliciousERC20TransferButton);
+  }
+
+  async clickMaliciousApprovalButton() {
+    await this.driver.clickElement(this.maliciousApprovalButton);
+  }
+
+  async clickMaliciousContractInteractionButton() {
+    await this.driver.clickElement(this.maliciousContractInteractionButton);
+  }
+
+  async clickMaliciousEthTransferButton() {
+    await this.driver.clickElement(this.maliciousEthTransferButton);
+  }
+
+  async clickMaliciousTradeOrderButton() {
+    await this.driver.clickElement(this.maliciousTradeOrderButton);
   }
 
   /**

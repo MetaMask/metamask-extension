@@ -5,10 +5,8 @@ import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/mu
 
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   getIsSwapsChain,
   getIsBridgeChain,
-  ///: END:ONLY_INCLUDE_IF
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { CoinOverview } from './coin-overview';
@@ -25,10 +23,8 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
 
   let isSwapsChain = false;
   let isBridgeChain = false;
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
   isBridgeChain = useSelector((state) => getIsBridgeChain(state, chainId));
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <CoinOverview

@@ -1,5 +1,5 @@
 import { NameType } from '@metamask/name-controller';
-import { HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import {
   GetAllSnaps,
   GetSnap,
@@ -39,6 +39,13 @@ const SNAP_MOCK_3 = {
   },
 };
 
+const SNAP_MOCK_4 = {
+  id: 'testSnap4',
+  manifest: {
+    proposedName: 'Test Snap 4',
+  },
+};
+
 function createMockMessenger({
   getAllSnaps,
   getSnap,
@@ -56,7 +63,9 @@ function createMockMessenger({
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getAllSnaps ||
-    jest.fn().mockReturnValue([SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3]);
+    jest
+      .fn()
+      .mockReturnValue([SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3, SNAP_MOCK_4]);
 
   const getSnapMock =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -65,7 +74,9 @@ function createMockMessenger({
     jest
       .fn()
       .mockImplementation((snapId) =>
-        [SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3].find(({ id }) => id === snapId),
+        [SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3, SNAP_MOCK_4].find(
+          ({ id }) => id === snapId,
+        ),
       );
 
   const handleSnapRequestMock =
@@ -79,9 +90,21 @@ function createMockMessenger({
     getPermissionControllerState ||
     jest.fn().mockReturnValue({
       subjects: {
-        [SNAP_MOCK.id]: { permissions: { 'endowment:name-lookup': true } },
-        [SNAP_MOCK_2.id]: { permissions: { 'endowment:name-lookup': true } },
+        [SNAP_MOCK.id]: { permissions: { 'endowment:name-lookup': {} } },
+        [SNAP_MOCK_2.id]: { permissions: { 'endowment:name-lookup': {} } },
         [SNAP_MOCK_3.id]: { permissions: {} },
+        [SNAP_MOCK_4.id]: {
+          permissions: {
+            'endowment:name-lookup': {
+              caveats: [
+                {
+                  type: SnapCaveatType.ChainIds,
+                  value: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+                },
+              ],
+            },
+          },
+        },
       },
     });
 
@@ -122,12 +145,17 @@ describe('SnapsNameProvider', () => {
       const { sourceIds, sourceLabels } = metadata;
 
       expect(sourceIds).toStrictEqual({
-        [NameType.ETHEREUM_ADDRESS]: [SNAP_MOCK.id, SNAP_MOCK_2.id],
+        [NameType.ETHEREUM_ADDRESS]: [
+          SNAP_MOCK.id,
+          SNAP_MOCK_2.id,
+          SNAP_MOCK_4.id,
+        ],
       });
 
       expect(sourceLabels).toStrictEqual({
         [SNAP_MOCK.id]: SNAP_MOCK.manifest.proposedName,
         [SNAP_MOCK_2.id]: SNAP_MOCK_2.manifest.proposedName,
+        [SNAP_MOCK_4.id]: SNAP_MOCK_4.manifest.proposedName,
       });
     });
   });

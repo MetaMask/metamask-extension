@@ -38,7 +38,6 @@
       "fullScreenGasPollTokens": "object",
       "notificationGasPollTokens": "object",
       "popupGasPollTokens": "object",
-      "qrHardware": {},
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
@@ -83,6 +82,7 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
+    "MultichainAccountService": "object",
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networkConfigurations": "object",

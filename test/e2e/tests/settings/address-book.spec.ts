@@ -20,7 +20,7 @@ import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
 
 async function mockTokenList(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/59144/tokens')
     .thenCallback(() => {
       return {
         statusCode: 200,

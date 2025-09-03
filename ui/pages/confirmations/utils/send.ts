@@ -5,6 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { isNativeAddress } from '@metamask/bridge-controller';
+import { useHistory } from 'react-router-dom';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
 import {
@@ -17,6 +18,7 @@ import {
   generateERC20TransferData,
   generateERC721TransferData,
 } from '../send-legacy/send.utils';
+import { SEND_ROUTE } from '../../../helpers/constants/routes';
 
 export const fromTokenMinUnitsNumeric = (
   value: string,
@@ -166,9 +168,38 @@ export function isDecimal(value: string) {
 }
 
 export function convertedCurrency(value: string, conversionRate?: number) {
+  if (!isDecimal(value) || parseFloat(value) < 0) {
+    return undefined;
+  }
   return new Numeric(value, 10)
     .applyConversionRate(conversionRate)
     .toBase(10)
     .toString()
     .replace(/\.?0+$/u, '');
 }
+
+export const navigateToSendRoute = (
+  history: ReturnType<typeof useHistory>,
+  params?: {
+    address?: string;
+    chainId?: string;
+  },
+) => {
+  if (process.env.SEND_REDESIGN_ENABLED) {
+    if (params) {
+      const queryParams = new URLSearchParams();
+      const { address, chainId } = params;
+      if (address) {
+        queryParams.append('asset', address);
+      }
+      if (chainId) {
+        queryParams.append('chainId', chainId);
+      }
+      history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
+    } else {
+      history.push(`${SEND_ROUTE}/asset`);
+    }
+  } else {
+    history.push(SEND_ROUTE);
+  }
+};

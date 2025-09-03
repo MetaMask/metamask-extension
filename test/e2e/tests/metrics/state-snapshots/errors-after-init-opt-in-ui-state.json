@@ -158,7 +158,7 @@
     "enableEnforcedSimulationsForTransactions": "object",
     "enforcedSimulationsSlippage": "number",
     "enforcedSimulationsSlippageForTransactions": "object",
-    "qrHardware": {},
+    "activeQrCodeScanRequest": null,
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "addressSecurityAlertResponses": "object",
