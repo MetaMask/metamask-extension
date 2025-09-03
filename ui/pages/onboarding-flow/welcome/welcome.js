@@ -194,11 +194,26 @@ export default function OnboardingWelcome({
         data: { success: false },
       });
 
+      // Map raw OAuth error messages to UI modal-friendly constants
       if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
         setLoginError(null);
-      } else {
-        setLoginError(errorMessage);
+        return;
       }
+
+      if (errorMessage === OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR) {
+        setLoginError(LOGIN_ERROR.SESSION_EXPIRED);
+        return;
+      }
+
+      if (
+        errorMessage === OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR ||
+        errorMessage === OAuthErrorMessages.NO_AUTH_CODE_FOUND_ERROR
+      ) {
+        setLoginError(LOGIN_ERROR.UNABLE_TO_CONNECT);
+        return;
+      }
+
+      setLoginError(LOGIN_ERROR.GENERIC);
     },
     [onboardingParentContext, bufferedTrace, bufferedEndTrace],
   );
