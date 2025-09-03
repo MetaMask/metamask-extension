@@ -148,6 +148,7 @@ import { MultichainAccountAddressListPage } from '../multichain-accounts/multich
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
+import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -270,6 +271,13 @@ const PermissionsPage = mmLazy(
   (() =>
     import(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
+    )) as unknown as DynamicImportType,
+);
+const GatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
     )) as unknown as DynamicImportType,
 );
 const Connections = mmLazy(
@@ -456,13 +464,8 @@ export default function Routes() {
 
   useEffect(() => {
     const windowType = getEnvironmentType();
-    const { openExtensionInBrowser } = globalThis.platform ?? {};
-    if (
-      showExtensionInFullSizeView &&
-      windowType === ENVIRONMENT_TYPE_POPUP &&
-      openExtensionInBrowser
-    ) {
-      openExtensionInBrowser();
+    if (showExtensionInFullSizeView && windowType === ENVIRONMENT_TYPE_POPUP) {
+      global.platform?.openExtensionInBrowser?.();
     }
   }, [showExtensionInFullSizeView]);
 
@@ -588,7 +591,15 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
-          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+          <Authenticated
+            path={PERMISSIONS}
+            component={
+              isGatorPermissionsFeatureEnabled()
+                ? GatorPermissionsPage
+                : PermissionsPage
+            }
+            exact
+          />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={ReviewPermissions}
