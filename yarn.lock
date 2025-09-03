@@ -7086,18 +7086,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^22.1.0":
-  version: 22.1.0
-  resolution: "@metamask/selected-network-controller@npm:22.1.0"
+"@metamask/selected-network-controller@npm:@metamask-previews/selected-network-controller@23.0.0-preview-a421f85b":
+  version: 23.0.0-preview-a421f85b
+  resolution: "@metamask-previews/selected-network-controller@npm:23.0.0-preview-a421f85b"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/base-controller": "npm:^8.2.0"
     "@metamask/json-rpc-engine": "npm:^10.0.3"
     "@metamask/swappable-obj-proxy": "npm:^2.3.0"
-    "@metamask/utils": "npm:^11.2.0"
+    "@metamask/utils": "npm:^11.4.2"
   peerDependencies:
-    "@metamask/network-controller": ^23.0.0
+    "@metamask/network-controller": ^24.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/e1baeb274cddf62a2b6962cbcac34a1a0e7fd7da9321c392652f95a3a63d9e0bd898dc5ed0334b47c7f1502355873299bf8d45a6fae515f7b13b3af1915a8e20
+  checksum: 10/534b3da53b69289af7ba68b4b30d9ccb1678933032614754fc42f95411091c858c787d50b4147b09c52360b2d17c7c661761dfdd3c5d27f34211e1fbe8d58652
   languageName: node
   linkType: hard
 
@@ -31727,7 +31727,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^3.0.0"
-    "@metamask/selected-network-controller": "npm:^22.1.0"
+    "@metamask/selected-network-controller": "npm:@metamask-previews/selected-network-controller@23.0.0-preview-a421f85b"
     "@metamask/signature-controller": "npm:^32.0.0"
     "@metamask/smart-transactions-controller": "npm:^18.1.0"
     "@metamask/snaps-controllers": "npm:^14.2.2"

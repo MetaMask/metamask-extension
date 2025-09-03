@@ -1297,14 +1297,6 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.SelectedNetworkController,
-      useRequestQueuePreference: true,
-      onPreferencesStateChange: () => {
-        // noop
-        // we have removed the ability to toggle the useRequestQueue preference
-        // both useRequestQueue and onPreferencesStateChange will be removed
-        // once mobile supports per dapp network selection
-        // see https://github.com/MetaMask/core/pull/5065#issue-2736965186
-      },
       domainProxyMap: new WeakRefObjectMap(),
     });
 
