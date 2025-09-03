@@ -4,7 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 
 async function mockInfura(mockServer: MockttpServer): Promise<void> {
@@ -196,6 +196,7 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
           })
@@ -208,7 +209,7 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
       },
 
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();
