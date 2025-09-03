@@ -41,10 +41,7 @@ import {
   SOLANA_TOKEN_IMAGE_URL,
   BITCOIN_TOKEN_IMAGE_URL,
 } from '../../../../shared/constants/multichain/networks';
-import {
-  TransactionGroupCategory,
-  TransactionGroupStatus,
-} from '../../../../shared/constants/transaction';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { formatAmount } from '../../../pages/confirmations/components/simulation-details/formatAmount';
@@ -172,7 +169,7 @@ const MultichainBridgeTransactionListItem: React.FC<
                   locale,
                   new BigNumber(sourceAsset.amount),
                 );
-                return `${displayAmount} ${sourceAsset.unit}`;
+                return `${displayAmount} ${bridgeHistoryItem.quote.srcAsset.symbol ?? sourceAsset.unit}`;
               }
               return '';
             })()}
