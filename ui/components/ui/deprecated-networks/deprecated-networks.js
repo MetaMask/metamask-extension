@@ -26,6 +26,17 @@ export default function DeprecatedNetworks() {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
+  const GOERLI_VARIANTS = [
+    CHAIN_IDS.GOERLI,
+    CHAIN_IDS.LINEA_GOERLI,
+    CHAIN_IDS.ARBITRUM_GOERLI,
+    CHAIN_IDS.OPTIMISM_GOERLI,
+  ];
+
+  const isDeprecatedNetworkGoerliVariants = Object.keys(
+    enabledNetworks?.eip155 || {},
+  ).some((network) => GOERLI_VARIANTS.includes(network));
+
   const isDeprecatedNetwork = Object.keys(enabledNetworks?.eip155 || {}).some(
     (network) => DEPRECATED_NETWORKS.includes(network),
   );
@@ -41,7 +52,7 @@ export default function DeprecatedNetworks() {
     chainId === CHAIN_IDS.LINEA_GOERLI ||
     chainId === CHAIN_IDS.ARBITRUM_GOERLI ||
     chainId === CHAIN_IDS.OPTIMISM_GOERLI ||
-    isDeprecatedNetwork
+    isDeprecatedNetworkGoerliVariants
   ) {
     props = {
       description: t('deprecatedGoerliNtwrkMsg'),
@@ -51,7 +62,7 @@ export default function DeprecatedNetworks() {
         externalLink: true,
       },
     };
-  } else if (DEPRECATED_NETWORKS.includes(chainId)) {
+  } else if (DEPRECATED_NETWORKS.includes(chainId) || isDeprecatedNetwork) {
     props = { description: t('deprecatedNetwork') };
   } else if (
     chainId === CHAIN_IDS.AURORA &&

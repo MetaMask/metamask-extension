@@ -4,7 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 
@@ -125,13 +125,14 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
+          .withNetworkControllerOnMainnet()
           .build(),
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();
