@@ -4,6 +4,7 @@ import {
   TransactionController,
   TransactionControllerMessenger,
   TransactionMeta,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
@@ -35,6 +36,7 @@ import { TransactionControllerInitMessenger } from '../messengers/transaction-co
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
+import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -81,6 +83,11 @@ export const TransactionControllerInit: ControllerInitFunction<
       const globalChainId = getGlobalChainId();
       return preferencesController().state.advancedGasFee[globalChainId];
     },
+    getSimulationConfig: async (url) => {
+      const getToken = () =>
+        initMessenger.call('AuthenticationController:getBearerToken');
+      return getShieldGatewayConfig(getToken, url);
+    },
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
       includeTokenTransfers: false,
@@ -89,7 +96,18 @@ export const TransactionControllerInit: ControllerInitFunction<
         onboardingController().state.completedOnboarding,
       updateTransactions: true,
     },
-    isAutomaticGasFeeUpdateEnabled: () => true,
+    isAutomaticGasFeeUpdateEnabled: ({ type }) => {
+      // Disables automatic gas fee updates for swap and bridge transactions
+      // which provide their own gas parameters when they are submitted
+      const disabledTypes = [
+        TransactionType.swap,
+        TransactionType.swapApproval,
+        TransactionType.bridge,
+        TransactionType.bridgeApproval,
+      ];
+
+      return !type || !disabledTypes.includes(type);
+    },
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
       const { chainId } = transactionMeta;
       const uiState = getUIState(getFlatState());

@@ -65,7 +65,6 @@ import {
   getIsAccessedFromDappConnectedSitePopover,
   getAllDomains,
   getPermittedEVMChainsForSelectedTab,
-  getPermittedEVMAccountsForSelectedTab,
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
@@ -194,10 +193,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
     getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
-  );
-
-  const permittedAccountAddresses = useSelector((state) =>
-    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -341,59 +336,64 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     ]);
   }, [searchedTestNetworks]);
 
-  const handleEvmNetworkChange = (
+  const getMultichainNetworkConfigurationOrThrow = (chainId: CaipChainId) => {
+    const network = multichainNetworks[chainId];
+    if (!network) {
+      throw new Error(
+        `Network configuration not found for chainId: ${chainId}`,
+      );
+    }
+    return network;
+  };
+
+  const handleEvmNetworkChange = async (
     chainId: CaipChainId,
     networkClientId?: string,
   ) => {
-    const hexChainId = convertCaipToHexChainId(chainId);
-    const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
-    const finalNetworkClientId =
-      networkClientId ?? defaultRpcEndpoint.networkClientId;
+    try {
+      const hexChainId = convertCaipToHexChainId(chainId);
+      const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
+      const finalNetworkClientId =
+        networkClientId ?? defaultRpcEndpoint.networkClientId;
 
-    dispatch(setActiveNetwork(finalNetworkClientId));
-    dispatch(updateCustomNonce(''));
-    dispatch(setNextNonce(''));
-    dispatch(detectNfts(allChainIds));
+      if (isAccessedFromDappConnectedSitePopover && selectedTabOrigin) {
+        const isNetworkPermitted = permittedChainIds.includes(hexChainId);
 
-    dispatch(toggleNetworkMenu());
+        if (!isNetworkPermitted) {
+          await dispatch(addPermittedChain(selectedTabOrigin, chainId));
+          dispatch(showPermittedNetworkToast());
+        }
 
-    // as a user, I don't want my network selection to force update my filter
-    // when I have "All Networks" toggled on however, if I am already filtered
-    // on "Current Network", we'll want to filter by the selected network when
-    // the network changes.
-    if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
-      dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
-    } else {
-      const allOpts = Object.keys(evmNetworks).reduce(
-        (acc, id) => {
-          acc[id] = true;
-          return acc;
-        },
-        {} as Record<string, boolean>,
-      );
-      dispatch(setTokenNetworkFilter(allOpts));
-    }
-
-    if (Object.keys(enabledNetworksByNamespace).length === 1) {
-      dispatch(enableSingleNetwork(hexChainId));
-    } else {
-      dispatch(enableAllPopularNetworks());
-    }
-
-    // If presently on a dapp, communicate a change to
-    // the dapp via silent switchEthereumChain that the
-    // network has changed due to user action
-    if (selectedTabOrigin && domains[selectedTabOrigin]) {
-      dispatch(
-        setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId),
-      );
-    }
-
-    if (permittedAccountAddresses.length > 0) {
-      dispatch(addPermittedChain(selectedTabOrigin, chainId));
-      if (!permittedChainIds.includes(hexChainId)) {
-        dispatch(showPermittedNetworkToast());
+        dispatch(
+          setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId),
+        );
       }
+
+      dispatch(setActiveNetwork(finalNetworkClientId));
+      dispatch(updateCustomNonce(''));
+      dispatch(setNextNonce(''));
+      dispatch(detectNfts(allChainIds));
+
+      if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
+        dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
+      } else {
+        const allOpts = Object.keys(evmNetworks).reduce(
+          (acc, id) => {
+            acc[id] = true;
+            return acc;
+          },
+          {} as Record<string, boolean>,
+        );
+        dispatch(setTokenNetworkFilter(allOpts));
+      }
+
+      if (Object.keys(enabledNetworksByNamespace).length === 1) {
+        dispatch(enableSingleNetwork(hexChainId));
+      } else {
+        dispatch(enableAllPopularNetworks());
+      }
+    } finally {
+      dispatch(toggleNetworkMenu());
     }
   };
 
@@ -408,23 +408,13 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
   };
 
-  const getMultichainNetworkConfigurationOrThrow = (chainId: CaipChainId) => {
-    const network = multichainNetworks[chainId];
-    if (!network) {
-      throw new Error(
-        `Network configuration not found for chainId: ${chainId}`,
-      );
-    }
-    return network;
-  };
-
   const handleNetworkChange = async (chainId: CaipChainId) => {
     const currentChain =
       getMultichainNetworkConfigurationOrThrow(currentChainId);
     const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
     if (chain.isEvm) {
-      handleEvmNetworkChange(chainId);
+      await handleEvmNetworkChange(chainId);
     } else {
       await handleNonEvmNetworkChange(chainId);
     }
