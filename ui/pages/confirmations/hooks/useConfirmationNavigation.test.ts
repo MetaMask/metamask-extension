@@ -2,6 +2,8 @@ import { useHistory } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 import { ApprovalFlowState } from '@metamask/approval-controller';
+import { useSearchParams } from 'react-router-dom-v5-compat';
+
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -14,6 +16,27 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
+
+function mockSearchParams(obj = {}) {
+  return {
+    get: (key: string) => (obj as Record<string, string>)[key] ?? null,
+    // eslint-disable-next-line object-shorthand
+    entries: function* () {
+      for (const key of Object.keys(obj)) {
+        yield [key, (obj as Record<string, string>)[key]];
+      }
+    },
+    [Symbol.iterator]() {
+      return this.entries();
+    },
+  };
+}
+
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useLocation: () => ({ pathname: '/send/asset' }),
+  useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
+}));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -64,10 +87,14 @@ function renderHook(
 describe('useConfirmationNavigation', () => {
   const useHistoryMock = jest.mocked(useHistory);
   const history = { replace: jest.fn() };
+  const mockUseSearchParams = jest.mocked(useSearchParams);
 
   beforeEach(() => {
     jest.resetAllMocks();
     useHistoryMock.mockReturnValue(history);
+    mockUseSearchParams.mockReturnValue([
+      mockSearchParams({}),
+    ] as unknown as ReturnType<typeof useSearchParams>);
   });
 
   describe('navigateToId', () => {
@@ -200,6 +227,22 @@ describe('useConfirmationNavigation', () => {
       expect(history.replace).toHaveBeenCalledTimes(1);
       expect(history.replace).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}`,
+      );
+    });
+  });
+
+  describe('queryParams', () => {
+    it('retain any queryParams present', () => {
+      mockUseSearchParams.mockReturnValue([
+        mockSearchParams({ test: 'dummy' }),
+      ] as unknown as ReturnType<typeof useSearchParams>);
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToIndex(1);
+
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}?test=dummy`,
       );
     });
   });

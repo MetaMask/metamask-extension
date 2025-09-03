@@ -5,6 +5,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { useSearchParams } from 'react-router-dom-v5-compat';
 
 import {
   getSelectedAccountCachedBalance,
@@ -45,6 +46,9 @@ export const useMaxValueRefresher = () => {
     selectMaxValueModeForTransaction(state, transactionMeta?.id),
   );
   const { updateTransactionEventFragment } = useTransactionEventFragment();
+  const [searchParams] = useSearchParams();
+  const paramMaxValueMode = Boolean(searchParams.get('maxValueMode')) ?? false;
+  const isMavValueMode = isMaxAmountMode || paramMaxValueMode;
 
   const balance = useSelector(getSelectedAccountCachedBalance);
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
@@ -60,16 +64,16 @@ export const useMaxValueRefresher = () => {
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_send_max: isMaxAmountMode,
+          is_send_max: isMavValueMode,
         },
       },
       transactionId,
     );
-  }, [isMaxAmountMode, transactionId]);
+  }, [isMavValueMode, transactionId]);
 
   useEffect(() => {
     if (
-      !isMaxAmountMode ||
+      !isMavValueMode ||
       transactionMeta.type !== TransactionType.simpleSend
     ) {
       return;
@@ -99,7 +103,7 @@ export const useMaxValueRefresher = () => {
       }),
     );
   }, [
-    isMaxAmountMode,
+    isMavValueMode,
     balance,
     gas,
     gasPrice,

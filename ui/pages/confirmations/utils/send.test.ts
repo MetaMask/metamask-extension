@@ -1,7 +1,10 @@
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import { EVM_NATIVE_ASSET } from '../../../../test/data/send/assets';
-import { findNetworkClientIdByChainId } from '../../../store/actions';
+import {
+  findNetworkClientIdByChainId,
+  getLayer1GasFeeValue,
+} from '../../../store/actions';
 import { Asset } from '../types/send';
 import {
   prepareEVMTransaction,
@@ -12,20 +15,22 @@ import {
   isDecimal,
   convertedCurrency,
   navigateToSendRoute,
+  getLayer1GasFees,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
     findNetworkClientIdByChainId: jest.fn().mockResolvedValue('mainnet'),
+    getLayer1GasFeeValue: jest.fn(),
   };
 });
 
 describe('Send - utils', () => {
   describe('fromTokenMinimalUnit', () => {
     it('return hex for the value with decimals multiplied', async () => {
-      expect(fromTokenMinimalUnits('0xA', 18)).toBe('8ac7230489e80000');
-      expect(fromTokenMinimalUnits('0xA', 0)).toBe('a');
+      expect(fromTokenMinimalUnits('0xA', 18)).toBe('0x8ac7230489e80000');
+      expect(fromTokenMinimalUnits('0xA', 0)).toBe('0xa');
     });
   });
 
@@ -65,7 +70,7 @@ describe('Send - utils', () => {
         data: '0x',
         from: '0x123',
         to: '0x456',
-        value: '56bc75e2d63100000',
+        value: '0x56bc75e2d63100000',
       });
     });
 
@@ -171,6 +176,21 @@ describe('Send - utils', () => {
     it('apply conversion rate to a currency', () => {
       expect(convertedCurrency('10.100', 15)).toBe('151.5');
       expect(convertedCurrency('250', 0.001)).toBe('0.25');
+    });
+  });
+
+  describe('getLayer1GasFees', () => {
+    it('call action getLayer1GasFeeValue with correct parameters', () => {
+      getLayer1GasFees({
+        asset: EVM_NATIVE_ASSET,
+        chainId: '0x1',
+        from: '0x123',
+        value: '0x64',
+      });
+      expect(getLayer1GasFeeValue).toHaveBeenCalledWith({
+        chainId: '0x1',
+        transactionParams: { from: '0x123', value: '0x56bc75e2d63100000' },
+      });
     });
   });
 });

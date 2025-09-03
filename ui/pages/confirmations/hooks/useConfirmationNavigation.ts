@@ -5,6 +5,8 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
+import { useSearchParams } from 'react-router-dom-v5-compat';
+
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -33,6 +35,8 @@ export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const history = useHistory();
+  const [searchParams] = useSearchParams();
+  const queryParams = new URLSearchParams(searchParams).toString();
 
   const getIndex = useCallback(
     (confirmationId?: string) => {
@@ -52,9 +56,10 @@ export function useConfirmationNavigation() {
         confirmations,
         Boolean(approvalFlows?.length),
         history,
+        queryParams,
       );
     },
-    [confirmations, history],
+    [confirmations, history, queryParams],
   );
 
   const navigateToIndex = useCallback(
@@ -75,6 +80,7 @@ export function navigateToConfirmation(
   confirmations: ApprovalRequest<Record<string, Json>>[],
   hasApprovalFlows: boolean,
   history: ReturnType<typeof useHistory>,
+  queryParams: string = '',
 ) {
   const hasNoConfirmations = confirmations?.length <= 0 || !confirmationId;
 
@@ -110,7 +116,11 @@ export function navigateToConfirmation(
   }
 
   if (type === ApprovalType.Transaction) {
-    history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
+    let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
+    if (queryParams.length) {
+      url = `${url}?${queryParams}`;
+    }
+    history.replace(url);
     return;
   }
 
