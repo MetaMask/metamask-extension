@@ -9,6 +9,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import * as Environment from '../../../../shared/modules/environment';
 import CreatePassword from './create-password';
 
 const mockHistoryReplace = jest.fn();
@@ -263,7 +264,11 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
-    it('should not create new wallet without terms checked', () => {
+    it('should not create new wallet without terms checked when socialLoginUiChanges are disabled', () => {
+      jest
+        .spyOn(Environment, 'getIsSocialLoginUiChangesEnabled')
+        .mockReturnValue(false);
+
       const mockStore = configureMockStore()(mockState);
       const { queryByTestId } = renderWithProvider(
         <CreatePassword createNewAccount={mockCreateNewAccount} />,
@@ -300,6 +305,49 @@ describe('Onboarding Create Password', () => {
       fireEvent.click(createNewWalletButton);
 
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
+    });
+
+    it('should create new wallet without marketing checked when socialLoginUiChanges are enabled', () => {
+      jest
+        .spyOn(Environment, 'getIsSocialLoginUiChangesEnabled')
+        .mockReturnValue(true);
+
+      const mockStore = configureMockStore()(mockState);
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword createNewAccount={mockCreateNewAccount} />,
+        mockStore,
+      );
+
+      const createPasswordInput = queryByTestId('create-password-new-input');
+      const confirmPasswordInput = queryByTestId(
+        'create-password-confirm-input',
+      );
+
+      const createPasswordEvent = {
+        target: {
+          value: '12345678',
+        },
+      };
+      const confirmPasswordEvent = {
+        target: {
+          value: '12345678',
+        },
+      };
+
+      fireEvent.change(createPasswordInput, createPasswordEvent);
+      fireEvent.change(confirmPasswordInput, confirmPasswordEvent);
+
+      const terms = queryByTestId('create-password-terms');
+
+      expect(terms).not.toBeChecked();
+
+      const createNewWalletButton = queryByTestId('create-password-submit');
+
+      expect(createNewWalletButton).toBeEnabled();
+
+      fireEvent.click(createNewWalletButton);
+
+      expect(mockCreateNewAccount).toHaveBeenCalled();
     });
   });
 
