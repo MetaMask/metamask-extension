@@ -37,6 +37,7 @@ describe('Send - utils', () => {
   describe('toTokenMinimalUnit', () => {
     it('return hex for the value with decimals multiplied', async () => {
       expect(toTokenMinimalUnit('0xA', 18)).toBe('0.00000000000000001');
+      expect(toTokenMinimalUnit('0x5ab79', 2)).toBe('3715.77');
       expect(toTokenMinimalUnit('0x5', 5)).toBe('0.00005');
       expect(toTokenMinimalUnit('0xA', 0)).toBe('10');
     });
