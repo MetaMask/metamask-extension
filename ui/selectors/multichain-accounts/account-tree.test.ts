@@ -2,28 +2,35 @@ import {
   AccountGroupId,
   AccountWalletType,
   AccountGroupType,
+  AccountWalletId,
 } from '@metamask/account-api';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
+
 import { KeyringTypes } from '@metamask/keyring-controller';
 
 import mockState from '../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 
+import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/modules/selectors/networks';
 import {
   getAccountTree,
   getAllAccountGroups,
   getAccountGroupWithInternalAccounts,
-  getCaip25AccountIdToMultichainAccountGroupMap,
   getCaip25IdByAccountGroupAndScope,
   getInternalAccountByGroupAndCaip,
   getInternalAccountBySelectedAccountGroupAndCaip,
+  getInternalAccountsFromGroupById,
   getMultichainAccountGroupById,
   getMultichainAccountGroups,
   getMultichainAccountsToScopesMap,
   getSingleAccountGroups,
+  getMultichainAccountsByWalletId,
   getSelectedAccountGroup,
   getWalletIdAndNameByAccountAddress,
   getWalletsWithAccounts,
+  getNetworkAddressCount,
+  getWallet,
+  getAccountGroupsByAddress,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 import {
@@ -32,6 +39,10 @@ import {
 } from './test-utils';
 
 describe('Multichain Accounts Selectors', () => {
+  // Get properly typed mockState (we know it conforms to the interface structure)
+  const typedMockState = mockState as unknown as MultichainAccountsState &
+    MultichainNetworkConfigurationsByChainIdState;
+
   // Test data constants
   const ENTROPY_WALLET_1_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
 
@@ -50,19 +61,18 @@ describe('Multichain Accounts Selectors', () => {
   const EIP155_MAINNET_SCOPE = 'eip155:0';
   const SOLANA_MAINNET_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
-  // Helper to create state with missing internal account
   const createStateWithMissingInternalAccount = (): MultichainAccountsState =>
     createMockMultichainAccountsState(
       {
         wallets: {
           'entropy:test': {
-            id: 'entropy:test',
-            type: AccountWalletType.Entropy,
+            id: 'entropy:test' as const,
+            type: AccountWalletType.Entropy as const,
             groups: {
               'entropy:test/0': {
-                id: 'entropy:test/0',
-                type: AccountGroupType.MultichainAccount,
-                accounts: ['missing-account-id'],
+                id: 'entropy:test/0' as const,
+                type: AccountGroupType.MultichainAccount as const,
+                accounts: ['missing-account-id'] as [string, ...string[]],
                 metadata: {
                   name: 'Test',
                   entropy: { groupIndex: 0 },
@@ -83,21 +93,26 @@ describe('Multichain Accounts Selectors', () => {
         accounts: {},
         selectedAccount: '',
       },
+      {
+        networkConfigurationsByChainId:
+          typedMockState.metamask.networkConfigurationsByChainId,
+        multichainNetworkConfigurationsByChainId:
+          typedMockState.metamask.multichainNetworkConfigurationsByChainId,
+      },
     );
 
-  // Helper to create state without multichain wallets
   const createStateWithoutMultichain = (): MultichainAccountsState =>
     createMockMultichainAccountsState(
       {
         wallets: {
           'keyring:Test': {
-            id: 'keyring:Test',
-            type: AccountWalletType.Keyring,
+            id: 'keyring:Test' as const,
+            type: AccountWalletType.Keyring as const,
             groups: {
               'keyring:Test/address': {
-                id: 'keyring:Test/address',
-                type: AccountGroupType.SingleAccount,
-                accounts: ['account1'],
+                id: 'keyring:Test/address' as const,
+                type: AccountGroupType.SingleAccount as const,
+                accounts: ['account1'] as [string],
                 metadata: {
                   name: 'Test',
                   pinned: false,
@@ -117,27 +132,31 @@ describe('Multichain Accounts Selectors', () => {
         accounts: {},
         selectedAccount: '',
       },
+      {
+        networkConfigurationsByChainId:
+          typedMockState.metamask.networkConfigurationsByChainId,
+        multichainNetworkConfigurationsByChainId:
+          typedMockState.metamask.multichainNetworkConfigurationsByChainId,
+      },
     );
 
-  // Get properly typed mockState (we know it conforms to the interface structure)
-  const typedMockState = mockState as unknown as MultichainAccountsState;
-
   // Helper to create state with mixed existing and missing accounts
-  const createStateWithMixedAccounts = (): MultichainAccountsState => ({
-    ...typedMockState,
-    metamask: {
-      ...typedMockState.metamask,
-      accountTree: {
-        ...typedMockState.metamask.accountTree,
+  const createStateWithMixedAccounts = (): MultichainAccountsState &
+    MultichainNetworkConfigurationsByChainIdState =>
+    createMockMultichainAccountsState(
+      {
         wallets: {
           'entropy:test': {
-            id: 'entropy:test',
-            type: AccountWalletType.Entropy,
+            id: 'entropy:test' as const,
+            type: AccountWalletType.Entropy as const,
             groups: {
               'entropy:test/0': {
-                id: 'entropy:test/0',
-                type: AccountGroupType.MultichainAccount,
-                accounts: ['existing-account', 'missing-account'],
+                id: 'entropy:test/0' as const,
+                type: AccountGroupType.MultichainAccount as const,
+                accounts: ['existing-account', 'missing-account'] as [
+                  string,
+                  ...string[],
+                ],
                 metadata: {
                   name: 'Test',
                   entropy: { groupIndex: 0 },
@@ -154,7 +173,7 @@ describe('Multichain Accounts Selectors', () => {
         },
         selectedAccountGroup: 'entropy:test/0' as AccountGroupId,
       },
-      internalAccounts: {
+      {
         ...typedMockState.metamask.internalAccounts,
         accounts: {
           ...typedMockState.metamask.internalAccounts.accounts,
@@ -165,22 +184,31 @@ describe('Multichain Accounts Selectors', () => {
           }),
         },
       },
-    },
-  });
+      {
+        networkConfigurationsByChainId:
+          typedMockState.metamask.networkConfigurationsByChainId,
+        multichainNetworkConfigurationsByChainId:
+          typedMockState.metamask.multichainNetworkConfigurationsByChainId,
+      },
+    );
 
   // Helper to create state with no matching accounts
-  const createStateWithNoMatchingAccounts = (): MultichainAccountsState =>
+  const createStateWithNoMatchingAccounts = (): MultichainAccountsState &
+    MultichainNetworkConfigurationsByChainIdState =>
     createMockMultichainAccountsState(
       {
         wallets: {
           'entropy:test': {
-            id: 'entropy:test',
-            type: AccountWalletType.Entropy,
+            id: 'entropy:test' as const,
+            type: AccountWalletType.Entropy as const,
             groups: {
               'entropy:test/0': {
-                id: 'entropy:test/0',
-                type: AccountGroupType.MultichainAccount,
-                accounts: ['missing-account-1', 'missing-account-2'],
+                id: 'entropy:test/0' as const,
+                type: AccountGroupType.MultichainAccount as const,
+                accounts: ['missing-account-1', 'missing-account-2'] as [
+                  string,
+                  ...string[],
+                ],
                 metadata: {
                   name: 'Test',
                   entropy: { groupIndex: 0 },
@@ -200,6 +228,12 @@ describe('Multichain Accounts Selectors', () => {
       {
         accounts: {},
         selectedAccount: '',
+      },
+      {
+        networkConfigurationsByChainId:
+          typedMockState.metamask.networkConfigurationsByChainId,
+        multichainNetworkConfigurationsByChainId:
+          typedMockState.metamask.multichainNetworkConfigurationsByChainId,
       },
     );
 
@@ -541,6 +575,18 @@ describe('Multichain Accounts Selectors', () => {
       );
     });
 
+    it('sanitizes an EIP-155 chain ID and returns the internal account for a group', () => {
+      const result = getInternalAccountByGroupAndCaip(
+        typedMockState,
+        ENTROPY_GROUP_1_ID as AccountGroupId,
+        'eip155:1',
+      );
+
+      expect(result).toStrictEqual(
+        typedMockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+      );
+    });
+
     it('returns null if the group is not found', () => {
       const result = getInternalAccountByGroupAndCaip(
         typedMockState,
@@ -557,6 +603,17 @@ describe('Multichain Accounts Selectors', () => {
       const result = getInternalAccountBySelectedAccountGroupAndCaip(
         typedMockState,
         EIP155_MAINNET_SCOPE,
+      );
+
+      expect(result).toStrictEqual(
+        typedMockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+      );
+    });
+
+    it('sanitizes an EIP-155 chain ID and returns the internal account for a selected account group', () => {
+      const result = getInternalAccountBySelectedAccountGroupAndCaip(
+        typedMockState,
+        'eip155:1',
       );
 
       expect(result).toStrictEqual(
@@ -676,13 +733,13 @@ describe('Multichain Accounts Selectors', () => {
         {
           wallets: {
             'keyring:Test': {
-              id: 'keyring:Test',
-              type: AccountWalletType.Keyring,
+              id: 'keyring:Test' as const,
+              type: AccountWalletType.Keyring as const,
               groups: {
                 'keyring:Test/address': {
-                  id: 'keyring:Test/address',
-                  type: AccountGroupType.SingleAccount,
-                  accounts: ['account1'],
+                  id: 'keyring:Test/address' as const,
+                  type: AccountGroupType.SingleAccount as const,
+                  accounts: ['account1'] as [string],
                   metadata: {
                     name: 'Test',
                     pinned: false,
@@ -701,6 +758,12 @@ describe('Multichain Accounts Selectors', () => {
         {
           accounts: {},
           selectedAccount: '',
+        },
+        {
+          networkConfigurationsByChainId:
+            typedMockState.metamask.networkConfigurationsByChainId,
+          multichainNetworkConfigurationsByChainId:
+            typedMockState.metamask.multichainNetworkConfigurationsByChainId,
         },
       );
       const result = getMultichainAccountGroups(stateWithoutEntropy);
@@ -731,13 +794,13 @@ describe('Multichain Accounts Selectors', () => {
         {
           wallets: {
             'keyring:Test': {
-              id: 'keyring:Test',
+              id: 'keyring:Test' as const,
               type: AccountWalletType.Keyring,
               groups: {
                 'keyring:Test/address': {
-                  id: 'keyring:Test/address',
+                  id: 'keyring:Test/address' as const,
                   type: AccountGroupType.SingleAccount,
-                  accounts: ['account1'],
+                  accounts: ['account1'] as [string],
                   metadata: {
                     name: 'Test',
                     pinned: false,
@@ -757,46 +820,17 @@ describe('Multichain Accounts Selectors', () => {
           accounts: {},
           selectedAccount: '',
         },
+        {
+          networkConfigurationsByChainId:
+            typedMockState.metamask.networkConfigurationsByChainId,
+          multichainNetworkConfigurationsByChainId:
+            typedMockState.metamask.multichainNetworkConfigurationsByChainId,
+        },
       );
       const result = getSingleAccountGroups(stateWithoutEntropy);
 
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe('keyring:Test/address');
-    });
-  });
-
-  describe('getCaip25AccountIdToMultichainAccountGroupMap', () => {
-    it('maps CAIP-25 account IDs to multichain account group IDs', () => {
-      const result =
-        getCaip25AccountIdToMultichainAccountGroupMap(typedMockState);
-
-      expect(result.size).toBeGreaterThan(0);
-      expect(result.get(`${EIP155_MAINNET_SCOPE}:${ACCOUNT_1_ADDRESS}`)).toBe(
-        ENTROPY_GROUP_1_ID,
-      );
-      expect(result.get(`${EIP155_MAINNET_SCOPE}:${ACCOUNT_2_ADDRESS}`)).toBe(
-        ENTROPY_GROUP_1_ID,
-      );
-      expect(result.get(`${EIP155_MAINNET_SCOPE}:${ACCOUNT_3_ADDRESS}`)).toBe(
-        ENTROPY_GROUP_2_ID,
-      );
-    });
-
-    it('returns empty map when no accounts exist', () => {
-      const emptyState = createEmptyState();
-      const result = getCaip25AccountIdToMultichainAccountGroupMap(emptyState);
-
-      expect(result.size).toBe(0);
-    });
-
-    it('skips accounts without matching internal accounts', () => {
-      const stateWithMissingInternalAccount =
-        createStateWithMissingInternalAccount();
-      const result = getCaip25AccountIdToMultichainAccountGroupMap(
-        stateWithMissingInternalAccount,
-      );
-
-      expect(result.size).toBe(0);
     });
   });
 
@@ -923,6 +957,280 @@ describe('Multichain Accounts Selectors', () => {
         SOLANA_MAINNET_SCOPE,
       );
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe('getMultichainAccountsByWalletId', () => {
+    it('returns all account groups for a specified wallet ID', () => {
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ' as AccountWalletId;
+
+      const result = getMultichainAccountsByWalletId(
+        mockState as unknown as MultichainAccountsState,
+        walletId,
+      );
+
+      const firstGroupId =
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
+
+      expect(result).toBeDefined();
+
+      if (result) {
+        expect(result[firstGroupId]).toBeDefined();
+      }
+    });
+
+    it('returns undefined for a non-existent wallet ID', () => {
+      const nonExistentWalletId = 'entropy:non-existent-id' as AccountWalletId;
+
+      const result = getMultichainAccountsByWalletId(
+        mockState as unknown as MultichainAccountsState,
+        nonExistentWalletId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('getWallet', () => {
+    it('returns the wallet object when it exists in state', () => {
+      const result = getWallet(
+        typedMockState,
+        ENTROPY_WALLET_1_ID as AccountWalletId,
+      );
+
+      expect(result).toBeDefined();
+      expect(result?.id).toBe(ENTROPY_WALLET_1_ID);
+      expect(result?.type).toBe('entropy');
+      expect(result?.metadata.name).toBe('Wallet 1');
+    });
+
+    it('returns undefined when wallet does not exist', () => {
+      const nonExistentWalletId = 'entropy:nonexistent' as AccountWalletId;
+      const result = getWallet(typedMockState, nonExistentWalletId);
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('getNetworkAddressCount', () => {
+    it('returns the number of accounts in a group', () => {
+      const result = getNetworkAddressCount(
+        typedMockState,
+        ENTROPY_GROUP_1_ID as AccountGroupId,
+      );
+
+      expect(result).toBe(2);
+    });
+
+    it('returns 0 when the group does not exist', () => {
+      const nonExistentGroupId = 'entropy:nonexistent/0' as AccountGroupId;
+      const result = getNetworkAddressCount(typedMockState, nonExistentGroupId);
+
+      expect(result).toBe(0);
+    });
+
+    it('returns 0 when the wallet does not exist', () => {
+      const invalidWalletGroupId = 'invalid-wallet/0' as AccountGroupId;
+      const result = getNetworkAddressCount(
+        typedMockState,
+        invalidWalletGroupId,
+      );
+
+      expect(result).toBe(0);
+    });
+  });
+
+  describe('getInternalAccountsFromGroupById', () => {
+    it('returns internal accounts for a valid group ID', () => {
+      const result = getInternalAccountsFromGroupById(
+        typedMockState,
+        ENTROPY_GROUP_1_ID as AccountGroupId,
+      );
+
+      expect(result).toHaveLength(2);
+      expect(result[0].id).toBe(ACCOUNT_1_ID);
+      expect(result[0].address).toBe(ACCOUNT_1_ADDRESS);
+      expect(result[1].id).toBe(ACCOUNT_2_ID);
+      expect(result[1].address).toBe(ACCOUNT_2_ADDRESS);
+    });
+
+    it('returns empty array when group ID is null', () => {
+      const result = getInternalAccountsFromGroupById(
+        typedMockState,
+        null as unknown as AccountGroupId,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    it('returns empty array when group does not exist', () => {
+      const nonExistentGroupId = 'entropy:nonexistent/0' as AccountGroupId;
+      const result = getInternalAccountsFromGroupById(
+        typedMockState,
+        nonExistentGroupId,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    it('returns empty array when wallet does not exist', () => {
+      const invalidWalletGroupId = 'invalid-wallet/0' as AccountGroupId;
+      const result = getInternalAccountsFromGroupById(
+        typedMockState,
+        invalidWalletGroupId,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    it('filters out accounts that do not exist in internalAccounts', () => {
+      const stateWithMixedAccounts = createStateWithMixedAccounts();
+      const result = getInternalAccountsFromGroupById(
+        stateWithMixedAccounts,
+        'entropy:test/0' as AccountGroupId,
+      );
+
+      // Should only return the existing account, not the missing one
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('existing-account');
+    });
+
+    it('returns empty array when no accounts in the group exist in internalAccounts', () => {
+      const stateWithNoMatchingAccounts = createStateWithNoMatchingAccounts();
+      const result = getInternalAccountsFromGroupById(
+        stateWithNoMatchingAccounts,
+        'entropy:test/0' as AccountGroupId,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    it('works with ledger hardware wallet groups', () => {
+      const result = getInternalAccountsFromGroupById(
+        typedMockState,
+        LEDGER_GROUP_ID as AccountGroupId,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].address).toBe(
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+      );
+      expect(result[0].metadata.keyring.type).toBe('Ledger Hardware');
+    });
+
+    it('returns empty array for empty account tree state', () => {
+      const emptyState = createEmptyState();
+      const result = getInternalAccountsFromGroupById(
+        emptyState,
+        ENTROPY_GROUP_1_ID as AccountGroupId,
+      );
+
+      expect(result).toEqual([]);
+    });
+
+    it('maintains the order of accounts as specified in the group', () => {
+      // Create a state with specific account order
+      const orderedState = createMockMultichainAccountsState(
+        {
+          wallets: {
+            'entropy:ordered': {
+              id: 'entropy:ordered',
+              type: AccountWalletType.Entropy,
+              groups: {
+                'entropy:ordered/0': {
+                  id: 'entropy:ordered/0',
+                  type: AccountGroupType.MultichainAccount,
+                  accounts: ['account-3', 'account-1', 'account-2'],
+                  metadata: {
+                    name: 'Ordered Group',
+                    entropy: { groupIndex: 0 },
+                    pinned: false,
+                    hidden: false,
+                  },
+                },
+              },
+              metadata: {
+                name: 'Ordered Wallet',
+                entropy: { id: 'ordered' },
+              },
+            },
+          },
+          selectedAccountGroup: 'entropy:ordered/0' as AccountGroupId,
+        },
+        {
+          accounts: {
+            'account-1': createMockInternalAccount({
+              id: 'account-1',
+              name: 'Account 1',
+              address: '0x111',
+            }),
+            'account-2': createMockInternalAccount({
+              id: 'account-2',
+              name: 'Account 2',
+              address: '0x222',
+            }),
+            'account-3': createMockInternalAccount({
+              id: 'account-3',
+              name: 'Account 3',
+              address: '0x333',
+            }),
+          },
+          selectedAccount: 'account-1',
+        },
+      );
+
+      const result = getInternalAccountsFromGroupById(
+        orderedState,
+        'entropy:ordered/0' as AccountGroupId,
+      );
+
+      expect(result).toHaveLength(3);
+      expect(result[0].id).toBe('account-3');
+      expect(result[1].id).toBe('account-1');
+      expect(result[2].id).toBe('account-2');
+    });
+  });
+
+  describe('getAccountGroupsByAddress', () => {
+    it('returns the correct account groups without duplicated values', () => {
+      const result = getAccountGroupsByAddress(typedMockState, [
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+      ]);
+
+      expect(result.length).toBe(3);
+      expect(result[0].id).toBe(ENTROPY_GROUP_1_ID);
+      expect(result[1].id).toBe(ENTROPY_GROUP_2_ID);
+      expect(result[2].id).toBe(LEDGER_GROUP_ID);
+    });
+
+    it('returns an empty array when no addresses match', () => {
+      const result = getAccountGroupsByAddress(typedMockState, [
+        'nonExistentAddress',
+      ]);
+
+      expect(result).toEqual([]);
+    });
+
+    it('returns an empty array when given an empty address list', () => {
+      const result = getAccountGroupsByAddress(typedMockState, []);
+
+      expect(result).toEqual([]);
+    });
+
+    it('handles duplicated addresses in the input list', () => {
+      const result = getAccountGroupsByAddress(typedMockState, [
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc', // duplicate
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813', // duplicate
+      ]);
+
+      expect(result.length).toBe(2);
+      expect(result[0].id).toBe(ENTROPY_GROUP_1_ID);
+      expect(result[1].id).toBe(LEDGER_GROUP_ID);
     });
   });
 });
