@@ -1,8 +1,9 @@
 .multichain-product-tour-menu {
   width: 344px;
   box-shadow: none;
-  left: -7px !important;
-  top: 10px !important; //important is required here since Menu has absolute position added via inline style in base component.
+  // Removed hardcoded positioning to allow Popper.js to control placement
+  // top: 10px !important;
+  // left: -7px !important;
 
   &--rtl {
     left: 6px !important;
@@ -27,6 +28,8 @@
     height: 40px;
     visibility: hidden;
     top: 0;
+    // Allow arrow positining via CSS variable
+    left: var(--arrow-position, 20px);
   }
 
   &__arrow::before {

@@ -3,6 +3,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import browser from 'webextension-polyfill';
@@ -69,6 +70,7 @@ import {
   setShowCopyAddressToast,
 } from '../../../ducks/app/app';
 import { PreferredAvatar } from '../../app/preferred-avatar';
+import { AccountIconTour } from '../../app/account-icon-tour/account-icon-tour';
 import {
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
@@ -89,6 +91,7 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const tourAnchorRef = useRef<HTMLDivElement>(null);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
@@ -207,11 +210,14 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
-          <PreferredAvatar
-            address={internalAccount.address}
-            className="shrink-0"
-          />
+          <div ref={tourAnchorRef}>
+            <PreferredAvatar
+              address={internalAccount.address}
+              className="shrink-0"
+            />
+          </div>
         )}
+
         {internalAccount && (
           <Text
             as="div"
@@ -245,6 +251,7 @@ export const AppHeaderUnlockedContent = ({
       </>
     );
   }, [
+    accountName,
     disableAccountPicker,
     dispatch,
     internalAccount,
@@ -312,6 +319,10 @@ export const AppHeaderUnlockedContent = ({
           onClose={() => dispatch(setShowSupportDataConsentModal(false))}
         />
       </Box>
+
+      {!isMultichainAccountsState2Enabled && (
+        <AccountIconTour anchorElement={tourAnchorRef.current} />
+      )}
     </>
   );
 };

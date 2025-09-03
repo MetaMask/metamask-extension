@@ -3805,6 +3805,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowPermissionsTour.bind(appStateController),
       setShowAccountBanner:
         appStateController.setShowAccountBanner.bind(appStateController),
+      setProductTour:
+        appStateController.setProductTour.bind(appStateController),
       setShowNetworkBanner:
         appStateController.setShowNetworkBanner.bind(appStateController),
       updateNftDropDownState:
