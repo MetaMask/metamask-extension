@@ -433,6 +433,7 @@ import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
+import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1968,6 +1969,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTreeController: AccountTreeControllerInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
+      GatorPermissionsController: GatorPermissionsControllerInit,
     };
 
     const {
@@ -2026,6 +2028,8 @@ export default class MetamaskController extends EventEmitter {
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
+    this.gatorPermissionsController =
+      controllersByName.GatorPermissionsController;
 
     this.getSecurityAlertsConfig = () => {
       return async (url) => {
@@ -2225,6 +2229,7 @@ export default class MetamaskController extends EventEmitter {
       NetworkOrderController: this.networkOrderController,
       AccountOrderController: this.accountOrderController,
       GasFeeController: this.gasFeeController,
+      GatorPermissionsController: this.gatorPermissionsController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
       TokenBalancesController: this.tokenBalancesController,
@@ -3408,6 +3413,7 @@ export default class MetamaskController extends EventEmitter {
       ensController,
       tokenListController,
       gasFeeController,
+      gatorPermissionsController,
       metaMetricsController,
       networkController,
       multichainNetworkController,
@@ -3492,6 +3498,18 @@ export default class MetamaskController extends EventEmitter {
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
+        ),
+      enableGatorPermissions:
+        gatorPermissionsController.enableGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
+      disableGatorPermissions:
+        gatorPermissionsController.disableGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
+      fetchAndUpdateGatorPermissions:
+        gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
+          gatorPermissionsController,
         ),
       ///: END:ONLY_INCLUDE_IF
       setUseExternalNameSources:

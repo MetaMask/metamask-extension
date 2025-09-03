@@ -240,7 +240,8 @@
     "dompurify": "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch",
     "@endo/env-options@npm:^1.1.11": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.7": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
-    "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch"
+    "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
+    "@metamask/gator-permissions-controller": "npm:@metamask-previews/gator-permissions-controller@^0.0.0-preview-541d905c"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -296,6 +297,7 @@
     "@metamask/eth-trezor-keyring": "^9.0.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^24.0.0",
+    "@metamask/gator-permissions-controller": "^0.0.0",
     "@metamask/institutional-wallet-snap": "1.3.4",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/json-rpc-engine": "^10.0.0",

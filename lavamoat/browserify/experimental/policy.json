@@ -1310,6 +1310,15 @@
         "uuid": true
       }
     },
+    "@metamask/gator-permissions-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/snaps-controllers": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,

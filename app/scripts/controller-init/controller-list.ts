@@ -46,6 +46,7 @@ import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-contr
 import { AccountTreeController } from '@metamask/account-tree-controller';
 import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-controller';
 import { EncryptionKey } from '@metamask/browser-passworder';
+import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -62,6 +63,7 @@ export type Controller =
   | DeFiPositionsController
   | ExecutionService
   | GasFeeController
+  | GatorPermissionsController
   | JsonSnapsRegistry
   | KeyringController
   | MultichainAssetsController
@@ -108,6 +110,7 @@ export type ControllerFlatState = AccountsController['state'] &
   DeFiPositionsController['state'] &
   DelegationController['state'] &
   GasFeeController['state'] &
+  GatorPermissionsController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
   MultichainAssetsController['state'] &
