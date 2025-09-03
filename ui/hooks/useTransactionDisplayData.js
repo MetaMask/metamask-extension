@@ -428,7 +428,6 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('sent');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.bridgeApproval) {
-    title = t('bridgeApproval');
     category = TransactionGroupCategory.approval;
     title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
     subtitle = origin;

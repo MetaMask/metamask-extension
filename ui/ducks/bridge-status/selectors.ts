@@ -50,7 +50,7 @@ export const selectBridgeHistoryItemForTxMetaId = createSelector(
  * Returns a bridge history item for a given approval tx id
  */
 export const selectBridgeHistoryForApprovalTxId = createSelector(
-  [selectBridgeHistoryForAccount, (_, approvalTxId: string) => approvalTxId],
+  [selectBridgeHistory, (_, approvalTxId: string) => approvalTxId],
   (bridgeHistory, approvalTxId) => {
     return Object.values(bridgeHistory).find(
       (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
