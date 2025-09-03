@@ -1777,7 +1777,7 @@
     "message": "Don't remind me again"
   },
   "deepLink_Error404Description": {
-    "message": "We can't find the page you are looking for."
+    "message": "We can't find the page you are looking for. Update to the latest version of MetaMask and we'll take you to the right place."
   },
   "deepLink_Error404Title": {
     "message": "This page doesn't exist"
