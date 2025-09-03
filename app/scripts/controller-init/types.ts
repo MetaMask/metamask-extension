@@ -222,6 +222,11 @@ export type ControllerInitRequest<
   }>;
 
   getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
+
+  /**
+   * The user's preferred language code, if any.
+   */
+  initLangCode: string | null;
 };
 
 /**
