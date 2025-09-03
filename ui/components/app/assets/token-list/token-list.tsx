@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { type Hex } from '@metamask/utils';
+import { isCaipChainId, type Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
@@ -160,9 +160,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       return;
     }
 
-    const xxx = token.chainId.startsWith('0x')
-      ? token.address
-      : token.address.split('/')[1];
+    const tokenAddress = isCaipChainId(token.chainId)
+      ? token.address.split('/')[1]
+      : token.address;
 
     console.log('TOKEN CLICK', {
       isNative: token.isNative,
@@ -170,12 +170,16 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       address: token.address,
       token,
       usedAddress:
-        isMultichainAccountsState2Enabled && token.isNative ? '' : xxx,
+        isMultichainAccountsState2Enabled && token.isNative ? '' : tokenAddress,
     });
 
     onTokenClick(
       token.chainId,
-      isMultichainAccountsState2Enabled && token.isNative ? '' : xxx,
+      isMultichainAccountsState2Enabled &&
+        token.isNative &&
+        !isCaipChainId(token.chainId)
+        ? ''
+        : tokenAddress,
     );
 
     // Track event: token details
