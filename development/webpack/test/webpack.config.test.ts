@@ -138,7 +138,7 @@ ${Object.entries(env)
     ]);
     assert.deepStrictEqual(
       manifestPlugin.options.description,
-      `development build from git id: ${getLatestCommit().hash()}`,
+      `webpack development build from git id: ${getLatestCommit().hash()}`,
     );
     assert(manifestPlugin.options.transform);
     const transformedManifest = manifestPlugin.options.transform(
