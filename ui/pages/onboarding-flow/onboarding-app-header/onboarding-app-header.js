@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import Dropdown from '../../../components/ui/dropdown';
