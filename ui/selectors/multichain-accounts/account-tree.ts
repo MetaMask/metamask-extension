@@ -750,7 +750,7 @@ export const getInternalAccountListSpreadByScopesByGroupId =
       const evmNetworkIds = new Set(
         Object.keys(caipNetworks).filter(
           (chainId) =>
-            chainId.startsWith('eip155:') &&
+            chainId.startsWith(KnownCaipNamespace.Eip155) &&
             !isTestNetwork(chainId as CaipChainId),
         ) as CaipChainId[],
       );

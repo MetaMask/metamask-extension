@@ -1242,7 +1242,6 @@ describe('Multichain Accounts Selectors', () => {
         ENTROPY_GROUP_2_ID,
       );
 
-      console.log(result);
       expect(result).toHaveLength(5);
       expect(result[0]).toHaveProperty('scope', 'eip155:1');
       expect(result[1]).toHaveProperty('scope', 'eip155:5');

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CaipChainId } from '@metamask/utils';
+import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 
 import {
   AlignItems,
@@ -56,7 +56,7 @@ export const MultichainAddressRow = ({
   // We're mixing hex with caip chain ids so its necessary
   // to use the hex format for EVMs and caip for non EVMs.
   const networkImageSrc = getImageForChainId(
-    chainId.startsWith('eip155')
+    chainId.startsWith(KnownCaipNamespace.Eip155)
       ? convertCaipToHexChainId(chainId as CaipChainId)
       : chainId,
   );
