@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import classnames from 'classnames';
@@ -48,7 +48,7 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -74,15 +74,15 @@ export default function OnboardingPinExtension() {
         new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
       },
     });
-    history.push(DEFAULT_ROUTE);
+    navigate(DEFAULT_ROUTE);
   };
 
   useEffect(() => {
     // if the user has not created a wallet, redirect to onboarding welcome route
     if (!currentKeyring) {
-      history.replace(ONBOARDING_WELCOME_ROUTE);
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
-  }, [currentKeyring, history]);
+  }, [currentKeyring, navigate]);
 
   return (
     <Box

@@ -17,9 +17,12 @@ import { AssetType } from '../../../../../../shared/constants/transaction';
 import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
 import { SendPageRecipientContent } from './recipient-content';
 
-jest.mock('reselect', () => ({
-  createSelector: jest.fn(),
-}));
+jest.mock('reselect', () => {
+  const createSelector = Object.assign(jest.fn(), {
+    withTypes: () => jest.fn(),
+  });
+  return { createSelector };
+});
 
 jest.mock('../../../../../../shared/modules/selectors/util', () => ({
   createDeepEqualSelector: jest.fn(),

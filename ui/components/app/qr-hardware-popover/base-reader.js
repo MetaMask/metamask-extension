@@ -102,7 +102,7 @@ const BaseReader = ({
 
   const handleScan = (data) => {
     try {
-      if (!data) {
+      if (!data || urDecoder.isComplete()) {
         return;
       }
       urDecoder.receivePart(data);

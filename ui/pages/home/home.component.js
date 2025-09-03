@@ -70,6 +70,7 @@ import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
+import ShieldEntryModal from '../../components/app/shield-entry-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -167,6 +168,7 @@ export default class Home extends PureComponent {
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
     showConnectionsRemovedModal: PropTypes.bool,
+    showShieldEntryModal: PropTypes.bool,
   };
 
   state = {
@@ -823,6 +825,7 @@ export default class Home extends PureComponent {
       isSeedlessPasswordOutdated,
       isPrimarySeedPhraseBackedUp,
       showConnectionsRemovedModal,
+      showShieldEntryModal,
     } = this.props;
 
     if (forgottenPassword) {
@@ -886,6 +889,16 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
+          {showShieldEntryModal && (
+            <ShieldEntryModal
+              onClose={() => {
+                // TODO: implement
+              }}
+              onGetStarted={() => {
+                // TODO: implement
+              }}
+            />
+          )}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}

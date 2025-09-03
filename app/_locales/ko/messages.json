@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "계정에 네트워크 수수료를 지불할 만큼의 $1(이)가 부족합니다."
   },
-  "alertMessageNetworkBusy": {
-    "message": "가스비가 높고 견적의 정확도도 떨어집니다."
-  },
   "alertMessageNoGasPrice": {
     "message": "수수료를 직접 업데이트할 때까지는 이 트랜잭션을 진행할 수 없습니다."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "불필요한 승인"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "네트워크 혼잡"
   },
   "alertReasonNoGasPrice": {
     "message": "수수료 견적 제공 불가"
@@ -684,12 +678,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "개인 정보 보호 방법 알아보기"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "계정을 백업하고 설정을 동기화하세요."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "백업 및 동기화 소개"
-  },
   "backupApprovalInfo": {
     "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
   },
@@ -713,9 +701,6 @@
   },
   "basic": {
     "message": "기본"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "기본 기능이 꺼져 있습니다."
   },
   "basicConfigurationDescription": {
     "message": "MetaMask는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 MetaMask와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. MetaMask는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 MetaMask 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
@@ -2180,9 +2165,6 @@
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
   },
-  "enableIt": {
-    "message": " 활성화"
-  },
   "enableSmartContractAccount": {
     "message": "스마트 계약 계정 활성화"
   },
@@ -3568,9 +3550,6 @@
   },
   "networkIsBusy": {
     "message": "네트워크 사용량이 많습니다. 가스비가 높고 견적의 정확도도 떨어집니다."
-  },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "한 개 이상의 네트워크가 활성화되어야 합니다"
   },
   "networkMenu": {
     "message": "네트워크 메뉴"
@@ -5533,60 +5512,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "이 옵션을 활성화하면 MetaMask에서 딥링크를 열 때 표시되는 중간 화면을 건너뜁니다. '딥링크'는 https://link.metamask.io/home과 같은 링크로 MetaMask가 열리도록 하는 링크입니다. 이러한 링크는 다른 사람들에 의해 숨겨질 수 있습니다. 중간 화면은 계정, 토큰, 기록, 잔액, 설정, 기타 잠재적으로 민감한 정보를 표시할 수 있는 MetaMask 내 페이지를 실수로 여는 것을 방지하기 위해 설계되었습니다. 이 설정은 MetaMask에서 서명된 링크에만 적용됩니다."
-  },
-  "slideBridgeDescription": {
-    "message": "지갑 내에서 9개 체인 간 이동"
-  },
-  "slideBridgeTitle": {
-    "message": "브릿지할 준비가 되셨나요?"
-  },
-  "slideCashOutDescription": {
-    "message": "암호화폐를 현금으로 매도"
-  },
-  "slideCashOutTitle": {
-    "message": "MetaMask로 현금화"
-  },
-  "slideDebitCardDescription": {
-    "message": "일부 지역에서 사용 가능"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMask 직불카드"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "어디에서든 지갑을 사용하세요"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "MetaMask 모바일 다운로드"
-  },
-  "slideFundWalletDescription": {
-    "message": "시작하려면 토큰을 추가하거나 전송하세요"
-  },
-  "slideFundWalletTitle": {
-    "message": "지갑에 자금 추가"
-  },
-  "slideMultiSrpDescription": {
-    "message": "MetaMask에서 여러 지갑을 가져와 사용하세요"
-  },
-  "slideMultiSrpTitle": {
-    "message": "여러 비밀복구구문 추가"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "같은 주소, 더욱 스마트한 기능"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "스마트 계정 사용을 시작하세요"
-  },
-  "slideSolanaDescription": {
-    "message": "시작하려면 솔라나 계정을 생성하세요"
-  },
-  "slideSolanaTitle": {
-    "message": "이제 솔라나가 지원됩니다"
-  },
-  "slideSweepStakeDescription": {
-    "message": "NFT를 민팅하고 당첨 기회를 잡으세요"
-  },
-  "slideSweepStakeTitle": {
-    "message": "$5000 USDC 경품 이벤트에 참여하세요!"
   },
   "slippage": {
     "message": "슬리피지"

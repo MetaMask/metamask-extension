@@ -127,7 +127,7 @@ export default function NftsTab() {
 
   return (
     <>
-      <Box marginTop={2}>
+      <Box>
         <AssetListControlBar />
       </Box>
 

@@ -6,9 +6,12 @@ import { Asset } from '../types/send';
 import {
   prepareEVMTransaction,
   submitEvmTransaction,
-  fromTokenMinimalUnit,
+  fromTokenMinimalUnits,
   toTokenMinimalUnit,
   formatToFixedDecimals,
+  isDecimal,
+  convertedCurrency,
+  navigateToSendRoute,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -21,8 +24,8 @@ jest.mock('../../../store/actions', () => {
 describe('Send - utils', () => {
   describe('fromTokenMinimalUnit', () => {
     it('return hex for the value with decimals multiplied', async () => {
-      expect(fromTokenMinimalUnit('0xA', 18)).toBe('8ac7230489e80000');
-      expect(fromTokenMinimalUnit('0xA', 0)).toBe('0xA');
+      expect(fromTokenMinimalUnits('0xA', 18)).toBe('8ac7230489e80000');
+      expect(fromTokenMinimalUnits('0xA', 0)).toBe('a');
     });
   });
 
@@ -135,6 +138,39 @@ describe('Send - utils', () => {
         value: '0x64',
       });
       expect(findNetworkClientIdByChainId).toHaveBeenCalledWith('0x1');
+    });
+  });
+
+  describe('navigateToSendRoute', () => {
+    it('call history.push with send route', () => {
+      const mockHistoryPush = jest.fn();
+      navigateToSendRoute({
+        push: mockHistoryPush,
+      });
+      expect(mockHistoryPush).toHaveBeenCalled();
+    });
+  });
+
+  describe('isDecimal', () => {
+    it('return true for decimal values and false otherwise', () => {
+      expect(isDecimal('10')).toBe(true);
+      expect(isDecimal('10.01')).toBe(true);
+      expect(isDecimal('.01')).toBe(true);
+      expect(isDecimal('-0.01')).toBe(true);
+      expect(isDecimal('abc')).toBe(false);
+      expect(isDecimal(' ')).toBe(false);
+    });
+  });
+
+  describe('convertedCurrency', () => {
+    it('return undefined for invalid input value', () => {
+      expect(convertedCurrency('abc', 15)).not.toBeDefined();
+      expect(convertedCurrency('-10', 15)).not.toBeDefined();
+    });
+
+    it('apply conversion rate to a currency', () => {
+      expect(convertedCurrency('10.100', 15)).toBe('151.5');
+      expect(convertedCurrency('250', 0.001)).toBe('0.25');
     });
   });
 });

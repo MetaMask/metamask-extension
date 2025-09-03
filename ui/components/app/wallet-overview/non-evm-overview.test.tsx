@@ -76,7 +76,7 @@ const mockNonEvmAccount = {
     },
   },
   options: {},
-  methods: [BtcMethod.SendBitcoin],
+  methods: Object.values(BtcMethod),
   type: BtcAccountType.P2wpkh,
 };
 

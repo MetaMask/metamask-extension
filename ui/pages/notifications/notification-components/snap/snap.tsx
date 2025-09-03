@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import {
   NotificationDetailTitle,
@@ -33,7 +33,7 @@ export const components: NotificationComponent<SnapNotification> = {
   guardFn: isOfTypeNodeGuard([TRIGGER_TYPES.SNAP]),
   // eslint-disable-next-line func-name-matching, @typescript-eslint/naming-convention
   item: function Item({ notification, onClick }) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const snapsMetadata = useSelector(getSnapsMetadata);
     const snapsNameGetter = getSnapName(snapsMetadata);
     const { markNotificationAsRead } = useMarkNotificationAsRead();
@@ -49,7 +49,7 @@ export const components: NotificationComponent<SnapNotification> = {
         ]);
       }
 
-      history.push(getSnapRoute(notification.data.origin));
+      navigate(getSnapRoute(notification.data.origin));
     };
 
     return (

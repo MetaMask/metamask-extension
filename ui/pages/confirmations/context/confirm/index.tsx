@@ -14,7 +14,7 @@ import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/syncConfirmPath';
 import { Confirmation } from '../../types/confirm';
 
-type ConfirmContextType = {
+export type ConfirmContextType = {
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;

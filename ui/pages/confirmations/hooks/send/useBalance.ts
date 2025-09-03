@@ -1,5 +1,5 @@
 import { Hex } from '@metamask/utils';
-import { ERC1155, toHex } from '@metamask/controller-utils';
+import { ERC1155 } from '@metamask/controller-utils';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { isNativeAddress } from '@metamask/bridge-controller';
 import { useMemo } from 'react';
@@ -13,17 +13,17 @@ import { useSendType } from './useSendType';
 
 type AccountWithBalances = Record<Hex, { balance: Hex }>;
 type TokenBalances = Record<Hex, Record<Hex, Record<Hex, Hex>>>;
-type MetamaskSendStata = {
+type MetamaskSendState = {
   metamask: { accountsByChainId: Record<Hex, AccountWithBalances> };
 };
-export type GetEvmBalanceArgs = {
+type GetEvmBalanceArgs = {
   accountsWithBalances?: AccountWithBalances;
   asset?: Asset;
   from: string;
   tokenBalances: TokenBalances;
 };
 
-export const getEvmBalance = ({
+const getEvmBalance = ({
   accountsWithBalances,
   asset,
   from,
@@ -58,7 +58,7 @@ export const getEvmBalance = ({
   );
 };
 
-export const getNonEvmBalance = (asset?: Asset) => {
+const getNonEvmBalance = (asset?: Asset) => {
   if (!asset) {
     return '0';
   }
@@ -67,23 +67,22 @@ export const getNonEvmBalance = (asset?: Asset) => {
 };
 
 export const useBalance = () => {
-  const { asset, from } = useSendContext();
+  const { asset, chainId, from } = useSendContext();
   const tokenBalances = useSelector(getTokenBalances);
   const { isEvmSendType } = useSendType();
   const accountsByChainId = useSelector(
-    (state: MetamaskSendStata) => state.metamask.accountsByChainId,
+    (state: MetamaskSendState) => state.metamask.accountsByChainId,
   ) as AccountWithBalances;
   const accountsWithBalances = useMemo(() => {
-    if (asset?.chainId && asset?.address && isEvmAddress(asset?.address)) {
-      return accountsByChainId[toHex(asset?.chainId)];
+    if (chainId && asset?.address && isEvmAddress(asset?.address)) {
+      return accountsByChainId[chainId as Hex];
     }
     return undefined;
-  }, [accountsByChainId, asset?.chainId]);
+  }, [accountsByChainId, asset?.address, chainId]);
 
   const balance = useMemo(() => {
     if (asset?.standard === ERC1155) {
-      // todo: add logic to check balance units for ERC1155 tokens
-      return '0';
+      return asset?.balance ?? '0';
     }
     if (isEvmSendType) {
       return getEvmBalance({

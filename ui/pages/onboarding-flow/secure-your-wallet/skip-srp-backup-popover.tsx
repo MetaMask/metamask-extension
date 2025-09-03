@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useCallback, useContext, useState } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -58,7 +58,7 @@ export default function SkipSRPBackup({
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onSkipSrpBackup = useCallback(async () => {
     await dispatch(setSeedPhraseBackedUp(false));
@@ -78,15 +78,15 @@ export default function SkipSRPBackup({
       getBrowserName() === PLATFORM_FIREFOX ||
       firstTimeFlowType === FirstTimeFlowType.restore
     ) {
-      history.push(ONBOARDING_COMPLETION_ROUTE);
+      navigate(ONBOARDING_COMPLETION_ROUTE);
     } else {
-      history.push(ONBOARDING_METAMETRICS);
+      navigate(ONBOARDING_METAMETRICS);
     }
   }, [
     dispatch,
     firstTimeFlowType,
     hdEntropyIndex,
-    history,
+    navigate,
     trackEvent,
     bufferedEndTrace,
   ]);
