@@ -380,8 +380,6 @@ export const SENTRY_BACKGROUND_STATE = {
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
     isContactSyncingEnabled: true,
-    hasAccountSyncingSyncedAtLeastOnce: false,
-    isAccountSyncingReadyToBeDispatched: false,
   },
 };
 

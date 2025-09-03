@@ -4,7 +4,6 @@ import {
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
 import { ControllerInitFunction } from '../types';
-import { isProduction } from '../../../../shared/modules/environment';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

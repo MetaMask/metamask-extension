@@ -164,14 +164,6 @@ describe('Contact Syncing - Existing User', function () {
           const header = new HeaderNavbar(driver);
           await header.checkPageIsLoaded();
 
-          // Wait for the UI to be ready before opening settings
-          await driver.wait(async () => {
-            const uiState = await getCleanAppState(driver);
-            return (
-              uiState?.metamask?.hasAccountSyncingSyncedAtLeastOnce === true
-            );
-          }, 30000);
-
           const settingsPage = new SettingsPage(driver);
           const contactsSettings = new ContactsSettings(driver);
 

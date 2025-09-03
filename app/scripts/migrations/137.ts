@@ -1,67 +1,21 @@
-import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
 export type VersionedData = {
   meta: {
     version: number;
   };
-  data: {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    OnboardingController?: {
-      completedOnboarding?: boolean;
-    };
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    UserStorageController?: {
-      isAccountSyncingReadyToBeDispatched?: boolean;
-    };
-  };
+  data: {};
 };
 
 export const version = 137;
 
 function transformState(state: VersionedData['data']) {
-  if (
-    !hasProperty(state, 'OnboardingController') ||
-    !isObject(state.OnboardingController)
-  ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Invalid OnboardingController state: ${typeof state.OnboardingController}`,
-      ),
-    );
-    return state;
-  }
-
-  if (
-    !hasProperty(state, 'UserStorageController') ||
-    !isObject(state.UserStorageController)
-  ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Invalid UserStorageController state: ${typeof state.UserStorageController}`,
-      ),
-    );
-    return state;
-  }
-
-  const { OnboardingController } = state;
-
-  const currentCompletedOnboardingStatus =
-    OnboardingController.completedOnboarding;
-
-  if (currentCompletedOnboardingStatus) {
-    state.UserStorageController.isAccountSyncingReadyToBeDispatched = true;
-  } else {
-    state.UserStorageController.isAccountSyncingReadyToBeDispatched = false;
-  }
-
   return state;
 }
 
 /**
- * This migration sets isAccountSyncingReadyToBeDispatched to true if completedOnboarding is true
+ * This migration was setting isAccountSyncingReadyToBeDispatched to true if completedOnboarding is true
+ * Since this state property does not exist anymore, this migration is a no-op.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.

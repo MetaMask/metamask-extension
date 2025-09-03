@@ -283,17 +283,6 @@ class HomePage {
     });
   }
 
-  /**
-   * This function checks if account syncing has been successfully completed at least once.
-   */
-  async checkHasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
-    console.log('Check if account syncing has synced at least once');
-    await this.driver.wait(async () => {
-      const uiState = await getCleanAppState(this.driver);
-      return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
-    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
-  }
-
   async checkIfBridgeButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.bridgeButton, {

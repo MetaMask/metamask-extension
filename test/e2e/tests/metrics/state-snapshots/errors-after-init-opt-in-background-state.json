@@ -366,9 +366,6 @@
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean",
-    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountSyncingReadyToBeDispatched": "boolean",
-    "isAccountSyncingInProgress": "boolean"
+    "isContactSyncingInProgress": "boolean"
   }
 }

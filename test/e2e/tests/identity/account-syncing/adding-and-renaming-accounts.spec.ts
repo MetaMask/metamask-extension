@@ -53,12 +53,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Wait for the initial account sync to complete before adding new accounts
-        await driver.wait(async () => {
-          const uiState = await getCleanAppState(driver);
-          return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
-        }, 30000);
-
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();

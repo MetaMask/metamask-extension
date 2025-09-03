@@ -22,7 +22,6 @@ type Contact = {
 type AppState = {
   metamask: {
     isContactSyncingEnabled: boolean;
-    hasAccountSyncingSyncedAtLeastOnce: boolean;
     addressBook?: Record<string, Record<string, Contact>>;
   };
 };
@@ -55,12 +54,6 @@ describe('Contact syncing - New User', function () {
       async ({ driver }) => {
         // Unlock wallet with backup and sync already enabled
         await unlockWallet(driver);
-
-        // Wait for the UI to be ready before opening settings
-        await driver.wait(async () => {
-          const uiState = await getCleanAppState(driver);
-          return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
-        }, 30000);
 
         // Set up test utilities
         const { waitUntilSyncedContactsNumberEquals } =

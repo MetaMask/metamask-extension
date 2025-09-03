@@ -14,8 +14,6 @@ import {
   hideWarning,
   checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
-  lockAccountSyncing,
-  unlockAccountSyncing,
 } from '../../../store/actions';
 import {
   Text,
@@ -470,7 +468,6 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
-                await dispatch(lockAccountSyncing());
                 await importWallet();
               } catch (e) {
                 setSrpError(
@@ -481,7 +478,6 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
-                await dispatch(unlockAccountSyncing());
               }
             }}
           >

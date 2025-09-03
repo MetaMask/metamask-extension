@@ -2970,29 +2970,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('syncInternalAccountsWithUserStorage', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls syncInternalAccountsWithUserStorage in the background', async () => {
-      const store = mockStore();
-
-      const syncInternalAccountsWithUserStorageStub = sinon.stub().resolves();
-
-      background.getApi.returns({
-        syncInternalAccountsWithUserStorage:
-          syncInternalAccountsWithUserStorageStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.syncInternalAccountsWithUserStorage());
-      expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
-        true,
-      );
-    });
-  });
-
   describe('syncContactsWithUserStorage', () => {
     afterEach(() => {
       sinon.restore();

@@ -1913,7 +1913,6 @@ class FixtureBuilder {
       isAccountSyncingEnabled = true,
       isProfileSyncingUpdateLoading = false,
       isAccountSyncingUpdateLoading = false,
-      hasAccountSyncingSyncedAtLeastOnce = false,
     } = options;
 
     merge(this.fixture.data.UserStorageController, {
@@ -1921,7 +1920,6 @@ class FixtureBuilder {
       isAccountSyncingEnabled,
       isProfileSyncingUpdateLoading,
       isAccountSyncingUpdateLoading,
-      hasAccountSyncingSyncedAtLeastOnce,
     });
     return this;
   }
