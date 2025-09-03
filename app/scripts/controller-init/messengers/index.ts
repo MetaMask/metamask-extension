@@ -78,10 +78,6 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
   },
-  GatorPermissionsController: {
-    getMessenger: getGatorPermissionsControllerMessenger,
-    getInitMessenger: getGatorPermissionsControllerInitMessenger,
-  },
   InstitutionalSnapController: {
     getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
