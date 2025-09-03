@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "У вас на счету недостаточно $1 для оплаты комиссий сети."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Цены газа высоки, а оценки менее точны."
-  },
   "alertMessageNoGasPrice": {
     "message": "Мы не сможем продолжить эту транзакцию, пока вы не обновите комиссию вручную."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Ненужное разрешение"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Сеть занята"
   },
   "alertReasonNoGasPrice": {
     "message": "Оценка комиссии недоступна"

@@ -267,7 +267,7 @@ async function mockTransactionRelayStatus(
 
 async function mockSmartTransactionFeatureFlags(mockServer: MockttpServer) {
   await mockServer
-    .forGet('https://swap.api.cx.metamask.io/featureFlags')
+    .forGet('https://bridge.api.cx.metamask.io/featureFlags')
     .thenCallback(() => {
       return {
         ok: true,
