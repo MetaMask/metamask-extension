@@ -35,6 +35,10 @@ on:
         required: false
       google-application-creds-base64:
         required: false
+      PR_TOKEN:
+        required: false
+      GCP_RLS_SHEET_ACCOUNT_BASE64:
+        required: false
 
 jobs:
   create-release-pr:

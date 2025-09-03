@@ -40,7 +40,8 @@ jobs:
           # Function to paginate and collect refs for a prefix
           fetch_matching_refs() {
             local prefix="$1"
-            local temp_file="$(mktemp)"
+            local temp_file
+            temp_file="$(mktemp)"
             local page=1
             echo "Fetching branches matching $prefix* (paginated)..." >&2
             while :; do
