@@ -1248,12 +1248,13 @@ class FixtureBuilder {
       // Determine selectedAccountGroup: group containing selected internal account
       let selectedAccountGroup = null;
       if (selectedAccountId) {
-        outer: for (const wallet of Object.values(wallets)) {
-          for (const group of Object.values(wallet.groups)) {
-            if (group.accounts.includes(selectedAccountId)) {
-              selectedAccountGroup = group.id;
-              break outer;
-            }
+        for (const wallet of Object.values(wallets)) {
+          const match = Object.values(wallet.groups).find((group) =>
+            group.accounts.includes(selectedAccountId),
+          );
+          if (match) {
+            selectedAccountGroup = match.id;
+            break;
           }
         }
       }
