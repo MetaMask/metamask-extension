@@ -5,7 +5,7 @@ import {
   DEPRECATED_NETWORKS,
   WHITELIST_NETWORK_NAME,
   WHITELIST_SYMBOL,
-  WHITELIST_NETWORK_RPC_URL,
+  WHITELIST_NETWORK_RPC_URL_ORIGIN,
 } from '../../../../../shared/constants/network';
 import {
   AlignItems,
@@ -197,7 +197,8 @@ async function getAlerts(pendingApproval, data) {
       !data.matchedChain.rpc
         ?.map((rpc) => new URL(rpc).origin)
         .includes(origin) &&
-      WHITELIST_NETWORK_RPC_URL[pendingApproval.requestData.chainId] !== origin
+      WHITELIST_NETWORK_RPC_URL_ORIGIN[pendingApproval.requestData.chainId] !==
+        origin
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }

@@ -516,7 +516,7 @@ export const WHITELIST_SYMBOL = {
   [CHAIN_IDS.HYPER_EVM]: 'HYPE',
 };
 
-export const WHITELIST_NETWORK_RPC_URL = {
+export const WHITELIST_NETWORK_RPC_URL_ORIGIN = {
   [CHAIN_IDS.HYPER_EVM]: 'https://rpc.hyperliquid.xyz',
 };
 
