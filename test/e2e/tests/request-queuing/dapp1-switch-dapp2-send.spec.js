@@ -1,3 +1,7 @@
+const {
+  default: NetworkManager,
+} = require('../../page-objects/pages/network-manager');
+
 const FixtureBuilder = require('../../fixture-builder');
 const {
   DAPP_ONE_URL,
@@ -79,13 +83,10 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Custom');
+        await driver.clickElement('[data-testid="Localhost 8546"]');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -225,13 +226,10 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Custom');
+        await driver.clickElement('[data-testid="Localhost 8546"]');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two

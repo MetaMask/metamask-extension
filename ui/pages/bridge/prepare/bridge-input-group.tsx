@@ -5,7 +5,6 @@ import {
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { type BigNumber } from 'bignumber.js';
 import {
   Text,
   TextField,
@@ -30,6 +29,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   getBridgeQuotes,
+  getFromTokenBalance,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
@@ -71,9 +71,7 @@ export const BridgeInputGroup = ({
   isMultiselectEnabled,
   onBlockExplorerClick,
   buttonProps,
-  balanceAmount,
 }: {
-  balanceAmount?: BigNumber;
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
@@ -104,12 +102,11 @@ export const BridgeInputGroup = ({
   const currentChainId = useSelector(getMultichainCurrentChainId);
   const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
 
-  const [, handleCopy] = useCopyToClipboard(MINUTE) as [
-    boolean,
-    (text: string) => void,
-  ];
+  const [, handleCopy] = useCopyToClipboard(MINUTE);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const balanceAmount = useSelector(getFromTokenBalance);
 
   const isAmountReadOnly =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -122,6 +119,12 @@ export const BridgeInputGroup = ({
       inputRef.current.focus();
     }
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
+
+  useEffect(() => {
+    return () => {
+      inputRef.current = null;
+    };
+  }, []);
 
   const isSwap = useIsMultichainSwap();
 
@@ -263,73 +266,75 @@ export const BridgeInputGroup = ({
         </AssetPicker>
       </Row>
 
-      <Row justifyContent={JustifyContent.spaceBetween}>
-        <Row>
-          <Text
-            variant={TextVariant.bodyMd}
-            fontWeight={FontWeight.Normal}
-            color={
-              isAmountReadOnly && isEstimatedReturnLow
-                ? TextColor.warningDefault
-                : TextColor.textAlternativeSoft
-            }
-            textAlign={TextAlign.End}
-            ellipsis
-          >
-            {isAmountReadOnly && isLoading && amountFieldProps.value === '0'
-              ? t('bridgeCalculatingAmount')
-              : undefined}
-            {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
-          </Text>
-        </Row>
+      <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>
         <Text
-          display={Display.Flex}
-          gap={1}
           variant={TextVariant.bodyMd}
+          fontWeight={FontWeight.Normal}
           color={
-            !isAmountReadOnly && isInsufficientBalance(balanceAmount)
-              ? TextColor.errorDefault
+            isAmountReadOnly && isEstimatedReturnLow
+              ? TextColor.warningDefault
               : TextColor.textAlternativeSoft
           }
-          onClick={() => {
-            if (isAmountReadOnly && token && selectedChainId) {
-              handleAddressClick();
-            } else if (token && selectedChainId) {
-              handleCopy(token.address);
-            }
-          }}
-          as={isAmountReadOnly ? 'a' : 'p'}
-          style={{
-            cursor: isAmountReadOnly ? 'pointer' : 'default',
-            textDecoration: isAmountReadOnly ? 'underline' : 'none',
-          }}
+          textAlign={TextAlign.End}
+          ellipsis
         >
-          {isAmountReadOnly &&
-            token &&
-            selectedChainId &&
-            (isNativeAddress(token.address)
-              ? undefined
-              : shortenString(token.address, {
-                  truncatedCharLimit: 11,
-                  truncatedStartChars: 4,
-                  truncatedEndChars: 4,
-                  skipCharacterInEnd: false,
-                }))}
-          {!isAmountReadOnly && balanceAmount
-            ? formatTokenAmount(locale, balanceAmount.toString(), token?.symbol)
+          {isAmountReadOnly && isLoading && amountFieldProps.value === '0'
+            ? t('bridgeCalculatingAmount')
             : undefined}
-          {onMaxButtonClick &&
-            token &&
-            !isNativeAddress(token.address) &&
-            balanceAmount && (
+          {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
+        </Text>
+        {!isAmountReadOnly && balanceAmount && token && (
+          <Text
+            display={Display.Flex}
+            gap={1}
+            variant={TextVariant.bodyMd}
+            color={
+              isInsufficientBalance
+                ? TextColor.errorDefault
+                : TextColor.textAlternativeSoft
+            }
+            style={{
+              cursor: 'default',
+              textDecoration: 'none',
+            }}
+          >
+            {formatTokenAmount(locale, balanceAmount, token.symbol)}
+            {onMaxButtonClick && (
               <ButtonLink
                 variant={TextVariant.bodyMd}
-                onClick={() => onMaxButtonClick(balanceAmount?.toFixed())}
+                onClick={() => onMaxButtonClick(balanceAmount)}
               >
                 {t('max')}
               </ButtonLink>
             )}
-        </Text>
+          </Text>
+        )}
+        {isAmountReadOnly &&
+          token &&
+          selectedChainId &&
+          !isNativeAddress(token.address) && (
+            <Text
+              display={Display.Flex}
+              gap={1}
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternativeSoft}
+              onClick={() => {
+                handleAddressClick();
+              }}
+              as={'a'}
+              style={{
+                cursor: isAmountReadOnly ? 'pointer' : 'default',
+                textDecoration: isAmountReadOnly ? 'underline' : 'none',
+              }}
+            >
+              {shortenString(token.address, {
+                truncatedCharLimit: 11,
+                truncatedStartChars: 4,
+                truncatedEndChars: 4,
+                skipCharacterInEnd: false,
+              })}
+            </Text>
+          )}
       </Row>
     </Column>
   );

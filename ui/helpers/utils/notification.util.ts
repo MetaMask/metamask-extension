@@ -1,6 +1,16 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type {
+  OnChainRawNotification,
+  OnChainRawNotificationsWithNetworkFields,
+} from '@metamask/notification-services-controller/notification-services';
+import {
+  NOTIFICATION_CHAINS_ID,
+  NOTIFICATION_NETWORK_CURRENCY_NAME,
+  NOTIFICATION_NETWORK_CURRENCY_SYMBOL,
+  SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS,
+  type BlockExplorerConfig,
+} from '@metamask/notification-services-controller/notification-services/ui';
 import { TextVariant } from '../constants/design-system';
 import {
   CHAIN_IDS,
@@ -16,30 +26,12 @@ import {
   LINEA_MAINNET_RPC_URL,
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
-import { SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS } from '../constants/metamask-notifications/metamask-notifications';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import type { BlockExplorerConfig } from '../constants/metamask-notifications/metamask-notifications';
 import {
   hexWEIToDecGWEI,
   hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
-
-type OnChainRawNotification =
-  NotificationServicesController.Types.OnChainRawNotification;
-type OnChainRawNotificationsWithNetworkFields =
-  NotificationServicesController.Types.OnChainRawNotificationsWithNetworkFields;
-
-/**
- * Type guard to ensure a key is present in an object.
- *
- * @param object - The object to check.
- * @param key - The key to check for.
- * @returns True if the key is present, false otherwise.
- */
-function isKey<T extends object>(object: T, key: PropertyKey): key is keyof T {
-  return key in object;
-}
 
 /**
  * Checks if 2 date objects are on the same day
@@ -309,38 +301,43 @@ export const getNetworkNameByChainId = (
  * - nativeCurrencyName: The name of the native currency.
  * - nativeCurrencySymbol: The symbol of the native currency.
  * - nativeCurrencyLogo: The logo URL of the native currency.
- * - nativeCurrencyAddress: A default address, typically the zero address.
  * - nativeBlockExplorerUrl: The URL of the block explorer associated with the network, if available.
  */
-export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
+export function getNetworkDetailsByChainId(chainId: number): {
   nativeCurrencyName: string;
   nativeCurrencySymbol: string;
   nativeCurrencyLogo: string;
-  nativeCurrencyAddress: string;
   blockExplorerConfig?: BlockExplorerConfig;
 } {
-  const fullNativeCurrencyName =
-    NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ?? '';
-  const nativeCurrencyName = fullNativeCurrencyName.split(' ')[0] ?? '';
-  const nativeCurrencySymbol =
-    CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-      chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-    ];
-  const nativeCurrencyLogo =
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ];
-  const nativeCurrencyAddress = '0x0000000000000000000000000000000000000000';
-  const blockExplorerConfig =
-    chainId && isKey(SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS, chainId)
-      ? SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[chainId]
-      : undefined;
+  const chainIdStr = chainId.toString();
+  const hexChainId = `0x${decimalToHex(chainId)}`;
+
+  type KnownChainIds =
+    (typeof NOTIFICATION_CHAINS_ID)[keyof typeof NOTIFICATION_CHAINS_ID];
+  if (
+    Object.values(NOTIFICATION_CHAINS_ID).includes(chainIdStr as KnownChainIds)
+  ) {
+    const knownChainId = chainIdStr as KnownChainIds;
+    return {
+      nativeCurrencyName:
+        NOTIFICATION_NETWORK_CURRENCY_NAME[knownChainId] ?? '',
+      nativeCurrencySymbol:
+        NOTIFICATION_NETWORK_CURRENCY_SYMBOL[knownChainId] ?? '',
+      nativeCurrencyLogo: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId],
+      blockExplorerConfig: SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[knownChainId],
+    };
+  }
+
   return {
-    nativeCurrencyName,
-    nativeCurrencySymbol,
-    nativeCurrencyLogo,
-    nativeCurrencyAddress,
-    blockExplorerConfig,
+    nativeCurrencyName:
+      NETWORK_TO_NAME_MAP[hexChainId as keyof typeof NETWORK_TO_NAME_MAP] ?? '',
+    nativeCurrencySymbol:
+      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+        hexChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+      ] ?? '',
+    nativeCurrencyLogo: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId],
+    blockExplorerConfig:
+      SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[chainIdStr as KnownChainIds],
   };
 }
 
@@ -482,6 +479,8 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
     };
   } catch (error) {
     throw new Error(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `Error fetching network fees for chainId ${chainId}: ${error}`,
     );
   }

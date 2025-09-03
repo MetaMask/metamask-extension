@@ -3,100 +3,85 @@
 exports[`Unlock Page should match snapshot 1`] = `
 <div>
   <div
-    class="unlock-page__container"
+    class="mm-box mm-box--padding-bottom-12 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
   >
-    <div
-      class="unlock-page"
+    <form
+      class="mm-box unlock-page mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       data-testid="unlock-page"
     >
       <div
-        class="unlock-page__mascot-container"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          style="z-index: 0;"
+          class="mm-box unlock-page__mascot-container mm-box--margin-bottom-0"
         >
-          <svg />
-        </div>
-      </div>
-      <h1
-        class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-box--margin-top-1 mm-box--margin-bottom-1 mm-box--color-text-default"
-        data-testid="unlock-page-title"
-      >
-        Welcome back
-      </h1>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-      >
-        The decentralized web awaits
-      </p>
-      <form
-        class="unlock-page__form"
-      >
-        <div
-          class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
-        >
-          <label
-            class="MuiFormLabel-root MuiInputLabel-root TextField-materialLabel-1 MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink Mui-focused Mui-focused TextField-materialFocused-2"
-            data-shrink="true"
-            for="password"
-            id="password-label"
-          >
-            Password
-          </label>
           <div
-            class="MuiInputBase-root MuiInput-root MuiInput-underline TextField-materialUnderline-3 MuiInputBase-fullWidth MuiInput-fullWidth Mui-focused Mui-focused MuiInputBase-formControl MuiInput-formControl"
+            style="z-index: 0;"
+          >
+            <svg />
+          </div>
+        </div>
+        <h1
+          class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-text--text-align-center mm-box--margin-bottom-12 mm-box--color-text-default"
+          data-testid="unlock-page-title"
+        >
+          Welcome back
+        </h1>
+        <div
+          class="mm-box mm-form-text-field mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
-              aria-invalid="false"
-              autocomplete="current-password"
-              class="MuiInputBase-input MuiInput-input"
+              aria-label="Password"
+              autocomplete="on"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
               data-testid="unlock-password"
-              dir="auto"
+              focused="true"
               id="password"
+              placeholder="Enter your password"
               type="password"
               value=""
             />
           </div>
         </div>
-      </form>
-      <button
-        class="button btn-default"
-        data-testid="unlock-submit"
-        disabled=""
-        style="margin-top: 20px; height: 56px; font-weight: 500; box-shadow: none;"
-        variant="contained"
-      >
-        Unlock
-      </button>
-      <div
-        class="unlock-page__links"
-      >
-        <a
-          class="button btn-link unlock-page__link"
-          role="button"
-          tabindex="0"
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--margin-bottom-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+          data-testid="unlock-submit"
+          disabled=""
+          type="submit"
+        >
+          Unlock
+        </button>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-bottom-6 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          data-testid="unlock-forgot-password-button"
+          type="button"
         >
           Forgot password?
-        </a>
+        </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          <span>
+             
+            Need help? Contact 
+            <a
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              href="https://support.metamask.io"
+              rel="noopener noreferrer"
+              target="_blank"
+              type="button"
+            >
+              MetaMask support
+            </a>
+            
+             
+          </span>
+        </p>
       </div>
-      <div
-        class="unlock-page__support"
-      >
-        <span>
-           
-          Need help? Contact 
-          <a
-            href="https://support.metamask.io"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            MetaMask support
-          </a>
-          
-           
-        </span>
-      </div>
-    </div>
+    </form>
   </div>
 </div>
 `;

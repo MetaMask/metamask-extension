@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
   Box,
   Icon,
@@ -17,14 +19,13 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
-import {
-  NATIVE_TOKEN_ADDRESS,
-  useSelectedGasFeeToken,
-} from '../../hooks/useGasFeeToken';
+import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
-import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
+import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -33,9 +34,7 @@ export function SelectedGasFeeToken() {
   const { isSupported: isGaslessSupported, isSmartTransaction } =
     useIsGaslessSupported();
 
-  const hasInsufficientNative = Boolean(
-    useInsufficientBalanceAlerts({ ignoreGasFeeToken: true }).length,
-  );
+  const hasInsufficientNative = useIsInsufficientBalance();
 
   const hasOnlyFutureNativeToken =
     gasFeeTokens?.length === 1 &&

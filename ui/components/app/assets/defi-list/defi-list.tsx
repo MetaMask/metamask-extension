@@ -1,7 +1,11 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { getSelectedAccount, getTokenSortConfig } from '../../../../selectors';
+import {
+  getEnabledNetworksByNamespace,
+  getSelectedAccount,
+  getTokenSortConfig,
+} from '../../../../selectors';
 import { useNetworkFilter } from '../hooks';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
@@ -21,6 +25,7 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { DeFiProtocolPosition } from '../types';
+import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 import DefiProtocolCell from './cells/defi-protocol-cell';
@@ -29,9 +34,12 @@ type DefiListProps = {
   onClick: (chainId: string, protocolId: string) => void;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function DefiList({ onClick }: DefiListProps) {
   const t = useI18nContext();
   const { networkFilter } = useNetworkFilter();
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const locale = useSelector(getIntlLocale);
 
   const tokenSortConfig = useSelector(getTokenSortConfig);
@@ -89,7 +97,9 @@ export default function DefiList({ onClick }: DefiListProps) {
     const filteredAssets = filterAssets(defiProtocolCells, [
       {
         key: 'chainId',
-        opts: networkFilter,
+        opts: isGlobalNetworkSelectorRemoved
+          ? enabledNetworksByNamespace
+          : networkFilter,
         filterCallback: 'inclusive',
       },
     ]);
@@ -102,6 +112,7 @@ export default function DefiList({ onClick }: DefiListProps) {
     networkFilter,
     selectedAccount,
     tokenSortConfig,
+    enabledNetworksByNamespace,
   ]);
 
   if (sortedFilteredDefi === undefined) {
@@ -141,7 +152,7 @@ export default function DefiList({ onClick }: DefiListProps) {
       ) : (
         <DeFiEmptyStateMessage
           primaryText={t('noDeFiPositions')}
-          secondaryText={t('startEarning')}
+          secondaryText={t('protocolNotSupported')}
         />
       )}
     </>

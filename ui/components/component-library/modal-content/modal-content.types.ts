@@ -48,9 +48,13 @@ export interface ModalContentStyleUtilityProps extends StyleUtilityProps {
   modalDialogProps?: any;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalContentProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ModalContentStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalContentComponent = <C extends React.ElementType = 'div'>(
   props: ModalContentProps<C>,
 ) => React.ReactElement | null;

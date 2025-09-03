@@ -8,6 +8,8 @@ export type SecurityAlertResponse = {
   features?: string[];
   providerRequestsCount?: Record<string, number>;
   reason: string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: string;
   securityAlertId?: string;
   source?: SecurityAlertSource;
@@ -18,3 +20,15 @@ export type UpdateSecurityAlertResponse = (
   securityAlertId: string,
   securityAlertResponse: SecurityAlertResponse,
 ) => Promise<TransactionMeta | SignatureRequest>;
+
+/**
+ * Getter for the Security Alerts API configuration. This allows to modify the
+ * URL and authorization header.
+ *
+ * @param url - The URL of the Security Alerts API.
+ * @returns A promise that resolves to the new URL and authorization header.
+ */
+export type GetSecurityAlertsConfig = (url: string) => Promise<{
+  newUrl?: string;
+  authorization?: string;
+}>;

@@ -96,7 +96,11 @@ jest.mock('../../../../hooks/useNfts', () => ({
 
 jest.mock('lodash', () => ({
   ...jest.requireActual('lodash'),
-  debounce: jest.fn().mockImplementation((fn) => fn),
+  debounce: jest.fn().mockImplementation((fn) => {
+    const debouncedFn = fn;
+    debouncedFn.cancel = jest.fn();
+    return debouncedFn;
+  }),
 }));
 
 describe('AssetPickerModal', () => {
@@ -425,8 +429,8 @@ describe('AssetPickerModal token filtering', () => {
     header: 'Select Token',
     isOpen: true,
     onClose: jest.fn(),
-    onAssetChange: onAssetChangeMock,
     autoFocus: true,
+    onAssetChange: onAssetChangeMock,
     network: {
       chainId: '0xa',
       name: 'Optimism',

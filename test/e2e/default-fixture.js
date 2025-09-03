@@ -86,11 +86,18 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000',
           },
           {
-            networkId: '0x539',
+            networkId: inputChainId,
             networkRpcUrl: 'http://localhost:8545',
           },
         ],
-        enabledNetworkMap: {},
+        enabledNetworkMap: {
+          eip155: {
+            [inputChainId]: true,
+          },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+          },
+        },
       },
       AccountOrderController: {
         pinnedAccountList: [],
@@ -106,7 +113,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
-        qrHardware: {},
         recoveryPhraseReminderHasBeenShown: true,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
@@ -144,6 +150,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
+        tracesBeforeMetricsOptIn: [],
         fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,
@@ -275,6 +282,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         allIgnoredTokens: {},
         allTokens: {},
       },
+      MultichainAccountService: {},
       TransactionController: {
         transactions: {},
       },

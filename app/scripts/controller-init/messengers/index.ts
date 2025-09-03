@@ -13,6 +13,7 @@ import {
   getSnapInsightsControllerMessenger,
   getSnapInterfaceControllerMessenger,
   getSnapsRegistryMessenger,
+  getWebSocketServiceMessenger,
 } from './snaps';
 import {
   getTransactionControllerMessenger,
@@ -32,6 +33,7 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
+  getNetworkOrderControllerMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getTokenRatesControllerMessenger,
@@ -46,6 +48,17 @@ import {
   getDelegationControllerInitMessenger,
   getDelegationControllerMessenger,
 } from './delegation/delegation-controller-messenger';
+import {
+  getAccountTreeControllerMessenger,
+  getAccountTreeControllerInitMessenger,
+  getMultichainAccountServiceMessenger,
+} from './accounts';
+import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
+import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
+import {
+  getShieldControllerInitMessenger,
+  getShieldControllerMessenger,
+} from './shield/shield-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -104,6 +117,14 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getRateLimitControllerMessenger,
     getInitMessenger: getRateLimitControllerInitMessenger,
   },
+  SeedlessOnboardingController: {
+    getMessenger: getSeedlessOnboardingControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ShieldController: {
+    getMessenger: getShieldControllerMessenger,
+    getInitMessenger: getShieldControllerInitMessenger,
+  },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
     getInitMessenger: noop,
@@ -146,6 +167,26 @@ export const CONTROLLER_MESSENGERS = {
   },
   AssetsContractController: {
     getMessenger: getAssetsContractControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AccountTreeController: {
+    getMessenger: getAccountTreeControllerMessenger,
+    getInitMessenger: getAccountTreeControllerInitMessenger,
+  },
+  WebSocketService: {
+    getMessenger: getWebSocketServiceMessenger,
+    getInitMessenger: noop,
+  },
+  SmartTransactionsController: {
+    getMessenger: getSmartTransactionsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainAccountService: {
+    getMessenger: getMultichainAccountServiceMessenger,
+    getInitMessenger: noop,
+  },
+  NetworkOrderController: {
+    getMessenger: getNetworkOrderControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;

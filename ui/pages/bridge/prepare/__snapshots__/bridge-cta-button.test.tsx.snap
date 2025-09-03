@@ -15,9 +15,8 @@ exports[`BridgeCTAButton should disable the component when quotes are loading an
 exports[`BridgeCTAButton should enable the component when quotes are loading and there are existing quotes 1`] = `
 <div>
   <button
-    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
     data-testid="bridge-cta-button"
-    data-theme="light"
     style="box-shadow: none;"
   >
     Submit
@@ -33,7 +32,21 @@ exports[`BridgeCTAButton should render the component when amount and dest token 
     <p
       class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
     >
-      Select token and amount
+      Select amount
+    </p>
+  </div>
+</div>
+`;
+
+exports[`BridgeCTAButton should render the component when amount, dest chain and dest token are missing (defaults set 1`] = `
+<div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
+    >
+      Select amount
     </p>
   </div>
 </div>

@@ -18,12 +18,14 @@ jobs:
           is-high-risk-environment: false
           fetch-depth: 0 # This is needed to checkout all branches
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Get the next semver version
         id: get-next-semver-version
         env:
           FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
-        run: ./development/get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
+        run: ./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
+        working-directory: '.github/scripts'
 
       - name: Add release label to PR and linked issues
         id: add-release-label-to-pr-and-linked-issues

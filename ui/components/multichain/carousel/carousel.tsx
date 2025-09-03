@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { useSelector } from 'react-redux';
 import { SolAccountType } from '@metamask/keyring-api';
-///: END:ONLY_INCLUDE_IF
 import { Carousel as ResponsiveCarousel } from 'react-responsive-carousel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, BoxProps, BannerBase } from '../../component-library';
@@ -18,16 +16,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { getSelectedAccount } from '../../../selectors';
-///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getSweepstakesCampaignActive,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  SOLANA_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../hooks/useCarouselManagement';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';
 import {
@@ -52,54 +42,18 @@ export const Carousel = React.forwardRef(
     const t = useI18nContext();
     const trackEvent = useContext(MetaMetricsContext);
 
-    ///: BEGIN:ONLY_INCLUDE_IF(solana)
     const selectedAccount = useSelector(getSelectedAccount);
-    ///: END:ONLY_INCLUDE_IF
 
     const visibleSlides = slides
       .filter((slide) => {
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
         if (
-          slide.id === SOLANA_SLIDE.id &&
+          slide.variableName === 'solana' &&
           selectedAccount?.type === SolAccountType.DataAccount
         ) {
           return false;
         }
-        ///: END:ONLY_INCLUDE_IF
 
         return !slide.dismissed || slide.undismissable;
-      })
-      .sort((a, b) => {
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
-        // prioritize Solana slide
-        if (a.id === SOLANA_SLIDE.id) {
-          return -1;
-        }
-        if (b.id === SOLANA_SLIDE.id) {
-          return 1;
-        }
-        ///: END:ONLY_INCLUDE_IF
-
-        const isSweepstakesActive = getSweepstakesCampaignActive(
-          new Date(new Date().toISOString()),
-        );
-        if (isSweepstakesActive) {
-          if (a.id === 'sweepStake') {
-            return -1;
-          }
-          if (b.id === 'sweepStake') {
-            return 1;
-          }
-        }
-
-        if (a.undismissable && !b.undismissable) {
-          return -1;
-        }
-        if (!a.undismissable && b.undismissable) {
-          return 1;
-        }
-
-        return 0;
       })
       .slice(0, MAX_SLIDES);
 
@@ -149,10 +103,20 @@ export const Carousel = React.forwardRef(
           event: MetaMetricsEventName.BannerNavigated,
           category: MetaMetricsEventCategory.Banner,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             from_banner: previousSlide.id,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             to_banner: nextSlide.id,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             from_banner_title: previousSlide.title,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             to_banner_title: nextSlide.title,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             navigation_method:
               Math.abs(selectedIndex - index) === 1 ? 'swipe' : 'dot',
           },

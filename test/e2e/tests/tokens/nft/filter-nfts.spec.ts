@@ -5,6 +5,9 @@ import FixtureBuilder from '../../../fixture-builder';
 import { Driver } from '../../../webdriver/driver';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
+import NetworkManager, {
+  NetworkId,
+} from '../../../page-objects/pages/network-manager';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -17,7 +20,7 @@ describe('View NFT details', function () {
           .withNftController({
             allNftContracts: {
               '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                [toHex(1337)]: [
+                [toHex(59144)]: [
                   {
                     address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
                     name: 'TestDappNFTs',
@@ -35,7 +38,7 @@ describe('View NFT details', function () {
             },
             allNfts: {
               '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                [toHex(1337)]: [
+                [toHex(59144)]: [
                   {
                     address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
                     description: 'Test Dapp NFTs for testing.',
@@ -46,7 +49,7 @@ describe('View NFT details', function () {
                     name: 'Test Dapp NFTs #1',
                     standard: 'ERC721',
                     tokenId: '1',
-                    chainId: 1337,
+                    chainId: 59144,
                   },
                 ],
                 [toHex(1)]: [
@@ -80,6 +83,12 @@ describe('View NFT details', function () {
             ignoredNfts: [],
           })
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+              '0xe708': true,
+            },
+          })
           .build(),
         smartContract,
         title: this.test?.fullTitle(),
@@ -87,26 +96,37 @@ describe('View NFT details', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
+        const networkManager = new NetworkManager(driver);
+
         // Click to open the NFT details page and check title
         const homePage = new Homepage(driver);
         await homePage.goToNftTab();
 
+        // Show Ethereum NFTs
         const nftListPage = new NftListPage(driver);
-        await nftListPage.filterNftsByNetworks('Current network');
-        await nftListPage.check_numberOfNftsDisplayed(2);
-        await nftListPage.check_nftNameIsDisplayed(
+        await networkManager.openNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await nftListPage.checkNumberOfNftsDisplayed(2);
+
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #2 on mainnet',
         );
-        await nftListPage.filterNftsByNetworks('Popular networks');
-        await nftListPage.check_numberOfNftsDisplayed(3);
-        await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #1');
-        await nftListPage.check_nftNameIsDisplayed(
+
+        // Show All NFTs
+        await networkManager.openNetworkManager();
+        await networkManager.selectAllNetworks();
+
+        await nftListPage.checkNumberOfNftsDisplayed(3);
+
+        await nftListPage.checkNftNameIsDisplayed('Test Dapp NFTs #1');
+
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );
-        await nftListPage.check_nftNameIsDisplayed(
+        await nftListPage.checkNftNameIsDisplayed(
           'Test Dapp NFTs #2 on mainnet',
         );
       },

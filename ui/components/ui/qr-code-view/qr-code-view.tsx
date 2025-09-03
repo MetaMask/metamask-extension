@@ -34,14 +34,20 @@ function mapStateToProps(state: Pick<MetaMaskReduxState, 'appState'>) {
 }
 const PREFIX_LEN = 6;
 const SUFFIX_LEN = 5;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function QrCodeView({
   Qr,
   warning,
   accountName,
+  location = 'Account Details Modal',
 }: {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Qr: { message?: string; data: string };
   warning: string | null | undefined;
   accountName?: string;
+  location?: string;
 }) {
   const trackEvent = useContext(MetaMetricsContext);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
@@ -86,6 +92,8 @@ function QrCodeView({
           data-testid="qr-code-image"
           className="qr-code__image"
           dangerouslySetInnerHTML={{
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             __html: qrImage.createTableTag(5, 16),
           }}
         />
@@ -125,13 +133,14 @@ function QrCodeView({
         color={TextColor.primaryDefault}
         className="qr-code__copy-button"
         data-testid="address-copy-button-text"
+        data-clipboard-text={checksummedAddress}
         onClick={() => {
           handleCopy(checksummedAddress);
           trackEvent({
             category: MetaMetricsEventCategory.Accounts,
             event: MetaMetricsEventName.PublicAddressCopied,
             properties: {
-              location: 'Account Details Modal',
+              location,
             },
           });
         }}
@@ -156,6 +165,7 @@ QrCodeView.propTypes = {
     ]),
     data: PropTypes.string.isRequired,
   }).isRequired,
+  location: PropTypes.string,
 };
 
 export default connect(mapStateToProps)(QrCodeView);

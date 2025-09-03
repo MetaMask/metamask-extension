@@ -37,7 +37,7 @@ describe('CreateNewVault', () => {
     );
     expect(
       screen.getByText(
-        'You can paste your entire secret recovery phrase into any field',
+        'You can paste your entire Secret Recovery Phrase into any field.',
       ),
     ).toBeInTheDocument();
   });
@@ -80,7 +80,9 @@ describe('CreateNewVault', () => {
 
     fireEvent.change(passwordInput, passwordEvent);
 
-    const passwordError = queryByText('Password not long enough');
+    const passwordError = queryByText(
+      'Password must have at least 8 characters',
+    );
 
     expect(passwordError).toBeInTheDocument();
 

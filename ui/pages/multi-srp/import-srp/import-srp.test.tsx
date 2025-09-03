@@ -9,10 +9,12 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
-import * as actions from '../../../store/actions';
+import { importMnemonicToVault } from '../../../store/actions';
 import { ImportSrp } from './import-srp';
 
 const mockClearClipboard = jest.fn();
+const mockLockAccountSyncing = jest.fn();
+const mockUnlockAccountSyncing = jest.fn();
 
 jest.mock('../../../helpers/utils/util', () => ({
   clearClipboard: () => mockClearClipboard(),
@@ -28,6 +30,10 @@ jest.mock('../../../store/actions', () => ({
   showAlert: jest.fn().mockReturnValue({ type: 'ALERT_OPEN' }),
   hideAlert: jest.fn().mockReturnValue({ type: 'ALERT_CLOSE' }),
   hideWarning: jest.fn().mockReturnValue({ type: 'HIDE_WARNING' }),
+  lockAccountSyncing: jest.fn().mockReturnValue(() => mockLockAccountSyncing()),
+  unlockAccountSyncing: jest
+    .fn()
+    .mockReturnValue(() => mockUnlockAccountSyncing()),
 }));
 
 const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
@@ -151,13 +157,29 @@ describe('ImportSrp', () => {
     fireEvent.click(importButton);
 
     await waitFor(() => {
-      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
+      expect(importMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
       const dispatchedActions = store.getActions();
       expect(dispatchedActions).toContainEqual({
         type: 'HIDE_WARNING',
       });
+    });
+  });
+
+  it('locks and unlocks account syncing during import', async () => {
+    const render = renderWithProvider(<ImportSrp />, store);
+    const { getByText } = render;
+    const importButton = getByText('Import wallet');
+    expect(importButton).not.toBeEnabled();
+    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+    fireEvent.click(importButton);
+    await waitFor(() => {
+      expect(mockLockAccountSyncing).toHaveBeenCalled();
+      expect(importMnemonicToVault).toHaveBeenCalledWith(
+        VALID_SECRET_RECOVERY_PHRASE,
+      );
+      expect(mockUnlockAccountSyncing).toHaveBeenCalled();
     });
   });
 
@@ -186,7 +208,7 @@ describe('ImportSrp', () => {
     fireEvent.click(importButton);
 
     await waitFor(() => {
-      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
+      expect(importMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
     });
@@ -226,7 +248,7 @@ describe('ImportSrp', () => {
   });
 
   it('logs an error and not call onActionComplete on import failure', async () => {
-    (actions.importMnemonicToVault as jest.Mock).mockImplementation(() =>
+    (importMnemonicToVault as jest.Mock).mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
@@ -241,7 +263,7 @@ describe('ImportSrp', () => {
     fireEvent.click(importButton);
 
     await waitFor(() => {
-      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
+      expect(importMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
       expect(onActionComplete).not.toHaveBeenCalled();

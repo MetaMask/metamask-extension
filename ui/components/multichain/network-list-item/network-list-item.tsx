@@ -36,6 +36,9 @@ import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
 
+const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
+  Object.values(IconName).includes(iconSrc as IconName);
+
 // TODO: Consider increasing this. This tooltip is
 // rendering when it has enough room to see everything
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
@@ -62,7 +65,7 @@ export const NetworkListItem = ({
 }: {
   name: string;
   iconSrc?: string;
-  iconSize?: AvatarNetworkSize;
+  iconSize?: AvatarNetworkSize | IconSize;
   rpcEndpoint?: { name?: string; url: string };
   chainId?: string;
   selected?: boolean;
@@ -134,6 +137,7 @@ export const NetworkListItem = ({
 
   return (
     <Box
+      data-testid={`network-list-item-${chainId}`}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={rpcEndpoint ? 2 : 4}
@@ -144,6 +148,7 @@ export const NetworkListItem = ({
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
+        'multichain-network-list-item--deselected': !selected,
         'multichain-network-list-item--disabled': disabled,
         'multichain-network-list-item--not-selectable': notSelectable,
       })}
@@ -161,13 +166,17 @@ export const NetworkListItem = ({
           backgroundColor={BackgroundColor.primaryDefault}
         />
       )}
-      <AvatarNetwork
-        borderColor={BorderColor.backgroundDefault}
-        backgroundColor={getAvatarNetworkColor(name)}
-        name={name}
-        src={iconSrc}
-        size={iconSize}
-      />
+      {isIconSrc(iconSrc) ? (
+        <Icon name={iconSrc} size={iconSize as IconSize} />
+      ) : (
+        <AvatarNetwork
+          borderColor={BorderColor.backgroundDefault}
+          backgroundColor={getAvatarNetworkColor(name)}
+          name={name}
+          src={iconSrc}
+          size={iconSize as AvatarNetworkSize}
+        />
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -234,7 +243,7 @@ export const NetworkListItem = ({
 
       {renderButton()}
       {showEndAccessory
-        ? endAccessory ?? (
+        ? (endAccessory ?? (
             <NetworkListItemMenu
               anchorElement={networkListItemMenuElement}
               isOpen={networkOptionsMenuOpen}
@@ -243,7 +252,7 @@ export const NetworkListItem = ({
               onDiscoverClick={onDiscoverClick}
               onClose={() => setNetworkOptionsMenuOpen(false)}
             />
-          )
+          ))
         : null}
     </Box>
   );

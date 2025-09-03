@@ -9,6 +9,7 @@ import {
   BNB_TOKEN_IMAGE_URL,
   POL_TOKEN_IMAGE_URL,
   AVAX_TOKEN_IMAGE_URL,
+  SEI_IMAGE_URL,
   CURRENCY_SYMBOLS,
   CHAIN_IDS,
 } from './network';
@@ -131,6 +132,15 @@ export const BASE_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   ...ETH_SWAPS_TOKEN_OBJECT,
 } as const;
 
+export const SEI_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
+  symbol: CURRENCY_SYMBOLS.SEI,
+  name: 'Sei',
+  address: DEFAULT_TOKEN_ADDRESS,
+  decimals: 18,
+  // SEI using the same icon as Sei Mainnet
+  iconUrl: SEI_IMAGE_URL,
+} as const;
+
 const SOLANA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: 'SOL',
   name: 'Solana',
@@ -154,6 +164,7 @@ const LINEA_CONTRACT_ADDRESS = '0x9dda6ef3d919c9bc8885d5560999a3640431e8e6';
 const ZKSYNC_ERA_CONTRACT_ADDRESS =
   '0xf504c1fe13d14df615e66dcd0abf39e60c697f34';
 const BASE_CONTRACT_ADDRESS = '0x9dda6ef3d919c9bc8885d5560999a3640431e8e6';
+const SEI_CONTRACT_ADDRESS = '0x962287c9d5B8a682389E61edAE90ec882325d08b';
 
 export const WETH_CONTRACT_ADDRESS =
   '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
@@ -175,11 +186,14 @@ export const WETH_LINEA_CONTRACT_ADDRESS =
   '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f';
 export const WETH_BASE_CONTRACT_ADDRESS =
   '0x4200000000000000000000000000000000000006';
+export const WSEI_BASE_CONTRACT_ADDRESS =
+  '0xe30fedd158a2e3b13e9badaeabafc5516e95e8c7';
 
 const SWAPS_TESTNET_CHAIN_ID = '0x539';
 
-export const SWAPS_API_V2_BASE_URL = 'https://swap.api.cx.metamask.io';
-export const SWAPS_DEV_API_V2_BASE_URL = 'https://swap.dev-api.cx.metamask.io';
+export const SWAPS_API_V2_BASE_URL = 'https://bridge.api.cx.metamask.io';
+export const SWAPS_DEV_API_V2_BASE_URL =
+  'https://bridge.dev-api.cx.metamask.io';
 export const TOKEN_API_BASE_URL = 'https://tokens.api.cx.metamask.io';
 export const GAS_API_BASE_URL = 'https://gas.api.cx.metamask.io';
 export const GAS_DEV_API_BASE_URL = 'https://gas.uat-api.cx.metamask.io';
@@ -195,9 +209,8 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.ZKSYNC_ERA,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  CHAIN_IDS.SEI,
   MultichainNetworks.SOLANA,
-  ///: END:ONLY_INCLUDE_IF
 ] as const;
 
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
@@ -222,6 +235,7 @@ export const SWAPS_CHAINID_CONTRACT_ADDRESS_MAP = {
   [CHAIN_IDS.ZKSYNC_ERA]: ZKSYNC_ERA_CONTRACT_ADDRESS,
   [CHAIN_IDS.LINEA_MAINNET]: LINEA_CONTRACT_ADDRESS,
   [CHAIN_IDS.BASE]: BASE_CONTRACT_ADDRESS,
+  [CHAIN_IDS.SEI]: SEI_CONTRACT_ADDRESS,
 } as const;
 
 export const SWAPS_WRAPPED_TOKENS_ADDRESSES = {
@@ -236,6 +250,7 @@ export const SWAPS_WRAPPED_TOKENS_ADDRESSES = {
   [CHAIN_IDS.ZKSYNC_ERA]: WETH_ZKSYNC_ERA_CONTRACT_ADDRESS,
   [CHAIN_IDS.LINEA_MAINNET]: WETH_LINEA_CONTRACT_ADDRESS,
   [CHAIN_IDS.BASE]: WETH_BASE_CONTRACT_ADDRESS,
+  [CHAIN_IDS.SEI]: WSEI_BASE_CONTRACT_ADDRESS,
 } as const;
 
 export const ALLOWED_CONTRACT_ADDRESSES = {
@@ -283,6 +298,10 @@ export const ALLOWED_CONTRACT_ADDRESSES = {
     SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.BASE],
     SWAPS_WRAPPED_TOKENS_ADDRESSES[CHAIN_IDS.BASE],
   ],
+  [CHAIN_IDS.SEI]: [
+    SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.SEI],
+    SWAPS_WRAPPED_TOKENS_ADDRESSES[CHAIN_IDS.SEI],
+  ],
 } as const;
 
 export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
@@ -298,6 +317,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.ZKSYNC_ERA]: ZKSYNC_ERA_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.LINEA_MAINNET]: LINEA_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.BASE]: BASE_SWAPS_TOKEN_OBJECT,
+  [CHAIN_IDS.SEI]: SEI_SWAPS_TOKEN_OBJECT,
   [MultichainNetworks.SOLANA]: SOLANA_SWAPS_TOKEN_OBJECT,
 } as const;
 
@@ -311,17 +331,28 @@ export const ARBITRUM = 'arbitrum';
 export const ZKSYNC_ERA = 'zksync';
 export const LINEA = 'linea';
 export const BASE = 'base';
+export const SEI = 'sei';
 
 export const SWAPS_CLIENT_ID = 'extension';
 
 export enum TokenBucketPriority {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   owned = 'owned',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   top = 'top',
 }
 
 export enum Slippage {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   default = 2,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   high = 3,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   stable = 0.5,
 }
 
@@ -406,7 +437,6 @@ const ZKSYNC_USDT_TOKEN_OBJECT = {
     'https://static.cx.metamask.io/api/v1/tokenIcons/324/0x493257fd37edb34451f62edf8d2a0c418852ba4c.png',
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 const SOLANA_USDC_TOKEN_OBJECT = {
   address:
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -416,7 +446,6 @@ const SOLANA_USDC_TOKEN_OBJECT = {
   iconUrl:
     'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
 };
-///: END:ONLY_INCLUDE_IF
 
 /**
  * The most common token pair for each chain
@@ -432,9 +461,7 @@ export const SWAPS_CHAINID_COMMON_TOKEN_PAIR = {
   [CHAIN_IDS.BASE]: BASE_USDC_TOKEN_OBJECT,
   [CHAIN_IDS.LINEA_MAINNET]: LINEA_USDC_TOKEN_OBJECT,
   [CHAIN_IDS.ZKSYNC_ERA]: ZKSYNC_USDT_TOKEN_OBJECT,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   [MultichainNetworks.SOLANA]: SOLANA_USDC_TOKEN_OBJECT,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export const STABLE_PAIRS: Record<string, boolean> = {
@@ -495,5 +522,8 @@ export const StablecoinsByChainId: Partial<Record<string, Set<string>>> = {
     '0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4', // USDC
     '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4', // USDC.e
     '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C', // USDT
+  ]),
+  [CHAIN_IDS.SEI]: new Set([
+    '0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1', // USDC
   ]),
 };

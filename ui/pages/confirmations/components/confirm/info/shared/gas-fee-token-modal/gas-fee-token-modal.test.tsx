@@ -3,6 +3,8 @@ import React from 'react';
 import { GasFeeToken } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 import { act } from '@testing-library/react';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 
@@ -13,7 +15,6 @@ import {
   updateSelectedGasFeeToken,
 } from '../../../../../../../store/controller-actions/transaction-controller';
 import { GAS_FEE_TOKEN_MOCK as GAS_FEE_TOKEN_MOCK_BASE } from '../../../../../../../../test/data/confirmations/gas';
-import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { Severity } from '../../../../../../../helpers/constants/design-system';

@@ -35,7 +35,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { NetworkListItem } from '../network-list-item';
 import {
-  hideNetworkBanner,
   setActiveNetwork,
   setShowTestNetworks,
   showModal,
@@ -53,13 +52,11 @@ import {
 import {
   FEATURED_RPCS,
   TEST_CHAINS,
-  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
+  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME } from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
-  getOnboardedInThisUISession,
-  getShowNetworkBanner,
   getOriginOfCurrentTab,
   getEditedNetwork,
   getOrderedNetworksList,
@@ -68,18 +65,15 @@ import {
   getIsAccessedFromDappConnectedSitePopover,
   getAllDomains,
   getPermittedEVMChainsForSelectedTab,
-  getPermittedEVMAccountsForSelectedTab,
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
+  getEnabledNetworksByNamespace,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
@@ -94,7 +88,6 @@ import {
   Modal,
   ModalOverlay,
   Text,
-  BannerBase,
   IconName,
   ModalContent,
   ModalHeader,
@@ -120,6 +113,10 @@ import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import {
+  enableAllPopularNetworks,
+  enableSingleNetwork,
+} from '../../../store/controller-actions/network-order-controller';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -127,18 +124,30 @@ import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
 import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum ACTION_MODE {
   // Displays the search box and network list
   LIST,
   // Displays the form to add or edit a network
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_EDIT,
   // Displays the page for adding an additional RPC URL
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_RPC,
   // Displays the page for adding an additional explorer URL
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_EXPLORER_URL,
   // Displays the page for selecting an RPC URL
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SELECT_RPC,
   // Add account for non EVM networks
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ADD_NON_EVM_ACCOUNT,
 }
 
@@ -153,6 +162,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const showTestnets = useSelector(getShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
@@ -164,8 +174,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     getIsAccessedFromDappConnectedSitePopover,
   );
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
-  const showNetworkBanner = useSelector(getShowNetworkBanner);
   // This selector provides the indication if the "Discover" button
   // is enabled based on the remote feature flag.
   const isNetworkDiscoverButtonEnabled = useSelector(
@@ -187,17 +195,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
   );
 
-  const permittedAccountAddresses = useSelector((state) =>
-    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
-  );
-
   const allChainIds = useSelector(getAllChainsToPoll);
   const canSelectNetwork: boolean =
-    !process.env.REMOVE_GNS ||
-    (Boolean(process.env.REMOVE_GNS) &&
-      Boolean(selectedTabOrigin) &&
-      Boolean(domains[selectedTabOrigin]) &&
-      isAccessedFromDappConnectedSitePopover);
+    Boolean(selectedTabOrigin) &&
+    Boolean(domains[selectedTabOrigin]) &&
+    isAccessedFromDappConnectedSitePopover;
 
   useEffect(() => {
     endTrace({ name: TraceName.NetworkList });
@@ -301,6 +303,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [focusSearch, setFocusSearch] = useState(false);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const searchNetworks = <T,>(networks: T[], query: string) =>
     searchQuery === ''
       ? networks
@@ -332,52 +336,64 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     ]);
   }, [searchedTestNetworks]);
 
-  const handleEvmNetworkChange = (
+  const getMultichainNetworkConfigurationOrThrow = (chainId: CaipChainId) => {
+    const network = multichainNetworks[chainId];
+    if (!network) {
+      throw new Error(
+        `Network configuration not found for chainId: ${chainId}`,
+      );
+    }
+    return network;
+  };
+
+  const handleEvmNetworkChange = async (
     chainId: CaipChainId,
     networkClientId?: string,
   ) => {
-    const hexChainId = convertCaipToHexChainId(chainId);
-    const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
-    const finalNetworkClientId =
-      networkClientId ?? defaultRpcEndpoint.networkClientId;
+    try {
+      const hexChainId = convertCaipToHexChainId(chainId);
+      const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
+      const finalNetworkClientId =
+        networkClientId ?? defaultRpcEndpoint.networkClientId;
 
-    dispatch(setActiveNetwork(finalNetworkClientId));
-    dispatch(updateCustomNonce(''));
-    dispatch(setNextNonce(''));
-    dispatch(detectNfts(allChainIds));
+      if (isAccessedFromDappConnectedSitePopover && selectedTabOrigin) {
+        const isNetworkPermitted = permittedChainIds.includes(hexChainId);
 
-    dispatch(toggleNetworkMenu());
+        if (!isNetworkPermitted) {
+          await dispatch(addPermittedChain(selectedTabOrigin, chainId));
+          dispatch(showPermittedNetworkToast());
+        }
 
-    // as a user, I don't want my network selection to force update my filter
-    // when I have "All Networks" toggled on however, if I am already filtered
-    // on "Current Network", we'll want to filter by the selected network when
-    // the network changes.
-    if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
-      dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
-    } else {
-      const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
-        acc[id] = true;
-        return acc;
-      }, {} as Record<string, boolean>);
-      dispatch(setTokenNetworkFilter(allOpts));
-    }
-
-    // If presently on a dapp, communicate a change to
-    // the dapp via silent switchEthereumChain that the
-    // network has changed due to user action
-    if (selectedTabOrigin && domains[selectedTabOrigin]) {
-      // setActiveNetwork should be called before setNetworkClientIdForDomain
-      // to ensure that the isConnected value can be accurately inferred from
-      // NetworkController.state.networksMetadata in return value of
-      // `metamask_getProviderState` requests and `metamask_chainChanged` events.
-      setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId);
-    }
-
-    if (permittedAccountAddresses.length > 0) {
-      dispatch(addPermittedChain(selectedTabOrigin, chainId));
-      if (!permittedChainIds.includes(hexChainId)) {
-        dispatch(showPermittedNetworkToast());
+        dispatch(
+          setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId),
+        );
       }
+
+      dispatch(setActiveNetwork(finalNetworkClientId));
+      dispatch(updateCustomNonce(''));
+      dispatch(setNextNonce(''));
+      dispatch(detectNfts(allChainIds));
+
+      if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
+        dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
+      } else {
+        const allOpts = Object.keys(evmNetworks).reduce(
+          (acc, id) => {
+            acc[id] = true;
+            return acc;
+          },
+          {} as Record<string, boolean>,
+        );
+        dispatch(setTokenNetworkFilter(allOpts));
+      }
+
+      if (Object.keys(enabledNetworksByNamespace).length === 1) {
+        dispatch(enableSingleNetwork(hexChainId));
+      } else {
+        dispatch(enableAllPopularNetworks());
+      }
+    } finally {
+      dispatch(toggleNetworkMenu());
     }
   };
 
@@ -392,23 +408,13 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
   };
 
-  const getMultichainNetworkConfigurationOrThrow = (chainId: CaipChainId) => {
-    const network = multichainNetworks[chainId];
-    if (!network) {
-      throw new Error(
-        `Network configuration not found for chainId: ${chainId}`,
-      );
-    }
-    return network;
-  };
-
   const handleNetworkChange = async (chainId: CaipChainId) => {
     const currentChain =
       getMultichainNetworkConfigurationOrThrow(currentChainId);
     const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
     if (chain.isEvm) {
-      handleEvmNetworkChange(chainId);
+      await handleEvmNetworkChange(chainId);
     } else {
       await handleNonEvmNetworkChange(chainId);
     }
@@ -425,21 +431,29 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       category: MetaMetricsEventCategory.Network,
       properties: {
         location: 'Network Menu',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: currentChainIdToTrack,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         from_network: currentChainIdToTrack,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         to_network: chainIdToTrack,
       },
     });
   };
 
   const isDiscoverBtnEnabled = useCallback(
-    (hexChainId: Hex): boolean => {
+    (chainId: Hex | `${string}:${string}`): boolean => {
       // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
-      // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      // and in the constants `CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP`.
       return (
-        (isNetworkDiscoverButtonEnabled as Record<Hex, boolean>)?.[
-          hexChainId
-        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+        Boolean(
+          isNetworkDiscoverButtonEnabled?.[
+            chainId as keyof typeof isNetworkDiscoverButtonEnabled
+          ],
+        ) && CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId] !== undefined
       );
     },
     [isNetworkDiscoverButtonEnabled],
@@ -456,11 +470,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     (network: MultichainNetworkConfiguration): boolean => {
       return (
         network.isEvm ||
-        completedOnboarding ||
+        (isUnlocked && completedOnboarding) ||
         hasAnyAccountsInNetwork(network.chainId)
       );
     },
-    [hasAnyAccountsInNetwork, completedOnboarding],
+    [isUnlocked, completedOnboarding, hasAnyAccountsInNetwork],
   );
 
   const getItemCallbacks = useCallback(
@@ -470,7 +484,16 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       const { chainId, isEvm } = network;
 
       if (!isEvm) {
-        return {};
+        return {
+          onDiscoverClick: isDiscoverBtnEnabled(chainId)
+            ? () => {
+                openWindow(
+                  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId],
+                  '_blank',
+                );
+              }
+            : undefined,
+        };
       }
 
       // Non-EVM networks cannot be deleted, edited or have
@@ -506,7 +529,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
               openWindow(
-                CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
+                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
                 '_blank',
               );
             }
@@ -521,6 +544,14 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               );
             }
           : undefined,
+        onRpcSelect: () => {
+          setActionMode(ACTION_MODE.SELECT_RPC);
+          dispatch(
+            setEditedNetwork({
+              chainId: hexChainId,
+            }),
+          );
+        },
       };
     },
     [
@@ -537,7 +568,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     network: MultichainNetworkConfiguration,
   ) => {
     const isCurrentNetwork = network.chainId === currentChainId;
-    const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
+    const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
       getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
 
@@ -566,7 +597,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
-        onRpcEndpointClick={onRpcConfigEdit}
+        onRpcEndpointClick={onRpcSelect}
         disabled={!isNetworkEnabled(network)}
         notSelectable={!canSelectNetwork}
       />
@@ -583,37 +614,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               setSearchQuery={setSearchQuery}
               setFocusSearch={setFocusSearch}
             />
-            {!process.env.REMOVE_GNS &&
-              completedOnboarding &&
-              !onboardedInThisUISession &&
-              showNetworkBanner &&
-              !searchQuery && (
-                <BannerBase
-                  marginLeft={4}
-                  marginRight={4}
-                  borderRadius={BorderRadius.LG}
-                  padding={4}
-                  marginTop={2}
-                  gap={4}
-                  backgroundColor={BackgroundColor.backgroundMuted}
-                  startAccessory={
-                    <Box
-                      display={Display.Flex}
-                      alignItems={AlignItems.center}
-                      justifyContent={JustifyContent.center}
-                    >
-                      <img
-                        src="./images/dragging-animation.svg"
-                        alt="drag-and-drop"
-                      />
-                    </Box>
-                  }
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                  onClose={() => hideNetworkBanner()}
-                  description={t('dragAndDropBanner')}
-                />
-              )}
             <Box>
               {searchedEnabledNetworks.length > 0 && (
                 <Box
@@ -794,9 +794,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   let title;
   if (actionMode === ACTION_MODE.LIST) {
-    title = process.env.REMOVE_GNS
-      ? t('manageNetworksMenuHeading')
-      : t('networkMenuHeading');
+    title = t('manageNetworksMenuHeading');
   } else if (actionMode === ACTION_MODE.ADD_EDIT && !editedNetwork) {
     title = t('addACustomNetwork');
   } else if (actionMode === ACTION_MODE.ADD_RPC) {

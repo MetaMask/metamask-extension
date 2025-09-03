@@ -141,11 +141,20 @@ export const sortNetworks = (
   networks: Record<string, MultichainNetworkConfiguration>,
   sortedChainIds: { networkId: string }[],
 ): MultichainNetworkConfiguration[] =>
-  Object.values(networks).sort(
-    (a, b) =>
-      sortedChainIds.findIndex(({ networkId }) => networkId === a.chainId) -
-      sortedChainIds.findIndex(({ networkId }) => networkId === b.chainId),
-  );
+  Object.values(networks).sort((a, b) => {
+    const indexA = sortedChainIds.findIndex(
+      ({ networkId }) => networkId === a.chainId,
+    );
+    const indexB = sortedChainIds.findIndex(
+      ({ networkId }) => networkId === b.chainId,
+    );
+
+    // If the chainId is not found, assign Infinity to place it at the bottom
+    const adjustedIndexA = indexA === -1 ? Infinity : indexA;
+    const adjustedIndexB = indexB === -1 ? Infinity : indexB;
+
+    return adjustedIndexA - adjustedIndexB;
+  });
 
 /**
  * Get the network icon for the given chain ID.

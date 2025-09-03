@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master')) }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 jobs:
   CLABot:
@@ -23,7 +23,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           path-to-signatures: 'cla.json'
-          url-to-cladocument: 'https://metamask.io/cla.html'
+          url-to-cladocument: 'https://metamask.io/cla'
           # This branch can't have protections, commits are made directly to the specified branch.
           branch: 'cla-signatures'
           allowlist: 'dependabot[bot],metamaskbot,crowdin-bot,runway-github[bot]'

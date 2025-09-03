@@ -1,122 +1,215 @@
-import React, { useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
+import classnames from 'classnames';
 import {
   setCompletedOnboarding,
   toggleExternalServices,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Button from '../../../components/ui/button';
 import {
   TextVariant,
   FontWeight,
-  TextAlign,
+  Display,
+  JustifyContent,
+  BlockSize,
+  FlexDirection,
+  BorderRadius,
+  IconColor,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { Text } from '../../../components/component-library';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
+import {
+  Box,
+  Button,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
+  IconName,
+  Text,
+} from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getFirstTimeFlowType,
   getExternalServicesOnboardingToggleState,
+  getCurrentKeyring,
 } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import OnboardingPinBillboard from './pin-billboard';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const currentKeyring = useSelector(getCurrentKeyring);
 
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
 
   const handleClick = async () => {
-    if (selectedIndex === 0) {
-      setSelectedIndex(1);
-    } else {
-      await dispatch(
-        toggleExternalServices(externalServicesOnboardingToggleState),
-      );
-      await dispatch(setCompletedOnboarding());
+    await dispatch(
+      toggleExternalServices(externalServicesOnboardingToggleState),
+    );
+    await dispatch(setCompletedOnboarding());
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.OnboardingWalletSetupComplete,
-        properties: {
-          wallet_setup_type:
-            firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
-          new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
-        },
-      });
-      history.push(DEFAULT_ROUTE);
-    }
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ExtensionPinned,
+      properties: {
+        wallet_setup_type:
+          firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
+        new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
+      },
+    });
+    navigate(DEFAULT_ROUTE);
   };
 
+  useEffect(() => {
+    // if the user has not created a wallet, redirect to onboarding welcome route
+    if (!currentKeyring) {
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    }
+  }, [currentKeyring, navigate]);
+
   return (
-    <div
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
+      gap={6}
       className="onboarding-pin-extension"
       data-testid="onboarding-pin-extension"
     >
-      <>
-        <Text
-          variant={TextVariant.headingLg}
-          as="h2"
-          align={TextAlign.Center}
-          fontWeight={FontWeight.Bold}
-        >
-          {t('onboardingPinExtensionTitle')}
-        </Text>
+      <Box>
         <Carousel
           selectedItem={selectedIndex}
           showThumbs={false}
           showStatus={false}
-          showArrows={false}
+          dynamicHeight
+          renderArrowPrev={(onClickHandler, hasPrev, label) => (
+            <ButtonIcon
+              iconName={IconName.Arrow2Left}
+              size={ButtonIconSize.Lg}
+              borderRadius={BorderRadius.full}
+              borderWidth={2}
+              borderColor={IconColor.iconDefault}
+              className={classnames('onboarding-pin-extension__arrow', {
+                'onboarding-pin-extension__arrow--disabled': !hasPrev,
+              })}
+              disabled={!hasPrev}
+              title={label}
+              onClick={onClickHandler}
+              ariaLabel={t('prev')}
+            />
+          )}
+          renderArrowNext={(onClickHandler, hasNext, label) => (
+            <ButtonIcon
+              iconName={IconName.Arrow2Right}
+              size={ButtonIconSize.Lg}
+              borderRadius={BorderRadius.full}
+              borderWidth={2}
+              borderColor={IconColor.iconDefault}
+              className={classnames(
+                'onboarding-pin-extension__arrow',
+                'onboarding-pin-extension__arrow--next',
+                {
+                  'onboarding-pin-extension__arrow--disabled': !hasNext,
+                },
+              )}
+              disabled={!hasNext}
+              title={label}
+              onClick={onClickHandler}
+              ariaLabel={t('next')}
+              data-testid="pin-extension-next"
+            />
+          )}
           onChange={(index) => setSelectedIndex(index)}
         >
-          <div>
-            <Text align={TextAlign.Center}>
-              {t('onboardingPinExtensionDescription')}
-            </Text>
-            <div className="onboarding-pin-extension__diagram">
-              <OnboardingPinBillboard />
-            </div>
-          </div>
-          <div>
-            <Text align={TextAlign.Center}>
-              {t('onboardingPinExtensionDescription2')}
-            </Text>
-            <Text align={TextAlign.Center}>
-              {t('onboardingPinExtensionDescription3')}
-            </Text>
-            <img
-              src="/images/onboarding-pin-browser.svg"
-              width="799"
-              height="320"
-              alt=""
-            />
-          </div>
-        </Carousel>
-        <div className="onboarding-pin-extension__buttons">
-          <Button
-            data-testid={
-              selectedIndex === 0 ? 'pin-extension-next' : 'pin-extension-done'
-            }
-            type="primary"
-            onClick={handleClick}
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.flexStart}
+            justifyContent={JustifyContent.center}
+            className="onboarding-pin-extension__image-container"
           >
-            {selectedIndex === 0 ? t('next') : t('done')}
-          </Button>
-        </div>
-      </>
-    </div>
+            <img
+              src="/images/onboarding-extension-pin.svg"
+              alt={t('onboardingPinExtensionAltPin')}
+            />
+          </Box>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.flexStart}
+            justifyContent={JustifyContent.center}
+            className="onboarding-pin-extension__image-container"
+          >
+            <img
+              src="/images/onboarding-extension-launch.svg"
+              alt={t('onboardingPinExtensionAltLaunch')}
+            />
+          </Box>
+        </Carousel>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.flexStart}
+          width={BlockSize.Full}
+          marginTop={4}
+          gap={4}
+        >
+          <Text
+            variant={TextVariant.headingLg}
+            fontWeight={FontWeight.Medium}
+            as="h2"
+          >
+            {t('onboardingPinExtensionTitle')}
+          </Text>
+          {selectedIndex === 0 ? (
+            <Box>
+              <Text variant={TextVariant.bodyMd}>
+                {t('onboardingPinExtensionDescription')}
+              </Text>
+            </Box>
+          ) : (
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={4}
+            >
+              <Text variant={TextVariant.bodyMd}>
+                {t('onboardingPinExtensionDescription2')}
+              </Text>
+              <Text variant={TextVariant.bodyMd}>
+                {t('onboardingPinExtensionDescription3', [getBrowserName()])}
+              </Text>
+            </Box>
+          )}
+        </Box>
+      </Box>
+      <Box>
+        <Button
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          block
+          data-testid="pin-extension-done"
+          onClick={handleClick}
+        >
+          {t('done')}
+        </Button>
+      </Box>
+    </Box>
   );
 }

@@ -24,12 +24,16 @@ type ContentfulBanner = ContentfulSysField & {
     endDate?: string;
     priorityPlacement?: boolean;
     showInExtension?: boolean;
+    variableName?: string;
+    cardPlacement?: string;
   };
 };
 
 type ContentfulBannerResponse = {
   items: ContentfulBanner[];
   includes?: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     Asset?: (ContentfulSysField & {
       fields?: { file?: { url?: string } };
     })[];
@@ -70,6 +74,8 @@ export async function fetchCarouselSlidesFromContentful(): Promise<{
       startDate,
       endDate,
       priorityPlacement,
+      variableName,
+      cardPlacement,
     } = entry.fields;
 
     const slide: CarouselSlide = {
@@ -82,6 +88,9 @@ export async function fetchCarouselSlidesFromContentful(): Promise<{
       dismissed: false,
       startDate,
       endDate,
+      priorityPlacement,
+      variableName,
+      cardPlacement,
     };
 
     if (priorityPlacement) {

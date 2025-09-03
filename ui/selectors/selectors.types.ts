@@ -17,7 +17,7 @@ export type InternalAccountWithPinnedHiddenActiveLastSelected =
     pinned: boolean;
     hidden: boolean;
     lastSelected: number;
-    active: number;
+    active: boolean;
   };
 
 export type MergedInternalAccount =

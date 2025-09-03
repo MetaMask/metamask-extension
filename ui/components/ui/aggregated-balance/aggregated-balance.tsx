@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import {
   AlignItems,
   Display,
@@ -26,7 +27,12 @@ import {
   getMultichainAggregatedBalance,
   getMultichainNativeTokenBalance,
 } from '../../../selectors/assets';
-import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
+import {
+  getEnabledNetworksByNamespace,
+  getPreferences,
+  getSelectedInternalAccount,
+  isGlobalNetworkSelectorRemoved,
+} from '../../../selectors';
 import {
   getMultichainNetwork,
   getMultichainShouldShowFiat,
@@ -56,6 +62,12 @@ export const AggregatedBalance = ({
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, selectedAccount),
   );
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+
+  const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
+    ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
+    : showNativeTokenAsMainBalance;
+
   const multichainNativeTokenBalance = useSelector((state) =>
     getMultichainNativeTokenBalance(state, selectedAccount),
   );
@@ -83,7 +95,8 @@ export const AggregatedBalance = ({
     locale,
     {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 5,
+      maximumFractionDigits:
+        MULTICHAIN_NETWORK_DECIMAL_PLACES[currentNetwork.chainId] || 5,
     },
   );
 
@@ -108,9 +121,7 @@ export const AggregatedBalance = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
         >
-          {showNativeTokenAsMainBalance ||
-          !isNonEvmRatesAvailable ||
-          !shouldShowFiat
+          {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? formattedTokenDisplay
             : formattedFiatDisplay}
         </SensitiveText>
@@ -119,9 +130,7 @@ export const AggregatedBalance = ({
           variant={TextVariant.inherit}
           isHidden={privacyMode}
         >
-          {showNativeTokenAsMainBalance ||
-          !isNonEvmRatesAvailable ||
-          !shouldShowFiat
+          {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? currentNetwork.network.ticker
             : currentCurrency.toUpperCase()}
         </SensitiveText>

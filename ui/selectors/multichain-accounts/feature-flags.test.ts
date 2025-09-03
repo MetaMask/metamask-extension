@@ -6,7 +6,7 @@ import {
 } from './feature-flags';
 
 jest.mock('../../../package.json', () => ({
-  version: '12.0.0',
+  version: '15.0.0',
 }));
 
 type TestState = RemoteFeatureFlagsState & {

@@ -40,19 +40,13 @@ class NftListPage {
     tag: 'h6',
   };
 
-  private readonly nftFilterByNetworks = '[data-testid="sort-by-networks"]';
-
-  private readonly nftFilterByPopularNetworks =
-    '[data-testid="network-filter-all"]';
-
-  private readonly nftFilterByCurrentNetwork =
-    '[data-testid="network-filter-current"]';
+  private readonly nftListItem = '[data-testid="nft-wrapper"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.clickElement(this.actionBarButton);
       await this.driver.waitForSelector(this.importNftButton);
@@ -99,7 +93,7 @@ class NftListPage {
     }
   }
 
-  async check_nftImageIsDisplayed(): Promise<void> {
+  async checkNftImageIsDisplayed(): Promise<void> {
     console.log('Check that NFT image is displayed in NFT tab on homepage');
     await this.driver.waitForSelector(this.nftIconOnActivityList);
   }
@@ -109,7 +103,7 @@ class NftListPage {
    *
    * @param nftName - The name of the NFT to check for.
    */
-  async check_nftNameIsDisplayed(nftName: string): Promise<void> {
+  async checkNftNameIsDisplayed(nftName: string): Promise<void> {
     console.log(
       `Check that NFT item ${nftName} is displayed in NFT tab on homepage`,
     );
@@ -119,26 +113,26 @@ class NftListPage {
     });
   }
 
-  async check_noNftInfoIsDisplayed(): Promise<void> {
+  async checkNoNftInfoIsDisplayed(): Promise<void> {
     console.log('Check that no NFT info is displayed on nft tab');
     await this.driver.waitForSelector(this.noNftInfo);
   }
 
-  async check_successImportNftMessageIsDisplayed(): Promise<void> {
+  async checkSuccessImportNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success imported NFT message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.successImportNftMessage);
   }
 
-  async check_successRemoveNftMessageIsDisplayed(): Promise<void> {
+  async checkSuccessRemoveNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success removed NFT message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.successRemoveNftMessage);
   }
 
-  async check_numberOfNftsDisplayed(
+  async checkNumberOfNftsDisplayed(
     expectedNumberOfNfts: number,
   ): Promise<void> {
     console.log(
@@ -154,19 +148,18 @@ class NftListPage {
     console.log(`${expectedNumberOfNfts} NFTs found in NFT list on homepage`);
   }
 
-  async filterNftsByNetworks(networkName: string): Promise<void> {
-    await this.driver.clickElement(this.nftFilterByNetworks);
-    if (networkName === 'Popular networks') {
-      await this.driver.waitForSelector(this.nftFilterByPopularNetworks);
-      await this.driver.clickElement(this.nftFilterByPopularNetworks);
-    } else if (networkName === 'Current network') {
-      await this.driver.waitForSelector(this.nftFilterByCurrentNetwork);
-      await this.driver.clickElement(this.nftFilterByCurrentNetwork);
-    } else {
-      throw new Error(
-        `Invalid network name selected for filtering NFTs: ${networkName}`,
-      );
+  async clickNFTFromList(index = 0, timeout = 10000): Promise<void> {
+    console.log(`Clicking NFT at index ${index}`);
+    const nfts = await this.driver.findElements(this.nftListItem);
+    if (nfts.length === 0) {
+      throw new Error('No NFTs found to select');
     }
+
+    const element = nfts[index];
+    await element.click();
+    // @ts-expect-error - The waitForElementState method is not typed correctly in the driver.
+    await element.waitForElementState('hidden', timeout);
+    console.log(`NFT at index ${index} selected successfully`);
   }
 }
 

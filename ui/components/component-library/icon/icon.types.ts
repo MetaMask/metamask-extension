@@ -35,6 +35,7 @@ export enum IconName {
   Add = 'add',
   Ai = 'ai',
   AlternateEmail = 'alternate-email',
+  Apple = 'apple',
   Apps = 'apps',
   Arrow2Down = 'arrow-2-down',
   Arrow2Left = 'arrow-2-left',
@@ -205,7 +206,6 @@ export enum IconName {
   Receive = 'receive',
   Received = 'received',
   Refresh = 'refresh',
-  RemoteMode = 'remote-mode',
   RemoveMinus = 'remove-minus',
   Report = 'report',
   Rocket = 'rocket',
@@ -332,9 +332,13 @@ export interface IconStyleUtilityProps extends StyleUtilityProps {
   style?: React.CSSProperties;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type IconProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, IconStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type IconComponent = <C extends React.ElementType = 'span'>(
   props: IconProps<C>,
 ) => React.ReactElement | null;

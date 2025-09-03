@@ -20,7 +20,10 @@
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
       "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-      "enabledNetworkMap": {}
+      "enabledNetworkMap": {
+        "eip155": "object",
+        "solana": "object"
+      }
     },
     "AccountOrderController": {
       "pinnedAccountList": {},
@@ -35,7 +38,6 @@
       "fullScreenGasPollTokens": "object",
       "notificationGasPollTokens": "object",
       "popupGasPollTokens": "object",
-      "qrHardware": {},
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
@@ -69,6 +71,7 @@
     "KeyringController": { "vault": "string" },
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
+      "tracesBeforeMetricsOptIn": "object",
       "fragments": "object",
       "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
       "participateInMetaMetrics": true,
@@ -79,6 +82,7 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
+    "MultichainAccountService": "object",
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networkConfigurations": "object",

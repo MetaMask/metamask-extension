@@ -38,10 +38,6 @@ import {
   updateSendAsset,
 } from '../../../../ducks/send';
 
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
-import { getRemoteSendAllowance } from '../../../../selectors/remote-mode';
-import { SendAllowanceBanner } from '../../../../pages/remote-mode/components';
-
 import {
   TokenStandard,
   AssetType,
@@ -51,7 +47,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   INSUFFICIENT_FUNDS_ERROR,
   INVALID_HEX_DATA_ERROR,
-} from '../../../../pages/confirmations/send/send.constants';
+} from '../../../../pages/confirmations/send-legacy/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
   DEFAULT_ROUTE,
@@ -65,10 +61,7 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
-import {
-  getSelectedInternalAccount,
-  smartTransactionsListSelector,
-} from '../../../../selectors';
+import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
@@ -338,18 +331,20 @@ export const SendPage = () => {
   const isSmartTransactionPending = smartTransactions?.find(
     ({ status }) => status === SmartTransactionStatus.pending,
   );
+  const isGasTooLow = sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR;
 
-  const isGasTooLow =
-    sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
-    sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
+  const isInsufficientFundsError =
+    sendErrors.amount === INSUFFICIENT_FUNDS_ERROR;
 
   const isHexDataInvalid = sendErrors.hexData === INVALID_HEX_DATA_ERROR;
 
-  const submitDisabled =
-    (isInvalidSendForm && !isGasTooLow) ||
-    requireContractAddressAcknowledgement ||
-    (isSwapAndSend && isSmartTransactionPending) ||
-    isHexDataInvalid;
+  const submitDisabled = Boolean(
+    isInsufficientFundsError ||
+      (isInvalidSendForm && !isGasTooLow) ||
+      requireContractAddressAcknowledgement ||
+      (isSwapAndSend && isSmartTransactionPending) ||
+      isHexDataInvalid,
+  );
 
   const isSendFormShown =
     draftTransactionExists &&
@@ -369,19 +364,6 @@ export const SendPage = () => {
     },
     [dispatch],
   );
-
-  // Remote Mode
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const currentChainId = useSelector(getCurrentChainId);
-  const remoteSendAllowance = useSelector((state) =>
-    getRemoteSendAllowance(state, {
-      from: selectedAccount.address,
-      chainId: currentChainId,
-      asset: transactionAsset,
-    }),
-  );
-  const isRemoteSendPossible = Boolean(remoteSendAllowance);
-  const showRemoteSendBanner = isRemoteSendPossible && isSendFormShown;
 
   let tooltipTitle = '';
 
@@ -409,10 +391,7 @@ export const SendPage = () => {
         {t('send')}
       </Header>
       <Content>
-        {showRemoteSendBanner && (
-          <SendAllowanceBanner allowance={remoteSendAllowance} />
-        )}
-        <SendPageAccountPicker isRemoteModeEnabled={isRemoteSendPossible} />
+        <SendPageAccountPicker />
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}
@@ -420,7 +399,6 @@ export const SendPage = () => {
             header={t('sendSelectSendAsset')}
             asset={transactionAsset}
             amount={amount}
-            disableMaxButton={isRemoteSendPossible}
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
             onClick={() => handleAssetPickerClick(false)}

@@ -26,7 +26,7 @@ class AddNetworkRpcUrlModal {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.addRpcUrlInput,
@@ -78,7 +78,7 @@ class AddNetworkRpcUrlModal {
    *
    * @param shouldBeEnabled - Whether the add RPC URL button should be enabled. Defaults to true.
    */
-  async check_addRpcUrlButtonIsEnabled(
+  async checkAddRpcUrlButtonIsEnabled(
     shouldBeEnabled: boolean = true,
   ): Promise<void> {
     console.log(
@@ -90,7 +90,7 @@ class AddNetworkRpcUrlModal {
     assert.equal(await addRpcUrlButton.isEnabled(), shouldBeEnabled);
   }
 
-  async check_errorMessageInvalidUrlIsDisplayed(): Promise<void> {
+  async checkErrorMessageInvalidUrlIsDisplayed(): Promise<void> {
     console.log('Check that error message invalid URL is displayed');
     await this.driver.waitForSelector(this.errorMessageInvalidUrl);
   }

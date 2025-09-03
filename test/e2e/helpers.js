@@ -25,6 +25,8 @@ const {
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
+const LocalWebSocketServer = require('./websocket-server').default;
+const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -126,6 +128,10 @@ async function withFixtures(options, testSuite) {
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
+    withSolanaWebSocket = {
+      server: false,
+      mocks: [],
+    },
   } = options;
 
   // Normalize localNodeOptions
@@ -151,6 +157,8 @@ async function withFixtures(options, testSuite) {
 
   let localNode;
   const localNodes = [];
+
+  let localWebSocketServer;
 
   try {
     // Start servers based on the localNodes array
@@ -255,6 +263,13 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
+
+    if (withSolanaWebSocket.server) {
+      localWebSocketServer = LocalWebSocketServer.getServerInstance();
+      localWebSocketServer.start();
+      await setupSolanaWebsocketMocks(withSolanaWebSocket.mocks);
+    }
+
     const { mockedEndpoint, getPrivacyReport } = await setupMocking(
       mockServer,
       testSpecificMock,
@@ -263,6 +278,7 @@ async function withFixtures(options, testSuite) {
         ethConversionInUsd,
         monConversionInUsd,
       },
+      withSolanaWebSocket,
     );
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
@@ -273,7 +289,10 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    const wd = await buildWebDriver(driverOptions);
+    const wd = await buildWebDriver({
+      ...driverOptions,
+      disableServerMochaToBackground,
+    });
     driver = wd.driver;
     extensionId = wd.extensionId;
     webDriver = driver.driver;
@@ -383,52 +402,76 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Add information to the end of the error message that should surface in the "Tests" tab of CircleCI
-    if (process.env.CIRCLE_NODE_INDEX) {
-      error.message += `\n  (Ran on CircleCI Node ${process.env.CIRCLE_NODE_INDEX} of ${process.env.CIRCLE_NODE_TOTAL}, Job ${process.env.CIRCLE_JOB})`;
-    }
-
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
-      await fixtureServer.stop();
+      const shutdownTasks = [fixtureServer.stop()];
+
       for (const server of localNodes) {
         if (server) {
-          await server.quit();
+          shutdownTasks.push(server.quit());
         }
       }
 
       if (useBundler) {
-        await bundlerServer.stop();
+        shutdownTasks.push(bundlerServer.stop());
       }
 
       if (webDriver) {
-        await driver.quit();
+        shutdownTasks.push(driver.quit());
       }
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
-            await new Promise((resolve, reject) => {
-              dappServer[i].close((error) => {
-                if (error) {
-                  return reject(error);
-                }
-                return resolve();
-              });
-            });
+            shutdownTasks.push(
+              new Promise((resolve, reject) => {
+                dappServer[i].close((error) => {
+                  if (error) {
+                    return reject(error);
+                  }
+                  return resolve();
+                });
+                // We need to close all connections to stop the server quickly
+                // Otherwise it takes a few seconds for it to close
+                dappServer[i].closeAllConnections();
+              }),
+            );
           }
         }
       }
       if (phishingPageServer.isRunning()) {
-        await phishingPageServer.quit();
+        shutdownTasks.push(phishingPageServer.quit());
       }
 
-      // Since mockServer could be stop'd at another location,
-      // use a try/catch to avoid an error
-      try {
-        await mockServer.stop();
-      } catch (e) {
-        console.log('mockServer already stopped');
+      shutdownTasks.push(
+        (async () => {
+          // Since mockServer could be stop'd at another location,
+          // use a try/catch to avoid an error
+          try {
+            await mockServer.stop();
+          } catch (e) {
+            console.log('mockServer already stopped');
+          }
+        })(),
+      );
+
+      if (withSolanaWebSocket.server) {
+        shutdownTasks.push(localWebSocketServer.stopAndCleanup());
+      }
+
+      const results = await Promise.allSettled(shutdownTasks);
+      const failures = results.filter((result) => result.status === 'rejected');
+      for (const { reason } of failures) {
+        console.error('Failed to shut down:', reason);
+      }
+      if (failures.length) {
+        // A test error may get overridden here by the shutdown error, but this is OK because a
+        // shutdown error indicates a bug in our test tooling that might invalidate later tests.
+        // eslint-disable-next-line no-unsafe-finally
+        throw new AggregateError(
+          failures.map((failure) => failure.reason),
+          'Failed to shut down test servers',
+        );
       }
     }
   }
@@ -436,6 +479,7 @@ async function withFixtures(options, testSuite) {
 
 const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
+  ExtensionUpdating: 'MetaMask Updating',
   InstalledExtensions: 'Extensions',
   Dialog: 'MetaMask Dialog',
   Phishing: 'MetaMask Phishing Detection',
@@ -481,6 +525,14 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
   return contract
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
+};
+const openPopupWithActiveTabOrigin = async (driver, origin = DAPP_URL) => {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
+  );
+
+  // Resize the popup window after it's opened
+  await driver.driver.manage().window().setRect({ width: 400, height: 600 });
 };
 
 const openDappConnectionsPage = async (driver) => {
@@ -932,6 +984,7 @@ module.exports = {
   withFixtures,
   createDownloadFolder,
   openDapp,
+  openPopupWithActiveTabOrigin,
   openDappConnectionsPage,
   createDappTransaction,
   switchToOrOpenDapp,

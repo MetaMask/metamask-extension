@@ -1,5 +1,6 @@
-import React, { useContext, RefObject } from 'react';
+import React, { useContext, RefObject, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { parseCaipChainId } from '@metamask/utils';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -19,34 +20,66 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
+import { getOriginOfCurrentTab, getAllDomains } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
 
 type ConnectedSitePopoverProps = {
+  referenceElement: RefObject<HTMLElement>;
   isOpen: boolean;
+  onClose: () => void;
   isConnected: boolean;
   onClick: () => void;
-  onClose: () => void;
-  referenceElement?: RefObject<HTMLElement>;
 };
 
-export const ConnectedSitePopover = ({
+export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
+  referenceElement,
   isOpen,
+  onClose,
   isConnected,
   onClick,
-  onClose,
-  referenceElement,
-}: ConnectedSitePopoverProps) => {
+}) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const siteName = getURLHost(activeTabOrigin);
-  // TODO: Replace it with networkClient Selector
-  // const activeDomain = useSelector(getAllDomains);
-  // const networkClientId = activeDomain?.[activeTabOrigin];
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const allDomains = useSelector(getAllDomains);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
   const dispatch = useDispatch();
+
+  // Get the network that this dapp is actually connected to using domain mapping
+  const dappActiveNetwork = useMemo(() => {
+    if (!activeTabOrigin || !allDomains) {
+      return null;
+    }
+
+    // Get the networkClientId for this domain
+    const networkClientId = allDomains[activeTabOrigin];
+    if (!networkClientId) {
+      return null;
+    }
+
+    // Find the network configuration that has this networkClientId
+    const networkConfiguration = Object.values(
+      networkConfigurationsByChainId,
+    ).find((network) => {
+      return network.rpcEndpoints.some(
+        (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
+      );
+    });
+
+    return networkConfiguration || null;
+  }, [activeTabOrigin, allDomains, networkConfigurationsByChainId]);
+
+  const getChainIdForImage = (chainId: `${string}:${string}`): string => {
+    const { namespace, reference } = parseCaipChainId(chainId);
+    return namespace === 'eip155'
+      ? `0x${parseInt(reference, 10).toString(16)}`
+      : chainId;
+  };
 
   return (
     <Popover
@@ -73,7 +106,7 @@ export const ConnectedSitePopover = ({
           paddingBottom={2}
         >
           <Text variant={TextVariant.bodyMdMedium}>{siteName}</Text>
-          {isConnected ? (
+          {isConnected && dappActiveNetwork ? (
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
@@ -84,11 +117,15 @@ export const ConnectedSitePopover = ({
                 size={AvatarNetworkSize.Xs}
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                name={currentNetwork?.nickname || ''}
+                name={dappActiveNetwork?.name || ''}
                 src={
-                  currentNetwork?.chainId
-                    ? getImageForChainId(currentNetwork.chainId)
-                    : undefined
+                  dappActiveNetwork?.chainId?.includes(':')
+                    ? getImageForChainId(
+                        getChainIdForImage(
+                          dappActiveNetwork.chainId as `${string}:${string}`,
+                        ),
+                      )
+                    : getImageForChainId(dappActiveNetwork?.chainId)
                 }
               />
               <ButtonLink
@@ -105,8 +142,9 @@ export const ConnectedSitePopover = ({
                     }),
                   )
                 }
+                data-testid="connected-site-popover-network-button"
               >
-                {currentNetwork?.nickname}
+                {(dappActiveNetwork as { name?: string })?.name}
               </ButtonLink>
             </Box>
           ) : (
@@ -140,7 +178,7 @@ export const ConnectedSitePopover = ({
                 onClick();
               } else {
                 global.platform.openTab({
-                  url: 'https://portfolio.metamask.io/explore/dapps',
+                  url: 'https://app.metamask.io/explore/dapps',
                 });
               }
             }}

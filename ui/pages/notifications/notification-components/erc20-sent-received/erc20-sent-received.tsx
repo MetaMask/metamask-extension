@@ -1,7 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { t } from '../../../../../shared/lib/translate';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
@@ -10,7 +9,6 @@ import {
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import {
   createTextItems,
   getAmount,
@@ -152,9 +150,8 @@ export const components: NotificationComponent<ERC20Notification> = {
         />
       ),
       Asset: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
+          notification.chain_id,
         );
         return (
           <NotificationDetailAsset
@@ -185,9 +182,8 @@ export const components: NotificationComponent<ERC20Notification> = {
         );
       },
       Network: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencyName } =
-          getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+          getNetworkDetailsByChainId(notification.chain_id);
 
         return (
           <NotificationDetailAsset

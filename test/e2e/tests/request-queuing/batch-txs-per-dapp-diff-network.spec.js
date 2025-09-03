@@ -1,4 +1,7 @@
 const { By } = require('selenium-webdriver');
+const {
+  switchToNetworkFromSendFlow,
+} = require('../../page-objects/flows/network.flow');
 const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -58,13 +61,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         // Wait for the first dapp's connect confirmation to disappear
         await driver.waitUntilXWindowHandles(2);
@@ -131,8 +128,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
             tag: 'button',
           });
         }
-
-        await driver.waitUntilXWindowHandles(3);
       },
     );
   });

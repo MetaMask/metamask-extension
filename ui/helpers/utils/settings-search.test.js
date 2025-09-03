@@ -150,7 +150,7 @@ const t = (key) => {
 describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 4;
+      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 5;
       const NUM_OF_HIDDEN_SETTINGS = 1;
 
       expect(getSettingsRoutes()).toHaveLength(
@@ -173,7 +173,7 @@ describe('Settings Search Utils', () => {
     it('returns "Backup And Sync" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('backupAndSync')),
-      ).toStrictEqual(2);
+      ).toStrictEqual(3);
     });
 
     it('returns "Contact" section count', () => {
@@ -183,7 +183,7 @@ describe('Settings Search Utils', () => {
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(20);
+      ).toStrictEqual(22);
     });
 
     it('returns "Network" section count', () => {

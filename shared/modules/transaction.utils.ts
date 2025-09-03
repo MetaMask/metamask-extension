@@ -14,9 +14,13 @@ import {
 import type { TransactionParams } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
 
-import { Hex } from '@metamask/utils';
+import { Hex, JsonRpcParams } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { AssetType, TokenStandard } from '../constants/transaction';
+import {
+  APPROVAL_METHOD_NAMES,
+  AssetType,
+  TokenStandard,
+} from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -49,6 +53,8 @@ type InferTransactionTypeResult = {
   // The contract code, in hex format if it exists. '0x0' or '0x' are also indicators of non-existent contract code
   getCodeResponse: string | null | undefined;
 };
+
+type DataMessageParam = object | string | number | boolean | JsonRpcParams;
 
 const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
@@ -321,10 +327,14 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
  * @param dataToParse
  * @returns
  */
-export const parseTypedDataMessage = (dataToParse: string) => {
-  const result = JSON.parse(dataToParse);
+export const parseTypedDataMessage = (dataToParse: DataMessageParam) => {
+  const result =
+    typeof dataToParse === 'object'
+      ? dataToParse
+      : JSON.parse(String(dataToParse));
 
-  const messageValue = extractLargeMessageValue(dataToParse);
+  const messageValue = extractLargeMessageValue(String(dataToParse));
+
   if (result.message?.value) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -347,17 +357,13 @@ export function parseApprovalTransactionData(data: Hex):
       isRevokeAll?: boolean;
       name: string;
       tokenAddress?: Hex;
+      spender?: Hex;
     }
   | undefined {
   const transactionDescription = parseStandardTokenTransactionData(data);
   const { args, name } = transactionDescription ?? {};
 
-  if (
-    !['approve', 'increaseAllowance', 'setApprovalForAll'].includes(
-      name ?? '',
-    ) ||
-    !name
-  ) {
+  if (!APPROVAL_METHOD_NAMES.includes(name ?? '') || !name) {
     return undefined;
   }
 
@@ -370,6 +376,8 @@ export function parseApprovalTransactionData(data: Hex):
     ? new BigNumber(rawAmountOrTokenId?.toString())
     : undefined;
 
+  const spender = args?.spender ?? args?._spender ?? args?.[0];
+
   const isApproveAll = name === 'setApprovalForAll' && args?._approved === true;
   const isRevokeAll = name === 'setApprovalForAll' && args?._approved === false;
   const tokenAddress = name === 'approve' ? args?.token : undefined;
@@ -380,5 +388,6 @@ export function parseApprovalTransactionData(data: Hex):
     isRevokeAll,
     name,
     tokenAddress,
+    spender,
   };
 }

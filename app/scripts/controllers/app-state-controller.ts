@@ -1,7 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
-import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -12,7 +11,8 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
+import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
+import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import { Browser } from 'webextension-polyfill';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -24,6 +24,7 @@ import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
+  DOWNLOAD_MOBILE_APP_SLIDE_ID,
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
@@ -36,6 +37,11 @@ import type {
   ThrottledOrigins,
   ThrottledOrigin,
 } from '../../../shared/types/origin-throttling';
+import {
+  ScanAddressResponse,
+  GetAddressSecurityAlertResponse,
+  AddAddressSecurityAlertResponse,
+} from '../lib/trust-signals/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -59,6 +65,7 @@ export type AppStateControllerState = {
   showPermissionsTour: boolean;
   showNetworkBanner: boolean;
   showAccountBanner: boolean;
+  showDownloadMobileAppSlide: boolean;
   trezorModel: string | null;
   currentPopupId?: number;
   onboardingDate: number | null;
@@ -69,21 +76,28 @@ export type AppStateControllerState = {
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
   // multiple networks.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  qrHardware: Json;
+  activeQrCodeScanRequest: QrScanRequest | null;
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
+  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
   // States used for displaying the changed network toast
-  switchedNetworkDetails: Record<string, string> | null;
-  switchedNetworkNeverShowMessage: boolean;
   currentExtensionPopupId: number;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   termsOfUseLastAgreed?: number;
   snapsInstallPrivacyWarningShown?: boolean;
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
-  upgradeSplashPageAcknowledgedForAccounts: string[];
+  isUpdateAvailable: boolean;
+  updateModalLastDismissedAt: number | null;
+  lastUpdatedAt: number | null;
+  enableEnforcedSimulations: boolean;
+  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
+  enforcedSimulationsSlippage: number;
+  enforcedSimulationsSlippageForTransactions: Record<string, number>;
 };
 
 const controllerName = 'AppStateController';
@@ -96,10 +110,17 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
   AppStateControllerState
 >;
 
+export type AppStateControllerRequestQrCodeScanAction = {
+  type: 'AppStateController:requestQrCodeScan';
+  handler: (request: QrScanRequest) => Promise<SerializedUR>;
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
-export type AppStateControllerActions = AppStateControllerGetStateAction;
+export type AppStateControllerActions =
+  | AppStateControllerGetStateAction
+  | AppStateControllerRequestQrCodeScanAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -132,9 +153,7 @@ export type AppStateControllerEvents =
 /**
  * Events that this controller is allowed to subscribe.
  */
-type AllowedEvents =
-  | PreferencesControllerStateChangeEvent
-  | KeyringControllerQRKeyringStateChangeEvent;
+type AllowedEvents = PreferencesControllerStateChangeEvent;
 
 export type AppStateControllerMessenger = RestrictedMessenger<
   typeof controllerName,
@@ -152,10 +171,9 @@ type PollingTokenType =
 type AppStateControllerInitState = Partial<
   Omit<
     AppStateControllerState,
-    | 'qrHardware'
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
-    | 'switchedNetworkDetails'
+    | 'addressSecurityAlertResponses'
     | 'currentExtensionPopupId'
   >
 >;
@@ -192,21 +210,29 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isRampCardClosed: false,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
-  switchedNetworkNeverShowMessage: false,
+  showDownloadMobileAppSlide: true,
   slides: [],
   throttledOrigins: {},
-  upgradeSplashPageAcknowledgedForAccounts: [],
+  isUpdateAvailable: false,
+  updateModalLastDismissedAt: null,
+  lastUpdatedAt: null,
+  enableEnforcedSimulations: true,
+  enableEnforcedSimulationsForTransactions: {},
+  enforcedSimulationsSlippage: 10,
+  enforcedSimulationsSlippageForTransactions: {},
+  activeQrCodeScanRequest: null,
   ...getInitialStateOverrides(),
 });
 
 function getInitialStateOverrides() {
   return {
-    qrHardware: {},
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
-    switchedNetworkDetails: null,
+    addressSecurityAlertResponses: {},
     currentExtensionPopupId: 0,
   };
 }
@@ -304,11 +330,13 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: {
     persist: true,
     anonymous: true,
   },
-  qrHardware: {
+  activeQrCodeScanRequest: {
     persist: false,
     anonymous: true,
   },
@@ -324,12 +352,8 @@ const controllerMetadata = {
     persist: false,
     anonymous: true,
   },
-  switchedNetworkDetails: {
+  addressSecurityAlertResponses: {
     persist: false,
-    anonymous: true,
-  },
-  switchedNetworkNeverShowMessage: {
-    persist: true,
     anonymous: true,
   },
   currentExtensionPopupId: {
@@ -348,6 +372,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  showDownloadMobileAppSlide: {
+    persist: true,
+    anonymous: true,
+  },
   slides: {
     persist: true,
     anonymous: true,
@@ -356,7 +384,31 @@ const controllerMetadata = {
     persist: false,
     anonymous: true,
   },
-  upgradeSplashPageAcknowledgedForAccounts: {
+  isUpdateAvailable: {
+    persist: false,
+    anonymous: true,
+  },
+  updateModalLastDismissedAt: {
+    persist: true,
+    anonymous: true,
+  },
+  lastUpdatedAt: {
+    persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulations: {
+    persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulationsForTransactions: {
+    persist: false,
+    anonymous: true,
+  },
+  enforcedSimulationsSlippage: {
+    persist: true,
+    anonymous: true,
+  },
+  enforcedSimulationsSlippageForTransactions: {
     persist: false,
     anonymous: true,
   },
@@ -378,6 +430,8 @@ export class AppStateController extends BaseController<
   readonly waitingForUnlock: { resolve: () => void }[];
 
   #approvalRequestId: string | null;
+
+  #qrCodeScanPromise: DeferredPromise<SerializedUR> | null = null;
 
   constructor({
     state = {},
@@ -421,19 +475,15 @@ export class AppStateController extends BaseController<
       },
     );
 
-    messenger.subscribe(
-      'KeyringController:qrKeyringStateChange',
-      (qrHardware: Json) =>
-        this.update((currentState) => {
-          // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-          currentState.qrHardware = qrHardware;
-        }),
-    );
-
     const { preferences } = messenger.call('PreferencesController:getState');
     if (typeof preferences.autoLockTimeLimit === 'number') {
       this.#setInactiveTimeout(preferences.autoLockTimeLimit);
     }
+
+    this.messagingSystem.registerActionHandler(
+      'AppStateController:requestQrCodeScan',
+      this.#requestQrCodeScan.bind(this),
+    );
 
     this.#approvalRequestId = null;
   }
@@ -594,6 +644,10 @@ export class AppStateController extends BaseController<
         }
         return slide;
       });
+
+      if (id === DOWNLOAD_MOBILE_APP_SLIDE_ID) {
+        state.showDownloadMobileAppSlide = false;
+      }
     });
   }
 
@@ -650,17 +704,35 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Add account to list of accounts for which user has acknowledged
-   * smart account upgrade splash page.
+   * Set whether or not there is an update available
    *
-   * @param account
+   * @param isUpdateAvailable - Whether or not there is an update available
    */
-  setSplashPageAcknowledgedForAccount(account: string): void {
+  setIsUpdateAvailable(isUpdateAvailable: boolean): void {
     this.update((state) => {
-      state.upgradeSplashPageAcknowledgedForAccounts = [
-        ...state.upgradeSplashPageAcknowledgedForAccounts,
-        account.toLowerCase(),
-      ];
+      state.isUpdateAvailable = isUpdateAvailable;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has dismissed the update modal
+   *
+   * @param updateModalLastDismissedAt - timestamp of the last time the user has dismissed the update modal.
+   */
+  setUpdateModalLastDismissedAt(updateModalLastDismissedAt: number): void {
+    this.update((state) => {
+      state.updateModalLastDismissedAt = updateModalLastDismissedAt;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has updated
+   *
+   * @param lastUpdatedAt - timestamp of the last time the user has updated
+   */
+  setLastUpdatedAt(lastUpdatedAt: number): void {
+    this.update((state) => {
+      state.lastUpdatedAt = lastUpdatedAt;
     });
   }
 
@@ -893,44 +965,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets an object with networkName and appName
-   * or `null` if the message is meant to be cleared
-   *
-   * @param switchedNetworkDetails - Details about the network that MetaMask just switched to.
-   */
-  setSwitchedNetworkDetails(
-    switchedNetworkDetails: { origin: string; networkClientId: string } | null,
-  ): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = switchedNetworkDetails;
-    });
-  }
-
-  /**
-   * Clears the switched network details in state
-   */
-  clearSwitchedNetworkDetails(): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = null;
-    });
-  }
-
-  /**
-   * Remembers if the user prefers to never see the
-   * network switched message again
-   *
-   * @param switchedNetworkNeverShowMessage
-   */
-  setSwitchedNetworkNeverShowMessage(
-    switchedNetworkNeverShowMessage: boolean,
-  ): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = null;
-      state.switchedNetworkNeverShowMessage = switchedNetworkNeverShowMessage;
-    });
-  }
-
-  /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
    *
    * @param trezorModel - The Trezor model.
@@ -948,6 +982,7 @@ export class AppStateController extends BaseController<
    */
   updateNftDropDownState(nftsDropdownState: Json): void {
     this.update((state) => {
+      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
       state.nftsDropdownState = nftsDropdownState;
     });
   }
@@ -969,6 +1004,22 @@ export class AppStateController extends BaseController<
       });
     }
   }
+
+  getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (
+    address: string,
+  ): ScanAddressResponse | undefined => {
+    return this.state.addressSecurityAlertResponses[address.toLowerCase()];
+  };
+
+  addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse = (
+    address: string,
+    addressSecurityAlertResponse: ScanAddressResponse,
+  ): void => {
+    this.update((state) => {
+      state.addressSecurityAlertResponses[address.toLowerCase()] =
+        addressSecurityAlertResponse;
+    });
+  };
 
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active
@@ -1059,6 +1110,97 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
+    });
+  }
+
+  /**
+   * Completes a QR code scan by resolving the promise with the scanned data.
+   *
+   * @param scannedData - The data that was scanned from the QR code.
+   * @throws If no QR code scan is in progress.
+   */
+  completeQrCodeScan(scannedData: SerializedUR): void {
+    if (!this.#qrCodeScanPromise) {
+      throw new Error('No QR code scan is in progress.');
+    }
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = null;
+    });
+
+    this.#qrCodeScanPromise.resolve(scannedData);
+    this.#qrCodeScanPromise = null;
+  }
+
+  /**
+   * Cancels the current QR code scan, if one is in progress.
+   * This will reject the promise with an error.
+   *
+   * @param error - The error to reject the promise with.
+   * @throws If no QR code scan is in progress.
+   */
+  cancelQrCodeScan(error?: Error): void {
+    if (!this.#qrCodeScanPromise) {
+      throw new Error('No QR code scan is in progress.');
+    }
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = null;
+    });
+
+    this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
+    this.#qrCodeScanPromise = null;
+  }
+
+  /**
+   * Requests a QR code scan and returns a promise that resolves with the scanned data.
+   * If a scan is already in progress, it returns the existing promise.
+   *
+   * @param request - The QR code scan request.
+   * @returns The scanned QR code data.
+   */
+  #requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
+    if (this.#qrCodeScanPromise) {
+      return this.#qrCodeScanPromise.promise;
+    }
+
+    const deferredPromise = createDeferredPromise<SerializedUR>();
+    this.#qrCodeScanPromise = deferredPromise;
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = request;
+    });
+
+    return deferredPromise.promise;
+  }
+
+  setEnableEnforcedSimulations(enabled: boolean): void {
+    this.update((state) => {
+      state.enableEnforcedSimulations = enabled;
+    });
+  }
+
+  setEnableEnforcedSimulationsForTransaction(
+    transactionId: string,
+    enabled: boolean,
+  ): void {
+    this.update((state) => {
+      state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
+    });
+  }
+
+  setEnforcedSimulationsSlippage(value: number): void {
+    this.update((state) => {
+      state.enforcedSimulationsSlippage = value;
+    });
+  }
+
+  setEnforcedSimulationsSlippageForTransaction(
+    transactionId: string,
+    value: number,
+  ): void {
+    this.update((state) => {
+      state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
     });
   }
 }

@@ -12,13 +12,15 @@ class PreinstalledExampleSettings {
 
   private readonly toggleButton = '.toggle-button';
 
+  private readonly toggleButtonOn = '.toggle-button--on';
+
   private readonly settingsDropdown = '[data-testid="snaps-dropdown"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.snapRenderPanel,
@@ -37,6 +39,7 @@ class PreinstalledExampleSettings {
   async clickToggleButtonOn(): Promise<void> {
     console.log('Toggling Setting on');
     await this.driver.clickElement(this.toggleButton);
+    await this.driver.waitForSelector(this.toggleButtonOn);
   }
 
   async selectRadioOption(option: string): Promise<void> {
@@ -50,12 +53,12 @@ class PreinstalledExampleSettings {
     await this.driver.clickElement({ text: option, tag: `option` });
   }
 
-  async check_isToggleOn(): Promise<void> {
+  async checkIsToggleOn(): Promise<void> {
     console.log('Checking if the toggle is on');
     await this.driver.waitForSelector(`${this.toggleButton}--on`);
   }
 
-  async check_selectedRadioOption(option: string): Promise<boolean> {
+  async checkSelectedRadioOption(option: string): Promise<boolean> {
     console.log(`Checking if the radio option "${option}" is selected`);
     const radioOption = await this.driver.findElement(
       `input[type="radio"][id="${option}"]`,
@@ -64,7 +67,7 @@ class PreinstalledExampleSettings {
     return isChecked;
   }
 
-  async check_selectedDropdownOption(option: string): Promise<void> {
+  async checkSelectedDropdownOption(option: string): Promise<void> {
     console.log(`Checking if the dropdown option "${option}" is selected`);
     await this.driver.waitForSelector({
       css: this.settingsDropdown,

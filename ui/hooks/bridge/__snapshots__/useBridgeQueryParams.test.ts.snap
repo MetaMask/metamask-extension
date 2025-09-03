@@ -1,0 +1,222 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useBridgeQueryParams should not set inputs when there are no query params 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
+  "toChainId": null,
+  "toToken": undefined,
+}
+`;
+
+exports[`useBridgeQueryParams should not set inputs when there are no query params 2`] = `
+[
+  [
+    undefined,
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "0x0000000000000000000000000000000000000000",
+    "0x1",
+  ],
+  [
+    undefined,
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "0x0000000000000000000000000000000000000000",
+    "0x1",
+  ],
+]
+`;
+
+exports[`useBridgeQueryParams should not set params when fetchAssetMetadataForAssetIds fails 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
+  "toChainId": null,
+  "toToken": undefined,
+}
+`;
+
+exports[`useBridgeQueryParams should only set dest token 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
+  "toChainId": "eip155:59144",
+  "toToken": {
+    "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "balance": "0",
+    "chainId": "eip155:59144",
+    "decimals": 6,
+    "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
+    "name": "USDC",
+    "string": "0",
+    "symbol": "USDC",
+  },
+}
+`;
+
+exports[`useBridgeQueryParams should only set src token and amount 1`] = `
+{
+  "fromToken": {
+    "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "balance": "0",
+    "chainId": "eip155:59144",
+    "decimals": 6,
+    "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
+    "name": "USDC",
+    "string": "0",
+    "symbol": "USDC",
+  },
+  "fromTokenInputValue": "0.000100",
+  "toChainId": null,
+  "toToken": undefined,
+}
+`;
+
+exports[`useBridgeQueryParams should only set src token and amount 2`] = `
+[
+  [
+    undefined,
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "0xe708",
+  ],
+  [
+    undefined,
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "0x0000000000000000000000000000000000000000",
+    "0xe708",
+  ],
+]
+`;
+
+exports[`useBridgeQueryParams should set evm bridge params 1`] = `
+{
+  "fromNativeBalance": "1000000",
+  "fromToken": {
+    "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "balance": "0",
+    "chainId": "eip155:59144",
+    "decimals": 6,
+    "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
+    "name": "USDC",
+    "string": "0",
+    "symbol": "USDC",
+  },
+  "fromTokenBalance": "1000000",
+  "fromTokenInputValue": "0.000100",
+  "toChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+  "toToken": {
+    "address": "501",
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+    "balance": "0",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "decimals": 9,
+    "image": "./images/solana-logo.svg",
+    "name": "Solana",
+    "string": "0",
+    "symbol": "SOL",
+  },
+}
+`;
+
+exports[`useBridgeQueryParams should set evm bridge params 2`] = `
+[
+  [
+    undefined,
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "0xe708",
+  ],
+  [
+    undefined,
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "0x0000000000000000000000000000000000000000",
+    "0xe708",
+  ],
+]
+`;
+
+exports[`useBridgeQueryParams should set solana swap params 1`] = `
+{
+  "fromToken": {
+    "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "balance": "0",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "decimals": 9,
+    "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+    "name": "Solana",
+    "string": "0",
+    "symbol": "USDC",
+  },
+  "fromTokenInputValue": "0.000000100",
+  "toChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+  "toToken": {
+    "address": "501",
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+    "balance": "0",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "decimals": 9,
+    "image": "./images/solana-logo.svg",
+    "name": "Solana",
+    "string": "0",
+    "symbol": "SOL",
+  },
+}
+`;
+
+exports[`useBridgeQueryParams should set src token after navigating from ERC20 asset page 1`] = `
+{
+  "fromToken": {
+    "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "balance": "0",
+    "chainId": "eip155:59144",
+    "decimals": 6,
+    "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
+    "name": "USDC",
+    "string": "0",
+    "symbol": "USDC",
+  },
+  "fromTokenInputValue": undefined,
+  "toChainId": null,
+  "toToken": undefined,
+}
+`;
+
+exports[`useBridgeQueryParams should set src token after navigating from native asset page 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
+  "toChainId": null,
+  "toToken": undefined,
+}
+`;
+
+exports[`useBridgeQueryParams should set src token after navigating from native asset page 2`] = `
+[
+  [
+    undefined,
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "0x0000000000000000000000000000000000000000",
+    "0xe708",
+  ],
+  [
+    undefined,
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "0x0000000000000000000000000000000000000000",
+    "0xe708",
+  ],
+]
+`;
+
+exports[`useBridgeQueryParams should unset amount 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
+  "toChainId": null,
+  "toToken": undefined,
+}
+`;

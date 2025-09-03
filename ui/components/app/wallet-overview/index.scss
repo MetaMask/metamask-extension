@@ -26,21 +26,14 @@
     }
   }
 
-  &__icon_button {
-    margin-top: 0 !important;
-  }
-
   &__buttons {
     display: flex;
     flex-direction: row;
     height: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     padding: 0 16px;
     width: 100%;
-
-    .wallet-overview-fullscreen > & {
-      width: auto;
-    }
+    max-width: 420px;
   }
 
   &__currency-wrapper {
@@ -62,8 +55,18 @@
   font-weight: 500;
 }
 
+// Makes the tooltip wrapper take the full width of the flex container same as the button
+.tooltip-button-wrapper {
+  flex: 1;
+}
+
 .coin-overview,
-.eth-overview {
+.eth-overview,
+.token-overview {
+  &__button {
+    flex: 1;
+  }
+
   &__balance {
     display: flex;
     flex-direction: column;
@@ -73,11 +76,6 @@
     margin: 16px 0;
     padding: 0 16px;
     max-width: 326px;
-  }
-
-  &__icon-button {
-    margin-top: 0 !important;
-    color: var(--color-icon-default);
   }
 
   &__primary-container {

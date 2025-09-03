@@ -3,7 +3,6 @@ import type {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import { Browser } from 'webextension-polyfill';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -44,6 +43,8 @@ const extensionMock = {
     },
   },
 } as unknown as jest.Mocked<Browser>;
+
+const TRANSACTION_ID_MOCK = '123-456';
 
 describe('AppStateController', () => {
   describe('setOutdatedBrowserWarningLastShown', () => {
@@ -476,16 +477,57 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setSplashPageAcknowledgedForAccount', () => {
-    it('adds the account to upgradeSplashPageAcknowledgedForAccounts', async () => {
+  describe('isUpdateAvailable', () => {
+    it('defaults to false', async () => {
       await withController(({ controller }) => {
-        const mockAccount = '0x123';
+        expect(controller.state.isUpdateAvailable).toStrictEqual(false);
+      });
+    });
+  });
 
-        controller.setSplashPageAcknowledgedForAccount(mockAccount);
+  describe('setIsUpdateAvailable', () => {
+    it('sets isUpdateAvailable', async () => {
+      await withController(({ controller }) => {
+        controller.setIsUpdateAvailable(true);
+        expect(controller.state.isUpdateAvailable).toStrictEqual(true);
+      });
+    });
+  });
 
-        expect(
-          controller.state.upgradeSplashPageAcknowledgedForAccounts,
-        ).toStrictEqual([mockAccount]);
+  describe('updateModalLastDismissedAt', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.updateModalLastDismissedAt).toStrictEqual(null);
+      });
+    });
+  });
+
+  describe('setUpdateModalLastDismissedAt', () => {
+    it('sets updateModalLastDismissedAt', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setUpdateModalLastDismissedAt(mockParams);
+        expect(controller.state.updateModalLastDismissedAt).toStrictEqual(
+          mockParams,
+        );
+      });
+    });
+  });
+
+  describe('lastUpdatedAt', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.lastUpdatedAt).toStrictEqual(null);
+      });
+    });
+  });
+
+  describe('setLastUpdatedAt', () => {
+    it('sets lastUpdatedAt', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setLastUpdatedAt(mockParams);
+        expect(controller.state.lastUpdatedAt).toStrictEqual(mockParams);
       });
     });
   });
@@ -569,6 +611,72 @@ describe('AppStateController', () => {
       });
     });
   });
+
+  describe('setEnableEnforcedSimulations', () => {
+    it('updates the enableEnforcedSimulations state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnableEnforcedSimulations(false);
+        expect(controller.state.enableEnforcedSimulations).toBe(false);
+
+        controller.setEnableEnforcedSimulations(true);
+        expect(controller.state.enableEnforcedSimulations).toBe(true);
+      });
+    });
+  });
+
+  describe('setEnableEnforcedSimulationsForTransaction', () => {
+    it('updates the enableEnforcedSimulationsForTransactions state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnableEnforcedSimulationsForTransaction(
+          TRANSACTION_ID_MOCK,
+          true,
+        );
+
+        expect(
+          controller.state.enableEnforcedSimulationsForTransactions,
+        ).toStrictEqual({
+          [TRANSACTION_ID_MOCK]: true,
+        });
+
+        controller.setEnableEnforcedSimulationsForTransaction(
+          TRANSACTION_ID_MOCK,
+          false,
+        );
+
+        expect(
+          controller.state.enableEnforcedSimulationsForTransactions,
+        ).toStrictEqual({
+          [TRANSACTION_ID_MOCK]: false,
+        });
+      });
+    });
+  });
+
+  describe('setEnforcedSimulationsSlippage', () => {
+    it('updates the enforcedSimulationsSlippage state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnforcedSimulationsSlippage(23);
+        expect(controller.state.enforcedSimulationsSlippage).toBe(23);
+      });
+    });
+  });
+
+  describe('setEnforcedSimulationsSlippageForTransaction', () => {
+    it('updates the enforcedSimulationsSlippageForTransactions state', async () => {
+      await withController(({ controller }) => {
+        controller.setEnforcedSimulationsSlippageForTransaction(
+          TRANSACTION_ID_MOCK,
+          25,
+        );
+
+        expect(
+          controller.state.enforcedSimulationsSlippageForTransactions,
+        ).toStrictEqual({
+          [TRANSACTION_ID_MOCK]: 25,
+        });
+      });
+    });
+  });
 });
 
 type WithControllerOptions = {
@@ -587,9 +695,7 @@ type WithControllerCallback<ReturnValue> = ({
     | AddApprovalRequest
     | AcceptRequest
     | PreferencesControllerGetStateAction,
-    | AppStateControllerEvents
-    | PreferencesControllerStateChangeEvent
-    | KeyringControllerQRKeyringStateChangeEvent
+    AppStateControllerEvents | PreferencesControllerStateChangeEvent
   >;
 }) => ReturnValue;
 
@@ -608,9 +714,7 @@ async function withController<ReturnValue>(
     | AddApprovalRequest
     | AcceptRequest
     | PreferencesControllerGetStateAction,
-    | AppStateControllerEvents
-    | PreferencesControllerStateChangeEvent
-    | KeyringControllerQRKeyringStateChangeEvent
+    AppStateControllerEvents | PreferencesControllerStateChangeEvent
   >();
   const appStateMessenger = controllerMessenger.getRestricted({
     name: 'AppStateController',
@@ -619,10 +723,7 @@ async function withController<ReturnValue>(
       `ApprovalController:acceptRequest`,
       `PreferencesController:getState`,
     ],
-    allowedEvents: [
-      `PreferencesController:stateChange`,
-      `KeyringController:qrKeyringStateChange`,
-    ],
+    allowedEvents: [`PreferencesController:stateChange`],
   });
   controllerMessenger.registerActionHandler(
     'PreferencesController:getState',

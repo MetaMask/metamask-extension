@@ -115,7 +115,7 @@ export const AccountNetwork = ({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         <ButtonLink onClick={onSwitch} data-testid={`switch_account-${name}`}>
-          {t('switch')}
+          {addressSupportSmartAccount ? t('switchBack') : t('switch')}
         </ButtonLink>
       )}
     </Box>

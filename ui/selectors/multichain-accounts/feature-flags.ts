@@ -55,7 +55,7 @@ export const isMultichainAccountsFeatureEnabled = (
     currentFeatureVersion &&
     minimumVersion &&
     currentFeatureVersion === featureVersion &&
-    semver.gte(minimumVersion, APP_VERSION)
+    semver.gte(APP_VERSION, minimumVersion)
   );
 };
 
@@ -74,7 +74,6 @@ export const getMultichainAccountsRemoteFeatureFlags = (
   try {
     assert(multichainAccountsFeatureFlags, MultichainAccountsFeatureFlag);
   } catch (error) {
-    console.warn('Invalid multichain accounts feature flags:', error);
     return {
       enabled: false,
       featureVersion: null,

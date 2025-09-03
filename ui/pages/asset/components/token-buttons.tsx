@@ -7,10 +7,7 @@ import { CaipAssetType } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
-import {
-  SEND_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
@@ -26,11 +23,7 @@ import {
 import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import {
-  showModal,
-  setSwitchedNetworkDetails,
-  setActiveNetworkWithError,
-} from '../../../store/actions';
+import { showModal, setActiveNetworkWithError } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -52,18 +45,21 @@ import {
 } from '../../../components/component-library';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainIsTestnet,
+} from '../../../selectors/multichain';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
+import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
+import { navigateToSendRoute } from '../../confirmations/utils/send';
 
 const TokenButtons = ({
   token,
@@ -93,6 +89,7 @@ const TokenButtons = ({
   const isSwapsChain = useSelector((state) =>
     getIsSwapsChain(state, isEvm ? currentChainId : multichainChainId),
   );
+
   const isBridgeChain = useSelector((state) =>
     getIsBridgeChain(state, isEvm ? currentChainId : multichainChainId),
   );
@@ -103,6 +100,10 @@ const TokenButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm(token.address as CaipAssetType);
   ///: END:ONLY_INCLUDE_IF
+
+  const isUnifiedUIEnabled = useSelector((state) =>
+    getIsUnifiedUIEnabled(state, isEvm ? currentChainId : multichainChainId),
+  );
 
   useEffect(() => {
     if (token.isERC721) {
@@ -124,15 +125,14 @@ const TokenButtons = ({
       try {
         const networkConfigurationId = networks[token.chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
-        await dispatch(
-          setSwitchedNetworkDetails({
-            networkClientId: networkConfigurationId,
-          }),
-        );
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
-        ${err}`);
+        ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          err
+        }`);
         throw err;
       }
     }
@@ -146,7 +146,11 @@ const TokenButtons = ({
       properties: {
         location: 'Token Overview',
         text: 'Buy',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: currentChainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: token.symbol,
       },
     });
@@ -158,9 +162,13 @@ const TokenButtons = ({
         event: MetaMetricsEventName.NavSendButtonClicked,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: token.symbol,
           location: MetaMetricsSwapsEventSource.TokenView,
           text: 'Send',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: token.chainId,
         },
       },
@@ -168,7 +176,7 @@ const TokenButtons = ({
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type)) {
+    if (!isEvmAccountType(account.type) && !process.env.SEND_REDESIGN_ENABLED) {
       await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;
@@ -183,7 +191,7 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      history.push(SEND_ROUTE);
+      navigateToSendRoute(history, { address: token.address });
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -204,19 +212,15 @@ const TokenButtons = ({
     ///: END:ONLY_INCLUDE_IF
   ]);
 
+  const isTestnet = useSelector(getMultichainIsTestnet);
+
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
       await setCorrectChain();
+      // Handle clicking from the asset details page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.TokenView,
-        {
-          ...token,
-          iconUrl: token.image,
-          balance: token?.balance?.value,
-          string: token?.balance?.display,
-          name: token.name ?? '',
-        },
-        undefined,
+        token,
         isSwap,
       );
     },
@@ -224,12 +228,16 @@ const TokenButtons = ({
   );
 
   const handleSwapOnClick = useCallback(async () => {
-    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
       handleBridgeOnClick(true);
       return;
     }
-    ///: END:ONLY_INCLUDE_IF
+
+    // Check if unified UI is enabled and route to bridge page for swaps
+    if (isUnifiedUIEnabled) {
+      handleBridgeOnClick(true); // true indicates it's a swap
+      return;
+    }
 
     await setCorrectChain();
 
@@ -237,9 +245,13 @@ const TokenButtons = ({
       event: MetaMetricsEventName.NavSwapButtonClicked,
       category: MetaMetricsEventCategory.Swaps,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: token.symbol,
         location: MetaMetricsSwapsEventSource.TokenView,
         text: 'Swap',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: currentChainId,
       },
     });
@@ -271,17 +283,22 @@ const TokenButtons = ({
     setCorrectChain,
     handleBridgeOnClick,
     multichainChainId,
+    isUnifiedUIEnabled,
   ]);
 
   return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
+    <Box
+      display={Display.Flex}
+      gap={3}
+      justifyContent={JustifyContent.spaceEvenly}
+    >
       <IconButton
         className="token-overview__button"
         Icon={
           <Icon
-            name={IconName.PlusAndMinus}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            name={IconName.Money}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
         }
         label={t('buyAndSell')}
@@ -290,7 +307,6 @@ const TokenButtons = ({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         disabled={token.isERC721 || !isBuyableChain}
-        tooltipRender={null}
       />
 
       <IconButton
@@ -298,15 +314,14 @@ const TokenButtons = ({
         onClick={handleSendOnClick}
         Icon={
           <Icon
-            name={IconName.Arrow2UpRight}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            name={IconName.Send}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
         }
         label={t('send')}
         data-testid="eth-overview-send"
         disabled={token.isERC721}
-        tooltipRender={null}
       />
 
       <IconButton
@@ -314,31 +329,31 @@ const TokenButtons = ({
         Icon={
           <Icon
             name={IconName.SwapHorizontal}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        tooltipRender={null}
         disabled={!isSwapsChain}
       />
 
-      <IconButton
-        className="token-overview__button"
-        data-testid="token-overview-bridge"
-        Icon={
-          <Icon
-            name={IconName.Bridge}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
-          />
-        }
-        label={t('bridge')}
-        onClick={() => handleBridgeOnClick(false)}
-        tooltipRender={null}
-        disabled={!isBridgeChain}
-      />
+      {!isUnifiedUIEnabled && !isTestnet && isBridgeChain && (
+        <IconButton
+          className="token-overview__button"
+          data-testid="token-overview-bridge"
+          Icon={
+            <Icon
+              name={IconName.Bridge}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          label={t('bridge')}
+          onClick={() => handleBridgeOnClick(false)}
+          disabled={!isBridgeChain}
+        />
+      )}
     </Box>
   );
 };

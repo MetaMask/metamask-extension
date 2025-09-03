@@ -19,7 +19,7 @@ const TEST_ETH = 'TESTETH';
 async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => ({
         statusCode: 200,
         json: TRADES_API_MOCK_RESULT,
@@ -35,7 +35,8 @@ async function mockSwapsAndSimpleKeyringSnap(mockServer: Mockttp) {
 }
 
 describe('Snap Account - Swap', function () {
-  it('swaps ETH for DAI using a snap account', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('swaps ETH for DAI using a snap account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

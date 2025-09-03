@@ -13,24 +13,26 @@ class OnboardingSrpPage {
     '.import-srp__number-of-words-dropdown option';
 
   private readonly srpMessage = {
-    text: 'Access your wallet with your Secret Recovery Phrase',
+    text: 'Import a wallet',
     tag: 'h2',
   };
 
-  private readonly srpWord0 = '[data-testid="import-srp__srp-word-0"]';
+  private readonly srpWord0 = '[data-testid="srp-input-import__srp-note"]';
 
   private readonly srpWords = '.import-srp__srp-word';
 
   private readonly wrongSrpWarningMessage = {
-    text: 'Invalid Secret Recovery Phrase',
+    text: 'Secret Recovery Phrase not found.',
     css: '.import-srp__banner-alert-text',
   };
+
+  private readonly srpError = '[data-testid="import-srp-error"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.srpMessage,
@@ -50,6 +52,10 @@ class OnboardingSrpPage {
     await this.driver.clickElementAndWaitToDisappear(this.srpConfirmButton);
   }
 
+  async clickConfirmButtonWithSrpError(): Promise<void> {
+    await this.driver.clickElement(this.srpConfirmButton);
+  }
+
   /**
    * Fill the SRP words with the provided seed phrase
    *
@@ -67,14 +73,25 @@ class OnboardingSrpPage {
   async fillSrpWordByWord(seedPhrase: string = E2E_SRP): Promise<void> {
     const words = seedPhrase.split(' ');
     for (const word of words) {
-      await this.driver.pasteIntoField(
-        `[data-testid="import-srp__srp-word-${words.indexOf(word)}"]`,
-        word,
-      );
+      const wordIndex = words.indexOf(word);
+      if (wordIndex === 0) {
+        await this.driver.waitForSelector(this.srpWord0);
+        const srpWord0Input = await this.driver.findElement(this.srpWord0);
+        await this.driver.fill(this.srpWord0, word);
+        await srpWord0Input.sendKeys(this.driver.Key.SPACE);
+      } else {
+        const srpWordSelector = `[data-testid="import-srp__srp-word-${wordIndex}"]`;
+        await this.driver.waitForSelector(srpWordSelector);
+        const srpWordInput = await this.driver.findElement(srpWordSelector);
+        await srpWordInput.sendKeys(word);
+        if (wordIndex < words.length - 1) {
+          await srpWordInput.sendKeys(this.driver.Key.SPACE);
+        }
+      }
     }
   }
 
-  async check_confirmSrpButtonIsDisabled(): Promise<void> {
+  async checkConfirmSrpButtonIsDisabled(): Promise<void> {
     console.log('Check that confirm SRP button is disabled');
     const confirmSeedPhrase = await this.driver.findElement(
       this.srpConfirmButton,
@@ -82,38 +99,9 @@ class OnboardingSrpPage {
     assert.equal(await confirmSeedPhrase.isEnabled(), false);
   }
 
-  /**
-   * Check the SRP dropdown iterates through each option
-   *
-   * @param numOptions - The number of options to check. Defaults to 5.
-   */
-  async check_srpDropdownIterations(numOptions: number = 5) {
-    console.log(
-      `Check the SRP dropdown iterates through ${numOptions} options`,
-    );
-    await this.driver.clickElement(this.srpDropdown);
-    await this.driver.wait(async () => {
-      const options = await this.driver.findElements(this.srpDropdownOptions);
-      return options.length === numOptions;
-    }, this.driver.timeout);
-
-    const options = await this.driver.findElements(this.srpDropdownOptions);
-    for (let i = 0; i < options.length; i++) {
-      if (i !== 0) {
-        await this.driver.clickElement(this.srpDropdown);
-      }
-      await options[i].click();
-      const expectedNumFields = 12 + i * 3;
-      await this.driver.wait(async () => {
-        const srpWordsFields = await this.driver.findElements(this.srpWords);
-        return expectedNumFields === srpWordsFields.length;
-      }, this.driver.timeout);
-    }
-  }
-
-  async check_wrongSrpWarningMessage(): Promise<void> {
-    console.log('Check that wrong SRP warning message is displayed');
-    await this.driver.waitForSelector(this.wrongSrpWarningMessage);
+  async checkSrpError(): Promise<void> {
+    console.log('Check that SRP error is displayed');
+    await this.driver.waitForSelector(this.srpError);
   }
 }
 

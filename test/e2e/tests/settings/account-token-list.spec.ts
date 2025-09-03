@@ -6,11 +6,12 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -46,9 +47,9 @@ describe('Settings', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await new AssetListPage(driver).check_tokenAmountIsDisplayed('25 ETH');
+        await new AssetListPage(driver).checkTokenAmountIsDisplayed('25 ETH');
         await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).check_accountBalanceDisplayed(
+        await new AccountListPage(driver).checkAccountBalanceDisplayed(
           '25 ETH',
         );
       },
@@ -61,6 +62,14 @@ describe('Settings', function () {
         fixtures: new FixtureBuilder()
           .withConversionRateEnabled()
           .withShowFiatTestnetEnabled()
+          .withPreferencesController({
+            preferences: { showTestNetworks: true },
+          })
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.LOCALHOST]: true,
+            },
+          })
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
@@ -69,8 +78,8 @@ describe('Settings', function () {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('42,500.00', 'USD');
-        await new AssetListPage(driver).check_tokenFiatAmountIsDisplayed(
+        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
+        await new AssetListPage(driver).checkTokenFiatAmountIsDisplayed(
           '$42,500.00',
         );
 
@@ -85,10 +94,10 @@ describe('Settings', function () {
         // it will show the total that the test is expecting.
 
         // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
-        await switchToNetworkFlow(driver, 'Sepolia');
+        await switchToNetworkFromSendFlow(driver, 'Sepolia');
 
         await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).check_accountValueAndSuffixDisplayed(
+        await new AccountListPage(driver).checkAccountValueAndSuffixDisplayed(
           '$42,500.00',
         );
       },
@@ -110,7 +119,7 @@ describe('Settings', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).check_accountBalanceDisplayed(
+        await new AccountListPage(driver).checkAccountBalanceDisplayed(
           '25 ETH',
         );
       },

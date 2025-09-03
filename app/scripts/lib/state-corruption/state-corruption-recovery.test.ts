@@ -1,13 +1,14 @@
 import 'navigator.locks';
 import {
-  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-  METHOD_REPAIR_DATABASE,
-} from '../state-corruption-errors';
-import {
   Backup,
   PersistenceError,
   PersistenceManager,
 } from '../stores/persistence-manager';
+import {
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  METHOD_REPAIR_DATABASE,
+} from '../../../../shared/constants/state-corruption';
+import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';
 import {
   waitForMicrotask,
   PortPolyfill,
@@ -35,12 +36,12 @@ function createConnectedPorts(uiCount: number) {
 const mockPersistence = (backup: unknown): PersistenceManager =>
   ({
     getBackup: jest.fn().mockResolvedValue(Promise.resolve(backup)),
-  } as unknown as PersistenceManager);
+  }) as unknown as PersistenceManager;
 
 const mockBrokenPersistence = (error: Error): PersistenceManager =>
   ({
     getBackup: jest.fn().mockRejectedValue(error),
-  } as unknown as PersistenceManager);
+  }) as unknown as PersistenceManager;
 
 describe('CorruptionHandler.handleStateCorruptionError', () => {
   let corruptionHandler: CorruptionHandler;
@@ -84,7 +85,7 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
                   method: '__INVALID__',
                 },
               });
-            } else if (message.data.method === 'RELOAD') {
+            } else if (message.data.method === RELOAD_WINDOW) {
               reloadFn(ui);
             }
           });

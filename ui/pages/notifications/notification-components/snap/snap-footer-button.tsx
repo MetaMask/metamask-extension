@@ -12,7 +12,7 @@ import { DetailedViewData, SnapNotification } from './types';
 
 export const SnapFooterButton = (props: { notification: SnapNotification }) => {
   const trackEvent = useContext(MetaMetricsContext);
-  const { navigate } = useSnapNavigation();
+  const { useSnapNavigate } = useSnapNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const data = props.notification.data as DetailedViewData;
   const footer = data?.detailedView?.footerLink;
@@ -28,8 +28,14 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
         category: MetaMetricsEventCategory.NotificationInteraction,
         event: MetaMetricsEventName.NotificationDetailClicked,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_id: props.notification.id,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_type: props.notification.type,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           clicked_item: isExternal ? 'external_link' : 'internal_link',
         },
       });
@@ -38,10 +44,15 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
       if (isExternal) {
         setIsOpen(true);
       } else {
-        navigate(href);
+        useSnapNavigate(href);
       }
     },
-    [navigate, props.notification.id, props.notification.type, trackEvent],
+    [
+      useSnapNavigate,
+      props.notification.id,
+      props.notification.type,
+      trackEvent,
+    ],
   );
 
   if (!footer) {

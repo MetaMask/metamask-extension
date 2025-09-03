@@ -4,19 +4,27 @@ on:
   push:
     branches:
       - main
-      - master
+      - stable
       - Version-v*
+      - release/*
       - trigger-ci*
   pull_request:
     types:
       - opened
       - reopened
       - synchronize
+    branches-ignore:
+      - stable
   merge_group:
+  schedule:
+    # Run the full suite "overnight," once every hour from 2:00am UTC until 5:59am UTC.
+    # This helps with "Top 10 failed tests on the metamask-extension repository main branch,"
+    # especially the Monday morning list, which is otherwise usually a fake empty.
+    - cron: '0 2-6 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master')) }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 env:
   # For a `pull_request` event, the branch is `github.head_ref``.
@@ -40,6 +48,14 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      # Need to cache `.metamask` folder for the anvil binary
+      - name: Cache .metamask folder
+        uses: actions/cache/save@v4
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
 
   lint-workflows:
     name: Lint workflows
@@ -61,6 +77,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -90,14 +107,14 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build prod' || 'yarn build dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
     secrets: inherit
 
   build-dist-mv2-browserify:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build prod' || 'yarn build dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
       mozilla-lint: true
       enable-mv3: false
     secrets: inherit
@@ -122,14 +139,14 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
     secrets: inherit
 
   build-flask-mv2-browserify:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'master' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
       mozilla-lint: true
       enable-mv3: false
     secrets: inherit
@@ -177,6 +194,7 @@ jobs:
   run-benchmarks:
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
+      - prep-deps
       - build-test-browserify
       - build-test-webpack
 
@@ -199,6 +217,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -221,6 +240,18 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-size
           path: test-artifacts/chrome
 
+  benchmark-pr:
+    needs:
+      - build-dist-browserify
+    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
+    uses: ./.github/workflows/benchmark-pr.yml
+    with:
+      browser-loads: '10'
+      page-loads: '10'
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+
   needs-e2e:
     needs:
       - prep-deps
@@ -237,8 +268,6 @@ jobs:
     uses: ./.github/workflows/e2e-chrome.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   e2e-firefox:
     needs:
@@ -247,9 +276,6 @@ jobs:
       - build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   build-storybook:
     name: Build storybook
@@ -274,6 +300,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -298,12 +325,20 @@ jobs:
     runs-on: ubuntu-latest
     env:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      GOOGLE_PROD_CLIENT_ID: 00000000000
+      APPLE_PROD_CLIENT_ID: 00000000000
+      GOOGLE_BETA_CLIENT_ID: 00000000000
+      APPLE_BETA_CLIENT_ID: 00000000000
+      GOOGLE_FLASK_CLIENT_ID: 00000000000
+      APPLE_FLASK_CLIENT_ID: 00000000000
+
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -323,7 +358,6 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name == 'pull_request' }}
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify
@@ -347,7 +381,7 @@ jobs:
 
   publish-release:
     name: Publish release
-    if: ${{ github.event_name == 'push' && github.ref_name == 'master' }}
+    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' }}
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify

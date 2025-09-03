@@ -65,9 +65,35 @@ export class CaipStream extends Duplex {
 export const createCaipStream = (portStream: Duplex): Duplex => {
   const caipStream = new CaipStream();
 
-  pipeline(portStream, caipStream, portStream, (err: Error) => {
+  /** Cleanly end the CAIP side if the port goes away. */
+  const handlePortGone = () => {
+    // End only once
+    if (
+      !caipStream.substream.destroyed &&
+      !caipStream.substream.writableEnded
+    ) {
+      caipStream.substream.end();
+    }
+  };
+
+  // 1. Listen for tab/iframe shutdown signals
+  // a. Node-style streams emit 'close' and/or 'end'
+  portStream.once?.('close', handlePortGone);
+  portStream.once?.('end', handlePortGone);
+
+  // b. chrome.runtime.Port exposes onDisconnect
+  //    (ExtensionPortStream exposes the raw Port at `._port`)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawPort: chrome.runtime.Port | undefined = (portStream as any)?._port;
+  rawPort?.onDisconnect?.addListener(handlePortGone);
+
+  // 2. Wire up the full duplex pipeline
+  pipeline(portStream, caipStream, portStream, (err: Error | null) => {
     caipStream.substream.destroy();
-    console.log('MetaMask CAIP stream', err);
+
+    if (err && err.message !== 'Premature close') {
+      console.error('MetaMask CAIP stream error:', err);
+    }
   });
 
   return caipStream.substream;

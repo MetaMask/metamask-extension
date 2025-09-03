@@ -14,6 +14,7 @@ import {
   fromIso8601DurationToPriceApiTimePeriod,
 } from '../util';
 import { fetchHistoricalPricesForAsset } from '../../../store/actions';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
@@ -109,6 +110,20 @@ const useHistoricalPricesEvm = ({
     if (!chainSupported) {
       return;
     }
+
+    const startTime = performance.now();
+
+    const traceContext = trace({
+      name: TraceName.GetAssetHistoricalPrices,
+      startTime,
+    });
+
+    trace({
+      name: TraceName.GetAssetHistoricalPrices,
+      startTime,
+      parentContext: traceContext,
+    });
+
     setLoading(true);
     const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
     fetchWithCache({
@@ -124,6 +139,10 @@ const useHistoricalPricesEvm = ({
         setPrices(pricesToSet);
       })
       .finally(() => {
+        endTrace({
+          name: TraceName.GetAssetHistoricalPrices,
+          timestamp: performance.timeOrigin + startTime,
+        });
         setLoading(false);
       });
   }, [isEvm, chainId, address, currency, timeRange, showFiat]);

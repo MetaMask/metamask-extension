@@ -98,8 +98,14 @@ async function withController<ReturnValue>(
   } = rest;
   const { provider } = createTestProviderTools({
     scaffold: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBalance: UPDATE_BALANCE,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBlockByNumber: { gasLimit: GAS_LIMIT },
     },
     networkId: currentNetworkId,
@@ -112,7 +118,7 @@ async function withController<ReturnValue>(
     ({
       id: 'accountId',
       address: SELECTED_ADDRESS,
-    } as InternalAccount);
+    }) as InternalAccount;
   messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -122,8 +128,14 @@ async function withController<ReturnValue>(
 
   const { provider: providerFromHook } = createTestProviderTools({
     scaffold: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBalance: UPDATE_BALANCE_HOOK,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBlockByNumber: { gasLimit: GAS_LIMIT_HOOK },
     },
     networkId: 'selectedNetworkId',
@@ -508,8 +520,14 @@ describe('AccountTrackerController', () => {
       });
       const providerFromHook = createTestProviderTools({
         scaffold: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_getBalance: UPDATE_BALANCE_HOOK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_getBlockByNumber: { gasLimit: GAS_LIMIT_HOOK },
         },
         networkId: '0x1',
@@ -949,6 +967,187 @@ describe('AccountTrackerController', () => {
             },
             currentBlockGasLimit: '',
             currentBlockGasLimitByChainId: {},
+          });
+        },
+      );
+    });
+  });
+
+  describe('updateNativeBalances', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should update balances for multiple accounts across different chains', async () => {
+      await withController(({ controller }) => {
+        const balances = [
+          {
+            address: VALID_ADDRESS,
+            chainId: '0x1' as const,
+            balance: '0x123456789',
+          },
+          {
+            address: VALID_ADDRESS_TWO,
+            chainId: '0x1' as const,
+            balance: '0x987654321',
+          },
+          {
+            address: VALID_ADDRESS,
+            chainId: '0x89' as const,
+            balance: '0xabcdef123',
+          },
+        ];
+
+        controller.updateNativeBalances(balances);
+
+        expect(controller.state.accountsByChainId).toStrictEqual({
+          '0x1': {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: '0x123456789',
+            },
+            [VALID_ADDRESS_TWO]: {
+              address: VALID_ADDRESS_TWO,
+              balance: '0x987654321',
+            },
+          },
+          '0x89': {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: '0xabcdef123',
+            },
+          },
+        });
+      });
+    });
+
+    it('should update existing balances without affecting other properties', async () => {
+      await withController(
+        {
+          state: {
+            accounts: {},
+            accountsByChainId: {
+              '0x1': {
+                [VALID_ADDRESS]: {
+                  address: VALID_ADDRESS,
+                  balance: '0x111',
+                  stakedBalance: '0xstaked123',
+                },
+              },
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          },
+        },
+        ({ controller }) => {
+          const balances = [
+            {
+              address: VALID_ADDRESS,
+              chainId: '0x1' as const,
+              balance: '0x222',
+            },
+          ];
+
+          controller.updateNativeBalances(balances);
+
+          expect(
+            controller.state.accountsByChainId['0x1'][VALID_ADDRESS],
+          ).toStrictEqual({
+            address: VALID_ADDRESS,
+            balance: '0x222',
+            stakedBalance: '0xstaked123',
+          });
+        },
+      );
+    });
+  });
+
+  describe('updateStakedBalances', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should update staked balances for multiple accounts across different chains', async () => {
+      await withController(({ controller }) => {
+        const stakedBalances = [
+          {
+            address: VALID_ADDRESS,
+            chainId: '0x1' as const,
+            stakedBalance: '0x1',
+          },
+          {
+            address: VALID_ADDRESS_TWO,
+            chainId: '0x1' as const,
+            stakedBalance: '0x1',
+          },
+          {
+            address: VALID_ADDRESS,
+            chainId: '0x89' as const,
+            stakedBalance: '0x1',
+          },
+        ];
+
+        controller.updateStakedBalances(stakedBalances);
+
+        expect(controller.state.accountsByChainId).toStrictEqual({
+          '0x1': {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: '0x0',
+              stakedBalance: '0x1',
+            },
+            [VALID_ADDRESS_TWO]: {
+              address: VALID_ADDRESS_TWO,
+              balance: '0x0',
+              stakedBalance: '0x1',
+            },
+          },
+          '0x89': {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: '0x0',
+              stakedBalance: '0x1',
+            },
+          },
+        });
+      });
+    });
+
+    it('should update existing staked balances without affecting other properties', async () => {
+      await withController(
+        {
+          state: {
+            accounts: {},
+            accountsByChainId: {
+              '0x1': {
+                [VALID_ADDRESS]: {
+                  address: VALID_ADDRESS,
+                  balance: '0x123',
+                  stakedBalance: '0x1',
+                },
+              },
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          },
+        },
+        ({ controller }) => {
+          const stakedBalances = [
+            {
+              address: VALID_ADDRESS,
+              chainId: '0x1' as const,
+              stakedBalance: '0x1',
+            },
+          ];
+
+          controller.updateStakedBalances(stakedBalances);
+
+          expect(
+            controller.state.accountsByChainId['0x1'][VALID_ADDRESS],
+          ).toStrictEqual({
+            address: VALID_ADDRESS,
+            balance: '0x123',
+            stakedBalance: '0x1',
           });
         },
       );

@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../../test/jest';
 import { ConnectedSitePopover } from './connected-site-popover';
 
 const props = {
+  referenceElement: { current: document.createElement('div') },
   isOpen: true,
   isConnected: true,
   onClick: jest.fn(),
@@ -17,6 +18,63 @@ const render = () => {
     metamask: {
       ...mockState.metamask,
       completedOnboarding: true,
+      // Add domains mapping for the test dapp
+      domains: {
+        'https://metamask.github.io': 'goerli-test-client',
+      },
+      // Add network configuration
+      networkConfigurationsByChainId: {
+        ...mockState.metamask.networkConfigurationsByChainId,
+        '0x5': {
+          chainId: '0x5',
+          name: 'Goerli',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              type: 'custom',
+              url: 'https://goerli.test',
+              networkClientId: 'goerli-test-client',
+            },
+          ],
+        },
+      },
+      // Add multichain network state
+      selectedMultichainNetworkChainId: 'eip155:5',
+      isEvmSelected: true,
+      multichainNetworkConfigurationsByChainId: {
+        ...mockState.metamask.multichainNetworkConfigurationsByChainId,
+        'eip155:5': {
+          chainId: 'eip155:5',
+          name: 'Goerli',
+          nativeCurrency: 'ETH',
+          isEvm: true,
+        },
+      },
+      // Add permissions for the test dapp
+      subjects: {
+        'https://metamask.github.io': {
+          permissions: {
+            'endowment:caip25': {
+              caveats: [
+                {
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:5': {
+                        accounts: [
+                          'eip155:5:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
     },
     activeTab: {
       id: 113,

@@ -32,4 +32,12 @@ export type CarouselSlide = {
   undismissable?: boolean;
   startDate?: string;
   endDate?: string;
+  priorityPlacement?: boolean;
+  variableName?: string;
+  cardPlacement?: string;
 };
+
+export enum PasswordChangeToastType {
+  Success = 'success',
+  Errored = 'errored',
+}

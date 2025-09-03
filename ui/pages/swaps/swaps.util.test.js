@@ -1,4 +1,5 @@
 import nock from 'nock';
+import { ChainId } from '@metamask/bridge-controller';
 import { MOCKS } from '../../../test/jest';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
@@ -18,6 +19,7 @@ import {
   LINEA,
   BASE,
 } from '../../../shared/constants/swaps';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   fetchTokens,
   fetchAggregatorMetadata,
@@ -69,7 +71,7 @@ describe('Swaps Util', () => {
 
   describe('fetchTokens', () => {
     beforeEach(() => {
-      nock('https://swap.api.cx.metamask.io')
+      nock('https://bridge.api.cx.metamask.io')
         .persist()
         .get('/networks/1/tokens?includeBlockedTokens=true')
         .reply(200, TOKENS);
@@ -88,7 +90,7 @@ describe('Swaps Util', () => {
 
   describe('fetchAggregatorMetadata', () => {
     beforeEach(() => {
-      nock('https://swap.api.cx.metamask.io')
+      nock('https://bridge.api.cx.metamask.io')
         .persist()
         .get('/networks/1/aggregatorMetadata')
         .reply(200, AGGREGATOR_METADATA);
@@ -107,7 +109,7 @@ describe('Swaps Util', () => {
 
   describe('fetchTopAssetsList', () => {
     beforeEach(() => {
-      nock('https://swap.api.cx.metamask.io')
+      nock('https://bridge.api.cx.metamask.io')
         .persist()
         .get('/networks/1/topAssets')
         .reply(200, TOP_ASSETS);
@@ -122,11 +124,19 @@ describe('Swaps Util', () => {
       const result = await fetchTopAssetsList(CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(TOP_ASSETS);
     });
+
+    it('should not fetch top assets for solana', async () => {
+      expect(await fetchTopAssetsList(MultichainNetworks.SOLANA)).toStrictEqual(
+        [],
+      );
+      expect(await fetchTopAssetsList(ChainId.SOLANA)).toStrictEqual([]);
+      expect(await fetchTopAssetsList('0x416EDEF1601BE')).toStrictEqual([]);
+    });
   });
 
   describe('fetchTopAssets', () => {
     beforeEach(() => {
-      nock('https://swap.api.cx.metamask.io')
+      nock('https://bridge.api.cx.metamask.io')
         .persist()
         .get('/networks/1/topAssets')
         .reply(200, TOP_ASSETS);

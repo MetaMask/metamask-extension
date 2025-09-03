@@ -3,6 +3,8 @@ import { getPersistentState } from '@metamask/base-controller';
 
 /**
  * @typedef {import('@metamask/base-controller').Messenger} Messenger
+ * @typedef {import('@metamask/base-controller').StateMetadataConstraint} StateMetadataConstraint
+ * @typedef {import('immer').Patch} Patch
  */
 
 /**
@@ -61,16 +63,22 @@ export default class ComposableObservableStore extends ObservableStore {
         config[key].subscribe((state) => {
           this.#onStateChange(key, state);
         });
+      } else if (this.persist) {
+        this.controllerMessenger.subscribe(
+          `${store.name}:stateChange`,
+          (state, patches) => {
+            if (this.#changedPersistedProperty(config[key].metadata, patches)) {
+              this.#onStateChange(
+                key,
+                getPersistentState(state, config[key].metadata),
+              );
+            }
+          },
+        );
       } else {
         this.controllerMessenger.subscribe(
           `${store.name}:stateChange`,
-          (state) => {
-            let updatedState = state;
-            if (this.persist) {
-              updatedState = getPersistentState(state, config[key].metadata);
-            }
-            this.#onStateChange(key, updatedState);
-          },
+          (state) => this.#onStateChange(key, state),
         );
       }
 
@@ -111,5 +119,30 @@ export default class ComposableObservableStore extends ObservableStore {
     this.updateState({ [controllerKey]: newState });
 
     this.emit('stateChange', { oldState, newState, controllerKey });
+  }
+
+  /**
+   * Returns true if the given set of patches makes changes to a persisted property.
+   *
+   * Note that we assume at least one property is persisted, so a complete replacement patch
+   * always returns true.
+   *
+   * @param {StateMetadataConstraint} metadata - Controller metadata.
+   * @param {Patch[]} patches - A list of patches, corresponding to a single state update.
+   * @returns True if the patches contain a change to persisted state, false otherwise.
+   */
+  #changedPersistedProperty(metadata, patches) {
+    return patches.some((patch) => {
+      // Complete state replacement
+      if (patch.path.length === 0) {
+        return true;
+      }
+      const topLevelProperty = patch.path[0];
+      // Missing metadata, return true out of caution
+      if (!metadata[topLevelProperty]) {
+        return true;
+      }
+      return metadata[topLevelProperty].persist;
+    });
   }
 }

@@ -10,6 +10,20 @@ jobs:
   publish-prerelease:
     name: Publish prerelease
     runs-on: ubuntu-latest
+    env:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      RUN_ID: ${{ github.run_id }}
+      # For a `pull_request` event, the branch is `github.head_ref`.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      BASE_COMMIT_HASH: ${{ github.event.pull_request.base.sha }}
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
+      MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete and logs
+      CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
+      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
     steps:
       - name: Checkout and setup high risk environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -17,27 +31,35 @@ jobs:
           is-high-risk-environment: true
           skip-allow-scripts: true
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Find the associated PR
+        if: ${{ (startsWith(env.BRANCH, 'Version-v') || startsWith(env.BRANCH, 'release/')) && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${process.env.BRANCH}`,
+              base: 'stable',
+            });
+            if (prs.data.length > 0) {
+              core.exportVariable("PR_NUMBER", prs.data[0].number);
+              core.exportVariable("BASE_COMMIT_HASH", prs.data[0].base.sha);
+              core.exportVariable("HEAD_COMMIT_HASH", prs.data[0].head.sha);
+              core.info(`The pull request number is '${process.env.PR_NUMBER}', the base commit hash is '${process.env.BASE_COMMIT_HASH}', and the head commit hash is '${process.env.HEAD_COMMIT_HASH}'`);
+            } else {
+              core.info(`No pull request detected for branch '${process.env.BRANCH}'`);
+            }
 
       - name: Get merge base commit hash
-        id: get-merge-base
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        if: ${{ env.BASE_COMMIT_HASH && env.HEAD_COMMIT_HASH }}
         run: |
-          merge_base="$(git merge-base "${BASE_SHA}" "${HEAD_SHA}")"
-          echo "MERGE_BASE=${merge_base}" >> "$GITHUB_OUTPUT"
-          echo "Merge base is '${merge_base}'"
+          merge_base_commit_hash="$(git merge-base "${BASE_COMMIT_HASH}" "${HEAD_COMMIT_HASH}")"
+          echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
+          echo "The merge base commit hash is '${merge_base_commit_hash}'"
 
       - name: Publish prerelease
-        if: ${{ env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
-        env:
-          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-          OWNER: ${{ github.repository_owner }}
-          REPOSITORY: ${{ github.event.repository.name }}
-          RUN_ID: ${{ github.run_id }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
-          MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
-          CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
-          HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+        if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
         run: yarn tsx ./development/metamaskbot-build-announce.ts

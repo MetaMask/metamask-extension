@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 
 import { GroupedDeFiPositions } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   TextColor,
   TextVariant,
@@ -11,7 +12,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { getPreferences } from '../../../selectors';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
+import { getTokenAvatarUrl } from '../../../components/app/assets/util/getTokenAvatarUrl';
 
 export const PositionTypeLabels = {
   supply: 'supplied',
@@ -77,7 +79,7 @@ const DefiDetailsList = React.memo(
         title: token.symbol,
         symbol: token.name,
         tokenFiatAmount: token.marketValue,
-        image: token.iconUrl,
+        image: getTokenAvatarUrl(token),
         primary: token.marketValue?.toString() || '0',
         secondary: token.balance,
         string: token.balance.toString(),
@@ -85,6 +87,8 @@ const DefiDetailsList = React.memo(
         chainId,
       };
     };
+
+    const { safeChains } = useSafeChains();
 
     return (
       <>
@@ -126,6 +130,7 @@ const DefiDetailsList = React.memo(
                         privacyMode={privacyMode}
                         onClick={undefined}
                         fixCurrencyToUSD
+                        safeChains={safeChains}
                       />
                     ))}
                   </Box>

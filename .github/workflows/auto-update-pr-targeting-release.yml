@@ -1,0 +1,77 @@
+name: Auto-update for PR targeting release branch
+
+on:
+  pull_request:
+    branches:
+      - Version-v*
+      - release/*
+
+jobs:
+  auto-update:
+    name: Auto-update
+    runs-on: ubuntu-latest
+    env:
+      YARN_ENABLE_IMMUTABLE_INSTALLS: false
+      YARN_ENABLE_HARDENED_MODE: false
+      INFURA_PROJECT_ID: 00000000000
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      # We don't want to use action-checkout-and-setup here because it forces `yarn --immutable`
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Use PAT to ensure that the commit later can trigger status check workflows
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      # Prevent loops on this action by checking if the last commit author is the bot itself
+      - name: Prevent loops
+        id: prevent-loops
+        run: |
+          author_name=$(git log -1 --pretty=format:'%an')
+          if [ "$author_name" = "MetaMask Bot" ]; then
+            echo "The author of the most recent commit is MetaMask Bot. Exiting the workflow."
+            echo "stop_loop=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "The author of the most recent commit is *not* MetaMask Bot, continuing..."
+            echo "stop_loop=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - run: corepack enable
+        if: ${{ steps.prevent-loops.outputs.stop_loop != 'true' }}
+
+      - name: Set up Node.js
+        if: ${{ steps.prevent-loops.outputs.stop_loop != 'true' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - run: yarn dedupe
+        if: ${{ steps.prevent-loops.outputs.stop_loop != 'true' }}
+
+      - name: Update all LavaMoat policies
+        if: ${{ steps.prevent-loops.outputs.stop_loop != 'true' }}
+        run: yarn lavamoat:auto
+
+      - name: Update attributions
+        if: ${{ steps.prevent-loops.outputs.stop_loop != 'true' }}
+        run: yarn attributions:generate
+        env:
+          FORCE_CLEANUP: true # We want it to restore the allow-scripts plugin and development dependencies
+
+      - name: Commit if there are changes
+        if: ${{ steps.prevent-loops.outputs.stop_loop != 'true' }}
+        run: |
+          if git diff --exit-code
+          then
+            echo "No changes detected"
+          else
+            echo "Changes detected, committing..."
+            git config --global user.name 'MetaMask Bot'
+            git config --global user.email 'metamaskbot@users.noreply.github.com'
+            git commit -am "release: dedupe, update LavaMoat policies, update attributions"
+            git push
+          fi

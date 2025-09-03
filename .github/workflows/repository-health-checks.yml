@@ -17,17 +17,18 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: ShellCheck Lint
         if: ${{ !cancelled() }}
         run: ./development/shellcheck.sh
 
       - name: Validate changelog
-        if: ${{ !startsWith(env.BRANCH, 'Version-v') }}
+        if: ${{ !startsWith(env.BRANCH, 'Version-v') && !startsWith(env.BRANCH, 'release/') }}
         run: yarn lint:changelog
 
       - name: Validate release candidate changelog
-        if: ${{ startsWith(env.BRANCH, 'Version-v') }}
+        if: ${{ startsWith(env.BRANCH, 'Version-v') || startsWith(env.BRANCH, 'release/') }}
         run: .github/scripts/validate-changelog-in-rc.sh
 
       - name: Lint lockfile

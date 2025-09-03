@@ -17,12 +17,12 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
-          mockCalls: true,
-          simulateTransaction: false,
+          mockGetTransactionSuccess: true,
         },
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             includeDevnet: true,
           });
@@ -64,12 +64,12 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
-          mockCalls: true,
-          simulateTransaction: false,
+          mockGetTransactionSuccess: true,
         },
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             includeDevnet: true,
           });
@@ -107,11 +107,12 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           {
             ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            mockCalls: true,
+            mockGetTransactionSuccess: true,
           },
           async (driver) => {
             const testDapp = new TestDappSolana(driver);
             await testDapp.openTestDappPage();
+            await testDapp.checkPageIsLoaded();
             await connectSolanaTestDapp(driver, testDapp, {
               includeDevnet: false, // Connect to Mainnet only
             });
@@ -124,11 +125,15 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
             await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            // Look for the permission to be set to Devnet
-            await driver.clickElement({ text: 'Permissions', tag: 'button' });
+            // Confirm connection
+            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+            // Look for the target chain to be set to Devnet
             const permission = await driver.findElement(
-              By.xpath("//span[contains(text(), 'Solana Devnet')]"),
+              By.xpath("//p[contains(text(), 'Solana Devnet')]"),
             );
+
             assert.ok(permission);
           },
         );

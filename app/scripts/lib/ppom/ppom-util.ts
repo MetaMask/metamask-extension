@@ -28,7 +28,11 @@ import { AppStateController } from '../../controllers/app-state-controller';
 import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
+import {
+  SecurityAlertResponse,
+  GetSecurityAlertsConfig,
+  UpdateSecurityAlertResponse,
+} from './types';
 import {
   isSecurityAlertsAPIEnabled,
   SecurityAlertsAPIRequest,
@@ -40,6 +44,8 @@ const log = createProjectLogger('ppom-util');
 const { sentry } = global;
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: BlockaidResultType.Errored,
   reason: BlockaidReason.errored,
 };
@@ -60,12 +66,14 @@ export async function validateRequestWithPPOM({
   securityAlertId,
   chainId,
   updateSecurityAlertResponse: updateSecurityResponse,
+  getSecurityAlertsConfig,
 }: {
   ppomController: PPOMController;
   request: PPOMRequest;
   securityAlertId: string;
   chainId: Hex;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
+  getSecurityAlertsConfig?: GetSecurityAlertsConfig;
 }) {
   try {
     const controllerObject = await updateSecurityResponse(
@@ -79,7 +87,12 @@ export async function validateRequestWithPPOM({
     log('Normalized request', normalizedRequest);
 
     const ppomResponse = isSecurityAlertsAPIEnabled()
-      ? await validateWithAPI(ppomController, chainId, normalizedRequest)
+      ? await validateWithAPI(
+          ppomController,
+          chainId,
+          normalizedRequest,
+          getSecurityAlertsConfig,
+        )
       : await validateWithController(
           ppomController,
           normalizedRequest,
@@ -242,7 +255,7 @@ function normalizeSignatureRequest(request: PPOMRequest): PPOMRequest {
     return request;
   }
 
-  const typedDataMessage = parseTypedDataMessage(request.params[1].toString());
+  const typedDataMessage = parseTypedDataMessage(request.params[1]);
 
   const sanitizedMessageRecursively = sanitizeMessageRecursively(
     typedDataMessage.message,
@@ -306,9 +319,14 @@ async function validateWithAPI(
   ppomController: PPOMController,
   chainId: string,
   request: SecurityAlertsAPIRequest | PPOMRequest,
+  getSecurityAlertsConfig?: GetSecurityAlertsConfig,
 ): Promise<SecurityAlertResponse> {
   try {
-    const response = await validateWithSecurityAlertsAPI(chainId, request);
+    const response = await validateWithSecurityAlertsAPI(
+      chainId,
+      request,
+      getSecurityAlertsConfig,
+    );
 
     return {
       ...response,

@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import {
   renderWithProvider,
   waitFor,
@@ -11,7 +12,11 @@ import {
 import { domainInitialState } from '../../../../ducks/domains';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
-import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
+import {
+  SEND_STAGES,
+  SEND_STATUSES,
+  startNewDraftTransaction,
+} from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
@@ -165,6 +170,9 @@ const baseStore = {
       showFiatInTestnets: true,
       tokenNetworkFilter: {},
     },
+    enabledNetworkMap: {
+      eip155: {},
+    },
     currentCurrency: 'USD',
     nativeCurrency: 'ETH',
     featureFlags: {
@@ -293,6 +301,10 @@ describe('SendPage', () => {
             '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
           ],
           hiddenAccountList: [],
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
       });
       const actions = store.getActions();
@@ -315,6 +327,10 @@ describe('SendPage', () => {
             '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
           ],
           hiddenAccountList: [],
+          multichainNetworkConfigurationsByChainId:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          selectedMultichainNetworkChainId: 'eip155:1',
+          isEvmSelected: true,
         },
         send: {
           ...baseStore.send,
@@ -431,6 +447,201 @@ describe('SendPage', () => {
       const sendWarning = queryByTestId('send-warning');
       await waitFor(() => {
         expect(sendWarning).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Submit Button', () => {
+    it('starts with the button enabled', async () => {
+      const {
+        result: { getByText },
+      } = await render(mockSendState);
+
+      const submitButton = getByText('Continue');
+      expect(submitButton).toBeEnabled();
+    });
+
+    describe('disables the button when', () => {
+      it('invalid send form', async () => {
+        const invalidFormState = {
+          ...mockSendState,
+          send: {
+            ...mockSendState.send,
+            currentTransactionUUID: '1-tx',
+            draftTransactions: {
+              '1-tx': {
+                ...mockSendState.send.draftTransactions['1-tx'],
+                status: SEND_STATUSES.INVALID,
+              },
+            },
+          },
+        };
+
+        const {
+          result: { getByText },
+        } = await render(invalidFormState);
+
+        const submitButton = getByText('Continue');
+
+        expect(submitButton).toBeDisabled();
+      });
+
+      it('recipient warning is present', async () => {
+        const recipientWarningState = {
+          ...mockSendState,
+          send: {
+            ...mockSendState.send,
+            currentTransactionUUID: '1-tx',
+            draftTransactions: {
+              '1-tx': {
+                ...mockSendState.send.draftTransactions['1-tx'],
+                recipient: {
+                  ...mockSendState.send.draftTransactions['1-tx'].recipient,
+                  warning: 'knownAddressRecipient',
+                },
+              },
+            },
+          },
+        };
+
+        const {
+          result: { getByText },
+        } = await render(recipientWarningState);
+
+        const submitButton = getByText('Continue');
+        expect(submitButton).toBeDisabled();
+      });
+
+      it('hex data is invalid', async () => {
+        const hexDataInvalidState = {
+          ...mockSendState,
+          send: {
+            ...mockSendState.send,
+            currentTransactionUUID: '1-tx',
+            draftTransactions: {
+              '1-tx': {
+                ...mockSendState.send.draftTransactions['1-tx'],
+                hexData: {
+                  error: 'invalidHexDataError',
+                },
+              },
+            },
+          },
+        };
+
+        const {
+          result: { getByText },
+        } = await render(hexDataInvalidState);
+
+        const submitButton = getByText('Continue');
+        expect(submitButton).toBeDisabled();
+      });
+
+      it('smart transaction is pending and isSwapAndSend is true', async () => {
+        const smartTransactionPendingState = {
+          ...mockSendState,
+          metamask: {
+            ...mockSendState.metamask,
+            smartTransactionsState: {
+              smartTransactions: {
+                [CHAIN_IDS.GOERLI]: [
+                  {
+                    uuid: 'uuid2',
+                    status: 'pending',
+                    cancellable: true,
+                    txParams: {
+                      from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                    },
+                    statusMetadata: {
+                      cancellationFeeWei: 36777567771000,
+                      cancellationReason: 'not_cancelled',
+                      deadlineRatio: 0.6400288486480713,
+                      minedHash:
+                        '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
+                      minedTx: 'success',
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          send: {
+            ...mockSendState.send,
+            currentTransactionUUID: '1-tx',
+            draftTransactions: {
+              '1-tx': {
+                ...mockSendState.send.draftTransactions['1-tx'],
+                sendAsset: {
+                  details: {
+                    address: '0x123',
+                  },
+                },
+                receiveAsset: {
+                  details: {
+                    address: '0x456',
+                  },
+                },
+              },
+            },
+          },
+        };
+
+        const {
+          result: { getByText },
+        } = await render(smartTransactionPendingState);
+
+        const submitButton = getByText('Confirm');
+        expect(submitButton).toBeDisabled();
+      });
+
+      it('there is an insufficient funds for gas error', async () => {
+        const insufficientFundsState = {
+          ...mockSendState,
+          send: {
+            ...mockSendState.send,
+            currentTransactionUUID: '1-tx',
+            draftTransactions: {
+              '1-tx': {
+                ...mockSendState.send.draftTransactions['1-tx'],
+                gas: {
+                  error: 'insufficientFunds',
+                },
+              },
+            },
+          },
+        };
+
+        const {
+          result: { getByText },
+        } = await render(insufficientFundsState);
+
+        const submitButton = getByText('Continue');
+        expect(submitButton).toBeEnabled();
+      });
+
+      it('there is an insufficient funds error', async () => {
+        const insufficientFundsState = {
+          ...mockSendState,
+          send: {
+            ...mockSendState.send,
+            currentTransactionUUID: '1-tx',
+            draftTransactions: {
+              '1-tx': {
+                ...mockSendState.send.draftTransactions['1-tx'],
+                amount: {
+                  error: 'insufficientFunds',
+                },
+              },
+            },
+          },
+        };
+
+        const {
+          result: { getByText },
+        } = await render(insufficientFundsState);
+
+        const submitButton = getByText('Continue');
+        expect(submitButton).toBeDisabled();
       });
     });
   });

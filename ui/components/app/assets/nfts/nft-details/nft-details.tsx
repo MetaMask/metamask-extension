@@ -34,7 +34,6 @@ import {
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
-  SEND_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import {
   checkAndUpdateSingleNftOwnershipStatus,
@@ -42,7 +41,6 @@ import {
   setRemoveNftMessage,
   setNewNftAddedMessage,
   setActiveNetworkWithError,
-  setSwitchedNetworkDetails,
 } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
@@ -88,6 +86,7 @@ import {
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+import { navigateToSendRoute } from '../../../../../pages/confirmations/utils/send';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -95,6 +94,8 @@ import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NftDetailsComponent({
   nft,
   nftChainId,
@@ -131,10 +132,10 @@ export function NftDetailsComponent({
 
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
   const nftChainNetwork = nftNetworkConfigs[nftChainId as Hex];
+  const { defaultRpcEndpointIndex } = nftChainNetwork;
+  const { networkClientId: nftNetworkClientId } =
+    nftChainNetwork.rpcEndpoints[defaultRpcEndpointIndex];
   const nftChainImage = getImageForChainId(nftChainId as string);
-  const nftNetworkClientId =
-    nftChainNetwork?.rpcEndpoints?.[nftChainNetwork?.defaultRpcEndpointIndex]
-      .networkClientId;
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
@@ -222,6 +223,8 @@ export function NftDetailsComponent({
       event: MetaMetricsEventName.NftDetailsOpened,
       category: MetaMetricsEventCategory.Tokens,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
       },
     });
@@ -243,10 +246,18 @@ export function NftDetailsComponent({
         event: MetaMetricsEventName.NFTRemoved,
         category: 'Wallet',
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_contract_address: address,
           tokenId: tokenId.toString(),
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_type: AssetType.NFT,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_standard: standard,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: currentNetwork,
           isSuccessful: isSuccessfulEvent,
         },
@@ -258,9 +269,9 @@ export function NftDetailsComponent({
   const prevNft = usePrevious(nft);
   useEffect(() => {
     if (!isEqual(prevNft, nft)) {
-      checkAndUpdateSingleNftOwnershipStatus(nft);
+      checkAndUpdateSingleNftOwnershipStatus(nft, nftNetworkClientId);
     }
-  }, [nft, prevNft]);
+  }, [nft, nftNetworkClientId, prevNft]);
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
@@ -295,15 +306,16 @@ export function NftDetailsComponent({
       try {
         const networkConfigurationId = networks[nftChainId as Hex];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
-        await dispatch(
-          setSwitchedNetworkDetails({
-            networkClientId: networkConfigurationId,
-          }),
-        );
       } catch (err) {
         console.error(`Failed to switch chains for NFT.
-          Target chainId: ${nftChainId}, Current chainId: ${currentChain.chainId}.
-          ${err}`);
+          Target chainId: ${nftChainId}, Current chainId: ${
+            currentChain.chainId
+          }.
+          ${
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            err
+          }`);
         throw err;
       }
     }
@@ -323,7 +335,7 @@ export function NftDetailsComponent({
       }),
     );
     // We only allow sending one NFT at a time
-    history.push(SEND_ROUTE);
+    navigateToSendRoute(history, { address: nft.address });
   };
 
   const getDateCreatedTimestamp = (dateString: string) => {
@@ -966,6 +978,8 @@ export function NftDetailsComponent({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NftDetails({ nft }: { nft: Nft }) {
   const { chainId } = useParams();
 

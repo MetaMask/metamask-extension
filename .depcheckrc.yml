@@ -9,6 +9,8 @@ ignores:
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
+  # injected via build system
+  - '@metamask/kernel-shims'
 
   #
   # dev deps
@@ -42,22 +44,16 @@ ignores:
   - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
-  - 'tar' # used by foundryup.ts
-  - 'minipass' # used by foundryup.ts
   - 'tweetnacl' # used by solana-wallet-standard
   - 'bs58' # used by solana-wallet-standard
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
-  - '@storybook/addon-designs'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
-  - '@storybook/addon-mdx-gfm'
   - '@storybook/builder-webpack5'
   - '@storybook/manager-webpack5'
   - '@storybook/react-webpack5'
-  - 'storybook-dark-mode'
-  - '@whitespace/storybook-addon-html'
   - 'react-syntax-highlighter'
   - 'style-loader'
   - 'css-loader'
@@ -83,6 +79,10 @@ ignores:
   - 'core-js-pure' # polyfills
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
+  # used in image optimization script
+  - 'sharp'
+  - 'imagemin'
+  - 'imagemin-gifsicle'
   # trezor
   - 'ts-mixer'
   - '@testing-library/dom'

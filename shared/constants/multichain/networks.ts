@@ -40,11 +40,19 @@ export type MultichainNetworkIds = `${MultichainNetworks}`;
 
 export enum MultichainNetworks {
   BITCOIN = BtcScope.Mainnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BITCOIN_TESTNET = BtcScope.Testnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BITCOIN_SIGNET = BtcScope.Signet,
 
   SOLANA = SolScope.Mainnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_DEVNET = SolScope.Devnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_TESTNET = SolScope.Testnet,
 }
 
@@ -54,7 +62,10 @@ export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
   string
 > = {
   [BtcScope.Mainnet]: 'Bitcoin',
-  [BtcScope.Testnet]: 'Bitcoin testnet',
+  [BtcScope.Testnet]: 'Bitcoin Testnet',
+  [BtcScope.Testnet4]: 'Bitcoin Testnet4',
+  [BtcScope.Signet]: 'Bitcoin Signet',
+  [BtcScope.Regtest]: 'Bitcoin Regtest',
   [SolScope.Mainnet]: 'Solana',
   [SolScope.Testnet]: 'Solana',
   [SolScope.Devnet]: 'Solana',
@@ -107,9 +118,9 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
     transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/tx/{txId}`,
   },
   [MultichainNetworks.BITCOIN_SIGNET]: {
-    url: BITCOIN_BLOCK_EXPLORER_URL,
-    address: `${BITCOIN_BLOCK_EXPLORER_URL}/address/{address}`,
-    transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/tx/{txId}`,
+    url: BITCOIN_SIGNET_BLOCK_EXPLORER_URL,
+    address: `${BITCOIN_SIGNET_BLOCK_EXPLORER_URL}/address/{address}`,
+    transaction: `${BITCOIN_SIGNET_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
 
   [MultichainNetworks.SOLANA]: {
@@ -280,3 +291,8 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     isAddressCompatible: isSolanaAddress,
   },
 };
+
+export const SOLANA_TEST_CHAINS: CaipChainId[] = [
+  SolScope.Testnet,
+  SolScope.Devnet,
+];

@@ -9,7 +9,6 @@ import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
-import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
@@ -19,6 +18,8 @@ import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
+import { useAddressTrustSignalAlerts } from './alerts/useAddressTrustSignalAlerts';
+import { useOriginTrustSignalAlerts } from './alerts/useOriginTrustSignalAlerts';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -38,7 +39,6 @@ function useTransactionAlerts(): Alert[] {
   const gasTooLowAlerts = useGasTooLowAlerts();
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
   const multipleApprovalAlerts = useMultipleApprovalsAlerts();
-  const networkBusyAlerts = useNetworkBusyAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
@@ -54,7 +54,6 @@ function useTransactionAlerts(): Alert[] {
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
       ...multipleApprovalAlerts,
-      ...networkBusyAlerts,
       ...noGasPriceAlerts,
       ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
@@ -69,7 +68,6 @@ function useTransactionAlerts(): Alert[] {
       gasTooLowAlerts,
       insufficientBalanceAlerts,
       multipleApprovalAlerts,
-      networkBusyAlerts,
       noGasPriceAlerts,
       nonContractAddressAlerts,
       pendingTransactionAlerts,
@@ -86,6 +84,8 @@ export default function useConfirmationAlerts(): Alert[] {
   const transactionAlerts = useTransactionAlerts();
   const selectedAccountAlerts = useSelectedAccountAlerts();
   const networkAndOriginSwitchingAlerts = useNetworkAndOriginSwitchingAlerts();
+  const addressTrustSignalAlerts = useAddressTrustSignalAlerts();
+  const originTrustSignalAlerts = useOriginTrustSignalAlerts();
 
   return useMemo(
     () => [
@@ -95,6 +95,8 @@ export default function useConfirmationAlerts(): Alert[] {
       ...transactionAlerts,
       ...selectedAccountAlerts,
       ...networkAndOriginSwitchingAlerts,
+      ...addressTrustSignalAlerts,
+      ...originTrustSignalAlerts,
     ],
     [
       blockaidAlerts,
@@ -103,6 +105,8 @@ export default function useConfirmationAlerts(): Alert[] {
       transactionAlerts,
       selectedAccountAlerts,
       networkAndOriginSwitchingAlerts,
+      addressTrustSignalAlerts,
+      originTrustSignalAlerts,
     ],
   );
 }

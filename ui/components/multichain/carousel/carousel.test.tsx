@@ -1,9 +1,5 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { useSelector } from 'react-redux';
-import { SolAccountType } from '@metamask/keyring-api';
-import { SOLANA_SLIDE } from '../../../hooks/useCarouselManagement';
-import { fetchCarouselSlidesFromContentful } from '../../../hooks/useCarouselManagement/fetchCarouselSlidesFromContentful';
 import { Carousel } from './carousel';
 import { MARGIN_VALUES, MAX_SLIDES, WIDTH_VALUES } from './constants';
 
@@ -24,13 +20,6 @@ jest.mock('react-responsive-carousel', () => ({
     </div>
   ),
 }));
-
-jest.mock(
-  '../../../hooks/useCarouselManagement/fetchCarouselSlidesFromContentful',
-);
-jest
-  .mocked(fetchCarouselSlidesFromContentful)
-  .mockResolvedValue({ prioritySlides: [], regularSlides: [] });
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -77,7 +66,7 @@ describe('Carousel', () => {
     expect(images[1]).toHaveAttribute('src', 'image2.jpg');
   });
 
-  it('should handle slide removal', async () => {
+  it('should handle slide removal', () => {
     const mockOnClose = jest.fn();
     const { container, rerender } = render(
       <Carousel slides={mockSlides} onClose={mockOnClose} />,
@@ -91,7 +80,7 @@ describe('Carousel', () => {
     fireEvent.click(closeButtons[0]);
     expect(mockOnClose).toHaveBeenCalledWith(false, '1');
 
-    const remainingSlides = mockSlides.filter((slide) => slide.id !== '1');
+    const remainingSlides = mockSlides.filter((s) => s.id !== '1');
     rerender(<Carousel slides={remainingSlides} onClose={mockOnClose} />);
 
     const updatedCloseButtons = container.querySelectorAll(
@@ -116,6 +105,7 @@ describe('Carousel', () => {
     if (!dots || dots.length === 0) {
       throw new Error('Carousel dots not found');
     }
+
     fireEvent.click(dots[1]);
 
     const slides = container.querySelectorAll('.mm-carousel-slide');
@@ -145,17 +135,15 @@ describe('Carousel', () => {
     expect(slides[0]).toHaveStyle({
       width: 'calc(98% - 16px)',
     });
-
     expect(slides[1]).toHaveStyle({
       width: WIDTH_VALUES.STANDARD_SLIDE,
     });
 
-    // Check margins for first slide
+    // first slide margins
     expect(slides[0]).toHaveStyle({
       margin: `${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.SLIDE_BOTTOM} 16px`,
     });
-
-    // Check margins for subsequent slides
+    // subsequent slide margins
     expect(slides[1]).toHaveStyle({
       margin: `${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.SLIDE_BOTTOM} ${MARGIN_VALUES.ZERO}`,
     });
@@ -173,6 +161,7 @@ describe('Carousel', () => {
 
   it('should handle slide click with href', () => {
     const mockOpenTab = jest.fn();
+    // @ts-expect-error mocking platform
     global.platform = {
       openTab: mockOpenTab,
       closeCurrentWindow: jest.fn(),
@@ -191,18 +180,14 @@ describe('Carousel', () => {
     if (!slide) {
       throw new Error('Slide not found');
     }
-    fireEvent.click(slide);
 
+    fireEvent.click(slide);
     expect(mockOpenTab).toHaveBeenCalledWith({ url: 'https://example.com' });
   });
 
   it('should handle slide click with onClick', () => {
     const mockOnClick = jest.fn();
-    const slidesWithClick = [
-      {
-        ...mockSlides[0],
-      },
-    ];
+    const slidesWithClick = [{ ...mockSlides[0] }];
 
     const { container } = render(
       <Carousel slides={slidesWithClick} onClick={mockOnClick} />,
@@ -212,17 +197,14 @@ describe('Carousel', () => {
     if (!slide) {
       throw new Error('Slide not found');
     }
-    fireEvent.click(slide);
 
+    fireEvent.click(slide);
     expect(mockOnClick).toHaveBeenCalledWith('1');
   });
 
   it('should not show close button for undismissable slides', () => {
     const undismissableSlides = [
-      {
-        ...mockSlides[0],
-        undismissable: true,
-      },
+      { ...mockSlides[0], undismissable: true },
       mockSlides[1],
     ];
 
@@ -252,56 +234,5 @@ describe('Carousel', () => {
 
     const visibleSlides = container.querySelectorAll('.mm-carousel-slide');
     expect(visibleSlides).toHaveLength(MAX_SLIDES);
-  });
-
-  describe('Solana slide filtering', () => {
-    const solanaSlide = {
-      id: SOLANA_SLIDE.id,
-      title: 'solana title',
-      description: 'solana description',
-      image: 'solana-image.jpg',
-    };
-
-    const slidesWithSolana = [...mockSlides, solanaSlide];
-
-    beforeEach(() => {
-      (useSelector as jest.Mock).mockReset();
-    });
-
-    it('should filter out Solana slides when account type is DataAccount', () => {
-      (useSelector as jest.Mock).mockImplementation(() => ({
-        type: SolAccountType.DataAccount,
-      }));
-
-      const { container } = render(<Carousel slides={slidesWithSolana} />);
-
-      const slides = container.querySelectorAll('.mm-carousel-slide');
-      expect(slides).toHaveLength(2);
-
-      const slideTestIds = Array.from(slides).map((slide) =>
-        slide.getAttribute('data-testid'),
-      );
-      expect(slideTestIds).toContain('slide-1');
-      expect(slideTestIds).toContain('slide-2');
-      expect(slideTestIds).not.toContain(`slide-${SOLANA_SLIDE.id}`);
-    });
-
-    it('should include Solana slides when account type is not DataAccount', () => {
-      (useSelector as jest.Mock).mockImplementation(() => ({
-        type: 'OtherAccountType',
-      }));
-
-      const { container } = render(<Carousel slides={slidesWithSolana} />);
-
-      const slides = container.querySelectorAll('.mm-carousel-slide');
-      expect(slides).toHaveLength(3);
-
-      const slideTestIds = Array.from(slides).map((slide) =>
-        slide.getAttribute('data-testid'),
-      );
-      expect(slideTestIds).toContain('slide-1');
-      expect(slideTestIds).toContain('slide-2');
-      expect(slideTestIds).toContain(`slide-${SOLANA_SLIDE.id}`);
-    });
   });
 });

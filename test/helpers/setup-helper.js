@@ -23,6 +23,22 @@ global.chrome = {
   },
 };
 
+// Stub for Sentry global
+global.sentry = {
+  captureException: () => {
+    // no-op
+  },
+  captureFeedback: () => {
+    // no-op
+  },
+  captureMessage: () => {
+    // no-op
+  },
+  lastEventId: () => {
+    // no-op
+  },
+};
+
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
 if (typeof beforeEach === 'function') {
@@ -34,13 +50,21 @@ if (typeof beforeEach === 'function') {
 
 // catch rejections that are still unhandled when tests exit
 const unhandledRejections = new Map();
+let ignoreUnhandled = false;
 process.on('unhandledRejection', (reason, promise) => {
-  console.log('Unhandled rejection:', reason);
-  unhandledRejections.set(promise, reason);
+  if (!ignoreUnhandled) {
+    console.log(
+      `Unhandled rejection: ..${process.env.IGNORE_UNHANDLED}`,
+      reason,
+    );
+    unhandledRejections.set(promise, reason);
+  }
 });
 process.on('rejectionHandled', (promise) => {
-  console.log(`handled: ${unhandledRejections.get(promise)}`);
-  unhandledRejections.delete(promise);
+  if (!ignoreUnhandled) {
+    console.log(`handled: ${unhandledRejections.get(promise)}`);
+    unhandledRejections.delete(promise);
+  }
 });
 
 process.on('exit', () => {
@@ -52,6 +76,15 @@ process.on('exit', () => {
     process.exit(1);
   }
 });
+// #region Helpers that allow tests to ignore unhandled rejections that might be intentional.
+process.resetIgnoreUnhandled = () => {
+  // default is false
+  ignoreUnhandled = false;
+};
+process.setIgnoreUnhandled = (ignore) => {
+  ignoreUnhandled = ignore;
+};
+// #endregion
 
 log.setDefaultLevel(5);
 global.log = log;

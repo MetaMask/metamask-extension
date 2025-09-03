@@ -14,7 +14,7 @@ import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import syncConfirmPath from '../../hooks/syncConfirmPath';
 import { Confirmation } from '../../types/confirm';
 
-type ConfirmContextType = {
+export type ConfirmContextType = {
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
@@ -64,6 +64,8 @@ export const ConfirmContextProvider: React.FC<{
   );
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const useConfirmContext = <T = Confirmation,>() => {
   const context = useContext(ConfirmContext);
   if (!context) {

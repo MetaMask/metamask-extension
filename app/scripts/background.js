@@ -8,24 +8,24 @@
 // It must be run first in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 
-import { finished, pipeline } from 'readable-stream';
-import debounce from 'debounce-stream';
+import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
-import { storeAsStream } from '@metamask/obs-store';
 import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-  EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
+import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
+import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/background-liveness-check';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -36,22 +36,17 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
-import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
-import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
-import {
-  FakeLedgerBridge,
-  FakeTrezorBridge,
-} from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import {
   CorruptionHandler,
   hasVault,
@@ -67,7 +62,6 @@ import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
-import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
 } from './lib/notification-manager';
@@ -76,14 +70,9 @@ import MetamaskController, {
 } from './metamask-controller';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import {
-  deferredPromise,
-  getPlatform,
-  shouldEmitDappViewedEvent,
-} from './lib/util';
+import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
-import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
@@ -94,6 +83,11 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
+import { createEvent } from './lib/deep-links/metrics';
+import { getRequestSafeReload } from './lib/safe-reload';
+import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
+import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -167,35 +161,14 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-if (!isManifestV3) {
-  /**
-   * `onInstalled` event handler.
-   *
-   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
-   * is never called.
-   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
-   *
-   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
-   */
-  const onInstalledListener = (details) => {
-    if (details.reason === 'install') {
-      onInstall();
-      browser.runtime.onInstalled.removeListener(onInstalledListener);
-    }
-  };
-
-  browser.runtime.onInstalled.addListener(onInstalledListener);
-
-  // This condition is for when the `onInstalled` listener in `app-init` was called before
-  // `background.js` was loaded.
-} else if (globalThis.stateHooks.metamaskWasJustInstalled) {
-  onInstall();
-  // Delete just to clean up global namespace
-  delete globalThis.stateHooks.metamaskWasJustInstalled;
-  // This condition is for when `background.js` was loaded before the `onInstalled` listener was
-  // called.
+// In MV3 onInstalled must be installed in the entry file
+if (globalThis.stateHooks.onInstalledListener) {
+  globalThis.stateHooks.onInstalledListener.then(handleOnInstalled);
 } else {
-  globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
+  browser.runtime.onInstalled.addListener(function listener(details) {
+    browser.runtime.onInstalled.removeListener(listener);
+    handleOnInstalled(details);
+  });
 }
 
 /**
@@ -223,7 +196,7 @@ let rejectInitialization;
  * state of application initialization (or re-initialization).
  */
 function setGlobalInitializers() {
-  const deferred = deferredPromise();
+  const deferred = withResolvers();
   isInitialized = deferred.promise;
   resolveInitialization = deferred.resolve;
   rejectInitialization = deferred.reject;
@@ -468,13 +441,27 @@ let connectEip1193;
 let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
-browser.runtime.onConnect.addListener(async (...args) => {
+browser.runtime.onConnect.addListener(async (port) => {
+  if (
+    inTest &&
+    getManifestFlags().testing?.simulateUnresponsiveBackground === true
+  ) {
+    return;
+  }
+
+  port.postMessage({
+    data: {
+      method: BACKGROUND_LIVENESS_METHOD,
+    },
+    name: 'background-liveness',
+  });
+
   // Queue up connection attempts here, waiting until after initialization
   try {
     await isInitialized;
 
     // This is set in `setupController`, which is called as part of initialization
-    connectWindowPostMessage(...args);
+    connectWindowPostMessage(port);
   } catch (error) {
     sentry?.captureException(error);
 
@@ -482,7 +469,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
     // restore from a backup, if we have one.
     if (isStateCorruptionError(error)) {
       await corruptionHandler.handleStateCorruptionError({
-        port: args[0],
+        port,
         error,
         database: persistenceManager,
         repairCallback: async (backup) => {
@@ -506,6 +493,23 @@ browser.runtime.onConnect.addListener(async (...args) => {
             await initBackground(null);
           }
         },
+      });
+    } else {
+      const errorLike = isObject(error)
+        ? {
+            message: error.message ?? 'Unknown error',
+            name: error.name ?? 'UnknownError',
+            stack: error.stack,
+          }
+        : {
+            message: String(error),
+            name: 'UnknownError',
+            stack: '',
+          };
+      // general errors
+      tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
+        error: errorLike,
+        currentLocale: controller?.preferencesController?.state?.currentLocale,
       });
     }
   }
@@ -593,6 +597,10 @@ async function initialize(backup) {
   // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
   // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
   if (process.env.IN_TEST && window.navigator?.webdriver) {
+    const { getSocketBackgroundToMocha } =
+      // Use `require` to make it easier to exclude this test code from the Browserify build.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+      require('../../test/e2e/background-socket/socket-background-to-mocha');
     getSocketBackgroundToMocha();
   }
 
@@ -618,13 +626,27 @@ async function initialize(backup) {
   const overrides = inTest
     ? {
         keyrings: {
-          trezorBridge: FakeTrezorBridge,
-          ledgerBridge: FakeLedgerBridge,
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          trezorBridge: require('../../test/stub/keyring-bridge')
+            .FakeTrezorBridge,
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          ledgerBridge: require('../../test/stub/keyring-bridge')
+            .FakeLedgerBridge,
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,
         },
       }
     : {};
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
+  const cronjobControllerStorageManager = new CronjobControllerStorageManager();
+  await cronjobControllerStorageManager.init();
+
+  const { update, requestSafeReload } =
+    getRequestSafeReload(persistenceManager);
 
   setupController(
     initState,
@@ -634,7 +656,15 @@ async function initialize(backup) {
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
+    requestSafeReload,
+    cronjobControllerStorageManager,
   );
+
+  controller.store.on('update', update);
+  controller.store.on('error', (error) => {
+    log.error('MetaMask controller.store error:', error);
+    sentry?.captureException(error);
+  });
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
@@ -643,6 +673,21 @@ async function initialize(backup) {
     await loadPhishingWarningPage();
   }
   await sendReadyMessageToTabs();
+
+  new DeepLinkRouter({
+    getExtensionURL: platform.getExtensionURL,
+    getState: controller.getState.bind(controller),
+  })
+    .on('navigate', async ({ url, parsed }) => {
+      // don't track deep links that are immediately redirected (like /buy)
+      if (!('redirectTo' in parsed)) {
+        await controller.metaMetricsController.trackEvent(
+          createEvent({ signature: parsed.signature, url }),
+        );
+      }
+    })
+    .on('error', (error) => sentry?.captureException(error))
+    .install();
 }
 
 /**
@@ -745,7 +790,14 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence(backup) {
   if (process.env.WITH_STATE) {
-    const stateOverrides = await generateWalletState();
+    const withState = JSON.parse(process.env.WITH_STATE);
+
+    // Use `require` to make it easier to exclude this test code from the Browserify build.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+    const { generateWalletState } = require('./fixtures/generate-wallet-state');
+    const fixtureBuilder = await generateWalletState(withState, false);
+
+    const stateOverrides = fixtureBuilder.fixture.data;
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
@@ -784,7 +836,8 @@ export async function loadStateFromPersistence(backup) {
   const migrator = new Migrator({
     migrations,
     defaultVersion: process.env.WITH_STATE
-      ? FIXTURE_STATE_METADATA_VERSION
+      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
       : null,
   });
 
@@ -963,6 +1016,8 @@ function trackAppOpened(environment) {
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
+ * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
+ * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
  */
 export function setupController(
   initState,
@@ -972,6 +1027,8 @@ export function setupController(
   stateMetadata,
   offscreenPromise,
   preinstalledSnaps,
+  requestSafeReload,
+  cronjobControllerStorageManager,
 ) {
   //
   // MetaMask Controller
@@ -1000,6 +1057,8 @@ export function setupController(
     featureFlags: {},
     offscreenPromise,
     preinstalledSnaps,
+    requestSafeReload,
+    cronjobControllerStorageManager,
   });
 
   setupEnsIpfsResolver({
@@ -1012,18 +1071,6 @@ export function setupController(
       controller.preferencesController.state.useAddressBarEnsResolution,
     provider: controller.provider,
   });
-
-  // setup state persistence
-  pipeline(
-    storeAsStream(controller.store),
-    debounce(1000),
-    createStreamSink(async (state) => {
-      await persistenceManager.set(state);
-    }),
-    (error) => {
-      log.error('MetaMask - Persistence pipeline failed', error);
-    },
-  );
 
   setupSentryGetStateGlobal(controller);
 
@@ -1166,7 +1213,9 @@ export function setupController(
 
       connectEip1193(portStream, remotePort.sender);
 
-      if (isFirefox) {
+      // for firefox and manifest v2 (non production webpack builds)
+      // we expose the multichain provider via window.postMessage
+      if (isFirefox || !isManifestV3) {
         const mux = setupMultiplex(portStream);
         mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
@@ -1476,6 +1525,23 @@ const addAppInstalledEvent = () => {
 };
 
 /**
+ * Handles the onInstalled event.
+ *
+ * @param {chrome.runtime.InstalledDetails} details
+ */
+function handleOnInstalled(details) {
+  if (details.reason === 'install') {
+    onInstall();
+  } else if (
+    details.reason === 'update' &&
+    details.previousVersion &&
+    details.previousVersion !== platform.getVersion()
+  ) {
+    onUpdate();
+  }
+}
+
+/**
  * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
  */
 function onInstall() {
@@ -1485,6 +1551,26 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
+
+/**
+ * Trigger actions that should happen only upon update installation
+ */
+async function onUpdate() {
+  await isInitialized;
+  log.debug('Update installation detected');
+  controller.appStateController.setLastUpdatedAt(Date.now());
+}
+
+/**
+ * Trigger actions that should happen only when an update is available
+ */
+async function onUpdateAvailable() {
+  await isInitialized;
+  log.debug('An update is available');
+  controller.appStateController.setIsUpdateAvailable(true);
+}
+
+browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
 
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {
