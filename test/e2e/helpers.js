@@ -965,8 +965,8 @@ async function openMenuSafe(driver) {
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 // TODO: https://github.com/MetaMask/metamask-extension/issues/35218
-// remove this function when browserify builds are removed
-// the file should be deleted, and the script should be removed from the manifest
+// The security team is working on adding an improved version of lockdown-more to the lavamoat webpack plugin.
+// remove this function once lockdown more works under webpack
 const isWebpack = () => {
   const manifest = readManifest();
   return manifest.description.includes('webpack');
