@@ -753,9 +753,7 @@ export default class SecurityTab extends PureComponent {
           >
             <ToggleButton
               value={useAddressBarEnsResolution}
-              onToggle={(value) =>
-                setUseAddressBarEnsResolution(!value)
-              }
+              onToggle={(value) => setUseAddressBarEnsResolution(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
