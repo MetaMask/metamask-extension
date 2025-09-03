@@ -71,10 +71,17 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
   );
   const addressEnd = address.substring(address.length - SUFFIX_LEN);
 
-  // Generate QR code
-  const qrImage = qrCode(QR_CODE_TYPE_NUMBER, QR_CODE_ERROR_CORRECTION_LEVEL);
-  qrImage.addData(address);
-  qrImage.make();
+  // Generate QR code data URL
+  const qrImageUrl = useMemo(() => {
+    const qr = qrCode(QR_CODE_TYPE_NUMBER, QR_CODE_ERROR_CORRECTION_LEVEL);
+    qr.addData(address);
+    qr.make();
+
+    // Get the HTML img tag and extract the data URL
+    const imgTag = qr.createImgTag(QR_CODE_CELL_SIZE, QR_CODE_MARGIN);
+    const srcMatch = imgTag.match(/src="([^"]+)"/);
+    return srcMatch ? srcMatch[1] : null;
+  }, [address]);
 
   // Handle copy address
   const handleCopyClick = useCallback(() => {
@@ -148,18 +155,14 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
               justifyContent={BoxJustifyContent.Center}
               alignItems={BoxAlignItems.Center}
             >
-              <Box
-                dangerouslySetInnerHTML={{
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  __html: qrImage.createTableTag(
-                    QR_CODE_CELL_SIZE,
-                    QR_CODE_MARGIN,
-                  ),
-                }}
-                // Background and border must remain white regardless of theme
-                className="bg-white border-4 border-white rounded-2xl"
-              />
+              {qrImageUrl && (
+                <img
+                  src={qrImageUrl}
+                  alt={`QR code: ${address}`}
+                  // Background and border must remain white regardless of theme
+                  className="bg-white border-4 border-white rounded-2xl"
+                />
+              )}
 
               <Box
                 // Background and border must remain white regardless of theme
