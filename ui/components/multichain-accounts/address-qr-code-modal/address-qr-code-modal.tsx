@@ -79,7 +79,7 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
 
     // Get the HTML img tag and extract the data URL
     const imgTag = qr.createImgTag(QR_CODE_CELL_SIZE, QR_CODE_MARGIN);
-    const srcMatch = imgTag.match(/src="([^"]+)"/);
+    const srcMatch = imgTag.match(/src="([^"]+)"/u);
     return srcMatch ? srcMatch[1] : null;
   }, [address]);
 
