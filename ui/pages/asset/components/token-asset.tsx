@@ -1,10 +1,16 @@
 import { Token } from '@metamask/assets-controllers';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
+import {
+  CaipAssetType,
+  Hex,
+  isCaipChainId,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
@@ -17,6 +23,7 @@ import {
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
+  getIsMultichainAccountsState2Enabled,
   getSelectedInternalAccount,
   getTokenList,
   selectERC20TokensByChain,
@@ -28,6 +35,7 @@ import {
   getMultichainIsEvm,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -45,8 +53,30 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       ? null
       : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
 
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  console.log('KJADHGHDKJAKJHD', {
+    chainId,
+    isMultichainAccountsState2Enabled,
+  });
+
+  const needsMultichainInternalAccount =
+    isMultichainAccountsState2Enabled && isCaipChainId(chainId);
+
+  // TODO Modify this for BIP44 usage
+  const selectedAccount = useSelector(
+    needsMultichainInternalAccount
+      ? (state: any) =>
+          getInternalAccountBySelectedAccountGroupAndCaip(state, chainId)
+      : getSelectedInternalAccount,
+  ) as InternalAccount;
   const { address: walletAddress } = selectedAccount;
+
+  console.log('KJADHGHDKJAKJHD 2', {
+    selectedAccount,
+  });
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
@@ -54,7 +84,12 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     getMultichainNetwork,
     selectedAccount,
   );
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = useSelector(getMultichainIsEvm) && !isCaipChainId(chainId);
+
+  console.log('KJADHGHDKJAKJHD 3', {
+    multichainNetwork,
+    isEvm,
+  });
 
   const history = useHistory();
   const dispatch = useDispatch();
