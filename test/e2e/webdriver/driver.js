@@ -1667,8 +1667,9 @@ function sanitizeTestTitle(testTitle) {
     let truncated = sanitized.substring(0, MAX_DIR_NAME_LENGTH);
 
     // Try to find the last dash to break at a word boundary
+    // and only use dash if it's not too far back
     const lastDashIndex = truncated.lastIndexOf('-');
-    if (lastDashIndex > MAX_DIR_NAME_LENGTH * 0.7) { // Only use dash if it's not too far back
+    if (lastDashIndex > MAX_DIR_NAME_LENGTH * 0.7) {
       truncated = truncated.substring(0, lastDashIndex);
     }
 
