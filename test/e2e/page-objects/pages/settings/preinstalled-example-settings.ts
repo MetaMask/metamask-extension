@@ -12,7 +12,7 @@ class PreinstalledExampleSettings {
 
   private readonly toggleButton = '.toggle-button';
 
-  private readonly toggleButtonOn = '.toggle-button--on'
+  private readonly toggleButtonOn = '.toggle-button--on';
 
   private readonly settingsDropdown = '[data-testid="snaps-dropdown"]';
 
