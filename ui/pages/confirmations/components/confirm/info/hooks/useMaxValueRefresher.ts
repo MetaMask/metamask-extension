@@ -48,7 +48,7 @@ export const useMaxValueRefresher = () => {
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const [searchParams] = useSearchParams();
   const paramMaxValueMode = searchParams.get('maxValueMode') === 'true';
-  const isMavValueMode = isMaxAmountMode || paramMaxValueMode;
+  const isMaxValueMode = isMaxAmountMode || paramMaxValueMode;
 
   const balance = useSelector(getSelectedAccountCachedBalance);
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
@@ -64,16 +64,16 @@ export const useMaxValueRefresher = () => {
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_send_max: isMavValueMode,
+          is_send_max: isMaxValueMode,
         },
       },
       transactionId,
     );
-  }, [isMavValueMode, transactionId]);
+  }, [isMaxValueMode, transactionId]);
 
   useEffect(() => {
     if (
-      !isMavValueMode ||
+      !isMaxValueMode ||
       transactionMeta.type !== TransactionType.simpleSend
     ) {
       return;
@@ -103,7 +103,7 @@ export const useMaxValueRefresher = () => {
       }),
     );
   }, [
-    isMavValueMode,
+    isMaxValueMode,
     balance,
     gas,
     gasPrice,
