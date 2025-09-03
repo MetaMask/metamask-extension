@@ -16,7 +16,7 @@ jobs:
   flaky-test-report:
     uses: MetaMask/github-tools/.github/workflows/flaky-test-report.yml@ci-flaky-tests-bot
     with:
-      repository: ${{ github.repository.name }}
+      repository: ${{ github.event.repository.name }}
       workflow_id: main.yml
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
