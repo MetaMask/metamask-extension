@@ -1,19 +1,20 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { waitFor } from '@testing-library/dom';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { waitFor, fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
 import * as Environment from '../../../../shared/modules/environment';
 import Welcome from './welcome';
 import { WelcomePageState } from './types';
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockIntersectionObserver = jest.fn();
 mockIntersectionObserver.mockReturnValue({
