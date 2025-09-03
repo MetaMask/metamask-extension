@@ -30,6 +30,8 @@ export const lavamoatPlugin = (args: Args) =>
             embeddedOptions: {
               scuttleGlobalThis: {
                 enabled: true,
+                // Globals used by the SelfInjectPlugin
+                exceptions: ['browser', 'chrome', 'btoa'],
               },
             },
           };

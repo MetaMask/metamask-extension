@@ -149,7 +149,16 @@ export class SelfInjectPlugin {
     newSource.add(`let d=document,s=d.createElement('script');`);
     newSource.add(`s.textContent=`);
     newSource.add(this.escapeJs(source + sourceMappingURLComment));
+    newSource.add(`+`);
+    // The browser's dev tools can't map our inline javascript back to its
+    // source. We add a sourceURL directive to help with that. It also helps
+    // organize the Sources panel in browser dev tools by separating the inline
+    // script into its own origin.
+    newSource.add(
+      `\`\\n//# sourceURL=\${${this.options.sourceUrlExpression(file)}};\``,
+    );
     newSource.add(`;`);
+    newSource.add(`s.nonce=${this.options.nonceExpression('/')};`);
     // add and immediately remove the script to avoid modifying the DOM.
     newSource.add(`d.documentElement.appendChild(s).remove()`);
     newSource.add(`}`);
