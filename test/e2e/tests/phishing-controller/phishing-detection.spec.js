@@ -9,6 +9,7 @@ const {
   unlockWallet,
   WINDOW_TITLES,
   createWebSocketConnection,
+  largeDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -56,6 +57,8 @@ describe('Phishing Detection', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
+        // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
+        await driver.delay(largeDelayMs);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
         // we need to wait for this selector to mitigate a race condition on the phishing page site
