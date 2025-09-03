@@ -5743,6 +5743,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/delegation-core@npm:0.2.0-rc.1":
+  version: 0.2.0-rc.1
+  resolution: "@metamask/delegation-core@npm:0.2.0-rc.1"
+  dependencies:
+    "@metamask/abi-utils": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.4.0"
+    "@noble/hashes": "npm:^1.8.0"
+  checksum: 10/c4f03f0406fe6ddbc0cb6020880ceee0e61932d10ea4f2b6c543541381f420f8da96fd37cfbe4b5d8e4f85efedd9d2402f982198f4b1e6322edb9d40234a6c8b
+  languageName: node
+  linkType: hard
+
 "@metamask/delegation-deployments@npm:^0.11.0":
   version: 0.11.0
   resolution: "@metamask/delegation-deployments@npm:0.11.0"
@@ -32037,6 +32048,7 @@ __metadata:
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.11.0"
     "@metamask/delegation-controller": "npm:^0.6.0"
+    "@metamask/delegation-core": "npm:0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.11.0"
     "@metamask/design-system-react": "npm:^0.3.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"

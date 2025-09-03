@@ -7,13 +7,8 @@ import {
   NonEmptyArray,
   parseCaipAccountId,
   KnownCaipNamespace,
+  Hex,
 } from '@metamask/utils';
-import type {
-  GatorPermissionsMap,
-  StoredGatorPermissionSanitized,
-  SignerParam,
-  PermissionTypes,
-} from '@metamask/gator-permissions-controller';
 import { uniq } from 'lodash';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
@@ -24,6 +19,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useRevokeGatorPermissions } from '../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllPermittedAccountsForSelectedTab,
@@ -60,109 +56,31 @@ import {
   DisconnectAllModal,
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
+import { DisconnectPermissionsModal } from '../../disconnect-permissions-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
-import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
+import {
+  GatorPermissionState,
+  getFilteredGatorPermissionsByType,
+} from '../../../../selectors/gator-permissions/gator-permissions';
 import { SiteCell } from './site-cell/site-cell';
 import { PermissionsCell } from './permissions-cell/permissions-cell';
 
-/**
- * Filters and groups gator permissions by type and site origin, returning counts and chain lists.
- *
- * This function takes the full gator permissions map and filters it to return
- * only permissions that match the specified site origin.
- * It groups the results into two main categories:
- * - streams: Combined count of native-token-stream and erc20-token-stream permissions
- * - subscriptions: Combined count of native-token-periodic and erc20-token-periodic permissions
- * Each category includes a list of all chains on which these permissions occur.
- *
- * @param gatorPermissions - The gator permissions map to filter
- * @param siteOrigin - The site origin to filter by (e.g., 'https://example.com')
- * @returns Object with counts and chain lists for streams and subscriptions
- */
-const getFilteredGatorPermissionsByType = (
-  gatorPermissions: GatorPermissionsMap,
-  siteOrigin: string,
-) => {
-  const result = {
-    streams: {
-      count: 0,
-      chains: new Set<string>(),
-    },
-    subscriptions: {
-      count: 0,
-      chains: new Set<string>(),
-    },
-  };
+// Custom hook to handle revoking gator permissions across multiple chain IDs so we don't violate calling hooks in a function.
+const useMultiChainGatorRevoke = (chainIds: string[]) => {
+  const revokeFunctions: Record<string, unknown> = {};
 
-  // Process stream permissions (native-token-stream + erc20-token-stream)
-  const streamTypes: (keyof GatorPermissionsMap)[] = [
-    'native-token-stream',
-    'erc20-token-stream',
-  ];
-  streamTypes.forEach((permissionType) => {
-    const permissionsForType = gatorPermissions[permissionType];
-    if (permissionsForType) {
-      Object.entries(permissionsForType).forEach(([chainId, permissions]) => {
-        // Filter permissions by site origin
-        const filteredPermissions = permissions.filter(
-          (
-            permission: StoredGatorPermissionSanitized<
-              SignerParam,
-              PermissionTypes
-            >,
-          ) => permission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
-        );
-
-        if (filteredPermissions.length > 0) {
-          result.streams.count += filteredPermissions.length;
-          result.streams.chains.add(chainId);
-        }
-      });
-    }
+  chainIds.forEach((chainId) => {
+    const { revokeGatorPermissionBatch } = useRevokeGatorPermissions({
+      chainId: chainId as Hex,
+    });
+    revokeFunctions[chainId] = revokeGatorPermissionBatch;
   });
 
-  // Process subscription permissions (native-token-periodic + erc20-token-periodic)
-  const subscriptionTypes: (keyof GatorPermissionsMap)[] = [
-    'native-token-periodic',
-    'erc20-token-periodic',
-  ];
-  subscriptionTypes.forEach((permissionType) => {
-    const permissionsForType = gatorPermissions[permissionType];
-    if (permissionsForType) {
-      Object.entries(permissionsForType).forEach(([chainId, permissions]) => {
-        // Filter permissions by site origin
-        const filteredPermissions = permissions.filter(
-          (
-            permission: StoredGatorPermissionSanitized<
-              SignerParam,
-              PermissionTypes
-            >,
-          ) => permission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
-        );
-
-        if (filteredPermissions.length > 0) {
-          result.subscriptions.count += filteredPermissions.length;
-          result.subscriptions.chains.add(chainId);
-        }
-      });
-    }
-  });
-
-  // Convert Sets to arrays for the final result
-  return {
-    streams: {
-      count: result.streams.count,
-      chains: Array.from(result.streams.chains),
-    },
-    subscriptions: {
-      count: result.subscriptions.count,
-      chains: Array.from(result.subscriptions.chains),
-    },
-  };
+  return revokeFunctions;
 };
 
 export const ReviewPermissions = () => {
@@ -175,6 +93,8 @@ export const ReviewPermissions = () => {
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
+  const [showDisconnectPermissionsModal, setShowDisconnectPermissionsModal] =
+    useState(false);
   const activeTabOrigin: string = securedOrigin;
 
   const showPermittedNetworkToastOpen = useSelector(
@@ -186,7 +106,7 @@ export const ReviewPermissions = () => {
       setShowNetworkToast(showPermittedNetworkToastOpen);
       dispatch(hidePermittedNetworkToast());
     }
-  }, [showPermittedNetworkToastOpen]);
+  }, [showPermittedNetworkToastOpen, dispatch]);
 
   const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
@@ -253,12 +173,73 @@ export const ReviewPermissions = () => {
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
 
-  const gatorPermissions = useSelector(getGatorPermissionsMap);
-
   // Get filtered gator permissions grouped by type
-  const filteredGatorPermissions = useMemo(() => {
-    return getFilteredGatorPermissionsByType(gatorPermissions, activeTabOrigin);
-  }, [gatorPermissions, activeTabOrigin]);
+  const filteredGatorPermissions = useSelector((state: GatorPermissionState) =>
+    getFilteredGatorPermissionsByType(state, activeTabOrigin),
+  );
+
+  // Get all gator permissions for the site (for the modal)
+  const allSiteGatorPermissions = useMemo(() => {
+    const allPermissions = [
+      ...filteredGatorPermissions.streams.permissions,
+      ...filteredGatorPermissions.subscriptions.permissions,
+    ];
+    return allPermissions;
+  }, [filteredGatorPermissions]);
+
+  // Get all unique chain IDs from gator permissions
+  const uniqueGatorChainIds = useMemo(() => {
+    const chainIds = new Set<string>();
+    allSiteGatorPermissions.forEach(({ chainId }) => {
+      chainIds.add(chainId);
+    });
+    return Array.from(chainIds);
+  }, [allSiteGatorPermissions]);
+
+  // Get revoke functions for each unique chain ID
+  const revokeFunctionsByChainId =
+    useMultiChainGatorRevoke(uniqueGatorChainIds);
+
+  const removeAllPermissionsIncludingGator = async () => {
+    // First, remove all regular permissions
+    disconnectAllPermissions();
+
+    // Then, revoke all gator permissions grouped by chain ID
+    if (allSiteGatorPermissions.length > 0) {
+      // Group gator permissions by chain ID
+      const gatorPermissionsByChainId = allSiteGatorPermissions.reduce(
+        (acc, { permission, chainId }) => {
+          if (!acc[chainId]) {
+            acc[chainId] = [];
+          }
+          acc[chainId].push(permission);
+          return acc;
+        },
+        {} as Record<string, unknown[]>,
+      );
+
+      // Revoke gator permissions for each chain ID
+      for (const [chainId, permissions] of Object.entries(
+        gatorPermissionsByChainId,
+      )) {
+        try {
+          const revokeFunction = revokeFunctionsByChainId[chainId];
+          if (
+            revokeFunction &&
+            revokeFunction instanceof Function &&
+            permissions.length > 0
+          ) {
+            await revokeFunction(permissions);
+          }
+        } catch (error) {
+          console.error(
+            `Failed to revoke gator permissions for chain ${chainId}:`,
+            error,
+          );
+        }
+      }
+    }
+  };
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
@@ -349,6 +330,7 @@ export const ReviewPermissions = () => {
               subscriptionsChainIds={
                 filteredGatorPermissions.subscriptions.chains
               }
+              paddingTop={connectedAccountAddresses.length === 0 ? 4 : 0}
             />
           ) : null}
           {connectedAccountAddresses.length === 0 &&
@@ -363,10 +345,38 @@ export const ReviewPermissions = () => {
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
                 trace({ name: TraceName.DisconnectAllModal });
-                disconnectAllPermissions();
-                setShowDisconnectAllModal(false);
+                // Check if there are active gator permissions
+                if (
+                  filteredGatorPermissions.streams.count > 0 ||
+                  filteredGatorPermissions.subscriptions.count > 0
+                ) {
+                  // Close disconnect modal and show other permissions modal
+                  setShowDisconnectAllModal(false);
+                  setShowDisconnectPermissionsModal(true);
+                } else {
+                  // No other permissions, proceed with normal disconnect
+                  disconnectAllPermissions();
+                  setShowDisconnectAllModal(false);
+                }
                 endTrace({ name: TraceName.DisconnectAllModal });
               }}
+            />
+          ) : null}
+          {showDisconnectPermissionsModal ? (
+            <DisconnectPermissionsModal
+              isOpen={showDisconnectPermissionsModal}
+              onClose={() => setShowDisconnectPermissionsModal(false)}
+              onSkip={() => {
+                // Skip removing other permissions, proceed with normal disconnect
+                setShowDisconnectPermissionsModal(false);
+                disconnectAllPermissions();
+              }}
+              onRemoveAll={() => {
+                // Remove all permissions including gator permissions
+                removeAllPermissionsIncludingGator();
+                setShowDisconnectPermissionsModal(false);
+              }}
+              permissions={allSiteGatorPermissions}
             />
           ) : null}
         </Content>
