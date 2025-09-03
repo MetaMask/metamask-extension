@@ -49,7 +49,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
 
         // Wait for token address to populate in dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_TokenAddressesValue(
+        await testDapp.checkTokenAddressesValue(
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
         );
 
@@ -97,7 +97,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
         await addTokensModal.waitForSuggestedTokensCount(2);
 
         // Confirm only 2 tokens are present in suggested token list
-        await addTokensModal.check_SuggestedTokensCount(2);
+        await addTokensModal.checkSuggestedTokensCount(2);
       },
     );
   });
