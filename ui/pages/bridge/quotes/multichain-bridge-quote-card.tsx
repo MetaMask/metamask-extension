@@ -6,6 +6,7 @@ import {
   formatEtaInMinutes,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import {
   Text,
@@ -257,23 +258,6 @@ export const MultichainBridgeQuoteCard = ({
             </Row>
           </Row>
 
-          {/* Time */}
-          <Row justifyContent={JustifyContent.spaceBetween}>
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-            >
-              {t('multichainQuoteCardTimeLabel')}
-            </Text>
-            <Text>
-              {t('bridgeTimingMinutes', [
-                formatEtaInMinutes(
-                  activeQuote.estimatedProcessingTimeInSeconds,
-                ),
-              ])}
-            </Text>
-          </Row>
-
           {/* Minimum Received */}
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={1}>
@@ -300,6 +284,28 @@ export const MultichainBridgeQuoteCard = ({
               )}
             </Text>
           </Row>
+
+          {/* Time */}
+          {isCrossChain(
+            activeQuote.quote.srcChainId,
+            activeQuote.quote.destChainId,
+          ) && (
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+              >
+                {t('multichainQuoteCardTimeLabel')}
+              </Text>
+              <Text>
+                {t('bridgeTimingMinutes', [
+                  formatEtaInMinutes(
+                    activeQuote.estimatedProcessingTimeInSeconds,
+                  ),
+                ])}
+              </Text>
+            </Row>
+          )}
 
           {/* Footer */}
           <Row
