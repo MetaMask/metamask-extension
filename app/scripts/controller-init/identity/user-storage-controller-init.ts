@@ -31,54 +31,6 @@ export const UserStorageControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     config: {
-      accountSyncing: {
-        forceEnableMultichainAccountSyncing: true,
-        maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
-        onAccountAdded: (profileId) => {
-          trackEvent({
-            category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.AccountsSyncAdded,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              profile_id: profileId,
-            },
-          });
-        },
-        onAccountNameUpdated: (profileId) => {
-          trackEvent({
-            category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.AccountsSyncNameUpdated,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              profile_id: profileId,
-            },
-          });
-        },
-        onAccountSyncErroneousSituation: (
-          profileId,
-          situationMessage,
-          sentryContext,
-        ) => {
-          captureException(
-            new Error(`Account sync - ${situationMessage}`),
-            sentryContext,
-          );
-          trackEvent({
-            category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.AccountsSyncErroneousSituation,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              profile_id: profileId,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              situation_message: situationMessage,
-            },
-          });
-        },
-      },
       contactSyncing: {
         onContactUpdated: (profileId) => {
           trackEvent({
