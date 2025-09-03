@@ -18,8 +18,6 @@ describe('Bridge tests', function (this: Suite) {
           'Arbitrum One',
         );
 
-        // await driver.delay(100000);
-
         await bridgeTransaction(
           driver,
           {
