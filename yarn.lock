@@ -6562,9 +6562,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/multichain-account-service@npm:0.6.0"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@0.6.0-preview-3232d5bd":
+  version: 0.6.0-preview-3232d5bd
+  resolution: "@metamask-previews/multichain-account-service@npm:0.6.0-preview-3232d5bd"
   dependencies:
     "@metamask/base-controller": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^16.1.0"
@@ -6572,6 +6572,7 @@ __metadata:
     "@metamask/keyring-internal-api": "npm:^8.1.0"
     "@metamask/keyring-snap-client": "npm:^7.0.0"
     "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -6582,7 +6583,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/7abed5e72b712a8cb5edb960d1a2016307b7f5efe015f63dfb3efa5291ebaf2ccea42a740080603d4d0698544495a951b496ff9e1cb5bcac6ddc403e9bb16549
+  checksum: 10/5fbefa1c57b3e1bfd6370e4b894fc1009c52e1ed2ba9b2c76a3d6063c0a47e1d8aafbf70d5227a5373ed2eb293cd6e331ced40a80144f9381a93cd87783870ee
   languageName: node
   linkType: hard
 
