@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -75,7 +75,7 @@ export default function CreatePassword({
   const [termsChecked, setTermsChecked] = useState(false);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
@@ -113,29 +113,30 @@ export default function CreatePassword({
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
-        history.replace(
+        navigate(
           isParticipateInMetaMetricsSet
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS,
+          { replace: true },
         );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (isFirefox) {
-          history.replace(ONBOARDING_COMPLETION_ROUTE);
+          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
-          history.replace(ONBOARDING_METAMETRICS);
+          navigate(ONBOARDING_METAMETRICS, { replace: true });
         }
       } else {
-        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
       }
     } else if (
       firstTimeFlowType === FirstTimeFlowType.import &&
       !secretRecoveryPhrase
     ) {
-      history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+      navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true });
     }
   }, [
     currentKeyring,
-    history,
+    navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
     secretRecoveryPhrase,
@@ -197,9 +198,9 @@ export default function CreatePassword({
     });
 
     if (isFirefox) {
-      history.replace(ONBOARDING_COMPLETION_ROUTE);
+      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
-      history.replace(ONBOARDING_METAMETRICS);
+      navigate(ONBOARDING_METAMETRICS, { replace: true });
     }
   };
 
@@ -252,12 +253,12 @@ export default function CreatePassword({
 
     if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
       if (isFirefox || isSocialLoginUiChangesEnabled) {
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
+        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
-        history.replace(ONBOARDING_METAMETRICS);
+        navigate(ONBOARDING_METAMETRICS, { replace: true });
       }
     } else {
-      history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
     }
   };
 
@@ -279,8 +280,8 @@ export default function CreatePassword({
     await forceUpdateMetamaskState(dispatch);
 
     firstTimeFlowType === FirstTimeFlowType.import
-      ? history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE)
-      : history.replace(ONBOARDING_WELCOME_ROUTE);
+      ? navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true })
+      : navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
   };
 
   const handlePasswordSetupError = (error) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import initializedMockState from '../../../../test/data/mock-send-state.json';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -12,14 +12,14 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import * as Environment from '../../../../shared/modules/environment';
 import CreatePassword from './create-password';
 
-const mockHistoryReplace = jest.fn();
+const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('Onboarding Create Password', () => {
   const mockState = {
@@ -43,8 +43,9 @@ describe('Onboarding Create Password', () => {
       const mockStore = configureMockStore()(initializedMockState);
 
       renderWithProvider(<CreatePassword />, mockStore);
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+        { replace: true },
       );
     });
 
@@ -60,7 +61,9 @@ describe('Onboarding Create Password', () => {
       const mockStore = configureMockStore()(importFirstTimeFlowState);
 
       renderWithProvider(<CreatePassword />, mockStore);
-      expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+        replace: true,
+      });
     });
 
     it('should redirect to onboarding completion when user has imported SRP and set participating in metametrics', () => {
@@ -75,8 +78,9 @@ describe('Onboarding Create Password', () => {
       const mockStore = configureMockStore()(importFirstTimeFlowState);
       renderWithProvider(<CreatePassword />, mockStore);
 
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_COMPLETION_ROUTE,
+        { replace: true },
       );
     });
   });
@@ -398,8 +402,11 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).toHaveBeenCalledWith(password);
 
       await waitFor(() => {
-        expect(mockHistoryReplace).toHaveBeenCalledWith(
+        expect(mockUseNavigate).toHaveBeenCalledWith(
           ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+          {
+            replace: true,
+          },
         );
       });
     });
@@ -460,7 +467,9 @@ describe('Onboarding Create Password', () => {
       );
 
       await waitFor(() => {
-        expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+        expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+          replace: true,
+        });
       });
     });
   });

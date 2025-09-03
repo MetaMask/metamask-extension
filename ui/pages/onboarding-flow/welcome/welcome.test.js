@@ -1,19 +1,21 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { waitFor } from '@testing-library/dom';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import thunk from 'redux-thunk';
+import { waitFor, fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
 import * as Environment from '../../../../shared/modules/environment';
 import Welcome from './welcome';
 import { WelcomePageState } from './types';
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockIntersectionObserver = jest.fn();
 mockIntersectionObserver.mockReturnValue({
@@ -22,10 +24,6 @@ mockIntersectionObserver.mockReturnValue({
   disconnect: () => null,
 });
 window.IntersectionObserver = mockIntersectionObserver;
-
-jest.mock('../../../../shared/modules/environment', () => ({
-  getIsSeedlessOnboardingFeatureEnabled: jest.fn().mockReturnValue(true),
-}));
 
 describe('Welcome Page', () => {
   const mockState = {
@@ -37,7 +35,7 @@ describe('Welcome Page', () => {
       metaMetricsId: '0x00000000',
     },
   };
-  const mockStore = configureMockStore()(mockState);
+  const mockStore = configureMockStore([thunk])(mockState);
 
   it('should render', () => {
     const { getByText } = renderWithProvider(
@@ -52,8 +50,6 @@ describe('Welcome Page', () => {
 
     const importButton = getByText('I have an existing wallet');
     expect(importButton).toBeInTheDocument();
-
-    expect(Environment.getIsSeedlessOnboardingFeatureEnabled()).toBe(true);
   });
 
   it('should render with seedless onboarding feature disabled', () => {
@@ -82,7 +78,9 @@ describe('Welcome Page', () => {
   it('should show the error modal when the error thrown in login', async () => {
     jest
       .spyOn(Actions, 'startOAuthLogin')
-      .mockRejectedValue(new Error('login error'));
+      .mockImplementation(() => async () => {
+        throw new Error('login error');
+      });
 
     const { getByText, getByTestId } = renderWithProvider(
       <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,

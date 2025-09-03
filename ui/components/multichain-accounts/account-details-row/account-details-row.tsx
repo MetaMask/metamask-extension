@@ -34,7 +34,7 @@ export const AccountDetailsRow = ({
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundAlternative}
+      backgroundColor={BackgroundColor.backgroundMuted}
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       style={style}

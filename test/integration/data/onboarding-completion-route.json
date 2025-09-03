@@ -299,7 +299,6 @@
     "chainId": "0xaa36a7",
     "ticker": "SepoliaETH"
   },
-  "qrHardware": {},
   "recoveryPhraseReminderHasBeenShown": false,
   "recoveryPhraseReminderLastShown": 1715943225448,
   "securityAlertsEnabled": true,

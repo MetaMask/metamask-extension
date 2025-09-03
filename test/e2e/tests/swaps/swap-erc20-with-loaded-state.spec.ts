@@ -20,7 +20,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
     await mockEmptyHistoricalPrices(mockServer, ETH_ADDRESS, '0x1'),
     await mockEmptyPrices(mockServer, '1'),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/token/1')
+      .forGet('https://bridge.api.cx.metamask.io/token/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -81,7 +81,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
         },
       })),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback((request: CompletedRequest) => {
         const url = new URL(request.url);
         const sourceToken = url.searchParams.get('sourceToken')?.toLowerCase();
@@ -145,7 +145,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       }),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: {

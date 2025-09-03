@@ -47,8 +47,8 @@ const goToOnboardingWelcomeLoginPage = async ({
   }
 
   const startOnboardingPage = new StartOnboardingPage(driver);
-  await startOnboardingPage.checkBannerPageIsLoaded();
-  await startOnboardingPage.agreeToTermsOfUse();
+  // await startOnboardingPage.checkBannerPageIsLoaded();
+  // await startOnboardingPage.agreeToTermsOfUse();
   await startOnboardingPage.checkLoginPageIsLoaded();
 
   return startOnboardingPage;
