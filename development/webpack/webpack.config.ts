@@ -20,7 +20,6 @@ import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
-import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
   type Manifest,
   collectEntries,
@@ -177,6 +176,7 @@ const plugins: WebpackPluginInstance[] = [
 ];
 // MV2 requires self-injection
 if (MANIFEST_VERSION === 2) {
+  const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
   plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
 }
 if (args.lavamoat) {
