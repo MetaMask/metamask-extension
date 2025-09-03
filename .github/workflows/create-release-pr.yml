@@ -7,7 +7,7 @@ on:
         description: 'The base branch, tag, or SHA for git operations. Usually `main`'
         required: true
       release-pr-base-branch:
-        description: 'The base branch, tag, or SHA for the release pull request. Usually `master`'
+        description: 'The base branch, tag, or SHA for the release pull request. Usually `stable`'
         required: true
       semver-version:
         description: 'A semantic version, eg: x.x.x'
@@ -39,14 +39,14 @@ on:
 jobs:
   create-release-pr:
     name: Create Release Pull Request using Github Tools
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@914cbff8a8d58cfe0053e8690a3c0d4b281e27d6
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@ddac3ee395896ff15df6fc561ff710efbb0dd3fa
     with:
       platform: extension
       checkout-base-branch: ${{ inputs.checkout-base-branch }}
       release-pr-base-branch: ${{ inputs.release-pr-base-branch }}
       semver-version: ${{ inputs.semver-version }}
       previous-version-ref: ${{ inputs.previous-version-ref }}
-      github-tools-version: 914cbff8a8d58cfe0053e8690a3c0d4b281e27d6
+      github-tools-version: ddac3ee395896ff15df6fc561ff710efbb0dd3fa
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       # If called from auto-create-release-pr use the PR_TOKEN passed in as an input, if called manually use github secret token values
