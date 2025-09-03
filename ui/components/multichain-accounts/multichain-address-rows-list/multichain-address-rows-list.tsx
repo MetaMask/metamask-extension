@@ -23,7 +23,7 @@ import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selector
 
 export type MultichainAddressRowsListProps = {
   /**
-   * Array of InternalAccount objects to determine compatible networks for
+   * The account group ID.
    */
   groupId: AccountGroupId;
 };
@@ -34,17 +34,17 @@ export const MultichainAddressRowsList = ({
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
 
-  const getAccountSpreadByNetworkByGroupId = useSelector((state) =>
+  const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
   );
 
   const filteredItems = useMemo(() => {
     if (!searchPattern.trim()) {
-      return getAccountSpreadByNetworkByGroupId;
+      return getAccountsSpreadByNetworkByGroupId;
     }
 
     const pattern = searchPattern.toLowerCase();
-    const filtered = getAccountSpreadByNetworkByGroupId.filter(
+    const filtered = getAccountsSpreadByNetworkByGroupId.filter(
       ({ networkName, account }) => {
         return (
           networkName.toLowerCase().includes(pattern) ||
@@ -54,7 +54,7 @@ export const MultichainAddressRowsList = ({
     );
 
     return filtered;
-  }, [getAccountSpreadByNetworkByGroupId, searchPattern]);
+  }, [getAccountsSpreadByNetworkByGroupId, searchPattern]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPattern(event.target.value);

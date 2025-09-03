@@ -766,7 +766,7 @@ export const getInternalAccountListSpreadByScopesByGroupId =
         // Use the precomputed EVM network IDs or account-specific scopes
         const scopes =
           account.type === EthAccountType.Eoa
-            ? Array.from(evmNetworkIds)
+            ? [...evmNetworkIds]
             : account.scopes || [];
 
         // Iterate over scopes and filter out test networks
