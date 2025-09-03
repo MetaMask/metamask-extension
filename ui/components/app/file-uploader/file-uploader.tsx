@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import classnames from 'classnames';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   BorderColor,
   BorderRadius,
@@ -26,7 +27,14 @@ import {
   FileUploaderProps,
   FileUploaderComponent,
 } from './file-uploader.types';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import {
+  ButtonIcon,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../component-library';
+import { ButtonIconSize } from '@metamask/design-system-react';
 
 export const FileUploader: FileUploaderComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -44,15 +52,35 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
     }: FileUploaderProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    const [files, setFiles] = useState<FileList | null>(null);
+
+    const addFiles = (newFiles: FileList) => {
+      const newFileList = Array.from(newFiles ?? []).filter(
+        (f) => !Array.from(files ?? []).some((f2) => f2.name === f.name),
+      );
+
+      const dt = new DataTransfer();
+      const allFiles = [
+        ...Array.from(files ?? []),
+        ...Array.from(newFileList ?? []),
+      ];
+      Array.from(allFiles).forEach((f) => dt.items.add(f));
+      setFiles(dt.files);
+    };
+
     const onFileDrop = (e: React.DragEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      const file = e.dataTransfer.files[0];
-      console.log('check: onFileDrop', file);
+      const { files } = e.dataTransfer;
+      console.log('check: onFileDrop', files);
+      addFiles(files);
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0] ?? null;
-      console.log('check: onFileChange', file);
+      const { files } = e.target;
+      if (!files) return;
+      addFiles(files);
+      // Clear input since file is moved to filelist already
+      e.target.value = '';
     };
 
     return (
@@ -143,6 +171,61 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
           >
             {helpText}
           </HelpText>
+        )}
+        {files && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+            marginTop={4}
+          >
+            {Array.from(files).map((file) => (
+              <Box
+                key={file.name}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                flexDirection={FlexDirection.Row}
+                borderRadius={BorderRadius.LG}
+                backgroundColor={BackgroundColor.backgroundSection}
+                paddingTop={2}
+                paddingBottom={2}
+                paddingInline={4}
+              >
+                <Icon
+                  name={
+                    file.type.includes('pdf') ? IconName.File : IconName.Image
+                  }
+                  size={IconSize.Md}
+                  color={IconColor.iconAlternative}
+                  marginRight={2}
+                />
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {file.name}
+                </Text>
+                <ButtonIcon
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
+                  color={IconColor.iconAlternative}
+                  ariaLabel="Remove file"
+                  onClick={() => {
+                    setFiles(
+                      (() => {
+                        const dt = new DataTransfer();
+                        Array.from(files)
+                          .filter((f) => f.name !== file.name)
+                          .forEach((f) => dt.items.add(f));
+                        return dt.files;
+                      })(),
+                    );
+                  }}
+                  marginLeft="auto"
+                />
+              </Box>
+            ))}
+          </Box>
         )}
       </Box>
     );
