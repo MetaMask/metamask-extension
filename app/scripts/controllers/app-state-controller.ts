@@ -65,6 +65,7 @@ export type AppStateControllerState = {
   showPermissionsTour: boolean;
   showNetworkBanner: boolean;
   showAccountBanner: boolean;
+  showAccountIconTour: boolean;
   showDownloadMobileAppSlide: boolean;
   trezorModel: string | null;
   currentPopupId?: number;
@@ -204,6 +205,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showPermissionsTour: true,
   showNetworkBanner: true,
   showAccountBanner: true,
+  showAccountIconTour: true,
   trezorModel: null,
   onboardingDate: null,
   lastViewedUserSurvey: null,
@@ -299,6 +301,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   showAccountBanner: {
+    persist: true,
+    anonymous: true,
+  },
+  showAccountIconTour: {
     persist: true,
     anonymous: true,
   },
@@ -928,6 +934,17 @@ export class AppStateController extends BaseController<
   setShowPermissionsTour(showPermissionsTour: boolean): void {
     this.update((state) => {
       state.showPermissionsTour = showPermissionsTour;
+    });
+  }
+
+  /**
+   * Sets whether the account icon tour should be shown to the user
+   *
+   * @param showAccountIconTour
+   */
+  setShowAccountIconTour(showAccountIconTour: boolean): void {
+    this.update((state) => {
+      state.showAccountIconTour = showAccountIconTour;
     });
   }
 
