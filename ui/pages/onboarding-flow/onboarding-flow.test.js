@@ -28,6 +28,7 @@ import {
 } from '../../store/actions';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import * as Environment from '../../../shared/modules/environment';
 import OnboardingFlow from './onboarding-flow';
 
 const mockUseNavigate = jest.fn();
@@ -285,6 +286,10 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding welcome screen', () => {
+    jest
+      .spyOn(Environment, 'getIsSocialLoginUiChangesEnabled')
+      .mockReturnValue(false);
+
     mockUseLocation.mockReturnValue({
       key: 'test-key',
       pathname: ONBOARDING_WELCOME_ROUTE,
@@ -300,6 +305,7 @@ describe('Onboarding Flow', () => {
 
     const onboardingWelcome = queryByTestId('onboarding-welcome-banner-title');
     expect(onboardingWelcome).toBeInTheDocument();
+    jest.clearAllMocks();
   });
 
   it('should render onboarding pin extension screen', () => {
