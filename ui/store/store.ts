@@ -1,4 +1,5 @@
 import { Reducer, StoreEnhancer } from 'redux';
+import { type TypedUseSelectorHook, useSelector } from 'react-redux';
 import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import rootReducer from '../ducks';
@@ -46,11 +47,11 @@ type ReduxState = {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
-  const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);
-  const isDev = debugModeEnabled && !process.env.IN_TEST;
+  const reduxDevtoolsEnabled = process.env.METAMASK_REACT_REDUX_DEVTOOLS;
+  const runningTests = process.env.IN_TEST;
   const enhancers: StoreEnhancer[] = [];
 
-  if (isDev) {
+  if (reduxDevtoolsEnabled && !runningTests) {
     enhancers.push(
       devtoolsEnhancer({
         name: 'MetaMask',
@@ -90,3 +91,5 @@ export default function configureStore(preloadedState: any) {
 type Store = ReturnType<typeof configureStore>;
 export type MetaMaskReduxState = ReturnType<Store['getState']>;
 export type MetaMaskReduxDispatch = Store['dispatch'];
+export const useAppSelector: TypedUseSelectorHook<MetaMaskReduxState> =
+  useSelector;

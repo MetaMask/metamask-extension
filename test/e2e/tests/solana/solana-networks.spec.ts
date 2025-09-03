@@ -15,16 +15,16 @@ describe('Solana network', function (this: Suite) {
       { title: this.test?.fullTitle() },
       async (driver) => {
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.check_accountLabel('Solana 1');
+        await headerNavbar.checkPageIsLoaded();
+        await headerNavbar.checkAccountLabel('Solana 1');
         const assetList = new AssetListPage(driver);
-        await assetList.check_networkFilterText('Solana');
-        await headerNavbar.check_ifNetworkPickerClickable(true);
+        await assetList.checkNetworkFilterText('Solana');
+        await headerNavbar.checkIfNetworkPickerClickable(true);
         await headerNavbar.openAccountMenu();
         const accountMenu = new AccountListPage(driver);
         await accountMenu.switchToAccount('Account 1');
-        await assetList.check_networkFilterText('Localhost 8545');
-        await headerNavbar.check_ifNetworkPickerClickable(true);
+        await assetList.checkNetworkFilterText('Localhost 8545');
+        await headerNavbar.checkIfNetworkPickerClickable(true);
       },
     );
   });
@@ -37,24 +37,21 @@ describe('Solana network', function (this: Suite) {
         const assetList = new AssetListPage(driver);
         const accountMenu = new AccountListPage(driver);
         const networkManager = new NetworkManager(driver);
-        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
         await accountMenu.switchToAccount('Account 1');
 
         // Switch to Linea Mainnet to set it as the selected network
         // in the network-controller
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Default');
-        await networkManager.selectNetwork(NetworkId.ETHEREUM);
-        await networkManager.selectNetwork(NetworkId.LINEA);
-        await networkManager.deselectNetwork(NetworkId.ETHEREUM);
-        await networkManager.closeNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
 
         // Switch back to Solana Mainnet
         await headerNavbar.openAccountMenu();
         await accountMenu.switchToAccount('Solana 1');
-        await headerNavbar.check_accountLabel('Solana 1');
-        await assetList.check_networkFilterText('Solana');
+        await headerNavbar.checkAccountLabel('Solana 1');
+        await assetList.checkNetworkFilterText('Solana');
 
         // Linea, still as the selected network in the network-controller
         // but not in the UI, should be removed from the network-controller
@@ -69,11 +66,11 @@ describe('Solana network', function (this: Suite) {
 
         // Lastly, switch to an EVM account and validate the Ethereum
         // Mainnet is the selected network
-        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
-        await accountMenu.check_pageIsLoaded();
+        await accountMenu.checkPageIsLoaded();
         await accountMenu.selectAccount('Account 1');
-        await assetList.check_networkFilterText('Ethereum');
+        await assetList.checkNetworkFilterText('Ethereum');
       },
     );
   });

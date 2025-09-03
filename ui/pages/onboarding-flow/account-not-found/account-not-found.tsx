@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
@@ -27,7 +27,8 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  resetOAuthLoginState,
+  forceUpdateMetamaskState,
+  resetOnboarding,
   setFirstTimeFlowType,
 } from '../../../store/actions';
 import {
@@ -41,7 +42,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountNotFound() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -52,10 +53,9 @@ export default function AccountNotFound() {
     trackEvent;
 
   const onLoginWithDifferentMethod = async () => {
-    // clear the social login state
-    await dispatch(resetOAuthLoginState());
-    await dispatch(setFirstTimeFlowType(null));
-    history.replace(ONBOARDING_WELCOME_ROUTE);
+    await dispatch(resetOnboarding());
+    await forceUpdateMetamaskState(dispatch);
+    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
   };
 
   const onCreateNewAccount = () => {
@@ -75,13 +75,13 @@ export default function AccountNotFound() {
       parentContext: onboardingParentContext?.current,
     });
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
-    history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
   };
 
   useEffect(() => {
     if (firstTimeFlowType !== FirstTimeFlowType.socialImport) {
       // if the onboarding flow is not social import, redirect to the welcome page
-      history.replace(ONBOARDING_WELCOME_ROUTE);
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
     if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
       bufferedTrace?.({
@@ -99,7 +99,7 @@ export default function AccountNotFound() {
     };
   }, [
     firstTimeFlowType,
-    history,
+    navigate,
     onboardingParentContext,
     bufferedTrace,
     bufferedEndTrace,
@@ -152,7 +152,7 @@ export default function AccountNotFound() {
             />
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {t('accountNotFoundDescription', [userSocialLoginEmail])}
+            {t('accountNotFoundDescription', [userSocialLoginEmail || '-'])}
           </Text>
         </Box>
       </Box>

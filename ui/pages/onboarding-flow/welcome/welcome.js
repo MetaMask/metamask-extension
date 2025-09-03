@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
 import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -17,6 +17,7 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
+  getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -47,11 +48,14 @@ export default function OnboardingWelcome({
   setPageState,
 }) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isUserAuthenticatedWithSocialLogin = useSelector(
+    getIsSocialLoginUserAuthenticated,
+  );
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
@@ -69,27 +73,35 @@ export default function OnboardingWelcome({
         firstTimeFlowType === FirstTimeFlowType.socialImport ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        history.replace(
+        navigate(
           isParticipateInMetaMetricsSet
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS,
+          { replace: true },
         );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (getBrowserName() === PLATFORM_FIREFOX) {
-          history.replace(ONBOARDING_COMPLETION_ROUTE);
+          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
-          history.replace(ONBOARDING_METAMETRICS);
+          navigate(ONBOARDING_METAMETRICS, { replace: true });
         }
       } else {
-        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
+      }
+    } else if (isUserAuthenticatedWithSocialLogin) {
+      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
+      } else {
+        navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
       }
     }
   }, [
     currentKeyring,
-    history,
+    navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
+    isUserAuthenticatedWithSocialLogin,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -113,8 +125,8 @@ export default function OnboardingWelcome({
       parentContext: onboardingParentContext?.current,
     });
 
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  }, [dispatch, history, trackEvent, onboardingParentContext, bufferedTrace]);
+    navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
+  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
 
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -132,8 +144,8 @@ export default function OnboardingWelcome({
       parentContext: onboardingParentContext?.current,
     });
 
-    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-  }, [dispatch, history, trackEvent, onboardingParentContext, bufferedTrace]);
+    navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
 
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {
@@ -216,9 +228,9 @@ export default function OnboardingWelcome({
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
-          history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+          navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
         } else {
-          history.replace(ONBOARDING_ACCOUNT_EXIST);
+          navigate(ONBOARDING_ACCOUNT_EXIST, { replace: true });
         }
       } catch (error) {
         handleSocialLoginError(error, socialConnectionType);
@@ -230,7 +242,7 @@ export default function OnboardingWelcome({
       dispatch,
       handleSocialLogin,
       trackEvent,
-      history,
+      navigate,
       onboardingParentContext,
       handleSocialLoginError,
       bufferedTrace,
@@ -263,14 +275,14 @@ export default function OnboardingWelcome({
         });
 
         if (isNewUser) {
-          history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
+          navigate(ONBOARDING_ACCOUNT_NOT_FOUND);
         } else {
           bufferedTrace?.({
             name: TraceName.OnboardingExistingSocialLogin,
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
-          history.push(ONBOARDING_UNLOCK_ROUTE);
+          navigate(ONBOARDING_UNLOCK_ROUTE);
         }
       } catch (error) {
         handleSocialLoginError(error, socialConnectionType);
@@ -282,7 +294,7 @@ export default function OnboardingWelcome({
       dispatch,
       handleSocialLogin,
       trackEvent,
-      history,
+      navigate,
       onboardingParentContext,
       handleSocialLoginError,
       bufferedTrace,

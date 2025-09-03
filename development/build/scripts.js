@@ -1028,9 +1028,9 @@ function setupBundlerDefaults(
     debug: true,
   });
 
-  // Ensure react-devtools is only included in dev builds
+  // Ensure react-devtools-core is only included in dev builds
   if (buildTarget !== BUILD_TARGETS.DEV) {
-    bundlerOpts.manualIgnore.push('react-devtools');
+    bundlerOpts.manualIgnore.push('react-devtools-core');
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
@@ -1298,7 +1298,7 @@ function renderHtmlFile({
       : `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
-  const eta = new Eta();
+  const eta = new Eta({ views: './app/' });
   const htmlOutput = eta
     .renderString(htmlTemplate, { isTest, shouldIncludeSnow })
     // these replacements are added to support the webpack build's automatic

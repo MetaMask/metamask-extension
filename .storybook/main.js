@@ -21,12 +21,7 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-actions',
     '@storybook/addon-a11y',
-    '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
-    'storybook-dark-mode',
-    '@whitespace/storybook-addon-html',
-    '@storybook/addon-mdx-gfm',
-    '@storybook/addon-designs',
   ],
   staticDirs: ['../app', './images'],
   env: (config) => ({
@@ -53,10 +48,6 @@ module.exports = {
     );
     config.resolve.alias['../../../store/actions'] = require.resolve(
       '../ui/__mocks__/actions.js',
-    );
-    // Import within controller-utils crashes storybook.
-    config.resolve.alias['@ethereumjs/util'] = require.resolve(
-      '../ui/__mocks__/ethereumjs-util.js',
     );
     config.resolve.alias['./useNftCollectionsMetadata'] = require.resolve(
       '../ui/__mocks__/useNftCollectionsMetadata.js',

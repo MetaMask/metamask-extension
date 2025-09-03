@@ -7,10 +7,7 @@ import { CaipAssetType } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
-import {
-  SEND_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
@@ -48,19 +45,21 @@ import {
 } from '../../../components/component-library';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainIsTestnet,
+} from '../../../selectors/multichain';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
 import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
+import { navigateToSendRoute } from '../../confirmations/utils/send';
 
 const TokenButtons = ({
   token,
@@ -177,7 +176,7 @@ const TokenButtons = ({
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type)) {
+    if (!isEvmAccountType(account.type) && !process.env.SEND_REDESIGN_ENABLED) {
       await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;
@@ -192,7 +191,7 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      history.push(SEND_ROUTE);
+      navigateToSendRoute(history, { address: token.address });
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -213,6 +212,8 @@ const TokenButtons = ({
     ///: END:ONLY_INCLUDE_IF
   ]);
 
+  const isTestnet = useSelector(getMultichainIsTestnet);
+
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
       await setCorrectChain();
@@ -227,12 +228,10 @@ const TokenButtons = ({
   );
 
   const handleSwapOnClick = useCallback(async () => {
-    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
       handleBridgeOnClick(true);
       return;
     }
-    ///: END:ONLY_INCLUDE_IF
 
     // Check if unified UI is enabled and route to bridge page for swaps
     if (isUnifiedUIEnabled) {
@@ -339,7 +338,7 @@ const TokenButtons = ({
         disabled={!isSwapsChain}
       />
 
-      {!isUnifiedUIEnabled && (
+      {!isUnifiedUIEnabled && !isTestnet && isBridgeChain && (
         <IconButton
           className="token-overview__button"
           data-testid="token-overview-bridge"
