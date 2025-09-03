@@ -144,9 +144,9 @@ export class SelfInjectPlugin {
 
     // generate the new self-injecting source code:
     const newSource = new ConcatSource();
-    newSource.add(`;(function (d, textContent)  {
+    newSource.add(`;(function (d, code)  {
   const s = d.createElement('script');
-  s.textContent = textContent;
+  s.textContent = code;
   d.documentElement.appendChild(s).remove();
 })(document,`);
     newSource.add(this.escapeJs(source + sourceMappingURLComment));
