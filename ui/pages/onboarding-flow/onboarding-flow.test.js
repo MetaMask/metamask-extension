@@ -27,6 +27,7 @@ import {
 } from '../../store/actions';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import * as Environment from '../../../shared/modules/environment';
 import OnboardingFlow from './onboarding-flow';
 
 jest.mock('../../store/actions', () => ({
@@ -268,6 +269,9 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding welcome screen', () => {
+    jest
+      .spyOn(Environment, 'getIsSocialLoginUiChangesEnabled')
+      .mockReturnValue(false);
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlow />,
       store,
