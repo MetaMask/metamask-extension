@@ -60,7 +60,6 @@ class ChromeDriver {
     if (process.env.CI || process.env.CODESPACES) {
       args.push('--disable-gpu');
       args.push('--disable-vulkan-fallback-to-gl-for-testing');
-      args.push('--use-gl=swiftshader');
     }
 
     if (isHeadless('SELENIUM')) {
