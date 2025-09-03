@@ -23,15 +23,30 @@ export const lavamoatPlugin = (args: Args) =>
     },
     // Snow needs to run outside of LavaMoat
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    staticShims_experimental: args.snow
-      ? [
-          join(
-            __dirname,
-            '../../../../../node_modules/@lavamoat/snow/snow.prod.js',
-          ),
-          join(__dirname, '../../../../../app/scripts/use-snow.js'),
-        ]
-      : undefined,
+    runtimeConfigurationPerChunk_experimental: (chunk) => {
+      console.log(chunk.name);
+      switch (chunk.name) {
+        case 'scripts/contentscript.js':
+          return { mode: 'safe' };
+        case 'scripts/inpage.js':
+          return { mode: 'unlocked_unsafe' };
+        case 'runtime':
+          return {
+            mode: 'safe',
+            staticShims: args.snow
+              ? [
+                  join(
+                    __dirname,
+                    '../../../../../node_modules/@lavamoat/snow/snow.prod.js',
+                  ),
+                  join(__dirname, '../../../../../app/scripts/use-snow.js'),
+                ]
+              : [],
+          };
+        default:
+          return { mode: 'safe' };
+      }
+    },
     scuttleGlobalThis: {
       enabled: true,
       // Scuttler depends on Snow
