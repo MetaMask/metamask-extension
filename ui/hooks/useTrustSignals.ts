@@ -57,14 +57,7 @@ export function useTrustSignals(
         value,
       );
 
-      if (securityAlertResponse === undefined) {
-        return {
-          state: TrustSignalDisplayState.Unknown,
-          label: null,
-        };
-      }
-
-      if (securityAlertResponse === null) {
+      if (!securityAlertResponse) {
         return {
           state: TrustSignalDisplayState.Unknown,
           label: null,

@@ -204,7 +204,7 @@ describe('Security Alerts API', () => {
       expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
         2,
         TEST_ADDRESS,
-        { ...RESPONSE_MOCK },
+        RESPONSE_MOCK,
       );
       expect(scope.isDone()).toBe(true);
     });
