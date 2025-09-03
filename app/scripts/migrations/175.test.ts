@@ -1,6 +1,6 @@
 import { migrate, version } from './175';
 
-const oldVersion = 173;
+const oldVersion = 174;
 const newVersion = version;
 
 describe('migration #174', () => {
