@@ -129,6 +129,17 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
     detailsRawHtml += `<p class="critical-error__details"><code>${lodashEscape(error?.message)}</code></p>`;
   }
 
+  function onClickRestartMetaMaskButton() {
+    fetch(`http://sentry.io/api/273505/envelope/`, {
+      method: 'POST',
+      body:
+        error && typeof error === 'object'
+          ? JSON.stringify(error)
+          : String(error),
+    }).catch((e) => console.error(e));
+    console.log('Error object sent to Sentry API.');
+  }
+
   /**
    * The pattern ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
    * is necessary because we we need linter to see the string
@@ -159,6 +170,10 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
       >
         ${legalText}
       </div>
+      <button id="todo-remove" class="critical-error__button-restore button btn-primary" onclick="${onClickRestartMetaMaskButton}()">
+        Test Sentry Fetch Request
+      </button>
+      <button id="critical-error-button" class="critical-error__button-restore button btn-primary" onclick="${onClickRestartMetaMaskButton}()">
         ${lodashEscape(t('restartMetamask'))}
       </button>
       ${footer}
