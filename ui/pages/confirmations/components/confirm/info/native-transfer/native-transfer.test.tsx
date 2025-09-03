@@ -6,9 +6,10 @@ import { getMockTokenTransferConfirmState } from '../../../../../../../test/data
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import NativeTransferInfo from './native-transfer';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(),
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useLocation: () => ({ pathname: '/' }),
+  useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));
 
 jest.mock(
@@ -29,16 +30,6 @@ jest.mock('../../../../../../store/actions', () => ({
 }));
 
 describe('NativeTransferInfo', () => {
-  const useLocationMock = jest.mocked(useLocation);
-
-  beforeEach(() => {
-    jest.resetAllMocks();
-
-    useLocationMock.mockReturnValue({
-      search: '',
-    } as unknown as ReturnType<typeof useLocationMock>);
-  });
-
   it('renders correctly', () => {
     const state = getMockTokenTransferConfirmState({});
     const mockStore = configureMockStore([])(state);
