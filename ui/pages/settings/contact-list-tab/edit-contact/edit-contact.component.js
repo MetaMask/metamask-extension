@@ -130,6 +130,7 @@ export default function EditContact({
           </div>
           <TextField
             id="nickname"
+            data-testid="address-book-edit-contact-name"
             placeholder={t('addAlias')}
             value={contactName}
             onChange={handleNameChange}
@@ -148,6 +149,7 @@ export default function EditContact({
           </div>
           <TextField
             id="address"
+            data-testid="address-book-edit-contact-address"
             value={newAddress}
             onChange={(e) => setNewAddress(e.target.value)}
             error={addressError}
@@ -199,7 +201,9 @@ export default function EditContact({
                 src={getImageForChainId(selectedChainId) || undefined}
                 name={networks?.[selectedChainId]?.name}
               />
-              <Text>{networks?.[selectedChainId]?.name}</Text>
+              <Text data-testid="address-book-edit-contact-network">
+                {networks?.[selectedChainId]?.name}
+              </Text>
             </Box>
             <Icon
               name={IconName.ArrowDown}

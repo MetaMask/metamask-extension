@@ -55,6 +55,7 @@ function ViewContact({
           <PreferredAvatar size={AvatarAccountSize.Lg} address={address} />
           <Text
             className="address-book__header__name"
+            data-testid="address-book-name"
             variant={TextVariant.bodyLgMedium}
             marginInlineStart={4}
             style={{ overflow: 'hidden' }}
@@ -78,7 +79,10 @@ function ViewContact({
             {t('ethereumPublicAddress')}
           </div>
           <div className="address-book__view-contact__group__value">
-            <div className="address-book__view-contact__group__static-address">
+            <div
+              className="address-book__view-contact__group__static-address"
+              data-testid="address-book-view-contact-address"
+            >
               {quadSplit(checkSummedAddress)}
             </div>
             <Tooltip
