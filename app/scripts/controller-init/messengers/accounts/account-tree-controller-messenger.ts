@@ -28,8 +28,6 @@ type Actions =
   | UserStorageController.UserStorageControllerPerformGetStorageAllFeatureEntries
   | UserStorageController.UserStorageControllerPerformSetStorage
   | UserStorageController.UserStorageControllerPerformBatchSetStorage
-  | UserStorageController.UserStorageControllerSyncInternalAccountsWithUserStorage
-  | UserStorageController.UserStorageControllerGetIsMultichainAccountSyncingEnabled
   | AuthenticationController.AuthenticationControllerGetSessionProfile
   | MultichainAccountServiceCreateMultichainAccountGroupAction;
 
@@ -70,8 +68,6 @@ export function getAccountTreeControllerMessenger(
       'UserStorageController:performGetStorageAllFeatureEntries',
       'UserStorageController:performSetStorage',
       'UserStorageController:performBatchSetStorage',
-      'UserStorageController:syncInternalAccountsWithUserStorage',
-      'UserStorageController:getIsMultichainAccountSyncingEnabled',
       'AuthenticationController:getSessionProfile',
       'MultichainAccountService:createMultichainAccountGroup',
       'SnapController:get',
