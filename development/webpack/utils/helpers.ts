@@ -60,6 +60,18 @@ export const TREZOR_MODULE_RE = new RegExp(
 export const noop = () => undefined;
 
 /**
+ * Scripts that are only used in browserify builds.
+ * These scripts should be deleted from the codebase
+ * and removed from the manifest after webpack builds are stable.
+ */
+export const browserifyOnlyScripts = [
+  'scripts/disable-console.js',
+  'scripts/lockdown-install.js',
+  'scripts/lockdown-run.js',
+  'scripts/lockdown-more.js',
+];
+
+/**
  * Collects all entry files for use with webpack.
  *
  * TODO: move this logic into the ManifestPlugin
@@ -103,12 +115,9 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   // add content_scripts to entries
   manifest.content_scripts?.forEach((s) =>
     s.js
-      // TODO(https://github.com/MetaMask/metamask-extension/issues/35218)
-      // scripts/disable-console.js is only relevant for the browserify build
-      // console is disabled by the lavamoat webpack plugin automatically
-      // clean up after browserify builds are removed
-      // the file should be deleted, and the script should be removed from the manifest
-      ?.filter((filename) => filename !== 'scripts/disable-console.js')
+      // browserifyOnlyScripts are only relevant for the browserify build
+      // so we need to remove them from the manifest when building with webpack
+      ?.filter((filename) => !browserifyOnlyScripts.includes(filename))
       ?.forEach(addManifestScript),
   );
 
