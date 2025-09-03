@@ -1,7 +1,6 @@
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import { type Transaction } from '@metamask/keyring-api';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import { type Transaction, TransactionStatus } from '@metamask/keyring-api';
 
 export function isBridgeComplete({
   status,
@@ -23,5 +22,5 @@ export function isBridgeFailed(
       status.status === StatusTypes.FAILED,
   );
 
-  return bridgeFailed || transaction.status === TransactionStatus.failed;
+  return bridgeFailed || transaction.status === TransactionStatus.Failed;
 }
