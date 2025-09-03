@@ -20,7 +20,7 @@ import { useBatchApproveBalanceChanges } from '../../../components/confirm/info/
 import { useConfirmContext } from '../../../context/confirm';
 import {
   getUseTransactionSimulations,
-  selectMultipleApprovalAlertAllowList,
+  selectNonZeroUnusedApprovalsAllowList,
 } from '../../../../../selectors';
 
 type ApprovalInfo = {
@@ -237,8 +237,8 @@ export function useMultipleApprovalsAlerts(): Alert[] {
     useBatchApproveBalanceChanges() ?? {};
 
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
-  const multipleApprovalAlertAllowList = useSelector(
-    selectMultipleApprovalAlertAllowList,
+  const nonZeroUnusedApprovalsAllowList = useSelector(
+    selectNonZeroUnusedApprovalsAllowList,
   ) as string[] | undefined;
 
   const nestedTransactions = currentConfirmation?.nestedTransactions;
@@ -250,7 +250,7 @@ export function useMultipleApprovalsAlerts(): Alert[] {
       SimulationErrorCode.ChainNotSupported,
       SimulationErrorCode.Disabled,
     ].includes(simulationData?.error?.code as SimulationErrorCode);
-  const skipAlertOriginAllowed = multipleApprovalAlertAllowList?.includes(
+  const skipAlertOriginAllowed = nonZeroUnusedApprovalsAllowList?.includes(
     currentConfirmation?.origin ?? '',
   );
 

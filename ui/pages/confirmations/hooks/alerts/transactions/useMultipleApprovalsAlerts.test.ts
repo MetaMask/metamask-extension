@@ -987,7 +987,7 @@ describe('useMultipleApprovalsAlerts', () => {
         },
         approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
         remoteFeatureFlags: {
-          multipleApprovalAlertAllowList: [originAllowedMock],
+          nonZeroUnusedApprovals: [originAllowedMock],
         },
       });
 
