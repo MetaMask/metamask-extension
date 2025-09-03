@@ -57,6 +57,12 @@ class ChromeDriver {
     args.push('--log-level=3');
     args.push('--enable-logging');
 
+    if (process.env.CI || process.env.CODESPACES) {
+      args.push('--disable-gpu');
+      args.push('--disable-vulkan-fallback-to-gl-for-testing');
+      args.push('--use-gl=swiftshader');
+    }
+
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
@@ -88,12 +94,6 @@ class ChromeDriver {
       .forBrowser('chrome')
       .setChromeOptions(options);
     const service = new chrome.ServiceBuilder();
-
-    if (process.env.CI || process.env.CODESPACES) {
-      args.push('--disable-gpu');
-      args.push('--disable-vulkan-fallback-to-gl-for-testing');
-      args.push('--use-gl=swiftshader');
-    }
 
     // Enables Chrome logging. Default: enabled
     // Especially useful for discovering why Chrome has crashed, but can also
