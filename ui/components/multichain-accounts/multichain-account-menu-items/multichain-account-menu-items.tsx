@@ -37,6 +37,7 @@ export const MultichainAccountMenuItems = ({
           justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
           onClick={item.onClick}
+          data-testid={`multichain-account-menu-item-${item.textKey}`}
         >
           <Text
             fontWeight={FontWeight.Medium}

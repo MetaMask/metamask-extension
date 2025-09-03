@@ -52,7 +52,10 @@ export const MultichainAccountDetailsPage = () => {
   );
 
   return (
-    <Page className="multichain-account-details">
+    <Page
+      className="multichain-account-details"
+      data-testid="multichain-account-details-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,
