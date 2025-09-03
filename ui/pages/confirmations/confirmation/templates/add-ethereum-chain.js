@@ -3,6 +3,9 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import {
   infuraProjectId,
   DEPRECATED_NETWORKS,
+  WHITELIST_NETWORK_NAME,
+  WHITELIST_SYMBOL,
+  WHITELIST_NETWORK_RPC_URL,
 } from '../../../../../shared/constants/network';
 import {
   AlignItems,
@@ -173,20 +176,28 @@ async function getAlerts(pendingApproval, data) {
   if (data.matchedChain) {
     if (
       data.matchedChain.name?.toLowerCase() !==
-      pendingApproval.requestData.chainName.toLowerCase()
+        pendingApproval.requestData.chainName.toLowerCase() &&
+      WHITELIST_NETWORK_NAME[
+        pendingApproval.requestData.chainId
+      ]?.toLowerCase() !== pendingApproval.requestData.chainName.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_NAME);
     }
     if (
       data.matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
-      pendingApproval.requestData.ticker?.toLowerCase()
+        pendingApproval.requestData.ticker?.toLowerCase() &&
+      WHITELIST_SYMBOL[pendingApproval.requestData.chainId]?.toLowerCase() !==
+        pendingApproval.requestData.ticker?.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
     const { origin } = new URL(pendingApproval.requestData.rpcUrl);
     if (
-      !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
+      !data.matchedChain.rpc
+        ?.map((rpc) => new URL(rpc).origin)
+        .includes(origin) &&
+      WHITELIST_NETWORK_RPC_URL[pendingApproval.requestData.chainId] !== origin
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }

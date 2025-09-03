@@ -508,6 +508,18 @@ export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
   HYPE: 'HYPE',
 };
 
+export const WHITELIST_NETWORK_NAME = {
+  [CHAIN_IDS.HYPER_EVM]: 'HyperEVM',
+};
+
+export const WHITELIST_SYMBOL = {
+  [CHAIN_IDS.HYPER_EVM]: 'HYPE',
+};
+
+export const WHITELIST_NETWORK_RPC_URL = {
+  [CHAIN_IDS.HYPER_EVM]: 'https://rpc.hyperliquid.xyz',
+};
+
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
 export const LINEA_GOERLI_TOKEN_IMAGE_URL = './images/linea-logo-testnet.png';
 export const LINEA_SEPOLIA_TOKEN_IMAGE_URL = './images/linea-logo-testnet.png';
