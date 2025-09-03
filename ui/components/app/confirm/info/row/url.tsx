@@ -21,6 +21,7 @@ import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
 import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
 import { useOriginTrustSignals } from '../../../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
+import Tooltip from '../../../../ui/tooltip';
 
 export type ConfirmInfoRowUrlProps = {
   url: string;
@@ -88,11 +89,13 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     // Priority 1: Malicious
     if (originTrustSignals.state === TrustSignalDisplayState.Malicious) {
       return (
-        <Icon
-          name={IconName.Danger}
-          color={IconColor.errorDefault}
-          size={IconSize.Sm}
-        />
+        <Tooltip title="Malicious site" position="bottom">
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.errorDefault}
+            size={IconSize.Sm}
+          />
+        </Tooltip>
       );
     }
 
@@ -104,22 +107,26 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     // Priority 3: Warning
     if (originTrustSignals.state === TrustSignalDisplayState.Warning) {
       return (
-        <Icon
-          name={IconName.Danger}
-          color={IconColor.warningDefault}
-          size={IconSize.Sm}
-        />
+        <Tooltip title="Suspicious site" position="bottom">
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.warningDefault}
+            size={IconSize.Sm}
+          />
+        </Tooltip>
       );
     }
 
     // Priority 4: Verified
     if (originTrustSignals.state === TrustSignalDisplayState.Verified) {
       return (
-        <Icon
-          name={IconName.VerifiedFilled}
-          color={IconColor.infoDefault}
-          size={IconSize.Sm}
-        />
+        <Tooltip title="Verified site" position="bottom">
+          <Icon
+            name={IconName.VerifiedFilled}
+            color={IconColor.infoDefault}
+            size={IconSize.Sm}
+          />
+        </Tooltip>
       );
     }
 
