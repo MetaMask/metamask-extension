@@ -140,6 +140,7 @@ function onboardingFixture() {
         },
       },
       UserStorageController: {},
+      MultichainAccountService: {},
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},
