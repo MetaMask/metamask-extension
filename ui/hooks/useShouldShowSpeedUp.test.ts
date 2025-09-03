@@ -70,6 +70,35 @@ describe('useShouldShowSpeedUp', () => {
     expect(result.current).toBe(true);
   });
 
+  it('should return false for intent transactions, regardless of timing or other conditions', () => {
+    const now = Date.now();
+
+    const transactionGroup = {
+      transactions: [
+        {
+          chainId: currentChainId,
+          submittedTime: now - 6000, // submitted over 5 seconds ago
+        },
+      ],
+      hasRetried: false,
+      initialTransaction: {
+        swapMetaData: {
+          isIntentTx: true,
+        },
+      },
+    };
+
+    const isEarliestNonce = true;
+
+    const { result } = renderHookWithProvider(
+      () => useShouldShowSpeedUp(transactionGroup, isEarliestNonce),
+      mockState,
+    );
+
+    // Should be false despite meeting all other conditions
+    expect(result.current).toBe(false);
+  });
+
   it('should remain false if hasRetried is true, regardless of timing', () => {
     const now = Date.now();
 

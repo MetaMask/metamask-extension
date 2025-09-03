@@ -12,16 +12,20 @@ import { getCurrentChainId } from '../../shared/modules/selectors/networks';
  * @param {boolean} isEarliestNonce - Whether this group is currently the earliest nonce
  */
 export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
-  const { transactions, hasRetried } = transactionGroup;
+  const { transactions, hasRetried, initialTransaction } = transactionGroup;
   const currentChainId = useSelector(getCurrentChainId);
 
   const [earliestTransaction = {}] = transactions;
 
   const matchCurrentChainId = earliestTransaction.chainId === currentChainId;
 
+  // Intent transactions cannot be sped up as they are handled off-chain
+  const isIntentTransaction = initialTransaction?.swapMetaData?.isIntentTx === true;
+
   const { submittedTime } = earliestTransaction;
   const [speedUpEnabled, setSpeedUpEnabled] = useState(() => {
     return (
+      !isIntentTransaction &&
       Date.now() - submittedTime > 5000 &&
       isEarliestNonce &&
       !hasRetried &&
@@ -37,7 +41,7 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
     // condition is already met. This effect will run anytime the variables
     // for determining enabled status change
     let timeoutId;
-    if (!hasRetried && isEarliestNonce && !speedUpEnabled) {
+    if (!isIntentTransaction && !hasRetried && isEarliestNonce && !speedUpEnabled) {
       if (Date.now() - submittedTime > SECOND * 5) {
         setSpeedUpEnabled(true);
       } else {
@@ -57,7 +61,8 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
         clearTimeout(timeoutId);
       }
     };
-  }, [submittedTime, speedUpEnabled, hasRetried, isEarliestNonce]);
+  }, [submittedTime, speedUpEnabled, hasRetried, isEarliestNonce, isIntentTransaction]);
 
-  return speedUpEnabled;
+  // Intent transactions should never show speed up option
+  return isIntentTransaction ? false : speedUpEnabled;
 }
