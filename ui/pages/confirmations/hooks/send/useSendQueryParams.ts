@@ -88,10 +88,7 @@ export const useSendQueryParams = () => {
     if (asset?.chainId !== undefined && paramChainId !== asset.chainId) {
       queryParams.set('chainId', asset.chainId.toString());
     }
-    if (
-      maxValueMode !== undefined &&
-      Boolean(paramMaxValueMode) !== maxValueMode
-    ) {
+    if (maxValueMode !== undefined && paramMaxValueMode !== `${maxValueMode}`) {
       queryParams.set('maxValueMode', maxValueMode.toString());
     }
     if (to !== undefined && paramRecipient !== to) {
@@ -115,7 +112,7 @@ export const useSendQueryParams = () => {
 
   useEffect(() => {
     if (value === undefined && paramAmount) {
-      updateValue(paramAmount, Boolean(paramMaxValueMode));
+      updateValue(paramAmount, paramMaxValueMode === 'true');
     }
   }, [paramAmount, paramMaxValueMode, updateValue, value]);
 

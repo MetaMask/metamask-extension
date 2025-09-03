@@ -38,7 +38,6 @@ export const useSendActions = () => {
             value: value as string,
           }),
         );
-        console.log('-----------------------');
         history.push(
           `${CONFIRM_TRANSACTION_ROUTE}?maxValueMode=${maxValueMode}`,
         );

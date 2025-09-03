@@ -47,7 +47,7 @@ export const useMaxValueRefresher = () => {
   );
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const [searchParams] = useSearchParams();
-  const paramMaxValueMode = Boolean(searchParams.get('maxValueMode')) ?? false;
+  const paramMaxValueMode = searchParams.get('maxValueMode') === 'true';
   const isMavValueMode = isMaxAmountMode || paramMaxValueMode;
 
   const balance = useSelector(getSelectedAccountCachedBalance);
