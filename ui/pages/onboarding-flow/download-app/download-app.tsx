@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -27,19 +27,19 @@ import { getCurrentKeyring } from '../../../selectors';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingDownloadApp() {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const currentKeyring = useSelector(getCurrentKeyring);
 
   const handleClick = async () => {
-    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+    navigate(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
 
   useEffect(() => {
     // if the user has not created a wallet, redirect to onboarding welcome route
     if (!currentKeyring) {
-      history.replace(ONBOARDING_WELCOME_ROUTE);
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
-  }, [currentKeyring, history]);
+  }, [currentKeyring, navigate]);
 
   return (
     <Box

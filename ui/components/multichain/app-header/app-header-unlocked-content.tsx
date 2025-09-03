@@ -69,6 +69,10 @@ import {
   setShowCopyAddressToast,
 } from '../../../ducks/app/app';
 import { PreferredAvatar } from '../../app/preferred-avatar';
+import {
+  getMultichainAccountGroupById,
+  getSelectedAccountGroup,
+} from '../../../selectors/multichain-accounts/account-tree';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -88,12 +92,19 @@ export const AppHeaderUnlockedContent = ({
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
+  const selectedMultichainAccountId = useSelector(getSelectedAccountGroup);
+  const selectedMultichainAccount = useSelector((state) =>
+    getMultichainAccountGroupById(state, selectedMultichainAccountId),
+  );
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
   const shortenedAddress =
     internalAccount &&
     shortenAddress(normalizeSafeAddress(internalAccount.address));
+  const accountName = isMultichainAccountsState2Enabled
+    ? selectedMultichainAccount.metadata.name
+    : internalAccount.metadata.name;
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
@@ -211,7 +222,7 @@ export const AppHeaderUnlockedContent = ({
           >
             <AccountPicker
               address={internalAccount.address}
-              name={internalAccount.metadata.name}
+              name={accountName}
               showAvatarAccount={false}
               onClick={() => {
                 handleAccountMenuClick();

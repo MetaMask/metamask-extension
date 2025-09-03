@@ -57,6 +57,7 @@ describe('useSendQueryParams', () => {
   it('handleSubmit is able to submit evm send', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_ASSET,
+      chainId: '0x5',
       from: MOCK_ADDRESS_1,
       to: MOCK_ADDRESS_2,
       value: 10,

@@ -1,6 +1,5 @@
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { toHex } from '@metamask/controller-utils';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -19,13 +18,12 @@ import { useSendType } from './useSendType';
 export const useSendActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { asset, from, fromAccount, to, updateCurrentPage, value } =
-    useSendContext();
+  const { asset, chainId, from, fromAccount, to, value } = useSendContext();
   const { isEvmSendType } = useSendType();
 
   const handleSubmit = useCallback(
     async (recipientAddress?: string) => {
-      if (!asset?.chainId) {
+      if (!asset) {
         return;
       }
       const toAddress = recipientAddress || to;
@@ -34,7 +32,7 @@ export const useSendActions = () => {
         dispatch(
           await submitEvmTransaction({
             asset,
-            chainId: toHex(asset.chainId),
+            chainId: chainId as Hex,
             from: from as Hex,
             to: toAddress as Hex,
             value: value as string,
@@ -56,13 +54,13 @@ export const useSendActions = () => {
     },
     [
       asset,
+      chainId,
       dispatch,
       from,
       fromAccount,
       history,
       isEvmSendType,
       to,
-      updateCurrentPage,
       value,
     ],
   );
