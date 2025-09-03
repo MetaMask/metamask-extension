@@ -19,14 +19,6 @@ interface ContentProps extends StyleUtilityProps {
    * Additional CSS class provided to the content
    */
   className?: string;
-  /**
-   * Whether the content should be scrollable
-   */
-  scrollable?: boolean;
-  /**
-   * Custom scrollbar color
-   */
-  scrollbarColor?: string;
 }
 
 export const Content = ({
