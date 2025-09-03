@@ -20,7 +20,6 @@ export const lavamoatPlugin = (args: Args) =>
       errorTrapping: 'none',
       reporting: 'none',
     },
-    // Snow needs to run outside of LavaMoat
     // eslint-disable-next-line @typescript-eslint/naming-convention
     runtimeConfigurationPerChunk_experimental: (chunk) => {
       switch (chunk.name) {
@@ -40,6 +39,7 @@ export const lavamoatPlugin = (args: Args) =>
         case 'runtime':
           return {
             mode: 'safe',
+            // If snow is enabled, it needs to run outside of LavaMoat
             staticShims: args.snow
               ? [
                   join(
