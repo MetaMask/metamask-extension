@@ -169,7 +169,7 @@ const MultichainBridgeTransactionListItem: React.FC<
                   locale,
                   new BigNumber(sourceAsset.amount),
                 );
-                return `${displayAmount} ${bridgeHistoryItem.quote.srcAsset.symbol ?? sourceAsset.unit}`;
+                return `-${displayAmount} ${bridgeHistoryItem.quote.srcAsset.symbol ?? sourceAsset.unit}`;
               }
               return '';
             })()}
