@@ -191,12 +191,11 @@ async function mockInfura(mockServer: MockttpServer): Promise<void> {
 }
 
 describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this: Suite) {
-  it.only('should show banner alert', async function () {
+  it('should show banner alert', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
           })
@@ -210,7 +209,6 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
 
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await driver.delay(500000);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();
