@@ -13,7 +13,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
-import { ApprovalType, toHex } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import {
   CHAIN_SPEC_URL,
@@ -403,7 +403,7 @@ export default function ConfirmationPage({
 
           const isWhitelistedSymbol =
             WHITELIST_SYMBOL[
-              toHex(_pendingConfirmation.requestData.chainId)
+              _pendingConfirmation.requestData.chainId
             ]?.toLowerCase() ===
             _pendingConfirmation.requestData.ticker?.toLowerCase();
 
