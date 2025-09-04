@@ -1,13 +1,18 @@
-import { Hex } from '@metamask/utils';
 import { ERC1155 } from '@metamask/controller-utils';
+import { Hex } from '@metamask/utils';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { isNativeAddress } from '@metamask/bridge-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { Numeric } from '../../../../../shared/modules/Numeric';
 import { getTokenBalances } from '../../../../ducks/metamask/metamask';
 import { Asset } from '../../types/send';
-import { formatToFixedDecimals, toTokenMinimalUnit } from '../../utils/send';
+import {
+  formatToFixedDecimals,
+  fromTokenMinUnitsNumeric,
+  toTokenMinimalUnit,
+} from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 
@@ -20,50 +25,70 @@ type GetEvmBalanceArgs = {
   accountsWithBalances?: AccountWithBalances;
   asset?: Asset;
   from: string;
+  isEvmSendType?: boolean;
   tokenBalances: TokenBalances;
 };
 
-const getEvmBalance = ({
+const getBalance = ({
   accountsWithBalances,
   asset,
   from,
+  isEvmSendType,
   tokenBalances,
 }: GetEvmBalanceArgs) => {
   if (!asset) {
-    return '0';
+    return {
+      balance: '0',
+      decimals: 0,
+      rawBalanceNumeric: new Numeric('0', 10),
+    };
   }
-  if (isNativeAddress(asset.address)) {
-    if (!accountsWithBalances) {
-      return '0';
+
+  let rawBalanceHex = asset?.rawBalance;
+
+  if (!rawBalanceHex && isEvmSendType) {
+    if (isNativeAddress(asset.address)) {
+      // todo: check this value is not same on different networks
+      const accountAddress = Object.keys(accountsWithBalances ?? {}).find(
+        (address) => address.toLowerCase() === from.toLowerCase(),
+      ) as Hex;
+      const account = accountsWithBalances?.[accountAddress];
+      rawBalanceHex = account?.balance;
+    } else {
+      rawBalanceHex = (
+        Object.values(tokenBalances[from as Hex]).find(
+          (chainTokenBalances: Record<Hex, Hex>) =>
+            chainTokenBalances?.[asset?.address as Hex],
+        ) as Record<Hex, Hex>
+      )?.[asset?.address as Hex];
     }
-    const accountAddress = Object.keys(accountsWithBalances).find(
-      (address) => address.toLowerCase() === from.toLowerCase(),
-    ) as Hex;
-    const account = accountsWithBalances[accountAddress];
-    return formatToFixedDecimals(
-      toTokenMinimalUnit(account.balance, asset.decimals),
-      asset.decimals,
-    );
-  }
-  const tokenBalance = (
-    Object.values(tokenBalances[from as Hex]).find(
-      (chainTokenBalances: Record<Hex, Hex>) =>
-        chainTokenBalances?.[asset?.address as Hex],
-    ) as Record<Hex, Hex>
-  )?.[asset?.address as Hex];
-
-  return formatToFixedDecimals(
-    toTokenMinimalUnit(tokenBalance, asset.decimals),
-    asset.decimals,
-  );
-};
-
-const getNonEvmBalance = (asset?: Asset) => {
-  if (!asset) {
-    return '0';
   }
 
-  return formatToFixedDecimals(asset.primary, asset.decimals);
+  if (rawBalanceHex) {
+    return {
+      balance: formatToFixedDecimals(
+        toTokenMinimalUnit(rawBalanceHex, asset.decimals),
+        asset.decimals,
+      ),
+      decimals: asset.decimals,
+      rawBalanceNumeric: new Numeric(rawBalanceHex, 16).toBase(10),
+    };
+  }
+
+  // todo: check this field is not asset.balance
+  if (asset.primary) {
+    return {
+      balance: formatToFixedDecimals(asset.primary, asset.decimals),
+      decimals: asset.decimals,
+      rawBalanceNumeric: fromTokenMinUnitsNumeric(
+        asset.primary,
+        10,
+        asset.decimals,
+      ),
+    };
+  }
+
+  return { balance: '0', decimals: 0, rawBalanceNumeric: new Numeric('0', 10) };
 };
 
 export const useBalance = () => {
@@ -80,22 +105,27 @@ export const useBalance = () => {
     return undefined;
   }, [accountsByChainId, asset?.address, chainId]);
 
-  const balance = useMemo(() => {
+  const { balance, decimals, rawBalanceNumeric } = useMemo(() => {
     if (asset?.standard === ERC1155) {
-      return asset?.balance ?? '0';
+      const bal = asset?.balance ?? '0';
+      return {
+        balance: bal,
+        decimals: 0,
+        rawBalanceNumeric: new Numeric(bal, 10),
+      };
     }
-    if (isEvmSendType) {
-      return getEvmBalance({
-        accountsWithBalances,
-        asset,
-        from,
-        tokenBalances,
-      });
-    }
-    return getNonEvmBalance(asset);
+    return getBalance({
+      accountsWithBalances,
+      asset,
+      from,
+      isEvmSendType,
+      tokenBalances,
+    });
   }, [accountsWithBalances, asset, from, isEvmSendType, tokenBalances]);
 
   return {
     balance,
+    decimals,
+    rawBalanceNumeric,
   };
 };
