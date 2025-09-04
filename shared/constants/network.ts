@@ -196,6 +196,7 @@ export const CHAIN_IDS = {
   OMNI: '0xa6',
   XRPLEVM: '0x15f900',
   FRAX: '0xfc',
+  PEAQ: '0xd0a',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -271,6 +272,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   XRPLEVM_TESTNET: '0x161c28',
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
+  PEAQ: '0xd0a',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -348,6 +350,7 @@ export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
 export const FRAX_DISPLAY_NAME = 'Fraxtal';
+export const PEAQ_DISPLAY_NAME = 'peaq';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -497,6 +500,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   XRPLEVM_TESTNET: 'XRP',
   XRPLEVM: 'XRP',
   SOPHON: 'SOPH',
+  PEAQ: 'PEAQ',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -621,6 +625,7 @@ export const XRPLEVM_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_NATIVE_TOKEN_IMAGE_URL = './images/xrplevm-native.svg';
 export const FRAX_IMAGE_URL = './images/frax.svg';
 export const FRAX_NATIVE_TOKEN_IMAGE_URL = './images/frax-native.svg';
+export const PEAQ_IMAGE_URL = './images/peaq.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -921,6 +926,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.OMNI]: CURRENCY_SYMBOLS.OMNI,
   [CHAIN_IDS.XRPLEVM]: CURRENCY_SYMBOLS.XRPLEVM,
   [CHAIN_IDS.FRAX]: CURRENCY_SYMBOLS.FRAX,
+  [CHAINLIST_CHAIN_IDS_MAP.PEAQ]: CHAINLIST_CURRENCY_SYMBOLS_MAP.PEAQ,
 } as const;
 
 /**
@@ -1078,6 +1084,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_IMAGE_URL,
   [CHAIN_IDS.FRAX]: FRAX_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.PEAQ]: PEAQ_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1150,6 +1157,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]:
     XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FRAX]: FRAX_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.PEAQ]: PEAQ_IMAGE_URL,
+
 } as const;
 
 /**
