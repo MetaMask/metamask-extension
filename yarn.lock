@@ -5795,15 +5795,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eip-5792-middleware@npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-e94ec490":
-  version: 1.0.0-preview-e94ec490
-  resolution: "@metamask-previews/eip-5792-middleware@npm:1.0.0-preview-e94ec490"
+"@metamask/eip-5792-middleware@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/eip-5792-middleware@npm:1.0.0"
   dependencies:
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.1"
-    "@metamask/transaction-controller": "npm:^60.1.0"
+    "@metamask/transaction-controller": "npm:^60.2.0"
     "@metamask/utils": "npm:^11.4.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/d09485041a5960c23bbd7c169dc6b7a1e1bf4809d27a199e218fd6789e8f3a2cf31e7bd7e5ffa602b4adeb1d2a9c9a270929b41a8d4d511b032b5b5b98be55a1
+  checksum: 10/126253e3802378cf7828b9f0f357487b3c4cfa614a14ca07519e804a62ef4157849f76bb940ed60d52ed48dfbbee8bf0dd725827fadcd9b0056bc2db86f172e8
   languageName: node
   linkType: hard
 
@@ -7530,9 +7530,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^60.1.0":
-  version: 60.1.0
-  resolution: "@metamask/transaction-controller@npm:60.1.0"
+"@metamask/transaction-controller@npm:^60.1.0, @metamask/transaction-controller@npm:^60.2.0":
+  version: 60.2.0
+  resolution: "@metamask/transaction-controller@npm:60.2.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -7562,7 +7562,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^24.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/a4d3f8b6c4e834b076f1a3700e836c7738a320c165f049038fb5fca509cd22c441ea6c24547ce9fc63ff2ab42bb22d23091470781e4c24439196b6a671f95979
+  checksum: 10/e60cfeb3893951bee5947e3aaeae4542f79a623a59f10b10270dea2ec051a28db8b24be7dc9d2f00284c97ddbf4664432f8b61cc8e5601d1a08c7e7dd2d5f519
   languageName: node
   linkType: hard
 
@@ -31758,7 +31758,7 @@ __metadata:
     "@metamask/design-system-react": "npm:^0.3.1"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
-    "@metamask/eip-5792-middleware": "npm:@metamask-previews/eip-5792-middleware@1.0.0-preview-e94ec490"
+    "@metamask/eip-5792-middleware": "npm:^1.0.0"
     "@metamask/ens-controller": "npm:^17.0.1"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/error-reporting-service": "npm:^2.0.0"
