@@ -41,13 +41,7 @@ export const useAmountValidation = () => {
       return validateERC1155Balance(asset, value, t);
     }
     return isEvmSendType ? validateEvmAmount() : await validateNonEvmAmount();
-  }, [
-    asset?.standard,
-    isEvmSendType,
-    validateEvmAmount,
-    validateNonEvmAmount,
-    value,
-  ]);
+  }, [asset, isEvmSendType, t, validateEvmAmount, validateNonEvmAmount, value]);
 
   const { value: amountError } = useAsyncResult(validateAmount, [
     validateAmount,
