@@ -10,7 +10,7 @@ export const lavamoatPlugin = (args: Args) =>
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
     inlineLockdown: /^runtime|contentscript\.js/u,
-    debugRuntime: args.lavamoat === 'debug',
+    debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
       errorTaming: 'unsafe',

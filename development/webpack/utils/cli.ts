@@ -186,8 +186,6 @@ function getOptions(
 ) {
   const isProduction = env === 'production';
   const prodDefaultDesc = "If `env` is 'production', `true`, otherwise `false`";
-  const isLavaMoat =
-    process.argv.includes('--lavamoat') || process.argv.includes('-l');
   return {
     watch: {
       alias: 'w',
@@ -326,26 +324,18 @@ function getOptions(
     lavamoat: {
       alias: 'l',
       array: false,
-      // if the user specifies --lavamoat, we default to undefined, to make sure coercion works
-      default: (isLavaMoat ? undefined : isProduction) as boolean,
+      default: isProduction,
       defaultDescription: prodDefaultDesc,
       description: 'Apply LavaMoat to the build assets',
       group: toOrange('Security:'),
-      type: 'string',
-      // false is not included in the type definitions for some reason, but it's a valid choice, so we need this type hack
-      choices: [true, false as true, 'debug'],
-      coerce: (arg: 'true' | 'false' | 'debug' | boolean | undefined) => {
-        if (arg === true || arg === 'true' || arg === undefined) return true;
-        if (arg === false || arg === 'false') return false;
-        return arg;
-      },
+      type: 'boolean',
     },
-    snow: {
-      alias: 's',
+    lavamoatDebug: {
+      alias: 'u',
       array: false,
-      default: isProduction,
-      defaultDescription: prodDefaultDesc,
-      description: 'Apply Snow to the build assets',
+      default: false,
+      description:
+        'Enables/disables LavaMoat debug mode (ignored if `lavamoat` is not enabled)',
       group: toOrange('Security:'),
       type: 'boolean',
     },
@@ -354,6 +344,15 @@ function getOptions(
       array: false,
       default: false,
       description: 'Generate the LavaMoat policy',
+      group: toOrange('Security:'),
+      type: 'boolean',
+    },
+    snow: {
+      alias: 's',
+      array: false,
+      default: isProduction,
+      defaultDescription: prodDefaultDesc,
+      description: 'Apply Snow to the build assets',
       group: toOrange('Security:'),
       type: 'boolean',
     },
@@ -390,9 +389,10 @@ Watch: ${args.watch}
 Cache: ${args.cache}
 Progress: ${args.progress}
 Zip: ${args.zip}
-Snow: ${args.snow}
 LavaMoat: ${args.lavamoat}
+LavaMoat debug: ${args.lavamoatDebug}
 Generate policy: ${args.generatePolicy}
+Snow: ${args.snow}
 Sentry: ${args.sentry}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}

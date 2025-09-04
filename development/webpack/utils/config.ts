@@ -132,7 +132,7 @@ export function getVariables(
   // code checks for the _string_ `"true"`, so we cast to string here.
   variables.set('ENABLE_SENTRY', args.sentry.toString());
   variables.set('ENABLE_SNOW', args.snow.toString());
-  variables.set('ENABLE_LAVAMOAT', Boolean(args.lavamoat).toString());
+  variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
 
   // convert the variables to a format that can be used by SWC, which expects
   // values be JSON stringified, as it JSON.parses them internally.
