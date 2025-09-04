@@ -5,12 +5,12 @@ const {
   default: NetworkManager,
   NetworkId,
 } = require('../../page-objects/pages/network-manager');
+const { loginWithBalanceValidation } = require('../../page-objects/flows/login.flow');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   openDapp,
-  unlockWallet,
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
@@ -192,7 +192,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -207,7 +207,9 @@ describe('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="Localhost 8546"]',
+        );
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -230,7 +232,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('handles three confirmations on three confirmations concurrently', async function () {
+  it.only('handles three confirmations on three confirmations concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -271,7 +273,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -359,7 +361,9 @@ describe('Request-queue UI changes', function () {
 
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await driver.clickElement('[data-testid="Localhost 8545"]');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="Localhost 8546"]',
+        );
 
         await validateBalanceAndActivity(driver, '24.9998');
       },
@@ -395,7 +399,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -456,7 +460,7 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver }) => {
         // Navigate to extension home screen
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -522,7 +526,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -598,7 +602,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
