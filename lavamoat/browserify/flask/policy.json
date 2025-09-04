@@ -1816,6 +1816,15 @@
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true
       }
     },
+    "@metamask/shield-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/signature-controller": {
       "globals": {
         "fetch": true
