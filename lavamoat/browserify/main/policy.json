@@ -1312,6 +1312,7 @@
     },
     "@metamask/gator-permissions-controller": {
       "packages": {
+        "@metamask/7715-permission-types": true,
         "@metamask/base-controller": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
