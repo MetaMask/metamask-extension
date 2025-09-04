@@ -279,61 +279,46 @@ export const getMultiChainAssets = createDeepEqualSelector(
  */
 export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
   (state) => state,
-  (_state, account?: InternalAccount) => account,
+  (_state, account: InternalAccount | undefined) => account,
   (
     _state,
-    _account?: InternalAccount,
-    tokenAddress?: Hex | CaipAssetType | string,
+    _account: InternalAccount | undefined,
+    tokenAddress: Hex | CaipAssetType | string | undefined,
   ) => tokenAddress,
   (
     _state,
-    _account?: InternalAccount,
-    _tokenAddress?: Hex | CaipAssetType | string,
-    _chainId?: Hex | CaipChainId,
+    _account: InternalAccount | undefined,
+    _tokenAddress: Hex | CaipAssetType | string | undefined,
+    _chainId: Hex | CaipChainId,
   ) => _chainId,
   (
     state,
-    account?: InternalAccount,
-    tokenAddress?: Hex | CaipAssetType | string,
-    chainId?: Hex | CaipChainId,
+    account: InternalAccount | undefined,
+    tokenAddress: Hex | CaipAssetType | string | undefined,
+    chainId: Hex | CaipChainId,
   ) => {
+    const isEvm = !isCaipChainId(chainId);
+    if (!tokenAddress && !isEvm) {
+      return null;
+    }
+
     const accountToUse =
       account ??
-      (isCaipChainId(chainId)
-        ? getInternalAccountBySelectedAccountGroupAndCaip(state, chainId)
-        : getSelectedInternalAccount(state));
+      (isEvm
+        ? getSelectedInternalAccount(state)
+        : getInternalAccountBySelectedAccountGroupAndCaip(state, chainId));
 
-    const assetsToSearch = isCaipChainId(chainId)
-      ? (groupBy(getMultiChainAssets(state, accountToUse), 'chainId') as Record<
-          CaipChainId,
+    const assetsToSearch = isEvm
+      ? (getSelectedAccountTokensAcrossChains(state) as Record<
+          Hex,
           TokenWithFiatAmount[]
         >)
-      : (getSelectedAccountTokensAcrossChains(state) as Record<
-          Hex,
+      : (groupBy(getMultiChainAssets(state, accountToUse), 'chainId') as Record<
+          CaipChainId,
           TokenWithFiatAmount[]
         >);
 
-    const realTokenAddress = isCaipChainId(chainId)
-      ? `${chainId}/${tokenAddress}`
-      : tokenAddress;
-
-    console.log('getTokenByAccountAndAddressAndChainId', {
-      assetsToSearch,
-      tokenAddress,
-      chainId,
-      accountToUse,
-      realTokenAddress,
-    });
-
-    const result = findAssetByAddress(
-      assetsToSearch,
-      realTokenAddress,
-      chainId,
-    );
-
-    console.log('getTokenByAccountAndAddressAndChainId RESULT', {
-      result,
-    });
+    const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
 
     return result;
   },

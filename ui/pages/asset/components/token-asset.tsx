@@ -54,11 +54,6 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     getIsMultichainAccountsState2Enabled,
   );
 
-  console.log('KJADHGHDKJAKJHD', {
-    chainId,
-    isMultichainAccountsState2Enabled,
-  });
-
   const needsMultichainInternalAccount =
     isMultichainAccountsState2Enabled && isCaipChainId(chainId);
 
@@ -71,10 +66,6 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   ) as InternalAccount;
   const { address: walletAddress } = selectedAccount;
 
-  console.log('KJADHGHDKJAKJHD 2', {
-    selectedAccount,
-  });
-
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
   const multichainNetwork = useMultichainSelector(
@@ -86,6 +77,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   console.log('KJADHGHDKJAKJHD 3', {
     multichainNetwork,
     isEvm,
+    token,
   });
 
   const history = useHistory();

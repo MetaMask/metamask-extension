@@ -71,8 +71,6 @@ export default function TokenCell({
     [token, tokenDisplayInfo],
   );
 
-  console.log('DISPLAY TOKEN', displayToken);
-
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
   };

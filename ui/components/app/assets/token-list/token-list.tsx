@@ -160,27 +160,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       return;
     }
 
-    const tokenAddress = isCaipChainId(token.chainId)
-      ? token.address.split('/')[1]
-      : token.address;
+    const tokenAddress =
+      !isCaipChainId(token.chainId) && token.isNative ? '' : token.address;
 
-    console.log('TOKEN CLICK', {
-      isNative: token.isNative,
-      chainId: token.chainId,
-      address: token.address,
-      token,
-      usedAddress:
-        isMultichainAccountsState2Enabled && token.isNative ? '' : tokenAddress,
-    });
-
-    onTokenClick(
-      token.chainId,
-      isMultichainAccountsState2Enabled &&
-        token.isNative &&
-        !isCaipChainId(token.chainId)
-        ? ''
-        : tokenAddress,
-    );
+    onTokenClick(token.chainId, tokenAddress);
 
     // Track event: token details
     trackEvent({

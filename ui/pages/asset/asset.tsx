@@ -1,5 +1,5 @@
 import { Nft } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
@@ -21,10 +21,6 @@ const Asset = () => {
 
   const { chainId, asset, id } = params;
   const decodedAsset = asset ? decodeURIComponent(asset) : undefined;
-  console.log('ASSET PAGE', {
-    params,
-    decodedAsset,
-  });
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 
@@ -33,9 +29,13 @@ const Asset = () => {
       state,
       undefined, // Defaults to the selected account
       decodedAsset,
-      chainId,
+      chainId as Hex | CaipChainId,
     ),
   );
+
+  console.log('ASSET PAGE', {
+    token,
+  });
 
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>

@@ -39,6 +39,7 @@ export const useTokenDisplayInfo = ({
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
+  // TODO Fix this selector before merging
   const showFiat =
     useMultichainSelector(
       makeGetMultichainShouldShowFiatByChainId(token.chainId),

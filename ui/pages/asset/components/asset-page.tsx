@@ -84,6 +84,9 @@ const AssetPage = ({
   asset: Asset;
   optionsButton: React.ReactNode;
 }) => {
+  console.log('ASSET PAGE XXXX', {
+    asset,
+  });
   const t = useI18nContext();
   const history = useHistory();
   const selectedAccount = useSelector(getSelectedAccount);
