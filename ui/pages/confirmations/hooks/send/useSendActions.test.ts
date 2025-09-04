@@ -1,4 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
@@ -25,9 +26,9 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: () => async (fn: () => Promise<unknown>) => {
+  useDispatch: () => (fn: () => void) => {
     if (fn) {
-      await fn();
+      fn();
     }
   },
 }));
@@ -54,13 +55,14 @@ describe('useSendQueryParams', () => {
     expect(mockHistory.goBack).toHaveBeenCalled();
   });
 
-  it('handleSubmit is able to submit evm send', () => {
+  it('handleSubmit is able to submit evm send', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_ASSET,
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
       to: MOCK_ADDRESS_2,
       value: 10,
+      maxValueMode: true,
     } as unknown as SendContext.SendContextType);
 
     const mockSubmitEvmTransaction = jest
@@ -75,6 +77,12 @@ describe('useSendQueryParams', () => {
     result.handleSubmit(MOCK_ADDRESS_2);
 
     expect(mockSubmitEvmTransaction).toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(mockHistory.push).toHaveBeenCalledWith(
+        '/confirm-transaction?maxValueMode=true',
+      );
+    });
   });
 
   it('handleSubmit is able to submit non-evm send', () => {

@@ -348,6 +348,18 @@
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
   },
+  "addressQrCodeModalDescription": {
+    "message": "Use this address to receive tokens and collectibles on $1",
+    "description": "$1 is the network name"
+  },
+  "addressQrCodeModalHeading": {
+    "message": "$1 Address",
+    "description": "$1 is the network name"
+  },
+  "addressQrCodeModalTitle": {
+    "message": "$1 / $2",
+    "description": "$1 is account name, $2 is network name"
+  },
   "addresses": {
     "message": "Addresses",
     "description": "Multichain account menu item for linking to addresses page"
@@ -7071,6 +7083,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
+  },
+  "trustSignalUrlMalicious": {
+    "message": "Malicious site"
+  },
+  "trustSignalUrlSuspicious": {
+    "message": "Suspicious site"
+  },
+  "trustSignalUrlVerified": {
+    "message": "Verified site"
   },
   "tryAgain": {
     "message": "Try again"

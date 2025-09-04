@@ -46,6 +46,7 @@ export const createBridgeMockStore = ({
     mockTokenData;
   const {
     internalAccounts: internalAccountsOverrides,
+    accountTree: accountTreeOverrides,
     ...metamaskStateOverridesWithoutAccounts
   } = metamaskStateOverrides;
   const internalAccounts = {
@@ -108,6 +109,7 @@ export const createBridgeMockStore = ({
     },
     localeMessages: { currentLocale: 'es_419' },
     metamask: {
+      featureFlags: {},
       ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
       ...swapsMetamask,
       ...mockNetworkState(
@@ -186,10 +188,26 @@ export const createBridgeMockStore = ({
                 },
                 accounts: ['15e69915-2a1a-4019-93b3-916e11fd432f'],
               },
+              // Account group with only 1 solana account (edge case)
+              'entropy:01K2FF18CTTXJYD34R78X4N1N1/2': {
+                type: 'multichain-account',
+                id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
+                metadata: {
+                  name: 'Account 1',
+                  pinned: false,
+                  hidden: false,
+                  entropy: {
+                    groupIndex: 0,
+                  },
+                },
+                accounts: ['bf13d52c-d6e8-40ea-9726-07d7149a3ca5'],
+              },
             },
           },
         },
-        selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+        selectedAccountGroup:
+          accountTreeOverrides?.selectedAccountGroup ??
+          'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
       ...tokenData,
       ...metamaskStateOverridesWithoutAccounts,
