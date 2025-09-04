@@ -35,6 +35,7 @@ export const useSendQueryParams = () => {
   const {
     asset,
     currentPage,
+    maxValueMode,
     to,
     updateValue,
     updateCurrentPage,
@@ -62,6 +63,7 @@ export const useSendQueryParams = () => {
   const paramAmount = searchParams.get('amount');
   const paramChainId = searchParams.get('chainId');
   const paramRecipient = searchParams.get('recipient');
+  const paramMaxValueMode = searchParams.get('maxValueMode');
 
   useEffect(() => {
     if (currentPage === subPath) {
@@ -86,6 +88,9 @@ export const useSendQueryParams = () => {
     if (asset?.chainId !== undefined && paramChainId !== asset.chainId) {
       queryParams.set('chainId', asset.chainId.toString());
     }
+    if (maxValueMode !== undefined && paramMaxValueMode !== `${maxValueMode}`) {
+      queryParams.set('maxValueMode', maxValueMode.toString());
+    }
     if (to !== undefined && paramRecipient !== to) {
       queryParams.set('recipient', to);
     }
@@ -93,9 +98,11 @@ export const useSendQueryParams = () => {
   }, [
     asset,
     history,
+    maxValueMode,
     paramAmount,
     paramAsset,
     paramChainId,
+    paramMaxValueMode,
     paramRecipient,
     searchParams,
     subPath,
@@ -105,9 +112,9 @@ export const useSendQueryParams = () => {
 
   useEffect(() => {
     if (value === undefined && paramAmount) {
-      updateValue(paramAmount);
+      updateValue(paramAmount, paramMaxValueMode === 'true');
     }
-  }, [paramAmount, value, updateValue]);
+  }, [paramAmount, paramMaxValueMode, updateValue, value]);
 
   useEffect(() => {
     if (to === undefined && paramRecipient) {
@@ -128,7 +135,8 @@ export const useSendQueryParams = () => {
           ({ address }) => address === paramAsset,
         );
       }
-    } else if (paramChainId) {
+    }
+    if (!newAsset && paramChainId) {
       newAsset = {
         ...getNativeAssetForChainId(paramChainId),
         chainId: paramChainId,
