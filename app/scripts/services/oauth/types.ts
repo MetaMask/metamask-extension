@@ -2,7 +2,7 @@ import {
   Web3AuthNetwork,
   AuthConnection,
 } from '@metamask/seedless-onboarding-controller';
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 
 export const SERVICE_NAME = 'OAuthService';
 
