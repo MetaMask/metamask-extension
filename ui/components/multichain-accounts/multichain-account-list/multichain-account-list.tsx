@@ -173,6 +173,8 @@ export const MultichainAccountList = ({
     defaultHomeActiveTabName,
     dispatch,
     history,
+    isInSearchMode,
+    displayWalletHeader,
     selectedAccountGroupsSet,
   ]);
 
