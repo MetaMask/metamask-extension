@@ -23,7 +23,7 @@ import {
   getIsEvmMultichainNetworkSelected,
 } from '../../../../selectors/multichain/networks';
 import {
-  getAllAssetsForSelectedAccountGroup,
+  getAssetsBySelectedAccountGroup,
   getTokenBalancesEvm,
 } from '../../../../selectors/assets';
 import {
@@ -58,7 +58,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     chainIds: chainIdsToPoll as Hex[],
   });
 
-  const accountGroupIdAssets = useSelector(getAllAssetsForSelectedAccountGroup);
+  const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 
   const multichainAssets = useMultiChainAssets();
 

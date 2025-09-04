@@ -537,9 +537,8 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
   },
 );
 
-// TODO: Find a better way to narrow the state needed to make better use of memoization
-export const getAllAssetsForSelectedAccountGroup = createDeepEqualSelector(
-  ({ metamask }: { metamask: AssetListState }) => {
+export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
+  ({ metamask }) => {
     const initialState = {
       accountTree: metamask.accountTree,
       internalAccounts: metamask.internalAccounts,
