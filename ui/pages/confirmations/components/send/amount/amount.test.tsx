@@ -126,7 +126,7 @@ describe('Amount', () => {
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '10.023',
       rawBalanceNumeric: new Numeric('10.023', 10),
-    });
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     const { getByText } = render();
 
     expect(getByText('10.023 NEU available')).toBeInTheDocument();
@@ -176,7 +176,7 @@ describe('Amount', () => {
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',
       rawBalanceNumeric: new Numeric('1', 10),
-    });
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
@@ -196,7 +196,7 @@ describe('Amount', () => {
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',
       rawBalanceNumeric: new Numeric('1', 10),
-    });
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
@@ -220,7 +220,7 @@ describe('Amount', () => {
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',
       rawBalanceNumeric: new Numeric('1', 10),
-    });
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
